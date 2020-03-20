@@ -31,3 +31,7 @@ variable activate_apis {
     default = []
 }
 
+variable environment {
+    type = string
+    default = "prod"
+}

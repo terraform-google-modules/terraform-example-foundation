@@ -31,3 +31,11 @@ variable activate_apis {
     default = []
 }
 
+variable subnet_allocation {
+
+}
+
+variable enable_networking {
+    type = bool
+    default = true
+}

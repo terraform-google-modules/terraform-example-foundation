@@ -3,7 +3,7 @@ module "frontend_subnet_allocation" {
     source = "./modules/subnet_allocation"
     
     project_index = index(local.app_network_indexes, "frontend")
-    application_name = "awesome_app"
+    application_name = "sample-app"
 
     cidr_vms = var.cidr_vms
     cidr_gke_pods = var.cidr_gke_pods
@@ -12,9 +12,8 @@ module "frontend_subnet_allocation" {
     subnet_size = var.subnet_size
 }
 
-
 output "result" {
-    value = module.frontend_subnet_allocation.subnet_cidr
+    value = module.frontend_subnet_allocation.network_range
 }
 
 module "folders" {
@@ -23,8 +22,6 @@ module "folders" {
     parent_folder_id    = "folders/974267969478"
     folder_display_name = "frendcloud"
 }
-
-
 
 module "awesome_app" {
     source = "./modules/standard_projects"
@@ -35,12 +32,14 @@ module "awesome_app" {
 
     project_folder_map = module.folders.folder_map
     
+    # Metadata
     project_prefix = "app"
     cost_centre = "retail"
-    application_name = "awesome_app"
+    application_name = "sample-app"
 
-    # enable_network = true
-    # subnet_allocation = module.frontend_subnet_allocation.subnet_allocation
+    # Network Setting
+    enable_networking = true
+    subnet_allocation = module.frontend_subnet_allocation.network_range
     
     # enable_dns = true
     # enable_cloud_build = true

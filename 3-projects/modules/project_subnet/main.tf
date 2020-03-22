@@ -36,7 +36,7 @@ locals {
 
 module "project_subnet" {
   source  = "terraform-google-modules/network/google//modules/subnets"
-  version = "~> 2.0.0"
+  version = "~> 2.1"
 
   project_id   = var.vpc_host_project_id
   network_name = var.vpc_self_link

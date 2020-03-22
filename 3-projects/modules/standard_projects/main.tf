@@ -1,3 +1,26 @@
+/**
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+locals {
+  envs = ["nonprod", "prod"]
+  project_env_map = {for project in data.google_project.projects : project.labels.environment => project.project_id }
+  env_project_map = {for env, project in local.project_env_map : project => env }
+  network_env_map = {for network in data.google_compute_network.shared-vpcs : local.env_project_map[network.project] => network}
+}
+
 module "nonprod_project" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 7.0"
@@ -10,8 +33,8 @@ module "nonprod_project" {
   billing_account             = var.billing_account
   folder_id                   = var.project_folder_map["nonprod"]
 
-  shared_vpc         = local.nonprod_host_project_id
-  shared_vpc_subnets = data.google_compute_network.nonprod_shared_vpc.subnetworks_self_links
+  shared_vpc         = local.project_env_map["nonprod"]
+  shared_vpc_subnets = local.network_env_map["nonprod"].subnetworks_self_links
 
   labels = {
     environment      = "nonprod"
@@ -32,8 +55,8 @@ module "prod_project" {
   billing_account             = var.billing_account
   folder_id                   = var.project_folder_map["prod"]
 
-  shared_vpc         = local.prod_host_project_id
-  shared_vpc_subnets = data.google_compute_network.prod_shared_vpc.subnetworks_self_links
+  shared_vpc         = local.project_env_map["prod"]
+  shared_vpc_subnets = local.network_env_map["prod"].subnetworks_self_links
 
   labels = {
     environment      = "prod"
@@ -42,14 +65,13 @@ module "prod_project" {
   }
 }
 
-
 /******************************************
   Project subnets
  *****************************************/
 module "networking_nonprod_project" {
   source              = "../../modules/project_subnet"
-  vpc_host_project_id = data.google_projects.projects-nonprod.projects[0].project_id
-  vpc_self_link       = data.google_compute_network.shared-vpc-nonprod.self_link
+  vpc_host_project_id = local.project_env_map["nonprod"]
+  vpc_self_link       = local.network_env_map["nonprod"].self_link
   ip_cidr_range       = var.subnet_allocation["nonprod"].primary_range
   application_name    = var.application_name
   secondary_ranges    = var.subnet_allocation["nonprod"].secondary_ranges
@@ -59,8 +81,8 @@ module "networking_nonprod_project" {
 
 module "networking_prod_project" {
   source              = "../../modules/project_subnet"
-  vpc_host_project_id = data.google_projects.projects-prod.projects[0].project_id
-  vpc_self_link       = data.google_compute_network.shared-vpc-prod.self_link
+  vpc_host_project_id = local.project_env_map["prod"]
+  vpc_self_link       = local.network_env_map["prod"].self_link
   ip_cidr_range       = var.subnet_allocation["prod"].primary_range
   application_name    = var.application_name
   secondary_ranges    = var.subnet_allocation["prod"].secondary_ranges

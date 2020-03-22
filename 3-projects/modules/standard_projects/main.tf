@@ -30,7 +30,7 @@ module "prod_project" {
   name                        = "${var.project_prefix}-prod"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = var.project_folder_map["nonprod"]
+  folder_id                   = var.project_folder_map["prod"]
 
 #   shared_vpc         = local.nonprod_host_project_id
 #   shared_vpc_subnets = data.google_compute_network.nonprod_shared_vpc.subnetworks_self_links

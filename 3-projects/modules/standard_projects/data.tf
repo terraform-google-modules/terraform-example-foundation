@@ -35,7 +35,7 @@ data "google_compute_network" "shared-vpcs" {
 data "google_projects" "projects-monitoring" {
     for_each = toset(local.envs)
 
-    filter = "labels.application_name=monitoring-${each.value}"
+    filter = "labels.application_name=org-monitoring-${each.value}"
 }
 
 data "google_project" "projects-monitoring" {

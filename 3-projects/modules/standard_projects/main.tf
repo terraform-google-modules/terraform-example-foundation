@@ -97,13 +97,13 @@ module "networking_prod_project" {
 resource "google_monitoring_group" "monitoring_nonprod" {
   display_name = "${var.application_name} - nonprod"
   filter       = "resource.metadata.cloud_account=\"${module.nonprod_project.project_id}\""
-  project      = local.monitor_project_env_map["nonprod"].project_id
+  project      = local.monitor_project_env_map["nonprod"]
 }
 
 resource "google_monitoring_group" "monitoring_prod" {
   display_name = "${var.application_name} - prod"
   filter       = "resource.metadata.cloud_account=\"${module.prod_project.project_id}\""
-  project      = local.monitor_project_env_map["prod"].project_id
+  project      = local.monitor_project_env_map["prod"]
 }
 
 /******************************************

@@ -55,3 +55,12 @@ variable enable_networking {
     type = bool
     default = true
 }
+
+variable enable_private_dns {
+    type = bool
+    default = true
+}
+
+variable "domain" {
+ description = "The top level domain name for the organization"
+}

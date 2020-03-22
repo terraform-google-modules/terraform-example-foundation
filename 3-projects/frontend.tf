@@ -57,9 +57,9 @@ module "awesome_app" {
     enable_networking = true
     subnet_allocation = module.frontend_subnet_allocation.network_range
     
-    # enable_dns = true
-    # enable_cloud_build = true
-    # enable_network = true
+    # DNS Setting
+    enable_private_dns = true
+    domain = var.domain
 }
 
 module "awesome_app_single" {

@@ -47,19 +47,3 @@ module "project_subnet" {
     "${var.application_name}" = local.secondary_ranges
   }
 }
-
-/******************************************
-  Subnet Restriction
- *****************************************/
-
-resource "google_project_organization_policy" "restrict-subnetworks" {
-  count      = var.enable_networking ? 1 : 0
-  project    = var.project_id
-  constraint = "compute.restrictSharedVpcSubnetworks"
-
-  list_policy {
-    allow {
-      values = local.subnet_self_link
-    }
-  }
-}

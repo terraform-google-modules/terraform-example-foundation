@@ -63,3 +63,7 @@ variable subnet_size {
     type = number
     default = 7 
 }
+
+variable "domain" {
+ description = "The top level domain name for the organization"
+}

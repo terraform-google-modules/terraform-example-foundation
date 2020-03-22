@@ -16,9 +16,10 @@
 
 locals {
   envs = ["nonprod", "prod"]
-  project_env_map = {for project in data.google_project.projects : project.labels.environment => project.project_id }
-  env_project_map = {for env, project in local.project_env_map : project => env }
+  host_project_env_map = {for project in data.google_project.projects : project.labels.environment => project.project_id }
+  env_project_map = {for env, project in local.host_project_env_map : project => env }
   network_env_map = {for network in data.google_compute_network.shared-vpcs : local.env_project_map[network.project] => network}
+  monitor_project_env_map = {for project in data.google_project.projects-monitoring : project.labels.environment => project.project_id }
 }
 
 module "nonprod_project" {
@@ -33,7 +34,7 @@ module "nonprod_project" {
   billing_account             = var.billing_account
   folder_id                   = var.project_folder_map["nonprod"]
 
-  shared_vpc         = local.project_env_map["nonprod"]
+  shared_vpc         = local.host_project_env_map["nonprod"]
   shared_vpc_subnets = local.network_env_map["nonprod"].subnetworks_self_links
 
   labels = {
@@ -55,7 +56,7 @@ module "prod_project" {
   billing_account             = var.billing_account
   folder_id                   = var.project_folder_map["prod"]
 
-  shared_vpc         = local.project_env_map["prod"]
+  shared_vpc         = local.host_project_env_map["prod"]
   shared_vpc_subnets = local.network_env_map["prod"].subnetworks_self_links
 
   labels = {
@@ -70,7 +71,7 @@ module "prod_project" {
  *****************************************/
 module "networking_nonprod_project" {
   source              = "../../modules/project_subnet"
-  vpc_host_project_id = local.project_env_map["nonprod"]
+  vpc_host_project_id = local.host_project_env_map["nonprod"]
   vpc_self_link       = local.network_env_map["nonprod"].self_link
   ip_cidr_range       = var.subnet_allocation["nonprod"].primary_range
   application_name    = var.application_name
@@ -81,7 +82,7 @@ module "networking_nonprod_project" {
 
 module "networking_prod_project" {
   source              = "../../modules/project_subnet"
-  vpc_host_project_id = local.project_env_map["prod"]
+  vpc_host_project_id = local.host_project_env_map["prod"]
   vpc_self_link       = local.network_env_map["prod"].self_link
   ip_cidr_range       = var.subnet_allocation["prod"].primary_range
   application_name    = var.application_name
@@ -90,3 +91,42 @@ module "networking_prod_project" {
   project_id          = module.prod_project.project_id
 }
 
+/******************************************
+  monitoring groups
+ *****************************************/
+resource "google_monitoring_group" "monitoring_nonprod" {
+  display_name = "${var.application_name} - nonprod"
+  filter       = "resource.metadata.cloud_account=\"${module.nonprod_project.project_id}\""
+  project      = local.monitor_project_env_map["nonprod"].project_id
+}
+
+resource "google_monitoring_group" "monitoring_prod" {
+  display_name = "${var.application_name} - prod"
+  filter       = "resource.metadata.cloud_account=\"${module.prod_project.project_id}\""
+  project      = local.monitor_project_env_map["prod"].project_id
+}
+
+/******************************************
+  Private DNS Management
+ *****************************************/
+module "dns_nonprod" {
+  source                = "../../modules/private_dns"
+  enable_networking     = var.enable_networking
+  project_id            = module.nonprod_project.project_id
+  application_name      = var.application_name
+  environment           = "nonprod"
+  shared_vpc_self_link  = local.network_env_map["nonprod"].self_link
+  shared_vpc_project_id = local.host_project_env_map["nonprod"]
+  domain = var.domain
+}
+
+module "dns_prod" {
+  source                = "../../modules/private_dns"
+  enable_networking     = var.enable_networking
+  project_id            = module.prod_project.project_id
+  application_name      = var.application_name
+  environment           = "prod"
+  shared_vpc_self_link  = local.network_env_map["prod"].self_link
+  shared_vpc_project_id = local.host_project_env_map["prod"]
+  domain = var.domain
+}

@@ -29,13 +29,16 @@ data "google_compute_network" "shared-vpcs" {
     for_each = toset(local.envs)
   
     name    = "shared-vpc-${each.value}"
-    project = local.project_env_map[each.value]
+    project = local.host_project_env_map[each.value]
 }
 
-data "google_projects" "projects-monitoring-prod" {
-  filter = "labels.application_name=monitoring-prod"
+data "google_projects" "projects-monitoring" {
+    for_each = toset(local.envs)
+
+    filter = "labels.application_name=monitoring-${each.value}"
 }
 
-data "google_projects" "projects-monitoring-nonprod" {
-  filter = "labels.application_name=monitoring-nonprod"
+data "google_project" "projects-monitoring" {
+    for_each = data.google_projects.projects-monitoring
+    project_id = each.value.projects[0].project_id
 }

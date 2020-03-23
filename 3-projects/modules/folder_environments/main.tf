@@ -15,6 +15,20 @@
  */
 
 locals {
-    app_network_indexes = ["frontend", "backend"]
-    parent_id = var.parent_id == "" ? "organizations/${var.organization_id}" : var.parent_id
+    envs = ["nonprod", "prod"]
+    folder_map = { for folder in google_folder.env_folders : folder.display_name => folder.name }
+}
+
+/*******************************************************************************
+    Folders
+*******************************************************************************/
+resource "google_folder" "parent_folder" {
+  display_name = var.folder_display_name
+  parent       = var.parent_folder_id
+}
+
+resource "google_folder" "env_folders" {
+    for_each = toset(local.envs)
+    display_name = each.value
+    parent       = google_folder.parent_folder.id
 }

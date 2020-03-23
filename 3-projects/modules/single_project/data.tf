@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-locals {
-    app_network_indexes = ["frontend", "backend"]
-    parent_id = var.parent_id == "" ? "organizations/${var.organization_id}" : var.parent_id
+data "google_projects" "projects" {
+  filter = "labels.application_name=org-shared-vpc-${var.environment}"
+}
+
+data "google_compute_network" "shared_vpc" {
+  name    = "shared-vpc-${var.environment}"
+  project = local.network_project_id
+}
+
+data "google_projects" "projects-monitoring" {
+  filter = "labels.application_name=monitoring-${var.environment}"
 }

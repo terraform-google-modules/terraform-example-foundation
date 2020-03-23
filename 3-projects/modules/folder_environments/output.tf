@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-locals {
-    app_network_indexes = ["frontend", "backend"]
-    parent_id = var.parent_id == "" ? "organizations/${var.organization_id}" : var.parent_id
+ output folder_map {
+    description = "Project id mapping from environment to application"
+    value = local.folder_map
 }

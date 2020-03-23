@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-locals {
-    app_network_indexes = ["frontend", "backend"]
-    parent_id = var.parent_id == "" ? "organizations/${var.organization_id}" : var.parent_id
-}
+billing_account = "Billing account"
+
+organization_id = "Organization id"
+
+terraform_service_account = "Service account to impersonate"
+
+default_region = "Default GCP region"
+
+domain = "Top level org domain"

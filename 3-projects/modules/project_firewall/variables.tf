@@ -14,60 +14,35 @@
  * limitations under the License.
  */
 
-variable project_folder_map {
-    type = map(string)
+
+variable "vpc_host_project_id" {
+  description = "VPC Host project ID."
+  type        = string
 }
 
-variable org_id {
-    type = string
+variable "project_id" {
+  description = "Project ID for project where applications resources reside.."
+  type        = string
 }
 
-variable billing_account {
-    type = string
+variable "vpc_self_link" {
+  description = "Self link for VPC to create the subnet in."
+  type        = string
 }
 
-variable impersonate_service_account {
-    type = string
+variable "application_name" {
+  description = "Name for subnets"
+  type        = string
 }
 
-variable project_prefix {
-    type = string
-}
-
-variable cost_centre {
-    type = string
-}
-
-variable application_name { 
-    type = string
-}
-
-variable activate_apis {
-    type = list(string)
-    default = []
-}
-
-variable subnet_allocation {
-
-}
-
-variable enable_networking {
-    type = bool
-    default = true
-}
-
-variable enable_private_dns {
-    type = bool
-    default = true
-}
-
-variable "domain" {
- description = "The top level domain name for the organization"
+variable "default_region" {
+  description = "Default region for resources."
+  type        = string
+  default     = "australia-southeast1"
 }
 
 variable "firewall_rules" {
   description = "List of project specific firewall rules, that will be scoped to supplied service accounts. Service accounts will be created."
-  default     = []
   type = list(object({
     rule_name               = string
     allow_protocol          = string
@@ -75,4 +50,10 @@ variable "firewall_rules" {
     source_service_accounts = list(string)
     target_service_accounts = list(string)
   }))
+}
+
+variable "enable_networking" {
+  description = "Flag to toggle the creation of subnets & firewall rules"
+  type        = bool
+  default     = true
 }

@@ -44,9 +44,5 @@ steps:
   - tfplan
 artifacts:
   objects:
-<<<<<<< HEAD
     location: 'gs://${_ARTIFACT_BUCKET_NAME}/terraform/cloudbuild/apply/$BUILD_ID'
-=======
-    location: 'gs://${_STATE_BUCKET_NAME}/terraform/cloudbuild/apply/$BUILD_ID'
->>>>>>> 1494892... feat: Add cloudbuild configuration and update README
     paths: ['cloudbuild-tf-apply.yaml', 'tfplan']

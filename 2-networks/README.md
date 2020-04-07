@@ -1,6 +1,6 @@
 # 2-networks
 
-The purpose of this step is to setup shared VPCs with default DNS, NAT, Private Service networking and baseline firewall rules. 
+The purpose of this step is to setup shared VPCs with default DNS, NAT, Private Service networking and baseline firewall rules.
 
 ## Prerequisites
 

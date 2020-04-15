@@ -14,65 +14,91 @@
  * limitations under the License.
  */
 
-variable project_folder_map {
-    type = map(string)
+variable org_id {
+  description = "The organization id for the associated services"
+  type        = string
 }
 
-variable org_id {
-    type = string
+variable nonprod_folder_id {
+  description = "The folder id the non-production where project will be created"
+  type        = string
+}
+
+variable prod_folder_id {
+  description = "The folder id the production where the project will be created"
+  type        = string
 }
 
 variable billing_account {
-    type = string
+  description = "The ID of the billing account to associated this project with"
+  type        = string
 }
 
 variable impersonate_service_account {
-    type = string
+  description = "Service account email of the account to impersonate to run Terraform"
+  type        = string
 }
 
 variable project_prefix {
-    type = string
+  description = "The name of the GCP project"
+  type        = string
 }
 
 variable cost_centre {
-    type = string
+  description = "The cost centre that links to the application"
+  type        = string
 }
 
-variable application_name { 
-    type = string
+variable application_name {
+  description = "The name of application where GCP resources relate"
+  type        = string
 }
 
 variable activate_apis {
-    type = list(string)
-    default = []
+  description = "The api to activate for the GCP project"
+  type        = list(string)
+  default     = []
 }
 
-variable subnet_allocation {
+variable nonprod_subnet_ip_cidr_range {
+  description = "The CIDR Range of the subnet to get allocated to the nonprod project"
+  type        = string
+}
 
+variable nonprod_subnet_secondary_ranges {
+  description = "The secondary CIDR Ranges of the subnet to get allocated to the nonprod project"
+  type = list(object({
+    range_name    = string
+    ip_cidr_range = string
+  }))
+  default = []
+}
+
+variable prod_subnet_ip_cidr_range {
+  description = "The CIDR Range of the subnet to get allocated to the prod project"
+  type        = string
+}
+
+variable prod_subnet_secondary_ranges {
+  description = "The secondary CIDR Ranges of the subnet to get allocated to the prod project"
+  type = list(object({
+    range_name    = string
+    ip_cidr_range = string
+  }))
+  default = []
 }
 
 variable enable_networking {
-    type = bool
-    default = true
+  type    = bool
+  default = true
 }
 
 variable enable_private_dns {
-    type = bool
-    default = true
+  type    = bool
+  default = false
 }
 
 variable "domain" {
- description = "The top level domain name for the organization"
+  description = "The top level domain name for the organization"
 }
 
-variable "firewall_rules" {
-  description = "List of project specific firewall rules, that will be scoped to supplied service accounts. Service accounts will be created."
-  default     = []
-  type = list(object({
-    rule_name               = string
-    allow_protocol          = string
-    allow_ports             = list(string)
-    source_service_accounts = list(string)
-    target_service_accounts = list(string)
-  }))
-}

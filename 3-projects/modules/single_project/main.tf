@@ -15,7 +15,7 @@
  */
 
 locals {
-  network_project_id = var.enable_networking ? data.google_projects.projects.projects[0].project_id : ""
+  host_network = data.google_compute_network.shared_vpc
 }
 
 module "project" {
@@ -28,14 +28,42 @@ module "project" {
   name                        = "${var.project_prefix}-${var.environment}"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = var.project_folder_map[var.environment]
+  folder_id                   = var.folder_id
 
-  shared_vpc         = local.network_project_id
-  shared_vpc_subnets = data.google_compute_network.shared_vpc.subnetworks_self_links
+  shared_vpc         = local.host_network.project
+  shared_vpc_subnets = local.host_network.subnetworks_self_links
 
   labels = {
     environment      = var.environment
     cost_centre      = var.cost_centre
     application_name = var.application_name
   }
+}
+
+/******************************************
+  Project subnets
+ *****************************************/
+module "networking_project" {
+  source = "../../modules/project_subnet"
+
+  project_id       = module.project.project_id
+  application_name = var.application_name
+
+  enable_networking   = var.enable_networking
+  vpc_host_project_id = local.host_network.project
+  vpc_self_link       = local.host_network.self_link
+  ip_cidr_range       = var.subnet_ip_cidr_range
+  secondary_ranges    = var.subnet_secondary_ranges
+}
+
+module "dns_prod" {
+  source = "../../modules/private_dns"
+
+  project_id            = module.project.project_id
+  enable_private_dns    = var.enable_private_dns
+  application_name      = var.application_name
+  environment           = var.environment
+  top_level_domain      = var.domain
+  shared_vpc_self_link  = local.host_network.self_link
+  shared_vpc_project_id = local.host_network.project
 }

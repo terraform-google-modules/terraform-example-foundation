@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-locals {
-    app_network_indexes = ["frontend", "backend"]
-    parent_id = var.parent_id == "" ? "organizations/${var.organization_id}" : var.parent_id
+resource "google_folder" "app" {
+  parent       = "organizations/${var.organization_id}"
+  display_name = "app"
 }

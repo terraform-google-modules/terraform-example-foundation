@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-billing_account = "Billing account"
+billing_account = "000000-000000-000000"
 
-organization_id = "Organization id"
+organization_id = "000000000000"
 
-terraform_service_account = "Service account to impersonate"
+terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
 
-default_region = "Default GCP region"
+default_region = "australia-southeast1"
 
-domain = "Top level org domain"
+domain = "example.com"

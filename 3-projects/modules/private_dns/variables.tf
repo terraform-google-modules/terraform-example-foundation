@@ -26,8 +26,8 @@ variable "environment" {
   description = "Environment to look up VPC and host project."
 }
 
-variable "domain" {
- description = "The top level domain name for the organization"
+variable "top_level_domain" {
+  description = "The top level domain name for the organization"
 }
 
 variable "shared_vpc_self_link" {
@@ -38,7 +38,7 @@ variable "shared_vpc_project_id" {
   description = "Project ID for Shared VPC."
 }
 
-variable "enable_networking" {
+variable "enable_private_dns" {
   description = "Flag to toggle the creation of dns zones"
   type        = bool
 }

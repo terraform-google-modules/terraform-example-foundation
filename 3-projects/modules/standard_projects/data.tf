@@ -14,31 +14,28 @@
  * limitations under the License.
  */
 
-data "google_projects" "projects" {
-    for_each = toset(local.envs)
-    filter = "labels.application_name=org-shared-vpc-${each.value}"
+data "google_projects" "prod-project" {
+  filter = "labels.application_name:org-shared-vpc-prod"
 }
 
-data "google_project" "projects" {
-    for_each = data.google_projects.projects
-    
-    project_id = each.value.projects[0].project_id
+data "google_project" "prod-project" {
+  project_id = data.google_projects.prod-project.projects[0].project_id
 }
 
-data "google_compute_network" "shared-vpcs" {
-    for_each = toset(local.envs)
-  
-    name    = "shared-vpc-${each.value}"
-    project = local.host_project_env_map[each.value]
+data "google_compute_network" "prod-shared-vpc" {
+  name    = "shared-vpc-prod"
+  project = data.google_project.prod-project.project_id
 }
 
-data "google_projects" "projects-monitoring" {
-    for_each = toset(local.envs)
-
-    filter = "labels.application_name=org-monitoring-${each.value}"
+data "google_projects" "nonprod-project" {
+  filter = "labels.application_name:org-shared-vpc-nonprod"
 }
 
-data "google_project" "projects-monitoring" {
-    for_each = data.google_projects.projects-monitoring
-    project_id = each.value.projects[0].project_id
+data "google_project" "nonprod-project" {
+  project_id = data.google_projects.nonprod-project.projects[0].project_id
+}
+
+data "google_compute_network" "nonprod-shared-vpc" {
+  name    = "shared-vpc-nonprod"
+  project = data.google_project.nonprod-project.project_id
 }

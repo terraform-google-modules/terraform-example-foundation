@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-locals {
-    envs = ["nonprod", "prod"]
-    folder_map = { for folder in google_folder.env_folders : folder.display_name => folder.name }
-}
-
 /*******************************************************************************
     Folders
 *******************************************************************************/
@@ -27,8 +22,12 @@ resource "google_folder" "parent_folder" {
   parent       = var.parent_folder_id
 }
 
-resource "google_folder" "env_folders" {
-    for_each = toset(local.envs)
-    display_name = each.value
-    parent       = google_folder.parent_folder.id
+resource "google_folder" "nonprod_folder" {
+  display_name = "nonprod"
+  parent       = google_folder.parent_folder.id
+}
+
+resource "google_folder" "prod_folder" {
+  display_name = "prod"
+  parent       = google_folder.parent_folder.id
 }

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- output folder_map {
-    description = "Project id mapping from environment to application"
-    value = local.folder_map
+output "nonprod_folder_id" {
+  value = google_folder.nonprod_folder.id
+}
+
+output "prod_folder_id" {
+  value = google_folder.prod_folder.id
 }

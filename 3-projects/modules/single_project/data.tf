@@ -15,14 +15,10 @@
  */
 
 data "google_projects" "projects" {
-  filter = "labels.application_name=org-shared-vpc-${var.environment}"
+  filter = "labels.application_name:org-shared-vpc-${var.environment}"
 }
 
 data "google_compute_network" "shared_vpc" {
   name    = "shared-vpc-${var.environment}"
-  project = local.network_project_id
-}
-
-data "google_projects" "projects-monitoring" {
-  filter = "labels.application_name=monitoring-${var.environment}"
+  project = data.google_projects.projects.projects[0].project_id
 }

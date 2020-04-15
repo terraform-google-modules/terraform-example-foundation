@@ -20,10 +20,24 @@ steps:
   - -c
   - |
     gcloud config set auth/impersonate_service_account ${_TF_SA_EMAIL}
-    terraform -input=false
-    terraform validate
-    terraform plan -input=false -out=tfplan
-    terraform apply -auto-approve -input=false tfplan
+- name: gcr.io/$PROJECT_ID/terraform
+  args:
+  - init
+  - -input=false
+- name: gcr.io/$PROJECT_ID/terraform
+  args:
+  - validate
+- name: gcr.io/$PROJECT_ID/terraform
+  args:
+  - plan
+  - -input=false
+  - -out=tfplan
+- name: gcr.io/$PROJECT_ID/terraform
+  args:
+  - apply
+  - -auto-approve
+  - -input=false
+  - tfplan
 artifacts:
   objects:
     location: 'gs://${_ARTIFACT_BUCKET_NAME}/terraform/cloudbuild/apply/$BUILD_ID'

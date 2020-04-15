@@ -15,15 +15,15 @@
  */
 
 locals {
-    enable_apis = var.enable_networking ? ["dns.googleapis.com", "compute.googleapis.com"] : []
-    dns_zone = "${var.application_name}.${var.environment}.${var.domain}."
+  enable_apis = var.enable_private_dns ? ["dns.googleapis.com", "compute.googleapis.com"] : []
+  dns_zone    = "${var.application_name}.${var.environment}.${var.top_level_domain}."
 }
 /******************************************
   Private DNS Management
  *****************************************/
-resource "google_compute_network" "ghost_dns_vpc" {
-  count                           = var.enable_networking ? 1 : 0
-  name                            = "dns-ghost-vpc"
+resource "google_compute_network" "host_dns_vpc" {
+  count                           = var.enable_private_dns ? 1 : 0
+  name                            = "dns-host-vpc"
   project                         = var.project_id
   auto_create_subnetworks         = false
   delete_default_routes_on_create = true
@@ -31,8 +31,8 @@ resource "google_compute_network" "ghost_dns_vpc" {
 }
 
 resource "google_dns_managed_zone" "dns_producer_zone" {
-  provider    = google-beta
-  count       = var.enable_networking ? 1 : 0
+  provider = google-beta
+  count    = var.enable_private_dns ? 1 : 0
 
   project     = var.project_id
   name        = "${var.application_name}-${var.environment}-producer-dns-zone"
@@ -41,14 +41,14 @@ resource "google_dns_managed_zone" "dns_producer_zone" {
   visibility  = "private"
   private_visibility_config {
     networks {
-      network_url = google_compute_network.ghost_dns_vpc[0].self_link
+      network_url = google_compute_network.host_dns_vpc[0].self_link
     }
   }
   depends_on = [google_project_service.enable_apis]
 }
 
 resource "google_dns_managed_zone" "dns_consumer_zone" {
-  count       = var.enable_networking ? 1 : 0
+  count       = var.enable_private_dns ? 1 : 0
   provider    = google-beta
   project     = var.shared_vpc_project_id
   name        = "${var.application_name}-${var.environment}-consumer-dns-zone"
@@ -62,7 +62,7 @@ resource "google_dns_managed_zone" "dns_consumer_zone" {
   }
   peering_config {
     target_network {
-      network_url = google_compute_network.ghost_dns_vpc[0].self_link
+      network_url = google_compute_network.host_dns_vpc[0].self_link
     }
   }
 }
@@ -71,11 +71,11 @@ resource "google_dns_managed_zone" "dns_consumer_zone" {
   Enable API
  *****************************************/
 resource "google_project_service" "enable_apis" {
-    for_each = toset(local.enable_apis)
-    
-    project            = var.project_id
-    service            = each.value
+  for_each = toset(local.enable_apis)
 
-    disable_on_destroy = false
+  project = var.project_id
+  service = each.value
+
+  disable_on_destroy = false
 }
 

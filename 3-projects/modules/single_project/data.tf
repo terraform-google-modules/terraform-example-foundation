@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-resource "google_folder" "app" {
-  parent       = "organizations/${var.organization_id}"
-  display_name = "app"
+data "google_projects" "projects" {
+  filter = "labels.application_name:org-shared-vpc-${var.environment}"
+}
+
+data "google_compute_network" "shared_vpc" {
+  name    = "shared-vpc-${var.environment}"
+  project = data.google_projects.projects.projects[0].project_id
 }

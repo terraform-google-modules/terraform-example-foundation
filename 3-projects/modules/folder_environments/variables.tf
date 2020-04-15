@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-resource "google_folder" "app" {
-  parent       = "organizations/${var.organization_id}"
-  display_name = "app"
+variable "parent_folder_id" {
+  description = "Top level folder ID"
+}
+
+variable "folder_display_name" {
+  description = "Folder name"
 }

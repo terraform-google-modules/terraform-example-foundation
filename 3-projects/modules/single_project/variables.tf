@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 variable org_id {
   description = "The organization id for the associated services"
   type        = string
 }
 
-variable nonprod_folder_id {
-  description = "The folder id the non-production where project will be created"
-  type        = string
-}
-
-variable prod_folder_id {
-  description = "The folder id the production where the project will be created"
+variable folder_id {
+  description = "The folder id where project will be created"
   type        = string
 }
 
@@ -60,45 +54,39 @@ variable activate_apis {
   default     = []
 }
 
-variable nonprod_subnet_ip_cidr_range {
-  description = "The CIDR Range of the subnet to get allocated to the nonprod project"
+variable environment {
+  description = "The environment the single project belongs to"
   type        = string
-}
-
-variable nonprod_subnet_secondary_ranges {
-  description = "The secondary CIDR Ranges of the subnet to get allocated to the nonprod project"
-  type = list(object({
-    range_name    = string
-    ip_cidr_range = string
-  }))
-  default = []
-}
-
-variable prod_subnet_ip_cidr_range {
-  description = "The CIDR Range of the subnet to get allocated to the prod project"
-  type        = string
-}
-
-variable prod_subnet_secondary_ranges {
-  description = "The secondary CIDR Ranges of the subnet to get allocated to the prod project"
-  type = list(object({
-    range_name    = string
-    ip_cidr_range = string
-  }))
-  default = []
+  default     = "prod"
 }
 
 variable enable_networking {
-  type    = bool
-  default = true
+  description = "The flag to create subnets in shared VPC"
+  type        = bool
+  default     = true
+}
+
+variable subnet_ip_cidr_range {
+  description = "The CIDR Range of the subnet to get allocated to the project"
+  type        = string
+}
+
+variable subnet_secondary_ranges {
+  description = "The secondary CIDR Ranges of the subnet to get allocated to the project"
+  type = list(object({
+    range_name    = string
+    ip_cidr_range = string
+  }))
+  default = []
 }
 
 variable enable_private_dns {
-  type    = bool
-  default = false
+  description = "The flag to create private dns zone in shared VPC"
+  type        = bool
+  default     = false
 }
 
-variable "domain" {
-  description = "The top level domain name for the organization"
+variable domain {
+  description = "Top-level domain"
+  type        = string
 }
-

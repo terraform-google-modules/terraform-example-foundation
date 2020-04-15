@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-resource "google_folder" "app" {
-  parent       = "organizations/${var.organization_id}"
-  display_name = "app"
+terraform {
+  backend "gcs" {
+    bucket = "UPDATE_ME"
+    prefix = "terraform/projects/state"
+  }
 }

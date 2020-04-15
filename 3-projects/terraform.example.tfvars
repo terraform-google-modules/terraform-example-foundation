@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-resource "google_folder" "app" {
-  parent       = "organizations/${var.organization_id}"
-  display_name = "app"
-}
+billing_account = "000000-000000-000000"
+
+organization_id = "000000000000"
+
+terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
+
+default_region = "australia-southeast1"
+
+domain = "example.com"

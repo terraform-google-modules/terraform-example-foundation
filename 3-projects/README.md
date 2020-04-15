@@ -1,6 +1,0 @@
-- Create folders 
-- Create projects
-- Create the Application ioc with Cloud Build
-    - non-prod, prod and shared
-        - shared resources across different environments
-                - source repo + cloud build

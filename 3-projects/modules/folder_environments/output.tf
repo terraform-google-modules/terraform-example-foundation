@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+output "nonprod_folder_id" {
+  value = google_folder.nonprod_folder.id
+}
 
-resource "google_folder" "app" {
-  parent       = "organizations/${var.organization_id}"
-  display_name = "app"
+output "prod_folder_id" {
+  value = google_folder.prod_folder.id
 }

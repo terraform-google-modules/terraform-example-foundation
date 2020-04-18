@@ -35,6 +35,10 @@ The purpose of this step is to setup folder structure, project, DNS and subnets 
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| domain | The top level domain name for the organization | string | n/a | yes |
+| billing\_account | The ID of the billing account to associated this project with | string | n/a | yes |
+| default\_region | Default region for subnet. | string | n/a | yes |
+| domain | The top level domain name for the organization | string | `""` | no |
+| organization\_id | The organization id for the associated services | string | n/a | yes |
+| terraform\_service\_account | Service account email of the account to impersonate to run Terraform | string | n/a | yes |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

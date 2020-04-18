@@ -13,65 +13,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-variable org_id {
+
+variable "org_id" {
   description = "The organization id for the associated services"
   type        = string
 }
 
-variable folder_id {
+variable "folder_id" {
   description = "The folder id where project will be created"
   type        = string
 }
 
-variable billing_account {
+variable "billing_account" {
   description = "The ID of the billing account to associated this project with"
   type        = string
 }
 
-variable impersonate_service_account {
+variable "impersonate_service_account" {
   description = "Service account email of the account to impersonate to run Terraform"
   type        = string
 }
 
-variable project_prefix {
+variable "project_prefix" {
   description = "The name of the GCP project"
   type        = string
 }
 
-variable cost_centre {
+variable "cost_centre" {
   description = "The cost centre that links to the application"
   type        = string
 }
 
-variable application_name {
+variable "application_name" {
   description = "The name of application where GCP resources relate"
   type        = string
 }
 
-variable activate_apis {
+variable "activate_apis" {
   description = "The api to activate for the GCP project"
   type        = list(string)
   default     = []
 }
 
-variable environment {
+variable "environment" {
   description = "The environment the single project belongs to"
   type        = string
   default     = "prod"
 }
 
-variable enable_networking {
+/******************************************
+  Project subnet (Optional)
+ *****************************************/
+variable "enable_networking" {
   description = "The flag to create subnets in shared VPC"
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable subnet_ip_cidr_range {
+variable "subnet_ip_cidr_range" {
   description = "The CIDR Range of the subnet to get allocated to the project"
   type        = string
+  default     = ""
 }
 
-variable subnet_secondary_ranges {
+variable "subnet_secondary_ranges" {
   description = "The secondary CIDR Ranges of the subnet to get allocated to the project"
   type = list(object({
     range_name    = string
@@ -80,13 +85,17 @@ variable subnet_secondary_ranges {
   default = []
 }
 
-variable enable_private_dns {
-  description = "The flag to create private dns zone in shared VPC"
+/******************************************
+  Private DNS Management (Optional)
+ *****************************************/
+variable "enable_private_dns" {
   type        = bool
+  description = "The flag to create private dns zone in shared VPC"
   default     = false
 }
 
-variable domain {
-  description = "Top-level domain"
+variable "domain" {
   type        = string
+  description = "The top level domain name for the organization"
+  default     = ""
 }

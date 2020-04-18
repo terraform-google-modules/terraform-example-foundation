@@ -16,8 +16,10 @@
 
 variable "parent_folder_id" {
   description = "Top level folder ID"
+  type        = string
 }
 
 variable "folder_display_name" {
   description = "Folder name"
+  type        = string
 }

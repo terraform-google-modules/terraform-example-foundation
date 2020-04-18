@@ -62,12 +62,12 @@ variable "secondary_ranges" {
 }
 
 variable "enable_networking" {
-  description = "Flag to toggle the creation of subnets & firewall rules"
+  description = "The Flag to toggle the creation of subnets"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "project_id" {
-  description = "Project Id"
   type        = string
+  description = "Project Id"
 }

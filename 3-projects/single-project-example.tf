@@ -32,19 +32,4 @@ module "single-project-app" {
   project_prefix   = "sample-single"
   cost_centre      = "cost-centre-1"
   application_name = "sample-single-project-app"
-
-  # Network Setting
-  enable_networking    = true
-  subnet_ip_cidr_range = "10.3.0.0/16"
-  subnet_secondary_ranges = [{
-    range_name    = "gke-pod",
-    ip_cidr_range = "10.4.0.0/16"
-    }, {
-    range_name    = "gke-svc",
-    ip_cidr_range = "10.5.0.0/16"
-  }]
-
-  # DNS Setting
-  enable_private_dns = true
-  domain             = var.domain
 }

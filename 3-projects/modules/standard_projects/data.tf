@@ -18,24 +18,16 @@ data "google_projects" "prod-project" {
   filter = "labels.application_name:org-shared-vpc-prod"
 }
 
-data "google_project" "prod-project" {
-  project_id = data.google_projects.prod-project.projects[0].project_id
-}
-
 data "google_compute_network" "prod-shared-vpc" {
   name    = "shared-vpc-prod"
-  project = data.google_project.prod-project.project_id
+  project = local.prod_project_id
 }
 
 data "google_projects" "nonprod-project" {
   filter = "labels.application_name:org-shared-vpc-nonprod"
 }
 
-data "google_project" "nonprod-project" {
-  project_id = data.google_projects.nonprod-project.projects[0].project_id
-}
-
 data "google_compute_network" "nonprod-shared-vpc" {
   name    = "shared-vpc-nonprod"
-  project = data.google_project.nonprod-project.project_id
+  project = local.nonprod_project_id
 }

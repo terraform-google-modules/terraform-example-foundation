@@ -31,7 +31,7 @@ locals {
 }
 
 /******************************************
-  Project subnet
+  Project subnet (Optional)
  *****************************************/
 
 module "project_subnet" {

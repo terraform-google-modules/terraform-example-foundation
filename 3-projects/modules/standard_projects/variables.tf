@@ -14,58 +14,59 @@
  * limitations under the License.
  */
 
-variable org_id {
+variable "org_id" {
   description = "The organization id for the associated services"
   type        = string
 }
 
-variable nonprod_folder_id {
+variable "nonprod_folder_id" {
   description = "The folder id the non-production where project will be created"
   type        = string
 }
 
-variable prod_folder_id {
+variable "prod_folder_id" {
   description = "The folder id the production where the project will be created"
   type        = string
 }
 
-variable billing_account {
+variable "billing_account" {
   description = "The ID of the billing account to associated this project with"
   type        = string
 }
 
-variable impersonate_service_account {
+variable "impersonate_service_account" {
   description = "Service account email of the account to impersonate to run Terraform"
   type        = string
 }
 
-variable project_prefix {
+variable "project_prefix" {
   description = "The name of the GCP project"
   type        = string
 }
 
-variable cost_centre {
+variable "cost_centre" {
   description = "The cost centre that links to the application"
   type        = string
 }
 
-variable application_name {
+variable "application_name" {
   description = "The name of application where GCP resources relate"
   type        = string
 }
 
-variable activate_apis {
+variable "activate_apis" {
   description = "The api to activate for the GCP project"
   type        = list(string)
   default     = []
 }
 
-variable nonprod_subnet_ip_cidr_range {
+variable "nonprod_subnet_ip_cidr_range" {
   description = "The CIDR Range of the subnet to get allocated to the nonprod project"
   type        = string
+  default     = ""
 }
 
-variable nonprod_subnet_secondary_ranges {
+variable "nonprod_subnet_secondary_ranges" {
   description = "The secondary CIDR Ranges of the subnet to get allocated to the nonprod project"
   type = list(object({
     range_name    = string
@@ -74,12 +75,22 @@ variable nonprod_subnet_secondary_ranges {
   default = []
 }
 
-variable prod_subnet_ip_cidr_range {
-  description = "The CIDR Range of the subnet to get allocated to the prod project"
-  type        = string
+/******************************************
+  Project subnet (Optional)
+ *****************************************/
+variable "enable_networking" {
+  description = "The flag to toggle the creation of subnets"
+  type        = bool
+  default     = false
 }
 
-variable prod_subnet_secondary_ranges {
+variable "prod_subnet_ip_cidr_range" {
+  description = "The CIDR Range of the subnet to get allocated to the prod project"
+  type        = string
+  default     = ""
+}
+
+variable "prod_subnet_secondary_ranges" {
   description = "The secondary CIDR Ranges of the subnet to get allocated to the prod project"
   type = list(object({
     range_name    = string
@@ -88,17 +99,17 @@ variable prod_subnet_secondary_ranges {
   default = []
 }
 
-variable enable_networking {
-  type    = bool
-  default = true
-}
-
-variable enable_private_dns {
-  type    = bool
-  default = false
+/******************************************
+  Private DNS Management (Optional)
+ *****************************************/
+variable "enable_private_dns" {
+  type        = bool
+  description = "The flag to create private dns zone in shared VPC"
+  default     = false
 }
 
 variable "domain" {
+  type        = string
   description = "The top level domain name for the organization"
+  default     = ""
 }
-

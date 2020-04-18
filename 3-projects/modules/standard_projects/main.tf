@@ -15,10 +15,10 @@
  */
 
 locals {
-  prod_project      = data.google_project.prod-project
+  prod_project_id   = data.google_projects.prod-project.projects[0].project_id
   prod_host_network = data.google_compute_network.prod-shared-vpc
 
-  nonprod_project      = data.google_project.nonprod-project
+  nonprod_project_id   = data.google_projects.nonprod-project.projects[0].project_id
   nonprod_host_network = data.google_compute_network.nonprod-shared-vpc
 }
 
@@ -27,7 +27,6 @@ module "nonprod_project" {
   version                     = "~> 7.0"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
-  default_service_account     = "depriviledge"
   activate_apis               = var.activate_apis
   name                        = "${var.project_prefix}-nonprod"
   org_id                      = var.org_id
@@ -49,7 +48,6 @@ module "prod_project" {
   version                     = "~> 7.0"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
-  default_service_account     = "depriviledge"
   activate_apis               = var.activate_apis
   name                        = "${var.project_prefix}-prod"
   org_id                      = var.org_id
@@ -67,7 +65,7 @@ module "prod_project" {
 }
 
 /******************************************
-  Project subnets
+  Project subnets (Optional)
  *****************************************/
 module "networking_nonprod_project" {
   source = "../../modules/project_subnet"
@@ -94,7 +92,7 @@ module "networking_prod_project" {
 }
 
 /******************************************
-  Private DNS Management
+  Private DNS Management (Optional)
  *****************************************/
 module "dns_nonprod" {
   source = "../../modules/private_dns"

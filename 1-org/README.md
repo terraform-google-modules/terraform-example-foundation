@@ -1,6 +1,6 @@
 # 1-org
 
-The purpose of this step is to setup top level shared folders, monitoring & networking projects, org level logging and set baseline security settings through organizational policy. 
+The purpose of this step is to setup top level shared folders, monitoring & networking projects, org level logging and set baseline security settings through organizational policy.
 
 ## Prerequisites
 

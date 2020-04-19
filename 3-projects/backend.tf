@@ -15,5 +15,8 @@
  */
 
 terraform {
-  required_version = ">= 0.12"
+  backend "gcs" {
+    bucket = "UPDATE_ME"
+    prefix = "terraform/projects/state"
+  }
 }

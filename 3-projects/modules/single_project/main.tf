@@ -23,7 +23,6 @@ module "project" {
   version                     = "~> 7.0"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
-  default_service_account     = "depriviledge"
   activate_apis               = var.activate_apis
   name                        = "${var.project_prefix}-${var.environment}"
   org_id                      = var.org_id
@@ -41,7 +40,7 @@ module "project" {
 }
 
 /******************************************
-  Project subnets
+  Project subnets (Optional)
  *****************************************/
 module "networking_project" {
   source = "../../modules/project_subnet"
@@ -56,6 +55,9 @@ module "networking_project" {
   secondary_ranges    = var.subnet_secondary_ranges
 }
 
+/******************************************
+  Private DNS Management (Optional)
+ *****************************************/
 module "dns_prod" {
   source = "../../modules/private_dns"
 

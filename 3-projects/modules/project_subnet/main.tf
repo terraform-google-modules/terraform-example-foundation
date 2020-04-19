@@ -31,7 +31,7 @@ locals {
 }
 
 /******************************************
-  Project subnet
+  Project subnet (Optional)
  *****************************************/
 
 module "project_subnet" {
@@ -51,7 +51,7 @@ module "project_subnet" {
 /******************************************
   Subnet Restriction
  *****************************************/
- 
+
 resource "google_project_organization_policy" "restrict-subnetworks" {
   count      = var.enable_networking ? 1 : 0
   project    = var.project_id

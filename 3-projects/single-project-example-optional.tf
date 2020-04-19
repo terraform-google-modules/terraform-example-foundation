@@ -14,24 +14,37 @@
  * limitations under the License.
  */
 
-module "standard_project_folders" {
-  source              = "./modules/folder_environments"
-  parent_folder_id    = google_folder.app.id
-  folder_display_name = "standard_app_example"
+resource "google_folder" "single-project-folder-optional" {
+  parent       = google_folder.app.id
+  display_name = "single-project-app-optional"
 }
 
-module "standard-project-app" {
-  source = "./modules/standard_projects"
+module "single-project-app-optional" {
+  source = "./modules/single_project"
 
   org_id                      = var.organization_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
 
-  nonprod_folder_id = module.standard_project_folders.nonprod_folder_id
-  prod_folder_id    = module.standard_project_folders.prod_folder_id
+  folder_id = google_folder.single-project-folder-optional.id
 
   # Metadata
-  project_prefix   = "sample-standard"
+  project_prefix   = "single-optional"
   cost_centre      = "cost-centre-1"
-  application_name = "sample-standard-project-app"
+  application_name = "sample-single-project-app-optional"
+
+  # Network Setting (Optional)
+  enable_networking    = true
+  subnet_ip_cidr_range = "10.3.0.0/16"
+  subnet_secondary_ranges = [{
+    range_name    = "gke-pod",
+    ip_cidr_range = "10.4.0.0/16"
+    }, {
+    range_name    = "gke-svc",
+    ip_cidr_range = "10.5.0.0/16"
+  }]
+
+  # DNS Setting (Optional)
+  enable_private_dns = true
+  domain             = var.domain
 }

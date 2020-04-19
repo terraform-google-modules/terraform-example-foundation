@@ -19,7 +19,7 @@ locals {
   dns_zone    = "${var.application_name}.${var.environment}.${var.top_level_domain}."
 }
 /******************************************
-  Private DNS Management
+  Private DNS Management (Optional)
  *****************************************/
 resource "google_compute_network" "host_dns_vpc" {
   count                           = var.enable_private_dns ? 1 : 0
@@ -48,8 +48,9 @@ resource "google_dns_managed_zone" "dns_producer_zone" {
 }
 
 resource "google_dns_managed_zone" "dns_consumer_zone" {
-  count       = var.enable_private_dns ? 1 : 0
-  provider    = google-beta
+  provider = google-beta
+  count    = var.enable_private_dns ? 1 : 0
+
   project     = var.shared_vpc_project_id
   name        = "${var.application_name}-${var.environment}-consumer-dns-zone"
   dns_name    = local.dns_zone

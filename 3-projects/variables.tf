@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-variable terraform_service_account {
+variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform"
   type        = string
 }
 
-variable organization_id {
+variable "organization_id" {
   description = "The organization id for the associated services"
   type        = string
 }
 
-variable billing_account {
+variable "billing_account" {
   description = "The ID of the billing account to associated this project with"
   type        = string
 }
 
-variable default_region {
+variable "default_region" {
   description = "Default region for subnet."
   type        = string
 }
 
+/******************************************
+  Private DNS Management (Optional)
+ *****************************************/
 variable "domain" {
   description = "The top level domain name for the organization"
   type        = string
+  default     = ""
 }

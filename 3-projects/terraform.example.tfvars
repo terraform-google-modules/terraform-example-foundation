@@ -22,4 +22,7 @@ terraform_service_account = "org-terraform@example-project-2334.iam.gserviceacco
 
 default_region = "australia-southeast1"
 
-domain = "example.com"
+/******************************************
+  Private DNS Management (Optional)
+ *****************************************/
+# domain = "example.com"

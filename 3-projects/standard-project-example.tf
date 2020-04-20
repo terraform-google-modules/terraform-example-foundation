@@ -20,7 +20,7 @@ module "standard_project_folders" {
   folder_display_name = "standard_app_example"
 }
 
-module "standard-project-app" {
+module "standard_project_app" {
   source = "./modules/standard_projects"
 
   org_id                      = var.organization_id

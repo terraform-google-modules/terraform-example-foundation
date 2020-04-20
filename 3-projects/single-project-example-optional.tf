@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-resource "google_folder" "single-project-folder-optional" {
+resource "google_folder" "single_project_folder_optional" {
   parent       = google_folder.app.id
   display_name = "single-project-app-optional"
 }
 
-module "single-project-app-optional" {
+module "single_project_app_optional" {
   source = "./modules/single_project"
 
   org_id                      = var.organization_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
 
-  folder_id = google_folder.single-project-folder-optional.id
+  folder_id = google_folder.single_project_folder_optional.id
 
   # Metadata
   project_prefix   = "single-optional"

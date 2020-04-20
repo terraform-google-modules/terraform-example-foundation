@@ -52,7 +52,7 @@ module "project_subnet" {
   Subnet Restriction
  *****************************************/
 
-resource "google_project_organization_policy" "restrict-subnetworks" {
+resource "google_project_organization_policy" "restrict_subnetworks" {
   count      = var.enable_networking ? 1 : 0
   project    = var.project_id
   constraint = "compute.restrictSharedVpcSubnetworks"

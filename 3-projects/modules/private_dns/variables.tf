@@ -35,7 +35,6 @@ variable "environment" {
 variable "top_level_domain" {
   description = "The top level domain name for the organization"
   type        = string
-  default     = ""
 }
 
 variable "shared_vpc_self_link" {

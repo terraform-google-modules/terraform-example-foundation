@@ -49,7 +49,6 @@ variable "enable_private_access" {
 variable "default_region" {
   description = "Default region for resources."
   type        = string
-  default     = "australia-southeast1"
 }
 
 variable "secondary_ranges" {

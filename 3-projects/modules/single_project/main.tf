@@ -58,7 +58,7 @@ module "networking_project" {
 /******************************************
   Private DNS Management (Optional)
  *****************************************/
-module "dns_prod" {
+module "dns" {
   source = "../../modules/private_dns"
 
   project_id            = module.project.project_id

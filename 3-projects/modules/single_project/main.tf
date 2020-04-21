@@ -42,18 +42,18 @@ module "project" {
 /******************************************
   Project subnets (Optional)
  *****************************************/
-module "networking_project" {
-  source = "../../modules/project_subnet"
+# module "networking_project" {
+#   source = "../../modules/project_subnet"
 
-  project_id       = module.project.project_id
-  application_name = var.application_name
+#   project_id       = module.project.project_id
+#   application_name = var.application_name
 
-  enable_networking   = var.enable_networking
-  vpc_host_project_id = local.host_network.project
-  vpc_self_link       = local.host_network.self_link
-  ip_cidr_range       = var.subnet_ip_cidr_range
-  secondary_ranges    = var.subnet_secondary_ranges
-}
+#   enable_networking   = var.enable_networking
+#   vpc_host_project_id = local.host_network.project
+#   vpc_self_link       = local.host_network.self_link
+#   ip_cidr_range       = var.subnet_ip_cidr_range
+#   secondary_ranges    = var.subnet_secondary_ranges
+# }
 
 /******************************************
   Private DNS Management (Optional)

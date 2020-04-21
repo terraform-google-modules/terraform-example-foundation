@@ -67,29 +67,29 @@ module "prod_project" {
 /******************************************
   Project subnets (Optional)
  *****************************************/
-module "networking_nonprod_project" {
-  source = "../../modules/project_subnet"
+# module "networking_nonprod_project" {
+#   source = "../../modules/project_subnet"
 
-  project_id          = module.nonprod_project.project_id
-  enable_networking   = var.enable_networking
-  application_name    = var.application_name
-  vpc_host_project_id = local.nonprod_host_network.project
-  vpc_self_link       = local.nonprod_host_network.self_link
-  ip_cidr_range       = var.nonprod_subnet_ip_cidr_range
-  secondary_ranges    = var.nonprod_subnet_secondary_ranges
-}
+#   project_id          = module.nonprod_project.project_id
+#   enable_networking   = var.enable_networking
+#   application_name    = var.application_name
+#   vpc_host_project_id = local.nonprod_host_network.project
+#   vpc_self_link       = local.nonprod_host_network.self_link
+#   ip_cidr_range       = var.nonprod_subnet_ip_cidr_range
+#   secondary_ranges    = var.nonprod_subnet_secondary_ranges
+# }
 
-module "networking_prod_project" {
-  source = "../../modules/project_subnet"
+# module "networking_prod_project" {
+#   source = "../../modules/project_subnet"
 
-  project_id          = module.prod_project.project_id
-  enable_networking   = var.enable_networking
-  application_name    = var.application_name
-  vpc_host_project_id = local.prod_host_network.project
-  vpc_self_link       = local.prod_host_network.self_link
-  ip_cidr_range       = var.prod_subnet_ip_cidr_range
-  secondary_ranges    = var.prod_subnet_secondary_ranges
-}
+#   project_id          = module.prod_project.project_id
+#   enable_networking   = var.enable_networking
+#   application_name    = var.application_name
+#   vpc_host_project_id = local.prod_host_network.project
+#   vpc_self_link       = local.prod_host_network.self_link
+#   ip_cidr_range       = var.prod_subnet_ip_cidr_range
+#   secondary_ranges    = var.prod_subnet_secondary_ranges
+# }
 
 /******************************************
   Private DNS Management (Optional)

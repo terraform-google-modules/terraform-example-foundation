@@ -30,6 +30,131 @@ The purpose of this step is to setup folder structure, project, DNS and subnets 
 1. Run terraform plan and review output
 1. Run terraform apply
 
+### Subnetting Module (Optional)
+This module enables users to allocate subnets with the project creation. To use this module, the following code needs to be uncommented.
+
+#### *single_project/main.tf*
+```
+/******************************************
+  Project subnets (Optional)
+ *****************************************/
+
+module "networking_project" {
+  source = "../../modules/project_subnet"
+
+  project_id       = module.project.project_id
+  application_name = var.application_name
+
+  enable_networking   = var.enable_networking
+  vpc_host_project_id = local.host_network.project
+  vpc_self_link       = local.host_network.self_link
+  ip_cidr_range       = var.subnet_ip_cidr_range
+  secondary_ranges    = var.subnet_secondary_ranges
+}
+```
+#### *single_project/variables.tf*
+```
+/******************************************
+  Project subnet (Optional)
+ *****************************************/
+
+variable "enable_networking" {
+  description = "The flag to create subnets in shared VPC"
+  type        = bool
+  default     = false
+}
+
+variable "subnet_ip_cidr_range" {
+  description = "The CIDR Range of the subnet to get allocated to the project"
+  type        = string
+  default     = ""
+}
+
+variable "subnet_secondary_ranges" {
+  description = "The secondary CIDR Ranges of the subnet to get allocated to the project"
+  type = list(object({
+    range_name    = string
+    ip_cidr_range = string
+  }))
+  default = []
+}
+```
+
+#### *standard_projects/main.tf*
+```
+/******************************************
+  Project subnets (Optional)
+ *****************************************/
+
+module "networking_nonprod_project" {
+  source = "../../modules/project_subnet"
+
+  project_id          = module.nonprod_project.project_id
+  enable_networking   = var.enable_networking
+  application_name    = var.application_name
+  vpc_host_project_id = local.nonprod_host_network.project
+  vpc_self_link       = local.nonprod_host_network.self_link
+  ip_cidr_range       = var.nonprod_subnet_ip_cidr_range
+  secondary_ranges    = var.nonprod_subnet_secondary_ranges
+}
+
+module "networking_prod_project" {
+  source = "../../modules/project_subnet"
+
+  project_id          = module.prod_project.project_id
+  enable_networking   = var.enable_networking
+  application_name    = var.application_name
+  vpc_host_project_id = local.prod_host_network.project
+  vpc_self_link       = local.prod_host_network.self_link
+  ip_cidr_range       = var.prod_subnet_ip_cidr_range
+  secondary_ranges    = var.prod_subnet_secondary_ranges
+}
+```
+
+#### standard_projects/variables.tf
+```
+/******************************************
+  Project subnet (Optional)
+ *****************************************/
+variable "enable_networking" {
+  description = "The flag to toggle the creation of subnets"
+  type        = bool
+  default     = false
+}
+
+variable "nonprod_subnet_ip_cidr_range" {
+  description = "The CIDR Range of the subnet to get allocated to the nonprod project"
+  type        = string
+  default     = ""
+}
+
+variable "nonprod_subnet_secondary_ranges" {
+  description = "The secondary CIDR Ranges of the subnet to get allocated to the nonprod project"
+  type = list(object({
+    range_name    = string
+    ip_cidr_range = string
+  }))
+  default = []
+}
+
+variable "prod_subnet_ip_cidr_range" {
+  description = "The CIDR Range of the subnet to get allocated to the prod project"
+  type        = string
+  default     = ""
+}
+
+variable "prod_subnet_secondary_ranges" {
+  description = "The secondary CIDR Ranges of the subnet to get allocated to the prod project"
+  type = list(object({
+    range_name    = string
+    ip_cidr_range = string
+  }))
+  default = []
+}
+
+```
+### Private DNS Module (Optional)
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 

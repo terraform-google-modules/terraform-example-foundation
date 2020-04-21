@@ -60,44 +60,44 @@ variable "activate_apis" {
   default     = []
 }
 
-variable "nonprod_subnet_ip_cidr_range" {
-  description = "The CIDR Range of the subnet to get allocated to the nonprod project"
-  type        = string
-  default     = ""
-}
-
-variable "nonprod_subnet_secondary_ranges" {
-  description = "The secondary CIDR Ranges of the subnet to get allocated to the nonprod project"
-  type = list(object({
-    range_name    = string
-    ip_cidr_range = string
-  }))
-  default = []
-}
-
 /******************************************
   Project subnet (Optional)
  *****************************************/
-variable "enable_networking" {
-  description = "The flag to toggle the creation of subnets"
-  type        = bool
-  default     = false
-}
+# variable "enable_networking" {
+#   description = "The flag to toggle the creation of subnets"
+#   type        = bool
+#   default     = false
+# }
 
-variable "prod_subnet_ip_cidr_range" {
-  description = "The CIDR Range of the subnet to get allocated to the prod project"
-  type        = string
-  default     = ""
-}
+# variable "nonprod_subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the nonprod project"
+#   type        = string
+#   default     = ""
+# }
 
-variable "prod_subnet_secondary_ranges" {
-  description = "The secondary CIDR Ranges of the subnet to get allocated to the prod project"
-  type = list(object({
-    range_name    = string
-    ip_cidr_range = string
-  }))
-  default = []
-}
+# variable "nonprod_subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the nonprod project"
+#   type = list(object({
+#     range_name    = string
+#     ip_cidr_range = string
+#   }))
+#   default = []
+# }
+
+# variable "prod_subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the prod project"
+#   type        = string
+#   default     = ""
+# }
+
+# variable "prod_subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the prod project"
+#   type = list(object({
+#     range_name    = string
+#     ip_cidr_range = string
+#   }))
+#   default = []
+# }
 
 /******************************************
   Private DNS Management (Optional)

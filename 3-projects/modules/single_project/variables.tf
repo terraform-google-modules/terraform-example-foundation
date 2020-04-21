@@ -64,26 +64,26 @@ variable "environment" {
 /******************************************
   Project subnet (Optional)
  *****************************************/
-variable "enable_networking" {
-  description = "The flag to create subnets in shared VPC"
-  type        = bool
-  default     = false
-}
+# variable "enable_networking" {
+#   description = "The flag to create subnets in shared VPC"
+#   type        = bool
+#   default     = false
+# }
 
-variable "subnet_ip_cidr_range" {
-  description = "The CIDR Range of the subnet to get allocated to the project"
-  type        = string
-  default     = ""
-}
+# variable "subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the project"
+#   type        = string
+#   default     = ""
+# }
 
-variable "subnet_secondary_ranges" {
-  description = "The secondary CIDR Ranges of the subnet to get allocated to the project"
-  type = list(object({
-    range_name    = string
-    ip_cidr_range = string
-  }))
-  default = []
-}
+# variable "subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the project"
+#   type = list(object({
+#     range_name    = string
+#     ip_cidr_range = string
+#   }))
+#   default = []
+# }
 
 /******************************************
   Private DNS Management (Optional)

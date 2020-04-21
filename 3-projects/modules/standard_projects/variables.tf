@@ -102,14 +102,14 @@ variable "activate_apis" {
 /******************************************
   Private DNS Management (Optional)
  *****************************************/
-variable "enable_private_dns" {
-  type        = bool
-  description = "The flag to create private dns zone in shared VPC"
-  default     = false
-}
+# variable "enable_private_dns" {
+#   type        = bool
+#   description = "The flag to create private dns zone in shared VPC"
+#   default     = true
+# }
 
-variable "domain" {
-  type        = string
-  description = "The top level domain name for the organization"
-  default     = ""
-}
+# variable "domain" {
+#   type        = string
+#   description = "The top level domain name for the organization"
+#   default     = ""
+# }

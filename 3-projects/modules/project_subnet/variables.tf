@@ -63,7 +63,7 @@ variable "secondary_ranges" {
 variable "enable_networking" {
   description = "The Flag to toggle the creation of subnets"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "project_id" {

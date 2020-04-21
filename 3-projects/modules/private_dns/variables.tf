@@ -50,5 +50,5 @@ variable "shared_vpc_project_id" {
 variable "enable_private_dns" {
   description = "Flag to toggle the creation of dns zones"
   type        = bool
-  default     = false
+  default     = true
 }

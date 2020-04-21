@@ -31,7 +31,7 @@ The purpose of this step is to setup folder structure, project, DNS and subnets 
 1. Run terraform apply
 
 ### Subnetting Module (Optional)
-This module enables users to allocate subnets with the project creation. To use this module, the following code needs to be uncommented.
+This module enables users to allocate subnets with the project creation. The subnet can be used to host GCE or GKE in the application. To use this module, the following code needs to be uncommented.
 
 #### *single_project/main.tf*
 ```
@@ -61,7 +61,7 @@ module "networking_project" {
 variable "enable_networking" {
   description = "The flag to create subnets in shared VPC"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "subnet_ip_cidr_range" {
@@ -119,7 +119,7 @@ module "networking_prod_project" {
 variable "enable_networking" {
   description = "The flag to toggle the creation of subnets"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "nonprod_subnet_ip_cidr_range" {
@@ -154,6 +154,107 @@ variable "prod_subnet_secondary_ranges" {
 
 ```
 ### Private DNS Module (Optional)
+This module provides the private DNS zone for the project created. The private DNS records can be resolved across all the projects in the same environment, i.e. nonprod and prod. To use this module, the following code needs to be uncommented.
+
+#### *single_project/main.tf*
+```
+module "dns" {
+  source = "../../modules/private_dns"
+
+  project_id            = module.project.project_id
+  enable_private_dns    = var.enable_private_dns
+  application_name      = var.application_name
+  environment           = var.environment
+  top_level_domain      = var.domain
+  shared_vpc_self_link  = local.host_network.self_link
+  shared_vpc_project_id = local.host_network.project
+}
+
+```
+#### *single_project/variables.tf*
+```
+/******************************************
+  Project subnet (Optional)
+ *****************************************/
+
+variable "enable_private_dns" {
+  type        = bool
+  description = "The flag to create private dns zone in shared VPC"
+  default     = true
+}
+
+variable "domain" {
+  type        = string
+  description = "The top level domain name for the organization"
+}
+```
+
+#### *standard_projects/main.tf*
+```
+/******************************************
+  Project subnets (Optional)
+ *****************************************/
+
+module "dns_nonprod" {
+  source = "../../modules/private_dns"
+
+  project_id            = module.nonprod_project.project_id
+  enable_private_dns    = var.enable_private_dns
+  environment           = "nonprod"
+  application_name      = var.application_name
+  top_level_domain      = var.domain
+  shared_vpc_self_link  = local.nonprod_host_network.self_link
+  shared_vpc_project_id = local.nonprod_host_network.project
+}
+
+module "dns_prod" {
+  source = "../../modules/private_dns"
+
+  project_id            = module.prod_project.project_id
+  enable_private_dns    = var.enable_private_dns
+  environment           = "prod"
+  application_name      = var.application_name
+  top_level_domain      = var.domain
+  shared_vpc_self_link  = local.prod_host_network.self_link
+  shared_vpc_project_id = local.prod_host_network.project
+}
+
+```
+#### *standard_projects/variables.tf*
+```
+variable "enable_private_dns" {
+  type        = bool
+  description = "The flag to create private dns zone in shared VPC"
+  default     = true
+}
+
+variable "domain" {
+  type        = string
+  description = "The top level domain name for the organization"
+  default     = ""
+}
+
+```
+#### *variables.tf*
+```
+/******************************************
+  Private DNS Management (Optional)
+ *****************************************/
+
+variable "domain" {
+   description = "The top level domain name for the organization"
+   type        = string
+}
+```
+
+#### *terraform.example.tf*
+```
+/******************************************
+  Private DNS Management (Optional)
+ *****************************************/
+
+# domain = "example.com"
+```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

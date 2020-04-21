@@ -94,26 +94,26 @@ module "prod_project" {
 /******************************************
   Private DNS Management (Optional)
  *****************************************/
-module "dns_nonprod" {
-  source = "../../modules/private_dns"
+# module "dns_nonprod" {
+#   source = "../../modules/private_dns"
 
-  project_id            = module.nonprod_project.project_id
-  enable_private_dns    = var.enable_private_dns
-  environment           = "nonprod"
-  application_name      = var.application_name
-  top_level_domain      = var.domain
-  shared_vpc_self_link  = local.nonprod_host_network.self_link
-  shared_vpc_project_id = local.nonprod_host_network.project
-}
+#   project_id            = module.nonprod_project.project_id
+#   enable_private_dns    = var.enable_private_dns
+#   environment           = "nonprod"
+#   application_name      = var.application_name
+#   top_level_domain      = var.domain
+#   shared_vpc_self_link  = local.nonprod_host_network.self_link
+#   shared_vpc_project_id = local.nonprod_host_network.project
+# }
 
-module "dns_prod" {
-  source = "../../modules/private_dns"
+# module "dns_prod" {
+#   source = "../../modules/private_dns"
 
-  project_id            = module.prod_project.project_id
-  enable_private_dns    = var.enable_private_dns
-  environment           = "prod"
-  application_name      = var.application_name
-  top_level_domain      = var.domain
-  shared_vpc_self_link  = local.prod_host_network.self_link
-  shared_vpc_project_id = local.prod_host_network.project
-}
+#   project_id            = module.prod_project.project_id
+#   enable_private_dns    = var.enable_private_dns
+#   environment           = "prod"
+#   application_name      = var.application_name
+#   top_level_domain      = var.domain
+#   shared_vpc_self_link  = local.prod_host_network.self_link
+#   shared_vpc_project_id = local.prod_host_network.project
+# }

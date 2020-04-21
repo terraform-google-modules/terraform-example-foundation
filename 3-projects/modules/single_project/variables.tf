@@ -67,7 +67,7 @@ variable "environment" {
 # variable "enable_networking" {
 #   description = "The flag to create subnets in shared VPC"
 #   type        = bool
-#   default     = false
+#   default     = true
 # }
 
 # variable "subnet_ip_cidr_range" {
@@ -88,14 +88,13 @@ variable "environment" {
 /******************************************
   Private DNS Management (Optional)
  *****************************************/
-variable "enable_private_dns" {
-  type        = bool
-  description = "The flag to create private dns zone in shared VPC"
-  default     = false
-}
+# variable "enable_private_dns" {
+#   type        = bool
+#   description = "The flag to create private dns zone in shared VPC"
+#   default     = true
+# }
 
-variable "domain" {
-  type        = string
-  description = "The top level domain name for the organization"
-  default     = ""
-}
+# variable "domain" {
+#   type        = string
+#   description = "The top level domain name for the organization"
+# }

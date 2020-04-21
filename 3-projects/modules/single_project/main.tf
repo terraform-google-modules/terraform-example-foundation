@@ -58,14 +58,14 @@ module "project" {
 /******************************************
   Private DNS Management (Optional)
  *****************************************/
-module "dns" {
-  source = "../../modules/private_dns"
+# module "dns" {
+#   source = "../../modules/private_dns"
 
-  project_id            = module.project.project_id
-  enable_private_dns    = var.enable_private_dns
-  application_name      = var.application_name
-  environment           = var.environment
-  top_level_domain      = var.domain
-  shared_vpc_self_link  = local.host_network.self_link
-  shared_vpc_project_id = local.host_network.project
-}
+#   project_id            = module.project.project_id
+#   enable_private_dns    = var.enable_private_dns
+#   application_name      = var.application_name
+#   environment           = var.environment
+#   top_level_domain      = var.domain
+#   shared_vpc_self_link  = local.host_network.self_link
+#   shared_vpc_project_id = local.host_network.project
+# }

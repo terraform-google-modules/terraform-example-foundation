@@ -37,8 +37,7 @@ variable "default_region" {
 /******************************************
   Private DNS Management (Optional)
  *****************************************/
-variable "domain" {
-  description = "The top level domain name for the organization"
-  type        = string
-  default     = ""
-}
+# variable "domain" {
+#   description = "The top level domain name for the organization"
+#   type        = string
+# }

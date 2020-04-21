@@ -4,8 +4,8 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | application\_name | Name for subnets | string | n/a | yes |
-| default\_region | Default region for resources. | string | `"australia-southeast1"` | no |
-| enable\_networking | The Flag to toggle the creation of subnets | bool | `"false"` | no |
+| default\_region | Default region for resources. | string | n/a | yes |
+| enable\_networking | The Flag to toggle the creation of subnets | bool | `"true"` | no |
 | enable\_private\_access | Flag to enable Google Private access in the subnet. | bool | `"true"` | no |
 | enable\_vpc\_flow\_logs | Flag to enable VPC flow logs with default configuration. | bool | `"false"` | no |
 | ip\_cidr\_range | CIDR Block to use for the subnet. | string | n/a | yes |

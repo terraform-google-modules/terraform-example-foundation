@@ -256,6 +256,9 @@ variable "domain" {
 # domain = "example.com"
 ```
 
+### Example Code for Subnetting and Private DNS (Optional)
+If you have uncommented the Subnetting and Private DNS Management module from previous steps. Please also uncomment *single-project-example-optional.tf* and *standard-project-example-optional.tf* for the example code.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 

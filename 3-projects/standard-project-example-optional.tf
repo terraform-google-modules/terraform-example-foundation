@@ -14,47 +14,47 @@
  * limitations under the License.
  */
 
-module "standard_project_folders_optional" {
-  source              = "./modules/folder_environments"
-  parent_folder_id    = google_folder.app.id
-  folder_display_name = "standard_app_example_optional"
-}
+# module "standard_project_folders_optional" {
+#   source              = "./modules/folder_environments"
+#   parent_folder_id    = google_folder.app.id
+#   folder_display_name = "standard_app_example_optional"
+# }
 
-module "standard_project_app_optional" {
-  source = "./modules/standard_projects"
+# module "standard_project_app_optional" {
+#   source = "./modules/standard_projects"
 
-  org_id                      = var.organization_id
-  billing_account             = var.billing_account
-  impersonate_service_account = var.terraform_service_account
+#   org_id                      = var.organization_id
+#   billing_account             = var.billing_account
+#   impersonate_service_account = var.terraform_service_account
 
-  nonprod_folder_id = module.standard_project_folders_optional.nonprod_folder_id
-  prod_folder_id    = module.standard_project_folders_optional.prod_folder_id
+#   nonprod_folder_id = module.standard_project_folders_optional.nonprod_folder_id
+#   prod_folder_id    = module.standard_project_folders_optional.prod_folder_id
 
-  # Metadata
-  project_prefix   = "standard-optional"
-  cost_centre      = "cost-centre-1"
-  application_name = "sample-standard-app-optional"
+#   # Metadata
+#   project_prefix   = "standard-optional"
+#   cost_centre      = "cost-centre-1"
+#   application_name = "sample-standard-app-optional"
 
-  # Network Setting (Optional)
-  enable_networking            = true
-  nonprod_subnet_ip_cidr_range = "10.64.0.0/16"
-  nonprod_subnet_secondary_ranges = [{
-    range_name    = "nonprod-gke-pod",
-    ip_cidr_range = "10.65.0.0/16"
-    }, {
-    range_name    = "nonprod-gke-svc",
-    ip_cidr_range = "10.66.0.0/16"
-  }]
-  prod_subnet_ip_cidr_range = "10.6.0.0/16"
-  prod_subnet_secondary_ranges = [{
-    range_name    = "prod-gke-pod",
-    ip_cidr_range = "10.7.0.0/16"
-    }, {
-    range_name    = "prod-gke-svc",
-    ip_cidr_range = "10.8.0.0/16"
-  }]
+#   # Network Setting (Optional)
+#   enable_networking            = true
+#   nonprod_subnet_ip_cidr_range = "10.64.0.0/16"
+#   nonprod_subnet_secondary_ranges = [{
+#     range_name    = "nonprod-gke-pod",
+#     ip_cidr_range = "10.65.0.0/16"
+#     }, {
+#     range_name    = "nonprod-gke-svc",
+#     ip_cidr_range = "10.66.0.0/16"
+#   }]
+#   prod_subnet_ip_cidr_range = "10.6.0.0/16"
+#   prod_subnet_secondary_ranges = [{
+#     range_name    = "prod-gke-pod",
+#     ip_cidr_range = "10.7.0.0/16"
+#     }, {
+#     range_name    = "prod-gke-svc",
+#     ip_cidr_range = "10.8.0.0/16"
+#   }]
 
-  # DNS Setting (Optional)
-  enable_private_dns = true
-  domain             = var.domain
-}
+#   # DNS Setting (Optional)
+#   enable_private_dns = true
+#   domain             = var.domain
+# }

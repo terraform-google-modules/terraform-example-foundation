@@ -1,6 +1,6 @@
 # 3-projects
 
-The purpose of this step is to setup folder structure, project, DNS and subnets used for applications.
+The purpose of this step is to setup folder structure and projects for applications, which are connected as service projects to the shared VPC created in the previous stage. Optionally, you can also create dedicated DNS zones and subnets for these applications.
 
 ## Prerequisites
 
@@ -31,12 +31,10 @@ The purpose of this step is to setup folder structure, project, DNS and subnets 
 1. Run terraform apply
 
 ### Subnetting Module (Optional)
-Refer to the [here](./modules/project_subnet/README.md) for
-details to this module.
+Creates a dedicated subnet per environment, per project and applies org policy to restrict access to only this subnet. Refer to the README [here](./modules/project_subnet/README.md) for details about this module.
 
 ### Private DNS Module (Optional)
-Refer to the [here](./modules/private_dns/README.md) for
-details to this module.
+Creates a dedicated private DNS zone per environment, per project and makes it available in the Shared VPC through DNS peering. Refer to the README [here](./modules/private_dns/README.md) for details about this module.
 
 ### Example Code for Subnetting and Private DNS (Optional)
 If you have uncommented the Subnetting and Private DNS Management module from previous steps. Please also uncomment *single-project-example-optional.tf* and *standard-project-example-optional.tf* for the example code.

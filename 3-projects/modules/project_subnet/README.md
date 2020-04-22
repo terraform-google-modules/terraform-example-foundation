@@ -137,4 +137,10 @@ module "prod_project" {
 | vpc\_host\_project\_id | VPC Host project ID. | string | n/a | yes |
 | vpc\_self\_link | Self link for VPC to create the subnet in. | string | n/a | yes |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| subnetwork\_self\_link | The self-link of subnet being create |
+
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

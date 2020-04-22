@@ -58,7 +58,6 @@ variable "activate_apis" {
 variable "environment" {
   description = "The environment the single project belongs to"
   type        = string
-  default     = "prod"
 }
 
 /******************************************

@@ -19,12 +19,13 @@ resource "google_folder" "single_project_folder" {
   display_name = "single-project-app"
 }
 
-module "single-project-app" {
+module "single_project_app" {
   source = "./modules/single_project"
 
   org_id                      = var.organization_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
+  environment = "prod"
 
   folder_id = google_folder.single_project_folder.id
 

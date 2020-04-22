@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-data "google_projects" "prod-project" {
+data "google_projects" "prod_project" {
   filter = "labels.application_name:org-shared-vpc-prod"
 }
 
-data "google_compute_network" "prod-shared-vpc" {
+data "google_compute_network" "prod_shared_vpc" {
   name    = "shared-vpc-prod"
   project = local.prod_project_id
 }
 
-data "google_projects" "nonprod-project" {
+data "google_projects" "nonprod_project" {
   filter = "labels.application_name:org-shared-vpc-nonprod"
 }
 
-data "google_compute_network" "nonprod-shared-vpc" {
+data "google_compute_network" "nonprod_shared_vpc" {
   name    = "shared-vpc-nonprod"
   project = local.nonprod_project_id
 }

@@ -15,11 +15,11 @@
  */
 
 locals {
-  prod_project_id   = data.google_projects.prod-project.projects[0].project_id
-  prod_host_network = data.google_compute_network.prod-shared-vpc
+  prod_project_id   = data.google_projects.prod_project.projects[0].project_id
+  prod_host_network = data.google_compute_network.prod_shared_vpc
 
-  nonprod_project_id   = data.google_projects.nonprod-project.projects[0].project_id
-  nonprod_host_network = data.google_compute_network.nonprod-shared-vpc
+  nonprod_project_id   = data.google_projects.nonprod_project.projects[0].project_id
+  nonprod_host_network = data.google_compute_network.nonprod_shared_vpc
 }
 
 module "nonprod_project" {
@@ -34,7 +34,7 @@ module "nonprod_project" {
   folder_id                   = var.nonprod_folder_id
 
   shared_vpc         = local.nonprod_host_network.project
-  shared_vpc_subnets = local.nonprod_host_network.subnetworks_self_links
+  shared_vpc_subnets = local.nonprod_host_network.subnetworks_self_links  # Optional: To enable subnetting, to replace to "module.networking_nonprod_project.subnetwork_self_link"
 
   labels = {
     environment      = "nonprod"
@@ -55,7 +55,7 @@ module "prod_project" {
   folder_id                   = var.prod_folder_id
 
   shared_vpc         = local.prod_host_network.project
-  shared_vpc_subnets = local.prod_host_network.subnetworks_self_links
+  shared_vpc_subnets = local.prod_host_network.subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_prod_project.subnetwork_self_link"
 
   labels = {
     environment      = "prod"
@@ -71,7 +71,9 @@ module "prod_project" {
 #   source = "../../modules/project_subnet"
 
 #   project_id          = module.nonprod_project.project_id
+#   default_region      = var.default_region
 #   enable_networking   = var.enable_networking
+  
 #   application_name    = var.application_name
 #   vpc_host_project_id = local.nonprod_host_network.project
 #   vpc_self_link       = local.nonprod_host_network.self_link
@@ -83,6 +85,7 @@ module "prod_project" {
 #   source = "../../modules/project_subnet"
 
 #   project_id          = module.prod_project.project_id
+#   default_region      = var.default_region
 #   enable_networking   = var.enable_networking
 #   application_name    = var.application_name
 #   vpc_host_project_id = local.prod_host_network.project

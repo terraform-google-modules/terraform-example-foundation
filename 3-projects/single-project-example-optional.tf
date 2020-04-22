@@ -25,8 +25,8 @@
 #   org_id                      = var.organization_id
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
-
 #   folder_id = google_folder.single_project_folder_optional.id
+#   environment = "prod"
 
 #   # Metadata
 #   project_prefix   = "single-optional"

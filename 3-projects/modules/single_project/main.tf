@@ -30,7 +30,7 @@ module "project" {
   folder_id                   = var.folder_id
 
   shared_vpc         = local.host_network.project
-  shared_vpc_subnets = local.host_network.subnetworks_self_links
+  shared_vpc_subnets = local.host_network.subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_project.subnetwork_self_link"
 
   labels = {
     environment      = var.environment
@@ -45,6 +45,7 @@ module "project" {
 # module "networking_project" {
 #   source = "../../modules/project_subnet"
 
+#   default_region   = var.default_region
 #   project_id       = module.project.project_id
 #   application_name = var.application_name
 

@@ -34,7 +34,7 @@ module "nonprod_project" {
   folder_id                   = var.nonprod_folder_id
 
   shared_vpc         = local.nonprod_host_network.project
-  shared_vpc_subnets = local.nonprod_host_network.subnetworks_self_links  # Optional: To enable subnetting, to replace to "module.networking_nonprod_project.subnetwork_self_link"
+  shared_vpc_subnets = local.nonprod_host_network.subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_nonprod_project.subnetwork_self_link"
 
   labels = {
     environment      = "nonprod"
@@ -73,7 +73,7 @@ module "prod_project" {
 #   project_id          = module.nonprod_project.project_id
 #   default_region      = var.default_region
 #   enable_networking   = var.enable_networking
-  
+
 #   application_name    = var.application_name
 #   vpc_host_project_id = local.nonprod_host_network.project
 #   vpc_self_link       = local.nonprod_host_network.self_link

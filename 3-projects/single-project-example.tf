@@ -25,7 +25,7 @@ module "single_project_app" {
   org_id                      = var.organization_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
-  environment = "prod"
+  environment                 = "prod"
 
   folder_id = google_folder.single_project_folder.id
 

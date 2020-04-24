@@ -16,7 +16,7 @@
 
 # module "standard_project_folders_optional" {
 #   source              = "./modules/folder_environments"
-#   parent_folder_id    = google_folder.app.id
+#   parent_folder_id    = google_folder.products.id
 #   folder_display_name = "standard_app_example_optional"
 # }
 

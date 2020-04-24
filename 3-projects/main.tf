@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-resource "google_folder" "app" {
+resource "google_folder" "products" {
   parent       = "organizations/${var.organization_id}"
-  display_name = "app"
+  display_name = "products"
 }

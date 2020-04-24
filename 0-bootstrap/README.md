@@ -18,7 +18,7 @@ Further details of permissions required and resources created, can be found in t
 1. Run `terraform init`
 1. Run `terraform plan` and review output
 1. Run `terraform apply`
-1. Copy the backend by running `cp backend.tf.example backend.tf` and update `backend.tf` with your bucket from the apply step
+1. Copy the backend by running `cp backend.tf.example backend.tf` and update `backend.tf` with your bucket from the apply step (The value from `terraform output gcs_bucket_tfstate`)
 1. Re-run `terraform init` agree to copy state to gcs when prompted
     1. (Optional) Run `terraform apply` to verify state is configured correctly
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

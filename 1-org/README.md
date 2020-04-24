@@ -9,10 +9,10 @@ The purpose of this step is to setup top level shared folders, monitoring & netw
 ## Usage
 
 ### Setup to run via Cloud Build
-1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID`
-1. Change freshly cloned repo and change to non master branch `git checkout -b plan`
-1. Copy contents of foundation to new repo `cp ../terraform-example-foundation/1-org/* .`
-1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
+1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID (this is from `terraform output` from the previous section, 0-bootstrap)`
+1. Navigate into the repo `cd gcp-org` and change to a non master branch `git checkout -b plan`
+1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/1-org/* .` (modify accordingly based on your current directory)
+1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values).
 1. Rename backend.tf.example backend.tf and update with your bucket from bootstrap.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
 1. Push your non master branch to trigger a plan `git push --set-upstream origin plan`

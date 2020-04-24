@@ -15,7 +15,7 @@
  */
 
 # resource "google_folder" "single_project_folder_optional" {
-#   parent       = google_folder.app.id
+#   parent       = google_folder.products.id
 #   display_name = "single-project-app-optional"
 # }
 

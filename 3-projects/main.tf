@@ -14,7 +14,3 @@
  * limitations under the License.
  */
 
-resource "google_folder" "app" {
-  parent       = "organizations/${var.org_id}"
-  display_name = "app"
-}

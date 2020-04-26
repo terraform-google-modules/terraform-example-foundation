@@ -15,6 +15,6 @@
  */
 
 resource "google_folder" "app" {
-  parent       = "organizations/${var.organization_id}"
+  parent       = "organizations/${var.org_id}"
   display_name = "app"
 }

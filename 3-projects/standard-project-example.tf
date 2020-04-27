@@ -16,14 +16,14 @@
 
 module "standard_project_folders" {
   source              = "./modules/folder_environments"
-  parent_folder_id    = google_folder.products.id
+  parent_folder_id    = google_folder.app-sample-standard.id
   folder_display_name = "standard_app_example"
 }
 
 module "standard_project_app" {
   source = "./modules/standard_projects"
 
-  org_id                      = var.organization_id
+  org_id                      = var.org_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
 

@@ -19,7 +19,7 @@ variable "terraform_service_account" {
   type        = string
 }
 
-variable "organization_id" {
+variable "org_id" {
   description = "The organization id for the associated services"
   type        = string
 }

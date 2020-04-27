@@ -15,14 +15,14 @@
  */
 
 resource "google_folder" "single_project_folder" {
-  parent       = google_folder.products.id
+  parent       = google_folder.app-sample-single.id
   display_name = "single-project-app"
 }
 
 module "single_project_app" {
   source = "./modules/single_project"
 
-  org_id                      = var.organization_id
+  org_id                      = var.org_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
   environment                 = "prod"

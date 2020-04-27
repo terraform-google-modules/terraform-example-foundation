@@ -16,7 +16,7 @@
 
 billing_account = "000000-000000-000000"
 
-organization_id = "000000000000"
+org_id = "000000000000"
 
 terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
 

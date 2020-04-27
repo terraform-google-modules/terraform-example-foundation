@@ -14,7 +14,20 @@
  * limitations under the License.
  */
 
-resource "google_folder" "products" {
-  parent       = "organizations/${var.organization_id}"
+data "google_active_folder" "products" {
   display_name = "products"
+  parent       = "organizations/${var.org_id}"
+}
+
+/******************************************
+  Second Level Folders
+ *****************************************/
+resource "google_folder" "app-sample-single" {
+  parent       = data.google_active_folder.products.name
+  display_name = "sample-app-single"
+}
+
+resource "google_folder" "app-sample-standard" {
+  parent       = data.google_active_folder.products.name
+  display_name = "sample-app-standard"
 }

@@ -23,7 +23,7 @@ module "standard_project_folders" {
 module "standard_project_app" {
   source = "./modules/standard_projects"
 
-  org_id                      = var.organization_id
+  org_id                      = var.org_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
 

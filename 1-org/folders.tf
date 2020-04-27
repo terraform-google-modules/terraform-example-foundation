@@ -23,11 +23,6 @@ resource "google_folder" "common" {
   parent       = "organizations/${var.org_id}"
 }
 
-resource "google_folder" "products" {
-  display_name = "products"
-  parent       = "organizations/${var.org_id}"
-}
-
 /******************************************
   Common sub-folders
  *****************************************/

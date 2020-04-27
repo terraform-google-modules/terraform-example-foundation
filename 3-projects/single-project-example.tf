@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-resource "google_folder" "single_project_folder" {
-  parent       = google_folder.products.id
-  display_name = "single-project-app"
-}
-
 module "single_project_app" {
   source = "./modules/single_project"
 
@@ -27,7 +22,7 @@ module "single_project_app" {
   impersonate_service_account = var.terraform_service_account
   environment                 = "prod"
 
-  folder_id = google_folder.single_project_folder.id
+  folder_id = module.standard_project_folders.prod_folder_id
 
   # Metadata
   project_prefix   = "sample-single"

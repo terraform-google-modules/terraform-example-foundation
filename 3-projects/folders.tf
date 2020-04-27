@@ -14,3 +14,19 @@
  * limitations under the License.
  */
 
+/******************************************
+  Business Unit Folders
+ *****************************************/
+resource "google_folder" "business_unit" {
+  display_name = "example-business-unit"
+  parent       = "organizations/${var.org_id}"
+}
+
+/******************************************
+  Team Folders
+ *****************************************/
+module "standard_project_folders" {
+  source              = "./modules/folder_environments"
+  parent_folder_id    = google_folder.business_unit.name
+  folder_display_name = "example-team"
+}

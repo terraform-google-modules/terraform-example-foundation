@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-# module "standard_project_folders_optional" {
-#   source              = "./modules/folder_environments"
-#   parent_folder_id    = google_folder.products.id
-#   folder_display_name = "standard_app_example_optional"
-# }
-
 # module "standard_project_app_optional" {
 #   source = "./modules/standard_projects"
 
-#   org_id                      = var.organization_id
+#   org_id                      = var.org_id
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
 
-#   nonprod_folder_id = module.standard_project_folders_optional.nonprod_folder_id
-#   prod_folder_id    = module.standard_project_folders_optional.prod_folder_id
+#   nonprod_folder_id = module.standard_project_folders.nonprod_folder_id
+#   prod_folder_id    = module.standard_project_folders.prod_folder_id
 
 #   # Metadata
 #   project_prefix   = "standard-optional"

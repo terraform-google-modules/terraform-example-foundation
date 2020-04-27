@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-module "standard_project_folders" {
-  source              = "./modules/folder_environments"
-  parent_folder_id    = google_folder.products.id
-  folder_display_name = "standard_app_example"
-}
-
 module "standard_project_app" {
   source = "./modules/standard_projects"
 

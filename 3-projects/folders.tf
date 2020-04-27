@@ -17,7 +17,7 @@
 /******************************************
   Business Unit Folders
  *****************************************/
-resource "google_folder" "business_unit" {
+resource "google_folder" "example_business_unit" {
   display_name = "example-business-unit"
   parent       = "organizations/${var.org_id}"
 }
@@ -25,8 +25,8 @@ resource "google_folder" "business_unit" {
 /******************************************
   Team Folders
  *****************************************/
-module "standard_project_folders" {
+module "example_team_folders" {
   source              = "./modules/folder_environments"
-  parent_folder_id    = google_folder.business_unit.name
+  parent_folder_id    = google_folder.example_business_unit.name
   folder_display_name = "example-team"
 }

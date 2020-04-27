@@ -21,8 +21,8 @@
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
 
-#   nonprod_folder_id = module.standard_project_folders.nonprod_folder_id
-#   prod_folder_id    = module.standard_project_folders.prod_folder_id
+#   nonprod_folder_id = module.example_team_folders.nonprod_folder_id
+#   prod_folder_id    = module.example_team_folders.prod_folder_id
 
 #   # Metadata
 #   project_prefix   = "standard-optional"

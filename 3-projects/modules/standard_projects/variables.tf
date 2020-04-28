@@ -105,7 +105,7 @@ variable "activate_apis" {
 # variable "enable_private_dns" {
 #   type        = bool
 #   description = "The flag to create private dns zone in shared VPC"
-#   default     = true
+#   default     = false
 # }
 
 # variable "domain" {

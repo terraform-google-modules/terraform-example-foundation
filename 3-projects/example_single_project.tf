@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-module "standard_project_folders" {
-  source              = "./modules/folder_environments"
-  parent_folder_id    = google_folder.app.id
-  folder_display_name = "standard_app_example"
-}
-
-module "standard_project_app" {
-  source = "./modules/standard_projects"
+module "example_single_project" {
+  source = "./modules/single_project"
 
   org_id                      = var.org_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
+  environment                 = "prod"
 
-  nonprod_folder_id = module.standard_project_folders.nonprod_folder_id
-  prod_folder_id    = module.standard_project_folders.prod_folder_id
+  folder_id = module.example_team_folders.prod_folder_id
 
   # Metadata
-  project_prefix   = "sample-standard"
+  project_prefix   = "sample-single"
   cost_centre      = "cost-centre-1"
-  application_name = "sample-standard-project-app"
+  application_name = "sample-single-project-app"
 }

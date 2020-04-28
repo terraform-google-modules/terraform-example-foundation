@@ -14,7 +14,18 @@
  * limitations under the License.
  */
 
-resource "google_folder" "app" {
-  parent       = "organizations/${var.org_id}"
-  display_name = "app"
+module "example_standard_projects" {
+  source = "./modules/standard_projects"
+
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  impersonate_service_account = var.terraform_service_account
+
+  nonprod_folder_id = module.example_team_folders.nonprod_folder_id
+  prod_folder_id    = module.example_team_folders.prod_folder_id
+
+  # Metadata
+  project_prefix   = "sample-standard"
+  cost_centre      = "cost-centre-1"
+  application_name = "sample-standard-project-app"
 }

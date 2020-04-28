@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-resource "google_folder" "single_project_folder" {
-  parent       = google_folder.app.id
-  display_name = "single-project-app"
+/******************************************
+  Business Unit Folders
+ *****************************************/
+resource "google_folder" "example_business_unit" {
+  display_name = "example-business-unit"
+  parent       = "organizations/${var.org_id}"
 }
 
-module "single_project_app" {
-  source = "./modules/single_project"
-
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
-  impersonate_service_account = var.terraform_service_account
-  environment                 = "prod"
-
-  folder_id = google_folder.single_project_folder.id
-
-  # Metadata
-  project_prefix   = "sample-single"
-  cost_centre      = "cost-centre-1"
-  application_name = "sample-single-project-app"
+/******************************************
+  Team Folders
+ *****************************************/
+module "example_team_folders" {
+  source              = "./modules/folder_environments"
+  parent_folder_id    = google_folder.example_business_unit.name
+  folder_display_name = "example-team"
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-module "single_project_app" {
+module "example_single_project" {
   source = "./modules/single_project"
 
   org_id                      = var.org_id

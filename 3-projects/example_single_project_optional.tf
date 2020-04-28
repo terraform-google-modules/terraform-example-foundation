@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-# module "single_project_app_optional" {
+# module "example_single_project_optional" {
 #   source = "./modules/single_project"
 
 #   org_id                      = var.org_id
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
-#   folder_id                   = module.example_team_folders.prod_folder_id
-#   environment                 = "prod"
+#   folder_id = module.example_team_folders.prod_folder_id
+#   environment = "prod"
 
 #   # Metadata
 #   project_prefix   = "single-optional"

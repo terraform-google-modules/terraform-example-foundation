@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-# module "standard_project_app_optional" {
+# module "example_standard_projects_optional" {
 #   source = "./modules/standard_projects"
 
 #   org_id                      = var.org_id

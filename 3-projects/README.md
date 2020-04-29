@@ -37,7 +37,7 @@ Creates a dedicated subnet per environment, per project and applies org policy t
 Creates a dedicated private DNS zone per environment, per project and makes it available in the Shared VPC through DNS peering. Refer to the README [here](./modules/private_dns/README.md) for details about this module.
 
 ### Example Code for Subnetting and Private DNS (Optional)
-If you have uncommented the Subnetting and Private DNS Management module from previous steps. Please also uncomment *single-project-example-optional.tf* and *standard-project-example-optional.tf* for the example code.
+If you have uncommented the Subnetting and Private DNS Management module from previous steps. Please also uncomment [*example_single_project_optional.tf*](./example_single_project_optional.tf) and [*example_standard_project_optional.tf*](./example_standard_project_optional.tf) for the example code, as well as the  [*outputs.tf*](./outputs.tf).
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

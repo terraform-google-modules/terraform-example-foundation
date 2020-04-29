@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- output "example_single_project" {
+
+output "example_single_project" {
   description = "The information related to the example single project."
   value = {
     "${module.example_single_project.environment}" : {

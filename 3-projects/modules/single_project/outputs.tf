@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- output "project_id" {
+
+output "project_id" {
   value       = module.project.project_id
   description = "The project where application-related infrastructure will reside."
 }

@@ -51,3 +51,20 @@ variable "bgp_asn" {
   description = "BGP ASN for default cloud router."
 }
 
+variable "dns_enable_inbound_forwarding" {
+  type        = bool
+  description = "Toggle inbound query forwarding for VPC DNS."
+  default     = true
+}
+
+variable "dns_enable_logging" {
+  type        = bool
+  description = "Toggle DNS logging for VPC DNS."
+  default     = true
+}
+
+variable "nat_num_addresses" {
+  type        = number
+  description = "Number of external IPs to reserve for Cloud NAT."
+  default     = 2
+}

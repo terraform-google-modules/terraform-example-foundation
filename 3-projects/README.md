@@ -54,9 +54,7 @@ If you have uncommented the Subnetting and Private DNS Management module from pr
 
 | Name | Description |
 |------|-------------|
-| example\_single\_project |  |
-| example\_single\_project\_optional |  |
-| example\_standard\_projects |  |
-| example\_standard\_projects\_optional |  |
+| example\_single\_project | The information related to the example single project. |
+| example\_standard\_projects | The information related to the example single project. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

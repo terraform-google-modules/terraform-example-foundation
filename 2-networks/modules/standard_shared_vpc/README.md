@@ -5,6 +5,9 @@
 |------|-------------|:----:|:-----:|:-----:|
 | bgp\_asn | BGP ASN for default cloud router. | string | n/a | yes |
 | default\_region | Default subnet region standard_shared_vpc currently only configures one region. | string | n/a | yes |
+| dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | bool | `"true"` | no |
+| dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |
+| nat\_num\_addresses | Number of external IPs to reserve for Cloud NAT. | number | `"2"` | no |
 | network\_name | Name for VPC. | string | n/a | yes |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | string | n/a | yes |
 | project\_id | Project ID for Shared VPC. | string | n/a | yes |

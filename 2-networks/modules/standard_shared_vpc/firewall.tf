@@ -19,8 +19,9 @@
  *****************************************/
 
 // Allow SSH when using the allow-ssh tag for Linux workloads.
-resource "google_compute_firewall" "allow_ssh" {
-  name    = "allow-ssh"
+resource "google_compute_firewall" "allow_iap_ssh" {
+  count   = var.default_fw_rules_enabled ? 1 : 0
+  name    = "allow-iap-ssh"
   network = module.main.network_name
   project = var.project_id
 
@@ -32,12 +33,13 @@ resource "google_compute_firewall" "allow_ssh" {
     ports    = ["22"]
   }
 
-  target_tags = ["allow-ssh"]
+  target_tags = ["allow-iap-ssh"]
 }
 
 // Allow RDP when using the allow-rdp tag for Windows workloads.
-resource "google_compute_firewall" "allow_rdp" {
-  name    = "allow-rdp"
+resource "google_compute_firewall" "allow_iap_rdp" {
+  count   = var.default_fw_rules_enabled ? 1 : 0
+  name    = "allow-iap-rdp"
   network = module.main.network_name
   project = var.project_id
 
@@ -49,11 +51,12 @@ resource "google_compute_firewall" "allow_rdp" {
     ports    = ["3389"]
   }
 
-  target_tags = ["allow-rdp"]
+  target_tags = ["allow-iap-rdp"]
 }
 
 // Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
 resource "google_compute_firewall" "allow_lb" {
+  count   = var.default_fw_rules_enabled ? 1 : 0
   name    = "allow-lb"
   network = module.main.network_name
   project = var.project_id

@@ -68,3 +68,9 @@ variable "nat_num_addresses" {
   description = "Number of external IPs to reserve for Cloud NAT."
   default     = 2
 }
+
+variable "default_fw_rules_enabled" {
+  type        = bool
+  description = "Toggle creation of default firewall rules."
+  default     = true
+}

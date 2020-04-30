@@ -4,6 +4,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | bgp\_asn | BGP ASN for default cloud router. | string | n/a | yes |
+| default\_fw\_rules\_enabled | Toggle creation of default firewall rules. | bool | `"true"` | no |
 | default\_region | Default subnet region standard_shared_vpc currently only configures one region. | string | n/a | yes |
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | bool | `"true"` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |

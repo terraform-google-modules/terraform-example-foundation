@@ -33,80 +33,64 @@ resource "google_dns_policy" "default_policy" {
   Private Google APIs DNS Zone & records.
  *****************************************/
 
-resource "google_dns_managed_zone" "private_googleapis" {
-  provider    = google-beta
-  project     = var.project_id
+module "private_googleapis" {
+  source      = "terraform-google-modules/cloud-dns/google"
+  version     = "~> 3.0"
+  project_id  = var.project_id
+  type        = "private"
   name        = "private-googleapis"
-  dns_name    = "googleapis.com."
+  domain      = "googleapis.com."
   description = "Private DNS zone to configure private.googleapis.com"
 
-  visibility = "private"
+  private_visibility_config_networks = [
+    module.main.network_self_link
+  ]
 
-  private_visibility_config {
-    networks {
-      network_url = module.main.network_self_link
-    }
-  }
-}
-
-resource "google_dns_record_set" "googleapis_cname" {
-  provider     = google-beta
-  project      = var.project_id
-  name         = "*.googleapis.com."
-  managed_zone = google_dns_managed_zone.private_googleapis.name
-  type         = "CNAME"
-  ttl          = 300
-  rrdatas      = ["private.googleapis.com."]
-}
-
-resource "google_dns_record_set" "private_googleapis_a" {
-  provider     = google-beta
-  project      = var.project_id
-  name         = "private.googleapis.com."
-  managed_zone = google_dns_managed_zone.private_googleapis.name
-  type         = "A"
-  ttl          = 300
-
-  rrdatas = ["199.36.153.8", "199.36.153.9", "199.36.153.10", "199.36.153.11"]
+  recordsets = [
+    {
+      name    = "*"
+      type    = "CNAME"
+      ttl     = 300
+      records = ["private.googleapis.com."]
+    },
+    {
+      name    = "private"
+      type    = "A"
+      ttl     = 300
+      records = ["199.36.153.8", "199.36.153.9", "199.36.153.10", "199.36.153.11"]
+    },
+  ]
 }
 
 /******************************************
   Private GCR DNS Zone & records.
  *****************************************/
 
-resource "google_dns_managed_zone" "private_gcr" {
-  provider    = google-beta
-  project     = var.project_id
+module "private_gcr" {
+  source      = "terraform-google-modules/cloud-dns/google"
+  version     = "~> 3.0"
+  project_id  = var.project_id
+  type        = "private"
   name        = "private-gcr"
-  dns_name    = "gcr.io."
+  domain      = "gcr.io."
   description = "Private DNS zone to configure gcr.io"
 
-  visibility = "private"
+  private_visibility_config_networks = [
+    module.main.network_self_link
+  ]
 
-  private_visibility_config {
-    networks {
-      network_url = module.main.network_self_link
-    }
-  }
-}
-
-resource "google_dns_record_set" "gcr_cname" {
-  provider     = google-beta
-  project      = var.project_id
-  name         = "*.gcr.io."
-  managed_zone = google_dns_managed_zone.private_gcr.name
-  type         = "CNAME"
-  ttl          = 300
-  rrdatas      = ["gcr.io."]
-}
-
-resource "google_dns_record_set" "private_gcr_a" {
-  provider     = google-beta
-  project      = var.project_id
-  name         = "gcr.io."
-  managed_zone = google_dns_managed_zone.private_gcr.name
-  type         = "A"
-  ttl          = 300
-
-  rrdatas = ["199.36.153.8", "199.36.153.9", "199.36.153.10", "199.36.153.11"]
+  recordsets = [
+    {
+      name    = "*"
+      type    = "CNAME"
+      ttl     = 300
+      records = ["gcr.io."]
+    },
+    {
+      name    = ""
+      type    = "A"
+      ttl     = 300
+      records = ["199.36.153.8", "199.36.153.9", "199.36.153.10", "199.36.153.11"]
+    },
+  ]
 }

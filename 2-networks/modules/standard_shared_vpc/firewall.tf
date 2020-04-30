@@ -18,7 +18,7 @@
   Default firewall rules
  *****************************************/
 
-// Allow SSH when using the allow-ssh tag for Linux workloads.
+// Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
 resource "google_compute_firewall" "allow_iap_ssh" {
   count   = var.default_fw_rules_enabled ? 1 : 0
   name    = "allow-iap-ssh"
@@ -36,7 +36,7 @@ resource "google_compute_firewall" "allow_iap_ssh" {
   target_tags = ["allow-iap-ssh"]
 }
 
-// Allow RDP when using the allow-rdp tag for Windows workloads.
+// Allow RDP via IAP when using the allow-iap-rdp tag for Windows workloads.
 resource "google_compute_firewall" "allow_iap_rdp" {
   count   = var.default_fw_rules_enabled ? 1 : 0
   name    = "allow-iap-rdp"

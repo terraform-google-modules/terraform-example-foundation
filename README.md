@@ -1,12 +1,12 @@
 # terraform-example-foundation
-This is an example repo showing how the CFT terraform modules can be composed to build a secure GCP foundation. The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the code leverages Google Cloud Build for deployment of the Terraform from steps 2 onward. Cloud Build has been chosen to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
+This is an example repo showing how the CFT Terraform modules can be composed to build a secure GCP foundation. The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the code leverages Google Cloud Build for deployment of the Terraform from steps 2 onward. Cloud Build has been chosen to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
 
 ## Overview
-This repo contains several distinct terraform projects each within their own directory that must be applied seperately, but in sequence. Each of these Terraform prjects are to be layered on top of each other, running in the following order.
+This repo contains several distinct Terraform projects each within their own directory that must be applied seperately, but in sequence. Each of these Terraform prjects are to be layered on top of each other, running in the following order.
 
 ### 1. [bootstrap](./0-bootstrap/README.md)
 
-This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT). This includes; projects, service accounts and a terraform state bucket. After executing this step, you will have the following structure:
+This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT). This includes; projects, service accounts and a Terraform state bucket. After executing this step, you will have the following structure:
 
 ```
 example-organization/

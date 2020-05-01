@@ -5,7 +5,7 @@ Cloud Build has been chosen to allow teams to quickly get started without needin
 
 ## Overview
 This repo contains several distinct Terraform projects each within their own directory that must be applied seperately, but in sequence.
-Each of these Terraform prjects are to be layered on top of each other, running in the following order.
+Each of these Terraform projects are to be layered on top of each other, running in the following order.
 
 ### 1. [bootstrap](./0-bootstrap/README.md)
 

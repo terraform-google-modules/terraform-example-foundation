@@ -7,7 +7,7 @@ Cloud Build has been chosen to allow teams to quickly get started without needin
 This repo contains several distinct Terraform projects each within their own directory that must be applied seperately, but in sequence.
 Each of these Terraform projects are to be layered on top of each other, running in the following order.
 
-### [0. Bootstrap](./0-bootstrap/README)
+### [0. Bootstrap](./0-bootstrap/)
 
 This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT).
 This includes; projects, service accounts and a Terraform state bucket. After executing this step, you will have the following structure:
@@ -22,7 +22,7 @@ In addition, this step uses the optional Cloud Build submodule, which sets up Cl
 A simple trigger mechanism is configured, which runs a `terraform plan` for any non master branch and `terraform apply` when changes are merged to the master branch.
 Usage instructions are available in the bootstrap [README](./0-bootstrap/README.md).
 
-### [1. Org](./1-org/README)
+### [1. Org](./1-org/)
 
 The purpose of this stage is to set up top level folders used to house projects which contain shared resources such as monitoring, networking, org level logging and also to set baseline security settings through organizational policy.
 This will create the following folder & project structure:
@@ -68,7 +68,7 @@ A full list of policies is [available here](https://cloud.google.com/resource-ma
 
 Usage instructions are available for the org step in the [README](./1-org/README.md).
 
-### [2. Networks](./2-networks/README)
+### [2. Networks](./2-networks/)
 
 This step focuses on creating a Shared VPC per environment (prod & nonprod) in a standard configuration with a reasonable security baseline. Currently this includes:
 
@@ -84,7 +84,7 @@ This step focuses on creating a Shared VPC per environment (prod & nonprod) in a
 
 Usage instructions are available for the network step in the [README](./2-networks/README.md).
 
-### [3. Projects](./3-projects/README)
+### [3. Projects](./3-projects/)
 
 This step, is focused on creating service projects in a standard configuration that are attached to the Shared VPC created in the previous step.
 Running this code as-is should generate a structure as shown below:

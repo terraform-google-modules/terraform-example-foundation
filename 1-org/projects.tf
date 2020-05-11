@@ -34,6 +34,7 @@ module "org_audit_logs" {
     environment      = "prod"
     application_name = "org-audit-logs"
   }
+  skip_gcloud_download        = true
 }
 
 module "org_billing_logs" {
@@ -52,6 +53,7 @@ module "org_billing_logs" {
     environment      = "prod"
     application_name = "org-billing-logs"
   }
+  skip_gcloud_download        = true
 }
 
 /******************************************
@@ -70,9 +72,10 @@ module "org_monitoring_nonprod" {
   activate_apis               = ["logging.googleapis.com", "monitoring.googleapis.com"]
 
   labels = {
-    environment      = "prod"
+    environment      = "nonprod"
     application_name = "org-monitoring-nonprod"
   }
+  skip_gcloud_download        = true
 }
 
 module "org_monitoring_prod" {
@@ -90,54 +93,67 @@ module "org_monitoring_prod" {
     environment      = "prod"
     application_name = "org-monitoring-prod"
   }
+  skip_gcloud_download        = true
 }
 
 /******************************************
   Projects for Shared VPCs
 *****************************************/
 
-module "org_shared_vpc_nonprod" {
+module "org_interconnect_all" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 7.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "org-shared-vpc-nonprod"
+  name                        = "org-interconnect-all"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.networking.id
-  activate_apis = [
-    "compute.googleapis.com",
-    "dns.googleapis.com",
-    "servicenetworking.googleapis.com",
-    "container.googleapis.com",
-    "logging.googleapis.com"
-  ]
+  activate_apis               = ["compute.googleapis.com", "logging.googleapis.com"]
 
   labels = {
     environment      = "prod"
-    application_name = "org-shared-vpc-nonprod"
+    application_name = "org-interconnect-all"
   }
+  skip_gcloud_download        = true
 }
 
-module "org_shared_vpc_prod" {
+/******************************************
+  Projects for DNS
+*****************************************/
+
+module "org_dns_nonprod" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 7.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "org-shared-vpc-prod"
+  name                        = "org-dns-nonprod"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.networking.id
-  activate_apis = [
-    "compute.googleapis.com",
-    "dns.googleapis.com",
-    "servicenetworking.googleapis.com",
-    "container.googleapis.com",
-    "logging.googleapis.com"
-  ]
+  activate_apis               = ["dns.googleapis.com", "logging.googleapis.com"]
+
+  labels = {
+    environment      = "nonprod"
+    application_name = "org-dns-nonprod"
+  }
+  skip_gcloud_download        = true
+}
+
+module "org_dns_prod" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 7.0"
+  random_project_id           = "true"
+  impersonate_service_account = var.terraform_service_account
+  name                        = "org-dns-prod"
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = google_folder.networking.id
+  activate_apis               = ["dns.googleapis.com", "logging.googleapis.com"]
 
   labels = {
     environment      = "prod"
-    application_name = "org-shared-vpc-prod"
+    application_name = "org-dns-prod"
   }
+  skip_gcloud_download        = true
 }

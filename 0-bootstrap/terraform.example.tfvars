@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
+org_id = "01234567890"
 
-billing_account = "000000-000000-000000"
+billing_account = "000000-ABCDEF-1A2B3C"
 
-group_org_admins = "gcp-organization-admins@example.com"
+group_org_admins = "google-admins@example.com"
 
-group_billing_admins = "gcp-billing-admins@example.com"
+group_billing_admins = "billing-admins@example.com"
 
-default_region = "australia-southeast1"
+default_region = "us-east1"

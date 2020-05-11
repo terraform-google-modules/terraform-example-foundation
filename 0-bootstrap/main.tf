@@ -34,21 +34,29 @@ provider "random" {
   Bootstrap GCP Organization.
 *************************************************/
 
+resource "google_folder" "seed" {
+  display_name = "seed"
+  parent       = "organizations/${var.org_id}"
+}
+
 module "seed_bootstrap" {
   source                  = "terraform-google-modules/bootstrap/google"
   version                 = "~> 1.0"
   org_id                  = var.org_id
+  folder_id               = google_folder.seed.id
   billing_account         = var.billing_account
   group_org_admins        = var.group_org_admins
   group_billing_admins    = var.group_billing_admins
   default_region          = var.default_region
   sa_enable_impersonation = true
+  skip_gcloud_download    = true
 }
 
 module "cloudbuild_bootstrap" {
   source                  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
   version                 = "~> 1.0"
   org_id                  = var.org_id
+  folder_id               = google_folder.seed.id
   billing_account         = var.billing_account
   group_org_admins        = var.group_org_admins
   default_region          = var.default_region
@@ -56,4 +64,21 @@ module "cloudbuild_bootstrap" {
   terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
   terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
   sa_enable_impersonation = true
+  skip_gcloud_download    = true
+}
+
+/*************************************************
+  Create backend.tf file to use in other modules.
+*************************************************/
+
+resource "local_file" "backend" {
+    content     = <<EOF
+terraform {
+  backend "gcs" {
+    bucket = "${module.seed_bootstrap.gcs_bucket_tfstate}"
+    prefix = "terraform/bootstrap/state"
+  }
+}
+EOF
+    filename = "${path.module}/backend.tf"
 }

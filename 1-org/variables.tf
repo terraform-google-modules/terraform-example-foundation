@@ -66,4 +66,3 @@ variable "data_access_table_expiration_ms" {
   type        = number
   default     = 2592000000
 }
-

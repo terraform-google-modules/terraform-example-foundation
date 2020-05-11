@@ -19,15 +19,15 @@
 *****************************************/
 
 module "log_export_activity_logs" {
-  source                  = "terraform-google-modules/log-export/google"
-  version                 = "~> 4.0"
-  destination_uri         = module.bq_activity_logs.destination_uri
-  include_children        = true
-  filter                  = "logName: \"/logs/cloudaudit.googleapis.com%2Factivity\""
-  log_sink_name           = "bigquery_activity_logs"
-  parent_resource_id      = var.org_id
-  parent_resource_type    = "organization"
-  unique_writer_identity  = true
+  source                 = "terraform-google-modules/log-export/google"
+  version                = "~> 4.0"
+  destination_uri        = module.bq_activity_logs.destination_uri
+  include_children       = true
+  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Factivity\""
+  log_sink_name          = "bigquery_activity_logs"
+  parent_resource_id     = var.dev_folder != "" ? var.dev_folder : var.org_id
+  parent_resource_type   = var.dev_folder != "" ? "folder" : "organization"
+  unique_writer_identity = true
 }
 
 module "bq_activity_logs" {
@@ -44,15 +44,15 @@ module "bq_activity_logs" {
 *****************************************/
 
 module "log_export_system_event_logs" {
-  source                  = "terraform-google-modules/log-export/google"
-  version                 = "~> 4.0"
-  destination_uri         = module.bq_system_event_logs.destination_uri
-  include_children        = true
-  filter                  = "logName: \"/logs/cloudaudit.googleapis.com%2Fsystem_event\""
-  log_sink_name           = "bigquery_system_event_logs"
-  parent_resource_id      = var.org_id
-  parent_resource_type    = "organization"
-  unique_writer_identity  = true
+  source                 = "terraform-google-modules/log-export/google"
+  version                = "~> 4.0"
+  destination_uri        = module.bq_system_event_logs.destination_uri
+  include_children       = true
+  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Fsystem_event\""
+  log_sink_name          = "bigquery_system_event_logs"
+  parent_resource_id     = var.dev_folder != "" ? var.dev_folder : var.org_id
+  parent_resource_type   = var.dev_folder != "" ? "folder" : "organization"
+  unique_writer_identity = true
 }
 
 module "bq_system_event_logs" {
@@ -70,15 +70,15 @@ module "bq_system_event_logs" {
 *****************************************/
 
 module "log_export_data_access_logs" {
-  source                  = "terraform-google-modules/log-export/google"
-  version                 = "~> 4.0"
-  destination_uri         = module.bq_data_access_logs.destination_uri
-  include_children        = true
-  filter                  = "logName: \"/logs/cloudaudit.googleapis.com%2Fdata_access\""
-  log_sink_name           = "bigquery_data_access_logs"
-  parent_resource_id      = var.org_id
-  parent_resource_type    = "organization"
-  unique_writer_identity  = true
+  source                 = "terraform-google-modules/log-export/google"
+  version                = "~> 4.0"
+  destination_uri        = module.bq_data_access_logs.destination_uri
+  include_children       = true
+  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Fdata_access\""
+  log_sink_name          = "bigquery_data_access_logs"
+  parent_resource_id     = var.dev_folder != "" ? var.dev_folder : var.org_id
+  parent_resource_type   = var.dev_folder != "" ? "folder" : "organization"
+  unique_writer_identity = true
 }
 
 module "bq_data_access_logs" {

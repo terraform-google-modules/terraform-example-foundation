@@ -23,3 +23,6 @@ group_org_admins = "google-admins@example.com"
 group_billing_admins = "billing-admins@example.com"
 
 default_region = "us-east1"
+
+//Optional - for development.  Will place all resources under a specific folder instead of org root
+//dev_folder = "01234567890"

@@ -26,11 +26,17 @@ Further details of permissions required and resources created, can be found in t
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| billing\_account |  | string | `"00080D-89CF65-59BA66"` | no |
 | billing\_account | The ID of the billing account to associate projects with. | string | n/a | yes |
+| default\_region |  | string | `"us-central1"` | no |
 | default\_region | Default region to create resources where applicable. | string | `"us-central1"` | no |
+| dev\_folder | Optional - if using a folder for testing. | string | `""` | no |
+| group\_billing\_admins |  | string | `"billing-admins@mtothel.com"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | string | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |
+| group\_org\_admins |  | string | `"google-admins@mtothel.com"` | no |
 | org\_id | GCP Organization ID | string | n/a | yes |
+| org\_id |  | string | `"889612674382"` | no |
 
 ## Outputs
 

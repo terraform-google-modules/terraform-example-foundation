@@ -20,7 +20,7 @@
 
 resource "google_folder" "common" {
   display_name = "common"
-  parent       = "organizations/${var.org_id}"
+  parent       = var.dev_folder != "" ? "folders/${var.dev_folder}" : "organizations/${var.org_id}"
 }
 
 /******************************************

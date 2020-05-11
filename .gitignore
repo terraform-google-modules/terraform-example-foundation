@@ -22,7 +22,7 @@ crash.log
 *.tfvars
 
 # Ignore backend.tf files that may be project specific
-#backend.tf
+backend.tf
 
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in

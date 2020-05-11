@@ -36,7 +36,7 @@ provider "random" {
 
 resource "google_folder" "seed" {
   display_name = "seed"
-  parent       = "organizations/${var.org_id}"
+  parent       = var.dev_folder != "" ? "folders/${var.dev_folder}" : "organizations/${var.org_id}"
 }
 
 module "seed_bootstrap" {
@@ -49,7 +49,6 @@ module "seed_bootstrap" {
   group_billing_admins    = var.group_billing_admins
   default_region          = var.default_region
   sa_enable_impersonation = true
-  skip_gcloud_download    = true
 }
 
 module "cloudbuild_bootstrap" {
@@ -64,15 +63,14 @@ module "cloudbuild_bootstrap" {
   terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
   terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
   sa_enable_impersonation = true
-  skip_gcloud_download    = true
 }
 
 /*************************************************
   Create backend.tf file to use in other modules.
 *************************************************/
 
-resource "local_file" "backend" {
-    content     = <<EOF
+resource "local_file" "bootstrap" {
+  content  = <<EOF
 terraform {
   backend "gcs" {
     bucket = "${module.seed_bootstrap.gcs_bucket_tfstate}"
@@ -80,5 +78,41 @@ terraform {
   }
 }
 EOF
-    filename = "${path.module}/backend.tf"
+  filename = "${path.module}/backend.tf"
+}
+
+resource "local_file" "org" {
+  content  = <<EOF
+terraform {
+  backend "gcs" {
+    bucket = "${module.seed_bootstrap.gcs_bucket_tfstate}"
+    prefix = "terraform/org/state"
+  }
+}
+EOF
+  filename = "${path.module}/../1-org/backend.tf"
+}
+
+resource "local_file" "networks" {
+  content  = <<EOF
+terraform {
+  backend "gcs" {
+    bucket = "${module.seed_bootstrap.gcs_bucket_tfstate}"
+    prefix = "terraform/networks/state"
+  }
+}
+EOF
+  filename = "${path.module}/../2-networks/backend.tf"
+}
+
+resource "local_file" "projects" {
+  content  = <<EOF
+terraform {
+  backend "gcs" {
+    bucket = "${module.seed_bootstrap.gcs_bucket_tfstate}"
+    prefix = "terraform/projects/state"
+  }
+}
+EOF
+  filename = "${path.module}/../3-projects/backend.tf"
 }

@@ -34,7 +34,7 @@ module "org_audit_logs" {
     environment      = "prod"
     application_name = "org-audit-logs"
   }
-  skip_gcloud_download        = true
+  skip_gcloud_download = true
 }
 
 module "org_billing_logs" {
@@ -53,7 +53,7 @@ module "org_billing_logs" {
     environment      = "prod"
     application_name = "org-billing-logs"
   }
-  skip_gcloud_download        = true
+  skip_gcloud_download = true
 }
 
 /******************************************
@@ -75,7 +75,7 @@ module "org_monitoring_nonprod" {
     environment      = "nonprod"
     application_name = "org-monitoring-nonprod"
   }
-  skip_gcloud_download        = true
+  skip_gcloud_download = true
 }
 
 module "org_monitoring_prod" {
@@ -93,7 +93,7 @@ module "org_monitoring_prod" {
     environment      = "prod"
     application_name = "org-monitoring-prod"
   }
-  skip_gcloud_download        = true
+  skip_gcloud_download = true
 }
 
 /******************************************
@@ -115,7 +115,7 @@ module "org_interconnect_all" {
     environment      = "prod"
     application_name = "org-interconnect-all"
   }
-  skip_gcloud_download        = true
+  skip_gcloud_download = true
 }
 
 /******************************************
@@ -137,7 +137,7 @@ module "org_dns_nonprod" {
     environment      = "nonprod"
     application_name = "org-dns-nonprod"
   }
-  skip_gcloud_download        = true
+  skip_gcloud_download = true
 }
 
 module "org_dns_prod" {
@@ -155,5 +155,5 @@ module "org_dns_prod" {
     environment      = "prod"
     application_name = "org-dns-prod"
   }
-  skip_gcloud_download        = true
+  skip_gcloud_download = true
 }

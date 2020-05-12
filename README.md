@@ -14,8 +14,9 @@ This includes; projects, service accounts and a Terraform state bucket. After ex
 
 ```
 example-organization/
-├── cft-cloudbuild
-└── cft-seed
+├── seed
+    ├── cft-cloudbuild
+    └── cft-seed
 ```
 
 In addition, this step uses the optional Cloud Build submodule, which sets up Cloud Build and Cloud Source Repositories for each of the stages below.
@@ -37,8 +38,9 @@ example-organization
     │   ├── org-monitoring-nonprod
     │   └── org-monitoring-prod
     └── networking
-        ├── org-shared-vpc-nonprod
-        └── org-shared-vpc-prod
+        ├── org-dns-nonprod
+        ├── org-dns-prod
+        └── org-interconnect-all
 ```
 
 #### Logs
@@ -91,13 +93,26 @@ Running this code as-is should generate a structure as shown below:
 
 ```
 example-organization/
-└── example-business-unit
-    └── example-team
-        ├── nonprod
-        │   └── sample-standard-nonprod
-        └── prod
-            ├── sample-single-prod
-            └── sample-standard-prod
+└── Production
+│   ├── base-shared-vpc
+│   ├── rest-shared-vpc
+│   ├── secrets
+│   └── app-project-n
+└── Non-Production
+│   ├── base-shared-vpc
+│   ├── rest-shared-vpc
+│   ├── secrets
+│   └── app-project-n
+└── QA
+│   ├── base-shared-vpc
+│   ├── rest-shared-vpc
+│   ├── secrets
+│   └── app-project-n
+└── Dev
+│   ├── base-shared-vpc
+│   ├── rest-shared-vpc
+│   ├── secrets
+│   └── app-project-n
 ```
 The code in this step includes two options for creating projects.
 The first is the standard projects module which creates a project per environment and the second creates a standalone project for one environment.

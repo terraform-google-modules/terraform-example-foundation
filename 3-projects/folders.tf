@@ -15,18 +15,14 @@
  */
 
 /******************************************
-  Business Unit Folders
+  Folders
  *****************************************/
-resource "google_folder" "example_business_unit" {
-  display_name = "example-business-unit"
-  parent       = "organizations/${var.org_id}"
+resource "google_folder" "prod" {
+  display_name = var.prod_folder_name
+  parent       = var.dev_folder != "" ? "folders/${var.dev_folder}" : "organizations/${var.org_id}"
 }
 
-/******************************************
-  Team Folders
- *****************************************/
-module "example_team_folders" {
-  source              = "./modules/folder_environments"
-  parent_folder_id    = google_folder.example_business_unit.name
-  folder_display_name = "example-team"
+resource "google_folder" "nonprod" {
+  display_name = var.nonprod_folder_name
+  parent       = var.dev_folder != "" ? "folders/${var.dev_folder}" : "organizations/${var.org_id}"
 }

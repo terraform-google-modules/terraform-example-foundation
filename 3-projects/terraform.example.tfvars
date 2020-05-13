@@ -20,9 +20,26 @@ org_id = "000000000000"
 
 terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
 
-default_region = "australia-southeast1"
+default_region = "region1"
 
 /******************************************
-  Private DNS Management (Optional)
+  Folder Names (Optional)
  *****************************************/
-# domain = "example.com"
+
+// prod_folder_name = "Prod"
+
+// nonprod_folder_name = "NonProd"
+
+// qa_folder_name = "Testing"
+
+// dev_folder_name = "Sandbox"
+
+/******************************************
+  Project Names (Optional)
+ *****************************************/
+ 
+ // prod_base_shared_vpc_project_name = ""
+
+ // prod_rest_shared_vpc_project_name = ""
+
+ //prod_secrets_project_name = ""

@@ -34,10 +34,64 @@ variable "default_region" {
   type        = string
 }
 
+variable "dev_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
+}
+
 /******************************************
-  Private DNS Management (Optional)
+  Folder Names
  *****************************************/
-# variable "domain" {
-#   description = "The top level domain name for the organization"
-#   type        = string
-# }
+
+variable "prod_folder_name" {
+  description = "Default Display Name for Production Folder."
+  type        = string
+  default     = "Production"
+}
+
+variable "nonprod_folder_name" {
+  description = "Default Display Name for Non-Production Folder."
+  type        = string
+  default     = "Staging"
+}
+
+variable "qa_folder_name" {
+  description = "Default Display Name for QA Folder."
+  type        = string
+  default     = "QA"
+}
+
+variable "dev_folder_name" {
+  description = "Default Display Name for Development Folder."
+  type        = string
+  default     = "Development"
+}
+
+ /******************************************
+  Project Names
+ *****************************************/
+
+variable "prod_base_shared_vpc_project_name" {
+  description = "Default Display Name for Production Base Shared VPC Project."
+  type        = string
+  default     = "p-base-shared-vpc"
+}
+
+variable "prod_rest_shared_vpc_project_name" {
+  description = "Default Display Name for Production Restricted Shared VPC Project."
+  type        = string
+  default     = "p-rest-shared-vpc"
+}
+
+variable "prod_secrets_project_name" {
+  description = "Default Display Name for Production Secrets Project."
+  type        = string
+  default     = "p-base-shared-vpc"
+}
+
+variable "nonprod_base_shared_vpc_project_name" {
+  description = "Default Display Name for Non-Production Base Shared VPC Project."
+  type        = string
+  default     = "n-base-shared-vpc"
+}

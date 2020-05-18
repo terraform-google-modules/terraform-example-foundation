@@ -87,7 +87,7 @@ variable "prod_rest_shared_vpc_project_name" {
 variable "prod_secrets_project_name" {
   description = "Default Display Name for Production Secrets Project."
   type        = string
-  default     = "p-base-shared-vpc"
+  default     = "p-secrets"
 }
 
 variable "nonprod_base_shared_vpc_project_name" {

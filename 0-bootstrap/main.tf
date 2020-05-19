@@ -35,13 +35,27 @@ provider "random" {
 *************************************************/
 
 module "seed_bootstrap" {
-  source                  = "terraform-google-modules/bootstrap/google"
-  version                 = "~> 1.0"
-  org_id                  = var.org_id
-  billing_account         = var.billing_account
-  group_org_admins        = var.group_org_admins
-  group_billing_admins    = var.group_billing_admins
-  default_region          = var.default_region
+  source               = "terraform-google-modules/bootstrap/google"
+  version              = "~> 1.0"
+  org_id               = var.org_id
+  billing_account      = var.billing_account
+  group_org_admins     = var.group_org_admins
+  group_billing_admins = var.group_billing_admins
+  default_region       = var.default_region
+  activate_apis        = ["serviceusage.googleapis.com",
+                          "servicenetworking.googleapis.com",
+                          "compute.googleapis.com",
+                          "logging.googleapis.com",
+                          "bigquery.googleapis.com",
+                          "cloudresourcemanager.googleapis.com",
+                          "cloudbilling.googleapis.com",
+                          "iam.googleapis.com",
+                          "admin.googleapis.com",
+                          "appengine.googleapis.com",
+                          "storage-api.googleapis.com",
+                          "monitoring.googleapis.com",
+                          "cloudbuild.googleapis.com",
+                          "cloudkms.googleapis.com"]
   sa_enable_impersonation = true
 }
 

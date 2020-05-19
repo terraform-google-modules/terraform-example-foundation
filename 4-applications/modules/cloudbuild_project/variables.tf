@@ -39,6 +39,11 @@ variable "project_prefix" {
   type        = string
 }
 
+variable "subnetwork_name" {
+  description = "The name of the subnetwork the application infrastructure will use"
+  type        = string
+}
+
 variable "application_name" {
   type        = string
   description = "Friendly application name to apply as a label."
@@ -46,5 +51,10 @@ variable "application_name" {
 
 variable "cost_centre" {
   description = "The cost centre that links to the application"
+  type        = string
+}
+
+variable "admin_group" {
+  description = "GSuite or Identity Group for GCP Application Administrators"
   type        = string
 }

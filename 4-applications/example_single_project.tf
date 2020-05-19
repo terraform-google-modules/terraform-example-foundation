@@ -21,6 +21,9 @@ module "example_single_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   default_region              = var.default_region
+  admin_group                 = "example_single_project_admin@YOURDOMAIN.COM"
+  subnetwork_name             = "example-subnet"
+
   # Metadata
   project_prefix   = "sample-single"
   application_name = "sample-single-project-app"

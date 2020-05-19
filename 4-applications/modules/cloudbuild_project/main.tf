@@ -15,29 +15,34 @@
  */
 
 locals {
-  application_projects = data.google_projects.application_projects.projects.*.project_id
+  application_filtered_projects_nonprod = data.google_projects.application_projects_nonprod.projects.*.project_id
+  application_filtered_projects_prod    = data.google_projects.application_projects_prod.projects.*.project_id
+
+  application_project_nonprod = length(local.application_filtered_projects_nonprod) == 1 ? local.application_filtered_projects_nonprod[0] : ""
+  application_project_prod    = length(local.application_filtered_projects_prod) == 1 ? local.application_filtered_projects_prod[0] : ""
 
   network_project_nonprod = data.google_projects.network_projects_nonprod.projects[0].project_id
   network_project_prod    = data.google_projects.network_projects_prod.projects[0].project_id
 
-  project_id_env_map = {
-    for id, project in data.google_project.application_project :
-    id
-    => element([for key, value in project.labels : value if key == "environment"], 0)
-  }
+  application_sa_name_nonprod = local.application_project_nonprod != "" ? google_service_account.children_nonprod[0].name : ""
+  application_sa_name_prod    = local.application_project_prod != "" ? google_service_account.children_prod[0].name : ""
 
-  cloudbuild_env_variables_maps = [
-    for project_id, env in local.project_id_env_map :
+  application_sa_email_nonprod = local.application_project_nonprod != "" ? google_service_account.children_nonprod[0].email : ""
+  application_sa_email_prod    = local.application_project_prod != "" ? google_service_account.children_prod[0].email : ""
+
+  cloudbuild_envs = merge(
+    local.application_project_nonprod != "" ?
     {
-      "_SA_EMAIL_${upper(env)}"           = google_service_account.children[project_id].email
-      "_APP_PROJECT_${upper(env)}"        = project_id
-      "_NETWORK_PROJECT_ID_${upper(env)}" = env == "nonprod" ? local.network_project_nonprod : local.network_project_prod
-    }
-  ]
-
-  cloudbuild_envs = zipmap(
-    flatten([for index, value in local.cloudbuild_env_variables_maps : [for k, v in value : k]]),
-    flatten([for index, value in local.cloudbuild_env_variables_maps : [for k, v in value : v]])
+      _SA_EMAIL_NONPROD           = local.application_sa_email_nonprod
+      _APP_PROJECT_NONPROD        = local.application_project_nonprod
+      _NETWORK_PROJECT_ID_NONPROD = local.network_project_nonprod
+    } : {},
+    local.application_project_prod != "" ?
+    {
+      _SA_EMAIL_PROD           = local.application_sa_email_prod
+      _APP_PROJECT_PROD        = local.application_project_prod
+      _NETWORK_PROJECT_ID_PROD = local.network_project_prod
+    } : {},
   )
 }
 
@@ -133,6 +138,15 @@ resource "google_cloudbuild_trigger" "non_master_trigger" {
   depends_on = [
     google_sourcerepo_repository.application_iac,
   ]
+}
+
+/******************************************
+  KMS Key
+ *****************************************/
+
+resource "google_kms_crypto_key" "tf_key" {
+  name     = "tf-key"
+  key_ring = google_kms_key_ring.tf_keyring.self_link
 }
 
 /******************************************

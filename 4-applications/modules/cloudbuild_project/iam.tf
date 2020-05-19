@@ -15,27 +15,8 @@
  */
 
 /******************************************
-  Service Account
+  Permission for Terraform Cloud Bucket
 *******************************************/
-resource "google_service_account" "children" {
-  project = module.project.project_id
-
-  for_each    = toset(local.application_projects)
-  account_id  = each.value
-  description = "Service account for application project infrastructure Cloud Build"
-}
-
-/******************************************
-  IAM Role - Cloud Build Service Account
-*******************************************/
-resource "google_service_account_iam_member" "impersonate" {
-  for_each = google_service_account.children
-
-  service_account_id = each.value.name
-  role               = "roles/iam.serviceAccountTokenCreator"
-  member             = "serviceAccount:${module.project.project_number}@cloudbuild.gserviceaccount.com"
-  depends_on         = [google_cloudbuild_trigger.master_trigger, google_cloudbuild_trigger.non_master_trigger]
-}
 
 resource "google_storage_bucket_iam_member" "terraform_backend" {
   bucket = google_storage_bucket.terraform_backend.name
@@ -44,28 +25,9 @@ resource "google_storage_bucket_iam_member" "terraform_backend" {
 }
 
 /******************************************
-  IAM Role - Application Project Service Account
-*******************************************/
-resource "google_project_iam_member" "editor" {
-  for_each = google_service_account.children
-
-  project = each.key
-  member  = "serviceAccount:${each.value.email}"
-  role    = "roles/editor"
-}
-
-/******************************************
-  KMS Key
+  Permissions to decrypt
  *****************************************/
 
-resource "google_kms_crypto_key" "tf_key" {
-  name     = "tf-key"
-  key_ring = google_kms_key_ring.tf_keyring.self_link
-}
-
-/******************************************
-  Permissions to decrypt.
- *****************************************/
 resource "google_kms_crypto_key_iam_binding" "cloudbuild_crypto_key_decrypter" {
   crypto_key_id = google_kms_crypto_key.tf_key.self_link
   role          = "roles/cloudkms.cryptoKeyDecrypter"
@@ -75,3 +37,103 @@ resource "google_kms_crypto_key_iam_binding" "cloudbuild_crypto_key_decrypter" {
   ]
   depends_on = [google_cloudbuild_trigger.master_trigger, google_cloudbuild_trigger.non_master_trigger]
 }
+
+/******************************************
+  Permissions for application admins to encrypt
+ *****************************************/
+
+resource "google_kms_crypto_key_iam_binding" "cloud_build_crypto_key_encrypter" {
+  crypto_key_id = google_kms_crypto_key.tf_key.self_link
+  role          = "roles/cloudkms.cryptoKeyEncrypter"
+
+  members = [
+    "group:${var.admin_group}",
+  ]
+}
+
+/******************************************
+  Service Account
+*******************************************/
+
+resource "google_service_account" "children_nonprod" {
+  count = local.application_project_nonprod != "" ? 1 : 0
+
+  project     = module.project.project_id
+  account_id  = local.application_project_nonprod
+  description = "Service account for application project infrastructure Cloud Build for Nonprod Environment"
+}
+
+resource "google_service_account" "children_prod" {
+  count = local.application_project_prod != "" ? 1 : 0
+
+  project     = module.project.project_id
+  account_id  = local.application_project_prod
+  description = "Service account for application project infrastructure Cloud Build for Prod Environment"
+}
+
+/******************************************
+  Permission for Service Account Impersonation
+*******************************************/
+
+resource "google_service_account_iam_member" "impersonate_nonprod" {
+  count = local.application_project_nonprod != "" ? 1 : 0
+
+  service_account_id = local.application_sa_name_nonprod
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${module.project.project_number}@cloudbuild.gserviceaccount.com"
+  depends_on         = [google_cloudbuild_trigger.master_trigger, google_cloudbuild_trigger.non_master_trigger]
+}
+
+resource "google_service_account_iam_member" "impersonate_prod" {
+  count = local.application_project_prod != "" ? 1 : 0
+
+  service_account_id = local.application_sa_name_prod
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${module.project.project_number}@cloudbuild.gserviceaccount.com"
+  depends_on         = [google_cloudbuild_trigger.master_trigger, google_cloudbuild_trigger.non_master_trigger]
+}
+
+/******************************************
+  Project Editor Permission
+*******************************************/
+
+resource "google_project_iam_member" "editor_nonprod" {
+  count = local.application_project_nonprod != "" ? 1 : 0
+
+  project = local.application_project_nonprod
+  member  = "serviceAccount:${local.application_sa_email_nonprod}"
+  role    = "roles/editor"
+}
+
+resource "google_project_iam_member" "editor_prod" {
+  count = local.application_project_prod != "" ? 1 : 0
+
+  project = local.application_project_prod
+  member  = "serviceAccount:${local.application_sa_email_prod}"
+  role    = "roles/editor"
+}
+
+/******************************************
+  Network Permission
+*******************************************/
+
+resource "google_compute_subnetwork_iam_member" "host_network_user_nonprod" {
+  count = local.application_project_nonprod != "" ? 1 : 0
+
+  project    = local.network_project_nonprod
+  region     = var.default_region
+  subnetwork = var.subnetwork_name
+  role       = "roles/compute.networkUser"
+  member     = "serviceAccount:${local.application_sa_email_nonprod}"
+}
+
+resource "google_compute_subnetwork_iam_member" "host_network_user_prod" {
+  count = local.application_project_prod != "" ? 1 : 0
+
+  project    = local.network_project_prod
+  region     = var.default_region
+  subnetwork = var.subnetwork_name
+  role       = "roles/compute.networkUser"
+  member     = "serviceAccount:${local.application_sa_email_prod}"
+}
+

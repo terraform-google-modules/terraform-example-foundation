@@ -25,12 +25,16 @@ data "google_projects" "network_projects_prod" {
   filter = "labels.application_name:org-shared-vpc-prod"
 }
 
-data "google_projects" "application_projects" {
-  filter = "labels.application_name=${var.application_name} lifecycleState=ACTIVE"
+data "google_projects" "application_projects_nonprod" {
+  filter = "labels.application_name=${var.application_name} labels.environment=nonprod lifecycleState=ACTIVE"
+}
+
+data "google_projects" "application_projects_prod" {
+  filter = "labels.application_name=${var.application_name} labels.environment=prod lifecycleState=ACTIVE"
 }
 
 data "google_project" "application_project" {
-  for_each = toset(local.application_projects)
+  for_each = toset(concat(local.application_filtered_projects_nonprod, local.application_filtered_projects_prod))
 
   project_id = each.value
 }

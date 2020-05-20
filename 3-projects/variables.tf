@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-variable "env_label" {
-  description = "Enviornment label for varibales to be deployed"
-  type        = string
-}
-
 variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform"
   type        = string
@@ -49,28 +44,54 @@ variable "dev_folder" {
   Folder Names
  *****************************************/
 
-variable "root_folder_name" {
-  description = "Default Display Name for Folder."
+variable "prod_folder_name" {
+  description = "Default Display Name for Production Folder."
   type        = string
+  default     = "Production"
 }
 
+variable "nonprod_folder_name" {
+  description = "Default Display Name for Non-Production Folder."
+  type        = string
+  default     = "Staging"
+}
+
+variable "qa_folder_name" {
+  description = "Default Display Name for QA Folder."
+  type        = string
+  default     = "QA"
+}
+
+variable "dev_folder_name" {
+  description = "Default Display Name for Development Folder."
+  type        = string
+  default     = "Development"
+}
 
 /******************************************
   Project Names
  *****************************************/
 
-variable "base_shared_vpc_project_name" {
-  description = "Default Display Name for Base Shared VPC Project."
+variable "prod_base_shared_vpc_project_name" {
+  description = "Default Display Name for Production Base Shared VPC Project."
   type        = string
+  default     = "p-base-shared-vpc"
 }
 
-variable "rest_shared_vpc_project_name" {
-  description = "Default Display Name for Restricted Shared VPC Project."
+variable "prod_rest_shared_vpc_project_name" {
+  description = "Default Display Name for Production Restricted Shared VPC Project."
   type        = string
+  default     = "p-rest-shared-vpc"
 }
 
-variable "secrets_project_name" {
-  description = "Default Display Name for Secrets Project."
+variable "prod_secrets_project_name" {
+  description = "Default Display Name for Production Secrets Project."
   type        = string
+  default     = "p-secrets"
 }
 
+variable "nonprod_base_shared_vpc_project_name" {
+  description = "Default Display Name for Non-Production Base Shared VPC Project."
+  type        = string
+  default     = "n-base-shared-vpc"
+}

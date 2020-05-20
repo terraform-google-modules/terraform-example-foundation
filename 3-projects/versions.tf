@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/******************************************
-  Folders
- *****************************************/
-resource "google_folder" "root" {
-  display_name = var.root_folder_name
-  parent       = var.dev_folder != "" ? "folders/${var.dev_folder}" : "organizations/${var.org_id}"
+terraform {
+  required_version = ">= 0.12"
 }

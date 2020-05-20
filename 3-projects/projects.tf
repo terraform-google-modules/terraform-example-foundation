@@ -18,22 +18,20 @@
   Projects for Production
 *****************************************/
 
-//prod
-
 module "base_shared_vpc" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 7.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = var.base_shared_vpc_project_name
+  name                        = var.prod_base_shared_vpc_project_name
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.root.id
+  folder_id                   = google_folder.prod.id
   activate_apis               = ["logging.googleapis.com", "compute.googleapis.com"]
 
   labels = {
-    environment      = var.env_label
+    environment      = "prod"
     application_name = "base-shared-vpc"
   }
   skip_gcloud_download = true
@@ -45,32 +43,32 @@ module "restricted_shared_vpc" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = var.rest_shared_vpc_project_name
+  name                        = var.prod_rest_shared_vpc_project_name
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.root.id
+  folder_id                   = google_folder.prod.id
   activate_apis               = ["logging.googleapis.com", "compute.googleapis.com"]
 
   labels = {
-    environment      = var.env_label
+    environment      = "prod"
     application_name = "rest-shared-vpc"
   }
   skip_gcloud_download = true
 }
 
-module "secrets_project" {
+module "prod_secrets_project" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 7.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = var.secrets_project_name
+  name                        = var.prod_secrets_project_name
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.root.id
+  folder_id                   = google_folder.prod.id
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
 
   labels = {
-    environment      = var.env_label
+    environment      = "prod"
     application_name = "secrets"
   }
   skip_gcloud_download = true

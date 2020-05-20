@@ -45,18 +45,15 @@ If you have uncommented the Subnetting and Private DNS Management module from pr
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| base\_shared\_vpc\_project\_name | Default Display Name for Base Shared VPC Project. | string | n/a | yes |
 | billing\_account | The ID of the billing account to associated this project with | string | n/a | yes |
 | default\_region | Default region for subnet. | string | n/a | yes |
 | dev\_folder | Optional - if using a folder for testing. | string | `""` | no |
-| dev\_folder\_name | Default Display Name for Development Folder. | string | `"Development"` | no |
-| nonprod\_base\_shared\_vpc\_project\_name | Default Display Name for Non-Production Base Shared VPC Project. | string | `"n-base-shared-vpc"` | no |
-| nonprod\_folder\_name | Default Display Name for Non-Production Folder. | string | `"Staging"` | no |
+| env\_label | Enviornment label for varibales to be deployed | string | n/a | yes |
 | org\_id | The organization id for the associated services | string | n/a | yes |
-| prod\_base\_shared\_vpc\_project\_name | Default Display Name for Production Base Shared VPC Project. | string | `"p-base-shared-vpc"` | no |
-| prod\_folder\_name | Default Display Name for Production Folder. | string | `"Production"` | no |
-| prod\_rest\_shared\_vpc\_project\_name | Default Display Name for Production Restricted Shared VPC Project. | string | `"p-rest-shared-vpc"` | no |
-| prod\_secrets\_project\_name | Default Display Name for Production Secrets Project. | string | `"p-base-shared-vpc"` | no |
-| qa\_folder\_name | Default Display Name for QA Folder. | string | `"QA"` | no |
+| rest\_shared\_vpc\_project\_name | Default Display Name for Restricted Shared VPC Project. | string | n/a | yes |
+| root\_folder\_name | Default Display Name for Folder. | string | n/a | yes |
+| secrets\_project\_name | Default Display Name for Secrets Project. | string | n/a | yes |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform | string | n/a | yes |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

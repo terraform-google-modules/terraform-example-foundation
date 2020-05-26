@@ -23,9 +23,9 @@ module "log_export_activity_logs" {
   version                = "~> 4.0"
   destination_uri        = module.bq_activity_logs.destination_uri
   filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Factivity\""
-  log_sink_name          = "bigquery_activity_logs"
-  parent_resource_id     = var.org_id
-  parent_resource_type   = "organization"
+  log_sink_name          = "bq_activity_logs"
+  parent_resource_id     = module.org_audit_logs.project_id
+  parent_resource_type   = "project"
   unique_writer_identity = true
 }
 
@@ -47,9 +47,9 @@ module "log_export_system_event_logs" {
   version                = "~> 4.0"
   destination_uri        = module.bq_system_event_logs.destination_uri
   filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Fsystem_event\""
-  log_sink_name          = "bigquery_system_event_logs"
-  parent_resource_id     = var.org_id
-  parent_resource_type   = "organization"
+  log_sink_name          = "bq_system_event_logs"
+  parent_resource_id     = module.org_audit_logs.project_id
+  parent_resource_type   = "project"
   unique_writer_identity = true
 }
 
@@ -72,9 +72,9 @@ module "log_export_data_access_logs" {
   version                = "~> 4.0"
   destination_uri        = module.bq_data_access_logs.destination_uri
   filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Fdata_access\""
-  log_sink_name          = "bigquery_data_access_logs"
-  parent_resource_id     = var.org_id
-  parent_resource_type   = "organization"
+  log_sink_name          = "bq_data_access_logs"
+  parent_resource_id     = module.org_audit_logs.project_id
+  parent_resource_type   = "project"
   unique_writer_identity = true
 }
 

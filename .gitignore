@@ -42,3 +42,4 @@ override.tf.json
 plan.out
 
 # End of https://www.gitignore.io/api/terraform
+.DS_Store

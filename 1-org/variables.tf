@@ -44,6 +44,11 @@ variable "audit_data_users" {
   type        = string
 }
 
+variable "monitoring_workspace_users" {
+  description = "Gsuite or Cloud Identity group that have access to Monitoring Workspaces."
+  type        = string
+}
+
 variable "domains_to_allow" {
   description = "The list of domains to allow users from in IAM."
   type        = list(string)

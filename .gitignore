@@ -18,6 +18,11 @@ crash.log
 # version control.
 #
 # example.tfvars
+!terraform.example.tfvars
+*.tfvars
+
+# Ignore backend.tf files that may be project specific
+backend.tf
 
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
@@ -32,5 +37,8 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+
+*tfplan*
+plan.out
 
 # End of https://www.gitignore.io/api/terraform

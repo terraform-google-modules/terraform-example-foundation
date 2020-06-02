@@ -34,11 +34,6 @@ provider "random" {
   Bootstrap GCP Organization.
 *************************************************/
 
-resource "google_folder" "seed" {
-  display_name = "seed"
-  parent       = var.dev_folder != "" ? "folders/${var.dev_folder}" : "organizations/${var.org_id}"
-}
-
 module "seed_bootstrap" {
   source                  = "terraform-google-modules/bootstrap/google"
   version                 = "~> 1.0"
@@ -61,20 +56,4 @@ module "cloudbuild_bootstrap" {
   terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
   terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
   sa_enable_impersonation = true
-}
-
-/*************************************************
-  Create backend.tf file
-*************************************************/
-
-resource "local_file" "bootstrap" {
-  content  = <<EOF
-terraform {
-  backend "gcs" {
-    bucket = "${module.seed_bootstrap.gcs_bucket_tfstate}"
-    prefix = "terraform/bootstrap/state"
-  }
-}
-EOF
-  filename = "${path.module}/backend.tf"
 }

@@ -40,3 +40,8 @@ variable "default_region" {
   default     = "us-central1"
 }
 
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
+}

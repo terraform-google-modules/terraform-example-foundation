@@ -26,3 +26,6 @@ default_region = "australia-southeast1"
   Private DNS Management (Optional)
  *****************************************/
 # domain = "example.com"
+
+//Optional - for development.  Will place all resources under a specific folder instead of org root
+//parent_folder = "01234567890"

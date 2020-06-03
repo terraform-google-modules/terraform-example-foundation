@@ -19,7 +19,7 @@
  *****************************************/
 resource "google_folder" "example_business_unit" {
   display_name = "example-business-unit"
-  parent       = "organizations/${var.org_id}"
+  parent       = var.dev_folder != "" ? "folders/${var.dev_folder}" : "organizations/${var.org_id}"
 }
 
 /******************************************

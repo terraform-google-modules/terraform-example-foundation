@@ -72,3 +72,8 @@ variable "data_access_table_expiration_ms" {
   default     = 2592000000
 }
 
+variable "dev_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
+}

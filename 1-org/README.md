@@ -41,6 +41,7 @@ The purpose of this step is to setup top level shared folders, monitoring & netw
 | billing\_data\_users | Gsuite or Cloud Identity group that have access to billing data set. | string | n/a | yes |
 | data\_access\_table\_expiration\_ms | Period before tables expire for data access logs in milliseconds. Default is 30 days. | number | `"2592000000"` | no |
 | default\_region | Default region for BigQuery resources. | string | n/a | yes |
+| dev\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | domains\_to\_allow | The list of domains to allow users from in IAM. | list(string) | n/a | yes |
 | monitoring\_workspace\_users | Gsuite or Cloud Identity group that have access to Monitoring Workspaces. | string | n/a | yes |
 | org\_id | The organization id for the associated services | string | n/a | yes |

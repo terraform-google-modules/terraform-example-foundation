@@ -31,4 +31,4 @@ terraform_service_account = "org-terraform@example-project-2334.iam.gserviceacco
 default_region = "australia-southeast1"
 
 //Optional - for development.  Will place all resources under a specific folder instead of org root
-//dev_folder = "01234567890"
+//parent_folder = "01234567890"

@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+locals {
+  parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+}
+
 /******************************************
   Top level folders
  *****************************************/
 
 resource "google_folder" "common" {
   display_name = "common"
-  parent       = var.dev_folder != "" ? "folders/${var.dev_folder}" : "organizations/${var.org_id}"
+  parent       = local.parent
 }
 
 /******************************************

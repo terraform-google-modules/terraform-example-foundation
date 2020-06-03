@@ -42,7 +42,7 @@ variable "default_region" {
 #   type        = string
 # }
 
-variable "dev_folder" {
+variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string
   default     = ""

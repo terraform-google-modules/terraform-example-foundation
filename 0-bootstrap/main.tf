@@ -33,10 +33,13 @@ provider "random" {
 /*************************************************
   Bootstrap GCP Organization.
 *************************************************/
+locals {
+  parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+}
 
 resource "google_folder" "seed" {
   display_name = "seed"
-  parent       = var.dev_folder != "" ? "folders/${var.dev_folder}" : "organizations/${var.org_id}"
+  parent       = local.parent
 }
 
 module "seed_bootstrap" {

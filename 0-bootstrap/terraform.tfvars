@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-billing_account = "000000-000000-000000"
+org_id = "889612674382"
 
-org_id = "000000000000"
+billing_account = "00080D-89CF65-59BA66"
 
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
+group_org_admins = "google-admins@mtothel.com"
 
-default_region = "australia-southeast1"
+group_billing_admins = "billing-admins@mtothel.com"
 
-/******************************************
-  Private DNS Management (Optional)
- *****************************************/
-# domain = "example.com"
+default_region = "us-east1"
 
-//Optional - for development.  Will place all resources under a specific folder instead of org root
-//parent_folder = "01234567890"
+parent_folder = "420966493982"

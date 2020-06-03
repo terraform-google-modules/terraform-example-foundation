@@ -31,6 +31,7 @@ Further details of permissions required and resources created, can be found in t
 | group\_billing\_admins | Google Group for GCP Billing Administrators | string | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |
 | org\_id | GCP Organization ID | string | n/a | yes |
+| parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 
 ## Outputs
 

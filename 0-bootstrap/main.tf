@@ -33,11 +33,20 @@ provider "random" {
 /*************************************************
   Bootstrap GCP Organization.
 *************************************************/
+locals {
+  parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+}
+
+resource "google_folder" "seed" {
+  display_name = "seed"
+  parent       = local.parent
+}
 
 module "seed_bootstrap" {
   source                  = "terraform-google-modules/bootstrap/google"
   version                 = "~> 1.0"
   org_id                  = var.org_id
+  folder_id               = google_folder.seed.id
   billing_account         = var.billing_account
   group_org_admins        = var.group_org_admins
   group_billing_admins    = var.group_billing_admins
@@ -49,6 +58,7 @@ module "cloudbuild_bootstrap" {
   source                  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
   version                 = "~> 1.0"
   org_id                  = var.org_id
+  folder_id               = google_folder.seed.id
   billing_account         = var.billing_account
   group_org_admins        = var.group_org_admins
   default_region          = var.default_region

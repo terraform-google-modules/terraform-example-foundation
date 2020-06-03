@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+locals {
+  parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+}
+
 /******************************************
   Business Unit Folders
  *****************************************/
 resource "google_folder" "example_business_unit" {
   display_name = "example-business-unit"
-  parent       = "organizations/${var.org_id}"
+  parent       = local.parent
 }
 
 /******************************************

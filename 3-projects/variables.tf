@@ -41,3 +41,9 @@ variable "default_region" {
 #   description = "The top level domain name for the organization"
 #   type        = string
 # }
+
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
+}

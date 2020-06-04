@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /******************************************
   Initializing variables
 *****************************************/
@@ -31,13 +31,13 @@ variable "system_event_table_expiration_ms" {}
 *****************************************/
 
 module "log_export_activity_logs" {
-  source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 4.0"
-  destination_uri        = module.bq_activity_logs.destination_uri
-  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Factivity\""
-  log_sink_name          = "bigquery_activity_logs"
-  parent_resource_id     = var.parent_resource_id
-  parent_resource_type   = var.parent_resource_type
+  source               = "terraform-google-modules/log-export/google"
+  version              = "~> 4.0"
+  destination_uri      = module.bq_activity_logs.destination_uri
+  filter               = "logName: \"/logs/cloudaudit.googleapis.com%2Factivity\""
+  log_sink_name        = "bigquery_activity_logs"
+  parent_resource_id   = var.parent_resource_id
+  parent_resource_type = var.parent_resource_type
   //TODO - include_children = true
   unique_writer_identity = true
 }
@@ -56,13 +56,13 @@ module "bq_activity_logs" {
 *****************************************/
 
 module "log_export_system_event_logs" {
-  source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 4.0"
-  destination_uri        = module.bq_system_event_logs.destination_uri
-  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Fsystem_event\""
-  log_sink_name          = "bigquery_system_event_logs"
-  parent_resource_id     = var.parent_resource_id
-  parent_resource_type   = var.parent_resource_type
+  source               = "terraform-google-modules/log-export/google"
+  version              = "~> 4.0"
+  destination_uri      = module.bq_system_event_logs.destination_uri
+  filter               = "logName: \"/logs/cloudaudit.googleapis.com%2Fsystem_event\""
+  log_sink_name        = "bigquery_system_event_logs"
+  parent_resource_id   = var.parent_resource_id
+  parent_resource_type = var.parent_resource_type
   //TODO - include_children = true
   unique_writer_identity = true
 }
@@ -82,13 +82,13 @@ module "bq_system_event_logs" {
 *****************************************/
 
 module "log_export_data_access_logs" {
-  source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 4.0"
-  destination_uri        = module.bq_data_access_logs.destination_uri
-  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Fdata_access\""
-  log_sink_name          = "bigquery_data_access_logs"
-  parent_resource_id     = var.parent_resource_id
-  parent_resource_type   = var.parent_resource_type
+  source               = "terraform-google-modules/log-export/google"
+  version              = "~> 4.0"
+  destination_uri      = module.bq_data_access_logs.destination_uri
+  filter               = "logName: \"/logs/cloudaudit.googleapis.com%2Fdata_access\""
+  log_sink_name        = "bigquery_data_access_logs"
+  parent_resource_id   = var.parent_resource_id
+  parent_resource_type = var.parent_resource_type
   //TODO - include_children = true
   unique_writer_identity = true
 }

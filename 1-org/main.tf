@@ -15,12 +15,12 @@
  */
 
 locals {
-  parent                = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  parent_resource_id    = var.parent_folder != "" ? var.parent_folder : var.org_id
-  parent_resource_type  = var.parent_folder != "" ? "folder" : "organization"
-  policy_folder_id      = var.parent_folder != "" ? var.parent_folder : null
-  policy_for            = var.parent_folder != "" ? "folder" : "organization"
-  policy_org_id         = var.parent_folder != "" ? null : var.org_id
+  parent               = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+  parent_resource_id   = var.parent_folder != "" ? var.parent_folder : var.org_id
+  parent_resource_type = var.parent_folder != "" ? "folder" : "organization"
+  policy_folder_id     = var.parent_folder != "" ? var.parent_folder : null
+  policy_for           = var.parent_folder != "" ? "folder" : "organization"
+  policy_org_id        = var.parent_folder != "" ? null : var.org_id
 }
 
 module "folders_shared" {
@@ -32,64 +32,64 @@ module "folders_shared" {
 module "logging_shared" {
   source = "./logging/shared"
 
-  access_table_expiration_ms        = var.access_table_expiration_ms
-  audit_data_users                  = var.audit_data_users
-  billing_account                   = var.billing_account
-  billing_data_users                = var.billing_data_users
-  data_access_table_expiration_ms   = var.data_access_table_expiration_ms
-  default_region                    = var.default_region
-  folder_id                         = module.folders_shared.logs_folder_id
-  org_id                            = var.org_id
-  parent_resource_id                = local.parent_resource_id
-  parent_resource_type              = local.parent_resource_type
-  system_event_table_expiration_ms  = var.system_event_table_expiration_ms
-  terraform_service_account         = var.terraform_service_account
+  access_table_expiration_ms       = var.access_table_expiration_ms
+  audit_data_users                 = var.audit_data_users
+  billing_account                  = var.billing_account
+  billing_data_users               = var.billing_data_users
+  data_access_table_expiration_ms  = var.data_access_table_expiration_ms
+  default_region                   = var.default_region
+  folder_id                        = module.folders_shared.logs_folder_id
+  org_id                           = var.org_id
+  parent_resource_id               = local.parent_resource_id
+  parent_resource_type             = local.parent_resource_type
+  system_event_table_expiration_ms = var.system_event_table_expiration_ms
+  terraform_service_account        = var.terraform_service_account
 }
 
 
 module "monitoring_dev" {
   source = "./monitoring/dev"
 
-  billing_account             = var.billing_account
-  default_region              = var.default_region
-  folder_id                   = module.folders_shared.monitoring_folder_id
-  monitoring_workspace_users  = var.monitoring_workspace_users
-  org_id                      = var.org_id
-  terraform_service_account   = var.terraform_service_account
+  billing_account            = var.billing_account
+  default_region             = var.default_region
+  folder_id                  = module.folders_shared.monitoring_folder_id
+  monitoring_workspace_users = var.monitoring_workspace_users
+  org_id                     = var.org_id
+  terraform_service_account  = var.terraform_service_account
 }
 
 
 module "monitoring_prod" {
   source = "./monitoring/prod"
 
-  billing_account             = var.billing_account
-  default_region              = var.default_region
-  folder_id                   = module.folders_shared.monitoring_folder_id
-  monitoring_workspace_users  = var.monitoring_workspace_users
-  org_id                      = var.org_id
-  terraform_service_account   = var.terraform_service_account
+  billing_account            = var.billing_account
+  default_region             = var.default_region
+  folder_id                  = module.folders_shared.monitoring_folder_id
+  monitoring_workspace_users = var.monitoring_workspace_users
+  org_id                     = var.org_id
+  terraform_service_account  = var.terraform_service_account
 }
 
 module "networks_dev" {
   source = "./networks/dev"
 
-  billing_account             = var.billing_account
-  default_region              = var.default_region
-  folder_id                   = module.folders_shared.networking_folder_id
+  billing_account = var.billing_account
+  default_region  = var.default_region
+  folder_id       = module.folders_shared.networking_folder_id
   //TODO networking_admins  = var.networking_admins
-  org_id                      = var.org_id
-  terraform_service_account   = var.terraform_service_account
+  org_id                    = var.org_id
+  terraform_service_account = var.terraform_service_account
 }
 
 module "networks_prod" {
   source = "./networks/prod"
 
-  billing_account             = var.billing_account
-  default_region              = var.default_region
-  folder_id                   = module.folders_shared.networking_folder_id
+  billing_account = var.billing_account
+  default_region  = var.default_region
+  folder_id       = module.folders_shared.networking_folder_id
   //TODO networking_admins  = var.networking_admins
-  org_id                      = var.org_id
-  terraform_service_account   = var.terraform_service_account
+  org_id                    = var.org_id
+  terraform_service_account = var.terraform_service_account
 }
 
 
@@ -100,10 +100,10 @@ module "org_iam_shared" {
 module "org_policies_shared" {
   source = "./org-policies/shared"
 
-  domains_to_allow  = var.domains_to_allow
-  folder_id         = local.policy_folder_id
-  organization_id   = local.policy_org_id
-  policy_for        = local.policy_for
+  domains_to_allow = var.domains_to_allow
+  folder_id        = local.policy_folder_id
+  organization_id  = local.policy_org_id
+  policy_for       = local.policy_for
 }
 
 module "secrets_shared" {

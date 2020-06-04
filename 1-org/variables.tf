@@ -17,49 +17,41 @@
 variable "org_id" {
   description = "The organization id for the associated services"
   type        = string
-  default     = ""
 }
 
 variable "billing_account" {
   description = "The ID of the billing account to associate this project with"
   type        = string
-  default     = ""
 }
 
 variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform."
   type        = string
-  default     = ""
 }
 
 variable "default_region" {
   description = "Default region for BigQuery resources."
   type        = string
-  default     = ""
 }
 
 variable "billing_data_users" {
   description = "Gsuite or Cloud Identity group that have access to billing data set."
   type        = string
-  default     = ""
 }
 
 variable "audit_data_users" {
   description = "Gsuite or Cloud Identity group that have access to audit logs."
   type        = string
-  default     = ""
 }
 
 variable "monitoring_workspace_users" {
   description = "Gsuite or Cloud Identity group that have access to Monitoring Workspaces."
   type        = string
-  default     = ""
 }
 
 variable "domains_to_allow" {
   description = "The list of domains to allow users from in IAM."
   type        = list(string)
-  default     = []
 }
 
 variable "access_table_expiration_ms" {

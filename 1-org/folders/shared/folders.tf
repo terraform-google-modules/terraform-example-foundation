@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-locals {
-  parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-}
+/******************************************
+  Initializing variables
+*****************************************/
+
+variable "parent" {}
 
 /******************************************
   Top level folders
@@ -24,7 +26,7 @@ locals {
 
 resource "google_folder" "common" {
   display_name = "common"
-  parent       = local.parent
+  parent       = var.parent
 }
 
 /******************************************

@@ -4,7 +4,7 @@ The supplied structure and code is intended to form a starting point for buildin
 Cloud Build has been chosen to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
 
 ## Overview
-This repo contains several distinct Terraform projects each within their own directory that must be applied seperately, but in sequence.
+This repo contains several distinct Terraform projects each within their own directory that must be applied separately, but in sequence.
 Each of these Terraform projects are to be layered on top of each other, running in the following order.
 
 ### [0. bootstrap](./0-bootstrap/)

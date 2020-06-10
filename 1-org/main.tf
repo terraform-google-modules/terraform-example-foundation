@@ -48,7 +48,7 @@ module "logging_shared" {
 
 
 module "monitoring_dev" {
-  source = "./monitoring/dev"
+  source = "./monitoring/nonprod"
 
   billing_account            = var.billing_account
   default_region             = var.default_region
@@ -71,7 +71,7 @@ module "monitoring_prod" {
 }
 
 module "networks_dev" {
-  source = "./networks/dev"
+  source = "./networking/nonprod"
 
   billing_account = var.billing_account
   default_region  = var.default_region
@@ -82,7 +82,7 @@ module "networks_dev" {
 }
 
 module "networks_prod" {
-  source = "./networks/prod"
+  source = "./networking/prod"
 
   billing_account = var.billing_account
   default_region  = var.default_region

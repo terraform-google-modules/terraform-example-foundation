@@ -68,7 +68,7 @@ A full list of policies is [available here](https://cloud.google.com/resource-ma
 
 Usage instructions are available for the org step in the [README](./1-org/README.md).
 
-### [2. networks](./2-networks/)
+### [3. networks](./3-networks/)
 
 This step focuses on creating a Shared VPC per environment (prod & nonprod) in a standard configuration with a reasonable security baseline. Currently this includes:
 
@@ -84,7 +84,7 @@ This step focuses on creating a Shared VPC per environment (prod & nonprod) in a
 
 Usage instructions are available for the network step in the [README](./2-networks/README.md).
 
-### [3. projects](./3-projects/)
+### [4. projects](./4-projects/)
 
 This step, is focused on creating service projects in a standard configuration that are attached to the Shared VPC created in the previous step.
 Running this code as-is should generate a structure as shown below:

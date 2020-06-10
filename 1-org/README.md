@@ -42,7 +42,6 @@ The purpose of this step is to setup top level shared folders, monitoring & netw
 | data\_access\_table\_expiration\_ms | Period before tables expire for data access logs in milliseconds. Default is 30 days. | number | `"2592000000"` | no |
 | default\_region | Default region for BigQuery resources. | string | n/a | yes |
 | domains\_to\_allow | The list of domains to allow users from in IAM. | list(string) | n/a | yes |
-| monitoring\_workspace\_users | Gsuite or Cloud Identity group that have access to Monitoring Workspaces. | string | n/a | yes |
 | org\_id | The organization id for the associated services | string | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | system\_event\_table\_expiration\_ms | Period before tables expire for system event logs in milliseconds. Default is 400 days. | number | `"34560000000"` | no |

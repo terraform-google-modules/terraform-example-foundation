@@ -14,34 +14,12 @@
  * limitations under the License.
  */
 
-locals {
-  parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-}
-
-/******************************************
-  Top level folders
- *****************************************/
-
-resource "google_folder" "common" {
+data "google_active_folder" "common" {
   display_name = "common"
   parent       = local.parent
 }
 
-/******************************************
-  Common sub-folders
- *****************************************/
-
-resource "google_folder" "logs" {
-  display_name = "logs"
-  parent       = google_folder.common.id
-}
-
-resource "google_folder" "monitoring" {
+data "google_active_folder" "monitoring" {
   display_name = "monitoring"
-  parent       = google_folder.common.id
-}
-
-resource "google_folder" "networking" {
-  display_name = "networking"
-  parent       = google_folder.common.id
+  parent       = data.google_active_folder.common.name
 }

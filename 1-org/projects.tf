@@ -55,44 +55,6 @@ module "org_billing_logs" {
 }
 
 /******************************************
-  Projects for monitoring workspaces
-*****************************************/
-
-module "org_monitoring_nonprod" {
-  source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0"
-  random_project_id           = "true"
-  impersonate_service_account = var.terraform_service_account
-  name                        = "org-monitoring-nonprod"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
-  folder_id                   = google_folder.monitoring.id
-  activate_apis               = ["logging.googleapis.com", "monitoring.googleapis.com"]
-
-  labels = {
-    environment      = "prod"
-    application_name = "org-monitoring-nonprod"
-  }
-}
-
-module "org_monitoring_prod" {
-  source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0"
-  random_project_id           = "true"
-  impersonate_service_account = var.terraform_service_account
-  name                        = "org-monitoring-prod"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
-  folder_id                   = google_folder.monitoring.id
-  activate_apis               = ["logging.googleapis.com", "monitoring.googleapis.com"]
-
-  labels = {
-    environment      = "prod"
-    application_name = "org-monitoring-prod"
-  }
-}
-
-/******************************************
   Projects for Shared VPCs
 *****************************************/
 

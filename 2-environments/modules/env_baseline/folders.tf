@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+/******************************************
+  Folder lookups
+*****************************************/
+
 data "google_active_folder" "common" {
   display_name = "common"
   parent       = local.parent
@@ -22,4 +26,18 @@ data "google_active_folder" "common" {
 data "google_active_folder" "monitoring" {
   display_name = "monitoring"
   parent       = data.google_active_folder.common.name
+}
+
+data "google_active_folder" "networking" {
+  display_name = "networking"
+  parent       = data.google_active_folder.common.name
+}
+
+/******************************************
+  Environment Folder
+*****************************************/
+
+resource "google_folder" "env" {
+  display_name = var.env
+  parent       = local.parent
 }

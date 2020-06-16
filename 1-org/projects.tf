@@ -53,3 +53,25 @@ module "org_billing_logs" {
     application_name = "org-billing-logs"
   }
 }
+
+/******************************************
+  Project for Org-wide Secrets
+*****************************************/
+
+module "org_secrets" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 7.0"
+  random_project_id           = "true"
+  impersonate_service_account = var.terraform_service_account
+  default_service_account     = "depriviledge"
+  name                        = "org-secrets"
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = google_folder.logs.id
+  activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
+
+  labels = {
+    environment      = "prod"
+    application_name = "org-secrets"
+  }
+}

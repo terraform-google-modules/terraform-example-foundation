@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-domains_to_allow = ["example.com"]
+module "env" {
+  source = "../../modules/env_baseline"
 
-billing_data_users = "gcp-billing-admins@example.com"
+  env = "dev"
 
-audit_data_users = "gcp-security-admins@example.com"
-
-org_id = "000000000000"
-
-billing_account = "000000-000000-000000"
-
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
-
-default_region = "australia-southeast1"
-
-//Optional - for development.  Will place all resources under a specific folder instead of org root
-//parent_folder = "01234567890"
+  parent_id                  = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+  org_id                     = var.org_id
+  billing_account            = var.billing_account
+  terraform_service_account  = var.terraform_service_account
+  monitoring_workspace_users = var.monitoring_workspace_users
+}

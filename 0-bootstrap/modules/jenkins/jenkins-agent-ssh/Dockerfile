@@ -11,7 +11,7 @@ RUN sed -i $SSHD_CONFIG_DIR/sshd_config \
         -e 's/#AuthorizedKeysFile.*/AuthorizedKeysFile    \/etc\/ssh\/authorized_keys/'
 
 # The Jenkins Agent needs the Master public key. This can be in your github repo
-COPY authorized_keys $SSHD_CONFIG_DIR/authorized_keys
+COPY authorized_public_keys $SSHD_CONFIG_DIR/authorized_keys
 
 # Configure secure permissions on SSHD_CONFIG_DIR
 RUN chmod 755 $SSHD_CONFIG_DIR \

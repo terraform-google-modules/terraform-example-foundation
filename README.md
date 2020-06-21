@@ -1,7 +1,5 @@
 # terraform-example-foundation
-This is an example repo showing how the CFT Terraform modules can be composed to build a secure GCP foundation.
-The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the code leverages Google Cloud Build for deployment of the Terraform from step 1 onwards.
-Cloud Build has been chosen to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
+This is an example repo showing how the CFT Terraform modules can be composed to build a secure GCP foundation. The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the code leverages Google Cloud Build for deployment of the Terraform from step 1 onwards. Cloud Build has been chosen to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
 
 ## Overview
 This repo contains several distinct Terraform projects each within their own directory that must be applied separately, but in sequence.
@@ -9,8 +7,19 @@ Each of these Terraform projects are to be layered on top of each other, running
 
 ### [0. bootstrap](./0-bootstrap/)
 
-This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT).
-This includes; projects, service accounts and a Terraform state bucket. After executing this step, you will have the following structure:
+This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT). This includes:
+    - The `cft-cloudbuild` project, which contains:
+      - Cloud Build implementation
+      - Cloud Source Repository
+      - Build pipeline
+      - Other resources
+    - The `cft-seed` Project, which contains:
+      - Terraform state bucket
+      - KMS configuration to encrypt the state bucket's content
+      - Custom Service Account used by Terraform to create new resources in GCP
+      - Other resources
+
+After executing this step, you will have the following structure:
 
 ```
 example-organization/
@@ -68,7 +77,7 @@ A full list of policies is [available here](https://cloud.google.com/resource-ma
 
 Usage instructions are available for the org step in the [README](./1-org/README.md).
 
-### [2. networks](./2-networks/)
+### [3. networks](./3-networks/)
 
 This step focuses on creating a Shared VPC per environment (prod & nonprod) in a standard configuration with a reasonable security baseline. Currently this includes:
 
@@ -84,7 +93,7 @@ This step focuses on creating a Shared VPC per environment (prod & nonprod) in a
 
 Usage instructions are available for the network step in the [README](./2-networks/README.md).
 
-### [3. projects](./3-projects/)
+### [4. projects](./4-projects/)
 
 This step, is focused on creating service projects in a standard configuration that are attached to the Shared VPC created in the previous step.
 Running this code as-is should generate a structure as shown below:

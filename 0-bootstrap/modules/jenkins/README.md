@@ -27,6 +27,13 @@ module "bootstrap" {
 
 Functional examples and sample Cloud Build definitions are included in the [examples](../../examples/) directory.
 
+Run `$ gcloud auth application-default login` before running `$ terraform plan` to avoid the error below:
+```
+Error: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
+   on <empty> line 0:
+  (source code not available)
+```
+
 ## Features
 
 1. Create a new GCP cloud build project using `project_prefix`

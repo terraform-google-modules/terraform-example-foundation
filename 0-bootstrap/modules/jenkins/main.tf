@@ -15,10 +15,11 @@
  */
 
 locals {
-  cloudbuild_project_id       = format("%s-%s", var.project_prefix, "cloudbuild")
-  cloudbuild_apis             = ["cloudbuild.googleapis.com", "sourcerepo.googleapis.com", "cloudkms.googleapis.com"]
+  jenkins_project_id       = format("%s-%s", var.project_prefix, "jenkins")
+  jenkins_apis             = ["cloudkms.googleapis.com"]
   impersonation_enabled_count = var.sa_enable_impersonation == true ? 1 : 0
   activate_apis               = distinct(var.activate_apis)
+  jenkins_gce_fw_tags         = ["jenkins-ssh-agent"]
 }
 
 resource "random_id" "suffix" {
@@ -31,13 +32,13 @@ data "google_organization" "org" {
 
 
 /******************************************
-  Cloudbuild project
+  Jenkins project
 *******************************************/
 
-module "cloudbuild_project" {
+module "jenkins_project" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 7.0"
-  name                        = local.cloudbuild_project_id
+  name                        = local.jenkins_project_id
   random_project_id           = true
   disable_services_on_destroy = false
   folder_id                   = var.folder_id
@@ -47,36 +48,108 @@ module "cloudbuild_project" {
   labels                      = var.project_labels
 }
 
-resource "google_project_service" "cloudbuild_apis" {
-  for_each           = toset(local.cloudbuild_apis)
-  project            = module.cloudbuild_project.project_id
+resource "google_project_service" "jenkins_apis" {
+  for_each           = toset(local.jenkins_apis)
+  project            = module.jenkins_project.project_id
   service            = each.value
   disable_on_destroy = false
 }
 
 /******************************************
-  Cloudbuild IAM for admins
+  Jenkins GCE instance
+*******************************************/
+resource "google_service_account" "jenkins_agent_gce_sa" {
+  project      = module.jenkins_project.project_id
+  account_id   = "jenkins-agent-gce-sa"
+  display_name = "CFT Jenkins Agent GCE custom Service Account"
+}
+
+resource "google_compute_instance" "jenkins_agent_gce_instance" {
+  name         = "jenkins_agent_01"
+  machine_type = "n1-standard-1"
+  zone         = "us-central1-a"
+
+  tags = local.jenkins_gce_fw_tags
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-9"
+    }
+  }
+
+  // Local SSD disk
+  scratch_disk {
+    interface = "SCSI"
+  }
+
+  network_interface {
+    network = "default"
+
+    access_config {
+      // Ephemeral IP
+    }
+  }
+
+  // TODO(caleonardo): Add the ssh public keys to the metadata
+  metadata = {
+    enable-oslogin = "false"
+  }
+
+  metadata_startup_script = "echo hi > /test.txt"
+
+  service_account {
+    email = google_service_account.jenkins_agent_gce_sa.email
+    scopes = ["userinfo-email", "compute-ro", "storage-ro"]
+  }
+}
+
+/******************************************
+  Jenkins GCE Firewall rules
 *******************************************/
 
-resource "google_project_iam_member" "org_admins_cloudbuild_editor" {
-  project = module.cloudbuild_project.project_id
-  role    = "roles/cloudbuild.builds.editor"
+resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
+  name    = "allow-ssh-to-jenkins-agent"
+  network = google_compute_network.default.name
+
+  //  allow {
+  //    protocol = "icmp"
+  //  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_tags = local.jenkins_gce_fw_tags
+}
+
+resource "google_compute_network" "default" {
+  name = "test-network"
+}
+
+/******************************************
+  Jenkins IAM for admins
+*******************************************/
+
+resource "google_project_iam_member" "org_admins_jenkins_admin" {
+  project = module.jenkins_project.project_id
+  role    = "roles/compute.admin"
   member  = "group:${var.group_org_admins}"
 }
 
-resource "google_project_iam_member" "org_admins_cloudbuild_viewer" {
-  project = module.cloudbuild_project.project_id
+resource "google_project_iam_member" "org_admins_jenkins_viewer" {
+  project = module.jenkins_project.project_id
   role    = "roles/viewer"
   member  = "group:${var.group_org_admins}"
 }
 
 /******************************************
-  Cloudbuild Artifact bucket
+  Jenkins Artifact bucket
 *******************************************/
 
-resource "google_storage_bucket" "cloudbuild_artifacts" {
-  project            = module.cloudbuild_project.project_id
-  name               = format("%s-%s-%s", var.project_prefix, "cloudbuild-artifacts", random_id.suffix.hex)
+resource "google_storage_bucket" "jenkins_artifacts" {
+  project            = module.jenkins_project.project_id
+  name               = format("%s-%s-%s", var.project_prefix, "jenkins-artifacts", random_id.suffix.hex)
   location           = var.default_region
   labels             = var.storage_bucket_labels
   bucket_policy_only = true
@@ -90,11 +163,11 @@ resource "google_storage_bucket" "cloudbuild_artifacts" {
  *****************************************/
 
 resource "google_kms_key_ring" "tf_keyring" {
-  project  = module.cloudbuild_project.project_id
+  project  = module.jenkins_project.project_id
   name     = "tf-keyring"
   location = var.default_region
   depends_on = [
-    google_project_service.cloudbuild_apis,
+    google_project_service.jenkins_apis,
   ]
 }
 
@@ -111,16 +184,16 @@ resource "google_kms_crypto_key" "tf_key" {
   Permissions to decrypt.
  *****************************************/
 
-resource "google_kms_crypto_key_iam_binding" "cloudbuild_crypto_key_decrypter" {
+resource "google_kms_crypto_key_iam_binding" "jenkins_crypto_key_decrypter" {
   crypto_key_id = google_kms_crypto_key.tf_key.self_link
   role          = "roles/cloudkms.cryptoKeyDecrypter"
 
   members = [
-    "serviceAccount:${module.cloudbuild_project.project_number}@cloudbuild.gserviceaccount.com",
+    "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}",
     "serviceAccount:${var.terraform_sa_email}"
   ]
   depends_on = [
-    google_project_service.cloudbuild_apis,
+    google_project_service.jenkins_apis,
   ]
 }
 
@@ -143,150 +216,157 @@ resource "google_kms_crypto_key_iam_binding" "cloud_build_crypto_key_encrypter" 
 
 resource "google_sourcerepo_repository" "gcp_repo" {
   for_each = toset(var.cloud_source_repos)
-  project  = module.cloudbuild_project.project_id
+  project  = module.jenkins_project.project_id
   name     = each.value
   depends_on = [
-    google_project_service.cloudbuild_apis,
+    google_project_service.jenkins_apis,
   ]
 }
 
-/******************************************
-  Cloud Source Repo IAM
-*******************************************/
+// ****************************************************************************
+// TODO(caleonardo): Configure this repo on-prem
+///******************************************
+//  Cloud Source Repo IAM
+//*******************************************/
+//
+//resource "google_project_iam_member" "org_admins_source_repo_admin" {
+//  project = module.jenkins_project.project_id
+//  role    = "roles/source.admin"
+//  member  = "group:${var.group_org_admins}"
+//}
 
-resource "google_project_iam_member" "org_admins_source_repo_admin" {
-  project = module.cloudbuild_project.project_id
-  role    = "roles/source.admin"
-  member  = "group:${var.group_org_admins}"
-}
+// TODO(caleonardo): Configure these triggers in Jenkins - use jcac.yaml
+///***********************************************
+// Cloud Build - Master branch triggers
+// ***********************************************/
+//
+//resource "google_cloudbuild_trigger" "master_trigger" {
+//  for_each    = toset(var.cloud_source_repos)
+//  project     = module.jenkins_project.project_id
+//  description = "${each.value} - terraform apply on push to master."
+//
+//  trigger_template {
+//    branch_name = "master"
+//    repo_name   = each.value
+//  }
+//
+//  substitutions = {
+//    _ORG_ID               = var.org_id
+//    _BILLING_ID           = var.billing_account
+//    _DEFAULT_REGION       = var.default_region
+//    _TF_SA_EMAIL          = var.terraform_sa_email
+//    _STATE_BUCKET_NAME    = var.terraform_state_bucket
+//    _ARTIFACT_BUCKET_NAME = google_storage_bucket.jenkins_artifacts.name
+//    _SEED_PROJECT_ID      = module.jenkins_project.project_id
+//  }
+//
+//  filename = "cloudbuild-tf-apply.yaml"
+//  depends_on = [
+//    google_sourcerepo_repository.gcp_repo,
+//  ]
+//}
+//
+///***********************************************
+// Cloud Build - Non Master branch triggers
+// ***********************************************/
+//
+//resource "google_cloudbuild_trigger" "non_master_trigger" {
+//  for_each    = toset(var.cloud_source_repos)
+//  project     = module.jenkins_project.project_id
+//  description = "${each.value} - terraform plan on all branches except master."
+//
+//  trigger_template {
+//    branch_name = "[^master]"
+//    repo_name   = each.value
+//  }
+//
+//  substitutions = {
+//    _ORG_ID               = var.org_id
+//    _BILLING_ID           = var.billing_account
+//    _DEFAULT_REGION       = var.default_region
+//    _TF_SA_EMAIL          = var.terraform_sa_email
+//    _STATE_BUCKET_NAME    = var.terraform_state_bucket
+//    _ARTIFACT_BUCKET_NAME = google_storage_bucket.jenkins_artifacts.name
+//    _SEED_PROJECT_ID      = module.jenkins_project.project_id
+//  }
+//
+//  filename = "cloudbuild-tf-plan.yaml"
+//  depends_on = [
+//    google_sourcerepo_repository.gcp_repo,
+//  ]
+//}
+
+// TODO(caleonardo): Configure this Terraform builder in Jenkins - use jcac.yaml
+///***********************************************
+// Cloud Build - Terraform builder
+// ***********************************************/
+//
+//resource "null_resource" "cloudbuild_terraform_builder" {
+//  triggers = {
+//    project_id_cloudbuild_project = module.jenkins_project.project_id
+//    terraform_version_sha256sum   = var.terraform_version_sha256sum
+//    terraform_version             = var.terraform_version
+//  }
+//
+//  provisioner "local-exec" {
+//    command = <<EOT
+//      gcloud builds submit ${path.module}/cloudbuild_builder/ \
+//      --project ${module.jenkins_project.project_id} \
+//      --config=${path.module}/cloudbuild_builder/cloudbuild.yaml \
+//      --substitutions=_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum}
+//  EOT
+//  }
+//  depends_on = [
+//    google_project_service.jenkins_apis,
+//  ]
+//}
+// ****************************************************************************
 
 /***********************************************
- Cloud Build - Master branch triggers
+  Jenkins - IAM
  ***********************************************/
 
-resource "google_cloudbuild_trigger" "master_trigger" {
-  for_each    = toset(var.cloud_source_repos)
-  project     = module.cloudbuild_project.project_id
-  description = "${each.value} - terraform apply on push to master."
-
-  trigger_template {
-    branch_name = "master"
-    repo_name   = each.value
-  }
-
-  substitutions = {
-    _ORG_ID               = var.org_id
-    _BILLING_ID           = var.billing_account
-    _DEFAULT_REGION       = var.default_region
-    _TF_SA_EMAIL          = var.terraform_sa_email
-    _STATE_BUCKET_NAME    = var.terraform_state_bucket
-    _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts.name
-    _SEED_PROJECT_ID      = module.cloudbuild_project.project_id
-  }
-
-  filename = "cloudbuild-tf-apply.yaml"
-  depends_on = [
-    google_sourcerepo_repository.gcp_repo,
-  ]
-}
-
-/***********************************************
- Cloud Build - Non Master branch triggers
- ***********************************************/
-
-resource "google_cloudbuild_trigger" "non_master_trigger" {
-  for_each    = toset(var.cloud_source_repos)
-  project     = module.cloudbuild_project.project_id
-  description = "${each.value} - terraform plan on all branches except master."
-
-  trigger_template {
-    branch_name = "[^master]"
-    repo_name   = each.value
-  }
-
-  substitutions = {
-    _ORG_ID               = var.org_id
-    _BILLING_ID           = var.billing_account
-    _DEFAULT_REGION       = var.default_region
-    _TF_SA_EMAIL          = var.terraform_sa_email
-    _STATE_BUCKET_NAME    = var.terraform_state_bucket
-    _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts.name
-    _SEED_PROJECT_ID      = module.cloudbuild_project.project_id
-  }
-
-  filename = "cloudbuild-tf-plan.yaml"
-  depends_on = [
-    google_sourcerepo_repository.gcp_repo,
-  ]
-}
-
-/***********************************************
- Cloud Build - Terraform builder
- ***********************************************/
-
-resource "null_resource" "cloudbuild_terraform_builder" {
-  triggers = {
-    project_id_cloudbuild_project = module.cloudbuild_project.project_id
-    terraform_version_sha256sum   = var.terraform_version_sha256sum
-    terraform_version             = var.terraform_version
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-      gcloud builds submit ${path.module}/cloudbuild_builder/ \
-      --project ${module.cloudbuild_project.project_id} \
-      --config=${path.module}/cloudbuild_builder/cloudbuild.yaml \
-      --substitutions=_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum}
-  EOT
-  }
-  depends_on = [
-    google_project_service.cloudbuild_apis,
-  ]
-}
-
-/***********************************************
-  Cloud Build - IAM
- ***********************************************/
-
-resource "google_storage_bucket_iam_member" "cloudbuild_artifacts_iam" {
-  bucket = google_storage_bucket.cloudbuild_artifacts.name
+resource "google_storage_bucket_iam_member" "jenkins_artifacts_iam" {
+  bucket = google_storage_bucket.jenkins_artifacts.name
   role   = "roles/storage.admin"
-  member = "serviceAccount:${module.cloudbuild_project.project_number}@cloudbuild.gserviceaccount.com"
+  member = "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}"
   depends_on = [
-    google_project_service.cloudbuild_apis,
+    google_project_service.jenkins_apis,
   ]
 }
 
-resource "google_service_account_iam_member" "cloudbuild_terraform_sa_impersonate_permissions" {
+/* TODO(caleonardo): better use google_service_account.jenkins_agent_gce_sa.email
+           directly, without impersonation.*/
+resource "google_service_account_iam_member" "jenkins_terraform_sa_impersonate_permissions" {
   count = local.impersonation_enabled_count
 
   service_account_id = var.terraform_sa_name
   role               = "roles/iam.serviceAccountTokenCreator"
-  member             = "serviceAccount:${module.cloudbuild_project.project_number}@cloudbuild.gserviceaccount.com"
+  member             = "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}"
   depends_on = [
-    google_project_service.cloudbuild_apis,
+    google_project_service.jenkins_apis,
   ]
 }
 
-resource "google_organization_iam_member" "cloudbuild_serviceusage_consumer" {
+resource "google_organization_iam_member" "jenkins_serviceusage_consumer" {
   count = local.impersonation_enabled_count
 
   org_id = var.org_id
   role   = "roles/serviceusage.serviceUsageConsumer"
-  member = "serviceAccount:${module.cloudbuild_project.project_number}@cloudbuild.gserviceaccount.com"
+  member = "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}"
   depends_on = [
-    google_project_service.cloudbuild_apis,
+    google_project_service.jenkins_apis,
   ]
 }
 
-# Required to allow cloud build to access state with impersonation.
-resource "google_storage_bucket_iam_member" "cloudbuild_state_iam" {
+# Required to allow jenkins to access state with impersonation.
+resource "google_storage_bucket_iam_member" "jenkins_state_iam" {
   count = local.impersonation_enabled_count
 
   bucket = var.terraform_state_bucket
   role   = "roles/storage.admin"
-  member = "serviceAccount:${module.cloudbuild_project.project_number}@cloudbuild.gserviceaccount.com"
+  member = "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}"
   depends_on = [
-    google_project_service.cloudbuild_apis,
+    google_project_service.jenkins_apis,
   ]
 }

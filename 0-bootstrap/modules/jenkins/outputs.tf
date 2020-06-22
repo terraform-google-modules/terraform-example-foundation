@@ -14,20 +14,31 @@
  * limitations under the License.
  */
 
-output "cloudbuild_project_id" {
-  description = "Project where CloudBuild configuration and terraform container image will reside."
-  value       = module.cloudbuild_project.project_id
+output "jenkins_project_id" {
+  description = "Project where Jenkins Agents and terraform builder container image will reside."
+  value       = module.jenkins_project.project_id
 }
 
-output "gcs_bucket_cloudbuild_artifacts" {
-  description = "Bucket used to store Cloud/Build artefacts in CloudBuild project."
-  value       = google_storage_bucket.cloudbuild_artifacts.name
+output "jenkins_sa_email" {
+  description = "Email for privileged custom service account for Jenkins Agent GCE instance."
+  value       = google_service_account.jenkins_agent_gce_sa.email
 }
 
-output "csr_repos" {
-  description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
-  value       = google_sourcerepo_repository.gcp_repo
+output "jenkins_sa_name" {
+  description = "Fully qualified name for privileged custom service account for Jenkins Agent GCE instance."
+  value       = google_service_account.jenkins_agent_gce_sa.name
 }
+
+output "gcs_bucket_jenkins_artifacts" {
+  description = "Bucket used to store Jenkins artifacts in Jenkins project."
+  value       = google_storage_bucket.jenkins_artifacts.name
+}
+
+// TODO(caleonardo): Configure this repo on-prem
+//output "csr_repos" {
+//  description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
+//  value       = google_sourcerepo_repository.gcp_repo
+//}
 
 output "kms_keyring" {
   description = "KMS Keyring created by the module."

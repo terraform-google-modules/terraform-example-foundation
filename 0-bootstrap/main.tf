@@ -83,7 +83,6 @@ module "jenkins_bootstrap" {
 
 module "jenkins_bootstrap" {
   source                  = "./modules/jenkins"
-  version                 = "~> 1.0"
   org_id                  = var.org_id
   folder_id               = google_folder.seed.id
   billing_account         = var.billing_account

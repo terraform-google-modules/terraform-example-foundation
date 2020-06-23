@@ -39,6 +39,24 @@ variable "default_region" {
   default     = "us-central1"
 }
 
+variable "jenkins_agent_gce_name" {
+  description = "Jenkins Agent GCE Instance name."
+  type        = string
+  default     = "jenkins-agent-02"
+}
+
+variable "jenkins_agent_gce_ssh_user" {
+  description = "Jenkins Agent GCE Instance SSH username."
+  type        = string
+  default     = "jenkins"
+}
+
+variable "jenkins_agent_gce_ssh_pub_key_file" {
+  description = "Jenkins Agent GCE Instance SSH Public Key."
+  type        = string
+  default     = "./jenkins-agent-ssh-pub-keys/ssh-pub-key-01.txt"
+}
+
 variable "terraform_sa_email" {
   description = "Email for terraform service account."
   type        = string

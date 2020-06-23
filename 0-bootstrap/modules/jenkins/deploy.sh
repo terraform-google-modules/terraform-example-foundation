@@ -1,31 +1,36 @@
 # shellcheck disable=SC2155
 export DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-#Test SSH in the AGENT:
-# sudo /usr/sbin/sshd -ddd -p 2222
-
-#Test SSH in the MASTER:
-# eval "$(ssh-agent -s)" && ssh-add /home/jenkins/.ssh/jenkinsAgent1_rsa && ssh-add -l
-# ssh -vvv -i /home/jenkins/.ssh/jenkinsAgent1_rsa.pub jenkins@192.168.9.2 -p 2222
-
-
 #printf "\n--------------------------------------\n"
-#echo "1 - WORKING IN THE LOCAL HOST"
-
-#export JENKINS_AGENT_NAME="Agent2"
+#echo "1 - WORKING IN THE LOCAL HOST TO GENERATE THE KEY PAIR"
+#
+#export JENKINS_AGENT_NAME="Agent5"
 #export SSH_LOCAL_CONFIG_DIR="$HOME/.ssh"
-#export JENKINS_SSH_PRIVATE_KEY_PASSWD="aaaaa"
-#ssh-keygen -t rsa -m PEM -N "${JENKINS_SSH_PRIVATE_KEY_PASSWD}" -C "Jenkins ${JENKINS_AGENT_NAME} key" -f "${SSH_LOCAL_CONFIG_DIR}"/jenkins${JENKINS_AGENT_NAME}_rsa
-#ssh-keygen -t rsa -m PEM -C "Jenkins ${JENKINS_AGENT_NAME} key" -f "${SSH_LOCAL_CONFIG_DIR}"/jenkins${JENKINS_AGENT_NAME}_rsa
-# Keep the private key in the Master
-# ## Generate the SSH key that Jenkins Master (SSH client) will need to connect to this Agent
-#export JENKINS_SSH_PRIVATE_KEY_PASSWD="password-to-protect-the-ssh-private-key"
-
 #echo "Creating $SSH_LOCAL_CONFIG_DIR directory"
 #mkdir "$SSH_LOCAL_CONFIG_DIR"
 #
-#echo "Generating public and private SSH keys"
-#ssh-keygen -t rsa -m PEM -N "${JENKINS_SSH_PRIVATE_KEY_PASSWD}" -C "Jenkins ${JENKINS_AGENT_NAME} key" -f "${SSH_LOCAL_CONFIG_DIR}"/jenkins${JENKINS_AGENT_NAME}_rsa
+###echo "Generating public and private SSH keys - Jenkins Master (SSH client) will use the private key to connect to the Agent (SSH Server)"
+### Generate keys WITH passowrd pretection:
+###export JENKINS_SSH_PRIVATE_KEY_PASSWD="password-to-protect-the-ssh-private-key"
+###ssh-keygen -t rsa -m PEM -N "${JENKINS_SSH_PRIVATE_KEY_PASSWD}" -C "Jenkins${JENKINS_AGENT_NAME}Usr" -f "${SSH_LOCAL_CONFIG_DIR}"/jenkins${JENKINS_AGENT_NAME}_rsa
+#
+### Generate keys WITHOUT passowrd pretection:
+#ssh-keygen -t rsa -m PEM -C "Jenkins${JENKINS_AGENT_NAME}Usr" -f "${SSH_LOCAL_CONFIG_DIR}"/jenkins${JENKINS_AGENT_NAME}_rsa
+#
+#echo "Keep the private key in the Master"
+#cat "${SSH_LOCAL_CONFIG_DIR}"/jenkins${JENKINS_AGENT_NAME}_rsa.pub
+
+#Test SSH server in the GCE AGENT:
+# sudo /usr/sbin/sshd -ddd -p 2222
+
+#Test SSH client in the local MASTER:
+# eval "$(ssh-agent -s)" && ssh-add /home/jenkins/.ssh/jenkinsAgent5_rsa && ssh-add -l
+# ssh -vvv -i /home/jenkins/.ssh/jenkinsAgent5_rsa.pub JenkinsAgent5Usr@192.168.9.2 -p 2222
+
+#Troubleshooting:
+# try to copy the private key to a standard location
+# cp /Users/cleonardo/Desktop/tech_labs_macbook_local/src/sec-best-practices-cft/terraform-example-foundation/0-bootstrap/modules/jenkins/jenkins-agent-ssh-pub-keys/jenkinsAgent5_rsa /Users/cleonardo/.ssh/id_rsa
+# ssh -vvvv -o IdentitiesOnly=yes JenkinsAgent5Usr@34.66.246.16 -p 22
 
 printf "\n\n--------------------------------------\n"
 printf "2 - WORKING WITH THE JENKINS AGENT\n"
@@ -88,7 +93,7 @@ docker build --tag jenkins_master_img:$TAG_NUMBER .
 docker run --publish 8080:8080 --detach --name jenkins-master-container-$TAG_NUMBER jenkins_master_img:$TAG_NUMBER
 
 #docker exec -ti jenkins-master-container-${TAG_NUMBER} /bin/bash
-#ssh jenkins@192.168.9.2 -i ~/.ssh/jenkinsAgent1_rsa
+#ssh jenkins@192.168.9.2 -i ~/.ssh/jenkinsAgent5_rsa
 
 ##cat ~/.ssh/jenkins${JENKINS_AGENT_NAME}_rsa.pub
 ##export SSH_PRIVATE_KEY=$`(cat ~/.ssh/jenkins${JENKINS_AGENT_NAME}_rsa | openssl base64 | tr -d '\n')`

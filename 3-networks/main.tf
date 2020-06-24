@@ -40,7 +40,7 @@ locals {
  Nonprod local variables
 *************************/
 locals {
-  nonprod_host_project_id  = "standard-shared-vpc-base" //data.google_projects.nonprod_host_project.projects[0].project_id
+  nonprod_host_project_id  = data.google_projects.nonprod_host_project.projects[0].project_id
   nonprod_environment_code = "n"
 }
 
@@ -49,7 +49,7 @@ locals {
  Prod local variables
 *************************/
 locals {
-  prod_host_project_id  = "standard-shared-vpc-base" #data.google_projects.prod_host_project.projects[0].project_id  
+  prod_host_project_id  = data.google_projects.prod_host_project.projects[0].project_id  
   prod_environment_code = "p"
 }
 
@@ -57,13 +57,13 @@ locals {
   VPC Host Projects
 *****************************************/
 
-# data "google_projects" "nonprod_host_project" {
-#   filter = "labels.application_name=org-shared-vpc-nonprod"
-# }
+data "google_projects" "nonprod_host_project" {
+  filter = "labels.application_name=org-shared-vpc-nonprod"
+}
 
-# data "google_projects" "prod_host_project" {
-#   filter = "labels.application_name=org-shared-vpc-prod"
-# }
+data "google_projects" "prod_host_project" {
+  filter = "labels.application_name=org-shared-vpc-prod"
+}
 
 /******************************************
  Shared VPCs

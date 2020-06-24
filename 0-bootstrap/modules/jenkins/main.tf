@@ -15,7 +15,7 @@
  */
 
 locals {
-  jenkins_project_id       = "cleonardo-terraform-tests-01" //format("%s-%s", var.project_prefix, "jenkins")
+  jenkins_project_name       = format("%s-%s", var.project_prefix, "jenkins2")
   jenkins_apis             = ["cloudkms.googleapis.com"]
   impersonation_enabled_count = var.sa_enable_impersonation == true ? 1 : 0
   activate_apis               = distinct(var.activate_apis)
@@ -29,52 +29,45 @@ locals {
 //data "google_organization" "org" {
 //  organization = var.org_id
 //}
-//
-//
-///******************************************
-//  Jenkins project
-//*******************************************/
-/* TODO(caleonardo): solve this problem when creating the project:
-    Error: Error setting billing account "aaaaaa-bbbbbb-cccccc" for project "projects/cft-jenkins-dc3a": googleapi: Error 400: Precondition check failed., failedPrecondition
-      on .terraform/modules/jenkins_project/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
-      96: resource "google_project" "main" {
-*/
 
-//
-//module "jenkins_project" {
-//  source                      = "terraform-google-modules/project-factory/google"
-//  version                     = "~> 7.0"
-//  name                        = local.jenkins_project_id
-//  random_project_id           = true
-//  disable_services_on_destroy = false
-//  folder_id                   = var.folder_id
-//  org_id                      = var.org_id
-//  billing_account             = var.billing_account
-//  activate_apis               = local.activate_apis
-//  labels                      = var.project_labels
-//}
-//
-//resource "google_project_service" "jenkins_apis" {
-//  for_each           = toset(local.jenkins_apis)
-//  project            = module.jenkins_project.project_id
-//  service            = each.value
-//  disable_on_destroy = false
-//}
 
 /******************************************
-  Jenkins GCE instance
+  Jenkins project
+*******************************************/
+module "jenkins_project" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 7.0"
+  name                        = local.jenkins_project_name
+  random_project_id           = true
+  disable_services_on_destroy = false
+  folder_id                   = var.folder_id
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  activate_apis               = local.activate_apis
+  labels                      = var.project_labels
+}
+
+resource "google_project_service" "jenkins_apis" {
+  for_each           = toset(local.jenkins_apis)
+  project            = module.jenkins_project.project_id
+  service            = each.value
+  disable_on_destroy = false
+}
+
+/******************************************
+  Jenkins Agent GCE instance
 *******************************************/
 resource "google_service_account" "jenkins_agent_gce_sa" {
-  project      = local.jenkins_project_id  //module.jenkins_project.project_id
+  project      = module.jenkins_project.project_id
   account_id   = "jenkins-agent-gce-sa"
   display_name = "CFT Jenkins Agent GCE custom Service Account"
 }
 
 resource "google_compute_instance" "jenkins_agent_gce_instance" {
-  project      = local.jenkins_project_id  //module.jenkins_project.project_id
+  project      = module.jenkins_project.project_id
   name         = var.jenkins_agent_gce_name
   machine_type = "n1-standard-1"
-  zone         = "us-central1-a"
+  zone         = "europe-west2-a"
 
   tags = local.jenkins_gce_fw_tags
 
@@ -93,7 +86,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
     }
   }
 
-  // TODO(caleonardo): Add the ssh public keys to the metadata
+  // Adding ssh public keys to the metadata, so the Jenkins Master can connect
   metadata = {
     enable-oslogin = "false"
     ssh-keys = "${var.jenkins_agent_gce_ssh_user}:${file(var.jenkins_agent_gce_ssh_pub_key_file)}"
@@ -115,11 +108,11 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 }
 
 /******************************************
-  Jenkins GCE Firewall rules
+  Jenkins Agent GCE Firewall rules
 *******************************************/
 
 resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
-  project = local.jenkins_project_id  //module.jenkins_project.project_id
+  project = module.jenkins_project.project_id
   name    = "allow-ssh-to-jenkins-agents"
   description = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
   network = google_compute_network.jenkins_agents.name
@@ -134,7 +127,7 @@ resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
 }
 
 resource "google_compute_network" "jenkins_agents" {
-  project = local.jenkins_project_id  //module.jenkins_project.project_id
+  project = module.jenkins_project.project_id
   name    = "jenkins-agents-network"
 }
 

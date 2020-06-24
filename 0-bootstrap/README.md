@@ -56,3 +56,26 @@ Further details of permissions required and resources created, can be found in t
 
 -   [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
 -   [Terraform](https://www.terraform.io/downloads.html) >= 0.12.6
+
+### Configuration
+
+Use gcloud before running the terraform scripts to crate an application-default login configuration with GCP. 
+
+## Troubleshooting
+
+If you don't crate an application-default login configuration with GCP, you might see errors about not having permissions to add projects to Billing account.
+
+```
+Error: Error setting billing account "aaaaaa-bbbbbb-cccccc" for project "projects/cft-jenkins-dc3a": googleapi: Error 400: Precondition check failed., failedPrecondition
+      on .terraform/modules/jenkins_project/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
+      96: resource "google_project" "main" {
+```
+ or 
+ 
+ ```
+Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbbbb-cccccc": billing.resourceAssociations.create
+  on .terraform/modules/jenkins_project/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
+  96: resource "google_project" "main" {
+```
+
+**Solution:** run this in your command line `$ gcloud auth application-default login`

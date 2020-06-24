@@ -93,7 +93,7 @@ output "prod_host_project_id" {
 
 output "prod_network_name" {
   value       = module.shared_vpc_prod.network_name
-  description = "The name of the VPC stá pronta para ser despachada do CD. Agbeing created"
+  description = "The name of the VPC being created"
 }
 
 output "prod_network_self_link" {

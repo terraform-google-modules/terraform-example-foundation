@@ -65,7 +65,7 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 | prod\_dns\_record\_set\_gcr\_api | DNS Record set for GCR APIs |
 | prod\_dns\_record\_set\_private\_api | DNS Record set for Private APIs |
 | prod\_host\_project\_id | The host project ID for prod |
-| prod\_network\_name | The name of the VPC stá pronta para ser despachada do CD. Agbeing created |
+| prod\_network\_name | The name of the VPC being created |
 | prod\_network\_self\_link | The URI of the VPC being created |
 | prod\_subnets\_ips | The IPs and CIDRs of the subnets being created |
 | prod\_subnets\_names | The names of the subnets being created |

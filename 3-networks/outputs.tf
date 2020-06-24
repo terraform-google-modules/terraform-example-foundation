@@ -52,6 +52,35 @@ output "nonprod_subnets_secondary_ranges" {
   value       = module.shared_vpc_nonprod.subnets_secondary_ranges
   description = "The secondary ranges associated with these subnets"
 }
+output "nonprod_allow_iap_ssh" {
+  value       = module.shared_vpc_nonprod.allow_iap_ssh
+  description = "Firewall rule allow_iap_ssh created in the network"
+}
+
+output "nonprod_allow_iap_rdp" {
+  value       = module.shared_vpc_nonprod.allow_iap_rdp
+  description = "Firewall rule allow_iap_rdp created in the network"
+}
+
+output "nonprod_allow_lb" {
+  value       = module.shared_vpc_nonprod.allow_lb
+  description = "Firewall rule allow_lb created in the network"
+}
+
+output "nonprod_default_policy" {
+  value       = module.shared_vpc_nonprod.default_policy
+  description = "DNS Policy created in the network"
+}
+
+output "nonprod_dns_record_set_private_api" {
+  value       = module.shared_vpc_nonprod.dns_record_set_private_api
+  description = "DNS Record set for Private APIs"
+}
+
+output "nonprod_dns_record_set_gcr_api" {
+  value       = module.shared_vpc_nonprod.dns_record_set_gcr_api
+  description = "DNS Record set for GCR APIs"
+}
 
 /******************************************
  Prod Outputs
@@ -64,7 +93,7 @@ output "prod_host_project_id" {
 
 output "prod_network_name" {
   value       = module.shared_vpc_prod.network_name
-  description = "The name of the VPC being created"
+  description = "The name of the VPC stá pronta para ser despachada do CD. Agbeing created"
 }
 
 output "prod_network_self_link" {
@@ -90,4 +119,34 @@ output "prod_subnets_self_links" {
 output "prod_subnets_secondary_ranges" {
   value       = module.shared_vpc_prod.subnets_secondary_ranges
   description = "The secondary ranges associated with these subnets"
+}
+
+output "prod_allow_iap_ssh" {
+  value       = module.shared_vpc_prod.allow_iap_ssh
+  description = "Firewall rule allow_iap_ssh created in the network"
+}
+
+output "prod_allow_iap_rdp" {
+  value       = module.shared_vpc_prod.allow_iap_rdp
+  description = "Firewall rule allow_iap_rdp created in the network"
+}
+
+output "prod_allow_lb" {
+  value       = module.shared_vpc_prod.allow_lb
+  description = "Firewall rule allow_lb created in the network"
+}
+
+output "prod_default_policy" {
+  value       = module.shared_vpc_prod.default_policy
+  description = "DNS Policy created in the network"
+}
+
+output "prod_dns_record_set_private_api" {
+  value       = module.shared_vpc_prod.dns_record_set_private_api
+  description = "DNS Record set for Private APIs"
+}
+
+output "prod_dns_record_set_gcr_api" {
+  value       = module.shared_vpc_prod.dns_record_set_gcr_api
+  description = "DNS Record set for GCR APIs"
 }

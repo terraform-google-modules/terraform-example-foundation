@@ -59,3 +59,32 @@ output "subnets_secondary_ranges" {
   description = "The secondary ranges associated with these subnets"
 }
 
+output "allow_iap_ssh" {
+  value       = google_compute_firewall.allow_iap_ssh
+  description = "Firewall rule allow_iap_ssh created in the network"
+}
+
+output "allow_iap_rdp" {
+  value       = google_compute_firewall.allow_iap_rdp
+  description = "Firewall rule allow_iap_rdp created in the network"
+}
+
+output "allow_lb" {
+  value       = google_compute_firewall.allow_lb
+  description = "Firewall rule allow_lb created in the network"
+}
+
+output "default_policy" {
+  value       = google_dns_policy.default_policy
+  description = "DNS Policy created in the network"
+}
+
+output "dns_record_set_private_api" {
+  value       = module.private_googleapis
+  description = "DNS Record set for Private APIs"
+}
+
+output "dns_record_set_gcr_api" {
+  value       = module.private_gcr
+  description = "DNS Record set for GCR APIs"
+}

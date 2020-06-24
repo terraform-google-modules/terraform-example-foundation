@@ -14,85 +14,117 @@
  * limitations under the License.
  */
 
+/**************************
+ Generic local variables
+**************************/
 locals {
-  nonprod_host_project_id = data.google_projects.nonprod_host_project.projects[0].project_id
-  prod_host_project_id    = data.google_projects.prod_host_project.projects[0].project_id
+  private_vpc_label = "private"
+  cidrs = {
+    prod = {
+      base = {
+        region1 = "10.0.0.0/21"
+        private_service = "10.0.16.0/20"
+      }
+    }
+    non-prod = {
+      base = {
+        region1 = "10.0.64.0/21"
+        private_service = "10.0.80.0/20"
+      }
+    }
+  }
+}
+
+
+/************************
+ Nonprod local variables
+*************************/
+locals {
+  nonprod_host_project_id  = "standard-shared-vpc-base" //data.google_projects.nonprod_host_project.projects[0].project_id
+  nonprod_environment_code = "n"
+}
+
+
+/************************
+ Prod local variables
+*************************/
+locals {
+  prod_host_project_id  = "standard-shared-vpc-base" #data.google_projects.prod_host_project.projects[0].project_id  
+  prod_environment_code = "p"
 }
 
 /******************************************
   VPC Host Projects
 *****************************************/
 
-data "google_projects" "nonprod_host_project" {
-  filter = "labels.application_name=org-shared-vpc-nonprod"
-}
+# data "google_projects" "nonprod_host_project" {
+#   filter = "labels.application_name=org-shared-vpc-nonprod"
+# }
 
-data "google_projects" "prod_host_project" {
-  filter = "labels.application_name=org-shared-vpc-prod"
-}
+# data "google_projects" "prod_host_project" {
+#   filter = "labels.application_name=org-shared-vpc-prod"
+# }
 
 /******************************************
  Shared VPCs
 *****************************************/
 
 module "shared_vpc_nonprod" {
-  source               = "./modules/standard_shared_vpc"
-  project_id           = local.nonprod_host_project_id
-  default_region       = var.default_region
-  network_name         = "shared-vpc-nonprod"
-  private_service_cidr = "10.200.0.0/22"
-  bgp_asn              = 64512
+  source           = "./modules/standard_shared_vpc"
+  project_id       = local.nonprod_host_project_id
+  environment_code = local.nonprod_environment_code
+  vpc_label        = local.private_vpc_label
+  default_region   = var.default_region
+  private_service_cidr = local.cidrs.non-prod.base.private_service
+  bgp_asn          = [64512]
   subnets = [
     {
-      subnet_name           = "example-subnet"
-      subnet_ip             = "10.200.4.0/22"
+      subnet_ip             = local.cidrs.non-prod.base.region1
       subnet_region         = var.default_region
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
       description           = "Non prod example subnet."
-    },
+      secondary_ranges = [
+        {
+          range_label   = "gke-pod"
+          ip_cidr_range = "192.168.0.0/19"
+        },
+        {
+          range_label   = "gke-svc"
+          ip_cidr_range = "192.168.32.0/23"
+        }
+      ]
+    }
   ]
-  secondary_ranges = {
-    example-subnet = [
-      {
-        range_name    = "example-subnet-gke-pod"
-        ip_cidr_range = "192.168.0.0/19"
-      },
-      {
-        range_name    = "example-subnet-gke-svc"
-        ip_cidr_range = "192.168.32.0/23"
-      },
-    ]
-  }
 }
 
 module "shared_vpc_prod" {
-  source               = "./modules/standard_shared_vpc"
-  project_id           = local.prod_host_project_id
-  default_region       = var.default_region
-  network_name         = "shared-vpc-prod"
-  private_service_cidr = "10.20.0.0/22"
-  bgp_asn              = 64513
+  source           = "./modules/standard_shared_vpc"
+  project_id       = local.prod_host_project_id
+  environment_code = local.prod_environment_code
+  vpc_label        = "${local.private_vpc_label}"
+  default_region   = var.default_region
+  private_service_cidr = local.cidrs.prod.base.private_service
+  bgp_asn          = [64513]
   subnets = [
     {
-      subnet_name           = "example-subnet"
-      subnet_ip             = "10.20.20.0/22"
+      subnet_ip             = local.cidrs.prod.base.region1
       subnet_region         = var.default_region
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
       description           = "Prod example subnet."
-    },
+      subnet_private_access = "true"
+      subnet_flow_logs      = "false"
+      secondary_ranges = [
+        {
+          range_label   = "gke-pod"
+          ip_cidr_range = "192.168.96.0/19"
+        },
+        {
+          range_label   = "gke-svc"
+          ip_cidr_range = "192.168.128.0/23"
+        }
+      ]
+    }
   ]
-  secondary_ranges = {
-    example-subnet = [
-      {
-        range_name    = "example-subnet-gke-pod"
-        ip_cidr_range = "192.168.96.0/19"
-      },
-      {
-        range_name    = "example-subnet-gke-svc"
-        ip_cidr_range = "192.168.128.0/23"
-      },
-    ]
-  }
 }

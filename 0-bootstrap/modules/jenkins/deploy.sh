@@ -25,12 +25,12 @@ export DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 #Test SSH client in the local MASTER:
 # eval "$(ssh-agent -s)" && ssh-add /home/jenkins/.ssh/jenkinsAgent5_rsa && ssh-add -l
-# ssh -vvv -i /home/jenkins/.ssh/jenkinsAgent5_rsa.pub JenkinsAgent5Usr@192.168.9.2 -p 2222
+# ssh -vvv -i /home/jenkins/.ssh/jenkinsAgent5_rsa.pub jenkins@192.168.9.2 -p 2222
 
 #Troubleshooting:
-# try to copy the private key to a standard location
+# try to copy the private key to a standard location instad of using the -i option
 # cp /Users/cleonardo/Desktop/tech_labs_macbook_local/src/sec-best-practices-cft/terraform-example-foundation/0-bootstrap/modules/jenkins/jenkins-agent-ssh-pub-keys/jenkinsAgent5_rsa /Users/cleonardo/.ssh/id_rsa
-# ssh -vvvv -o IdentitiesOnly=yes JenkinsAgent5Usr@34.66.246.16 -p 22
+# ssh -vvvv -o IdentitiesOnly=yes jenkins@34.66.246.16 -p 22
 
 printf "\n\n--------------------------------------\n"
 printf "2 - WORKING WITH THE JENKINS AGENT\n"

@@ -1,7 +1,3 @@
-# Copying the code from terraform-google-bootstrap/modules/cloudbuild/
-
-This initial commit contains a copy of the code in [terraform-google-bootstrap/modules/cloudbuild](https://github.com/terraform-google-modules/terraform-google-bootstrap/tree/master/modules/cloudbuild) as well as additional directories `jenkins-agent-ssh` and `jenkins-master`
---------------------------------------------------------------------------------
 ## Overview
 
 

@@ -92,6 +92,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
     ssh-keys = "${var.jenkins_agent_gce_ssh_user}:${file(var.jenkins_agent_gce_ssh_pub_key_file)}"
   }
 
+  // TODO(caleonardo): Setup the Java installation here for the Jenkins Agent
   metadata_startup_script = "echo hi > /test.txt"
 
   service_account {

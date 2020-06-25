@@ -1,7 +1,7 @@
 # terraform-example-foundation
 This is an example repo showing how the CFT Terraform modules can be composed to build a secure GCP foundation.
-The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the code leverages Google Cloud Build for deployment of the Terraform from step 1 onwards.
-Cloud Build has been chosen to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
+The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the code leverages Google Cloud Build for deployment of the Terraform from step 1 onwards. An option to use Jenkins is also available.
+Cloud Build has been chosen by default to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool. An example using Jenkins is also provided.
 
 ## Overview
 This repo contains several distinct Terraform projects each within their own directory that must be applied separately, but in sequence.
@@ -10,7 +10,20 @@ Each of these Terraform projects are to be layered on top of each other, running
 ### [0. bootstrap](./0-bootstrap/)
 
 This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT).
-This includes; projects, service accounts and a Terraform state bucket. After executing this step, you will have the following structure:
+- The `cft-cloudbuild` project, which contains:
+  - Cloud Build implementation
+  - Cloud Source Repository
+  - Build pipeline
+  - Other resources
+- The `cft-seed` project, which contains:
+  - Terraform state bucket
+  - KMS configuration to encrypt the state bucket's content
+  - Custom Service Account used by Terraform to create new resources in GCP
+  - Other resources
+
+A Best practice is to use custom service accounts instead of default ones. However, Cloud Build doesn't support custom service accounts yet. To avoid using the default Cloud Build service account `@cloudbuild.gserviceaccount.com` for deploying new infrastructure, this default service account is instead granted access to generate tokens over the Terraform custom service account. If using Jenkins, this limitation does not exist, because we can assign a custom service account directly to the GCE instance that runs as a Jenkins Agent.
+
+After executing this step, you will have the following structure:
 
 ```
 example-organization/

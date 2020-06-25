@@ -83,16 +83,35 @@ module "seed_bootstrap" {
   ]
 }
 
-module "cloudbuild_bootstrap" {
-  source                  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
-  version                 = "~> 1.0"
-  org_id                  = var.org_id
-  folder_id               = google_folder.seed.id
-  billing_account         = var.billing_account
-  group_org_admins        = var.group_org_admins
-  default_region          = var.default_region
-  terraform_sa_email      = module.seed_bootstrap.terraform_sa_email
-  terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
-  terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
-  sa_enable_impersonation = true
+// Choose between cloudbuild_bootstrap and jenkins_bootstrap by commenting / deleting the module you do not want to use
+// If you want to use the cloudbuild_bootstrap module, un-comment it and delete / comment the Jenkins_bootstrap module
+//module "cloudbuild_bootstrap" {
+//  source                  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
+//  version                 = "~> 1.0"
+//  org_id                  = var.org_id
+//  folder_id               = google_folder.seed.id
+//  billing_account         = var.billing_account
+//  group_org_admins        = var.group_org_admins
+//  default_region          = var.default_region
+//  terraform_sa_email      = module.seed_bootstrap.terraform_sa_email
+//  terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
+//  terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
+//  sa_enable_impersonation = true
+//
+//  cloud_source_repos = [
+//    "gcp-org",
+//    "gcp-environments",
+//    "gcp-networks",
+//    "gcp-projects",
+//  ]
+//}
+
+module "jenkins_bootstrap" {
+  source                      = "./modules/jenkins"
+  org_id                      = var.org_id
+  folder_id                   = google_folder.seed.id
+  billing_account             = var.billing_account
+  default_region              = var.default_region
+  jenkins_sa_email            = var.jenkins_sa_email
+  jenkins_master_ip_addresses = var.jenkins_master_ip_addresses
 }

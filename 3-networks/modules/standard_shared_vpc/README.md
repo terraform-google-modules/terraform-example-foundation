@@ -3,7 +3,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| bgp\_asn | BGP ASN values for cloud routeres. | `list(number)` | n/a | yes |
+| bgp\_asn | BGP ASN for default cloud router. | `number` | n/a | yes |
 | default\_fw\_rules\_enabled | Toggle creation of default firewall rules. | `bool` | `true` | no |
 | default\_region | Region used to create cloud router. | `string` | n/a | yes |
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | `bool` | `true` | no |

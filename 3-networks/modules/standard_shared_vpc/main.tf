@@ -19,10 +19,10 @@
  *****************************************/
 
 locals {
-  vpc_type       = "shared"
-  vpc_label      = (var.vpc_label != "" ? var.vpc_label : "private")
-  vpc_name       = "${var.environment_code}-${local.vpc_type}-${local.vpc_label}"
-  network_name   = "vpc-${local.vpc_name}"
+  vpc_type     = "shared"
+  vpc_label    = (var.vpc_label != "" ? var.vpc_label : "private")
+  vpc_name     = "${var.environment_code}-${local.vpc_type}-${local.vpc_label}"
+  network_name = "vpc-${local.vpc_name}"
   subnets = [
     for subnet in var.subnets : {
       subnet_name           = "sb-${local.vpc_name}-${subnet.subnet_region}"
@@ -36,7 +36,7 @@ locals {
 
   temp_secondary_ranges = [
     for subnet in var.subnets : {
-      sub_name =  "sb-${local.vpc_name}-${subnet.subnet_region}"
+      sub_name = "sb-${local.vpc_name}-${subnet.subnet_region}"
       ranges = [
         for range in subnet.secondary_ranges : {
           range_name    = "rn-${local.vpc_name}-${subnet.subnet_region}-${range.range_label}"
@@ -48,7 +48,7 @@ locals {
 
   secondary_ranges = {
     for ranges in local.temp_secondary_ranges :
-      ranges.sub_name => ranges.ranges
+    ranges.sub_name => ranges.ranges
   }
 }
 

@@ -28,7 +28,7 @@ module "env_secrets" {
   name                        = "env-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.logs.id
+  folder_id                   = data.google_active_folder.logs.id
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
 
   labels = {

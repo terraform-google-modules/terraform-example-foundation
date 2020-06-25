@@ -33,6 +33,11 @@ data "google_active_folder" "networking" {
   parent       = data.google_active_folder.common.name
 }
 
+data "google_active_folder" "logs" {
+  display_name = "logs"
+  parent       = data.google_active_folder.common.name
+}
+
 /******************************************
   Environment Folder
 *****************************************/

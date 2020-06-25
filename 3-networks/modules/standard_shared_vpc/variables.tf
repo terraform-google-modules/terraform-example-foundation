@@ -51,8 +51,8 @@ variable "vpc_label" {
 }
 
 variable "bgp_asn" {
-  type        = list(number)
-  description = "BGP ASN values for cloud routeres."
+  type        = number
+  description = "BGP ASN for default cloud router."
 }
 
 variable "subnets" {

@@ -123,7 +123,7 @@ resource "google_compute_router" "nat_router" {
   network = module.main.network_self_link
 
   bgp {
-    asn = var.bgp_asn[0]
+    asn = var.bgp_asn
   }
 }
 

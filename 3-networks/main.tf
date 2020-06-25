@@ -14,44 +14,21 @@
  * limitations under the License.
  */
 
-/**************************
- Generic local variables
-**************************/
+
 locals {
   private_vpc_label = "private"
-  cidrs = {
-    prod = {
-      base = {
-        region1 = "10.0.0.0/21"
-        private_service = "10.0.16.0/20"
-      }
-    }
-    non-prod = {
-      base = {
-        region1 = "10.0.64.0/21"
-        private_service = "10.0.80.0/20"
-      }
-    }
-  }
-}
 
-
-/************************
- Nonprod local variables
-*************************/
-locals {
   nonprod_host_project_id  = data.google_projects.nonprod_host_project.projects[0].project_id
   nonprod_environment_code = "n"
-}
+  nonprod_cidrs_sub_network = "10.0.64.0/21"
+  nonprod_cidrs_private_service = "10.0.80.0/20"
 
-
-/************************
- Prod local variables
-*************************/
-locals {
   prod_host_project_id  = data.google_projects.prod_host_project.projects[0].project_id  
   prod_environment_code = "p"
+  prod_cidrs_sub_network = "10.0.0.0/21"
+  prod_cidrs_private_service = "10.0.16.0/20"
 }
+
 
 /******************************************
   VPC Host Projects
@@ -75,11 +52,11 @@ module "shared_vpc_nonprod" {
   environment_code = local.nonprod_environment_code
   vpc_label        = local.private_vpc_label
   default_region   = var.default_region
-  private_service_cidr = local.cidrs.non-prod.base.private_service
-  bgp_asn          = [64512]
+  private_service_cidr = local.nonprod_cidrs_private_service
+  bgp_asn          = 64512
   subnets = [
     {
-      subnet_ip             = local.cidrs.non-prod.base.region1
+      subnet_ip             = local.nonprod_cidrs_sub_network
       subnet_region         = var.default_region
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
@@ -102,13 +79,13 @@ module "shared_vpc_prod" {
   source           = "./modules/standard_shared_vpc"
   project_id       = local.prod_host_project_id
   environment_code = local.prod_environment_code
-  vpc_label        = "${local.private_vpc_label}"
+  vpc_label        = local.private_vpc_label
   default_region   = var.default_region
-  private_service_cidr = local.cidrs.prod.base.private_service
-  bgp_asn          = [64513]
+  private_service_cidr = local.prod_cidrs_private_service
+  bgp_asn          = 64513
   subnets = [
     {
-      subnet_ip             = local.cidrs.prod.base.region1
+      subnet_ip             = local.prod_cidrs_sub_network
       subnet_region         = var.default_region
       subnet_private_access = "true"
       subnet_flow_logs      = "false"

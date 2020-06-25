@@ -35,19 +35,19 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| billing\_account | Billing account to attach to projects. | `any` | n/a | yes |
-| default\_region | Default subnet region standard\_shared\_vpc currently only configures one region | `any` | n/a | yes |
-| org\_id | Organization ID | `any` | n/a | yes |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `any` | n/a | yes |
+|------|-------------|:----:|:-----:|:-----:|
+| billing\_account | Billing account to attach to projects. | string | n/a | yes |
+| default\_region | Default subnet region standard_shared_vpc currently only configures one region | string | n/a | yes |
+| org\_id | Organization ID | string | n/a | yes |
+| terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| nonprod\_allow\_iap\_rdp | Firewall rule allow\_iap\_rdp created in the network |
-| nonprod\_allow\_iap\_ssh | Firewall rule allow\_iap\_ssh created in the network |
-| nonprod\_allow\_lb | Firewall rule allow\_lb created in the network |
+| nonprod\_allow\_iap\_rdp | Firewall rule allow_iap_rdp created in the network |
+| nonprod\_allow\_iap\_ssh | Firewall rule allow_iap_ssh created in the network |
+| nonprod\_allow\_lb | Firewall rule allow_lb created in the network |
 | nonprod\_default\_policy | DNS Policy created in the network |
 | nonprod\_dns\_record\_set\_gcr\_api | DNS Record set for GCR APIs |
 | nonprod\_dns\_record\_set\_private\_api | DNS Record set for Private APIs |
@@ -58,9 +58,9 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 | nonprod\_subnets\_names | The names of the subnets being created |
 | nonprod\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | nonprod\_subnets\_self\_links | The self-links of subnets being created |
-| prod\_allow\_iap\_rdp | Firewall rule allow\_iap\_rdp created in the network |
-| prod\_allow\_iap\_ssh | Firewall rule allow\_iap\_ssh created in the network |
-| prod\_allow\_lb | Firewall rule allow\_lb created in the network |
+| prod\_allow\_iap\_rdp | Firewall rule allow_iap_rdp created in the network |
+| prod\_allow\_iap\_ssh | Firewall rule allow_iap_ssh created in the network |
+| prod\_allow\_lb | Firewall rule allow_lb created in the network |
 | prod\_default\_policy | DNS Policy created in the network |
 | prod\_dns\_record\_set\_gcr\_api | DNS Record set for GCR APIs |
 | prod\_dns\_record\_set\_private\_api | DNS Record set for Private APIs |

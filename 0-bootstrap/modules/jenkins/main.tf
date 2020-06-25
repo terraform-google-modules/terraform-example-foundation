@@ -15,7 +15,7 @@
  */
 
 locals {
-  jenkins_project_name       = format("%s-%s", var.project_prefix, "jenkins2")
+  cicd_project_name       = format("%s-%s", var.project_prefix, "cicd")
   jenkins_apis             = ["cloudkms.googleapis.com"]
   impersonation_enabled_count = var.sa_enable_impersonation == true ? 1 : 0
   activate_apis               = distinct(var.activate_apis)
@@ -34,10 +34,10 @@ locals {
 /******************************************
   Jenkins project
 *******************************************/
-module "jenkins_project" {
+module "cicd_project" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 7.0"
-  name                        = local.jenkins_project_name
+  name                        = local.cicd_project_name
   random_project_id           = true
   disable_services_on_destroy = false
   folder_id                   = var.folder_id
@@ -49,7 +49,7 @@ module "jenkins_project" {
 
 resource "google_project_service" "jenkins_apis" {
   for_each           = toset(local.jenkins_apis)
-  project            = module.jenkins_project.project_id
+  project            = module.cicd_project.project_id
   service            = each.value
   disable_on_destroy = false
 }
@@ -58,13 +58,13 @@ resource "google_project_service" "jenkins_apis" {
   Jenkins Agent GCE instance
 *******************************************/
 resource "google_service_account" "jenkins_agent_gce_sa" {
-  project      = module.jenkins_project.project_id
+  project      = module.cicd_project.project_id
   account_id   = "jenkins-agent-gce-sa"
   display_name = "CFT Jenkins Agent GCE custom Service Account"
 }
 
 resource "google_compute_instance" "jenkins_agent_gce_instance" {
-  project      = module.jenkins_project.project_id
+  project      = module.cicd_project.project_id
   name         = var.jenkins_agent_gce_name
   machine_type = "n1-standard-1"
   zone         = "europe-west2-a"
@@ -113,7 +113,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 *******************************************/
 
 resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
-  project = module.jenkins_project.project_id
+  project = module.cicd_project.project_id
   name    = "allow-ssh-to-jenkins-agents"
   description = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
   network = google_compute_network.jenkins_agents.name
@@ -128,7 +128,7 @@ resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
 }
 
 resource "google_compute_network" "jenkins_agents" {
-  project = module.jenkins_project.project_id
+  project = module.cicd_project.project_id
   name    = "jenkins-agents-network"
 }
 

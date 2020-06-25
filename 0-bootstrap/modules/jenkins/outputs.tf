@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-//output "jenkins_project_id" {
-//  description = "Project where Jenkins Agents and terraform builder container image will reside."
-//  value       = module.jenkins_project.project_id
-//}
+output "cicd_project_id" {
+  description = "Project where Jenkins Agents and terraform builder container image will reside."
+  value       = module.cicd_project.project_id
+}
 
 output "jenkins_agent_gce_instance_id" {
   description = "Jenkins Agents GCE Instance."

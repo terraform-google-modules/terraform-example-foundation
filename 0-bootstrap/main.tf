@@ -54,14 +54,32 @@ module "seed_bootstrap" {
   sa_enable_impersonation = true
 }
 
-module "cloudbuild_bootstrap" {
-  source                  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
-  version                 = "~> 1.0"
+// TODO(caleonardo / bharathkkb): Choose between cloudbuild_bootstrap and jenkins_bootstrap with a variable
+// Un-comment the cloudbuild_bootstrap module if you want to use Cloud Build instead of Jenkins
+//module "cloudbuild_bootstrap" {
+//  source                  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
+//  version                 = "~> 1.0"
+//  org_id                  = var.org_id
+//  folder_id               = google_folder.seed.id
+//  billing_account         = var.billing_account
+//  group_org_admins        = var.group_org_admins
+//  default_region          = var.default_region
+//  terraform_sa_email      = module.seed_bootstrap.terraform_sa_email
+//  terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
+//  terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
+//  sa_enable_impersonation = true
+//}
+
+
+module "jenkins_bootstrap" {
+  source                  = "./modules/jenkins"
   org_id                  = var.org_id
   folder_id               = google_folder.seed.id
   billing_account         = var.billing_account
   group_org_admins        = var.group_org_admins
   default_region          = var.default_region
+  jenkins_sa_email        = module.seed_bootstrap.jenkins_sa_email
+  jenkins_sa_name         = module.seed_bootstrap.jenkins_sa_name
   terraform_sa_email      = module.seed_bootstrap.terraform_sa_email
   terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
   terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate

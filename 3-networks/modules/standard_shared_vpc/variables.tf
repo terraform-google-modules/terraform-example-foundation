@@ -40,9 +40,9 @@ variable "environment_code" {
   description = "A short form of the folder level resources (environment) within the Google Cloud organization."
 }
 
-variable "default_region" {
+variable "nat_region" {
   type        = string
-  description = "Region used to create cloud router."
+  description = "Region used to create NAT cloud router."
 }
 
 variable "vpc_label" {
@@ -50,9 +50,9 @@ variable "vpc_label" {
   description = "Label for VPC."
 }
 
-variable "bgp_asn" {
+variable "bgp_asn_nat" {
   type        = number
-  description = "BGP ASN for default cloud router."
+  description = "BGP ASN for NAT cloud routes."
 }
 
 variable "subnets" {
@@ -62,6 +62,7 @@ variable "subnets" {
     subnet_private_access = string,
     subnet_flow_logs      = string,
     description           = string,
+    bgp_asn               = list(number)
     secondary_ranges = list(object({
       range_label   = string,
       ip_cidr_range = string

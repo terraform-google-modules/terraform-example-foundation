@@ -88,3 +88,25 @@ output "dns_record_set_gcr_api" {
   value       = module.private_gcr
   description = "DNS Record set for GCR APIs"
 }
+
+output "region1_router1" {
+  value       = module.region1_router1
+  description = "Router 1 for Region 1"
+}
+
+output "region1_router2" {
+  value       = module.region1_router2
+  description = "Router 2 for Region 1"
+}
+
+output "region2_router1" {
+  value       = module.region2_router1
+  description = "Router 1 for Region 2"
+}
+
+output "region2_router2" {
+  value       = module.region2_router2
+  description = "Router 2 for Region 2"
+}
+
+

@@ -29,7 +29,7 @@ Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbb
   on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
   96: resource "google_project" "main" {
 ```
- 
+
 ## Features
 
 1. Create a new GCP project using `project_prefix`
@@ -62,7 +62,7 @@ Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbb
 | cloud\_source\_repos | List of Cloud Source Repo's to create with CloudBuild triggers. | list(string) | `<list>` | no |
 | default\_region | Default region to create resources where applicable. | string | `"us-central1"` | no |
 | jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name | string | jenkins-agent-01 | yes |
-| jenkins\_agent\_gce\_ssh\_user | Jenkins Agent GCE Instance SSH username | string | jenkins | yes | 
+| jenkins\_agent\_gce\_ssh\_user | Jenkins Agent GCE Instance SSH username | string | jenkins | yes |
 | jenkins\_agent\_gce\_ssh\_pub\_key\_file | Jenkins Agent GCE Instance SSH Public Key | string | `./jenkins-agent-ssh-pub-keys/metadata-ssh-pub-keys` | yes |
 | folder\_id | The ID of a folder to host this project | string | `""` | no |
 | group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |

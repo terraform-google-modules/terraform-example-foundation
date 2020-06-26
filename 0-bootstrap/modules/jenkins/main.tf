@@ -26,8 +26,7 @@ locals {
 *******************************************/
 module "cicd_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  // TODO(caleonardo): use latest current versions so that we are up to date
-  version                     = "~> 7.0"
+  version                     = "~> 7.0" // TODO(caleonardo): use latest current versions so that we are up to date
   name                        = local.cicd_project_name
   random_project_id           = true
   disable_services_on_destroy = false
@@ -101,7 +100,6 @@ resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
   name          = "allow-ssh-to-jenkins-agents"
   description   = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
   network       = google_compute_network.jenkins_agents.name
-
   source_ranges = var.jenkins_master_ip_addresses
   target_tags   = local.jenkins_gce_fw_tags
 

@@ -59,33 +59,26 @@ Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbb
 |------|-------------|:----:|:-----:|:-----:|
 | activate\_apis | List of APIs to enable in the Cloudbuild project. | list(string) | `<list>` | no |
 | billing\_account | The ID of the billing account to associate projects with. | string | n/a | yes |
-| cloud\_source\_repos | List of Cloud Source Repo's to create with CloudBuild triggers. | list(string) | `<list>` | no |
-| default\_region | Default region to create resources where applicable. | string | `"us-central1"` | no |
-| jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name | string | jenkins-agent-01 | yes |
-| jenkins\_agent\_gce\_ssh\_user | Jenkins Agent GCE Instance SSH username | string | jenkins | yes |
-| jenkins\_agent\_gce\_ssh\_pub\_key\_file | Jenkins Agent GCE Instance SSH Public Key | string | `./jenkins-agent-ssh-pub-keys/metadata-ssh-pub-keys` | yes |
+| default\_region | Default region to create resources where applicable. | string | `"europe-west2"` | no |
 | folder\_id | The ID of a folder to host this project | string | `""` | no |
-| group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |
+| jenkins\_agent\_gce\_machine\_type | Jenkins Agent GCE Instance type. | string | `"n1-standard-1"` | no |
+| jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name. | string | `"jenkins-agent-01"` | no |
+| jenkins\_agent\_gce\_ssh\_pub\_key\_file | File with the SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. | string | `"./jenkins-agent-ssh-pub-keys/metadata-ssh-pub-keys"` | no |
+| jenkins\_agent\_gce\_ssh\_user | Jenkins Agent GCE Instance SSH username. | string | `"jenkins"` | no |
+| jenkins\_master\_ip\_addresses | A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | list(string) | n/a | yes |
+| jenkins\_sa\_email | Email for Jenkins Agent service account. | string | `"jenkins-agent-gce-sa"` | no |
 | org\_id | GCP Organization ID | string | n/a | yes |
 | project\_labels | Labels to apply to the project. | map(string) | `<map>` | no |
-| project\_prefix | Name prefix to use for projects created. | string | `"cft"` | no |
+| project\_prefix | Name prefix to use for projects created. | string | `"prj"` | no |
 | sa\_enable\_impersonation | Allow org_admins group to impersonate service account & enable APIs required. | bool | `"false"` | no |
-| storage\_bucket\_labels | Labels to apply to the storage bucket. | map(string) | `<map>` | no |
-| terraform\_sa\_email | Email for terraform service account. | string | n/a | yes |
-| terraform\_sa\_name | Fully-qualified name of the terraform service account. | string | n/a | yes |
-| terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. | string | n/a | yes |
-| terraform\_version | Default terraform version. | string | `"0.12.24"` | no |
-| terraform\_version\_sha256sum | sha256sum for default terraform version. | string | `"602d2529aafdaa0f605c06adb7c72cfb585d8aa19b3f4d8d189b42589e27bf11"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| jenkins\_project\_id | Project where Jenkins Agent and terraform container image will reside. |
-| TODO csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
-| TODO gcs\_bucket\_jenkins\_artifacts | Bucket used to store Jenkins artifacts in CICD project. |
-| TODO kms\_crypto\_key | KMS key created by the module. |
-| TODO kms\_keyring | KMS Keyring created by the module. |
+| cicd\_project\_id | Project where the cicd pipeline (Jenkins Agents and terraform builder container image) reside. |
+| jenkins\_agent\_gce\_instance\_id | Jenkins Agent GCE Instance id. |
+| jenkins\_sa\_email | Email for privileged custom service account for Jenkins Agent GCE instance. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

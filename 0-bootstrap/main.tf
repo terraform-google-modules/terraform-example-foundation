@@ -55,7 +55,7 @@ module "seed_bootstrap" {
 }
 
 // TODO(caleonardo / bharathkkb): Choose between cloudbuild_bootstrap and jenkins_bootstrap with a variable
-// Un-comment the cloudbuild_bootstrap module if you want to use Cloud Build instead of Jenkins
+// Un-comment the cloudbuild_bootstrap module and the outputs if you want to use Cloud Build instead of Jenkins
 //module "cloudbuild_bootstrap" {
 //  source                  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
 //  version                 = "~> 1.0"
@@ -76,8 +76,7 @@ module "jenkins_bootstrap" {
   org_id                      = var.org_id
   folder_id                   = google_folder.seed.id
   billing_account             = var.billing_account
-  group_org_admins            = var.group_org_admins
   default_region              = var.default_region
-  jenkins_sa_email            = jenkins_sa_email
-  jenkins_master_ip_addresses = jenkins_master_ip_addresses
+  jenkins_sa_email            = var.jenkins_sa_email
+  jenkins_master_ip_addresses = var.jenkins_master_ip_addresses
 }

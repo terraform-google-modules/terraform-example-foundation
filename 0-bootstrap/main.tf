@@ -72,16 +72,12 @@ module "seed_bootstrap" {
 
 
 module "jenkins_bootstrap" {
-  source                  = "./modules/jenkins"
-  org_id                  = var.org_id
-  folder_id               = google_folder.seed.id
-  billing_account         = var.billing_account
-  group_org_admins        = var.group_org_admins
-  default_region          = var.default_region
-  jenkins_sa_email        = module.seed_bootstrap.jenkins_sa_email
-  jenkins_sa_name         = module.seed_bootstrap.jenkins_sa_name
-  terraform_sa_email      = module.seed_bootstrap.terraform_sa_email
-  terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
-  terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
-  sa_enable_impersonation = true
+  source                      = "./modules/jenkins"
+  org_id                      = var.org_id
+  folder_id                   = google_folder.seed.id
+  billing_account             = var.billing_account
+  group_org_admins            = var.group_org_admins
+  default_region              = var.default_region
+  jenkins_sa_email            = jenkins_sa_email
+  jenkins_master_ip_addresses = jenkins_master_ip_addresses
 }

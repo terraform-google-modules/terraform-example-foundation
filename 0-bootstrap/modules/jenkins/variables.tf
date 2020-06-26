@@ -28,10 +28,22 @@ variable "billing_account" {
   type        = string
 }
 
+variable "default_region" {
+  description = "Default region to create resources where applicable."
+  type        = string
+  default     = "europe-west2"
+}
+
 variable "jenkins_agent_gce_name" {
   description = "Jenkins Agent GCE Instance name."
   type        = string
   default     = "jenkins-agent-01"
+}
+
+variable "jenkins_agent_gce_machine_type" {
+  description = "Jenkins Agent GCE Instance type."
+  type        = string
+  default     = "n1-standard-1"
 }
 
 variable "jenkins_agent_gce_ssh_user" {
@@ -47,9 +59,14 @@ variable "jenkins_agent_gce_ssh_pub_key_file" {
 }
 
 variable "jenkins_sa_email" {
-  description = "Email for jenkins service account."
+  description = "Email for Jenkins Agent service account."
   type        = string
   default     = "jenkins-agent-gce-sa"
+}
+
+variable "jenkins_master_ip_addresses" {
+  description = "A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
+  type        = list(string)
 }
 
 /******************************************
@@ -83,7 +100,8 @@ variable "activate_apis" {
     "iam.googleapis.com",
     "admin.googleapis.com",
     "appengine.googleapis.com",
-    "storage-api.googleapis.com"
+    "storage-api.googleapis.com",
+    "cloudkms.googleapis.com"
   ]
 }
 

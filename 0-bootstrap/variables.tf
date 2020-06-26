@@ -45,3 +45,14 @@ variable "parent_folder" {
   type        = string
   default     = ""
 }
+
+variable "jenkins_sa_email" {
+  description = "Email for Jenkins Agent service account."
+  type        = string
+  default     = "jenkins-agent-gce-sa"
+}
+
+variable "jenkins_master_ip_addresses" {
+  description = "A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
+  type        = list(string)
+}

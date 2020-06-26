@@ -11,7 +11,7 @@ The objective of this module is to deploy a Google Cloud Platform project `prj-c
 
 1. Add the SSH public keys of your Jenkins Agent in the file `./jenkins-agent-ssh-pub-keys/metadata-ssh-pub-keys`
 
-1. Run `$ gcloud auth application-default login` before running `$ terraform plan` to avoid the errors below:
+1. While developing only - Run `$ gcloud auth application-default login` before running `$ terraform plan` to avoid the errors below:
 ```
 Error: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
    on <empty> line 0:
@@ -119,16 +119,7 @@ resources of this module:
 
 This API can be enabled in the default project created during establishing an organization.
 
-### Troubleshooting
-
-When running `terraform apply` for the first time, you might see an message like this in the logs:
-```
-module.cicd_project.module.project-factory.null_resource.preconditions (local-exec): googleapiclient.errors.HttpError: <HttpError 403 when requesting https://cloudbilling.googleapis.com/v1/billingAccounts/000000-000000-000000:testIamPermissions?alt=json returned "Cloud Billing API has not been used in project 0123456789 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/cloudbilling.googleapis.com/overview?project=0123456789 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.". 
-```
-
-Just go to the link above and click "Enable" to activate billing in the project. Terraform will wait a few seconds for you to go to that link. However, it could happen that the terraform script times out and fail. If it fails, just enable the billing before running the terraform script again.
-
 ## Contributing
 
-Refer to the [contribution guidelines](../../CONTRIBUTING.md) for
+Refer to the [contribution guidelines](../../../CONTRIBUTING.md) for
 information on contributing to this module.

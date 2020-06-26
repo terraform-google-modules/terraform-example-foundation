@@ -15,8 +15,7 @@
  */
 
 locals {
-  cicd_project_name       = format("%s-%s", var.project_prefix, "cicd")
-  jenkins_apis             = ["cloudkms.googleapis.com"]
+  cicd_project_name           = format("%s-%s", var.project_prefix, "cicd")
   impersonation_enabled_count = var.sa_enable_impersonation == true ? 1 : 0
   activate_apis               = distinct(var.activate_apis)
   jenkins_gce_fw_tags         = ["ssh-jenkins-agent"]
@@ -27,6 +26,7 @@ locals {
 *******************************************/
 module "cicd_project" {
   source                      = "terraform-google-modules/project-factory/google"
+  // TODO(caleonardo): use latest current versions so that we are up to date
   version                     = "~> 7.0"
   name                        = local.cicd_project_name
   random_project_id           = true
@@ -36,13 +36,6 @@ module "cicd_project" {
   billing_account             = var.billing_account
   activate_apis               = local.activate_apis
   labels                      = var.project_labels
-}
-
-resource "google_project_service" "jenkins_apis" {
-  for_each           = toset(local.jenkins_apis)
-  project            = module.cicd_project.project_id
-  service            = each.value
-  disable_on_destroy = false
 }
 
 /******************************************
@@ -57,8 +50,8 @@ resource "google_service_account" "jenkins_agent_gce_sa" {
 resource "google_compute_instance" "jenkins_agent_gce_instance" {
   project      = module.cicd_project.project_id
   name         = var.jenkins_agent_gce_name
-  machine_type = "n1-standard-1"
-  zone         = "europe-west2-a"
+  machine_type = var.jenkins_agent_gce_machine_type
+  zone         = "${var.default_region}-a"
 
   tags = local.jenkins_gce_fw_tags
 
@@ -73,14 +66,14 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 
     access_config {
       // Ephemeral IP
-      // TODO(caleonardo): This should have either a fixed IP address or no external IP at all
+      // TODO(caleonardo): This must not have an external IP at all - Only use for testing while developing
     }
   }
 
   // Adding ssh public keys to the metadata, so the Jenkins Master can connect
   metadata = {
     enable-oslogin = "false"
-    ssh-keys = "${var.jenkins_agent_gce_ssh_user}:${file(var.jenkins_agent_gce_ssh_pub_key_file)}"
+    ssh-keys       = "${var.jenkins_agent_gce_ssh_user}:${file(var.jenkins_agent_gce_ssh_pub_key_file)}"
   }
 
   // TODO(caleonardo): Setup the Java installation here for the Jenkins Agent
@@ -104,12 +97,12 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 *******************************************/
 
 resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
-  project = module.cicd_project.project_id
-  name    = "allow-ssh-to-jenkins-agents"
-  description = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
-  network = google_compute_network.jenkins_agents.name
+  project       = module.cicd_project.project_id
+  name          = "allow-ssh-to-jenkins-agents"
+  description   = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
+  network       = google_compute_network.jenkins_agents.name
 
-  source_ranges = ["0.0.0.0/0"]  // TODO(caleonardo): Specify here the Jenkins Master IP Address
+  source_ranges = var.jenkins_master_ip_addresses
   target_tags   = local.jenkins_gce_fw_tags
 
   allow {

@@ -47,7 +47,7 @@ module "restricted_shared_vpc" {
   environment_code     = local.environment_code
   policy_name          = "${local.environment_code}-restricted-access-policy"
   restricted_services  = ["bigquery.googleapis.com", "storage.googleapis.com"]
-  members              = ["serviceAccount:{${var.terraform_service_account}}"]
+  members              = ["serviceAccount:${var.terraform_service_account}"]
   vpc_label            = local.restricted_vpc_label
   nat_region           = var.nat_region
   private_service_cidr = local.restricted_private_service_cidr

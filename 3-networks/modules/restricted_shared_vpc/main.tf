@@ -141,7 +141,7 @@ resource "google_compute_router_nat" "default_nat" {
 }
 
 /************************************
-  Router to advertise shared VPC 
+  Router to advertise shared VPC
   subnetworks and Google Restricted API
 ************************************/
 

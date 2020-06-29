@@ -26,7 +26,7 @@ resource "google_compute_firewall" "allow_iap_ssh" {
   project = var.project_id
 
   // Cloud IAP's TCP forwarding netblock
-  source_ranges = concat(data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4)
+  source_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
 
   allow {
     protocol = "tcp"
@@ -44,7 +44,7 @@ resource "google_compute_firewall" "allow_iap_rdp" {
   project = var.project_id
 
   // Cloud IAP's TCP forwarding netblock
-  source_ranges = concat(data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4)
+  source_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
 
   allow {
     protocol = "tcp"

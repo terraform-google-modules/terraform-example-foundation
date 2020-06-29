@@ -20,12 +20,14 @@ locals {
 
 module "access_context_manager_policy" {
   source      = "terraform-google-modules/vpc-service-controls/google"
+  version     = "~> 2.0.0"
   parent_id   = var.org_id
   policy_name = var.policy_name
 }
 
 module "access_level_members" {
   source      = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
+  version     = "~> 2.0.0"
   description = "${local.prefix} Access Level"
   policy      = module.access_context_manager_policy.policy_id
   name        = "alp_${local.prefix}_members"
@@ -34,6 +36,7 @@ module "access_level_members" {
 
 module "vpc_service_perimeter" {
   source         = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
+  version        = "~> 2.0.0"
   policy         = module.access_context_manager_policy.policy_id
   perimeter_name = "sp_${local.prefix}_default_perimeter"
   description    = "Default VPC Service Controls perimeter"

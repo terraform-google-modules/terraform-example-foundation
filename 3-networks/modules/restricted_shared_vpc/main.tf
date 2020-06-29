@@ -147,6 +147,7 @@ resource "google_compute_router_nat" "default_nat" {
 
 module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 0.1.0"
   name    = "cr-${local.vpc_name}-${local.subnets[0].subnet_region}-cr1"
   project = var.project_id
   network = module.main.network_name
@@ -163,6 +164,7 @@ module "region1_router1" {
 
 module "region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 0.1.0"
   name    = "cr-${local.vpc_name}-${local.subnets[0].subnet_region}-cr2"
   project = var.project_id
   network = module.main.network_name
@@ -179,6 +181,7 @@ module "region1_router2" {
 
 module "region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 0.1.0"
   name    = "cr-${local.vpc_name}-${local.subnets[1].subnet_region}-cr1"
   project = var.project_id
   network = module.main.network_name
@@ -195,6 +198,7 @@ module "region2_router1" {
 
 module "region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 0.1.0"
   name    = "cr-${local.vpc_name}-${local.subnets[1].subnet_region}-cr2"
   project = var.project_id
   network = module.main.network_name

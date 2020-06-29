@@ -15,13 +15,12 @@
  */
 
 locals {
-  parent_id = var.org_id
-  prefix    = "${var.environment_code}_${local.vpc_type}_${local.vpc_label}"
+  prefix = "${var.environment_code}_${local.vpc_type}_${local.vpc_label}"
 }
 
 module "access_context_manager_policy" {
   source      = "terraform-google-modules/vpc-service-controls/google"
-  parent_id   = local.parent_id
+  parent_id   = var.org_id
   policy_name = var.policy_name
 }
 

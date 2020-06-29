@@ -15,6 +15,7 @@
  */
 
 variable "org_id" {
+  type        = string
   description = "Organization ID"
 }
 
@@ -24,8 +25,8 @@ variable "project_id" {
 }
 
 variable "project_number" {
-  description = "Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter."
   type        = number
+  description = "Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter."
 }
 
 variable "environment_code" {
@@ -95,16 +96,16 @@ variable "default_fw_rules_enabled" {
 }
 
 variable "policy_name" {
-  description = "The access context policy's name."
   type        = string
+  description = "The access context policy's name."
 }
 
 variable "members" {
-  description = "An allowed list of members (users, service accounts). The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid}"
   type        = list(string)
+  description = "An allowed list of members (users, service accounts). The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid}"
 }
 
 variable "restricted_services" {
-  description = "List of services to restrict."
   type        = list(string)
+  description = "List of services to restrict."
 }

@@ -15,21 +15,26 @@
  */
 
 variable "org_id" {
+  type        = string
   description = "Organization ID"
 }
 
 variable "terraform_service_account" {
+  type        = string
   description = "Service account email of the account to impersonate to run Terraform."
 }
 
 variable "nat_region" {
+  type        = string
   description = "NAT region for the shared vpc module."
 }
 
 variable "subnet_region1" {
+  type        = string
   description = "First subnet region. The shared vpc modules only configures exactly two regions."
 }
 
 variable "subnet_region2" {
+  type        = string
   description = "Second subnet region. The shared vpc modules only configures exactly two regions."
 }

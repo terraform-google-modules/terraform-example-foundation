@@ -52,6 +52,7 @@ output "restricted_subnets_secondary_ranges" {
   value       = module.restricted_shared_vpc.subnets_secondary_ranges
   description = "The secondary ranges associated with these subnets"
 }
+
 output "restricted_allow_iap_ssh" {
   value       = module.restricted_shared_vpc.allow_iap_ssh
   description = "Firewall rule allow_iap_ssh created in the network"

@@ -25,7 +25,7 @@ locals {
 
 # TODO: Replace with label of the restricted shared vpc project
 data "google_projects" "restricted_host_project" {
-  filter = "labels.application_name=org-shared-vpc-${local.env}"
+  filter = "labels.application_name=restricted-shared-vpc-host-${local.env}"
 }
 
 data "google_project" "restricted_host_project" {

@@ -15,17 +15,13 @@
  */
 
 locals {
-  environment_code                = "n"
-  env                             = "nonprod"
-  restricted_project_id           = data.google_projects.restricted_host_project.projects[0].project_id
-  restricted_project_number       = data.google_project.restricted_host_project.number
-  restricted_vpc_label            = "restricted"
-  restricted_private_service_cidr = "10.0.112.0/20"
-  restricted_cidrs_sub_network1   = "10.0.96.0/21"
-  restricted_cidrs_sub_network2   = "10.0.104.0/21"
-  nat_bgp_asn                     = "64512"
-  region1_bgp_asn                 = [64514, 64515]
-  region2_bgp_asn                 = [64516, 64517]
+  environment_code          = "n"
+  env                       = "nonprod"
+  restricted_project_id     = data.google_projects.restricted_host_project.projects[0].project_id
+  restricted_project_number = data.google_project.restricted_host_project.number
+  restricted_vpc_label      = "restricted"
+  region1_bgp_asn           = [64514, 64515]
+  region2_bgp_asn           = [64516, 64517]
 }
 
 # TODO: Replace with label of the restricted shared vpc project
@@ -50,12 +46,12 @@ module "restricted_shared_vpc" {
   members              = ["serviceAccount:${var.terraform_service_account}"]
   vpc_label            = local.restricted_vpc_label
   nat_region           = var.nat_region
-  private_service_cidr = local.restricted_private_service_cidr
+  private_service_cidr = "10.0.112.0/20"
   org_id               = var.org_id
-  bgp_asn_nat          = local.nat_bgp_asn
+  bgp_asn_nat          = "64512"
   subnets = [
     {
-      subnet_ip             = local.restricted_cidrs_sub_network1
+      subnet_ip             = "10.0.96.0/21"
       subnet_region         = var.subnet_region1
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
@@ -72,7 +68,7 @@ module "restricted_shared_vpc" {
         },
       ]
       }, {
-      subnet_ip             = local.restricted_cidrs_sub_network2
+      subnet_ip             = "10.0.104.0/21"
       subnet_region         = var.subnet_region2
       subnet_private_access = "true"
       subnet_flow_logs      = "false"

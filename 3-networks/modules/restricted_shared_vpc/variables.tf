@@ -39,11 +39,6 @@ variable "nat_region" {
   description = "Region used to create NAT cloud router."
 }
 
-variable "vpc_label" {
-  type        = string
-  description = "Label for VPC."
-}
-
 variable "bgp_asn_nat" {
   type        = number
   description = "BGP ASN for NAT cloud routes."

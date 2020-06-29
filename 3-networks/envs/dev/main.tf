@@ -19,7 +19,6 @@ locals {
   env                       = "dev"
   restricted_project_id     = data.google_projects.restricted_host_project.projects[0].project_id
   restricted_project_number = data.google_project.restricted_host_project.number
-  restricted_vpc_label      = "restricted"
   region1_bgp_asn           = [64514, 64515]
   region2_bgp_asn           = [64516, 64517]
 }
@@ -44,7 +43,6 @@ module "restricted_shared_vpc" {
   policy_name          = "${local.environment_code}-restricted-access-policy"
   restricted_services  = ["bigquery.googleapis.com", "storage.googleapis.com"]
   members              = ["serviceAccount:${var.terraform_service_account}"]
-  vpc_label            = local.restricted_vpc_label
   nat_region           = var.nat_region
   private_service_cidr = "10.0.176.0/20"
   org_id               = var.org_id

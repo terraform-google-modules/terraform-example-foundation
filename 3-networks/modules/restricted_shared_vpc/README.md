@@ -18,7 +18,6 @@
 | project\_number | Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter. | number | n/a | yes |
 | restricted\_services | List of services to restrict. | list(string) | n/a | yes |
 | subnets | The list of subnets being created. Includes the Secondary ranges that will be used in some of the subnets. If you don't have secondary ranges, inform an empty list 'secondary_ranges = []' | object | `<list>` | no |
-| vpc\_label | Label for VPC. | string | n/a | yes |
 
 ## Outputs
 

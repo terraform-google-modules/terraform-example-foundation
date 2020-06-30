@@ -1,0 +1,69 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+driver:
+  name: terraform
+  command_timeout: 2700
+
+provisioner:
+  name: terraform
+
+verifier:
+  name: terraform
+
+platforms:
+  - name: default
+
+suites:
+  - name: bootstrap
+    driver:
+      root_module_directory: test/fixtures/bootstrap/
+    verifier:
+      color: false
+      systems:
+        - name: bootstrap
+          backend: local
+          controls:
+            - bootstrap
+  - name: org
+    driver:
+      root_module_directory: test/fixtures/org/
+    verifier:
+      color: false
+      systems:
+        - name: org
+          backend: local
+          controls:
+            - org
+  - name: envs
+    driver:
+      root_module_directory: test/fixtures/envs/
+    verifier:
+      color: false
+      systems:
+        - name: envs
+          backend: local
+          controls:
+            - envs
+  - name: networks
+    driver:
+      root_module_directory: test/fixtures/networks/
+    verifier:
+      color: false
+      systems:
+        - name: networks
+          backend: local
+          controls:
+            - networks

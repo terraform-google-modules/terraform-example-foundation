@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 variable "project_id" {
   type        = string
   description = "Project ID for Restricted Shared VPC."
@@ -55,21 +39,21 @@ variable "bgp_asn_nat" {
   description = "BGP ASN for NAT cloud routes."
 }
 
+variable "bgp_asn_subnet" {
+  type        = number
+  description = "BGP ASN for Subnets cloud routers."
+}
+
 variable "subnets" {
-  type = list(object({
-    subnet_ip             = string,
-    subnet_region         = string,
-    subnet_private_access = string,
-    subnet_flow_logs      = string,
-    description           = string,
-    bgp_asn               = list(number)
-    secondary_ranges = list(object({
-      range_label   = string,
-      ip_cidr_range = string
-    }))
-  }))
-  description = "The list of subnets being created. Includes the Secondary ranges that will be used in some of the subnets. If you don't have secondary ranges, inform an empty list 'secondary_ranges = []'"
+  type        = list(map(string))
+  description = "The list of subnets being created"
   default     = []
+}
+
+variable "secondary_ranges" {
+  type        = map(list(object({ range_name = string, ip_cidr_range = string })))
+  description = "Secondary ranges that will be used in some of the subnets"
+  default     = {}
 }
 
 variable "dns_enable_inbound_forwarding" {

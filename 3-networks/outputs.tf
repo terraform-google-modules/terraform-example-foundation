@@ -52,20 +52,6 @@ output "nonprod_subnets_secondary_ranges" {
   value       = module.shared_vpc_nonprod.subnets_secondary_ranges
   description = "The secondary ranges associated with these subnets"
 }
-output "nonprod_allow_iap_ssh" {
-  value       = module.shared_vpc_nonprod.allow_iap_ssh
-  description = "Firewall rule allow_iap_ssh created in the network"
-}
-
-output "nonprod_allow_iap_rdp" {
-  value       = module.shared_vpc_nonprod.allow_iap_rdp
-  description = "Firewall rule allow_iap_rdp created in the network"
-}
-
-output "nonprod_allow_lb" {
-  value       = module.shared_vpc_nonprod.allow_lb
-  description = "Firewall rule allow_lb created in the network"
-}
 
 output "nonprod_default_policy" {
   value       = module.shared_vpc_nonprod.default_policy
@@ -139,21 +125,6 @@ output "prod_subnets_self_links" {
 output "prod_subnets_secondary_ranges" {
   value       = module.shared_vpc_prod.subnets_secondary_ranges
   description = "The secondary ranges associated with these subnets"
-}
-
-output "prod_allow_iap_ssh" {
-  value       = module.shared_vpc_prod.allow_iap_ssh
-  description = "Firewall rule allow_iap_ssh created in the network"
-}
-
-output "prod_allow_iap_rdp" {
-  value       = module.shared_vpc_prod.allow_iap_rdp
-  description = "Firewall rule allow_iap_rdp created in the network"
-}
-
-output "prod_allow_lb" {
-  value       = module.shared_vpc_prod.allow_lb
-  description = "Firewall rule allow_lb created in the network"
 }
 
 output "prod_default_policy" {

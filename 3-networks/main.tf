@@ -16,19 +16,8 @@
 
 
 locals {
-  private_vpc_label = "private"
-
-  nonprod_host_project_id       = data.google_projects.nonprod_host_project.projects[0].project_id
-  nonprod_environment_code      = "n"
-  nonprod_cidrs_sub_network1    = "10.0.64.0/21"
-  nonprod_cidrs_sub_network2    = "10.0.72.0/21"
-  nonprod_cidrs_private_service = "10.0.80.0/20"
-
-  prod_host_project_id       = data.google_projects.prod_host_project.projects[0].project_id
-  prod_environment_code      = "p"
-  prod_cidrs_sub_network1    = "10.0.0.0/21"
-  prod_cidrs_sub_network2    = "10.0.8.0/21"
-  prod_cidrs_private_service = "10.0.16.0/20"
+  nonprod_host_project_id = data.google_projects.nonprod_host_project.projects[0].project_id
+  prod_host_project_id    = data.google_projects.prod_host_project.projects[0].project_id
 }
 
 
@@ -51,81 +40,82 @@ data "google_projects" "prod_host_project" {
 module "shared_vpc_nonprod" {
   source               = "./modules/standard_shared_vpc"
   project_id           = local.nonprod_host_project_id
-  environment_code     = local.nonprod_environment_code
-  vpc_label            = local.private_vpc_label
+  environment_code     = "n"
+  vpc_label            = "private"
   nat_region           = var.nat_region
-  private_service_cidr = local.nonprod_cidrs_private_service
+  private_service_cidr = "10.0.80.0/20"
   bgp_asn_nat          = "64512"
+  bgp_asn_subnet       = "64514"
+
   subnets = [
     {
-      subnet_ip             = local.nonprod_cidrs_sub_network1
+      subnet_name           = "sb-n-shared-private-${var.subnet_region1}"
+      subnet_ip             = "10.0.64.0/21"
       subnet_region         = var.subnet_region1
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
-      bgp_asn               = [64514, 64515]
-      description           = "Non prod example subnet."
-      secondary_ranges = [
-        {
-          range_label   = "gke-pod"
-          ip_cidr_range = "192.168.0.0/19"
-        },
-        {
-          range_label   = "gke-svc"
-          ip_cidr_range = "192.168.32.0/23"
-        }
-      ]
+      description           = "Non prod example subnet"
     },
     {
-      subnet_ip             = local.nonprod_cidrs_sub_network2
+      subnet_name           = "sb-n-shared-private-${var.subnet_region2}"
+      subnet_ip             = "10.0.72.0/21"
       subnet_region         = var.subnet_region2
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
-      bgp_asn               = [64516, 64517]
-      description           = "Non prod example subnet."
-      secondary_ranges      = []
+      description           = "Non prod example subnet"
     }
   ]
+  secondary_ranges = {
+    "sb-n-shared-private-${var.subnet_region1}" = [
+      {
+        range_name    = "rn-n-shared-private-${var.subnet_region1}-gke-pod"
+        ip_cidr_range = "192.168.0.0/19"
+      },
+      {
+        range_name    = "rn-n-shared-private-${var.subnet_region1}-gke-svc"
+        ip_cidr_range = "192.168.32.0/23"
+      }
+    ]
+  }
+
 }
 
 module "shared_vpc_prod" {
   source               = "./modules/standard_shared_vpc"
   project_id           = local.prod_host_project_id
-  environment_code     = local.prod_environment_code
-  vpc_label            = local.private_vpc_label
+  environment_code     = "p"
+  vpc_label            = "private"
   nat_region           = var.nat_region
-  private_service_cidr = local.prod_cidrs_private_service
-  bgp_asn_nat          = 64513
+  private_service_cidr = "10.0.16.0/20"
+  bgp_asn_nat          = "64513"
+  bgp_asn_subnet       = "64514"
   subnets = [
     {
-      subnet_ip             = local.prod_cidrs_sub_network1
+      subnet_name           = "sb-p-shared-private-${var.subnet_region1}"
+      subnet_ip             = "10.0.0.0/21"
       subnet_region         = var.subnet_region1
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
-      description           = "Prod example subnet."
-      subnet_private_access = "true"
-      subnet_flow_logs      = "false"
-      bgp_asn               = [64518, 64519]
-      secondary_ranges = [
-        {
-          range_label   = "gke-pod"
-          ip_cidr_range = "192.168.96.0/19"
-        },
-        {
-          range_label   = "gke-svc"
-          ip_cidr_range = "192.168.128.0/23"
-        }
-      ]
+      description           = "Prod example subnet"
     },
     {
-      subnet_ip             = local.prod_cidrs_sub_network2
+      subnet_name           = "sb-p-shared-private-${var.subnet_region2}"
+      subnet_ip             = "10.0.8.0/21"
       subnet_region         = var.subnet_region2
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
-      description           = "Prod example subnet."
-      subnet_private_access = "true"
-      subnet_flow_logs      = "false"
-      bgp_asn               = [64520, 64521]
-      secondary_ranges      = []
+      description           = "Prod example subnet"
     }
   ]
+  secondary_ranges = {
+    "sb-p-shared-private-${var.subnet_region1}" = [{
+      range_name    = "rn-p-shared-private-${var.subnet_region1}-gke-pod"
+      ip_cidr_range = "192.168.96.0/19"
+      },
+      {
+        range_name    = "rn-p-shared-private-${var.subnet_region1}-gke-svc"
+        ip_cidr_range = "192.168.128.0/23"
+      }
+    ]
+  }
 }

@@ -4,6 +4,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | bgp\_asn\_nat | BGP ASN for NAT cloud routes. | number | n/a | yes |
+| bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | number | n/a | yes |
 | default\_fw\_rules\_enabled | Toggle creation of default firewall rules. | bool | `"true"` | no |
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | bool | `"true"` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |
@@ -12,7 +13,8 @@
 | nat\_region | Region used to create NAT cloud router. | string | n/a | yes |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | string | n/a | yes |
 | project\_id | Project ID for Restricted Shared VPC. | string | n/a | yes |
-| subnets | The list of subnets being created. Includes the Secondary ranges that will be used in some of the subnets. If you don't have secondary ranges, inform an empty list 'secondary_ranges = []' | object | `<list>` | no |
+| secondary\_ranges | Secondary ranges that will be used in some of the subnets | object | `<map>` | no |
+| subnets | The list of subnets being created | list(map(string)) | `<list>` | no |
 | vpc\_label | Label for VPC. | string | n/a | yes |
 
 ## Outputs

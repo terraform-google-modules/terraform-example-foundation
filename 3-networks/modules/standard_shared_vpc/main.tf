@@ -19,43 +19,9 @@
  *****************************************/
 
 locals {
-  vpc_type                = "shared"
-  vpc_label               = (var.vpc_label != "" ? var.vpc_label : "private")
-  vpc_name                = "${var.environment_code}-${local.vpc_type}-${local.vpc_label}"
+  vpc_name                = "${var.environment_code}-shared-${var.vpc_label}"
   network_name            = "vpc-${local.vpc_name}"
   private_googleapis_cidr = "199.36.153.8/30"
-  subnets = [
-    for subnet in var.subnets : {
-      subnet_name           = "sb-${local.vpc_name}-${subnet.subnet_region}"
-      subnet_ip             = subnet.subnet_ip
-      subnet_region         = subnet.subnet_region
-      subnet_private_access = subnet.subnet_private_access
-      subnet_flow_logs      = subnet.subnet_flow_logs
-      description           = subnet.description
-    }
-  ]
-
-  temp_secondary_ranges = [
-    for subnet in var.subnets : {
-      sub_name = "sb-${local.vpc_name}-${subnet.subnet_region}"
-      ranges = [
-        for range in subnet.secondary_ranges : {
-          range_name    = "rn-${local.vpc_name}-${subnet.subnet_region}-${range.range_label}"
-          ip_cidr_range = range.ip_cidr_range
-        }
-      ]
-    }
-  ]
-
-  secondary_ranges = {
-    for ranges in local.temp_secondary_ranges :
-    ranges.sub_name => ranges.ranges
-  }
-
-  bgp_asn = {
-    for subnet in var.subnets :
-    "sb-${local.vpc_name}-${subnet.subnet_region}" => subnet.bgp_asn
-  }
 }
 
 module "main" {
@@ -66,8 +32,8 @@ module "main" {
   shared_vpc_host                        = "true"
   delete_default_internet_gateway_routes = "true"
 
-  subnets          = local.subnets
-  secondary_ranges = local.secondary_ranges
+  subnets          = var.subnets
+  secondary_ranges = var.secondary_ranges
 
   routes = [
     {
@@ -157,64 +123,68 @@ resource "google_compute_router_nat" "default_nat" {
 
 module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  name    = "cr-${local.vpc_name}-${local.subnets[0].subnet_region}-cr1"
+  version = "~> 0.2.0"
+  name    = "cr-${local.vpc_name}-${var.subnets[0].subnet_region}-cr1"
   project = var.project_id
   network = module.main.network_name
-  region  = local.subnets[0].subnet_region
+  region  = var.subnets[0].subnet_region
   bgp = {
-    asn = lookup(local.bgp_asn, local.subnets[0].subnet_name, [])[0]
+    asn = var.bgp_asn_subnet
     advertised_ip_ranges = [{
       range = local.private_googleapis_cidr
       }, {
-      range = local.subnets[0].subnet_ip
+      range = var.subnets[0].subnet_ip
     }]
   }
 }
 
 module "region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
-  name    = "cr-${local.vpc_name}-${local.subnets[0].subnet_region}-cr2"
+  version = "~> 0.2.0"
+  name    = "cr-${local.vpc_name}-${var.subnets[0].subnet_region}-cr2"
   project = var.project_id
   network = module.main.network_name
-  region  = local.subnets[0].subnet_region
+  region  = var.subnets[0].subnet_region
   bgp = {
-    asn = lookup(local.bgp_asn, local.subnets[0].subnet_name, [])[1]
+    asn = var.bgp_asn_subnet
     advertised_ip_ranges = [{
       range = local.private_googleapis_cidr
       }, {
-      range = local.subnets[0].subnet_ip
+      range = var.subnets[0].subnet_ip
     }]
   }
 }
 
 module "region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  name    = "cr-${local.vpc_name}-${local.subnets[1].subnet_region}-cr1"
+  version = "~> 0.2.0"
+  name    = "cr-${local.vpc_name}-${var.subnets[1].subnet_region}-cr1"
   project = var.project_id
   network = module.main.network_name
-  region  = local.subnets[1].subnet_region
+  region  = var.subnets[1].subnet_region
   bgp = {
-    asn = lookup(local.bgp_asn, local.subnets[1].subnet_name, [])[0]
+    asn = var.bgp_asn_subnet
     advertised_ip_ranges = [{
       range = local.private_googleapis_cidr
       }, {
-      range = local.subnets[1].subnet_ip
+      range = var.subnets[1].subnet_ip
     }]
   }
 }
 
 module "region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
-  name    = "cr-${local.vpc_name}-${local.subnets[1].subnet_region}-cr2"
+  version = "~> 0.2.0"
+  name    = "cr-${local.vpc_name}-${var.subnets[1].subnet_region}-cr2"
   project = var.project_id
   network = module.main.network_name
-  region  = local.subnets[1].subnet_region
+  region  = var.subnets[1].subnet_region
   bgp = {
-    asn = lookup(local.bgp_asn, local.subnets[1].subnet_name, [])[1]
+    asn = var.bgp_asn_subnet
     advertised_ip_ranges = [{
       range = local.private_googleapis_cidr
       }, {
-      range = local.subnets[1].subnet_ip
+      range = var.subnets[1].subnet_ip
     }]
   }
 }

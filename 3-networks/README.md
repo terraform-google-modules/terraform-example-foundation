@@ -47,9 +47,6 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 
 | Name | Description |
 |------|-------------|
-| nonprod\_allow\_iap\_rdp | Firewall rule allow_iap_rdp created in the network |
-| nonprod\_allow\_iap\_ssh | Firewall rule allow_iap_ssh created in the network |
-| nonprod\_allow\_lb | Firewall rule allow_lb created in the network |
 | nonprod\_default\_policy | DNS Policy created in the network |
 | nonprod\_dns\_record\_set\_gcr\_api | DNS Record set for GCR APIs |
 | nonprod\_dns\_record\_set\_private\_api | DNS Record set for Private APIs |
@@ -64,9 +61,6 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 | nonprod\_subnets\_names | The names of the subnets being created |
 | nonprod\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | nonprod\_subnets\_self\_links | The self-links of subnets being created |
-| prod\_allow\_iap\_rdp | Firewall rule allow_iap_rdp created in the network |
-| prod\_allow\_iap\_ssh | Firewall rule allow_iap_ssh created in the network |
-| prod\_allow\_lb | Firewall rule allow_lb created in the network |
 | prod\_default\_policy | DNS Policy created in the network |
 | prod\_dns\_record\_set\_gcr\_api | DNS Record set for GCR APIs |
 | prod\_dns\_record\_set\_private\_api | DNS Record set for Private APIs |

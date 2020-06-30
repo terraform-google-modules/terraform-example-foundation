@@ -40,3 +40,52 @@ module "vpc_host_project" {
     application_name = "org-shared-vpc-${var.env}"
   }
 }
+
+
+module "base_shared_vpc_host_project" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 7.0"
+  random_project_id           = "true"
+  impersonate_service_account = var.terraform_service_account
+  name                        = "prj-${var.environment_code}-shared-base"
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = google_folder.env.id
+  activate_apis = [
+    "compute.googleapis.com",
+    "dns.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "container.googleapis.com",
+    "logging.googleapis.com"
+  ]
+
+  labels = {
+    environment      = var.env
+    application_name = "base-shared-vpc-host-${var.env}"
+  }
+}
+
+module "restricted_shared_vpc_host_project" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 7.0"
+  random_project_id           = "true"
+  impersonate_service_account = var.terraform_service_account
+  name                        = "prj-${var.environment_code}-shared-restricted"
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = google_folder.env.id
+  activate_apis = [
+    "compute.googleapis.com",
+    "dns.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "container.googleapis.com",
+    "logging.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "accesscontextmanager.googleapis.com"
+  ]
+
+  labels = {
+    environment      = var.env
+    application_name = "restricted-shared-vpc-host-${var.env}"
+  }
+}

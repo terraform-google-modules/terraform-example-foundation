@@ -34,7 +34,7 @@ output "gcs_bucket_tfstate" {
   value       = module.seed_bootstrap.gcs_bucket_tfstate
 }
 
-// TODO(caleonardo / bharathkkb): Choose between cloudbuild_bootstrap and jenkins_bootstrap with a variable
+// TODO(caleonardo / bharathkkb): Choose between cloudbuild_bootstrap and jenkins_bootstrap with an "enabled" variable
 // Un-comment the cloudbuild_bootstrap module and the outputs if you want to use Cloud Build instead of Jenkins
 //output "cloudbuild_project_id" {
 //  description = "Project where CloudBuild configuration and terraform container image will reside."

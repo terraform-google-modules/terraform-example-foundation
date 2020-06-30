@@ -17,6 +17,11 @@
 /******************************************
   Required variables
 *******************************************/
+variable "enabled" {
+  description = "Flag to optionally disable usage of this module."
+  type        = bool
+  default     = true
+}
 
 variable "org_id" {
   description = "GCP Organization ID"
@@ -31,7 +36,7 @@ variable "billing_account" {
 variable "default_region" {
   description = "Default region to create resources where applicable."
   type        = string
-  default     = "europe-west2"
+  default     = "us-central1"
 }
 
 variable "jenkins_agent_gce_name" {

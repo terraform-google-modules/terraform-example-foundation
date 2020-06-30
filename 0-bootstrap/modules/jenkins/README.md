@@ -47,7 +47,7 @@ Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbb
 ## Resources created
 
 - TODO
-    - KMS Keyring and key for secrets, including IAM for Cloudbuild, Org Admins and Terraform service acocunt
+    - KMS Keyring and key for secrets, including IAM for Cloudbuild, Org Admins and Terraform service account
     - (optional) Cloudbuild impersonation permissions for a service account
     - (optional) Cloud Source Repos, with triggers for terraform plan (all other branches) & terraform apply (master)
 
@@ -59,7 +59,8 @@ Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbb
 |------|-------------|:----:|:-----:|:-----:|
 | activate\_apis | List of APIs to enable in the Cloudbuild project. | list(string) | `<list>` | no |
 | billing\_account | The ID of the billing account to associate projects with. | string | n/a | yes |
-| default\_region | Default region to create resources where applicable. | string | `"europe-west2"` | no |
+| default\_region | Default region to create resources where applicable. | string | `"us-central1"` | no |
+| enabled | Flag to optionally disable usage of this module. | bool | `"true"` | no |
 | folder\_id | The ID of a folder to host this project | string | `""` | no |
 | jenkins\_agent\_gce\_machine\_type | Jenkins Agent GCE Instance type. | string | `"n1-standard-1"` | no |
 | jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name. | string | `"jenkins-agent-01"` | no |

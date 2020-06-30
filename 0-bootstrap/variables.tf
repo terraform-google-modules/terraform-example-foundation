@@ -45,3 +45,15 @@ variable "parent_folder" {
   type        = string
   default     = ""
 }
+
+variable "org_project_creators" {
+  description = "Additional list of members to have project creator role accross the organization. Prefix of group: user: or serviceAccount: is required."
+  type        = list(string)
+  default     = []
+}
+
+variable "skip_gcloud_download" {
+  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
+  type        = bool
+  default     = true
+}

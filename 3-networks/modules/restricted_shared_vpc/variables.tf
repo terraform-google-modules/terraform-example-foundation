@@ -44,21 +44,21 @@ variable "bgp_asn_nat" {
   description = "BGP ASN for NAT cloud routes."
 }
 
+variable "bgp_asn_subnet" {
+  type        = number
+  description = "BGP ASN for Subnets cloud routers."
+}
+
 variable "subnets" {
-  type = list(object({
-    subnet_ip             = string,
-    subnet_region         = string,
-    subnet_private_access = string,
-    subnet_flow_logs      = string,
-    description           = string,
-    bgp_asn               = list(number)
-    secondary_ranges = list(object({
-      range_label   = string,
-      ip_cidr_range = string
-    }))
-  }))
-  description = "The list of subnets being created. Includes the Secondary ranges that will be used in some of the subnets. If you don't have secondary ranges, inform an empty list 'secondary_ranges = []'"
+  type        = list(map(string))
+  description = "The list of subnets being created"
   default     = []
+}
+
+variable "secondary_ranges" {
+  type        = map(list(object({ range_name = string, ip_cidr_range = string })))
+  description = "Secondary ranges that will be used in some of the subnets"
+  default     = {}
 }
 
 variable "dns_enable_inbound_forwarding" {

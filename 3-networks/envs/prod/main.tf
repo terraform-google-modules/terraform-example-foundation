@@ -19,13 +19,10 @@ locals {
   env                       = "prod"
   restricted_project_id     = data.google_projects.restricted_host_project.projects[0].project_id
   restricted_project_number = data.google_project.restricted_host_project.number
-  region1_bgp_asn           = [64514, 64515]
-  region2_bgp_asn           = [64516, 64517]
 }
 
-# TODO: Replace with label of the restricted shared vpc project
 data "google_projects" "restricted_host_project" {
-  filter = "labels.application_name=org-shared-vpc-${local.env}"
+  filter = "labels.application_name=restricted-shared-vpc-host-${local.env}"
 }
 
 data "google_project" "restricted_host_project" {
@@ -47,40 +44,36 @@ module "restricted_shared_vpc" {
   private_service_cidr = "10.0.48.0/20"
   org_id               = var.org_id
   bgp_asn_nat          = "64512"
+  bgp_asn_subnet       = "64514"
+
   subnets = [
     {
+      subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.subnet_region1}"
       subnet_ip             = "10.0.32.0/21"
       subnet_region         = var.subnet_region1
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
-      bgp_asn               = local.region1_bgp_asn
-      description           = "First subnet example."
-      secondary_ranges = [
-        {
-          range_label   = "gke-pod"
-          ip_cidr_range = "192.168.0.0/19"
-        },
-        {
-          range_label   = "gke-svc"
-          ip_cidr_range = "192.168.32.0/23"
-        },
-      ]
-      }, {
+      description           = "First ${local.env} subnet example."
+    },
+    {
+      subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.subnet_region2}"
       subnet_ip             = "10.0.40.0/21"
       subnet_region         = var.subnet_region2
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
-      bgp_asn               = local.region2_bgp_asn
-      description           = "Second subnet example."
-      secondary_ranges = [
-        {
-          range_label   = "gke-pod"
-          ip_cidr_range = "192.168.64.0/19"
-        },
-        {
-          range_label   = "gke-svc"
-          ip_cidr_range = "192.168.128.0/23"
-      }, ]
+      description           = "Second ${local.env} subnet example."
     }
   ]
+  secondary_ranges = {
+    "sb-${local.environment_code}-shared-restricted-${var.subnet_region1}" = [
+      {
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.subnet_region1}-gke-pod"
+        ip_cidr_range = "192.168.0.0/19"
+      },
+      {
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.subnet_region1}-gke-svc"
+        ip_cidr_range = "192.168.32.0/23"
+      }
+    ]
+  }
 }

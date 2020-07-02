@@ -121,12 +121,9 @@ module "region1_router1" {
   network = module.main.network_name
   region  = var.subnets[0].subnet_region
   bgp = {
-    asn = var.bgp_asn_subnet
-    advertised_ip_ranges = [{
-      range = local.restricted_googleapis_cidr
-      }, {
-      range = var.subnets[0].subnet_ip
-    }]
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
   }
 }
 
@@ -138,12 +135,9 @@ module "region1_router2" {
   network = module.main.network_name
   region  = var.subnets[0].subnet_region
   bgp = {
-    asn = var.bgp_asn_subnet
-    advertised_ip_ranges = [{
-      range = local.restricted_googleapis_cidr
-      }, {
-      range = var.subnets[0].subnet_ip
-    }]
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
   }
 }
 
@@ -155,12 +149,9 @@ module "region2_router1" {
   network = module.main.network_name
   region  = var.subnets[1].subnet_region
   bgp = {
-    asn = var.bgp_asn_subnet
-    advertised_ip_ranges = [{
-      range = local.restricted_googleapis_cidr
-      }, {
-      range = var.subnets[1].subnet_ip
-    }]
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
   }
 }
 
@@ -172,11 +163,8 @@ module "region2_router2" {
   network = module.main.network_name
   region  = var.subnets[1].subnet_region
   bgp = {
-    asn = var.bgp_asn_subnet
-    advertised_ip_ranges = [{
-      range = local.restricted_googleapis_cidr
-      }, {
-      range = var.subnets[1].subnet_ip
-    }]
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
   }
 }

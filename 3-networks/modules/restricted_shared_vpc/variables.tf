@@ -84,10 +84,10 @@ variable "nat_num_addresses" {
   default     = 2
 }
 
-variable "default_fw_rules_enabled" {
+variable "optional_fw_rules_enabled" {
   type        = bool
-  description = "Toggle creation of default firewall rules."
-  default     = true
+  description = "Toggle creation of optional firewall rules."
+  default     = false
 }
 
 variable "policy_name" {

@@ -75,3 +75,25 @@ module "org_secrets" {
     application_name = "org-secrets"
   }
 }
+
+/******************************************
+  Project for SCC Notifications
+*****************************************/
+
+module "scc_notifications" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 7.0"
+  random_project_id           = "true"
+  impersonate_service_account = var.terraform_service_account
+  default_service_account     = "depriviledge"
+  name                        = "prj-scc-notifications"
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = google_folder.logs.id
+  activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com"]
+
+  labels = {
+    environment      = "prod"
+    application_name = "prj-scc-notification"
+  }
+}

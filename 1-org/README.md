@@ -44,6 +44,8 @@ The purpose of this step is to setup top level shared folders, monitoring & netw
 | domains\_to\_allow | The list of domains to allow users from in IAM. | list(string) | n/a | yes |
 | org\_id | The organization id for the associated services | string | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
+| scc\_notification\_filter | Filter used to SCC Notification | string | `"state=\\\"ACTIVE\\\""` | no |
+| scc\_notification\_name | Name of SCC Notification | string | n/a | yes |
 | system\_event\_table\_expiration\_ms | Period before tables expire for system event logs in milliseconds. Default is 400 days. | number | `"34560000000"` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 

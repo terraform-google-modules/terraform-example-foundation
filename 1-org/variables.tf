@@ -67,6 +67,17 @@ variable "data_access_table_expiration_ms" {
   default     = 2592000000
 }
 
+variable "scc_notification_name" {
+  description = "Name of SCC Notification"
+  type        = string
+}
+
+variable "scc_notification_filter" {
+  description = "Filter used to SCC Notification"
+  type        = string
+  default     = "state=\\\"ACTIVE\\\""
+}
+
 variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string

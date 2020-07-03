@@ -73,7 +73,7 @@ variable "scc_notification_name" {
 }
 
 variable "scc_notification_filter" {
-  description = "Filter used to SCC Notification"
+  description = "Filter used to SCC Notification, you can see more details how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter"
   type        = string
   default     = "state=\\\"ACTIVE\\\""
 }

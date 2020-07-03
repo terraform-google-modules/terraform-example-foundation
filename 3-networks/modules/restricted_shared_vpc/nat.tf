@@ -20,9 +20,9 @@
 
 resource "google_compute_router" "nat_router1" {
   count   = var.nat_enabled ? 1 : 0
-  name    = "cr-${local.vpc_name}-${var.nat_region1}-nat-router"
+  name    = "cr-${local.vpc_name}-${var.subnets[0].subnet_region}-nat-router"
   project = var.project_id
-  region  = var.nat_region1
+  region  = var.subnets[0].subnet_region
   network = module.main.network_self_link
 
   bgp {
@@ -33,16 +33,16 @@ resource "google_compute_router" "nat_router1" {
 resource "google_compute_address" "nat_external_addresses1" {
   count   = var.nat_enabled ? var.nat_num_addresses1 : 0
   project = var.project_id
-  name    = "ca-${local.vpc_name}-${var.nat_region1}-${count.index}"
-  region  = var.nat_region1
+  name    = "ca-${local.vpc_name}-${var.subnets[0].subnet_region}-${count.index}"
+  region  = var.subnets[0].subnet_region
 }
 
 resource "google_compute_router_nat" "egress_nat1" {
   count                              = var.nat_enabled ? 1 : 0
-  name                               = "rn-${local.vpc_name}-${var.nat_region1}-egress"
+  name                               = "rn-${local.vpc_name}-${var.subnets[0].subnet_region}-egress"
   project                            = var.project_id
   router                             = google_compute_router.nat_router1.0.name
-  region                             = var.nat_region1
+  region                             = var.subnets[0].subnet_region
   nat_ip_allocate_option             = "MANUAL_ONLY"
   nat_ips                            = google_compute_address.nat_external_addresses1.*.self_link
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
@@ -55,9 +55,9 @@ resource "google_compute_router_nat" "egress_nat1" {
 
 resource "google_compute_router" "nat_router2" {
   count   = var.nat_enabled ? 1 : 0
-  name    = "cr-${local.vpc_name}-${var.nat_region2}-nat-router"
+  name    = "cr-${local.vpc_name}-${var.subnets[1].subnet_region}-nat-router"
   project = var.project_id
-  region  = var.nat_region2
+  region  = var.subnets[1].subnet_region
   network = module.main.network_self_link
 
   bgp {
@@ -68,16 +68,16 @@ resource "google_compute_router" "nat_router2" {
 resource "google_compute_address" "nat_external_addresses2" {
   count   = var.nat_enabled ? var.nat_num_addresses2 : 0
   project = var.project_id
-  name    = "ca-${local.vpc_name}-${var.nat_region2}-${count.index}"
-  region  = var.nat_region2
+  name    = "ca-${local.vpc_name}-${var.subnets[1].subnet_region}-${count.index}"
+  region  = var.subnets[1].subnet_region
 }
 
 resource "google_compute_router_nat" "egress_nat2" {
   count                              = var.nat_enabled ? 1 : 0
-  name                               = "rn-${local.vpc_name}-${var.nat_region2}-egress"
+  name                               = "rn-${local.vpc_name}-${var.subnets[1].subnet_region}-egress"
   project                            = var.project_id
   router                             = google_compute_router.nat_router2.0.name
-  region                             = var.nat_region2
+  region                             = var.subnets[1].subnet_region
   nat_ip_allocate_option             = "MANUAL_ONLY"
   nat_ips                            = google_compute_address.nat_external_addresses2.*.self_link
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"

@@ -40,12 +40,6 @@ variable "nat_enabled" {
   default     = false
 }
 
-variable "nat_region1" {
-  type        = string
-  description = "Region used to create first NAT cloud router."
-  default     = ""
-}
-
 variable "nat_bgp_asn1" {
   type        = number
   description = "BGP ASN for first NAT cloud routes."
@@ -56,12 +50,6 @@ variable "nat_num_addresses1" {
   type        = number
   description = "Number of external IPs to reserve for first Cloud NAT."
   default     = 2
-}
-
-variable "nat_region2" {
-  type        = string
-  description = "Region used to create second NAT cloud router."
-  default     = ""
 }
 
 variable "nat_bgp_asn2" {

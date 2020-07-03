@@ -37,15 +37,34 @@ module "main" {
   subnets          = var.subnets
   secondary_ranges = var.secondary_ranges
 
-  routes = [
-    {
+  routes = concat(
+    [{
       name              = "rt-${local.vpc_name}-1000-all-default-restricted-api"
       description       = "Route through IGW to allow restricted google api access."
       destination_range = local.restricted_googleapis_cidr
       next_hop_internet = "true"
       priority          = "1000"
-    }
-  ]
+    }],
+    var.nat_enabled ?
+    [
+      {
+        name              = "rt-${local.vpc_name}-1000-egress-internet-default"
+        description       = "Tag based route through IGW to access internet"
+        destination_range = "0.0.0.0/0"
+        tags              = "egress-internet"
+        next_hop_internet = "true"
+        priority          = "1000"
+      },
+      {
+        name              = "rt-${local.vpc_name}-1000-all-default-windows-kms"
+        description       = "Route through IGW to allow Windows KMS activation for GCP."
+        destination_range = "35.190.247.13/32"
+        next_hop_internet = "true"
+        priority          = "1000"
+      }
+    ]
+    : []
+  )
 }
 
 /***************************************************************

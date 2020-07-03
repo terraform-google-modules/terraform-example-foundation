@@ -13,8 +13,6 @@
 | nat\_enabled | Toggle creation of NAT cloud router. | bool | `"false"` | no |
 | nat\_num\_addresses1 | Number of external IPs to reserve for first Cloud NAT. | number | `"2"` | no |
 | nat\_num\_addresses2 | Number of external IPs to reserve for second Cloud NAT. | number | `"2"` | no |
-| nat\_region1 | Region used to create first NAT cloud router. | string | `""` | no |
-| nat\_region2 | Region used to create second NAT cloud router. | string | `""` | no |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules. | bool | `"false"` | no |
 | org\_id | Organization ID | string | n/a | yes |
 | policy\_name | The access context policy's name. | string | n/a | yes |

@@ -24,11 +24,6 @@ variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform."
 }
 
-variable "nat_region" {
-  type        = string
-  description = "NAT region for the shared vpc module."
-}
-
 variable "subnet_region1" {
   type        = string
   description = "First subnet region. The shared vpc modules only configures exactly two regions."

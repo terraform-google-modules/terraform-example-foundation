@@ -3,7 +3,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| nat\_region | NAT region for the shared vpc module. | string | n/a | yes |
 | org\_id | Organization ID | string | n/a | yes |
 | subnet\_region1 | First subnet region. The shared vpc modules only configures exactly two regions. | string | n/a | yes |
 | subnet\_region2 | Second subnet region. The shared vpc modules only configures exactly two regions. | string | n/a | yes |

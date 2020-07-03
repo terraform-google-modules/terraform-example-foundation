@@ -71,43 +71,6 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   reserved_peering_ranges = [google_compute_global_address.private_service_access_address.name]
 }
 
-/******************************************
-  NAT Cloud Router & NAT config
- *****************************************/
-
-resource "google_compute_router" "nat_router" {
-  name    = "cr-${local.vpc_name}-${var.nat_region}-nat-router"
-  project = var.project_id
-  region  = var.nat_region
-  network = module.main.network_self_link
-
-  bgp {
-    asn = var.bgp_asn_nat
-  }
-}
-
-resource "google_compute_address" "nat_external_addresses" {
-  count   = var.nat_num_addresses
-  project = var.project_id
-  name    = "ca-${local.vpc_name}-${var.nat_region}-${count.index}"
-  region  = var.nat_region
-}
-
-resource "google_compute_router_nat" "default_nat" {
-  name                               = "rn-${local.vpc_name}-${var.nat_region}-default"
-  project                            = var.project_id
-  router                             = google_compute_router.nat_router.name
-  region                             = var.nat_region
-  nat_ip_allocate_option             = "MANUAL_ONLY"
-  nat_ips                            = google_compute_address.nat_external_addresses.*.self_link
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
-
-  log_config {
-    filter = "TRANSLATIONS_ONLY"
-    enable = true
-  }
-}
-
 /************************************
   Router to advertise shared VPC
   subnetworks and Google Restricted API

@@ -91,7 +91,7 @@ module "scc_notifications" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.logs.id
   activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com"]
-  skip_gcloud_download        = true
+  skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
     environment      = "prod"

@@ -50,6 +50,8 @@ module "scc_notification" {
 
   platform = "linux"
 
+  additional_components = var.skip_gcloud_download ? [] : ["alpha"]
+
   create_cmd_entrypoint = "gcloud"
   create_cmd_body       = <<-EOF
     alpha scc notifications create ${var.scc_notification_name} --organization ${var.org_id} \
@@ -60,6 +62,10 @@ module "scc_notification" {
 EOF
 
   destroy_cmd_entrypoint = "gcloud"
-  destroy_cmd_body       = "alpha scc notifications delete organizations/${var.org_id}/notificationConfigs/${var.scc_notification_name} --quiet"
-  skip_download          = "true"
+  destroy_cmd_body       = <<-EOF
+  alpha scc notifications delete organizations/${var.org_id}/notificationConfigs/${var.scc_notification_name} \
+  --impersonate-service-account ${var.terraform_service_account} \
+  --quiet
+  EOF
+  skip_download          = var.skip_gcloud_download
 }

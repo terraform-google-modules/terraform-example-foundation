@@ -44,8 +44,8 @@ module "shared_vpc_nonprod" {
   vpc_label            = "private"
   private_service_cidr = "10.0.80.0/20"
   nat_enabled          = true
-  nat_bgp_asn1         = "64514"
-  nat_bgp_asn2         = "64514"
+  nat_bgp_asn_region1  = "64514"
+  nat_bgp_asn_region2  = "64514"
   default_region1      = var.default_region1
   default_region2      = var.default_region2
   bgp_asn_subnet       = "64514"
@@ -80,7 +80,6 @@ module "shared_vpc_nonprod" {
       }
     ]
   }
-
 }
 
 module "shared_vpc_prod" {
@@ -89,7 +88,9 @@ module "shared_vpc_prod" {
   environment_code     = "p"
   vpc_label            = "private"
   private_service_cidr = "10.0.16.0/20"
-  nat_enabled          = false
+  nat_enabled          = true
+  nat_bgp_asn_region1  = "64514"
+  nat_bgp_asn_region2  = "64514"
   default_region1      = var.default_region1
   default_region2      = var.default_region2
   bgp_asn_subnet       = "64514"

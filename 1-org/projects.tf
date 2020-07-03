@@ -82,7 +82,7 @@ module "org_secrets" {
 
 module "scc_notifications" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0"
+  version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
@@ -91,6 +91,7 @@ module "scc_notifications" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.logs.id
   activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com"]
+  skip_gcloud_download        = true
 
   labels = {
     environment      = "prod"

@@ -19,17 +19,19 @@
 *****************************************/
 
 locals {
-  description = "SCC Notification for all findings '${var.scc_notification_filter}'"
+  description = "SCC Notification for all active findings"
 }
 
 
 resource "google_pubsub_topic" "scc_notification_topic" {
-  name = "top-scc-notification"
+  name    = "top-scc-notification"
+  project = module.scc_notifications.project_id
 }
 
 resource "google_pubsub_subscription" "scc_notification_subscription" {
-  name  = "sub-scc-notification"
-  topic = google_pubsub_topic.scc_notification_topic.name
+  name    = "sub-scc-notification"
+  topic   = google_pubsub_topic.scc_notification_topic.name
+  project = module.scc_notifications.project_id
 
   message_retention_duration = "1200s"
   retain_acked_messages      = true
@@ -48,8 +50,15 @@ module "scc_notification" {
 
   platform = "linux"
 
-  create_cmd_entrypoint  = "gcloud"
-  create_cmd_body        = "alpha scc notifications create ${var.scc_notification_name} --organization \"${var.org_id}\" --description \"${local.description}\" --pubsub-topic ${google_pubsub_topic.scc_notification_topic.name} --filter \"${var.scc_notification_filter}\""
+  create_cmd_entrypoint = "gcloud"
+  create_cmd_body       = <<-EOF
+    alpha scc notifications create ${var.scc_notification_name} --organization ${var.org_id} \
+    --description "${local.description}" \
+    --pubsub-topic projects/${module.scc_notifications.project_id}/topics/${google_pubsub_topic.scc_notification_topic.name} \
+    --filter "${var.scc_notification_filter}" \
+    --impersonate-service-account=${var.terraform_service_account}
+EOF
+
   destroy_cmd_entrypoint = "gcloud"
   destroy_cmd_body       = "alpha scc notifications delete organizations/${var.org_id}/notificationConfigs/${var.scc_notification_name} --quiet"
   skip_download          = "true"

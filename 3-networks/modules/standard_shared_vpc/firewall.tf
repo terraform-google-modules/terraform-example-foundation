@@ -36,6 +36,21 @@ resource "google_compute_firewall" "deny_all_egress" {
 }
 
 
+resource "google_compute_firewall" "allow_private_api_egress" {
+  name      = "fw-${var.environment_code}-shared-private-65534-e-a-all-all-tcp-443"
+  network   = module.main.network_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 65534
+
+  allow {
+    protocol = "tcp"
+    ports    = ["443"]
+  }
+
+  destination_ranges = [local.private_googleapis_cidr]
+}
+
 
 /******************************************
   Default firewall rules

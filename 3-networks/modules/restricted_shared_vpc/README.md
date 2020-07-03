@@ -4,15 +4,17 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | number | n/a | yes |
+| default\_region1 | First subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
+| default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | bool | `"true"` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization. | string | n/a | yes |
 | members | An allowed list of members (users, service accounts). The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid} | list(string) | n/a | yes |
-| nat\_bgp\_asn1 | BGP ASN for first NAT cloud routes. | number | `"0"` | no |
-| nat\_bgp\_asn2 | BGP ASN for second NAT cloud routes. | number | `"0"` | no |
+| nat\_bgp\_asn\_region1 | BGP ASN for first NAT cloud routes. | number | `"0"` | no |
+| nat\_bgp\_asn\_region2 | BGP ASN for second NAT cloud routes. | number | `"0"` | no |
 | nat\_enabled | Toggle creation of NAT cloud router. | bool | `"false"` | no |
-| nat\_num\_addresses1 | Number of external IPs to reserve for first Cloud NAT. | number | `"2"` | no |
-| nat\_num\_addresses2 | Number of external IPs to reserve for second Cloud NAT. | number | `"2"` | no |
+| nat\_num\_addresses\_region1 | Number of external IPs to reserve for first Cloud NAT. | number | `"2"` | no |
+| nat\_num\_addresses\_region2 | Number of external IPs to reserve for second Cloud NAT. | number | `"2"` | no |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules. | bool | `"false"` | no |
 | org\_id | Organization ID | string | n/a | yes |
 | policy\_name | The access context policy's name. | string | n/a | yes |
@@ -27,24 +29,10 @@
 
 | Name | Description |
 |------|-------------|
-| allow\_iap\_rdp | Firewall rule allow_iap_rdp created in the network |
-| allow\_iap\_ssh | Firewall rule allow_iap_ssh created in the network |
-| allow\_lb | Firewall rule allow_lb created in the network |
-| default\_policy | DNS Policy created in the network |
-| dns\_record\_set\_gcr\_api | DNS Record set for GCR APIs |
-| dns\_record\_set\_restricted\_api | DNS Record set for Private APIs |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
-| policy\_name | Name of the parent access context policy |
-| protected\_project\_id | Project id of the project INSIDE the default VPC Service Controls perimeter |
-| region1\_router1 | Router 1 for Region 1 |
-| region1\_router2 | Router 2 for Region 1 |
-| region2\_router1 | Router 1 for Region 2 |
-| region2\_router2 | Router 2 for Region 2 |
-| subnets\_flow\_logs | Whether the subnets have VPC flow logs enabled |
 | subnets\_ips | The IPs and CIDRs of the subnets being created |
 | subnets\_names | The names of the subnets being created |
-| subnets\_private\_access | Whether the subnets have access to Google API's without a public IP |
 | subnets\_regions | The region where the subnets will be created |
 | subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | subnets\_self\_links | The self-links of subnets being created |

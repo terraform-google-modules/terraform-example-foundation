@@ -44,33 +44,35 @@ module "restricted_shared_vpc" {
   org_id               = var.org_id
   nat_enabled          = false
   bgp_asn_subnet       = "64514"
+  default_region1      = var.default_region1
+  default_region2      = var.default_region2
 
   subnets = [
     {
-      subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.subnet_region1}"
+      subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.default_region1}"
       subnet_ip             = "10.0.96.0/21"
-      subnet_region         = var.subnet_region1
+      subnet_region         = var.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
       description           = "First ${local.env} subnet example."
     },
     {
-      subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.subnet_region2}"
+      subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.default_region2}"
       subnet_ip             = "10.0.104.0/21"
-      subnet_region         = var.subnet_region2
+      subnet_region         = var.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = "false"
       description           = "Second ${local.env} subnet example."
     }
   ]
   secondary_ranges = {
-    "sb-${local.environment_code}-shared-restricted-${var.subnet_region1}" = [
+    "sb-${local.environment_code}-shared-restricted-${var.default_region2}" = [
       {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.subnet_region1}-gke-pod"
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region2}-gke-pod"
         ip_cidr_range = "192.168.0.0/19"
       },
       {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.subnet_region1}-gke-svc"
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region2}-gke-svc"
         ip_cidr_range = "192.168.32.0/23"
       }
     ]

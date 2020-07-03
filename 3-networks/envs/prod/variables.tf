@@ -24,12 +24,12 @@ variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform."
 }
 
-variable "subnet_region1" {
+variable "default_region1" {
   type        = string
-  description = "First subnet region. The shared vpc modules only configures exactly two regions."
+  description = "First subnet region. The shared vpc modules only configures two regions."
 }
 
-variable "subnet_region2" {
+variable "default_region2" {
   type        = string
-  description = "Second subnet region. The shared vpc modules only configures exactly two regions."
+  description = "Second subnet region. The shared vpc modules only configures two regions."
 }

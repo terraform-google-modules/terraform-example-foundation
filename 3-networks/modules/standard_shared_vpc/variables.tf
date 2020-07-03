@@ -16,7 +16,7 @@
 
 variable "project_id" {
   type        = string
-  description = "Project ID for Restricted Shared VPC."
+  description = "Project ID for Private Shared VPC."
 }
 
 variable "environment_code" {

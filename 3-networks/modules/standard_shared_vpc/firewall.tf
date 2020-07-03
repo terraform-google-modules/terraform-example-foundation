@@ -15,13 +15,36 @@
  */
 
 /******************************************
+  Mandatory firewall rules
+ *****************************************/
+resource "google_compute_firewall" "deny_all_egress" {
+  name      = "fw-${var.environment_code}-shared-private-65535-e-d-all-all-tcp-udp"
+  network   = module.main.network_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 65535
+
+  deny {
+    protocol = "tcp"
+  }
+
+  deny {
+    protocol = "udp"
+  }
+
+  destination_ranges = ["0.0.0.0/0"]
+}
+
+
+
+/******************************************
   Default firewall rules
  *****************************************/
 
 // Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
 resource "google_compute_firewall" "allow_iap_ssh" {
   count   = var.default_fw_rules_enabled ? 1 : 0
-  name    = "fw-${local.vpc_name}-1000-i-a-all-allow-iap-ssh-tcp-22"
+  name    = "fw-${var.environment_code}-shared-private-1000-i-a-all-allow-iap-ssh-tcp-22"
   network = module.main.network_name
   project = var.project_id
 
@@ -39,7 +62,7 @@ resource "google_compute_firewall" "allow_iap_ssh" {
 // Allow RDP via IAP when using the allow-iap-rdp tag for Windows workloads.
 resource "google_compute_firewall" "allow_iap_rdp" {
   count   = var.default_fw_rules_enabled ? 1 : 0
-  name    = "fw-${local.vpc_name}-1000-i-a-all-allow-iap-rdp-tcp-3389"
+  name    = "fw-${var.environment_code}-shared-private-1000-i-a-all-allow-iap-rdp-tcp-3389"
   network = module.main.network_name
   project = var.project_id
 
@@ -57,7 +80,7 @@ resource "google_compute_firewall" "allow_iap_rdp" {
 // Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
 resource "google_compute_firewall" "allow_lb" {
   count   = var.default_fw_rules_enabled ? 1 : 0
-  name    = "fw-${local.vpc_name}-1000-i-a-all-allow-lb-tcp-80-8080-443"
+  name    = "fw-${var.environment_code}-shared-private-1000-i-a-all-allow-lb-tcp-80-8080-443"
   network = module.main.network_name
   project = var.project_id
 

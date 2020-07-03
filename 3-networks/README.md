@@ -36,11 +36,9 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| billing\_account | Billing account to attach to projects. | string | n/a | yes |
-| nat\_region | NAT region standard_shared_vpc | string | n/a | yes |
+| default\_region1 | Default region standard_shared_vpc currently only configures two regions | string | n/a | yes |
+| default\_region2 | Default region standard_shared_vpc currently only configures two regions | string | n/a | yes |
 | org\_id | Organization ID | string | n/a | yes |
-| subnet\_region1 | Subnet region standard_shared_vpc currently only configures two regions | string | n/a | yes |
-| subnet\_region2 | Subnet region standard_shared_vpc currently only configures two regions | string | n/a | yes |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 
 ## Outputs

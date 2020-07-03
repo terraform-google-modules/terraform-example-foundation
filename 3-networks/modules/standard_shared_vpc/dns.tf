@@ -21,7 +21,7 @@
 resource "google_dns_policy" "default_policy" {
   provider                  = google-beta
   project                   = var.project_id
-  name                      = "dp-${local.vpc_name}-default-policy"
+  name                      = "dp-${var.environment_code}-shared-private-default-policy"
   enable_inbound_forwarding = var.dns_enable_inbound_forwarding
   enable_logging            = var.dns_enable_logging
   networks {
@@ -38,7 +38,7 @@ module "private_googleapis" {
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "private"
-  name        = "dz-${local.vpc_name}-private-apis"
+  name        = "dz-${var.environment_code}-shared-private-apis"
   domain      = "googleapis.com."
   description = "Private DNS zone to configure private.googleapis.com"
 
@@ -71,7 +71,7 @@ module "private_gcr" {
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "private"
-  name        = "dz-${local.vpc_name}-private-gcr"
+  name        = "dz-${var.environment_code}-shared-private-gcr"
   domain      = "gcr.io."
   description = "Private DNS zone to configure gcr.io"
 

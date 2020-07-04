@@ -42,25 +42,25 @@ variable "nat_enabled" {
 
 variable "nat_bgp_asn_region1" {
   type        = number
-  description = "BGP ASN for first NAT cloud routes."
+  description = "BGP ASN for region 1 NAT cloud routes. If NAT is enabled this variable value must be a value in ranges [64512..65534] or [4200000000..4294967294]."
   default     = 0
 }
 
 variable "nat_num_addresses_region1" {
   type        = number
-  description = "Number of external IPs to reserve for first Cloud NAT."
+  description = "Number of external IPs to reserve for region 1 Cloud NAT."
   default     = 2
 }
 
 variable "nat_bgp_asn_region2" {
   type        = number
-  description = "BGP ASN for second NAT cloud routes."
+  description = "BGP ASN for region 2 NAT cloud routes. If NAT is enabled this variable value must be a value in ranges [64512..65534] or [4200000000..4294967294]."
   default     = 0
 }
 
 variable "nat_num_addresses_region2" {
   type        = number
-  description = "Number of external IPs to reserve for second Cloud NAT."
+  description = "Number of external IPs to reserve for region 2 Cloud NAT."
   default     = 2
 }
 

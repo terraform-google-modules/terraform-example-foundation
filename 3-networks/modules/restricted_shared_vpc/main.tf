@@ -76,7 +76,6 @@ module "main" {
  **************************************************************/
 
 resource "google_compute_global_address" "private_service_access_address" {
-  provider = google-beta
 
   name          = "ga-${local.vpc_name}-vpc-peering-internal"
   project       = var.project_id
@@ -88,7 +87,6 @@ resource "google_compute_global_address" "private_service_access_address" {
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
-  provider                = google-beta
   network                 = module.main.network_self_link
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_service_access_address.name]

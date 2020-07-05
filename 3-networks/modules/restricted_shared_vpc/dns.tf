@@ -19,7 +19,6 @@
  *****************************************/
 
 resource "google_dns_policy" "default_policy" {
-  provider                  = google-beta
   project                   = var.project_id
   name                      = "default-policy"
   enable_inbound_forwarding = var.dns_enable_inbound_forwarding

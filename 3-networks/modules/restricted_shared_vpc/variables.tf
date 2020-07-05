@@ -102,6 +102,12 @@ variable "private_service_cidr" {
   description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
 }
 
+variable "windows_activation_enabled" {
+  type        = bool
+  description = "Enable Windows license activation for Windows workloads."
+  default     = false
+}
+
 variable "optional_fw_rules_enabled" {
   type        = bool
   description = "Toggle creation of optional firewall rules."

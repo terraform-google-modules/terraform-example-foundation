@@ -73,7 +73,7 @@ variable "scc_notification_name" {
 }
 
 variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
+  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module. If set to true you, must ensure that Gcloud Alpha module is installed.)"
   type        = bool
   default     = true
 }

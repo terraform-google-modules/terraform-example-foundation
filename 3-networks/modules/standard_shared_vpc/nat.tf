@@ -27,7 +27,7 @@ resource "google_compute_router" "nat_router_region1" {
   network = module.main.network_self_link
 
   bgp {
-    asn = var.nat_bgp_asn_region1
+    asn = var.nat_bgp_asn
   }
 }
 
@@ -62,7 +62,7 @@ resource "google_compute_router" "nat_router_region2" {
   network = module.main.network_self_link
 
   bgp {
-    asn = var.nat_bgp_asn_region2
+    asn = var.nat_bgp_asn
   }
 }
 

@@ -38,17 +38,17 @@ data "google_projects" "prod_host_project" {
 *****************************************/
 
 module "shared_vpc_nonprod" {
-  source               = "./modules/standard_shared_vpc"
-  project_id           = local.nonprod_host_project_id
-  environment_code     = "n"
-  vpc_label            = "private"
-  private_service_cidr = "10.0.80.0/20"
-  nat_enabled          = true
-  nat_bgp_asn_region1  = "64514"
-  nat_bgp_asn_region2  = "64514"
-  default_region1      = var.default_region1
-  default_region2      = var.default_region2
-  bgp_asn_subnet       = "64514"
+  source                     = "./modules/standard_shared_vpc"
+  project_id                 = local.nonprod_host_project_id
+  environment_code           = "n"
+  vpc_label                  = "private"
+  private_service_cidr       = "10.0.80.0/20"
+  nat_enabled                = true
+  nat_bgp_asn                = "64514"
+  default_region1            = var.default_region1
+  default_region2            = var.default_region2
+  bgp_asn_subnet             = "64514"
+  windows_activation_enabled = true
 
   subnets = [
     {
@@ -83,17 +83,17 @@ module "shared_vpc_nonprod" {
 }
 
 module "shared_vpc_prod" {
-  source               = "./modules/standard_shared_vpc"
-  project_id           = local.prod_host_project_id
-  environment_code     = "p"
-  vpc_label            = "private"
-  private_service_cidr = "10.0.16.0/20"
-  nat_enabled          = true
-  nat_bgp_asn_region1  = "64514"
-  nat_bgp_asn_region2  = "64514"
-  default_region1      = var.default_region1
-  default_region2      = var.default_region2
-  bgp_asn_subnet       = "64514"
+  source                     = "./modules/standard_shared_vpc"
+  project_id                 = local.prod_host_project_id
+  environment_code           = "p"
+  vpc_label                  = "private"
+  private_service_cidr       = "10.0.16.0/20"
+  nat_enabled                = true
+  nat_bgp_asn                = "64514"
+  default_region1            = var.default_region1
+  default_region2            = var.default_region2
+  bgp_asn_subnet             = "64514"
+  windows_activation_enabled = true
   subnets = [
     {
       subnet_name           = "sb-p-shared-private-${var.default_region1}"

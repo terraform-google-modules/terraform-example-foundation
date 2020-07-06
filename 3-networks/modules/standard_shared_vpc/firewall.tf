@@ -105,6 +105,7 @@ resource "google_compute_firewall" "allow_windows_activation" {
     protocol = "tcp"
     ports    = ["1688"]
   }
+}
 
 // Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
 resource "google_compute_firewall" "allow_lb" {

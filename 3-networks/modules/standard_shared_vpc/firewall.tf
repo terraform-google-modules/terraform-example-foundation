@@ -92,6 +92,20 @@ resource "google_compute_firewall" "allow_iap_rdp" {
   target_tags = ["allow-iap-rdp"]
 }
 
+// Allow access to kms.windows.googlecloud.com for Windows license activation
+resource "google_compute_firewall" "allow_windows_activation" {
+  count     = var.windows_activation_enabled ? 1 : 0
+  name      = "fw-${var.environment_code}-shared-private-0-e-a-all-tcp-1688"
+  network   = module.main.network_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 0
+
+  allow {
+    protocol = "tcp"
+    ports    = ["1688"]
+  }
+
 // Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
 resource "google_compute_firewall" "allow_lb" {
   count   = var.default_fw_rules_enabled ? 1 : 0

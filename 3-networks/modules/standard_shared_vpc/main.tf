@@ -52,7 +52,10 @@ module "main" {
         tags              = "egress-internet"
         next_hop_internet = "true"
         priority          = "1000"
-      },
+      }
+    ]
+    : [],
+    var.windows_activation_enabled ?
       {
         name              = "rt-${local.vpc_name}-1000-all-default-windows-kms"
         description       = "Route through IGW to allow Windows KMS activation for GCP."

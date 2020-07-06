@@ -103,6 +103,12 @@ variable "private_service_cidr" {
   description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
 }
 
+variable "windows_activation_enabled" {
+  type        = bool
+  description = "Enable Windows license activation for Windows workloads."
+  default     = false
+}
+
 variable "nat_num_addresses" {
   type        = number
   description = "Number of external IPs to reserve for Cloud NAT."

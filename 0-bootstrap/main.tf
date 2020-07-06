@@ -77,7 +77,6 @@ module "seed_bootstrap" {
     "roles/logging.configWriter",
     "roles/orgpolicy.policyAdmin",
     "roles/resourcemanager.folderAdmin",
-    "roles/pubsub.admin",
     "roles/securitycenter.notificationConfigEditor"
   ]
 }

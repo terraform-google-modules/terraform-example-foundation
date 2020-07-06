@@ -54,8 +54,8 @@ module "seed_bootstrap" {
   sa_enable_impersonation = true
 }
 
-// TODO(caleonardo / bharathkkb): Choose between cloudbuild_bootstrap and jenkins_bootstrap with an "enabled" variable
-// Un-comment the cloudbuild_bootstrap module and the outputs if you want to use Cloud Build instead of Jenkins
+// Choose between cloudbuild_bootstrap and jenkins_bootstrap by commenting / deleting the module you do not want to use
+// If you want to use the cloudbuild_bootstrap module, un-comment it and delete / comment the Jenkins_bootstrap module
 //module "cloudbuild_bootstrap" {
 //  source                  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
 //  version                 = "~> 1.0"

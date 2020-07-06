@@ -17,12 +17,6 @@
 /******************************************
   Required variables
 *******************************************/
-variable "enabled" {
-  description = "Flag to optionally disable usage of this module."
-  type        = bool
-  default     = true
-}
-
 variable "org_id" {
   description = "GCP Organization ID"
   type        = string

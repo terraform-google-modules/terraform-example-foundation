@@ -41,16 +41,12 @@ module "cicd_project" {
   Jenkins Agent GCE instance
 *******************************************/
 resource "google_service_account" "jenkins_agent_gce_sa" {
-  count = var.enabled ? 1 : 0
-
   project      = module.cicd_project.project_id
   account_id   = var.jenkins_sa_email
   display_name = "CFT Jenkins Agent GCE custom Service Account"
 }
 
 resource "google_compute_instance" "jenkins_agent_gce_instance" {
-  count = var.enabled ? 1 : 0
-
   project      = module.cicd_project.project_id
   name         = var.jenkins_agent_gce_name
   machine_type = var.jenkins_agent_gce_machine_type
@@ -65,7 +61,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
   }
 
   network_interface {
-    network = google_compute_network.jenkins_agents[0].self_link
+    network = google_compute_network.jenkins_agents.self_link
 
     access_config {
       // Ephemeral IP
@@ -83,7 +79,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
   metadata_startup_script = "echo hi > /test.txt"
 
   service_account {
-    email = google_service_account.jenkins_agent_gce_sa[0].email
+    email = google_service_account.jenkins_agent_gce_sa.email
     scopes = [
       // TODO(caleonardo): These scopes will need to change.
       "https://www.googleapis.com/auth/compute.readonly",
@@ -101,12 +97,10 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 *******************************************/
 
 resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
-  count = var.enabled ? 1 : 0
-
   project       = module.cicd_project.project_id
   name          = "allow-ssh-to-jenkins-agents"
   description   = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
-  network       = google_compute_network.jenkins_agents[0].name
+  network       = google_compute_network.jenkins_agents.name
   source_ranges = var.jenkins_master_ip_addresses
   target_tags   = local.jenkins_gce_fw_tags
 
@@ -117,8 +111,6 @@ resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
 }
 
 resource "google_compute_network" "jenkins_agents" {
-  count = var.enabled ? 1 : 0
-
   project = module.cicd_project.project_id
   name    = "jenkins-agents-network"
 }

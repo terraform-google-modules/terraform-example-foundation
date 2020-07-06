@@ -21,10 +21,10 @@ output "cicd_project_id" {
 
 output "jenkins_agent_gce_instance_id" {
   description = "Jenkins Agent GCE Instance id."
-  value       = google_compute_instance.jenkins_agent_gce_instance[0].id
+  value       = google_compute_instance.jenkins_agent_gce_instance.id
 }
 
 output "jenkins_sa_email" {
   description = "Email for privileged custom service account for Jenkins Agent GCE instance."
-  value       = google_service_account.jenkins_agent_gce_sa[0].email
+  value       = google_service_account.jenkins_agent_gce_sa.email
 }

@@ -89,7 +89,7 @@ module "scc_notifications" {
   name                        = "prj-scc-notifications"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.logs.id
+  folder_id                   = local.parent
   activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com"]
   skip_gcloud_download        = var.skip_gcloud_download
 

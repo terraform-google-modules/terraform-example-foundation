@@ -29,46 +29,13 @@ variable "terraform_service_account" {
   type        = string
 }
 
-variable "default_region" {
-  description = "Default region for BigQuery resources."
-  type        = string
-}
-
-variable "billing_data_users" {
-  description = "Gsuite or Cloud Identity group that have access to billing data set."
-  type        = string
-}
-
-variable "audit_data_users" {
-  description = "Gsuite or Cloud Identity group that have access to audit logs."
-  type        = string
-}
-
-variable "domains_to_allow" {
-  description = "The list of domains to allow users from in IAM."
-  type        = list(string)
-}
-
-variable "access_table_expiration_ms" {
-  description = "Period before tables expire for access logs in milliseconds. Default is 400 days."
-  type        = number
-  default     = 34560000000
-}
-
-variable "system_event_table_expiration_ms" {
-  description = "Period before tables expire for system event logs in milliseconds. Default is 400 days."
-  type        = number
-  default     = 34560000000
-}
-
-variable "data_access_table_expiration_ms" {
-  description = "Period before tables expire for data access logs in milliseconds. Default is 30 days."
-  type        = number
-  default     = 2592000000
-}
-
 variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string
   default     = ""
+}
+
+variable "monitoring_workspace_users" {
+  description = "Gsuite or Cloud Identity group that have access to Monitoring Workspaces."
+  type        = string
 }

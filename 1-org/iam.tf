@@ -15,22 +15,6 @@
  */
 
 /******************************************
-  Monitoring - IAM
-*****************************************/
-
-resource "google_project_iam_member" "monitoring_prod_editor" {
-  project = module.org_monitoring_prod.project_id
-  role    = "roles/monitoring.editor"
-  member  = "group:${var.monitoring_workspace_users}"
-}
-
-resource "google_project_iam_member" "monitoring_nonprod_editor" {
-  project = module.org_monitoring_nonprod.project_id
-  role    = "roles/monitoring.editor"
-  member  = "group:${var.monitoring_workspace_users}"
-}
-
-/******************************************
   Audit Logs - IAM
 *****************************************/
 

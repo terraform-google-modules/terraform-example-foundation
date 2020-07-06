@@ -20,8 +20,6 @@ billing_data_users = "gcp-billing-admins@example.com"
 
 audit_data_users = "gcp-security-admins@example.com"
 
-monitoring_workspace_users = "gcp-monitoring-admins@example.com"
-
 org_id = "000000000000"
 
 billing_account = "000000-000000-000000"

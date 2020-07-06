@@ -1,0 +1,91 @@
+jenkins:
+  numExecutors: 0
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: ${JENKINS_WEB_UI_ADMIN_USER}
+          password: ${JENKINS_WEB_UI_ADMIN_PASSWD}
+          properties:
+          - mailer:
+              emailAddress: ${JENKINS_WEB_UI_ADMIN_EMAIL}
+  nodes:
+  - permanent:
+      launcher:
+        ssh:
+          credentialsId: "ssh_private_key_to_connect_to_${JENKINS_AGENT_NAME}"
+          host: ${JENKINS_AGENT_IP_ADDR}
+          port: 22
+          sshHostKeyVerificationStrategy:
+            manuallyTrustedKeyVerificationStrategy:
+              requireInitialManualTrust: false
+      name: "jenkins-ssh-agent-${JENKINS_AGENT_NAME}"
+      nodeDescription: "Jenkins Agent as a container running in GCE"
+      numExecutors: 1
+      remoteFS: ${JENKINS_AGENT_REMOTE_DIR}
+      retentionStrategy: "always"
+jobs:
+  - script: >
+      multibranchPipelineJob('terraform-jenkins-create-demo') {
+        factory {
+          workflowBranchProjectFactory {
+            scriptPath('example-pipelines/example-create/Jenkinsfile')
+          }
+        }
+        branchSources {
+          github {
+            id('12312313')
+            scanCredentialsId('github-token')
+            repoOwner("${GITHUB_USERNAME}")
+            repository("${GITHUB_REPO_NAME}")
+            buildOriginBranchWithPR(false)
+            buildOriginBranch(true)
+            buildOriginPRMerge(true)
+            buildForkPRMerge(true)
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+            numToKeep(10)
+          }
+        }
+        triggers {
+          periodic(1)
+        }
+      }
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: "github-token"
+              username: ${GITHUB_USERNAME}
+              password: ${GITHUB_TOKEN}
+              description: "Github personal token"
+          - basicSSHUserPrivateKey:
+              scope: GLOBAL
+              id: "ssh_private_key_to_connect_to_${JENKINS_AGENT_NAME}"
+              username: jenkins
+              description: "SSH private key provided"
+              privateKeySource:
+                directEntry:
+                  privateKey: |
+                    -----BEGIN RSA PRIVATE KEY-----
+                    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                    +        !!!! DO NOT REGISTER YOUR PRIVATE KEY HERE !!!!       +
+                    +  !!!!  IF YOU DO, DOCKER WILL PUT IT IN THE BUILD LOGS !!!!  +
+                    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                    + Instead, configure the private key using the Jenkins Web UI  +
+                    + 1 - Log in to the Web UI of your Jenkins Master              +
+                    + 2 - Click on "Credentials"                                   +
+                    + 3 - Find and click on the credential                         +
+                    +     for "ssh_private_key_to_connect_to_<Agent-Name>"         +
+                    + 4 - Click on "Update"                                        +
+                    + 5 - Click on "Replace"                                       +
+                    + 6 - Paste the private key in the textbox                     +
+                     +    named "Enter New Secret Below"                           +
+                    -----END RSA PRIVATE KEY-----

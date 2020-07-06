@@ -20,4 +20,3 @@ terraform {
     prefix = "terraform/org/state"
   }
 }
-

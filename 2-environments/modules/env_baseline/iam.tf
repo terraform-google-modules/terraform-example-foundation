@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = "~> 0.12.6"
+/******************************************
+  Monitoring - IAM
+*****************************************/
 
-  required_providers {
-    google      = "~> 3.5"
-    google-beta = "~> 3.5"
-  }
+resource "google_project_iam_member" "monitoring_editor" {
+  project = module.monitoring_project.project_id
+  role    = "roles/monitoring.editor"
+  member  = "group:${var.monitoring_workspace_users}"
 }

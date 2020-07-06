@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = "~> 0.12.6"
+org_id = "000000000000"
 
-  required_providers {
-    google      = "~> 3.5"
-    google-beta = "~> 3.5"
-  }
-}
+billing_account = "000000-000000-000000"
+
+terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
+
+monitoring_workspace_users = "gcp-monitoring-admins@example.com"
+
+//Optional - for development.  Will place all resources under a specific folder instead of org root
+//parent_folder = "01234567890"

@@ -93,3 +93,16 @@ module "jenkins_bootstrap" {
   terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
   sa_enable_impersonation = true
 }
+
+module "jenkins_bootstrap" {
+  source                  = "./modules/jenkins"
+  org_id                  = var.org_id
+  folder_id               = google_folder.seed.id
+  billing_account         = var.billing_account
+  group_org_admins        = var.group_org_admins
+  default_region          = var.default_region
+  terraform_sa_email      = module.seed_bootstrap.terraform_sa_email
+  terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
+  terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
+  sa_enable_impersonation = true
+}

@@ -53,6 +53,41 @@ output "nonprod_subnets_secondary_ranges" {
   description = "The secondary ranges associated with these subnets"
 }
 
+output "nonprod_default_policy" {
+  value       = module.shared_vpc_nonprod.default_policy
+  description = "DNS Policy created in the network"
+}
+
+output "nonprod_dns_record_set_private_api" {
+  value       = module.shared_vpc_nonprod.dns_record_set_private_api
+  description = "DNS Record set for Private APIs"
+}
+
+output "nonprod_dns_record_set_gcr_api" {
+  value       = module.shared_vpc_nonprod.dns_record_set_gcr_api
+  description = "DNS Record set for GCR APIs"
+}
+
+output "nonprod_region1_router1" {
+  value       = module.shared_vpc_nonprod.region1_router1
+  description = "Router 1 for Region 1"
+}
+
+output "nonprod_region1_router2" {
+  value       = module.shared_vpc_nonprod.region1_router2
+  description = "Router 1 for Region 2"
+}
+
+output "nonprod_region2_router1" {
+  value       = module.shared_vpc_nonprod.region2_router1
+  description = "Router 2 for Region 1"
+}
+
+output "nonprod_region2_router2" {
+  value       = module.shared_vpc_nonprod.region2_router2
+  description = "Router 2 for Region 2"
+}
+
 /******************************************
  Prod Outputs
 *****************************************/
@@ -90,4 +125,39 @@ output "prod_subnets_self_links" {
 output "prod_subnets_secondary_ranges" {
   value       = module.shared_vpc_prod.subnets_secondary_ranges
   description = "The secondary ranges associated with these subnets"
+}
+
+output "prod_default_policy" {
+  value       = module.shared_vpc_prod.default_policy
+  description = "DNS Policy created in the network"
+}
+
+output "prod_dns_record_set_private_api" {
+  value       = module.shared_vpc_prod.dns_record_set_private_api
+  description = "DNS Record set for Private APIs"
+}
+
+output "prod_dns_record_set_gcr_api" {
+  value       = module.shared_vpc_prod.dns_record_set_gcr_api
+  description = "DNS Record set for GCR APIs"
+}
+
+output "prod_region1_router1" {
+  value       = module.shared_vpc_prod.region1_router1
+  description = "Router 1 for Region 1"
+}
+
+output "prod_region1_router2" {
+  value       = module.shared_vpc_prod.region1_router2
+  description = "Router 1 for Region 2"
+}
+
+output "prod_region2_router1" {
+  value       = module.shared_vpc_prod.region2_router1
+  description = "Router 2 for Region 1"
+}
+
+output "prod_region2_router2" {
+  value       = module.shared_vpc_prod.region2_router2
+  description = "Router 2 for Region 2"
 }

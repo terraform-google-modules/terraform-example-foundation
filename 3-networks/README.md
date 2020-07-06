@@ -36,8 +36,8 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| billing\_account | Billing account to attach to projects. | string | n/a | yes |
-| default\_region | Default subnet region standard_shared_vpc currently only configures one region | string | n/a | yes |
+| default\_region1 | Default region standard_shared_vpc currently only configures two regions | string | n/a | yes |
+| default\_region2 | Default region standard_shared_vpc currently only configures two regions | string | n/a | yes |
 | org\_id | Organization ID | string | n/a | yes |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 
@@ -45,16 +45,30 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 
 | Name | Description |
 |------|-------------|
+| nonprod\_default\_policy | DNS Policy created in the network |
+| nonprod\_dns\_record\_set\_gcr\_api | DNS Record set for GCR APIs |
+| nonprod\_dns\_record\_set\_private\_api | DNS Record set for Private APIs |
 | nonprod\_host\_project\_id | The host project ID for nonprod |
 | nonprod\_network\_name | The name of the VPC being created |
 | nonprod\_network\_self\_link | The URI of the VPC being created |
+| nonprod\_region1\_router1 | Router 1 for Region 1 |
+| nonprod\_region1\_router2 | Router 1 for Region 2 |
+| nonprod\_region2\_router1 | Router 2 for Region 1 |
+| nonprod\_region2\_router2 | Router 2 for Region 2 |
 | nonprod\_subnets\_ips | The IPs and CIDRs of the subnets being created |
 | nonprod\_subnets\_names | The names of the subnets being created |
 | nonprod\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | nonprod\_subnets\_self\_links | The self-links of subnets being created |
+| prod\_default\_policy | DNS Policy created in the network |
+| prod\_dns\_record\_set\_gcr\_api | DNS Record set for GCR APIs |
+| prod\_dns\_record\_set\_private\_api | DNS Record set for Private APIs |
 | prod\_host\_project\_id | The host project ID for prod |
 | prod\_network\_name | The name of the VPC being created |
 | prod\_network\_self\_link | The URI of the VPC being created |
+| prod\_region1\_router1 | Router 1 for Region 1 |
+| prod\_region1\_router2 | Router 1 for Region 2 |
+| prod\_region2\_router1 | Router 2 for Region 1 |
+| prod\_region2\_router2 | Router 2 for Region 2 |
 | prod\_subnets\_ips | The IPs and CIDRs of the subnets being created |
 | prod\_subnets\_names | The names of the subnets being created |
 | prod\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |

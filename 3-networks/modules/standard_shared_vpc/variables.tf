@@ -16,17 +16,56 @@
 
 variable "project_id" {
   type        = string
-  description = "Project ID for Shared VPC."
+  description = "Project ID for Private Shared VPC."
 }
 
-variable "network_name" {
+variable "environment_code" {
   type        = string
-  description = "Name for VPC."
+  description = "A short form of the folder level resources (environment) within the Google Cloud organization."
 }
 
-variable "default_region" {
+variable "default_region1" {
   type        = string
-  description = "Default subnet region standard_shared_vpc currently only configures one region."
+  description = "Default region 1 for subnets and Cloud Routers"
+}
+
+variable "default_region2" {
+  type        = string
+  description = "Default region 2 for subnets and Cloud Routers"
+}
+
+variable "nat_enabled" {
+  type        = bool
+  description = "Toggle creation of NAT cloud router."
+  default     = false
+}
+
+variable "nat_bgp_asn" {
+  type        = number
+  description = "BGP ASN for first NAT cloud routes."
+  default     = 0
+}
+
+variable "nat_num_addresses_region1" {
+  type        = number
+  description = "Number of external IPs to reserve for first Cloud NAT."
+  default     = 2
+}
+
+variable "nat_num_addresses_region2" {
+  type        = number
+  description = "Number of external IPs to reserve for second Cloud NAT."
+  default     = 2
+}
+
+variable "bgp_asn_subnet" {
+  type        = number
+  description = "BGP ASN for Subnets cloud routers."
+}
+
+variable "vpc_label" {
+  type        = string
+  description = "Label for VPC."
 }
 
 variable "subnets" {
@@ -41,16 +80,6 @@ variable "secondary_ranges" {
   default     = {}
 }
 
-variable "private_service_cidr" {
-  type        = string
-  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
-}
-
-variable "bgp_asn" {
-  type        = string
-  description = "BGP ASN for default cloud router."
-}
-
 variable "dns_enable_inbound_forwarding" {
   type        = bool
   description = "Toggle inbound query forwarding for VPC DNS."
@@ -61,6 +90,17 @@ variable "dns_enable_logging" {
   type        = bool
   description = "Toggle DNS logging for VPC DNS."
   default     = true
+}
+
+variable "private_service_cidr" {
+  type        = string
+  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
+}
+
+variable "windows_activation_enabled" {
+  type        = bool
+  description = "Enable Windows license activation for Windows workloads."
+  default     = false
 }
 
 variable "nat_num_addresses" {

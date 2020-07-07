@@ -8,11 +8,10 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
 1. 1-org executed successfully.
 1. Cloud Identity / Gsuite group for monitoring admins.
 1. Membership in the monitoring admins group for user running terraform
-1. Empty Cloud Source Repository "gcp-envs" in Cloud Build project. Connect Cloud Build triggers replicated from the gcp-org CSR repository.
 
 ## Usage
 ### Setup to run via Cloud Build
-1. Clone repo `gcloud source repos clone gcp-envs --project=YOUR_CLOUD_BUILD_PROJECT_ID`
+1. Clone repo `gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID`
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/2-environments/* .` (modify accordingly based on your current directory)
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory)

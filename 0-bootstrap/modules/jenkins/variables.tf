@@ -52,6 +52,7 @@ variable "jenkins_agent_gce_ssh_user" {
   default     = "jenkins"
 }
 
+// TODO(caleonardo): change this variable so it is a list of Strings instead of a separate file
 variable "jenkins_agent_gce_ssh_pub_key_file" {
   description = "File with the SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key."
   type        = string

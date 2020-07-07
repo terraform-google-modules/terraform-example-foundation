@@ -30,7 +30,7 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
 1. Change into 2-environments folder
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap. Copy terraform.tfvars into each of the folders within the envs/ folder.
 1. Within each envs/ folder, update backend.tf with your bucket name from the bootstrap step.
-1. In sequence, change into each folder within the envs/ folder and run the following commands: 
+1. In sequence, change into each folder within the envs/ folder and run the following commands:
     1. Run `terraform init`
     1. Run `terraform plan` and review output
     1. Run `terraform apply`

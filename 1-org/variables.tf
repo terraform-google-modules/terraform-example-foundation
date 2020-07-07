@@ -67,6 +67,12 @@ variable "data_access_table_expiration_ms" {
   default     = 2592000000
 }
 
+variable "skip_gcloud_download" {
+  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module. If set to true you, must ensure that Gcloud Alpha module is installed.)"
+  type        = bool
+  default     = true
+}
+
 variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string

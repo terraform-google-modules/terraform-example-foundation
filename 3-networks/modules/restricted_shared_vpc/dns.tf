@@ -20,7 +20,7 @@
 
 resource "google_dns_policy" "default_policy" {
   project                   = var.project_id
-  name                      = "dp-${var.environment_code}-shared-private-default-policy"
+  name                      = "default-policy"
   enable_inbound_forwarding = var.dns_enable_inbound_forwarding
   enable_logging            = var.dns_enable_logging
   networks {
@@ -29,17 +29,17 @@ resource "google_dns_policy" "default_policy" {
 }
 
 /******************************************
-  Private Google APIs DNS Zone & records.
+  Restricted Google APIs DNS Zone & records.
  *****************************************/
 
-module "private_googleapis" {
+module "restricted_googleapis" {
   source      = "terraform-google-modules/cloud-dns/google"
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "private"
-  name        = "dz-${var.environment_code}-shared-private-apis"
+  name        = "restricted-googleapis"
   domain      = "googleapis.com."
-  description = "Private DNS zone to configure private.googleapis.com"
+  description = "Private DNS zone to configure restricted.googleapis.com"
 
   private_visibility_config_networks = [
     module.main.network_self_link
@@ -50,27 +50,27 @@ module "private_googleapis" {
       name    = "*"
       type    = "CNAME"
       ttl     = 300
-      records = ["private.googleapis.com."]
+      records = ["restricted.googleapis.com."]
     },
     {
-      name    = "private"
+      name    = "restricted"
       type    = "A"
       ttl     = 300
-      records = ["199.36.153.8", "199.36.153.9", "199.36.153.10", "199.36.153.11"]
+      records = ["199.36.153.4", "199.36.153.5", "199.36.153.6", "199.36.153.7"]
     },
   ]
 }
 
 /******************************************
-  Private GCR DNS Zone & records.
+  Restricted GCR DNS Zone & records.
  *****************************************/
 
-module "private_gcr" {
+module "restricted_gcr" {
   source      = "terraform-google-modules/cloud-dns/google"
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "private"
-  name        = "dz-${var.environment_code}-shared-private-gcr"
+  name        = "restricted-gcr"
   domain      = "gcr.io."
   description = "Private DNS zone to configure gcr.io"
 
@@ -89,7 +89,7 @@ module "private_gcr" {
       name    = ""
       type    = "A"
       ttl     = 300
-      records = ["199.36.153.8", "199.36.153.9", "199.36.153.10", "199.36.153.11"]
+      records = ["199.36.153.4", "199.36.153.5", "199.36.153.6", "199.36.153.7"]
     },
   ]
 }

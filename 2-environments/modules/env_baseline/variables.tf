@@ -19,6 +19,11 @@ variable "env" {
   type        = string
 }
 
+variable "environment_code" {
+  type        = string
+  description = "A short form of the folder level resources (environment) within the Google Cloud organization (ex. d)."
+}
+
 variable "parent_id" {
   description = "The parent folder or org for environments"
   type        = string

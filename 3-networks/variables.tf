@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-variable "billing_account" {
-  description = "Billing account to attach to projects."
-}
-
 variable "org_id" {
   description = "Organization ID"
 }
@@ -26,7 +22,11 @@ variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform."
 }
 
-variable "default_region" {
-  description = "Default subnet region standard_shared_vpc currently only configures one region"
+variable "default_region1" {
+  description = "Default region standard_shared_vpc currently only configures two regions"
+}
+
+variable "default_region2" {
+  description = "Default region standard_shared_vpc currently only configures two regions"
 }
 

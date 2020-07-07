@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-module "env" {
-  source = "../../modules/env_baseline"
-
-  env              = "nonprod"
-  environment_code = "n"
-
-  parent_id                  = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  org_id                     = var.org_id
-  billing_account            = var.billing_account
-  terraform_service_account  = var.terraform_service_account
-  monitoring_workspace_users = var.monitoring_workspace_users
+terraform {
+  required_version = ">= 0.12"
 }

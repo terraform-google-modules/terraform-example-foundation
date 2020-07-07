@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-module "env" {
-  source = "../../modules/env_baseline"
+/******************************************
+  Ranges for default firewall rules.
+ *****************************************/
 
-  env              = "nonprod"
-  environment_code = "n"
+data "google_netblock_ip_ranges" "legacy_health_checkers" {
+  range_type = "legacy-health-checkers"
+}
 
-  parent_id                  = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  org_id                     = var.org_id
-  billing_account            = var.billing_account
-  terraform_service_account  = var.terraform_service_account
-  monitoring_workspace_users = var.monitoring_workspace_users
+data "google_netblock_ip_ranges" "health_checkers" {
+  range_type = "health-checkers"
+}
+
+data "google_netblock_ip_ranges" "iap_forwarders" {
+  range_type = "iap-forwarders"
 }

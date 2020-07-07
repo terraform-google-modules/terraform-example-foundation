@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-module "env" {
-  source = "../../modules/env_baseline"
+variable "org_id" {
+  type        = string
+  description = "Organization ID"
+}
 
-  env              = "nonprod"
-  environment_code = "n"
+variable "terraform_service_account" {
+  type        = string
+  description = "Service account email of the account to impersonate to run Terraform."
+}
 
-  parent_id                  = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  org_id                     = var.org_id
-  billing_account            = var.billing_account
-  terraform_service_account  = var.terraform_service_account
-  monitoring_workspace_users = var.monitoring_workspace_users
+variable "default_region1" {
+  type        = string
+  description = "First subnet region. The shared vpc modules only configures two regions."
+}
+
+variable "default_region2" {
+  type        = string
+  description = "Second subnet region. The shared vpc modules only configures two regions."
 }

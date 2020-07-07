@@ -28,11 +28,6 @@ variable "billing_account" {
   type        = string
 }
 
-variable "group_org_admins" {
-  description = "Google Group for GCP Organization Administrators"
-  type        = string
-}
-
 variable "default_region" {
   description = "Default region to create resources where applicable."
   type        = string
@@ -42,7 +37,13 @@ variable "default_region" {
 variable "jenkins_agent_gce_name" {
   description = "Jenkins Agent GCE Instance name."
   type        = string
-  default     = "jenkins-agent-02"
+  default     = "jenkins-agent-01"
+}
+
+variable "jenkins_agent_gce_machine_type" {
+  description = "Jenkins Agent GCE Instance type."
+  type        = string
+  default     = "n1-standard-1"
 }
 
 variable "jenkins_agent_gce_ssh_user" {
@@ -52,24 +53,20 @@ variable "jenkins_agent_gce_ssh_user" {
 }
 
 variable "jenkins_agent_gce_ssh_pub_key_file" {
-  description = "Jenkins Agent GCE Instance SSH Public Key."
+  description = "File with the SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key."
   type        = string
-  default     = "./jenkins-agent-ssh-pub-keys/ssh-pub-key-01.txt"
+  default     = "./jenkins-agent-ssh-pub-keys/metadata-ssh-pub-keys"
 }
 
-variable "terraform_sa_email" {
-  description = "Email for terraform service account."
+variable "jenkins_sa_email" {
+  description = "Email for Jenkins Agent service account."
   type        = string
+  default     = "jenkins-agent-gce-sa"
 }
 
-variable "terraform_sa_name" {
-  description = "Fully-qualified name of the terraform service account."
-  type        = string
-}
-
-variable "terraform_state_bucket" {
-  description = "Default state bucket, used in Cloud Build substitutions."
-  type        = string
+variable "jenkins_master_ip_addresses" {
+  description = "A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
+  type        = list(string)
 }
 
 /******************************************
@@ -103,7 +100,8 @@ variable "activate_apis" {
     "iam.googleapis.com",
     "admin.googleapis.com",
     "appengine.googleapis.com",
-    "storage-api.googleapis.com"
+    "storage-api.googleapis.com",
+    "cloudkms.googleapis.com"
   ]
 }
 
@@ -113,37 +111,8 @@ variable "sa_enable_impersonation" {
   default     = false
 }
 
-variable "storage_bucket_labels" {
-  description = "Labels to apply to the storage bucket."
-  type        = map(string)
-  default     = {}
-}
-
-variable "cloud_source_repos" {
-  description = "List of Cloud Source Repo's to create with CloudBuild triggers."
-  type        = list(string)
-
-  default = [
-    "gcp-org",
-    "gcp-networks",
-    "gcp-projects",
-  ]
-}
-
 variable "folder_id" {
   description = "The ID of a folder to host this project"
   type        = string
   default     = ""
-}
-
-variable "terraform_version" {
-  description = "Default terraform version."
-  type        = string
-  default     = "0.12.24"
-}
-
-variable "terraform_version_sha256sum" {
-  description = "sha256sum for default terraform version."
-  type        = string
-  default     = "602d2529aafdaa0f605c06adb7c72cfb585d8aa19b3f4d8d189b42589e27bf11"
 }

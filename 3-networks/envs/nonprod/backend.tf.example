@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-variable "org_id" {
-  description = "Organization ID"
+terraform {
+  backend "gcs" {
+    bucket = "UPDATE_ME"
+    prefix = "terraform/networks/nonprod"
+  }
 }
-
-variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform."
-}
-
-variable "default_region1" {
-  description = "Default region standard_shared_vpc currently only configures two regions"
-}
-
-variable "default_region2" {
-  description = "Default region standard_shared_vpc currently only configures two regions"
-}
-

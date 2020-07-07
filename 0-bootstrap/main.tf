@@ -66,9 +66,12 @@ module "seed_bootstrap" {
     "storage-api.googleapis.com",
     "monitoring.googleapis.com",
     "pubsub.googleapis.com",
-    "securitycenter.googleapis.com"
+    "securitycenter.googleapis.com",
+    "accesscontextmanager.googleapis.com"
   ]
+
   sa_org_iam_permissions = [
+    "roles/accesscontextmanager.policyAdmin",
     "roles/billing.user",
     "roles/compute.networkAdmin",
     "roles/compute.xpnAdmin",
@@ -77,7 +80,8 @@ module "seed_bootstrap" {
     "roles/logging.configWriter",
     "roles/orgpolicy.policyAdmin",
     "roles/resourcemanager.folderAdmin",
-    "roles/securitycenter.notificationConfigEditor"
+    "roles/securitycenter.notificationConfigEditor",
+    "roles/resourcemanager.organizationViewer"
   ]
 }
 

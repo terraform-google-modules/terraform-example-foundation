@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
+variable "org_id" {
+  type        = string
+  description = "Organization ID"
+}
+
 variable "project_id" {
   type        = string
-  description = "Project ID for Private Shared VPC."
+  description = "Project ID for Restricted Shared VPC."
+}
+
+variable "project_number" {
+  type        = number
+  description = "Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter."
 }
 
 variable "environment_code" {
   type        = string
   description = "A short form of the folder level resources (environment) within the Google Cloud organization."
-}
-
-variable "default_region1" {
-  type        = string
-  description = "Default region 1 for subnets and Cloud Routers"
-}
-
-variable "default_region2" {
-  type        = string
-  description = "Default region 2 for subnets and Cloud Routers"
 }
 
 variable "nat_enabled" {
@@ -42,19 +42,19 @@ variable "nat_enabled" {
 
 variable "nat_bgp_asn" {
   type        = number
-  description = "BGP ASN for first NAT cloud routes."
-  default     = 0
+  description = "BGP ASN for NAT cloud routes. If NAT is enabled this variable value must be a value in ranges [64512..65534] or [4200000000..4294967294]."
+  default     = 64512
 }
 
 variable "nat_num_addresses_region1" {
   type        = number
-  description = "Number of external IPs to reserve for first Cloud NAT."
+  description = "Number of external IPs to reserve for region 1 Cloud NAT."
   default     = 2
 }
 
 variable "nat_num_addresses_region2" {
   type        = number
-  description = "Number of external IPs to reserve for second Cloud NAT."
+  description = "Number of external IPs to reserve for region 2 Cloud NAT."
   default     = 2
 }
 
@@ -63,9 +63,14 @@ variable "bgp_asn_subnet" {
   description = "BGP ASN for Subnets cloud routers."
 }
 
-variable "vpc_label" {
+variable "default_region1" {
   type        = string
-  description = "Label for VPC."
+  description = "First subnet region. The shared vpc modules only configures two regions."
+}
+
+variable "default_region2" {
+  type        = string
+  description = "Second subnet region. The shared vpc modules only configures two regions."
 }
 
 variable "subnets" {
@@ -103,14 +108,23 @@ variable "windows_activation_enabled" {
   default     = false
 }
 
-variable "nat_num_addresses" {
-  type        = number
-  description = "Number of external IPs to reserve for Cloud NAT."
-  default     = 2
+variable "optional_fw_rules_enabled" {
+  type        = bool
+  description = "Toggle creation of optional firewall rules."
+  default     = false
 }
 
-variable "default_fw_rules_enabled" {
-  type        = bool
-  description = "Toggle creation of default firewall rules."
-  default     = true
+variable "policy_name" {
+  type        = string
+  description = "The access context policy's name."
+}
+
+variable "members" {
+  type        = list(string)
+  description = "An allowed list of members (users, service accounts). The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid}"
+}
+
+variable "restricted_services" {
+  type        = list(string)
+  description = "List of services to restrict."
 }

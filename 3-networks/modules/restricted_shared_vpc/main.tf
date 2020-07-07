@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,11 @@
  *****************************************/
 
 locals {
-  vpc_name                = "${var.environment_code}-shared-${var.vpc_label}"
-  network_name            = "vpc-${local.vpc_name}"
-  private_googleapis_cidr = "199.36.153.8/30"
+  vpc_type                   = "shared"
+  vpc_label                  = "restricted"
+  vpc_name                   = "${var.environment_code}-${local.vpc_type}-${local.vpc_label}"
+  network_name               = "vpc-${local.vpc_name}"
+  restricted_googleapis_cidr = "199.36.153.4/30"
 }
 
 module "main" {
@@ -37,9 +39,9 @@ module "main" {
 
   routes = concat(
     [{
-      name              = "rt-${local.vpc_name}-1000-all-default-private-api"
-      description       = "Route through IGW to allow private google api access."
-      destination_range = "199.36.153.8/30"
+      name              = "rt-${local.vpc_name}-1000-all-default-restricted-api"
+      description       = "Route through IGW to allow restricted google api access."
+      destination_range = local.restricted_googleapis_cidr
       next_hop_internet = "true"
       priority          = "1000"
     }],
@@ -56,12 +58,13 @@ module "main" {
     ]
     : [],
     var.windows_activation_enabled ?
-    [{
-      name              = "rt-${local.vpc_name}-1000-all-default-windows-kms"
-      description       = "Route through IGW to allow Windows KMS activation for GCP."
-      destination_range = "35.190.247.13/32"
-      next_hop_internet = "true"
-      priority          = "1000"
+    [
+      {
+        name              = "rt-${local.vpc_name}-1000-all-default-windows-kms"
+        description       = "Route through IGW to allow Windows KMS activation for GCP."
+        destination_range = "35.190.247.13/32"
+        next_hop_internet = "true"
+        priority          = "1000"
       }
     ]
     : []
@@ -73,6 +76,7 @@ module "main" {
  **************************************************************/
 
 resource "google_compute_global_address" "private_service_access_address" {
+
   name          = "ga-${local.vpc_name}-vpc-peering-internal"
   project       = var.project_id
   purpose       = "VPC_PEERING"
@@ -90,7 +94,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
 /************************************
   Router to advertise shared VPC
-  subnetworks and Google Private API
+  subnetworks and Google Restricted API
 ************************************/
 
 module "region1_router1" {
@@ -103,7 +107,7 @@ module "region1_router1" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
   }
 }
 
@@ -117,7 +121,7 @@ module "region1_router2" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
   }
 }
 
@@ -131,7 +135,7 @@ module "region2_router1" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
   }
 }
 
@@ -145,6 +149,6 @@ module "region2_router2" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
   }
 }

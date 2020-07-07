@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-variable "org_id" {
-  description = "Organization ID"
+/******************************************
+  Ranges for default firewall rules.
+ *****************************************/
+
+data "google_netblock_ip_ranges" "legacy_health_checkers" {
+  range_type = "legacy-health-checkers"
 }
 
-variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform."
+data "google_netblock_ip_ranges" "health_checkers" {
+  range_type = "health-checkers"
 }
 
-variable "default_region1" {
-  description = "Default region standard_shared_vpc currently only configures two regions"
+data "google_netblock_ip_ranges" "iap_forwarders" {
+  range_type = "iap-forwarders"
 }
-
-variable "default_region2" {
-  description = "Default region standard_shared_vpc currently only configures two regions"
-}
-

@@ -3,6 +3,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`. | number | n/a | yes |
 | bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | number | n/a | yes |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
 | default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
@@ -16,7 +17,6 @@
 | nat\_num\_addresses\_region2 | Number of external IPs to reserve for region 2 Cloud NAT. | number | `"2"` | no |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules. | bool | `"false"` | no |
 | org\_id | Organization ID | string | n/a | yes |
-| policy\_name | The access context policy's name. | string | n/a | yes |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | string | n/a | yes |
 | project\_id | Project ID for Restricted Shared VPC. | string | n/a | yes |
 | project\_number | Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter. | number | n/a | yes |
@@ -31,6 +31,10 @@
 |------|-------------|
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
+| region1\_router1 | Router 1 for Region 1 |
+| region1\_router2 | Router 2 for Region 1 |
+| region2\_router1 | Router 1 for Region 2 |
+| region2\_router2 | Router 2 for Region 2 |
 | subnets\_ips | The IPs and CIDRs of the subnets being created |
 | subnets\_names | The names of the subnets being created |
 | subnets\_regions | The region where the subnets will be created |

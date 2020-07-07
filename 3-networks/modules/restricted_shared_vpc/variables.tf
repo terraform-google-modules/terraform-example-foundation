@@ -19,6 +19,11 @@ variable "org_id" {
   description = "Organization ID"
 }
 
+variable "access_context_manager_policy_id" {
+  type        = number
+  description = "The id of the default Access Context Manager policy. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`."
+}
+
 variable "project_id" {
   type        = string
   description = "Project ID for Restricted Shared VPC."
@@ -112,11 +117,6 @@ variable "optional_fw_rules_enabled" {
   type        = bool
   description = "Toggle creation of optional firewall rules."
   default     = false
-}
-
-variable "policy_name" {
-  type        = string
-  description = "The access context policy's name."
 }
 
 variable "members" {

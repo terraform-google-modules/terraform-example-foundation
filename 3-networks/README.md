@@ -1,4 +1,4 @@
-# 2-networks
+# 3-networks
 
 The purpose of this step is to setup shared VPCs with default DNS, NAT, Private Service networking and baseline firewall rules.
 
@@ -6,13 +6,14 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
+1. 2-environments executed successfully.
 
 ## Usage
 
 ### Setup to run via Cloud Build
 1. Clone repo `gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID`
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan`
-1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/2-networks/* .` (modify accordingly based on your current directory)
+1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/3-networks/* .` (modify accordingly based on your current directory)
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory)
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
 1. Rename backend.tf.example backend.tf and update with your bucket from bootstrap.
@@ -24,7 +25,7 @@ The purpose of this step is to setup shared VPCs with default DNS, NAT, Private 
 
 
 ### Run terraform locally
-1. Change into 2-networks folder
+1. Change into 3-networks folder
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
 1. Rename backend.tf.example backend.tf and update with your bucket from bootstrap.
 1. Run `terraform init`

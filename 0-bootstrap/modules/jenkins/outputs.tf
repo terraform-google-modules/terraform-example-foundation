@@ -15,12 +15,12 @@
  */
 
 output "cicd_project_id" {
-  description = "Project where Jenkins Agents and terraform builder container image will reside."
+  description = "Project where the cicd pipeline (Jenkins Agents and terraform builder container image) reside."
   value       = module.cicd_project.project_id
 }
 
 output "jenkins_agent_gce_instance_id" {
-  description = "Jenkins Agents GCE Instance."
+  description = "Jenkins Agent GCE Instance id."
   value       = google_compute_instance.jenkins_agent_gce_instance.id
 }
 
@@ -33,24 +33,3 @@ output "jenkins_sa_name" {
   description = "Fully qualified name for privileged custom service account for Jenkins Agent GCE instance."
   value       = google_service_account.jenkins_agent_gce_sa.name
 }
-
-//output "gcs_bucket_jenkins_artifacts" {
-//  description = "Bucket used to store Jenkins artifacts in Jenkins project."
-//  value       = google_storage_bucket.jenkins_artifacts.name
-//}
-//
-//// TODO(caleonardo): Configure this repo on-prem
-////output "csr_repos" {
-////  description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
-////  value       = google_sourcerepo_repository.gcp_repo
-////}
-//
-//output "kms_keyring" {
-//  description = "KMS Keyring created by the module."
-//  value       = google_kms_key_ring.tf_keyring
-//}
-//
-//output "kms_crypto_key" {
-//  description = "KMS key created by the module."
-//  value       = google_kms_crypto_key.tf_key
-//}

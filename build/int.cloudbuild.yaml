@@ -15,7 +15,7 @@
 steps:
 - name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   id: 'placeholder'
-  args: ['/bin/bash --version']
+  args: ['/bin/bash', '--version']
 tags:
 - 'ci'
 - 'placeholder'

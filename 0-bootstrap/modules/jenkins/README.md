@@ -86,6 +86,7 @@ Error: google: could not find default credentials. See https://developers.google
 | cicd\_project\_id | Project where the cicd pipeline (Jenkins Agents and terraform builder container image) reside. |
 | jenkins\_agent\_gce\_instance\_id | Jenkins Agent GCE Instance id. |
 | jenkins\_sa\_email | Email for privileged custom service account for Jenkins Agent GCE instance. |
+| jenkins\_sa\_name | Fully qualified name for privileged custom service account for Jenkins Agent GCE instance. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

@@ -56,7 +56,7 @@ Further details of permissions required and resources created, can be found in t
 
 ### Configuration
 
-Use gcloud before running the terraform scripts to crate an application-default login configuration with GCP. 
+Use gcloud before running the terraform scripts to crate an application-default login configuration with GCP.
 
 ## Troubleshooting
 
@@ -67,8 +67,8 @@ Error: Error setting billing account "aaaaaa-bbbbbb-cccccc" for project "project
       on .terraform/modules/jenkins_project/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
       96: resource "google_project" "main" {
 ```
- or 
- 
+ or
+
  ```
 Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbbbb-cccccc": billing.resourceAssociations.create
   on .terraform/modules/jenkins_project/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":

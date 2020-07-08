@@ -26,12 +26,6 @@
 
 | Name | Description |
 |------|-------------|
-| allow\_iap\_rdp | Firewall rule allow_iap_rdp created in the network |
-| allow\_iap\_ssh | Firewall rule allow_iap_ssh created in the network |
-| allow\_lb | Firewall rule allow_lb created in the network |
-| default\_policy | DNS Policy created in the network |
-| dns\_record\_set\_gcr\_api | DNS Record set for GCR APIs |
-| dns\_record\_set\_private\_api | DNS Record set for Private APIs |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
 | region1\_router1 | Router 1 for Region 1 |

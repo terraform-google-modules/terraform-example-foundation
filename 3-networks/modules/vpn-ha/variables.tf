@@ -24,6 +24,11 @@ variable "default_region2" {
   description = "Default region 2 for Cloud Routers"
 }
 
+variable "network_name" {
+  type        = string
+  description = "Network Name"
+}
+
 variable "vpc_name" {
   type        = string
   description = "VPC Name"

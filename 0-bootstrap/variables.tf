@@ -46,6 +46,18 @@ variable "parent_folder" {
   default     = ""
 }
 
+variable "org_project_creators" {
+  description = "Additional list of members to have project creator role accross the organization. Prefix of group: user: or serviceAccount: is required."
+  type        = list(string)
+  default     = []
+}
+
+variable "skip_gcloud_download" {
+  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
+  type        = bool
+  default     = true
+}
+
 variable "jenkins_sa_email" {
   description = "Email for Jenkins Agent service account."
   type        = string

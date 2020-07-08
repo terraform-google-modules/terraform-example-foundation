@@ -32,6 +32,8 @@ Further details of permissions required and resources created, can be found in t
 | group\_billing\_admins | Google Group for GCP Billing Administrators | string | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |
 | jenkins\_master\_ip\_addresses | A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | list(string) | n/a | yes |
+| org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | list(string) | `<list>` | no |
+| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
 | jenkins\_sa\_email | Email for Jenkins Agent service account. | string | `"jenkins-agent-gce-sa"` | no |
 | org\_id | GCP Organization ID | string | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |

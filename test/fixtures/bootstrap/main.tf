@@ -15,11 +15,12 @@
  */
 
 module "bootstrap" {
-  source               = "../../../0-bootstrap"
-  parent_folder        = var.parent_folder
-  org_id               = var.org_id
-  group_org_admins     = var.group_email
-  group_billing_admins = var.group_email
-  billing_account      = var.billing_account
-  org_project_creators = var.org_project_creators
+  source                      = "../../../0-bootstrap"
+  parent_folder               = var.parent_folder
+  org_id                      = var.org_id
+  group_org_admins            = var.group_email
+  group_billing_admins        = var.group_email
+  billing_account             = var.billing_account
+  org_project_creators        = var.org_project_creators
+  jenkins_master_ip_addresses = ["0.0.0.0/0"]
 }

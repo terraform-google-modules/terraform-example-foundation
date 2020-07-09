@@ -97,4 +97,11 @@ module "cloudbuild_bootstrap" {
   terraform_sa_name       = module.seed_bootstrap.terraform_sa_name
   terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
   sa_enable_impersonation = true
+
+  cloud_source_repos = [
+    "gcp-org",
+    "gcp-environments",
+    "gcp-networks",
+    "gcp-projects",
+  ]
 }

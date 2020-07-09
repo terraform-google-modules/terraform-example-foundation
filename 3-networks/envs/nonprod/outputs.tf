@@ -52,3 +52,42 @@ output "restricted_subnets_secondary_ranges" {
   value       = module.restricted_shared_vpc.subnets_secondary_ranges
   description = "The secondary ranges associated with these subnets"
 }
+
+/******************************************
+ Private Outputs
+*****************************************/
+
+output "private_host_project_id" {
+  value       = local.private_project_id
+  description = "The private host project ID"
+}
+
+output "private_network_name" {
+  value       = module.private_shared_vpc.network_name
+  description = "The name of the VPC being created"
+}
+
+output "private_network_self_link" {
+  value       = module.private_shared_vpc.network_self_link
+  description = "The URI of the VPC being created"
+}
+
+output "private_subnets_names" {
+  value       = module.private_shared_vpc.subnets_names
+  description = "The names of the subnets being created"
+}
+
+output "private_subnets_ips" {
+  value       = module.private_shared_vpc.subnets_ips
+  description = "The IPs and CIDRs of the subnets being created"
+}
+
+output "private_subnets_self_links" {
+  value       = module.private_shared_vpc.subnets_self_links
+  description = "The self-links of subnets being created"
+}
+
+output "private_subnets_secondary_ranges" {
+  value       = module.private_shared_vpc.subnets_secondary_ranges
+  description = "The secondary ranges associated with these subnets"
+}

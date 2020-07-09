@@ -14,19 +14,6 @@
  * limitations under the License.
  */
 
-variable "org_id" {
-  description = "Organization ID"
+terraform {
+  required_version = ">= 0.12"
 }
-
-variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform."
-}
-
-variable "default_region1" {
-  description = "Default region standard_shared_vpc currently only configures two regions"
-}
-
-variable "default_region2" {
-  description = "Default region standard_shared_vpc currently only configures two regions"
-}
-

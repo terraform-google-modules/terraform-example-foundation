@@ -145,3 +145,13 @@ module "org_enforce_bucket_level_access" {
   constraint      = "constraints/storage.uniformBucketLevelAccess"
 }
 
+/******************************************
+  Access Context Manager Policy
+*******************************************/
+
+module "access_context_manager_policy" {
+  source      = "terraform-google-modules/vpc-service-controls/google"
+  version     = "~> 2.0.0"
+  parent_id   = local.organization_id
+  policy_name = "default policy"
+}

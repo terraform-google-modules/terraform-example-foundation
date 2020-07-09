@@ -77,7 +77,7 @@ Error: google: could not find default credentials. See https://developers.google
 | folder\_id | The ID of a folder to host this project | string | `""` | no |
 | jenkins\_agent\_gce\_machine\_type | Jenkins Agent GCE Instance type. | string | `"n1-standard-1"` | no |
 | jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name. | string | `"jenkins-agent-01"` | no |
-| jenkins\_agent\_gce\_ssh\_pub\_key\_file | File with the SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. | string | `"./jenkins-agent-ssh-pub-keys/metadata-ssh-pub-keys"` | no |
+| jenkins\_agent\_gce\_ssh\_pub\_key | SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. | string | `"ssh-rsa [KEY_VALUE] [USERNAME]"` | no |
 | jenkins\_agent\_gce\_ssh\_user | Jenkins Agent GCE Instance SSH username. | string | `"jenkins"` | no |
 | jenkins\_master\_ip\_addresses | A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | list(string) | n/a | yes |
 | jenkins\_sa\_email | Email for Jenkins Agent service account. | string | `"jenkins-agent-gce-sa"` | no |

@@ -72,7 +72,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
   // Adding ssh public keys to the metadata, so the Jenkins Master can connect
   metadata = {
     enable-oslogin = "false"
-    ssh-keys       = "${var.jenkins_agent_gce_ssh_user}:${file(var.jenkins_agent_gce_ssh_pub_key_file)}"
+    ssh-keys       = var.jenkins_agent_gce_ssh_pub_key
   }
 
   // TODO(caleonardo): Setup the Java installation here for the Jenkins Agent

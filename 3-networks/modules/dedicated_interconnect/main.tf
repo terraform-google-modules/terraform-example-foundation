@@ -48,7 +48,7 @@ module "interconnect_attachment2_region1" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
   version = "~> 0.2.0"
 
-  name    = "vl-${var.interconnect_location2_region1}-${var.vpc_name}-${var.default_region1}-cr1"
+  name    = "vl-${var.interconnect_location2_region1}-${var.vpc_name}-${var.default_region1}-cr2"
   project = local.interconnect_project_id
   region  = var.default_region1
   router  = var.region1_router2_name
@@ -92,7 +92,7 @@ module "interconnect_attachment2_region2" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
   version = "~> 0.2.0"
 
-  name    = "vl-${var.interconnect_location2_region2}-${var.vpc_name}-${var.default_region2}-cr1"
+  name    = "vl-${var.interconnect_location2_region2}-${var.vpc_name}-${var.default_region2}-cr2"
   project = local.interconnect_project_id
   region  = var.default_region2
   router  = var.region2_router2_name

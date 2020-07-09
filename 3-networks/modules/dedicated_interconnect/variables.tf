@@ -16,7 +16,7 @@
 
 variable "vpc_name" {
   type        = string
-  description = "lable to identify the VPC associated with shared VPC that will use the Interconnect."
+  description = "Label to identify the VPC associated with shared VPC that will use the Interconnect."
 }
 
 variable "default_region1" {

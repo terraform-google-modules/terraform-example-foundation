@@ -1,3 +1,17 @@
+# Dedicated interconnecte module
+
+This module implementes the recomendation proposed in [Establishing 99.99% Availability for Dedicated Interconnect](https://cloud.google.com/network-connectivity/docs/interconnect/tutorials/dedicated-creating-9999-availability).
+
+## Prerequisites
+
+1. Execution of at least one of the environments in `3-networks/env/`.
+1. Creation on two Cloud Routers for each Region. Both the `Restricted shared VPC` and the `Standard shared VPC` modules create two Cloud Routers for each Region that should be used as input for this module. **This module only works with two regions.**
+1. Provisioning of four [dedicated interconnects](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/dedicated-overview), Two for each region.
+
+## Usage
+
+Sections with examples of calls to this module are commented in each one of the environments. Uncomment these section and update the input values with your interconnects and peer BGP information and rerun Terraform.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
@@ -20,6 +34,19 @@
 | region1\_router2\_name | Name of the Router 2 for Region 1 where the attachment resides. | string | n/a | yes |
 | region2\_router1\_name | Name of the Router 1 for Region 2 where the attachment resides. | string | n/a | yes |
 | region2\_router2\_name | Name of the Router 2 for Region 2 where the attachment resides | string | n/a | yes |
-| vpc\_name | lable to identify the VPC associated with shared VPC that will use the Interconnect. | string | n/a | yes |
+| vpc\_name | Label to identify the VPC associated with shared VPC that will use the Interconnect. | string | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| interconnect\_attachment1\_region1 | The created attachment |
+| interconnect\_attachment1\_region1\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
+| interconnect\_attachment1\_region2 | The created attachment |
+| interconnect\_attachment1\_region2\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
+| interconnect\_attachment2\_region1 | The created attachment |
+| interconnect\_attachment2\_region1\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
+| interconnect\_attachment2\_region2 | The created attachment |
+| interconnect\_attachment2\_region2\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

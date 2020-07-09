@@ -19,181 +19,191 @@
  *****************************************/
 
 locals {
-  interconnect_project_id = data.google_projects.interconnect_project.projects[0].project_id
+  vpc_name                = "${var.environment_code}-shared-${var.vpc_label}"
+  network_name            = "vpc-${local.vpc_name}"
 }
 
-data "google_projects" "interconnect_project" {
-  filter = "labels.application_name=prj-interconnect"
-}
 
 module "vpn_ha_region1_router1" {
   source     = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  project_id = local.interconnect_project_id
+  project_id = var.project_id
   region     = var.default_region1
-  network    = var.network_name
-  name       = "vpn-${var.vpc_name}-${var.default_region1}-cr1"
+  network    = local.network_name
+  name       = "vpn-${local.vpc_name}-${var.default_region1}-cr1"
   peer_external_gateway = {
-    redundancy_type = "SINGLE_IP_INTERNALLY_REDUNDANT"
+    redundancy_type = "TWO_IPS_REDUNDANCY"
     interfaces = [{
       id         = 0
-      ip_address = var.on_prem_ip_address
-
+      ip_address = var.on_prem_router_ip_address1
+    },
+    {
+      id         = 1
+      ip_address = var.on_prem_router_ip_address2
     }]
   }
-  router_name = var.region1_router1_name
+  router_name = "cr-${local.vpc_name}-${var.default_region1}-cr1"
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = var.remote0_ip
-        asn     = var.bgp_asn
+        address = var.bgp_peer_address0
+        asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.remote0_range
+      bgp_session_range               = var.bgp_peer_range0
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
-      shared_secret                   = var.remote0_secret
+      shared_secret                   = var.bgp_peer_secret
     }
     remote-1 = {
       bgp_peer = {
-        address = var.remote1_ip
-        asn     = var.bgp_asn
+        address = var.bgp_peer_address1
+        asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.remote1_range
+      bgp_session_range               = var.bgp_peer_range1
       ike_version                     = 2
       vpn_gateway_interface           = 1
-      peer_external_gateway_interface = 0
-      shared_secret                   = var.remote1_secret
+      peer_external_gateway_interface = 1
+      shared_secret                   = var.bgp_peer_secret
     }
   }
 }
 
 module "vpn_ha_region1_router2" {
   source     = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  project_id = local.interconnect_project_id
+  project_id = var.project_id
   region     = var.default_region1
-  network    = var.network_name
-  name       = "vpn-${var.vpc_name}-${var.default_region1}-cr2"
+  network    = local.network_name
+  name       = "vpn-${local.vpc_name}-${var.default_region1}-cr2"
   peer_external_gateway = {
-    redundancy_type = "SINGLE_IP_INTERNALLY_REDUNDANT"
+    redundancy_type = "TWO_IPS_REDUNDANCY"
     interfaces = [{
       id         = 0
-      ip_address = var.on_prem_ip_address
-
+      ip_address = var.on_prem_router_ip_address1
+    },
+    {
+      id         = 1
+      ip_address = var.on_prem_router_ip_address2
     }]
   }
-  router_name = var.region1_router2_name
+  router_name = "cr-${local.vpc_name}-${var.default_region1}-cr2"
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = var.remote0_ip
-        asn     = var.bgp_asn
+        address = var.bgp_peer_address2
+        asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.remote0_range
+      bgp_session_range               = var.bgp_peer_range2
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
-      shared_secret                   = var.remote0_secret
+      shared_secret                   = var.bgp_peer_secret
     }
     remote-1 = {
       bgp_peer = {
-        address = var.remote1_ip
-        asn     = var.bgp_asn
+        address = var.bgp_peer_address3
+        asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.remote1_range
+      bgp_session_range               = var.bgp_peer_range3
       ike_version                     = 2
       vpn_gateway_interface           = 1
-      peer_external_gateway_interface = 0
-      shared_secret                   = var.remote1_secret
+      peer_external_gateway_interface = 1
+      shared_secret                   = var.bgp_peer_secret
     }
   }
 }
 
 module "vpn_ha_region2_router1" {
   source     = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  project_id = local.interconnect_project_id
+  project_id = var.project_id
   region     = var.default_region2
-  network    = var.network_name
-  name       = "vpn-${var.vpc_name}-${var.default_region2}-cr1"
+  network    = local.network_name
+  name       = "vpn-${local.vpc_name}-${var.default_region2}-cr1"
   peer_external_gateway = {
-    redundancy_type = "SINGLE_IP_INTERNALLY_REDUNDANT"
+    redundancy_type = "TWO_IPS_REDUNDANCY"
     interfaces = [{
       id         = 0
-      ip_address = var.on_prem_ip_address
-
+      ip_address = var.on_prem_router_ip_address1
+    },
+    {
+      id         = 1
+      ip_address = var.on_prem_router_ip_address2
     }]
   }
-  router_name = var.region2_router1_name
+  router_name = "cr-${local.vpc_name}-${var.default_region2}-cr1"
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = var.remote0_ip
-        asn     = var.bgp_asn
+        address = var.bgp_peer_address4
+        asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.remote0_range
+      bgp_session_range               = var.bgp_peer_range4
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
-      shared_secret                   = var.remote0_secret
+      shared_secret                   = var.bgp_peer_secret
     }
     remote-1 = {
       bgp_peer = {
-        address = var.remote1_ip
-        asn     = var.bgp_asn
+        address = var.bgp_peer_address5
+        asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.remote1_range
+      bgp_session_range               = var.bgp_peer_range5
       ike_version                     = 2
       vpn_gateway_interface           = 1
-      peer_external_gateway_interface = 0
-      shared_secret                   = var.remote1_secret
+      peer_external_gateway_interface = 1
+      shared_secret                   = var.bgp_peer_secret
     }
   }
 }
 
 module "vpn_ha_region2_router2" {
   source     = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  project_id = local.interconnect_project_id
+  project_id = var.project_id
   region     = var.default_region2
-  network    = var.network_name
-  name       = "vpn-${var.vpc_name}-${var.default_region2}-cr2"
+  network    = local.network_name
+  name       = "vpn-${local.vpc_name}-${var.default_region2}-cr2"
   peer_external_gateway = {
-    redundancy_type = "SINGLE_IP_INTERNALLY_REDUNDANT"
+    redundancy_type = "TWO_IPS_REDUNDANCY"
     interfaces = [{
       id         = 0
-      ip_address = var.on_prem_ip_address
-
+      ip_address = var.on_prem_router_ip_address1
+    },
+    {
+      id         = 1
+      ip_address = var.on_prem_router_ip_address2
     }]
   }
-  router_name = var.region2_router2_name
+  router_name = "cr-${local.vpc_name}-${var.default_region2}-cr2"
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = var.remote0_ip
-        asn     = var.bgp_asn
+        address = var.bgp_peer_address6
+        asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.remote0_range
+      bgp_session_range               = var.bgp_peer_range6
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
-      shared_secret                   = var.remote0_secret
+      shared_secret                   = var.bgp_peer_secret
     }
     remote-1 = {
       bgp_peer = {
-        address = var.remote1_ip
-        asn     = var.bgp_asn
+        address = var.bgp_peer_address7
+        asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.remote1_range
+      bgp_session_range               = var.bgp_peer_range7
       ike_version                     = 2
       vpn_gateway_interface           = 1
-      peer_external_gateway_interface = 0
-      shared_secret                   = var.remote1_secret
+      peer_external_gateway_interface = 1
+      shared_secret                   = var.bgp_peer_secret
     }
   }
 }

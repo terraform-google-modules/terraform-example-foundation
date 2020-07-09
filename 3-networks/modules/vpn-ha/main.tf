@@ -19,8 +19,8 @@
  *****************************************/
 
 locals {
-  vpc_name                = "${var.environment_code}-shared-${var.vpc_label}"
-  network_name            = "vpc-${local.vpc_name}"
+  vpc_name     = "${var.environment_code}-shared-${var.vpc_label}"
+  network_name = "vpc-${local.vpc_name}"
 }
 
 
@@ -35,10 +35,10 @@ module "vpn_ha_region1_router1" {
     interfaces = [{
       id         = 0
       ip_address = var.on_prem_router_ip_address1
-    },
-    {
-      id         = 1
-      ip_address = var.on_prem_router_ip_address2
+      },
+      {
+        id         = 1
+        ip_address = var.on_prem_router_ip_address2
     }]
   }
   router_name = "cr-${local.vpc_name}-${var.default_region1}-cr1"
@@ -81,10 +81,10 @@ module "vpn_ha_region1_router2" {
     interfaces = [{
       id         = 0
       ip_address = var.on_prem_router_ip_address1
-    },
-    {
-      id         = 1
-      ip_address = var.on_prem_router_ip_address2
+      },
+      {
+        id         = 1
+        ip_address = var.on_prem_router_ip_address2
     }]
   }
   router_name = "cr-${local.vpc_name}-${var.default_region1}-cr2"
@@ -127,10 +127,10 @@ module "vpn_ha_region2_router1" {
     interfaces = [{
       id         = 0
       ip_address = var.on_prem_router_ip_address1
-    },
-    {
-      id         = 1
-      ip_address = var.on_prem_router_ip_address2
+      },
+      {
+        id         = 1
+        ip_address = var.on_prem_router_ip_address2
     }]
   }
   router_name = "cr-${local.vpc_name}-${var.default_region2}-cr1"
@@ -173,10 +173,10 @@ module "vpn_ha_region2_router2" {
     interfaces = [{
       id         = 0
       ip_address = var.on_prem_router_ip_address1
-    },
-    {
-      id         = 1
-      ip_address = var.on_prem_router_ip_address2
+      },
+      {
+        id         = 1
+        ip_address = var.on_prem_router_ip_address2
     }]
   }
   router_name = "cr-${local.vpc_name}-${var.default_region2}-cr2"

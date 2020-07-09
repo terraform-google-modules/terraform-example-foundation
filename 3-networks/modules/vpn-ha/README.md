@@ -6,21 +6,30 @@ https://cloud.google.com/network-connectivity/docs/vpn/how-to/creating-ha-vpn#cr
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| bgp\_asn | BGP ASN for cloud routes. | number | `"0"` | no |
+| bgp\_peer\_address0 | Remote 0 IP | string | n/a | yes |
+| bgp\_peer\_address1 | Remote 1 IP | string | n/a | yes |
+| bgp\_peer\_address2 | Remote 2 IP | string | n/a | yes |
+| bgp\_peer\_address3 | Remote 3 IP | string | n/a | yes |
+| bgp\_peer\_address4 | Remote 4 IP | string | n/a | yes |
+| bgp\_peer\_address5 | Remote 5 IP | string | n/a | yes |
+| bgp\_peer\_address6 | Remote 6 IP | string | n/a | yes |
+| bgp\_peer\_address7 | Remote 7 IP | string | n/a | yes |
+| bgp\_peer\_asn | BGP ASN for cloud routes. | number | n/a | yes |
+| bgp\_peer\_range0 | Remote 0 IP range | string | n/a | yes |
+| bgp\_peer\_range1 | Remote 1 IP range | string | n/a | yes |
+| bgp\_peer\_range2 | Remote 2 IP range | string | n/a | yes |
+| bgp\_peer\_range3 | Remote 3 IP range | string | n/a | yes |
+| bgp\_peer\_range4 | Remote 4 IP range | string | n/a | yes |
+| bgp\_peer\_range5 | Remote 5 IP range | string | n/a | yes |
+| bgp\_peer\_range6 | Remote 6 IP range | string | n/a | yes |
+| bgp\_peer\_range7 | Remote 7 IP range | string | n/a | yes |
+| bgp\_peer\_secret | Shared secret used to set the secure session between the Cloud VPN gateway and the peer VPN gateway. | string | n/a | yes |
 | default\_region1 | Default region 1 for Cloud Routers | string | n/a | yes |
 | default\_region2 | Default region 2 for Cloud Routers | string | n/a | yes |
-| network\_name | Network Name | string | n/a | yes |
-| on\_prem\_ip\_address | On-Prem IP address | string | n/a | yes |
-| region1\_router1\_name | Cloud Router 1 name for region 1 | string | n/a | yes |
-| region1\_router2\_name | Cloud Router 2 name for region 1 | string | n/a | yes |
-| region2\_router1\_name | Cloud Router 1 name for region 2 | string | n/a | yes |
-| region2\_router2\_name | Cloud Router 2 name for region 2 | string | n/a | yes |
-| remote0\_ip | Remote 0 IP | string | n/a | yes |
-| remote0\_range | Remote 0 IP range | string | n/a | yes |
-| remote0\_secret | Remote 0 secret name | string | n/a | yes |
-| remote1\_ip | Remote 1 IP | string | n/a | yes |
-| remote1\_range | Remote 1 IP range | string | n/a | yes |
-| remote1\_secret | Remote 1 secret name | string | n/a | yes |
-| vpc\_name | VPC Name | string | n/a | yes |
+| environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization. | string | n/a | yes |
+| on\_prem\_router\_ip\_address1 | On-Prem Router IP address | string | n/a | yes |
+| on\_prem\_router\_ip\_address2 | On-Prem Router IP address | string | n/a | yes |
+| project\_id | VPC Project ID | string | n/a | yes |
+| vpc\_label | Label for VPC. | string | n/a | yes |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

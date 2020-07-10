@@ -18,30 +18,6 @@
   Projects for Shared VPCs
 *****************************************/
 
-module "vpc_host_project" {
-  source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0"
-  random_project_id           = "true"
-  impersonate_service_account = var.terraform_service_account
-  name                        = "org-shared-vpc-${var.env}"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
-  folder_id                   = data.google_active_folder.networking.id
-  activate_apis = [
-    "compute.googleapis.com",
-    "dns.googleapis.com",
-    "servicenetworking.googleapis.com",
-    "container.googleapis.com",
-    "logging.googleapis.com"
-  ]
-
-  labels = {
-    environment      = var.env
-    application_name = "org-shared-vpc-${var.env}"
-  }
-}
-
-
 module "base_shared_vpc_host_project" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 7.0"

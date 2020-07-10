@@ -52,7 +52,6 @@ module "seed_bootstrap" {
   group_billing_admins    = var.group_billing_admins
   default_region          = var.default_region
   sa_enable_impersonation = true
-
   activate_apis = [
     "serviceusage.googleapis.com",
     "servicenetworking.googleapis.com",
@@ -66,6 +65,8 @@ module "seed_bootstrap" {
     "appengine.googleapis.com",
     "storage-api.googleapis.com",
     "monitoring.googleapis.com",
+    "pubsub.googleapis.com",
+    "securitycenter.googleapis.com",
     "accesscontextmanager.googleapis.com"
   ]
 
@@ -79,7 +80,8 @@ module "seed_bootstrap" {
     "roles/logging.configWriter",
     "roles/orgpolicy.policyAdmin",
     "roles/resourcemanager.folderAdmin",
-    "roles/resourcemanager.organizationViewer",
+    "roles/securitycenter.notificationConfigEditor",
+    "roles/resourcemanager.organizationViewer"
   ]
 }
 

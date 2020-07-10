@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-domains_to_allow = ["example.com"]
-
-billing_data_users = "gcp-billing-admins@example.com"
-
-audit_data_users = "gcp-security-admins@example.com"
-
 org_id = "000000000000"
-
-billing_account = "000000-000000-000000"
 
 terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
 
-default_region = "australia-southeast1"
+default_region1 = "us-central1"
 
-scc_notification_name = ""
+default_region2 = "us-west1"
 
-//Optional - for development.  Will place all resources under a specific folder instead of org root
-//parent_folder = "01234567890"
-//scc_notification_filter = "state=\\\"ACTIVE\\\""
+access_context_manager_policy_id = 000000000000

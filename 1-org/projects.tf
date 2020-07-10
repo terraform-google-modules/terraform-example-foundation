@@ -75,3 +75,48 @@ module "org_secrets" {
     application_name = "org-secrets"
   }
 }
+
+/******************************************
+  Project for Interconnect
+*****************************************/
+
+module "interconnect" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 8.0"
+  random_project_id           = "true"
+  impersonate_service_account = var.terraform_service_account
+  default_service_account     = "depriviledge"
+  name                        = "prj-interconnect"
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = google_folder.common.id
+  skip_gcloud_download        = var.skip_gcloud_download
+
+  labels = {
+    environment      = "prod"
+    application_name = "prj-interconnect"
+  }
+}
+
+/******************************************
+  Project for SCC Notifications
+*****************************************/
+
+module "scc_notifications" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 8.0"
+  random_project_id           = "true"
+  impersonate_service_account = var.terraform_service_account
+  default_service_account     = "depriviledge"
+  name                        = "prj-scc-notifications"
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = google_folder.common.id
+  activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com"]
+  skip_gcloud_download        = var.skip_gcloud_download
+
+  labels = {
+    environment      = "prod"
+    application_name = "prj-scc-notification"
+  }
+}

@@ -19,12 +19,12 @@ variable "vpc_name" {
   description = "Label to identify the VPC associated with shared VPC that will use the Interconnect."
 }
 
-variable "default_region1" {
+variable "region1" {
   type        = string
   description = "First subnet region. The dedicated Interconnect module only configures two regions."
 }
 
-variable "default_region2" {
+variable "region2" {
   type        = string
   description = "Second subnet region. The dedicated Interconnect module only configures two regions."
 }
@@ -44,42 +44,42 @@ variable "peer_asn" {
   description = "Peer BGP Autonomous System Number (ASN)."
 }
 
-variable "interconnect_location1_region1" {
+variable "region1_interconnect1_location" {
   type        = string
   description = "Name of the interconnect location used in the creation of the Interconnect for the first location of region1"
 }
 
-variable "interconnect_location2_region1" {
+variable "region1_interconnect2_location" {
   type        = string
   description = "Name of the interconnect location used in the creation of the Interconnect for the second location of region1"
 }
 
-variable "interconnect_location1_region2" {
+variable "region2_interconnect1_location" {
   type        = string
   description = "Name of the interconnect location used in the creation of the Interconnect for the first location of region2"
 }
 
-variable "interconnect_location2_region2" {
+variable "region2_interconnect2_location" {
   type        = string
   description = "Name of the interconnect location used in the creation of the Interconnect for the second location of region2"
 }
 
-variable "interconnect1_region1" {
+variable "region1_interconnect1" {
   type        = string
   description = "URL of the underlying Interconnect object that this attachment's traffic will traverse through."
 }
 
-variable "interconnect2_region1" {
+variable "region1_interconnect2" {
   type        = string
   description = "URL of the underlying Interconnect object that this attachment's traffic will traverse through."
 }
 
-variable "interconnect1_region2" {
+variable "region2_interconnect1" {
   type        = string
   description = "URL of the underlying Interconnect object that this attachment's traffic will traverse through."
 }
 
-variable "interconnect2_region2" {
+variable "region2_interconnect2" {
   type        = string
   description = "URL of the underlying Interconnect object that this attachment's traffic will traverse through."
 }

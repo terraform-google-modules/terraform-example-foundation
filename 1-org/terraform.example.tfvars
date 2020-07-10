@@ -28,5 +28,8 @@ terraform_service_account = "org-terraform@example-project-2334.iam.gserviceacco
 
 default_region = "australia-southeast1"
 
+scc_notification_name = ""
+
 //Optional - for development.  Will place all resources under a specific folder instead of org root
 //parent_folder = "01234567890"
+//scc_notification_filter = "state=\\\"ACTIVE\\\""

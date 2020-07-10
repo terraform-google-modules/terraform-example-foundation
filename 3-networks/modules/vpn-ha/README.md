@@ -1,15 +1,70 @@
 # High Availability VPN module
 
-This module implementes the recomendation proposed in [High Availability VPN](https://cloud.google.com/network-connectivity/docs/how-to/how-to-choose#cloud-vpn).
+This module implementes the recomendation proposed in
+[High Availability VPN](https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies#overview).
 
 ## Prerequisites
 
 1. Execution of at least one of the environments in `3-networks/env/`.
-1. Creation on two Cloud Routers for each Region. Both the `Restricted shared VPC` and the `Standard shared VPC` modules create two Cloud Routers for each Region that should be used as input for this module. **This module only works with two regions.**
+1. Creation on two Cloud Routers for each Region. Both the `Restricted shared VPC`
+and the `Standard shared VPC` modules create two Cloud Routers for each Region
+that should be used as input for this module. **This module only works with two regions.**
 
 ## Usage
 
-Sections with examples of calls to this module are commented in each one of the environments. Uncomment these section and update the input values with your interconnects and peer BGP information and rerun Terraform.
+For each environmnet and for each network, you should add the following peace of code in the
+`envs/<environment>/main.tf`
+
+```hcl
+module "shared_<private/restricted>_vpn" {
+  source = "../../modules/vpn-ha"
+
+  project_id = local.<private/restricted>_project_id
+  default_region1 = var.default_region1
+  default_region2 = var.default_region2
+  vpc_label = "<private/restricted>"
+  environment_code = ${local.environment_code}
+
+  bgp_peer_secret = "<my-secret-value>"
+
+  on_prem_router_ip_address1 = "8.8.8.8" # on-prem router ip address
+  on_prem_router_ip_address2 = "8.8.8.8" # on-prem router ip address
+
+  bgp_peer_asn = "64515"
+
+  # tunnel 0
+  bgp_peer_address0 = "169.254.1.1"
+  bgp_peer_range0 = "169.254.1.2/30"
+
+  # tunnel 1
+  bgp_peer_address1 = "169.254.2.1"
+  bgp_peer_range1 = "169.254.2.2/30"
+
+  # tunnel 2
+  bgp_peer_address2 = "169.254.4.1"
+  bgp_peer_range2 = "169.254.4.2/30"
+
+  # tunnel 3
+  bgp_peer_address3 = "169.254.6.1"
+  bgp_peer_range3 = "169.254.6.2/30"
+
+  # tunnel 4
+  bgp_peer_address4 = "169.254.8.1"
+  bgp_peer_range4 = "169.254.8.2/30"
+
+  # tunnel 5
+  bgp_peer_address5 = "169.254.10.1"
+  bgp_peer_range5 = "169.254.10.2/30"
+
+  # tunnel 6
+  bgp_peer_address6 = "169.254.12.1"
+  bgp_peer_range6 = "169.254.12.2/30"
+
+  # tunnel 7
+  bgp_peer_address7 = "169.254.14.1"
+  bgp_peer_range7 = "169.254.14.2/30"
+}
+```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

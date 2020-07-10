@@ -1,5 +1,15 @@
-https://cloud.google.com/network-connectivity/docs/vpn/how-to/creating-ha-vpn#creating-ha-gw-peer-tunnel
+# High Availability VPN module
 
+This module implementes the recomendation proposed in [High Availability VPN](https://cloud.google.com/network-connectivity/docs/how-to/how-to-choose#cloud-vpn).
+
+## Prerequisites
+
+1. Execution of at least one of the environments in `3-networks/env/`.
+1. Creation on two Cloud Routers for each Region. Both the `Restricted shared VPC` and the `Standard shared VPC` modules create two Cloud Routers for each Region that should be used as input for this module. **This module only works with two regions.**
+
+## Usage
+
+Sections with examples of calls to this module are commented in each one of the environments. Uncomment these section and update the input values with your interconnects and peer BGP information and rerun Terraform.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

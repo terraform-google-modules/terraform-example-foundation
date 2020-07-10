@@ -28,12 +28,20 @@ variable "billing_account" {
   type        = string
 }
 
+variable "group_org_admins" {
+  description = "Google Group for GCP Organization Administrators"
+  type        = string
+}
+
 variable "default_region" {
   description = "Default region to create resources where applicable."
   type        = string
   default     = "us-central1"
 }
 
+/* ----------------------------------------
+    Specific to CICD Project
+   ---------------------------------------- */
 variable "jenkins_agent_gce_name" {
   description = "Jenkins Agent GCE Instance name."
   type        = string
@@ -61,12 +69,30 @@ variable "jenkins_agent_gce_ssh_pub_key" {
 variable "jenkins_sa_email" {
   description = "Email for Jenkins Agent service account."
   type        = string
-  default     = "jenkins-agent-gce-sa"
+  default     = "jenkins-agent-gce"
 }
 
 variable "jenkins_master_ip_addresses" {
   description = "A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
   type        = list(string)
+}
+
+/* ----------------------------------------
+    Specific to Seed Project
+   ---------------------------------------- */
+variable "terraform_sa_email" {
+  description = "Email for terraform service account. It must be supplied by the seed project"
+  type        = string
+}
+
+variable "terraform_sa_name" {
+  description = "Fully-qualified name of the terraform service account. It must be supplied by the seed project"
+  type        = string
+}
+
+variable "terraform_state_bucket" {
+  description = "Default state bucket, used in Cloud Build substitutions. It must be supplied by the seed project"
+  type        = string
 }
 
 /******************************************
@@ -86,7 +112,7 @@ variable "project_prefix" {
 }
 
 variable "activate_apis" {
-  description = "List of APIs to enable in the Cloudbuild project."
+  description = "List of APIs to enable in the CICD project."
   type        = list(string)
 
   default = [
@@ -94,12 +120,12 @@ variable "activate_apis" {
     "servicenetworking.googleapis.com",
     "compute.googleapis.com",
     "logging.googleapis.com",
-    "bigquery.googleapis.com",
+    "bigquery.googleapis.com", // TODO(caleonardo): confirm if CICD Project needs BQ
     "cloudresourcemanager.googleapis.com",
     "cloudbilling.googleapis.com",
     "iam.googleapis.com",
     "admin.googleapis.com",
-    "appengine.googleapis.com",
+    "appengine.googleapis.com", // TODO(caleonardo): confirm if CICD Project needs GAE
     "storage-api.googleapis.com",
     "cloudkms.googleapis.com"
   ]
@@ -111,8 +137,32 @@ variable "sa_enable_impersonation" {
   default     = false
 }
 
+variable "storage_bucket_prefix" {
+  description = "Name prefix to use for storage buckets."
+  type        = string
+  default     = "bkt"
+}
+
+variable "storage_bucket_labels" {
+  description = "Labels to apply to the storage bucket."
+  type        = map(string)
+  default     = {}
+}
+
 variable "folder_id" {
   description = "The ID of a folder to host this project"
   type        = string
   default     = ""
+}
+
+variable "terraform_version" {
+  description = "Default terraform version."
+  type        = string
+  default     = "0.12.24"
+}
+
+variable "terraform_version_sha256sum" {
+  description = "sha256sum for default terraform version."
+  type        = string
+  default     = "602d2529aafdaa0f605c06adb7c72cfb585d8aa19b3f4d8d189b42589e27bf11"
 }

@@ -40,13 +40,13 @@ Sections with examples of calls to this module are commented in each one of the 
 
 | Name | Description |
 |------|-------------|
-| interconnect\_attachment1\_region1 | The created attachment |
+| interconnect\_attachment1\_region1 | The interconnect attachment 1 for region 1 |
 | interconnect\_attachment1\_region1\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
-| interconnect\_attachment1\_region2 | The created attachment |
+| interconnect\_attachment1\_region2 | The interconnect attachment 1 for region 2 |
 | interconnect\_attachment1\_region2\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
-| interconnect\_attachment2\_region1 | The created attachment |
+| interconnect\_attachment2\_region1 | The interconnect attachment 2 for region 1 |
 | interconnect\_attachment2\_region1\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
-| interconnect\_attachment2\_region2 | The created attachment |
+| interconnect\_attachment2\_region2 | The interconnect attachment 2 for region 2 |
 | interconnect\_attachment2\_region2\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

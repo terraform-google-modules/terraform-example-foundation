@@ -16,7 +16,7 @@
 
 output "interconnect_attachment1_region1" {
   value       = module.interconnect_attachment1_region1.attachment
-  description = "The created attachment"
+  description = "The interconnect attachment 1 for region 1"
 }
 
 output "interconnect_attachment1_region1_customer_router_ip_address" {
@@ -26,7 +26,7 @@ output "interconnect_attachment1_region1_customer_router_ip_address" {
 
 output "interconnect_attachment2_region1" {
   value       = module.interconnect_attachment2_region1.attachment
-  description = "The created attachment"
+  description = "The interconnect attachment 2 for region 1"
 }
 
 output "interconnect_attachment2_region1_customer_router_ip_address" {
@@ -36,7 +36,7 @@ output "interconnect_attachment2_region1_customer_router_ip_address" {
 
 output "interconnect_attachment1_region2" {
   value       = module.interconnect_attachment1_region2.attachment
-  description = "The created attachment"
+  description = "The interconnect attachment 1 for region 2"
 }
 
 output "interconnect_attachment1_region2_customer_router_ip_address" {
@@ -46,7 +46,7 @@ output "interconnect_attachment1_region2_customer_router_ip_address" {
 
 output "interconnect_attachment2_region2" {
   value       = module.interconnect_attachment2_region2.attachment
-  description = "The created attachment"
+  description = "The interconnect attachment 2 for region 2"
 }
 
 output "interconnect_attachment2_region2_customer_router_ip_address" {

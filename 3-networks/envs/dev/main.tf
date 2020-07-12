@@ -107,7 +107,7 @@ module "restricted_shared_vpc" {
 #   region1_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-2"
 #   region1_interconnect2_location = "las-zone1-770"
 
-#   region2                        = var.default_region1
+#   region2                        = var.default_region2
 #   region2_router1_name           = module.restricted_shared_vpc.region2_router1.router.name
 #   region2_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-3"
 #   region2_interconnect1_location = "lax-zone2-19"
@@ -187,7 +187,7 @@ module "private_shared_vpc" {
 #   region1_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-2"
 #   region1_interconnect2_location = "las-zone1-770"
 
-#   region2                        = var.default_region1
+#   region2                        = var.default_region2
 #   region2_router1_name           = module.private_shared_vpc.region2_router1.router.name
 #   region2_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-3"
 #   region2_interconnect1_location = "lax-zone2-19"

@@ -115,7 +115,7 @@ module "peering_zone" {
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "peering"
-  name        = "pz_to_dns_hub"
+  name        = "pz-to-dns-hub"
   domain      = var.domain
   description = "Private DNS peering zone."
 

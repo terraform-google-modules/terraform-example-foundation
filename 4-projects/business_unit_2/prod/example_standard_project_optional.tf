@@ -48,6 +48,14 @@
 #     range_name    = "prod-gke-svc",
 #     ip_cidr_range = "10.8.0.0/16"
 #   }]
+#   dev_subnet_ip_cidr_range = "10.6.0.0/16"
+#   dev_subnet_secondary_ranges = [{
+#     range_name    = "dev-gke-pod",
+#     ip_cidr_range = "10.7.0.0/16"
+#     }, {
+#     range_name    = "dev-gke-svc",
+#     ip_cidr_range = "10.8.0.0/16"
+#   }]
 
 #   # DNS Setting (Optional)
 #   enable_private_dns = true

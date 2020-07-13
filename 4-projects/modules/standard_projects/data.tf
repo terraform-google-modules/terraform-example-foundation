@@ -31,3 +31,12 @@ data "google_compute_network" "nonprod_shared_vpc" {
   name    = "shared-vpc-nonprod"
   project = local.nonprod_project_id
 }
+
+data "google_projects" "dev_project" {
+  filter = "labels.application_name:org-shared-vpc-dev"
+}
+
+data "google_compute_network" "dev_shared_vpc" {
+  name    = "shared-vpc-dev"
+  project = local.dev_project_id
+} 

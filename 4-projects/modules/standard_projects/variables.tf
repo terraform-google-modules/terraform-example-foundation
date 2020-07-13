@@ -29,6 +29,11 @@ variable "prod_folder_id" {
   type        = string
 }
 
+variable "dev_folder_id" {
+  description = "The development folder id where the project will be created"
+  type        = string
+}
+
 variable "billing_account" {
   description = "The ID of the billing account to associated this project with"
   type        = string
@@ -92,6 +97,21 @@ variable "activate_apis" {
 
 # variable "prod_subnet_secondary_ranges" {
 #   description = "The secondary CIDR Ranges of the subnet to get allocated to the prod project"
+#   type = list(object({
+#     range_name    = string
+#     ip_cidr_range = string
+#   }))
+#   default = []
+# }
+
+# variable "dev_subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the dev project"
+#   type        = string
+#   default     = ""
+# }
+
+# variable "dev_subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the dev project"
 #   type = list(object({
 #     range_name    = string
 #     ip_cidr_range = string

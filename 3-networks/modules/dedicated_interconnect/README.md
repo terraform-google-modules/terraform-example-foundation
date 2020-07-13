@@ -1,16 +1,16 @@
-# Dedicated interconnecte module
+# Dedicated Interconnect module
 
-This module implementes the recomendation proposed in [Establishing 99.99% Availability for Dedicated Interconnect](https://cloud.google.com/network-connectivity/docs/interconnect/tutorials/dedicated-creating-9999-availability).
+This module implements the recommendation proposed in [Establishing 99.99% Availability for Dedicated Interconnect](https://cloud.google.com/network-connectivity/docs/interconnect/tutorials/dedicated-creating-9999-availability).
 
 ## Prerequisites
 
 1. Execution of at least one of the environments in `3-networks/env/`.
-1. Creation on two Cloud Routers for each Region. Both the `Restricted shared VPC` and the `Standard shared VPC` modules create two Cloud Routers for each Region that should be used as input for this module. **This module only works with two regions.**
+1. Creation of two Cloud Routers for each region. Both `Restricted shared VPC` and `Standard shared VPC` modules create two Cloud Routers for each region, these routers should be used as input for this module. **This module only works with two regions.**
 1. Provisioning of four [dedicated interconnects](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/dedicated-overview) in the `prj-interconnect` project created in step `1-org` under folder `fldr-common`.
 
 ## Usage
 
-Sections with examples of calls to this module are commented in each one of the environments. Uncomment these section and update the input values with your interconnects and peer BGP information and rerun Terraform.
+Sections with examples of calls to this module are commented in each one of the environments. Uncomment these sections and update the input values with your interconnects and peer BGP information and rerun Terraform.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

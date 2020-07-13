@@ -18,6 +18,7 @@
 
 source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials
 gcloud config set project "${TF_VAR_project_id:?}"
+# sleep 60s to give time for permissions in prepare step to take effect
 sleep 60
 gcloud alpha scc notifications delete test-scc-notification --organization "${TF_VAR_org_id:?}" -q || true
 POLICY_ID=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)")

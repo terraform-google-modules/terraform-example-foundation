@@ -20,6 +20,7 @@ module "dev" {
   access_context_manager_policy_id = var.policy_id
   default_region2                  = "us-central1"
   default_region1                  = "us-west1"
+  domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
 }
 
@@ -29,6 +30,7 @@ module "nonprod" {
   access_context_manager_policy_id = var.policy_id
   default_region2                  = "us-central1"
   default_region1                  = "us-west1"
+  domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
 }
 
@@ -38,5 +40,6 @@ module "prod" {
   access_context_manager_policy_id = var.policy_id
   default_region2                  = "us-central1"
   default_region1                  = "us-west1"
+  domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
 }

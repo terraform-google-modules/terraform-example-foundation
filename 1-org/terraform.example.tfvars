@@ -30,6 +30,14 @@ default_region = "australia-southeast1"
 
 scc_notification_name = ""
 
+dns_default_region1 = "us-central1"
+
+dns_default_region2 = "us-west1"
+
+domain = "example.com."
+
+target_name_server_addresses = ["8.8.8.8", "8.8.8.4"]
+
 //Optional - for development.  Will place all resources under a specific folder instead of org root
 //parent_folder = "01234567890"
 //scc_notification_filter = "state=\\\"ACTIVE\\\""

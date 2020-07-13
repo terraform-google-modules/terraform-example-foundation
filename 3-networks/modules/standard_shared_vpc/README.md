@@ -9,6 +9,7 @@
 | default\_region2 | Default region 2 for subnets and Cloud Routers | string | n/a | yes |
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | bool | `"true"` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |
+| domain | The DNS name of peering managed zone, for instance 'example.com.' | string | n/a | yes |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization. | string | n/a | yes |
 | nat\_bgp\_asn | BGP ASN for first NAT cloud routes. | number | `"0"` | no |
 | nat\_enabled | Toggle creation of NAT cloud router. | bool | `"false"` | no |

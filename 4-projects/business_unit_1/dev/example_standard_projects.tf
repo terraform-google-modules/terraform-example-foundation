@@ -20,8 +20,7 @@ module "example_standard_projects" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
-
-  dev_folder_id     = var.parent_folder
+  dev_folder_id               = var.parent_folder
 
   # Metadata
   project_prefix   = "sample-standard-bu1-d"

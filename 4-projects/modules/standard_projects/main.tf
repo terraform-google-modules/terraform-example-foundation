@@ -67,7 +67,7 @@ module "prod_project" {
   }
 }
 
-module "nonprod_project" {
+module "dev_project" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 7.0"
   random_project_id           = "true"

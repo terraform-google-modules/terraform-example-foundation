@@ -39,4 +39,4 @@ data "google_projects" "dev_project" {
 data "google_compute_network" "dev_shared_vpc" {
   name    = "shared-vpc-dev"
   project = local.dev_project_id
-} 
+}

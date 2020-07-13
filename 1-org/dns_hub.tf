@@ -259,7 +259,7 @@ module "dns_hub_region2_router2" {
 /******************************************
  HA VPN (optional)
 *****************************************/
-# update the on_prem_router_ip_addresses, bgp_peer_asn and bgp_peer_secret in the locals 
+# update the on_prem_router_ip_addresses, bgp_peer_asn and bgp_peer_secret in the locals
 # with actual values before running the script.
 
 # locals {

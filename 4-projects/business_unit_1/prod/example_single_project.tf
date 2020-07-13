@@ -22,7 +22,7 @@ module "example_single_project" {
   impersonate_service_account = var.terraform_service_account
   environment                 = "prod"
 
-  folder_id = module.example_team_folders.prod_folder_id
+  folder_id = var.parent_folder
 
   # Metadata
   project_prefix   = "sample-single-bu1-p"

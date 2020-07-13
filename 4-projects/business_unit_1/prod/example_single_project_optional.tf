@@ -20,7 +20,7 @@
 #   org_id                      = var.org_id
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
-#   folder_id = module.example_team_folders.prod_folder_id
+#   folder_id = var.parent_folder
 #   environment = "prod"
 
 #   # Metadata

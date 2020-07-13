@@ -25,7 +25,7 @@ module "example_single_project" {
   folder_id = module.example_team_folders.dev_folder_id
 
   # Metadata
-  project_prefix   = "sample-single-bu1-d"
+  project_prefix   = "sample-single-bu2-d"
   cost_centre      = "cost-centre-1"
-  application_name = "sample-single-project-app-bu1-d"
+  application_name = "sample-single-project-app-bu2-d"
 }

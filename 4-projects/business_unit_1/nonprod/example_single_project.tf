@@ -20,12 +20,12 @@ module "example_single_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
-  environment                 = "dev"
+  environment                 = "nonprod"
 
-  folder_id = module.example_team_folders.dev_folder_id
+  folder_id = module.example_team_folders.nonprod_folder_id
 
   # Metadata
-  project_prefix   = "sample-single-bu1-d"
+  project_prefix   = "sample-single-bu1-n"
   cost_centre      = "cost-centre-1"
-  application_name = "sample-single-project-app-bu1-d"
+  application_name = "sample-single-project-app-bu1-n"
 }

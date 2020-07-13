@@ -32,6 +32,23 @@ The purpose of this step is to setup top level shared folders, monitoring & netw
 1. Run `terraform plan` and review output
 1. Run `terraform apply`
 
+### Connection to onprem environment
+
+The DNS Hub project needs connection to the onprem environment.
+The recommended configuration to access onprem is to use dedicated interconnect.
+Follow instructions in `../terraform-example-foundation/1-org/dns_hub.tf` to enable dedicated interconnect.
+
+If you are not able to use dedicated interconnect you can also use an HA VPN to access onprem.
+There is an example file `dns_hub_vpn.tf.example`, that can be used to
+setup an HA VPN **to test** the infrastructure created.
+To use the VPN example:
+
+1. Rename `dns_hub_vpn.tf.example` to `dns_hub_vpn.tf`
+1. Update in the file the values for `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
+1. Run `terraform apply -var 'bgp_peer_secret=<your-secret>'`.
+
+`bgp_peer_secret` must not be saved in the terraform.tfvars file.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
@@ -40,6 +57,7 @@ The purpose of this step is to setup top level shared folders, monitoring & netw
 | access\_table\_expiration\_ms | Period before tables expire for access logs in milliseconds. Default is 400 days. | number | `"34560000000"` | no |
 | audit\_data\_users | Gsuite or Cloud Identity group that have access to audit logs. | string | n/a | yes |
 | bgp\_asn\_dns | BGP Autonomous System Number (ASN). | number | `"64667"` | no |
+| bgp\_peer\_secret | Shared secret used to set the secure session between the Cloud VPN gateway and the peer VPN gateway for the DNS hub. Only necessary if you are using the VPN example code. | string | `""` | no |
 | billing\_account | The ID of the billing account to associate this project with | string | n/a | yes |
 | billing\_data\_users | Gsuite or Cloud Identity group that have access to billing data set. | string | n/a | yes |
 | data\_access\_table\_expiration\_ms | Period before tables expire for data access logs in milliseconds. Default is 30 days. | number | `"2592000000"` | no |

@@ -122,3 +122,9 @@ variable "target_name_server_addresses" {
   default     = []
   type        = list(string)
 }
+
+variable "bgp_peer_secret" {
+  type        = string
+  description = "Shared secret used to set the secure session between the Cloud VPN gateway and the peer VPN gateway for the DNS hub. Only necessary if you are using the VPN example code."
+  default     = ""
+}

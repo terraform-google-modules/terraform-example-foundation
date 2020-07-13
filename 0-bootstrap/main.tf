@@ -43,8 +43,8 @@ resource "google_folder" "seed" {
 }
 
 module "seed_bootstrap" {
-  source = "github.com/terraform-google-modules/terraform-google-bootstrap"
-  # version                 = "~> 1.0"
+  source                  = "terraform-google-modules/bootstrap/google"
+  version                 = "~> 1.2"
   org_id                  = var.org_id
   folder_id               = google_folder.seed.id
   billing_account         = var.billing_account
@@ -90,8 +90,8 @@ module "seed_bootstrap" {
 }
 
 module "cloudbuild_bootstrap" {
-  source = "github.com/terraform-google-modules/terraform-google-bootstrap//modules/cloudbuild"
-  # version                 = "~> 1.0"
+  source                  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
+  version                 = "~> 1.2"
   org_id                  = var.org_id
   folder_id               = google_folder.seed.id
   billing_account         = var.billing_account

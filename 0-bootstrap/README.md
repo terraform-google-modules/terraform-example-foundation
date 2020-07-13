@@ -32,7 +32,9 @@ Further details of permissions required and resources created, can be found in t
 | group\_billing\_admins | Google Group for GCP Billing Administrators | string | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |
 | org\_id | GCP Organization ID | string | n/a | yes |
+| org\_project\_creators | Additional list of members to have project creator role accross the organization. Prefix of group: user: or serviceAccount: is required. | list(string) | `<list>` | no |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
+| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
 
 ## Outputs
 

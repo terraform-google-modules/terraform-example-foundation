@@ -1,0 +1,4 @@
+name: org
+attributes:
+  - name: foo
+    required: true

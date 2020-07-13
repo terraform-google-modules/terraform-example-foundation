@@ -32,12 +32,16 @@ resource "google_dns_policy" "default_policy" {
   Restricted Google APIs DNS Zone & records.
  *****************************************/
 
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
 module "restricted_googleapis" {
   source      = "terraform-google-modules/cloud-dns/google"
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "private"
-  name        = "restricted-googleapis"
+  name        = "restricted-googleapis-${random_id.suffix.hex}"
   domain      = "googleapis.com."
   description = "Private DNS zone to configure restricted.googleapis.com"
 
@@ -70,7 +74,7 @@ module "restricted_gcr" {
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "private"
-  name        = "restricted-gcr"
+  name        = "restricted-gcr-${random_id.suffix.hex}"
   domain      = "gcr.io."
   description = "Private DNS zone to configure gcr.io"
 

@@ -21,9 +21,7 @@ module "example_standard_projects" {
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
 
-  dev_folder_id     = module.example_team_folders.dev_folder_id
-  nonprod_folder_id = module.example_team_folders.nonprod_folder_id
-  prod_folder_id    = module.example_team_folders.prod_folder_id
+  dev_folder_id     = var.parent_folder
 
   # Metadata
   project_prefix   = "sample-standard-bu1-d"

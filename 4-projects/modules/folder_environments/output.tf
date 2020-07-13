@@ -20,3 +20,7 @@ output "nonprod_folder_id" {
 output "prod_folder_id" {
   value = google_folder.prod_folder.id
 }
+
+output "dev_folder_id" {
+  value = google_folder.dev_folder.id
+}

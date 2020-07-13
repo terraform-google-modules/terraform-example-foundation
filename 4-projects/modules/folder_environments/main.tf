@@ -31,3 +31,8 @@ resource "google_folder" "prod_folder" {
   display_name = "prod"
   parent       = google_folder.parent_folder.id
 }
+
+resource "google_folder" "dev_folder" {
+  display_name = "dev"
+  parent       = google_folder.parent_folder.id
+}

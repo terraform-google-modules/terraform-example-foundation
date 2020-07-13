@@ -269,37 +269,29 @@ locals {
   bgp_peer_asn    = "64515"
   bgp_peer_secret = "<my-secret-value>"
 
-  # tunnel 0
-  bgp_peer_address0 = "169.254.1.1"
-  bgp_peer_range0   = "169.254.1.2/30"
+  region1_router1_tunnel0_bgp_peer_address = "169.254.1.1"
+  region1_router1_tunnel0_bgp_peer_range   = "169.254.1.2/30"
 
-  # tunnel 1
-  bgp_peer_address1 = "169.254.2.1"
-  bgp_peer_range1   = "169.254.2.2/30"
+  region1_router1_tunnel1_bgp_peer_address = "169.254.2.1"
+  region1_router1_tunnel1_bgp_peer_range   = "169.254.2.2/30"
 
-  # tunnel 2
-  bgp_peer_address2 = "169.254.4.1"
-  bgp_peer_range2   = "169.254.4.2/30"
+  region1_router2_tunnel0_bgp_peer_address = "169.254.4.1"
+  region1_router2_tunnel0_bgp_peer_range   = "169.254.4.2/30"
 
-  # tunnel 3
-  bgp_peer_address3 = "169.254.6.1"
-  bgp_peer_range3   = "169.254.6.2/30"
+  region1_router2_tunnel1_bgp_peer_address = "169.254.6.1"
+  region1_router2_tunnel1_bgp_peer_range   = "169.254.6.2/30"
 
-  # tunnel 4
-  bgp_peer_address4 = "169.254.8.1"
-  bgp_peer_range4   = "169.254.8.2/30"
+  region2_router1_tunnel0_bgp_peer_address = "169.254.8.1"
+  region2_router1_tunnel0_bgp_peer_range   = "169.254.8.2/30"
 
-  # tunnel 5
-  bgp_peer_address5 = "169.254.10.1"
-  bgp_peer_range5   = "169.254.10.2/30"
+  region2_router1_tunnel1_bgp_peer_address = "169.254.10.1"
+  region2_router1_tunnel1_bgp_peer_range   = "169.254.10.2/30"
 
-  # tunnel 6
-  bgp_peer_address6 = "169.254.12.1"
-  bgp_peer_range6   = "169.254.12.2/30"
+  region2_router2_tunnel0_bgp_peer_address = "169.254.12.1"
+  region2_router2_tunnel0_bgp_peer_range   = "169.254.12.2/30"
 
-  # tunnel 7
-  bgp_peer_address7 = "169.254.14.1"
-  bgp_peer_range7   = "169.254.14.2/30"
+  region2_router2_tunnel1_bgp_peer_address = "169.254.14.1"
+  region2_router2_tunnel1_bgp_peer_range   = "169.254.14.2/30"
 }
 
 module "vpn_ha_region1_router1" {
@@ -324,11 +316,11 @@ module "vpn_ha_region1_router1" {
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = local.bgp_peer_address0
+        address = local.region1_router1_tunnel0_bgp_peer_address
         asn     = local.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = local.bgp_peer_range0
+      bgp_session_range               = local.region1_router1_tunnel0_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
@@ -336,11 +328,11 @@ module "vpn_ha_region1_router1" {
     }
     remote-1 = {
       bgp_peer = {
-        address = local.bgp_peer_address1
+        address = local.region1_router1_tunnel1_bgp_peer_address
         asn     = local.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = local.bgp_peer_range1
+      bgp_session_range               = local.region1_router1_tunnel1_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
@@ -371,11 +363,11 @@ module "vpn_ha_region1_router2" {
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = local.bgp_peer_address2
+        address = local.region1_router2_tunnel0_bgp_peer_address
         asn     = local.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = local.bgp_peer_range2
+      bgp_session_range               = local.region1_router2_tunnel0_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
@@ -383,11 +375,11 @@ module "vpn_ha_region1_router2" {
     }
     remote-1 = {
       bgp_peer = {
-        address = local.bgp_peer_address3
+        address = local.region1_router2_tunnel1_bgp_peer_address
         asn     = local.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = local.bgp_peer_range3
+      bgp_session_range               = local.region1_router2_tunnel1_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
@@ -418,11 +410,11 @@ module "vpn_ha_region2_router1" {
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = local.bgp_peer_address4
+        address = local.region2_router1_tunnel0_bgp_peer_address
         asn     = local.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = local.bgp_peer_range4
+      bgp_session_range               = local.region2_router1_tunnel0_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
@@ -430,11 +422,11 @@ module "vpn_ha_region2_router1" {
     }
     remote-1 = {
       bgp_peer = {
-        address = local.bgp_peer_address5
+        address = local.region2_router1_tunnel1_bgp_peer_address
         asn     = local.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = local.bgp_peer_range5
+      bgp_session_range               = local.region2_router1_tunnel1_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
@@ -465,11 +457,11 @@ module "vpn_ha_region2_router2" {
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = local.bgp_peer_address6
+        address = local.region2_router2_tunnel0_bgp_peer_address
         asn     = local.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = local.bgp_peer_range6
+      bgp_session_range               = local.region2_router2_tunnel0_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
@@ -477,11 +469,11 @@ module "vpn_ha_region2_router2" {
     }
     remote-1 = {
       bgp_peer = {
-        address = local.bgp_peer_address7
+        address = local.region2_router2_tunnel1_bgp_peer_address
         asn     = local.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = local.bgp_peer_range7
+      bgp_session_range               = local.region2_router2_tunnel1_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1

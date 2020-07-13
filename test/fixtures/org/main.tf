@@ -20,7 +20,7 @@ module "test" {
   org_id                    = var.org_id
   billing_account           = var.billing_account
   terraform_service_account = var.terraform_sa_email
-  default_region            = "us-central1"
+  default_region            = "us-east4"
   billing_data_users        = var.group_email
   audit_data_users          = var.group_email
   scc_notification_name     = "test-scc-notification"

@@ -78,8 +78,10 @@ module "dns-forwarding-zone" {
   name       = "fz-dns-hub"
   domain     = var.domain
 
-  private_visibility_config_networks = module.dns_hub_vpc.network_self_link
-  target_name_server_addresses       = var.target_name_server_addresses
+  private_visibility_config_networks = [
+    module.dns_hub_vpc.network_self_link
+  ]
+  target_name_server_addresses = var.target_name_server_addresses
 }
 
 /*********************************************************
@@ -129,7 +131,7 @@ module "dns_hub_region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.2.0"
   name    = "cr-dns-hub-${var.dns_default_region2}-cr4"
-  project = module.dns_hub_vpc.network_name
+  project = module.dns_hub.project_id
   network = module.dns_hub_vpc.network_name
   region  = var.dns_default_region2
   bgp = {
@@ -146,111 +148,111 @@ module "dns_hub_region2_router2" {
 # uncommnet if you have done the requirement steps listed in ../3-networks/modules/dedicated_interconnect/README.md
 # update the interconnect, interconnect locations, and peer fields in the locals with actual values before running the script.
 
-locals {
-  peer_asn        = "64515"
-  peer_ip_address = "8.8.8.8" # on-prem router ip address
-  peer_name       = "interconnect-peer"
+# locals {
+#   peer_asn        = "64515"
+#   peer_ip_address = "8.8.8.8" # on-prem router ip address
+#   peer_name       = "interconnect-peer"
 
-  region1_interconnect1_location = "las-zone1-770"
-  region1_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-1"
+#   region1_interconnect1_location = "las-zone1-770"
+#   region1_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-1"
 
-  region1_interconnect2_location = "las-zone1-770"
-  region1_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-2"
+#   region1_interconnect2_location = "las-zone1-770"
+#   region1_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-2"
 
-  region2_interconnect1_location = "lax-zone2-19"
-  region2_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-3"
+#   region2_interconnect1_location = "lax-zone2-19"
+#   region2_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-3"
 
-  region2_interconnect2_location = "lax-zone1-403"
-  region2_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-4"
-}
+#   region2_interconnect2_location = "lax-zone1-403"
+#   region2_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-4"
+# }
 
-module "interconnect_attachment1_region1" {
-  source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 0.2.0"
+# module "interconnect_attachment1_region1" {
+#   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
+#   version = "~> 0.2.0"
 
-  name    = "vl-${local.region1_interconnect1_location}-dns-hub-${var.dns_default_region1}-cr1"
-  project = module.interconnect.project_id
-  region  = var.dns_default_region1
-  router  = module.dns_hub_region1_router1.router.name
+#   name    = "vl-${local.region1_interconnect1_location}-dns-hub-${var.dns_default_region1}-cr1"
+#   project = module.interconnect.project_id
+#   region  = var.dns_default_region1
+#   router  = module.dns_hub_region1_router1.router.name
 
-  interconnect = local.region1_interconnect1
+#   interconnect = local.region1_interconnect1
 
-  interface = {
-    name = "if-${local.region1_interconnect1_location}-dns-hub-${var.dns_default_region1}"
-  }
+#   interface = {
+#     name = "if-${local.region1_interconnect1_location}-dns-hub-${var.dns_default_region1}"
+#   }
 
-  peer = {
-    name            = local.peer_name
-    peer_ip_address = local.peer_ip_address
-    peer_asn        = local.peer_asn
-  }
-}
+#   peer = {
+#     name            = local.peer_name
+#     peer_ip_address = local.peer_ip_address
+#     peer_asn        = local.peer_asn
+#   }
+# }
 
-module "interconnect_attachment2_region1" {
-  source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 0.2.0"
+# module "interconnect_attachment2_region1" {
+#   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
+#   version = "~> 0.2.0"
 
-  name    = "vl-${local.region1_interconnect2_location}-dns-hub-${var.dns_default_region1}-cr2"
-  project = module.interconnect.project_id
-  region  = var.dns_default_region1
-  router  = module.dns_hub_region1_router2.router.name
+#   name    = "vl-${local.region1_interconnect2_location}-dns-hub-${var.dns_default_region1}-cr2"
+#   project = module.interconnect.project_id
+#   region  = var.dns_default_region1
+#   router  = module.dns_hub_region1_router2.router.name
 
-  interconnect = local.region1_interconnect2
+#   interconnect = local.region1_interconnect2
 
-  interface = {
-    name = "if-${local.region1_interconnect2_location}-dns-hub-${var.dns_default_region1}"
-  }
+#   interface = {
+#     name = "if-${local.region1_interconnect2_location}-dns-hub-${var.dns_default_region1}"
+#   }
 
-  peer = {
-    name            = local.peer_name
-    peer_ip_address = local.peer_ip_address
-    peer_asn        = local.peer_asn
-  }
-}
+#   peer = {
+#     name            = local.peer_name
+#     peer_ip_address = local.peer_ip_address
+#     peer_asn        = local.peer_asn
+#   }
+# }
 
-module "interconnect_attachment1_region2" {
-  source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 0.2.0"
+# module "interconnect_attachment1_region2" {
+#   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
+#   version = "~> 0.2.0"
 
-  name    = "vl-${local.region2_interconnect1_location}-dns-hub-${var.dns_default_region2}-cr3"
-  project = module.interconnect.project_id
-  region  = var.dns_default_region2
-  router  = module.dns_hub_region2_router1.router.name
+#   name    = "vl-${local.region2_interconnect1_location}-dns-hub-${var.dns_default_region2}-cr3"
+#   project = module.interconnect.project_id
+#   region  = var.dns_default_region2
+#   router  = module.dns_hub_region2_router1.router.name
 
-  interconnect = local.region2_interconnect1
+#   interconnect = local.region2_interconnect1
 
-  interface = {
-    name = "if-${local.region2_interconnect1_location}-dns-hub-${var.dns_default_region2}"
-  }
+#   interface = {
+#     name = "if-${local.region2_interconnect1_location}-dns-hub-${var.dns_default_region2}"
+#   }
 
-  peer = {
-    name            = local.peer_name
-    peer_ip_address = local.peer_ip_address
-    peer_asn        = local.peer_asn
-  }
-}
+#   peer = {
+#     name            = local.peer_name
+#     peer_ip_address = local.peer_ip_address
+#     peer_asn        = local.peer_asn
+#   }
+# }
 
-module "interconnect_attachment2_region2" {
-  source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 0.2.0"
+# module "interconnect_attachment2_region2" {
+#   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
+#   version = "~> 0.2.0"
 
-  name    = "vl-${local.region2_interconnect2_location}-dns-hub-${var.dns_default_region2}-cr4"
-  project = module.interconnect.project_id
-  region  = var.dns_default_region2
-  router  = module.dns_hub_region2_router2.router.name
+#   name    = "vl-${local.region2_interconnect2_location}-dns-hub-${var.dns_default_region2}-cr4"
+#   project = module.interconnect.project_id
+#   region  = var.dns_default_region2
+#   router  = module.dns_hub_region2_router2.router.name
 
-  interconnect = local.region2_interconnect2
+#   interconnect = local.region2_interconnect2
 
-  interface = {
-    name = "if-${local.region2_interconnect2_location}-dns-hub-${var.dns_default_region2}"
-  }
+#   interface = {
+#     name = "if-${local.region2_interconnect2_location}-dns-hub-${var.dns_default_region2}"
+#   }
 
-  peer = {
-    name            = local.peer_name
-    peer_ip_address = local.peer_ip_address
-    peer_asn        = local.peer_asn
-  }
-}
+#   peer = {
+#     name            = local.peer_name
+#     peer_ip_address = local.peer_ip_address
+#     peer_asn        = local.peer_asn
+#   }
+# }
 
 
 

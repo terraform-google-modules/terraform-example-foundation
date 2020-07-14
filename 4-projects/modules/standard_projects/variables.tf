@@ -74,14 +74,20 @@ variable "activate_apis" {
 #   default     = false
 # }
 
-# variable "nonprod_subnet_ip_cidr_range" {
-#   description = "The CIDR Range of the subnet to get allocated to the nonprod project"
+# variable "base_nonprod_subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the base nonprod project"
 #   type        = string
 #   default     = ""
 # }
 
-# variable "nonprod_subnet_secondary_ranges" {
-#   description = "The secondary CIDR Ranges of the subnet to get allocated to the nonprod project"
+# variable "restricted_nonprod_subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the restricted nonprod project"
+#   type        = string
+#   default     = ""
+# }
+
+# variable "base_nonprod_subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the base nonprod project"
 #   type = list(object({
 #     range_name    = string
 #     ip_cidr_range = string
@@ -89,14 +95,8 @@ variable "activate_apis" {
 #   default = []
 # }
 
-# variable "prod_subnet_ip_cidr_range" {
-#   description = "The CIDR Range of the subnet to get allocated to the prod project"
-#   type        = string
-#   default     = ""
-# }
-
-# variable "prod_subnet_secondary_ranges" {
-#   description = "The secondary CIDR Ranges of the subnet to get allocated to the prod project"
+# variable "restricted_nonprod_subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the restricted nonprod project"
 #   type = list(object({
 #     range_name    = string
 #     ip_cidr_range = string
@@ -104,14 +104,59 @@ variable "activate_apis" {
 #   default = []
 # }
 
-# variable "dev_subnet_ip_cidr_range" {
-#   description = "The CIDR Range of the subnet to get allocated to the dev project"
+# variable "base_prod_subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the base prod project"
 #   type        = string
 #   default     = ""
 # }
 
-# variable "dev_subnet_secondary_ranges" {
-#   description = "The secondary CIDR Ranges of the subnet to get allocated to the dev project"
+# variable "restricted_prod_subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the restricted prod project"
+#   type        = string
+#   default     = ""
+# }
+
+# variable "base_prod_subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the base prod project"
+#   type = list(object({
+#     range_name    = string
+#     ip_cidr_range = string
+#   }))
+#   default = []
+# }
+
+# variable "restricted_prod_subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the restricted prod project"
+#   type = list(object({
+#     range_name    = string
+#     ip_cidr_range = string
+#   }))
+#   default = []
+# }
+
+# variable "base_dev_subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the base dev project"
+#   type        = string
+#   default     = ""
+# }
+
+# variable "restricted_dev_subnet_ip_cidr_range" {
+#   description = "The CIDR Range of the subnet to get allocated to the restricted dev project"
+#   type        = string
+#   default     = ""
+# }
+
+# variable "base_dev_subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the base dev project"
+#   type = list(object({
+#     range_name    = string
+#     ip_cidr_range = string
+#   }))
+#   default = []
+# }
+
+# variable "restricted_dev_subnet_secondary_ranges" {
+#   description = "The secondary CIDR Ranges of the subnet to get allocated to the restricted dev project"
 #   type = list(object({
 #     range_name    = string
 #     ip_cidr_range = string
@@ -133,3 +178,4 @@ variable "activate_apis" {
 #   description = "The top level domain name for the organization"
 #   default     = ""
 # }
+

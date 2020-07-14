@@ -14,29 +14,56 @@
  * limitations under the License.
  */
 
-data "google_projects" "prod_project" {
-  filter = "labels.application_name:org-shared-vpc-prod"
+data "google_projects" "base_prod_project" {
+  filter = "labels.application_name:base-shared-vpc-host-prod"
 }
 
-data "google_compute_network" "prod_shared_vpc" {
-  name    = "shared-vpc-prod"
-  project = local.prod_project_id
+data "google_compute_network" "base_prod_shared_vpc" {
+  name    = "p-shared-base"
+  project = local.base_prod_project_id
 }
 
-data "google_projects" "nonprod_project" {
-  filter = "labels.application_name:org-shared-vpc-nonprod"
+data "google_projects" "restricted_prod_project" {
+  filter = "labels.application_name:restricted-shared-vpc-host-prod"
 }
 
-data "google_compute_network" "nonprod_shared_vpc" {
-  name    = "shared-vpc-nonprod"
-  project = local.nonprod_project_id
+data "google_compute_network" "restricted_prod_shared_vpc" {
+  name    = "p-shared-restricted"
+  project = local.restricted_prod_project_id
 }
 
-data "google_projects" "dev_project" {
-  filter = "labels.application_name:org-shared-vpc-dev"
+data "google_projects" "base_nonprod_project" {
+  filter = "labels.application_name:base-shared-vpc-host-nonprod"
 }
 
-data "google_compute_network" "dev_shared_vpc" {
-  name    = "shared-vpc-dev"
-  project = local.dev_project_id
+data "google_compute_network" "base_nonprod_shared_vpc" {
+  name    = "n-shared-base"
+  project = local.base_nonprod_project_id
+}
+
+data "google_projects" "restricted_nonprod_project {
+  filter = "labels.application_name:restricted-shared-vpc-host-nonprod"
+}
+
+data "google_compute_network" "restricted_nonprod_shared_vpc" {
+  name    = "n-shared-restricted"
+  project = local.restricted_nonprod_project_id
+}
+
+data "google_projects" "base_dev_project" {
+  filter = "labels.application_name:base-shared-vpc-host-dev"
+}
+
+data "google_compute_network" "base_dev_shared_vpc" {
+  name    = "d-shared-base"
+  project = local.base_dev_project_id
+}
+
+data "google_projects" "restricted_dev_project" {
+  filter = "labels.application_name:restricted-shared-vpc-host-dev"
+}
+
+data "google_compute_network" "restricted_dev_shared_vpc" {
+  name    = "d-shared-restricted"
+  project = local.restricted_dev_project_id
 }

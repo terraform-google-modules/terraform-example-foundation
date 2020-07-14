@@ -48,3 +48,9 @@ variable "monitoring_workspace_users" {
   description = "Gsuite or Cloud Identity group that have access to Monitoring Workspaces."
   type        = string
 }
+
+variable "skip_gcloud_download" {
+  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
+  type        = bool
+  default     = true
+}

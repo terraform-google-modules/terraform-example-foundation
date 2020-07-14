@@ -20,8 +20,9 @@
 #   org_id                      = var.org_id
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
-#   folder_id = var.parent_folder
-#   environment = "nonprod"
+#   folder_id                   = var.parent_folder
+#   environment                 = "nonprod"
+#   skip_gcloud_download        = var.skip_gcloud_download
 
 #   # Metadata
 #   project_prefix   = "single-optional-bu1-n"

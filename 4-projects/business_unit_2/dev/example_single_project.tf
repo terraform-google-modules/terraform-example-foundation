@@ -21,6 +21,7 @@ module "example_single_project" {
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
   environment                 = "dev"
+  skip_gcloud_download        = var.skip_gcloud_download
 
   folder_id = var.parent_folder
 

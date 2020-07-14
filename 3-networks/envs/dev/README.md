@@ -28,7 +28,7 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 ### Run terraform locally
 1. Change into 3-networks/env/dev folder
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Rename backend.tf.example backend.tf and update with your bucket from bootstrap.
+1. Rename backend.tf.example to backend.tf and update with your bucket from bootstrap.
 1. Run `terraform init`
 1. Run `terraform plan` and review output
 1. Run `terraform apply`

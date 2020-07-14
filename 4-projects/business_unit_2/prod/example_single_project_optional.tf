@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+# locals {
+#   env           = "prod"
+#   env_code      = element(split("", local.env), 0)
+#   business_code = "bu2"
+# }
+
 # module "example_single_project_optional" {
 #   source = "../../modules/single_project"
 
@@ -21,13 +27,13 @@
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
 #   folder_id                   = var.parent_folder
-#   environment                 = "prod"
+#   environment                 = local.env
 #   skip_gcloud_download        = var.skip_gcloud_download
 
 #   # Metadata
-#   project_prefix   = "single-optional-bu2-p"
+#   project_prefix   = "prj-${local.business_code}-${local.env_code}-sample-opt"
 #   cost_centre      = "cost-centre-1"
-#   application_name = "sample-single-project-app-optional-bu2-p"
+#   application_name = "sample-opt-prj-app-${local.business_code}-${local.env_code}"
 
 #   # Network Setting (Optional)
 #   enable_networking    = true

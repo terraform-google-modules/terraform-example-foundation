@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
+locals {
+  dns_hub_project_id = data.google_projects.dns_hub.projects[0].project_id
+}
+
+/******************************************
+  DNS Hub Project
+*****************************************/
+
+data "google_projects" "dns_hub" {
+  filter = "labels.application_name=prj-dns-hub"
+}
+
+
 /******************************************
   DNS Hub VPC
 *****************************************/
@@ -21,7 +34,7 @@
 module "dns_hub_vpc" {
   source                                 = "terraform-google-modules/network/google"
   version                                = "~> 2.0"
-  project_id                             = module.dns_hub.project_id
+  project_id                             = local.dns_hub_project_id
   network_name                           = "vpc-dns-hub"
   shared_vpc_host                        = "false"
   delete_default_internet_gateway_routes = "true"
@@ -56,7 +69,7 @@ module "dns_hub_vpc" {
  *****************************************/
 
 resource "google_dns_policy" "default_policy" {
-  project                   = module.dns_hub.project_id
+  project                   = local.dns_hub_project_id
   name                      = "dp-dns-hub-default-policy"
   enable_inbound_forwarding = true
   enable_logging            = var.dns_enable_logging
@@ -73,7 +86,7 @@ module "dns-forwarding-zone" {
   source  = "terraform-google-modules/cloud-dns/google"
   version = "3.0.2"
 
-  project_id = module.dns_hub.project_id
+  project_id = local.dns_hub_project_id
   type       = "forwarding"
   name       = "fz-dns-hub"
   domain     = var.domain
@@ -92,7 +105,7 @@ module "dns_hub_region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.2.0"
   name    = "cr-dns-hub-${var.dns_default_region1}-cr1"
-  project = module.dns_hub.project_id
+  project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
   region  = var.dns_default_region1
   bgp = {
@@ -105,7 +118,7 @@ module "dns_hub_region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.2.0"
   name    = "cr-dns-hub-${var.dns_default_region1}-cr2"
-  project = module.dns_hub.project_id
+  project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
   region  = var.dns_default_region1
   bgp = {
@@ -118,7 +131,7 @@ module "dns_hub_region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.2.0"
   name    = "cr-dns-hub-${var.dns_default_region2}-cr3"
-  project = module.dns_hub.project_id
+  project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
   region  = var.dns_default_region2
   bgp = {
@@ -131,7 +144,7 @@ module "dns_hub_region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.2.0"
   name    = "cr-dns-hub-${var.dns_default_region2}-cr4"
-  project = module.dns_hub.project_id
+  project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
   region  = var.dns_default_region2
   bgp = {

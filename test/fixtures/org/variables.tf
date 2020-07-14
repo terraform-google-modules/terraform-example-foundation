@@ -37,8 +37,3 @@ variable "terraform_sa_email" {
 variable "domain_to_allow" {
   description = "The test domain_to_allow allow users from in IAM."
 }
-
-variable "domain" {
-  type        = string
-  description = "The DNS name of forwarding managed zone, for instance 'example.com'"
-}

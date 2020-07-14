@@ -32,23 +32,6 @@ The purpose of this step is to setup top level shared folders, monitoring & netw
 1. Run `terraform plan` and review output
 1. Run `terraform apply`
 
-### Connection to onprem environment
-
-The DNS Hub project needs connection to the onprem environment.
-The recommended configuration to access onprem is to use dedicated interconnect.
-Follow instructions in `../terraform-example-foundation/1-org/dns_hub.tf` to enable dedicated interconnect.
-
-If you are not able to use dedicated interconnect you can also use an HA VPN to access onprem.
-There is an example file `dns_hub_vpn.tf.example`, that can be used to
-setup an HA VPN **to test** the infrastructure created.
-To use the VPN example:
-
-1. Rename `dns_hub_vpn.tf.example` to `dns_hub_vpn.tf`
-1. Update in the file the values for `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
-1. Run `terraform apply -var 'bgp_peer_secret=<your-secret>'`.
-
-`bgp_peer_secret` must not be saved in the terraform.tfvars file.
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
@@ -56,16 +39,10 @@ To use the VPN example:
 |------|-------------|:----:|:-----:|:-----:|
 | access\_table\_expiration\_ms | Period before tables expire for access logs in milliseconds. Default is 400 days. | number | `"34560000000"` | no |
 | audit\_data\_users | Gsuite or Cloud Identity group that have access to audit logs. | string | n/a | yes |
-| bgp\_asn\_dns | BGP Autonomous System Number (ASN). | number | `"64667"` | no |
-| bgp\_peer\_secret | Shared secret used to set the secure session between the Cloud VPN gateway and the peer VPN gateway for the DNS hub. Only necessary if you are using the VPN example code. | string | `""` | no |
 | billing\_account | The ID of the billing account to associate this project with | string | n/a | yes |
 | billing\_data\_users | Gsuite or Cloud Identity group that have access to billing data set. | string | n/a | yes |
 | data\_access\_table\_expiration\_ms | Period before tables expire for data access logs in milliseconds. Default is 30 days. | number | `"2592000000"` | no |
 | default\_region | Default region for BigQuery resources. | string | n/a | yes |
-| dns\_default\_region1 | First subnet region for DNS Hub network. | string | n/a | yes |
-| dns\_default\_region2 | Second subnet region for DNS Hub network. | string | n/a | yes |
-| dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |
-| domain | The DNS name of forwarding managed zone, for instance 'example.com' | string | n/a | yes |
 | domains\_to\_allow | The list of domains to allow users from in IAM. | list(string) | n/a | yes |
 | org\_id | The organization id for the associated services | string | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
@@ -73,7 +50,6 @@ To use the VPN example:
 | scc\_notification\_name | Name of SCC Notification | string | n/a | yes |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module. If set to true you, must ensure that Gcloud Alpha module is installed.) | bool | `"true"` | no |
 | system\_event\_table\_expiration\_ms | Period before tables expire for system event logs in milliseconds. Default is 400 days. | number | `"34560000000"` | no |
-| target\_name\_server\_addresses | List of target name servers for forwarding zone. | list(string) | n/a | yes |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -41,7 +41,7 @@ data "google_compute_network" "base_nonprod_shared_vpc" {
   project = local.base_nonprod_project_id
 }
 
-data "google_projects" "restricted_nonprod_project {
+data "google_projects" "restricted_nonprod_project" {
   filter = "labels.application_name:restricted-shared-vpc-host-nonprod"
 }
 

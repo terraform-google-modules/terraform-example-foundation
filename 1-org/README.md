@@ -73,7 +73,7 @@ To use the VPN example:
 | scc\_notification\_name | Name of SCC Notification | string | n/a | yes |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module. If set to true you, must ensure that Gcloud Alpha module is installed.) | bool | `"true"` | no |
 | system\_event\_table\_expiration\_ms | Period before tables expire for system event logs in milliseconds. Default is 400 days. | number | `"34560000000"` | no |
-| target\_name\_server\_addresses | List of target name servers for forwarding zone. | list(string) | `<list>` | no |
+| target\_name\_server\_addresses | List of target name servers for forwarding zone. | list(string) | n/a | yes |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

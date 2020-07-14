@@ -119,7 +119,6 @@ variable "bgp_asn_dns" {
 
 variable "target_name_server_addresses" {
   description = "List of target name servers for forwarding zone."
-  default     = []
   type        = list(string)
 }
 

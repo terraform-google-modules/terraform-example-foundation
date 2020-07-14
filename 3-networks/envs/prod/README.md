@@ -6,14 +6,15 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
-1. 2-environments/prod executed successfully.
+1. 2-environments/envs/prod executed successfully.
+1. 3-networks/envs/shared executed successfully.
 
 ## Usage
 
 ### Setup to run via Cloud Build
 1. Clone repo `gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID`
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan-prod`
-1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/2-networks/envs/prod/* .` (modify accordingly based on your current directory)
+1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/3-networks/envs/prod/* .` (modify accordingly based on your current directory)
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory)
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
 1. Rename backend.tf.example to backend.tf and update with your bucket from bootstrap.
@@ -27,7 +28,7 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 ### Run terraform locally
 1. Change into 3-networks/env/prod folder
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Rename backend.tf.example backend.tf and update with your bucket from bootstrap.
+1. Rename backend.tf.example to backend.tf and update with your bucket from bootstrap.
 1. Run `terraform init`
 1. Run `terraform plan` and review output
 1. Run `terraform apply`

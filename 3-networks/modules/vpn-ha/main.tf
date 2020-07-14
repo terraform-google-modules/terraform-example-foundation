@@ -19,8 +19,7 @@
  *****************************************/
 
 locals {
-  vpc_name     = "${var.environment_code}-shared-${var.vpc_label}"
-  network_name = "vpc-${local.vpc_name}"
+  network_name = "vpc-${var.vpc_name}"
 }
 
 
@@ -29,7 +28,7 @@ module "vpn_ha_region1_router1" {
   project_id = var.project_id
   region     = var.default_region1
   network    = local.network_name
-  name       = "vpn-${local.vpc_name}-${var.default_region1}-cr1"
+  name       = "vpn-${var.vpc_name}-${var.default_region1}-cr1"
   peer_external_gateway = {
     redundancy_type = "TWO_IPS_REDUNDANCY"
     interfaces = [{
@@ -41,15 +40,15 @@ module "vpn_ha_region1_router1" {
         ip_address = var.on_prem_router_ip_address2
     }]
   }
-  router_name = "cr-${local.vpc_name}-${var.default_region1}-cr1"
+  router_name = var.region1_router1_name
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = var.bgp_peer_address0
+        address = var.region1_router1_tunnel0_bgp_peer_address
         asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.bgp_peer_range0
+      bgp_session_range               = var.region1_router1_tunnel0_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
@@ -57,11 +56,11 @@ module "vpn_ha_region1_router1" {
     }
     remote-1 = {
       bgp_peer = {
-        address = var.bgp_peer_address1
+        address = var.region1_router1_tunnel1_bgp_peer_address
         asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.bgp_peer_range1
+      bgp_session_range               = var.region1_router1_tunnel1_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
@@ -75,7 +74,7 @@ module "vpn_ha_region1_router2" {
   project_id = var.project_id
   region     = var.default_region1
   network    = local.network_name
-  name       = "vpn-${local.vpc_name}-${var.default_region1}-cr2"
+  name       = "vpn-${var.vpc_name}-${var.default_region1}-cr2"
   peer_external_gateway = {
     redundancy_type = "TWO_IPS_REDUNDANCY"
     interfaces = [{
@@ -87,15 +86,15 @@ module "vpn_ha_region1_router2" {
         ip_address = var.on_prem_router_ip_address2
     }]
   }
-  router_name = "cr-${local.vpc_name}-${var.default_region1}-cr2"
+  router_name = var.region1_router2_name
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = var.bgp_peer_address2
+        address = var.region1_router2_tunnel0_bgp_peer_address
         asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.bgp_peer_range2
+      bgp_session_range               = var.region1_router2_tunnel0_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
@@ -103,11 +102,11 @@ module "vpn_ha_region1_router2" {
     }
     remote-1 = {
       bgp_peer = {
-        address = var.bgp_peer_address3
+        address = var.region1_router2_tunnel1_bgp_peer_address
         asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.bgp_peer_range3
+      bgp_session_range               = var.region1_router2_tunnel1_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
@@ -121,7 +120,7 @@ module "vpn_ha_region2_router1" {
   project_id = var.project_id
   region     = var.default_region2
   network    = local.network_name
-  name       = "vpn-${local.vpc_name}-${var.default_region2}-cr1"
+  name       = "vpn-${var.vpc_name}-${var.default_region2}-cr1"
   peer_external_gateway = {
     redundancy_type = "TWO_IPS_REDUNDANCY"
     interfaces = [{
@@ -133,15 +132,15 @@ module "vpn_ha_region2_router1" {
         ip_address = var.on_prem_router_ip_address2
     }]
   }
-  router_name = "cr-${local.vpc_name}-${var.default_region2}-cr1"
+  router_name = var.region2_router1_name
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = var.bgp_peer_address4
+        address = var.region2_router1_tunnel0_bgp_peer_address
         asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.bgp_peer_range4
+      bgp_session_range               = var.region2_router1_tunnel0_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
@@ -149,11 +148,11 @@ module "vpn_ha_region2_router1" {
     }
     remote-1 = {
       bgp_peer = {
-        address = var.bgp_peer_address5
+        address = var.region2_router1_tunnel1_bgp_peer_address
         asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.bgp_peer_range5
+      bgp_session_range               = var.region2_router1_tunnel1_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
@@ -167,7 +166,7 @@ module "vpn_ha_region2_router2" {
   project_id = var.project_id
   region     = var.default_region2
   network    = local.network_name
-  name       = "vpn-${local.vpc_name}-${var.default_region2}-cr2"
+  name       = "vpn-${var.vpc_name}-${var.default_region2}-cr2"
   peer_external_gateway = {
     redundancy_type = "TWO_IPS_REDUNDANCY"
     interfaces = [{
@@ -179,15 +178,15 @@ module "vpn_ha_region2_router2" {
         ip_address = var.on_prem_router_ip_address2
     }]
   }
-  router_name = "cr-${local.vpc_name}-${var.default_region2}-cr2"
+  router_name = var.region2_router2_name
   tunnels = {
     remote-0 = {
       bgp_peer = {
-        address = var.bgp_peer_address6
+        address = var.region2_router2_tunnel0_bgp_peer_address
         asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.bgp_peer_range6
+      bgp_session_range               = var.region2_router2_tunnel0_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
@@ -195,11 +194,11 @@ module "vpn_ha_region2_router2" {
     }
     remote-1 = {
       bgp_peer = {
-        address = var.bgp_peer_address7
+        address = var.region2_router2_tunnel1_bgp_peer_address
         asn     = var.bgp_peer_asn
       }
       bgp_peer_options                = null
-      bgp_session_range               = var.bgp_peer_range7
+      bgp_session_range               = var.region2_router2_tunnel1_bgp_peer_range
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1

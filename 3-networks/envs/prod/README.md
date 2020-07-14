@@ -33,12 +33,21 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 1. Run `terraform apply`
 
 
+### Using High Availability VPN
+If you are not able to use dedicated interconnect you can also use an HA VPN to access onprem.
+
+1. Rename `vpn.tf.example` to `vpn.tf` in the environment folder in `3-networks/envs/prod`
+1. Update in the file the values for `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
+1. Run `terraform plan -var 'bgp_peer_secret=<your-secret>'` and review output
+1. Run `terraform apply -var 'bgp_peer_secret=<your-secret>'`.  **This module only works with two regions.**
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`. | number | n/a | yes |
+| bgp\_peer\_secret | Shared secret used to set the secure session between the Cloud VPN gateway and the peer VPN gateway. | string | `""` | no |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
 | default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
 | org\_id | Organization ID | string | n/a | yes |

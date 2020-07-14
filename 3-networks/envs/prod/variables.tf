@@ -24,6 +24,12 @@ variable "access_context_manager_policy_id" {
   description = "The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`."
 }
 
+variable "bgp_peer_secret" {
+  type        = string
+  description = "Shared secret used to set the secure session between the Cloud VPN gateway and the peer VPN gateway."
+  default     = ""
+}
+
 variable "terraform_service_account" {
   type        = string
   description = "Service account email of the account to impersonate to run Terraform."

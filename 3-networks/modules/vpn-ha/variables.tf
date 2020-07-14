@@ -29,16 +29,6 @@ variable "default_region2" {
   description = "Default region 2 for Cloud Routers"
 }
 
-variable "vpc_label" {
-  type        = string
-  description = "Label for VPC."
-}
-
-variable "environment_code" {
-  type        = string
-  description = "A short form of the folder level resources (environment) within the Google Cloud organization."
-}
-
 variable "bgp_peer_secret" {
   type        = string
   description = "Shared secret used to set the secure session between the Cloud VPN gateway and the peer VPN gateway."
@@ -54,88 +44,112 @@ variable "on_prem_router_ip_address2" {
   description = "On-Prem Router IP address"
 }
 
+variable "region1_router1_name" {
+  type        = string
+  description = "Name of the Router 1 for Region 1 where the attachment resides."
+}
+
+variable "region1_router2_name" {
+  type        = string
+  description = "Name of the Router 2 for Region 1 where the attachment resides."
+}
+
+variable "region2_router1_name" {
+  type        = string
+  description = "Name of the Router 1 for Region 2 where the attachment resides."
+}
+
+variable "region2_router2_name" {
+  type        = string
+  description = "Name of the Router 2 for Region 2 where the attachment resides"
+}
+
+variable "vpc_name" {
+  type        = string
+  description = "Label to identify the VPC associated with shared VPC that will use the Interconnect."
+}
+
 variable "bgp_peer_asn" {
   type        = number
   description = "BGP ASN for cloud routes."
 }
 
-variable "bgp_peer_address0" {
+variable "region1_router1_tunnel0_bgp_peer_address" {
   type        = string
-  description = "Remote 0 IP"
+  description = "BGP session address for router 1 in region 1 tunnel 0"
 }
 
-variable "bgp_peer_range0" {
+variable "region1_router1_tunnel0_bgp_peer_range" {
   type        = string
-  description = "Remote 0 IP range"
+  description = "BGP session range for router 1 in region 1 tunnel 0"
 }
 
-variable "bgp_peer_address1" {
+variable "region1_router1_tunnel1_bgp_peer_address" {
   type        = string
-  description = "Remote 1 IP"
+  description = "BGP session address for router 1 in region 1 tunnel 1"
 }
 
-variable "bgp_peer_range1" {
+variable "region1_router1_tunnel1_bgp_peer_range" {
   type        = string
-  description = "Remote 1 IP range"
+  description = "BGP session range for router 1 in region 1 tunnel 1"
 }
 
-variable "bgp_peer_address2" {
+variable "region1_router2_tunnel0_bgp_peer_address" {
   type        = string
-  description = "Remote 2 IP"
+  description = "BGP session address for router 2 in region 1 tunnel 0"
 }
 
-variable "bgp_peer_range2" {
+variable "region1_router2_tunnel0_bgp_peer_range" {
   type        = string
-  description = "Remote 2 IP range"
+  description = "BGP session range for router 2 in region 1 tunnel 0"
 }
 
-variable "bgp_peer_address3" {
+variable "region1_router2_tunnel1_bgp_peer_address" {
   type        = string
-  description = "Remote 3 IP"
+  description = "BGP session address for router 2 in region 1 tunnel 1"
 }
 
-variable "bgp_peer_range3" {
+variable "region1_router2_tunnel1_bgp_peer_range" {
   type        = string
-  description = "Remote 3 IP range"
+  description = "BGP session range for router 2 in region 1 tunnel 1"
 }
 
-variable "bgp_peer_address4" {
+variable "region2_router1_tunnel0_bgp_peer_address" {
   type        = string
-  description = "Remote 4 IP"
+  description = "BGP session address for router 1 in region 2 tunnel 0"
 }
 
-variable "bgp_peer_range4" {
+variable "region2_router1_tunnel0_bgp_peer_range" {
   type        = string
-  description = "Remote 4 IP range"
+  description = "BGP session range for router 1 in region 2 tunnel 0"
 }
 
-variable "bgp_peer_address5" {
+variable "region2_router1_tunnel1_bgp_peer_address" {
   type        = string
-  description = "Remote 5 IP"
+  description = "BGP session address for router 1 in region 2 tunnel 2"
 }
 
-variable "bgp_peer_range5" {
+variable "region2_router1_tunnel1_bgp_peer_range" {
   type        = string
-  description = "Remote 5 IP range"
+  description = "BGP session range for router 1 in region 2 tunnel 2"
 }
 
-
-variable "bgp_peer_address6" {
+variable "region2_router2_tunnel0_bgp_peer_address" {
   type        = string
-  description = "Remote 6 IP"
+  description = "BGP session address for router 2 in region 2 tunnel 0"
 }
 
-variable "bgp_peer_range6" {
+variable "region2_router2_tunnel0_bgp_peer_range" {
   type        = string
-  description = "Remote 6 IP range"
+  description = "BGP session range for router 2 in region 2 tunnel 0"
 }
 
-variable "bgp_peer_address7" {
+variable "region2_router2_tunnel1_bgp_peer_address" {
   type        = string
-  description = "Remote 7 IP"
+  description = "BGP session address for router 2 in region 1 tunnel 1"
 }
 
-variable "bgp_peer_range7" {
+variable "region2_router2_tunnel1_bgp_peer_range" {
   type        = string
-  description = "Remote 7 IP range"
+  description = "BGP session range for router 2 in region 1 tunnel 1"
 }

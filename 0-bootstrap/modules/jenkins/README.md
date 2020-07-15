@@ -109,8 +109,6 @@ Error: google: could not find default credentials. See https://developers.google
 | jenkins\_agent\_gce\_instance\_id | Jenkins Agent GCE Instance id. |
 | jenkins\_agent\_sa\_email | Email for privileged custom service account for Jenkins Agent GCE instance. |
 | jenkins\_agent\_sa\_name | Fully qualified name for privileged custom service account for Jenkins Agent GCE instance. |
-| kms\_crypto\_key | KMS key created by the module. |
-| kms\_keyring | KMS Keyring created by the module. Use this if you need to protect any secrets in the CICD project |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

@@ -29,9 +29,14 @@ variable "default_region2" {
   description = "Default region 2 for Cloud Routers"
 }
 
-variable "bgp_peer_secret" {
+variable "environment" {
   type        = string
-  description = "Shared secret used to set the secure session between the Cloud VPN gateway and the peer VPN gateway."
+  description = "Environment for the VPN configuration. Valid options are dev, nonprod, prod"
+}
+
+variable "vpn_psk_secret_name" {
+  type        = string
+  description = "The name of the secret to retrieve from secret manager. This will be retrieved from the environment secrets project."
 }
 
 variable "on_prem_router_ip_address1" {

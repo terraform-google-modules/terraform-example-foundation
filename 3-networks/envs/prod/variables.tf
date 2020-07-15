@@ -38,3 +38,8 @@ variable "default_region2" {
   type        = string
   description = "Second subnet region. The shared vpc modules only configures two regions."
 }
+
+variable "domain" {
+  type        = string
+  description = "The DNS name of peering managed zone, for instance 'example.com.'"
+}

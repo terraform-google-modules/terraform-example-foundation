@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
-
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
-
-default_region1 = "us-central1"
-
-default_region2 = "us-west1"
-
-domain = "example.com."
-
-access_context_manager_policy_id = 000000000000
+module "dns_hub" {
+  source                       = "../../../3-networks/envs/shared"
+  dns_default_region1          = "us-central1"
+  dns_default_region2          = "us-west1"
+  domain                       = var.domain
+  target_name_server_addresses = ["8.8.8.8", "8.8.8.4"]
+  terraform_service_account    = var.terraform_sa_email
+}

@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
+variable "terraform_sa_email" {
+  description = "The SA that will be used for creating projects."
+}
 
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
-
-default_region1 = "us-central1"
-
-default_region2 = "us-west1"
-
-domain = "example.com."
-
-access_context_manager_policy_id = 000000000000
+variable "domain" {
+  type        = string
+  description = "The DNS name of peering managed zone, for instance 'example.com.'"
+}

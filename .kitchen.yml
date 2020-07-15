@@ -57,6 +57,16 @@ suites:
           backend: local
           controls:
             - envs
+  - name: dns_hub
+    driver:
+      root_module_directory: test/fixtures/dns_hub/
+    verifier:
+      color: false
+      systems:
+        - name: dns_hub
+          backend: local
+          controls:
+            - dns_hub
   - name: networks
     driver:
       root_module_directory: test/fixtures/networks/

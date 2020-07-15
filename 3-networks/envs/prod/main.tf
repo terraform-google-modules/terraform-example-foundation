@@ -55,6 +55,7 @@ module "restricted_shared_vpc" {
   bgp_asn_subnet                   = "64514"
   default_region1                  = var.default_region1
   default_region2                  = var.default_region2
+  domain                           = var.domain
 
   subnets = [
     {
@@ -134,6 +135,7 @@ module "private_shared_vpc" {
   nat_bgp_asn                = "64514"
   default_region1            = var.default_region1
   default_region2            = var.default_region2
+  domain                     = var.domain
   bgp_asn_subnet             = "64514"
   windows_activation_enabled = true
   subnets = [

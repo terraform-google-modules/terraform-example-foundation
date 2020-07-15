@@ -9,8 +9,23 @@ Each of these Terraform projects are to be layered on top of each other, running
 
 ### [0. bootstrap](./0-bootstrap/)
 
-This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT).
-This includes; projects, service accounts and a Terraform state bucket. After executing this step, you will have the following structure:
+This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT). This includes:
+- The `cft-seed` project, which contains:
+  - Terraform state bucket
+  - Custom Service Account used by Terraform to create new resources in GCP
+- The `cft-cloudbuild` project (`prj-cicd` if using Jenkins), which contains:
+  - A CICD pipeline implemented with either Cloud Build or Jenkins
+  - If using Cloud Build:
+    - Cloud Source Repository
+  - If using Jenkins:
+    - Custom Service Account to run Jenkins Agents GCE instances
+    - VPN connection with on-prem (or where ever your Jenkins Master is located)
+
+It is a best practice to have two separate projects here (`cft-seed` and `prj-cicd`) for separation of concerns. On one hand, `cft-seed` stores terraform state and has the Service Account able to create / modify infrastructure. On the other hand, the deployment of that infrastructure is coordinated by a tool of your choice (either Cloud Build or Jenkins), which is implemented in `prj-cicd`.
+
+If using Cloud Build, its default service account `@cloudbuild.gserviceaccount.com` is granted access to generate tokens over the Terraform custom service account. If using Jenkins, the custom service account used by the GCE instance is granted the access.
+
+After executing this step, you will have the following structure:
 
 ```
 example-organization/

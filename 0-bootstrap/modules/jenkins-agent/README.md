@@ -13,6 +13,29 @@ If you don't have a Jenkins implementation and don't want one, then we recommend
 
 ## Usage
 
+Basic usage of this sub-module is as follows:
+
+```hcl
+module "jenkins_bootstrap" {
+  source                                  = "./modules/jenkins-agent"
+  org_id                                  = "<ORGANIZATION_ID>"
+  folder_id                               = "<FOLDER_ID>"
+  billing_account                         = "<BILLING_ACCOUNT_ID>"
+  group_org_admins                        = "gcp-organization-admins@example.com"
+  default_region                          = "us-central1"
+  terraform_sa_email                      = "<SERVICE_ACCOUNT_EMAIL>" # normally module.seed_bootstrap.terraform_sa_email
+  terraform_sa_name                       = "<SERVICE_ACCOUNT_NAME>" # normally module.seed_bootstrap.terraform_sa_name
+  terraform_state_bucket                  = "<GCS_STATE_BUCKET_NAME>" # normally module.seed_bootstrap.gcs_bucket_tfstate
+  sa_enable_impersonation                 = true
+  jenkins_master_ip_addresses             = ["10.1.0.6/32"]
+  jenkins_agent_gce_subnetwork_cidr_range = "10.2.0.0/24"
+  jenkins_agent_gce_private_ip_address    = "10.2.0.6"
+  nat_bgp_asn                             = "BGP_ASN_FOR_NAT_CLOUD_ROUTE"
+  jenkins_agent_sa_email                  = "jenkins-agent-gce" # service_account_prefix will be added
+  jenkins_agent_gce_ssh_pub_key           = var.jenkins_agent_gce_ssh_pub_key
+}
+```
+
 1. While developing only - Run `$ gcloud auth application-default login` before running `$ terraform plan` to avoid the errors below:
 ```
 Error: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
@@ -32,20 +55,6 @@ Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbb
   96: resource "google_project" "main" {
 ```
 
-Run `$ gcloud auth application-default login` before running `$ terraform plan` to avoid the error below:
-```
-Error: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
-   on <empty> line 0:
-  (source code not available)
-```
-
-Run `$ gcloud auth application-default login` before running `$ terraform plan` to avoid the error below:
-```
-Error: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
-   on <empty> line 0:
-  (source code not available)
-```
-
 ## Features
 
 1. Creates a new GCP project using `project_prefix`
@@ -54,6 +63,7 @@ Error: google: could not find default credentials. See https://developers.google
 1. Creates a Service Account (`jenkins_agent_sa_email`) to run the Jenkins Agent GCE instance
 1. Creates a GCS bucket for Jenkins Artifacts using `project_prefix`
 1. Allows `jenkins_agent_sa_email` service account permissions to impersonate terraform service account (which exists in the `seed` project) using `sa_enable_impersonation` and supplied value for `terraform_sa_name`
+1. Adds Cloud NAT for the Agent to be able to download updates and necessary binaries.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
@@ -72,7 +82,7 @@ Error: google: could not find default credentials. See https://developers.google
 | jenkins\_agent\_gce\_ssh\_user | Jenkins Agent GCE Instance SSH username. | string | `"jenkins"` | no |
 | jenkins\_agent\_gce\_subnetwork\_cidr\_range | The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0) | string | n/a | yes |
 | jenkins\_agent\_sa\_email | Email for Jenkins Agent service account. | string | `"jenkins-agent-gce"` | no |
-| jenkins\_master\_ip\_addresses | A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | list(string) | n/a | yes |
+| jenkins\_master\_ip\_addresses | A list of CIDR IP ranges of the Jenkins Master in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | list(string) | n/a | yes |
 | nat\_bgp\_asn | BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address. | number | n/a | yes |
 | org\_id | GCP Organization ID | string | n/a | yes |
 | project\_labels | Labels to apply to the project. | map(string) | `<map>` | no |
@@ -115,10 +125,10 @@ Error: google: could not find default credentials. See https://developers.google
 
  - **VPN Connectivity with on-prem:** Once you run this module and your Jenkins Agent is created in the CICD project in GCP, please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to). This VPN configuration is necessary to allow communication between the Jenkins Master (on prem or in a cloud environment) with the Jenkins Agent in the CICD project. The reason why you add this connection manually is because you need to keep the VPN secret away from any configuration file, such as the Terraform state.
 
- - **Binaries and packages:** The Jenkins Agent needs to fetch several binaries needed to execute pipelines. These include `java`, `terraform`, `terraform-validator` and the terraform modules used by the scripts provided here and the terraform modules you use in your own scripts. You have several options to have these binaries and libraries available:
-    - having Internet access (ideally through Cloud NAT).
-    - having a local repository on your premises that the Agent can reach out to.
-    - preparing a golden image for `jenkins_agent_gce_instance.boot_disk.initialize_params.image` (although, you might still need network access to download dependencies while running a pipeline).
+ - **Binaries and packages:** The Jenkins Agent needs to fetch several binaries needed to execute pipelines. These include `java`, `terraform`, `terraform-validator` and the binaries you use in your own scripts. You have several options to have these binaries and libraries available:
+    - having Internet access (ideally through Cloud NAT, implemented by default).
+    - having local package repositories on your premises that the Agent can reach out to through the VPN connection.
+    - preparing a golden image for `jenkins_agent_gce_instance.boot_disk.initialize_params.image` using tools like Packer. Although, you might still need network access to download dependencies while running a pipeline.
 
 ### Permissions
 

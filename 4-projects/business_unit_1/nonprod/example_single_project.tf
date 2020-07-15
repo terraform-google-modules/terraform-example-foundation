@@ -32,7 +32,11 @@ module "example_single_project" {
   folder_id = var.parent_folder
 
   # Metadata
-  project_prefix   = "prj-${local.business_code}-${local.env_code}-sample-single"
-  cost_centre      = "cost-centre-1"
-  application_name = "sample-single-prj-app-${local.business_code}-${local.env_code}"
+  project_prefix    = "prj-${local.business_code}-${local.env_code}-sample-single"
+  cost_centre       = "cost-centre-1"
+  application_name  = "sample-single-prj-app-${local.business_code}-${local.env_code}"
+  billing_code      = "1234"
+  primary_contact   = "example@example.com"
+  secondary_contact = "example2@example.com"
+  business_code     = local.business_code
 }

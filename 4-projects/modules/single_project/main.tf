@@ -34,9 +34,13 @@ module "project" {
   shared_vpc_subnets = local.host_network.subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_project.subnetwork_self_link"
 
   labels = {
-    environment      = var.environment
-    cost_centre      = var.cost_centre
-    application_name = var.application_name
+    environment       = var.environment
+    cost_centre       = var.cost_centre
+    application_name  = var.application_name
+    billing_code      = var.billing_code
+    primary_contact   = var.primary_contact
+    secondary_contact = var.secondary_contact
+    business_code     = var.business_code
   }
 }
 

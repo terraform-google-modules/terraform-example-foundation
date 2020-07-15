@@ -51,6 +51,8 @@ resource "google_service_account" "jenkins_agent_gce_sa" {
 }
 
 data "template_file" "jenkins_agent_gce_startup_script" {
+  // Add Cloud NAT for the Agent to reach internet and download updates and necessary binaries
+  // not needed  if user has a golden image with all necessary packages.
   template = file("${path.module}/files/jenkins_gce_startup_script.sh")
   vars = {
     TERRAFORM_DIR     = "/opt/terraform/"
@@ -68,6 +70,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 
   boot_disk {
     initialize_params {
+      // It is better if user has a golden image with all necessary packages.
       image = "debian-cloud/debian-9"
     }
   }

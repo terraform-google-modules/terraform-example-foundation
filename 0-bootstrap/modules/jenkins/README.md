@@ -48,26 +48,14 @@ Error: google: could not find default credentials. See https://developers.google
 
 ## Features
 
-1. Create a new GCP project using `project_prefix`
-1. Enable APIs in the project using `activate_apis`
-1. Create a GCE Instance to run the Jenkins Agent with SSH access using the supplied public key
-1. Create a GCS bucket for Jenkins Artifacts using `project_prefix`
-1. Create KMS Keyring and key for encryption, in case there is the need to protect any secrets in the CICD project
-    1. Grant access to decrypt to `terraform_sa_email` and to `jenkins_agent_sa_email` (Jenkins GCE Instance custom service account)
-    1. Grant access to encrypt to `group_org_admins`
-1. Optionally give `jenkins_agent_sa_email` service account permissions to impersonate terraform service account using `sa_enable_impersonation` and supplied value for `terraform_sa_name`
+1. Creates a new GCP project using `project_prefix`
+1. Enables APIs in the project using `activate_apis`
+1. Creates a GCE Instance to run the Jenkins Agent with SSH access using the supplied public key
+1. Creates a Service Account (`jenkins_agent_sa_email`) to run the Jenkins Agent GCE instance
+1. Creates a GCS bucket for Jenkins Artifacts using `project_prefix`
+1. Allows `jenkins_agent_sa_email` service account permissions to impersonate terraform service account (which exists in the `seed` project) using `sa_enable_impersonation` and supplied value for `terraform_sa_name`
 1. TODO:
-    1.  Replace the FW rule with a VPN configuration to allow communication between on-prem and CICD project.
-
-
-## Resources created
-
-- KMS Keyring and key for secrets, including IAM for Jenkins Agent GCE custom Service Account, Org Admins and Terraform service account
-- (optional) Jenkins Agent Service Account impersonation permissions
-- TODO - no priority
-   - (optional) Jenkins Master in CICD project, in case the client has no Master on-prem
-   - (optional) Cloud Source Repos, in case the client ha no Git implementation.
-
+    1.  Add Cloud NAT for the Agent to reach internet and download updates and necessary binaries (not needed if user has a golden image with all necessary packages)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
@@ -123,9 +111,9 @@ Error: google: could not find default credentials. See https://developers.google
 
 ### Infrastructure
 
- - *Jenkins Master*: You need a Jenkins Master. Please note this module does not include an option to create a Jenkins Master. To deploy a Jenkins Master, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins). If you don't have a Jenkins implementation and don't want one, then we recommend you to use the Cloud Build module instead of this Jenkins module.
+ - **Jenkins Master**: You need a Jenkins Master. Please note this module does not include an option to create a Jenkins Master. To deploy a Jenkins Master, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins). If you don't have a Jenkins implementation and don't want one, then we recommend you to use the Cloud Build module instead of this Jenkins module.
 
- - *VPN Connectivity with on-prem*: Please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to). This VPN configuration is necessary to allow communication between the Jenkins Master (on prem or in a cloud environment) with the Jenkins Agent in the CICD project.
+ - **VPN Connectivity with on-prem**: Once you run this module and your Jenkins Agent is created in the CICD project in GCP, please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to). This VPN configuration is necessary to allow communication between the Jenkins Master (on prem or in a cloud environment) with the Jenkins Agent in the CICD project. The reason why you add this connection manually is because you need to keep the VPN secret away from any configuration file, such as the Terraform state.
 
 ### Permissions
 

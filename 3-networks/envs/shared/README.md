@@ -1,6 +1,6 @@
-# 3-networks/dev
+# 3-networks/shared
 
-The purpose of this step is to setup private and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment dev.
+The purpose of this step is to setup the global [DNS Hub](https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones) that will be used by all environments.
 
 ## Prerequisites
 
@@ -39,7 +39,6 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | bgp\_asn\_dns | BGP Autonomous System Number (ASN). | number | `"64667"` | no |
-| bgp\_peer\_secret | Shared secret used to set the secure session between the Cloud VPN gateway and the peer VPN gateway for the DNS hub. Only necessary if you are using the VPN example code. | string | `""` | no |
 | dns\_default\_region1 | First subnet region for DNS Hub network. | string | n/a | yes |
 | dns\_default\_region2 | Second subnet region for DNS Hub network. | string | n/a | yes |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |

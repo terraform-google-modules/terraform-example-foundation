@@ -87,6 +87,11 @@ variable "jenkins_master_ip_addresses" {
   type        = list(string)
 }
 
+variable "nat_bgp_asn" {
+  type        = number
+  description = "BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address."
+}
+
 /* ----------------------------------------
     Specific to Seed Project
    ---------------------------------------- */

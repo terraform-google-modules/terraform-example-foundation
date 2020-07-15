@@ -55,8 +55,8 @@ data "template_file" "jenkins_agent_gce_startup_script" {
   // not needed  if user has a golden image with all necessary packages.
   template = file("${path.module}/files/jenkins_gce_startup_script.sh")
   vars = {
-    TERRAFORM_DIR     = "/opt/terraform/"
-    TERRAFORM_VERSION = var.terraform_version
+    tpl_TERRAFORM_DIR     = "/opt/terraform/"
+    tpl_TERRAFORM_VERSION = var.terraform_version
   }
 }
 
@@ -79,11 +79,6 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
     // Internal and static IP configuration
     subnetwork = google_compute_subnetwork.jenkins_agents_subnet.self_link
     network_ip = google_compute_address.jenkins_agent_gce_static_ip.address
-
-    access_config {
-      // External and ephemeral IP configuration
-      // TODO(caleonardo): This must not have an external IP. Only use for testing while developing a VPN / Cloud NAT resource
-    }
   }
 
   // Adding ssh public keys to the GCE instance metadata, so the Jenkins Master can connect to this Agent
@@ -150,6 +145,42 @@ resource "google_compute_address" "jenkins_agent_gce_static_ip" {
   region       = var.default_region
   purpose      = "GCE_ENDPOINT"
   description  = "The static Internal IP address of the Jenkins Agent"
+}
+
+/******************************************
+  NAT Cloud Router & NAT config
+ *****************************************/
+
+resource "google_compute_router" "nat_router_region1" {
+  name    = "cr-${google_compute_network.jenkins_agents.name}-${var.default_region}-nat-router"
+  project = module.cicd_project.project_id
+  region  = var.default_region
+  network = google_compute_network.jenkins_agents.self_link
+
+  bgp {
+    asn = var.nat_bgp_asn
+  }
+}
+
+resource "google_compute_address" "nat_external_addresses1" {
+  name    = "ca-${google_compute_network.jenkins_agents.name}-${var.default_region}"
+  project = module.cicd_project.project_id
+  region  = var.default_region
+}
+
+resource "google_compute_router_nat" "nat_external_addresses_region1" {
+  project                            = module.cicd_project.project_id
+  name                               = "rn-${google_compute_network.jenkins_agents.name}-${var.default_region}-egress"
+  router                             = google_compute_router.nat_router_region1.name
+  region                             = var.default_region
+  nat_ip_allocate_option             = "MANUAL_ONLY"
+  nat_ips                            = google_compute_address.nat_external_addresses1.*.self_link
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+
+  log_config {
+    filter = "TRANSLATIONS_ONLY"
+    enable = true
+  }
 }
 
 /******************************************

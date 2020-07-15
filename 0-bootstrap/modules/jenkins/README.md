@@ -117,8 +117,8 @@ Error: google: could not find default credentials. See https://developers.google
  - **VPN Connectivity with on-prem:** Once you run this module and your Jenkins Agent is created in the CICD project in GCP, please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to). This VPN configuration is necessary to allow communication between the Jenkins Master (on prem or in a cloud environment) with the Jenkins Agent in the CICD project. The reason why you add this connection manually is because you need to keep the VPN secret away from any configuration file, such as the Terraform state.
 
  - **Binaries and packages:** The Jenkins Agent needs to fetch several binaries needed to execute pipelines. These include `java`, `terraform`, `terraform-validator` and the terraform modules used by the scripts provided here and the terraform modules you use in your own scripts. You have several options to have these binaries and libraries available:
-    - having Internet access (ideally through Cloud NAT)
-    - having a local repository on your premises that the Agent can reach out to 
+    - having Internet access (ideally through Cloud NAT).
+    - having a local repository on your premises that the Agent can reach out to.
     - preparing a golden image for `jenkins_agent_gce_instance.boot_disk.initialize_params.image` (although, you might still need network access to download dependencies while running a pipeline).
 
 ### Permissions

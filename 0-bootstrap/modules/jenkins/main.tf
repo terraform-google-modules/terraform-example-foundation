@@ -21,6 +21,10 @@ locals {
   jenkins_gce_fw_tags         = ["ssh-jenkins-agent"]
 }
 
+resource "random_id" "suffix" {
+  byte_length = 2
+}
+
 /******************************************
   CICD project
 *******************************************/
@@ -42,8 +46,16 @@ module "cicd_project" {
 *******************************************/
 resource "google_service_account" "jenkins_agent_gce_sa" {
   project      = module.cicd_project.project_id
-  account_id   = var.jenkins_sa_email
-  display_name = "CFT Jenkins Agent GCE custom Service Account"
+  account_id   = format("%s-%s", var.service_account_prefix, var.jenkins_agent_sa_email)
+  display_name = "Jenkins Agent (GCE instance) custom Service Account"
+}
+
+data "template_file" "jenkins_agent_gce_startup_script" {
+  template = file("${path.module}/files/jenkins_gce_startup_script.sh")
+  vars = {
+    TERRAFORM_DIR     = "/opt/terraform/"
+    TERRAFORM_VERSION = var.terraform_version
+  }
 }
 
 resource "google_compute_instance" "jenkins_agent_gce_instance" {
@@ -61,22 +73,23 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
   }
 
   network_interface {
-    network = google_compute_network.jenkins_agents.self_link
+    // Internal and static IP configuration
+    subnetwork = google_compute_subnetwork.jenkins_agents_subnet.self_link
+    network_ip = google_compute_address.jenkins_agent_gce_static_ip.address
 
     access_config {
-      // Ephemeral IP
-      // TODO(caleonardo): This must not have an external IP at all - Only use for testing while developing
+      // External and ephemeral IP configuration
+      // TODO(caleonardo): This must not have an external IP. Only use for testing while developing a VPN / Cloud NAT resource
     }
   }
 
-  // Adding ssh public keys to the metadata, so the Jenkins Master can connect
+  // Adding ssh public keys to the GCE instance metadata, so the Jenkins Master can connect to this Agent
   metadata = {
     enable-oslogin = "false"
     ssh-keys       = var.jenkins_agent_gce_ssh_pub_key
   }
 
-  // TODO(caleonardo): Setup the Java installation here for the Jenkins Agent
-  metadata_startup_script = "echo hi > /test.txt"
+  metadata_startup_script = data.template_file.jenkins_agent_gce_startup_script.rendered
 
   service_account {
     email = google_service_account.jenkins_agent_gce_sa.email
@@ -93,16 +106,17 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 }
 
 /******************************************
-  Jenkins Agent GCE Firewall rules
+  Jenkins Agent GCE Network and Firewall rules
 *******************************************/
 
-resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
+resource "google_compute_firewall" "fw_allow_ssh_into_jenkins_agent" {
   project       = module.cicd_project.project_id
-  name          = "allow-ssh-to-jenkins-agents"
+  name          = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
   description   = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
   network       = google_compute_network.jenkins_agents.name
   source_ranges = var.jenkins_master_ip_addresses
   target_tags   = local.jenkins_gce_fw_tags
+  priority      = 1000
 
   allow {
     protocol = "tcp"
@@ -112,7 +126,100 @@ resource "google_compute_firewall" "allow_ssh_to_jenkins_agent_fw" {
 
 resource "google_compute_network" "jenkins_agents" {
   project = module.cicd_project.project_id
-  name    = "jenkins-agents-network"
+  name    = "vpc-b-jenkinsagents"
 }
 
-// TODO(caleonardo): add an option to create a Jenkins Master in GCP, in case the user doesn't have one on-prem
+resource "google_compute_subnetwork" "jenkins_agents_subnet" {
+  project       = module.cicd_project.project_id
+  name          = "jenkins-agents-subnet"
+  ip_cidr_range = var.jenkins_agent_gce_subnetwork_cidr_range
+  region        = var.default_region
+  network       = google_compute_network.jenkins_agents.self_link
+}
+
+resource "google_compute_address" "jenkins_agent_gce_static_ip" {
+  // This internal IP address needs to be accessible via the VPN tunnel
+  project      = module.cicd_project.project_id
+  name         = "jenkins-agent-gce-static-ip"
+  subnetwork   = google_compute_subnetwork.jenkins_agents_subnet.self_link
+  address_type = "INTERNAL"
+  address      = var.jenkins_agent_gce_private_ip_address
+  region       = var.default_region
+  purpose      = "GCE_ENDPOINT"
+  description  = "The static Internal IP address of the Jenkins Agent"
+}
+
+/******************************************
+  VPN Connectivity Master on-prem <--> CICD project
+*******************************************/
+
+// Please add VPN connectivity manually: see README > Requirements
+
+/******************************************
+  Jenkins IAM for admins
+*******************************************/
+
+resource "google_project_iam_member" "org_admins_jenkins_admin" {
+  project = module.cicd_project.project_id
+  role    = "roles/compute.admin"
+  member  = "group:${var.group_org_admins}"
+}
+
+resource "google_project_iam_member" "org_admins_jenkins_viewer" {
+  project = module.cicd_project.project_id
+  role    = "roles/viewer"
+  member  = "group:${var.group_org_admins}"
+}
+
+/******************************************
+  Jenkins Artifact bucket
+*******************************************/
+
+resource "google_storage_bucket" "gcs_jenkins_artifacts" {
+  project            = module.cicd_project.project_id
+  name               = format("%s-%s-%s-%s", var.storage_bucket_prefix, module.cicd_project.project_id, "jenkins-artifacts", random_id.suffix.hex)
+  location           = var.default_region
+  labels             = var.storage_bucket_labels
+  bucket_policy_only = true
+  versioning {
+    enabled = true
+  }
+}
+
+/***********************************************
+  Jenkins - IAM
+ ***********************************************/
+
+// Allow the Jenkins Agent (GCE Instance) custom Service Account to store artifacts in GCS
+// The pipeline must use gsutil to store artifacts in the GCS bucket
+resource "google_storage_bucket_iam_member" "jenkins_artifacts_iam" {
+  bucket = google_storage_bucket.gcs_jenkins_artifacts.name
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}"
+}
+
+// Allow the Jenkins Agent (GCE Instance) custom Service Account to impersonate the Terraform Service Account
+resource "google_service_account_iam_member" "jenkins_terraform_sa_impersonate_permissions" {
+  count = local.impersonation_enabled_count
+
+  service_account_id = var.terraform_sa_name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}"
+}
+
+resource "google_organization_iam_member" "jenkins_serviceusage_consumer" {
+  count = local.impersonation_enabled_count
+
+  org_id = var.org_id
+  role   = "roles/serviceusage.serviceUsageConsumer"
+  member = "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}"
+}
+
+# Required to allow jenkins Service Account to access state with impersonation.
+resource "google_storage_bucket_iam_member" "jenkins_state_iam" {
+  count = local.impersonation_enabled_count
+
+  bucket = var.terraform_state_bucket
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}"
+}

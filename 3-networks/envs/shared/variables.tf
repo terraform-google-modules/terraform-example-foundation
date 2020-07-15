@@ -14,32 +14,39 @@
  * limitations under the License.
  */
 
-variable "org_id" {
-  type        = string
-  description = "Organization ID"
-}
-
-variable "access_context_manager_policy_id" {
-  type        = number
-  description = "The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`."
-}
-
 variable "terraform_service_account" {
   type        = string
   description = "Service account email of the account to impersonate to run Terraform."
 }
 
-variable "default_region1" {
+variable "dns_default_region1" {
   type        = string
-  description = "First subnet region. The shared vpc modules only configures two regions."
+  description = "First subnet region for DNS Hub network."
 }
 
-variable "default_region2" {
+variable "dns_default_region2" {
   type        = string
-  description = "Second subnet region. The shared vpc modules only configures two regions."
+  description = "Second subnet region for DNS Hub network."
+}
+
+variable "dns_enable_logging" {
+  type        = bool
+  description = "Toggle DNS logging for VPC DNS."
+  default     = true
 }
 
 variable "domain" {
   type        = string
-  description = "The DNS name of peering managed zone, for instance 'example.com.'"
+  description = "The DNS name of forwarding managed zone, for instance 'example.com'"
+}
+
+variable "bgp_asn_dns" {
+  type        = number
+  description = "BGP Autonomous System Number (ASN)."
+  default     = 64667
+}
+
+variable "target_name_server_addresses" {
+  description = "List of target name servers for forwarding zone."
+  type        = list(string)
 }

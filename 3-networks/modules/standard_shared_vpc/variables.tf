@@ -92,6 +92,11 @@ variable "dns_enable_logging" {
   default     = true
 }
 
+variable "domain" {
+  type        = string
+  description = "The DNS name of peering managed zone, for instance 'example.com.'"
+}
+
 variable "private_service_cidr" {
   type        = string
   description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."

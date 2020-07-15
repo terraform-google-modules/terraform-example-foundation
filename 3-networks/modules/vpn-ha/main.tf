@@ -19,9 +19,19 @@
  *****************************************/
 
 locals {
-  network_name = "vpc-${var.vpc_name}"
+  network_name          = "vpc-${var.vpc_name}"
+  env_secret_project_id = data.google_projects.env_secrets.projects[0].project_id
+  psk_secret_data       = chomp(data.google_secret_manager_secret_version.psk.secret_data)
 }
 
+data "google_projects" "env_secrets" {
+  filter = "labels.application_name=env-secrets labels.environment=${var.environment} lifecycleState=ACTIVE"
+}
+
+data "google_secret_manager_secret_version" "psk" {
+  project = local.env_secret_project_id
+  secret  = var.vpn_psk_secret_name
+}
 
 module "vpn_ha_region1_router1" {
   source     = "terraform-google-modules/vpn/google//modules/vpn_ha"
@@ -52,7 +62,7 @@ module "vpn_ha_region1_router1" {
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
-      shared_secret                   = var.bgp_peer_secret
+      shared_secret                   = local.psk_secret_data
     }
     remote-1 = {
       bgp_peer = {
@@ -64,7 +74,7 @@ module "vpn_ha_region1_router1" {
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
-      shared_secret                   = var.bgp_peer_secret
+      shared_secret                   = local.psk_secret_data
     }
   }
 }
@@ -98,7 +108,7 @@ module "vpn_ha_region1_router2" {
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
-      shared_secret                   = var.bgp_peer_secret
+      shared_secret                   = local.psk_secret_data
     }
     remote-1 = {
       bgp_peer = {
@@ -110,7 +120,7 @@ module "vpn_ha_region1_router2" {
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
-      shared_secret                   = var.bgp_peer_secret
+      shared_secret                   = local.psk_secret_data
     }
   }
 }
@@ -144,7 +154,7 @@ module "vpn_ha_region2_router1" {
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
-      shared_secret                   = var.bgp_peer_secret
+      shared_secret                   = local.psk_secret_data
     }
     remote-1 = {
       bgp_peer = {
@@ -156,7 +166,7 @@ module "vpn_ha_region2_router1" {
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
-      shared_secret                   = var.bgp_peer_secret
+      shared_secret                   = local.psk_secret_data
     }
   }
 }
@@ -190,7 +200,7 @@ module "vpn_ha_region2_router2" {
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
-      shared_secret                   = var.bgp_peer_secret
+      shared_secret                   = local.psk_secret_data
     }
     remote-1 = {
       bgp_peer = {
@@ -202,7 +212,7 @@ module "vpn_ha_region2_router2" {
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
-      shared_secret                   = var.bgp_peer_secret
+      shared_secret                   = local.psk_secret_data
     }
   }
 }

@@ -75,6 +75,7 @@ Error: google: could not find default credentials. See https://developers.google
 | jenkins\_agent\_gce\_subnetwork\_cidr\_range | The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0) | string | n/a | yes |
 | jenkins\_agent\_sa\_email | Email for Jenkins Agent service account. | string | `"jenkins-agent-gce"` | no |
 | jenkins\_master\_ip\_addresses | A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | list(string) | n/a | yes |
+| nat\_bgp\_asn | BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address. | number | n/a | yes |
 | org\_id | GCP Organization ID | string | n/a | yes |
 | project\_labels | Labels to apply to the project. | map(string) | `<map>` | no |
 | project\_prefix | Name prefix to use for projects created. | string | `"prj"` | no |
@@ -111,9 +112,14 @@ Error: google: could not find default credentials. See https://developers.google
 
 ### Infrastructure
 
- - **Jenkins Master**: You need a Jenkins Master. Please note this module does not include an option to create a Jenkins Master. To deploy a Jenkins Master, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins). If you don't have a Jenkins implementation and don't want one, then we recommend you to use the Cloud Build module instead of this Jenkins module.
+ - **Jenkins Master:** You need a Jenkins Master. Please note this module does not include an option to create a Jenkins Master. To deploy a Jenkins Master, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins). If you don't have a Jenkins implementation and don't want one, then we recommend you to use the Cloud Build module instead of this Jenkins module.
 
- - **VPN Connectivity with on-prem**: Once you run this module and your Jenkins Agent is created in the CICD project in GCP, please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to). This VPN configuration is necessary to allow communication between the Jenkins Master (on prem or in a cloud environment) with the Jenkins Agent in the CICD project. The reason why you add this connection manually is because you need to keep the VPN secret away from any configuration file, such as the Terraform state.
+ - **VPN Connectivity with on-prem:** Once you run this module and your Jenkins Agent is created in the CICD project in GCP, please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to). This VPN configuration is necessary to allow communication between the Jenkins Master (on prem or in a cloud environment) with the Jenkins Agent in the CICD project. The reason why you add this connection manually is because you need to keep the VPN secret away from any configuration file, such as the Terraform state.
+
+ - **Binaries and packages:** The Jenkins Agent needs to fetch several binaries needed to execute pipelines. These include `java`, `terraform`, `terraform-validator` and the terraform modules used by the scripts provided here and the terraform modules you use in your own scripts. You have several options to have these binaries and libraries available:
+    - having Internet access (ideally through Cloud NAT)
+    - having a local repository on your premises that the Agent can reach out to 
+    - preparing a golden image for `jenkins_agent_gce_instance.boot_disk.initialize_params.image` (although, you might still need network access to download dependencies while running a pipeline).
 
 ### Permissions
 

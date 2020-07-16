@@ -27,7 +27,7 @@ locals {
 *****************************************/
 
 data "google_projects" "restricted_host_project" {
-  filter = "labels.application_name=restricted-shared-vpc-host-${local.env}"
+  filter = "labels.application_name=restricted-shared-vpc-host-${local.env}  lifecycleState=ACTIVE"
 }
 
 data "google_project" "restricted_host_project" {
@@ -35,7 +35,7 @@ data "google_project" "restricted_host_project" {
 }
 
 data "google_projects" "private_project" {
-  filter = "labels.application_name=base-shared-vpc-host-${local.env}"
+  filter = "labels.application_name=base-shared-vpc-host-${local.env}  lifecycleState=ACTIVE"
 }
 
 /******************************************

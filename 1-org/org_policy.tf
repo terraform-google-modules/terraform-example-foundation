@@ -149,9 +149,8 @@ module "org_enforce_bucket_level_access" {
   Access Context Manager Policy
 *******************************************/
 
-module "access_context_manager_policy" {
-  source      = "terraform-google-modules/vpc-service-controls/google"
-  version     = "~> 2.0.0"
-  parent_id   = var.org_id
-  policy_name = "default policy"
+resource "google_access_context_manager_access_policy" "access_policy" {
+  count  = var.create_access_context_manager_access_policy ? 1 : 0
+  parent = "organizations/${var.org_id}"
+  title  = "default policy"
 }

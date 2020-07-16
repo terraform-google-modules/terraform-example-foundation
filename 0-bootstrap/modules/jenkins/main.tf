@@ -30,7 +30,7 @@ resource "random_id" "suffix" {
 *******************************************/
 module "cicd_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0" // TODO(caleonardo): use latest current versions so that we are up to date
+  version                     = "~> 7.0"
   name                        = local.cicd_project_name
   random_project_id           = true
   disable_services_on_destroy = false
@@ -55,8 +55,9 @@ data "template_file" "jenkins_agent_gce_startup_script" {
   // not needed  if user has a golden image with all necessary packages.
   template = file("${path.module}/files/jenkins_gce_startup_script.sh")
   vars = {
-    tpl_TERRAFORM_DIR     = "/opt/terraform/"
-    tpl_TERRAFORM_VERSION = var.terraform_version
+    tpl_TERRAFORM_DIR               = "/opt/builder/terraform/"
+    tpl_TERRAFORM_VERSION           = var.terraform_version
+    tpl_TERRAFORM_VERSION_SHA256SUM = var.terraform_version_sha256sum
   }
 }
 

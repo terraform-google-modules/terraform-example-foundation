@@ -82,6 +82,11 @@ variable "environment" {
   type        = string
 }
 
+variable "env_code" {
+  description = "A short form of the environment field"
+  type        = string
+}
+
 variable "skip_gcloud_download" {
   description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
   type        = bool

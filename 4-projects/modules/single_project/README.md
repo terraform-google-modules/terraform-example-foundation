@@ -9,6 +9,7 @@
 | billing\_code | The code that's used to provide chargeback information | string | n/a | yes |
 | business\_code | The code that describes which business unit owns the project | string | `"abcd"` | no |
 | cost\_centre | The cost centre that links to the application | string | n/a | yes |
+| env\_code | A short form of the environment field | string | n/a | yes |
 | environment | The environment the single project belongs to | string | n/a | yes |
 | folder\_id | The folder id where project will be created | string | n/a | yes |
 | impersonate\_service\_account | Service account email of the account to impersonate to run Terraform | string | n/a | yes |

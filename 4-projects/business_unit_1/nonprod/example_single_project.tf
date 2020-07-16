@@ -16,7 +16,6 @@
 
 locals {
   env           = "nonprod"
-  env_code      = element(split("", local.env), 0)
   business_code = "bu1"
 }
 
@@ -27,14 +26,15 @@ module "example_single_project" {
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
   environment                 = local.env
+  env_code                    = var.env_code
   skip_gcloud_download        = var.skip_gcloud_download
 
   folder_id = var.parent_folder
 
   # Metadata
-  project_prefix    = "prj-${local.business_code}-${local.env_code}-sample-single"
+  project_prefix    = "prj-${local.business_code}-${var.env_code}-sample-single"
   cost_centre       = "cost-centre-1"
-  application_name  = "sample-single-prj-app-${local.business_code}-${local.env_code}"
+  application_name  = "sample-single-prj-app-${local.business_code}-${var.env_code}"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"

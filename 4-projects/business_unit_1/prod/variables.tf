@@ -40,6 +40,11 @@ variable "skip_gcloud_download" {
   default     = true
 }
 
+variable "env_code" {
+  description = "A short form of the environment field"
+  type        = string
+}
+
 /******************************************
   Private DNS Management (Optional)
  *****************************************/

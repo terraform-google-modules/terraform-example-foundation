@@ -19,7 +19,7 @@
 *****************************************/
 
 data "google_projects" "dns_hub" {
-  filter = "labels.application_name=prj-dns-hub"
+  filter = "labels.application_name=prj-dns-hub lifecycleState=ACTIVE"
 }
 
 data "google_compute_network" "vpc_dns_hub" {

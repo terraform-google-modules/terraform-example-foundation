@@ -44,14 +44,14 @@ module "dns_hub_vpc" {
     subnet_ip             = "172.16.0.0/25"
     subnet_region         = var.dns_default_region1
     subnet_private_access = "true"
-    subnet_flow_logs      = "false"
+    subnet_flow_logs      = var.subnetworks_enable_logging
     description           = "DNS hub subnet for region 1."
     }, {
     subnet_name           = "sb-dns-hub-${var.dns_default_region2}"
     subnet_ip             = "172.16.0.128/25"
     subnet_region         = var.dns_default_region2
     subnet_private_access = "true"
-    subnet_flow_logs      = "false"
+    subnet_flow_logs      = var.subnetworks_enable_logging
     description           = "DNS hub subnet for region 2."
   }]
 

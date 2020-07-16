@@ -35,6 +35,12 @@ variable "dns_enable_logging" {
   default     = true
 }
 
+variable "subnetworks_enable_logging" {
+  type        = bool
+  description = "Toggle subnetworks flow logging for VPC Subnetwoks."
+  default     = true
+}
+
 variable "domain" {
   type        = string
   description = "The DNS name of forwarding managed zone, for instance 'example.com'"

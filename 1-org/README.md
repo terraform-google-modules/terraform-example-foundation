@@ -41,6 +41,7 @@ The purpose of this step is to setup top level shared folders, monitoring & netw
 | audit\_data\_users | Gsuite or Cloud Identity group that have access to audit logs. | string | n/a | yes |
 | billing\_account | The ID of the billing account to associate this project with | string | n/a | yes |
 | billing\_data\_users | Gsuite or Cloud Identity group that have access to billing data set. | string | n/a | yes |
+| create\_access\_context\_manager\_access\_policy | Whether to create access context manager access policy | bool | `"true"` | no |
 | data\_access\_table\_expiration\_ms | Period before tables expire for data access logs in milliseconds. Default is 30 days. | number | `"2592000000"` | no |
 | default\_region | Default region for BigQuery resources. | string | n/a | yes |
 | domains\_to\_allow | The list of domains to allow users from in IAM. | list(string) | n/a | yes |

@@ -22,14 +22,14 @@ steps:
   - 'TF_VAR_folder_id=$_FOLDER_ID'
   - 'TF_VAR_billing_account=$_BILLING_ACCOUNT'
   - 'TF_VAR_group_email=test-gcp-org-admins@test.infra.cft.tips'
-- id: clean
-  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', './test/clean_org.sh']
-  env:
-  - 'TF_VAR_org_id=$_ORG_ID'
-  - 'TF_VAR_folder_id=$_FOLDER_ID'
-  - 'TF_VAR_billing_account=$_BILLING_ACCOUNT'
-  - 'TF_VAR_group_email=test-gcp-org-admins@test.infra.cft.tips'
+# - id: clean
+#   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+#   args: ['/bin/bash', '-c', './test/clean_org.sh']
+#   env:
+#   - 'TF_VAR_org_id=$_ORG_ID'
+#   - 'TF_VAR_folder_id=$_FOLDER_ID'
+#   - 'TF_VAR_billing_account=$_BILLING_ACCOUNT'
+#   - 'TF_VAR_group_email=test-gcp-org-admins@test.infra.cft.tips'
 - id: create
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create']

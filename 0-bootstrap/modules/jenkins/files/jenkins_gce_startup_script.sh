@@ -15,31 +15,36 @@
 
 #!/bin/sh
 
-echo "**** Startup Step 1/8: Update apt-get repositories. ****"
+echo "**** Startup Step 1/7: Update apt-get repositories. ****"
 sudo apt-get update
 
-echo "**** Startup Step 2/8: Install Java. Needed to accept jobs from Jenkins Master. ****"
+echo "**** Startup Step 2/7: Install Java. Needed to accept jobs from Jenkins Master. ****"
 sudo apt-get install -y default-jdk
 
-echo "**** Startup Step 3/8: Create the directory for Terraform in /opt. ****"
+echo "**** Startup Step 3/7: Install tools needed to run pipeline commands. ****"
+sudo apt-get install -y git jq unzip google-cloud-sdk google-cloud-sdk
+
+echo "**** Startup Step 4/7: Create a directory to locate Terraform binaries. ****"
 # shellcheck disable=SC2154
-mkdir "${tpl_TERRAFORM_DIR}" && cd "${tpl_TERRAFORM_DIR}" || exit
+sudo mkdir -p "${tpl_TERRAFORM_DIR}" && cd "${tpl_TERRAFORM_DIR}" || exit
 
-echo "**** Startup Step 4/8: Download Terraform. ****"
+echo "**** Startup Step 5/7: Download, verify and unzip Terraform binaries. ****"
 # shellcheck disable=SC2154
-wget "https://releases.hashicorp.com/terraform/${tpl_TERRAFORM_VERSION}/terraform_${tpl_TERRAFORM_VERSION}_linux_amd64.zip"
+wget "https://releases.hashicorp.com/terraform/${tpl_TERRAFORM_VERSION}/terraform_${tpl_TERRAFORM_VERSION}_linux_amd64.zip" && \
+    echo "${tpl_TERRAFORM_VERSION_SHA256SUM} terraform_${tpl_TERRAFORM_VERSION}_linux_amd64.zip" > terraform_SHA256SUMS && \
+    sha256sum -c terraform_SHA256SUMS --status && \
+    sudo unzip "terraform_${tpl_TERRAFORM_VERSION}_linux_amd64.zip" -d "${tpl_TERRAFORM_DIR}" && \
+    sudo chmod 755 terraform && \
+    sudo rm -f "${tpl_TERRAFORM_DIR}terraform_${tpl_TERRAFORM_VERSION}_linux_amd64.zip" && \
+    sudo apt-get remove --purge -y curl unzip && \
+    sudo apt-get --purge -y autoremove && \
+    sudo apt-get clean && \
+    sudo rm -rf /var/lib/apt/lists/*
 
-echo "**** Startup Step 5/8: Install git and unzip. Needed to run pipeline commands. ****"
-sudo apt-get install -y git unzip
-
-echo "**** Startup Step 6/8: Unzip the Terraform download. ****"
-unzip "terraform_${tpl_TERRAFORM_VERSION}_linux_amd64.zip"
-chmod 755" ${tpl_TERRAFORM_DIR}"/terraform
-
-echo "**** Startup Step 7/8: Download and install the Terraform validator ****"
+echo "**** Startup Step 6/7: Download and install the Terraform validator ****"
 gsutil cp gs://terraform-validator/releases/2019-04-04/terraform-validator-linux-amd64 .
-chmod 755 "${tpl_TERRAFORM_DIR}"/terraform-validator-linux-amd64
-mv "${tpl_TERRAFORM_DIR}"/terraform-validator-linux-amd64 "${tpl_TERRAFORM_DIR}"/terraform-validator
+chmod 755 "${tpl_TERRAFORM_DIR}terraform-validator-linux-amd64"
+mv "${tpl_TERRAFORM_DIR}terraform-validator-linux-amd64" "${tpl_TERRAFORM_DIR}terraform-validator"
 
-echo "**** Startup Step 8/8: Set the Linux PATH to point to the Terraform directory. ****"
+echo "**** Startup Step 7/7: Set the Linux PATH to point to the Terraform directory. ****"
 export PATH=$PATH:${tpl_TERRAFORM_DIR}

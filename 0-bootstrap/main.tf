@@ -102,11 +102,16 @@ module "cloudbuild_bootstrap" {
   terraform_state_bucket  = module.seed_bootstrap.gcs_bucket_tfstate
   sa_enable_impersonation = true
   skip_gcloud_download    = var.skip_gcloud_download
+  cloudbuild_plan_filename  = "build/cloudbuild-tf-plan.yaml"
+  cloudbuild_apply_filename = "build/cloudbuild-tf-apply.yaml"
 
   cloud_source_repos = [
-    "gcp-org",
-    "gcp-environments",
-    "gcp-networks",
-    "gcp-projects",
+    "gcp-foundation"
+  ]
+
+  terraform_apply_branches = [
+    "dev",
+    "nonprod",
+    "prod"
   ]
 }

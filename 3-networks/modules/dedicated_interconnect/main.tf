@@ -19,7 +19,7 @@ locals {
 }
 
 data "google_projects" "interconnect_project" {
-  filter = "labels.application_name=prj-interconnect"
+  filter = "labels.application_name=prj-interconnect lifecycleState=ACTIVE"
 }
 
 module "interconnect_attachment1_region1" {

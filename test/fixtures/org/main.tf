@@ -20,7 +20,7 @@ resource "random_id" "suffix" {
 
 
 module "test" {
-  source                                      = "../../../1-org"
+  source                                      = "../../../1-org/envs/shared"
   parent_folder                               = var.parent_folder
   org_id                                      = var.org_id
   billing_account                             = var.billing_account

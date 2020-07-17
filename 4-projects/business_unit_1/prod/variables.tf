@@ -45,6 +45,11 @@ variable "env_code" {
   type        = string
 }
 
+variable "vpc_type" {
+  description = "The type of VPC to attach the project to (base, rest, etc)"
+  type        = string
+}
+
 /******************************************
   Private DNS Management (Optional)
  *****************************************/

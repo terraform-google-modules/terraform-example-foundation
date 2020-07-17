@@ -33,7 +33,6 @@ module "example_single_project" {
 
   # Metadata
   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample-single"
-  cost_centre       = "cost-centre-1"
   application_name  = "sample-single-prj-app-${local.business_code}-${var.env_code}"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

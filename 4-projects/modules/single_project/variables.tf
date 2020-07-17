@@ -39,11 +39,6 @@ variable "project_prefix" {
   type        = string
 }
 
-variable "cost_centre" {
-  description = "The cost centre that links to the application"
-  type        = string
-}
-
 variable "application_name" {
   description = "The name of application where GCP resources relate"
   type        = string

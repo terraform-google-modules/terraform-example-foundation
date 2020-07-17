@@ -35,7 +35,6 @@ module "project" {
 
   labels = {
     environment       = var.environment
-    cost_centre       = var.cost_centre
     application_name  = var.application_name
     billing_code      = var.billing_code
     primary_contact   = var.primary_contact

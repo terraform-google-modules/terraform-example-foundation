@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-# locals {
-#   env           = "dev"
-#   business_code = "bu2"
-# }
-
 # module "example_single_project_optional" {
 #   source = "../../modules/single_project"
 

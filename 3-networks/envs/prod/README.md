@@ -35,6 +35,14 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 1. Run `terraform apply`
 
 
+### Using High Availability VPN
+If you are not able to use dedicated interconnect you can also use an HA VPN to access onprem.
+
+1. Rename `vpn.tf.example` to `vpn.tf` in the environment folder in `3-networks/envs/prod`
+1. Create secret for VPN preshared key `echo 'MY_PSK' | gcloud secrets create VPN_PSK_SECRET_NAME --project ENV_SECRETS_PROJECT --replication-policy=automatic --data-file=-`
+1. Update in the file the values for `environment`, `vpn_psk_secret_name`, `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
+1. Verify other default values are valid for your environment.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
@@ -43,8 +51,11 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`. | number | n/a | yes |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
 | default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
+| dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | string | n/a | yes |
+| firewall\_enable\_logging | Toggle firewall logginglogging for VPC Firewalls. | bool | `"true"` | no |
 | org\_id | Organization ID | string | n/a | yes |
+| subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetwoks. | bool | `"true"` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 
 ## Outputs

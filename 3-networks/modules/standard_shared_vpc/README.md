@@ -11,6 +11,7 @@
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | string | n/a | yes |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization. | string | n/a | yes |
+| firewall\_enable\_logging | Toggle firewall logginglogging for VPC Firewalls. | bool | `"true"` | no |
 | nat\_bgp\_asn | BGP ASN for first NAT cloud routes. | number | `"0"` | no |
 | nat\_enabled | Toggle creation of NAT cloud router. | bool | `"false"` | no |
 | nat\_num\_addresses | Number of external IPs to reserve for Cloud NAT. | number | `"2"` | no |

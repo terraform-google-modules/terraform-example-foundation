@@ -27,7 +27,7 @@
 
 #   # Metadata
 #   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample-single"
-#   application_name  = "sample-single-prj-app-${local.business_code}-${var.env_code}"
+#   application_name  = "${local.business_code}-sample-single"
 #   billing_code      = "1234"
 #   primary_contact   = "example@example.com"
 #   secondary_contact = "example2@example.com"

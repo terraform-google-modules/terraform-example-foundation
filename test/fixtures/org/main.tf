@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
+
 module "test" {
-  source                    = "../../../1-org"
-  parent_folder             = var.parent_folder
-  org_id                    = var.org_id
-  billing_account           = var.billing_account
-  terraform_service_account = var.terraform_sa_email
-  default_region            = "us-east4"
-  billing_data_users        = var.group_email
-  audit_data_users          = var.group_email
-  scc_notification_name     = "test-scc-notification"
-  domains_to_allow          = [var.domain_to_allow]
+  source                                      = "../../../1-org"
+  parent_folder                               = var.parent_folder
+  org_id                                      = var.org_id
+  billing_account                             = var.billing_account
+  terraform_service_account                   = var.terraform_sa_email
+  default_region                              = "us-east4"
+  billing_data_users                          = var.group_email
+  audit_data_users                            = var.group_email
+  scc_notification_name                       = "test-scc-notif-${random_id.suffix.hex}"
+  domains_to_allow                            = [var.domain_to_allow]
+  create_access_context_manager_access_policy = false
 }

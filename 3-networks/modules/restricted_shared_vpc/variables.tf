@@ -102,6 +102,12 @@ variable "dns_enable_logging" {
   default     = true
 }
 
+variable "firewall_enable_logging" {
+  type        = bool
+  description = "Toggle firewall logginglogging for VPC Firewalls."
+  default     = true
+}
+
 variable "domain" {
   type        = string
   description = "The DNS name of peering managed zone, for instance 'example.com.'"

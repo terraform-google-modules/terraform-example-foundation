@@ -106,6 +106,7 @@ module "cloudbuild_bootstrap" {
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
 
   cloud_source_repos = [
+    "gcp-bootstrap",
     "gcp-org",
     "gcp-environments",
     "gcp-networks",

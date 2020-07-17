@@ -35,7 +35,7 @@ module "vpc_service_perimeter" {
   source         = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
   version        = "~> 2.0.0"
   policy         = var.access_context_manager_policy_id
-  perimeter_name = "sp_${local.prefix}_default_perimeter_${random_id.random_access_level_suffix.hex"
+  perimeter_name = "sp_${local.prefix}_default_perimeter_${random_id.random_access_level_suffix.hex}"
   description    = "Default VPC Service Controls perimeter"
   resources      = [var.project_number]
 

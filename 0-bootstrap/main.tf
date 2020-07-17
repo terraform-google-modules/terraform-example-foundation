@@ -106,7 +106,10 @@ module "cloudbuild_bootstrap" {
   cloudbuild_apply_filename = "build/cloudbuild-tf-apply.yaml"
 
   cloud_source_repos = [
-    "gcp-foundation"
+    "gcp-org",
+    "gcp-environments",
+    "gcp-networks",
+    "gcp-projects"
   ]
 
   terraform_apply_branches = [

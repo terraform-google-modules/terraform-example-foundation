@@ -41,6 +41,7 @@ module "project" {
     secondary_contact = var.secondary_contact
     business_code     = var.business_code
     env_code          = element(split("", var.environment), 0)
+    vpc_type          = var.vpc_type
   }
 }
 

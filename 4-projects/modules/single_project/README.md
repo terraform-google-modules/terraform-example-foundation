@@ -17,5 +17,6 @@
 | project\_prefix | The name of the GCP project | string | n/a | yes |
 | secondary\_contact | The secondary email contact for the project | string | `""` | no |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
+| vpc\_type | The type of VPC to attach the project to (base, rest, etc) | string | `""` | no |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

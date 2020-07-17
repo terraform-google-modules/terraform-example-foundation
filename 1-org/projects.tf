@@ -24,10 +24,10 @@ module "org_audit_logs" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "org-audit-logs"
+  name                        = "prj-org-audit-logs"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.logs.id
+  folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
 
@@ -43,10 +43,10 @@ module "org_billing_logs" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "org-billing-logs"
+  name                        = "prj-org-billing-logs"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.logs.id
+  folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
 
@@ -66,10 +66,10 @@ module "org_secrets" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "org-secrets"
+  name                        = "prj-org-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.logs.id
+  folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
 
@@ -97,7 +97,7 @@ module "interconnect" {
 
   labels = {
     environment      = "prod"
-    application_name = "prj-interconnect"
+    application_name = "interconnect"
   }
 }
 
@@ -120,7 +120,7 @@ module "scc_notifications" {
 
   labels = {
     environment      = "prod"
-    application_name = "prj-scc-notification"
+    application_name = "scc-notification"
   }
 }
 
@@ -150,6 +150,6 @@ module "dns_hub" {
 
   labels = {
     environment      = "prod"
-    application_name = "prj-dns-hub"
+    application_name = "dns-hub"
   }
 }

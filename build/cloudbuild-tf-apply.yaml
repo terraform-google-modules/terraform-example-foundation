@@ -14,31 +14,51 @@
 
 timeout: 1200s
 steps:
-- name: gcr.io/$PROJECT_ID/terraform
+- id: "set SA"
+  name: gcr.io/${PROJECT_ID}/terraform
   entrypoint: /bin/bash
   args:
   - -c
   - |
     gcloud config set auth/impersonate_service_account ${_TF_SA_EMAIL}
-- name: gcr.io/$PROJECT_ID/terraform
+
+# [START tf-init]
+- id: 'tf init'
+  name: gcr.io/${PROJECT_ID}/terraform
+  entrypoint: /bin/bash
   args:
-  - init
-  - -input=false
-- name: gcr.io/$PROJECT_ID/terraform
+  - -c
+  - |
+      ./tf-wrapper.sh init ${BRANCH_NAME}
+
+# [START tf-validate]
+- id: 'tf validate'
+  name: gcr.io/${PROJECT_ID}/terraform
+  entrypoint: /bin/bash
   args:
-  - validate
-- name: gcr.io/$PROJECT_ID/terraform
+  - -c
+  - |
+      ./tf-wrapper.sh validate ${BRANCH_NAME} ${_POLICY_REPO}
+
+# [START tf-plan]
+- id: 'tf plan'
+  name: gcr.io/${PROJECT_ID}/terraform
+  entrypoint: /bin/bash
   args:
-  - plan
-  - -input=false
-  - -out=tfplan
-- name: gcr.io/$PROJECT_ID/terraform
+  - -c
+  - |
+      ./tf-wrapper.sh plan ${BRANCH_NAME}
+
+# [START tf-apply]
+- id: 'tf apply'
+  name: gcr.io/${PROJECT_ID}/terraform
+  entrypoint: /bin/bash
   args:
-  - apply
-  - -auto-approve
-  - -input=false
-  - tfplan
+  - -c
+  - |
+      ./tf-wrapper.sh apply ${BRANCH_NAME}
+
 artifacts:
   objects:
-    location: 'gs://${_ARTIFACT_BUCKET_NAME}/terraform/cloudbuild/apply/$BUILD_ID'
-    paths: ['cloudbuild-tf-apply.yaml', 'tfplan']
+    location: 'gs://${_ARTIFACT_BUCKET_NAME}/terraform/cloudbuild/apply/${BUILD_ID}'
+    paths: ['cloudbuild-tf-apply.yaml', 'envs/${BRANCH_NAME}/${BRANCH_NAME}.tfplan']

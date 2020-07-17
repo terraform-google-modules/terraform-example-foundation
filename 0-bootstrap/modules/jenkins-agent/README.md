@@ -54,8 +54,6 @@ Error: google: could not find default credentials. See https://developers.google
 1. Creates a Service Account (`jenkins_agent_sa_email`) to run the Jenkins Agent GCE instance
 1. Creates a GCS bucket for Jenkins Artifacts using `project_prefix`
 1. Allows `jenkins_agent_sa_email` service account permissions to impersonate terraform service account (which exists in the `seed` project) using `sa_enable_impersonation` and supplied value for `terraform_sa_name`
-1. TODO:
-    1.  Add Cloud NAT for the Agent to reach internet and download updates and necessary binaries (not needed if user has a golden image with all necessary packages)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
@@ -81,6 +79,7 @@ Error: google: could not find default credentials. See https://developers.google
 | project\_prefix | Name prefix to use for projects created. | string | `"prj"` | no |
 | sa\_enable\_impersonation | Allow org_admins group to impersonate service account & enable APIs required. | bool | `"false"` | no |
 | service\_account\_prefix | Name prefix to use for service accounts. | string | `"sa"` | no |
+| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
 | storage\_bucket\_labels | Labels to apply to the storage bucket. | map(string) | `<map>` | no |
 | storage\_bucket\_prefix | Name prefix to use for storage buckets. | string | `"bkt"` | no |
 | terraform\_sa\_email | Email for terraform service account. It must be supplied by the seed project | string | n/a | yes |

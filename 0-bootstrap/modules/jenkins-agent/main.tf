@@ -30,7 +30,7 @@ resource "random_id" "suffix" {
 *******************************************/
 module "cicd_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0"
+  version                     = "~> 8.0"
   name                        = local.cicd_project_name
   random_project_id           = true
   disable_services_on_destroy = false
@@ -39,6 +39,7 @@ module "cicd_project" {
   billing_account             = var.billing_account
   activate_apis               = local.activate_apis
   labels                      = var.project_labels
+  skip_gcloud_download        = var.skip_gcloud_download
 }
 
 /******************************************
@@ -55,7 +56,7 @@ data "template_file" "jenkins_agent_gce_startup_script" {
   // not needed  if user has a golden image with all necessary packages.
   template = file("${path.module}/files/jenkins_gce_startup_script.sh")
   vars = {
-    tpl_TERRAFORM_DIR               = "/opt/builder/terraform/"
+    tpl_TERRAFORM_DIR               = "/usr/local/bin/"
     tpl_TERRAFORM_VERSION           = var.terraform_version
     tpl_TERRAFORM_VERSION_SHA256SUM = var.terraform_version_sha256sum
   }

@@ -19,8 +19,8 @@ locals {
 }
 
 module "project" {
-  source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.0"
+  source = "git::https://github.com/kwraith05/terraform-google-project-factory.git//modules/core_project_factory?ref=feature/attach-to-vpc-sc-perimeter"
+  # version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = var.activate_apis
@@ -32,6 +32,10 @@ module "project" {
 
   shared_vpc         = local.host_network.project
   shared_vpc_subnets = local.host_network.subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_project.subnetwork_self_link"
+  shared_vpc_enabled = var.shared_vpc_enabled
+
+  vpc_service_control_attach_enabled = var.vpc_service_control_attach_enabled
+  vpc_service_control_perimeter_name = var.vpc_service_control_perimeter_name
 
   labels = {
     environment       = var.environment

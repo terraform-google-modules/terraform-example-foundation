@@ -61,6 +61,24 @@ variable "system_event_table_expiration_ms" {
   default     = 34560000000
 }
 
+variable "vpc_flow_table_expiration_ms" {
+  description = "Period before tables expire for vpc flow logs in milliseconds. Default is 400 days."
+  type        = number
+  default     = 34560000000
+}
+
+variable "access_transparency_table_expiration_ms" {
+  description = "Period before tables expire for access transparency logs in milliseconds. Default is 400 days."
+  type        = number
+  default     = 34560000000
+}
+
+variable "firewall_rules_table_expiration_ms" {
+  description = "Period before tables expire for firewall rules logs in milliseconds. Default is 400 days."
+  type        = number
+  default     = 34560000000
+}
+
 variable "data_access_table_expiration_ms" {
   description = "Period before tables expire for data access logs in milliseconds. Default is 30 days."
   type        = number
@@ -92,6 +110,12 @@ variable "parent_folder" {
 
 variable "create_access_context_manager_access_policy" {
   description = "Whether to create access context manager access policy"
+  type        = bool
+  default     = true
+}
+
+variable "data_access_logs_enabled" {
+  description = "Enable Data Access logs of types DATA_READ, DATA_WRITE and ADMIN_READ for all GCP services. Enabling Data Access logs might result in your organization being charged for the additional logs usage. See https://cloud.google.com/logging/docs/audit#data-access"
   type        = bool
   default     = true
 }

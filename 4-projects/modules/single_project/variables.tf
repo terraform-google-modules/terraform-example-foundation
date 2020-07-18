@@ -106,12 +106,6 @@ variable "vpc_service_control_perimeter_name" {
   default     = null
 }
 
-variable "shared_vpc_enabled" {
-  description = "If shared VPC should be used"
-  type        = bool
-  default     = false
-}
-
 /******************************************
   Project subnet (Optional)
  *****************************************/

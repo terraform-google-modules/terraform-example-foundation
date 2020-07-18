@@ -14,18 +14,28 @@
  * limitations under the License.
  */
 
-module "example_standard_projects" {
-  source = "./modules/standard_projects"
+locals {
+  env           = "nonprod"
+  business_code = "bu2"
+}
+
+module "example_single_project" {
+  source = "../../modules/single_project"
 
   org_id                      = var.org_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
+  environment                 = local.env
+  env_code                    = var.env_code
+  skip_gcloud_download        = var.skip_gcloud_download
 
-  nonprod_folder_id = module.example_team_folders.nonprod_folder_id
-  prod_folder_id    = module.example_team_folders.prod_folder_id
+  folder_id = var.parent_folder
 
   # Metadata
-  project_prefix   = "sample-standard"
-  cost_centre      = "cost-centre-1"
-  application_name = "sample-standard-project-app"
+  project_prefix    = "prj-${local.business_code}-${var.env_code}-sample-single"
+  application_name  = "${local.business_code}-sample-single"
+  billing_code      = "1234"
+  primary_contact   = "example@example.com"
+  secondary_contact = "example2@example.com"
+  business_code     = local.business_code
 }

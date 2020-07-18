@@ -15,18 +15,23 @@
  */
 
 # module "example_single_project_optional" {
-#   source = "./modules/single_project"
+#   source = "../../modules/single_project"
 
 #   org_id                      = var.org_id
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
-#   folder_id = module.example_team_folders.prod_folder_id
-#   environment = "prod"
+#   folder_id                   = var.parent_folder
+#   environment                 = local.env
+#   env_code                    = var.env_code
+#   skip_gcloud_download        = var.skip_gcloud_download
 
 #   # Metadata
-#   project_prefix   = "single-optional"
-#   cost_centre      = "cost-centre-1"
-#   application_name = "sample-single-project-app-optional"
+#   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample-single"
+#   application_name  = "${local.business_code}-sample-single"
+#   billing_code      = "1234"
+#   primary_contact   = "example@example.com"
+#   secondary_contact = "example2@example.com"
+#   business_code     = local.business_code
 
 #   # Network Setting (Optional)
 #   enable_networking    = true

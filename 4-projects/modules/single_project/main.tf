@@ -20,22 +20,28 @@ locals {
 
 module "project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0"
+  version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = var.activate_apis
-  name                        = "${var.project_prefix}-${var.environment}"
+  name                        = var.project_prefix
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
+  skip_gcloud_download        = var.skip_gcloud_download
 
   shared_vpc         = local.host_network.project
   shared_vpc_subnets = local.host_network.subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_project.subnetwork_self_link"
 
   labels = {
-    environment      = var.environment
-    cost_centre      = var.cost_centre
-    application_name = var.application_name
+    environment       = var.environment
+    application_name  = var.application_name
+    billing_code      = var.billing_code
+    primary_contact   = var.primary_contact
+    secondary_contact = var.secondary_contact
+    business_code     = var.business_code
+    env_code          = element(split("", var.environment), 0)
+    vpc_type          = var.vpc_type
   }
 }
 

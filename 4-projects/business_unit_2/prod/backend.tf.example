@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-/*******************************************************************************
-    Folders
-*******************************************************************************/
-resource "google_folder" "parent_folder" {
-  display_name = var.folder_display_name
-  parent       = var.parent_folder_id
-}
-
-resource "google_folder" "nonprod_folder" {
-  display_name = "nonprod"
-  parent       = google_folder.parent_folder.id
-}
-
-resource "google_folder" "prod_folder" {
-  display_name = "prod"
-  parent       = google_folder.parent_folder.id
+terraform {
+  backend "gcs" {
+    bucket = "UPDATE_ME"
+    prefix = "terraform/projects/business_unit_2/prod"
+  }
 }

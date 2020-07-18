@@ -18,12 +18,16 @@ locals {
   prefix = "${var.environment_code}_${local.vpc_type}_${local.vpc_label}"
 }
 
+resource "random_id" "random_access_level_suffix" {
+  byte_length = 2
+}
+
 module "access_level_members" {
   source      = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
   version     = "~> 2.0.0"
   description = "${local.prefix} Access Level"
   policy      = var.access_context_manager_policy_id
-  name        = "alp_${local.prefix}_members"
+  name        = "alp_${local.prefix}_members_${random_id.random_access_level_suffix.hex}"
   members     = var.members
 }
 
@@ -31,7 +35,7 @@ module "vpc_service_perimeter" {
   source         = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
   version        = "~> 2.0.0"
   policy         = var.access_context_manager_policy_id
-  perimeter_name = "sp_${local.prefix}_default_perimeter"
+  perimeter_name = "sp_${local.prefix}_default_perimeter_${random_id.random_access_level_suffix.hex}"
   description    = "Default VPC Service Controls perimeter"
   resources      = [var.project_number]
 

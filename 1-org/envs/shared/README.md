@@ -61,4 +61,16 @@ You can choose not to enable the Data Access logs by setting variable `data_acce
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 | vpc\_flow\_table\_expiration\_ms | Period before tables expire for vpc flow logs in milliseconds. Default is 400 days. | number | `"34560000000"` | no |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| common\_folder\_display\_name | The common folder display name |
+| dns\_hub\_project\_id | The DNS hub project ID |
+| interconnect\_project\_id | The interconnect project ID |
+| org\_audit\_logs\_project\_id | The org audit logs project ID |
+| org\_billing\_logs\_project\_id | The org billing logs project ID |
+| org\_secrets\_project\_id | The org secrets project ID |
+| scc\_notifications\_project\_id | The SCC notifications project ID |
+
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

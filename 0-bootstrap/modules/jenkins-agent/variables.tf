@@ -142,8 +142,6 @@ variable "activate_apis" {
     "admin.googleapis.com",
     "appengine.googleapis.com",
     "storage-api.googleapis.com",
-    "cloudkms.googleapis.com",
-    "sourcerepo.googleapis.com",
   ]
 }
 

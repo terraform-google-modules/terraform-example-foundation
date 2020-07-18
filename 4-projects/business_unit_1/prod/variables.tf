@@ -50,6 +50,11 @@ variable "vpc_type" {
   type        = string
 }
 
+variable "policy_id" {
+  type        = string
+  description = "The ID of the access context manager policy the perimeter lies in"
+}
+
 /******************************************
   Private DNS Management (Optional)
  *****************************************/

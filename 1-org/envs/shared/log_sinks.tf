@@ -73,7 +73,7 @@ module "bq_system_event_logs" {
 *****************************************/
 
 resource "google_organization_iam_audit_config" "organization_data_access_config" {
-  count   = var.data_access_logs_enabled ? (var.parent_folder != "" ? 0 : 1) : 0
+  count   = var.data_access_logs_enabled && var.parent_folder == "" ? 1 : 0
   org_id  = var.org_id
   service = "allServices"
 
@@ -91,7 +91,7 @@ resource "google_organization_iam_audit_config" "organization_data_access_config
 }
 
 resource "google_folder_iam_audit_config" "folder_data_access_config" {
-  count   = var.data_access_logs_enabled ? (var.parent_folder != "" ? 1 : 0) : 0
+  count   = var.data_access_logs_enabled && var.parent_folder != "" ? 1 : 0
   folder  = "folders/${var.parent_folder}"
   service = "allServices"
 

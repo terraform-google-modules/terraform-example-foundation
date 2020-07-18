@@ -14,38 +14,34 @@
  * limitations under the License.
  */
 
-# module "example_standard_projects_optional" {
-#   source = "./modules/standard_projects"
+# module "example_single_project_optional" {
+#   source = "../../modules/single_project"
 
 #   org_id                      = var.org_id
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
-
-#   nonprod_folder_id = module.example_team_folders.nonprod_folder_id
-#   prod_folder_id    = module.example_team_folders.prod_folder_id
+#   folder_id                   = var.parent_folder
+#   environment                 = local.env
+#   env_code                    = var.env_code
+#   skip_gcloud_download        = var.skip_gcloud_download
 
 #   # Metadata
-#   project_prefix   = "standard-optional"
-#   cost_centre      = "cost-centre-1"
-#   application_name = "sample-standard-app-optional"
+#   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample-single"
+#   application_name  = "${local.business_code}-sample-single"
+#   billing_code      = "1234"
+#   primary_contact   = "example@example.com"
+#   secondary_contact = "example2@example.com"
+#   business_code     = local.business_code
 
 #   # Network Setting (Optional)
-#   enable_networking            = true
-#   nonprod_subnet_ip_cidr_range = "10.64.0.0/16"
-#   nonprod_subnet_secondary_ranges = [{
-#     range_name    = "nonprod-gke-pod",
-#     ip_cidr_range = "10.65.0.0/16"
+#   enable_networking    = true
+#   subnet_ip_cidr_range = "10.3.0.0/16"
+#   subnet_secondary_ranges = [{
+#     range_name    = "gke-pod",
+#     ip_cidr_range = "10.4.0.0/16"
 #     }, {
-#     range_name    = "nonprod-gke-svc",
-#     ip_cidr_range = "10.66.0.0/16"
-#   }]
-#   prod_subnet_ip_cidr_range = "10.6.0.0/16"
-#   prod_subnet_secondary_ranges = [{
-#     range_name    = "prod-gke-pod",
-#     ip_cidr_range = "10.7.0.0/16"
-#     }, {
-#     range_name    = "prod-gke-svc",
-#     ip_cidr_range = "10.8.0.0/16"
+#     range_name    = "gke-svc",
+#     ip_cidr_range = "10.5.0.0/16"
 #   }]
 
 #   # DNS Setting (Optional)

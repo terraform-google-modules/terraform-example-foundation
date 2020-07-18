@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-variable "parent_folder_id" {
-  description = "Top level folder ID"
-  type        = string
-}
-
-variable "folder_display_name" {
-  description = "Folder name"
-  type        = string
+terraform {
+  backend "gcs" {
+    bucket = "UPDATE_ME"
+    prefix = "terraform/projects/business_unit_1/nonprod"
+  }
 }

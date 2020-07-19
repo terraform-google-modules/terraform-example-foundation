@@ -23,7 +23,7 @@ locals {
 *****************************************/
 
 data "google_projects" "dns_hub" {
-  filter = "labels.application_name=prj-dns-hub lifecycleState=ACTIVE"
+  filter = "labels.application_name=dns-hub lifecycleState=ACTIVE"
 }
 
 

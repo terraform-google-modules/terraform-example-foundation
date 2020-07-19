@@ -26,7 +26,7 @@ module "monitoring_project" {
   name                        = "org-monitoring-${var.env}"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = data.google_active_folder.monitoring.id
+  folder_id                   = data.google_active_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
   disable_services_on_destroy = false
   activate_apis = [

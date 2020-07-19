@@ -24,7 +24,8 @@ tf_plan() {
 
 tf_validate() {
   if ! ${tf_validator_path} version &> /dev/null; then
-    terraform validate || exit 31
+    echo "terraform-validator not found!  Check path or visit"
+    echo "https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator"
   else
     terraform show -json $branchname.tfplan > $branchname.json || exit 32
     terraform-validator-linux-amd64 validate $branchname.json --policy-path=${policyrepo} || exit 33

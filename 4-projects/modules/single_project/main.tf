@@ -19,8 +19,8 @@ locals {
 }
 
 module "project" {
-  source = "git::https://github.com/kwraith05/terraform-google-project-factory.git?ref=feature/attach-to-vpc-sc-perimeter"
-  # version                     = "~> 8.0"
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = var.activate_apis

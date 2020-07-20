@@ -14,9 +14,29 @@
  * limitations under the License.
  */
 
-output "common_folder_display_name" {
-  value       = google_folder.common.display_name
-  description = "The common folder display name"
+output "org_id" {
+  value       = var.org_id
+  description = "The organization id"
+}
+
+output "scc_notification_name" {
+  value       = var.scc_notification_name
+  description = "Name of SCC Notification"
+}
+
+output "parent_resource_id" {
+  value       = local.parent_resource_id
+  description = "The parent resource id"
+}
+
+output "parent_resource_type" {
+  value       = local.parent_resource_type
+  description = "The parent resource type"
+}
+
+output "common_folder_name" {
+  value       = google_folder.common.name
+  description = "The common folder name"
 }
 
 output "org_audit_logs_project_id" {

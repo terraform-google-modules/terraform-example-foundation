@@ -65,12 +65,16 @@ You can choose not to enable the Data Access logs by setting variable `data_acce
 
 | Name | Description |
 |------|-------------|
-| common\_folder\_display\_name | The common folder display name |
+| common\_folder\_name | The common folder name |
 | dns\_hub\_project\_id | The DNS hub project ID |
 | interconnect\_project\_id | The interconnect project ID |
 | org\_audit\_logs\_project\_id | The org audit logs project ID |
 | org\_billing\_logs\_project\_id | The org billing logs project ID |
+| org\_id | The organization id |
 | org\_secrets\_project\_id | The org secrets project ID |
+| parent\_resource\_id | The parent resource id |
+| parent\_resource\_type | The parent resource type |
+| scc\_notification\_name | Name of SCC Notification |
 | scc\_notifications\_project\_id | The SCC notifications project ID |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -43,10 +43,14 @@ suites:
     verifier:
       color: false
       systems:
-        - name: org
+        - name: inspec-gcp
+          backend: gcp
+          controls:
+            - gcp
+        - name: local
           backend: local
           controls:
-            - org
+            - gcloud
   - name: envs
     driver:
       root_module_directory: test/fixtures/envs/

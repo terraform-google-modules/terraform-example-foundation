@@ -18,6 +18,14 @@ nonprod_base_shared_vpc_project_id = attribute('nonprod_base_shared_vpc_project_
 nonprod_restricted_shared_vpc_project_id = attribute('nonprod_restricted_shared_vpc_project_id')
 nonprod_env_secrets_project_id = attribute('nonprod_env_secrets_project_id')
 
+monitoring_project_apis = ['logging.googleapis.com', 'monitoring.googleapis.com']
+networking_project_apis = ['compute.googleapis.com',
+                           'dns.googleapis.com',
+                           'servicenetworking.googleapis.com',
+                           'container.googleapis.com',
+                           'logging.googleapis.com']
+secret_project_apis = ['secretmanager.googleapis.com', 'logging.googleapis.com']
+
 control nonprod do
   title 'gcp step 2-envs test nonprod'
   describe google_resourcemanager_folder(name: nonprod_env_folder) do
@@ -49,116 +57,42 @@ control nonprod do
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 
-  describe google_project_service(
-    project: nonprod_monitoring_project_id,
-    name: 'logging.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
+  monitoring_project_apis.each do |api|
+    describe google_project_service(
+      project: nonprod_monitoring_project_id,
+      name: api
+    ) do
+      it { should exist }
+      its('state') { should cmp 'ENABLED' }
+    end
   end
 
-  describe google_project_service(
-    project: nonprod_monitoring_project_id,
-    name: 'monitoring.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
+  networking_project_apis.each do |api|
+    describe google_project_service(
+      project: nonprod_base_shared_vpc_project_id,
+      name: api
+    ) do
+      it { should exist }
+      its('state') { should cmp 'ENABLED' }
+    end
+
+    describe google_project_service(
+      project: nonprod_restricted_shared_vpc_project_id,
+      name: api
+    ) do
+      it { should exist }
+      its('state') { should cmp 'ENABLED' }
+    end
   end
 
-  describe google_project_service(
-    project: nonprod_base_shared_vpc_project_id,
-    name: 'compute.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_base_shared_vpc_project_id,
-    name: 'dns.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_base_shared_vpc_project_id,
-    name: 'servicenetworking.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_base_shared_vpc_project_id,
-    name: 'container.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_base_shared_vpc_project_id,
-    name: 'logging.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_restricted_shared_vpc_project_id,
-    name: 'compute.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_restricted_shared_vpc_project_id,
-    name: 'dns.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_restricted_shared_vpc_project_id,
-    name: 'servicenetworking.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_restricted_shared_vpc_project_id,
-    name: 'container.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_restricted_shared_vpc_project_id,
-    name: 'logging.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_env_secrets_project_id,
-    name: 'secretmanager.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: nonprod_env_secrets_project_id,
-    name: 'logging.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
+  secret_project_apis.each do |api|
+    describe google_project_service(
+      project: nonprod_env_secrets_project_id,
+      name: api
+    ) do
+      it { should exist }
+      its('state') { should cmp 'ENABLED' }
+    end
   end
 
   google_project_iam_bindings(project: nonprod_monitoring_project_id).where(iam_binding_role: 'roles/monitoring.editor') do

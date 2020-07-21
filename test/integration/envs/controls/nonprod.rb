@@ -17,6 +17,7 @@ nonprod_monitoring_project_id = attribute('nonprod_monitoring_project_id')
 nonprod_base_shared_vpc_project_id = attribute('nonprod_base_shared_vpc_project_id')
 nonprod_restricted_shared_vpc_project_id = attribute('nonprod_restricted_shared_vpc_project_id')
 nonprod_env_secrets_project_id = attribute('nonprod_env_secrets_project_id')
+monitoring_group = attribute('monitoring_group')
 
 monitoring_project_apis = ['logging.googleapis.com', 'monitoring.googleapis.com']
 networking_project_apis = ['compute.googleapis.com',
@@ -26,32 +27,32 @@ networking_project_apis = ['compute.googleapis.com',
                            'logging.googleapis.com']
 secret_project_apis = ['secretmanager.googleapis.com', 'logging.googleapis.com']
 
-control nonprod do
+control 'nonprod' do
   title 'gcp step 2-envs test nonprod'
   describe google_resourcemanager_folder(name: nonprod_env_folder) do
     it { should exist }
     its('display_name') { should eq 'nonprod' }
   end
 
-  describe google_project(name: nonprod_monitoring_project_id) do
+  describe google_project(project: nonprod_monitoring_project_id) do
     it { should exist }
     its('project_id') { should cmp nonprod_monitoring_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 
-  describe google_project(name: nonprod_base_shared_vpc_project_id) do
+  describe google_project(project: nonprod_base_shared_vpc_project_id) do
     it { should exist }
     its('project_id') { should cmp nonprod_base_shared_vpc_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 
-  describe google_project(name: nonprod_restricted_shared_vpc_project_id) do
+  describe google_project(project: nonprod_restricted_shared_vpc_project_id) do
     it { should exist }
     its('project_id') { should cmp nonprod_restricted_shared_vpc_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 
-  describe google_project(name: nonprod_env_secrets_project_id) do
+  describe google_project(project: nonprod_env_secrets_project_id) do
     it { should exist }
     its('project_id') { should cmp nonprod_env_secrets_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
@@ -95,8 +96,8 @@ control nonprod do
     end
   end
 
-  google_project_iam_bindings(project: nonprod_monitoring_project_id).where(iam_binding_role: 'roles/monitoring.editor') do
+  describe google_project_iam_binding(project: nonprod_monitoring_project_id,  role: 'roles/monitoring.editor') do
     it { should exist }
-    # its('members') {should include 'group:${var.monitoring_workspace_users}' }
+    its('members') {should include "group:#{monitoring_group}" }
   end
 end

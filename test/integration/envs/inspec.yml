@@ -3,12 +3,15 @@ depends:
     git: https://github.com/inspec/inspec-gcp.git
     tag: v1.7.0
 attributes:
+  - name: monitoring_group
+    required: true
+    type: string
   - name: dev_env_folder
     required: true
     type: string
   - name: dev_monitoring_editor_role
     required: true
-    type: string
+    type: hash
   - name: dev_monitoring_project_id
     required: true
     type: string
@@ -26,7 +29,7 @@ attributes:
     type: string
   - name: nonprod_monitoring_editor_role
     required: true
-    type: string
+    type: hash
   - name: nonprod_monitoring_project_id
     required: true
     type: string
@@ -44,14 +47,14 @@ attributes:
     type: string
   - name: prod_monitoring_editor_role
     required: true
-    type: string
+    type: hash
   - name: prod_monitoring_project_id
     required: true
     type: string
   - name: prod_base_shared_vpc_project_id
     required: true
     type: string
-  - name: nonprod_restricted_shared_vpc_project_id
+  - name: prod_restricted_shared_vpc_project_id
     required: true
     type: string
   - name: prod_env_secrets_project_id

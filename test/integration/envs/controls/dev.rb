@@ -17,6 +17,7 @@ dev_monitoring_project_id = attribute('dev_monitoring_project_id')
 dev_base_shared_vpc_project_id = attribute('dev_base_shared_vpc_project_id')
 dev_restricted_shared_vpc_project_id = attribute('dev_restricted_shared_vpc_project_id')
 dev_env_secrets_project_id = attribute('dev_env_secrets_project_id')
+monitoring_group = attribute('monitoring_group')
 
 monitoring_project_apis = ['logging.googleapis.com', 'monitoring.googleapis.com']
 networking_project_apis = ['compute.googleapis.com',
@@ -26,7 +27,7 @@ networking_project_apis = ['compute.googleapis.com',
                            'logging.googleapis.com']
 secret_project_apis = ['secretmanager.googleapis.com', 'logging.googleapis.com']
 
-control dev do
+control 'dev' do
   title 'gcp step 2-envs test dev'
 
   describe google_resourcemanager_folder(name: dev_env_folder) do
@@ -34,25 +35,25 @@ control dev do
     its('display_name') { should eq 'dev' }
   end
 
-  describe google_project(name: dev_monitoring_project_id) do
+  describe google_project(project: dev_monitoring_project_id) do
     it { should exist }
     its('project_id') { should cmp dev_monitoring_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 
-  describe google_project(name: dev_base_shared_vpc_project_id) do
+  describe google_project(project: dev_base_shared_vpc_project_id) do
     it { should exist }
     its('project_id') { should cmp dev_base_shared_vpc_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 
-  describe google_project(name: dev_restricted_shared_vpc_project_id) do
+  describe google_project(project: dev_restricted_shared_vpc_project_id) do
     it { should exist }
     its('project_id') { should cmp dev_restricted_shared_vpc_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 
-  describe google_project(name: dev_env_secrets_project_id) do
+  describe google_project(project: dev_env_secrets_project_id) do
     it { should exist }
     its('project_id') { should cmp dev_env_secrets_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
@@ -96,8 +97,8 @@ control dev do
     end
   end
 
-  google_project_iam_bindings(project: dev_monitoring_project_id).where(iam_binding_role: 'roles/monitoring.editor') do
+  describe google_project_iam_binding(project: dev_monitoring_project_id,  role: 'roles/monitoring.editor') do
     it { should exist }
-    # its('members') {should include 'group:${var.monitoring_workspace_users}' }
+    its('members') {should include "group:#{monitoring_group}" }
   end
 end

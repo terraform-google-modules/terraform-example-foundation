@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+output "monitoring_group" {
+  description = "Monitoring workspace group."
+  value       = var.group_email
+}
+
 output "dev_env_folder" {
   description = "Development environment folder created under parent."
   value       = module.dev.env_folder

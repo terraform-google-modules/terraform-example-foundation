@@ -22,7 +22,7 @@ control nonprod do
   title 'gcp step 2-envs test nonprod'
   describe google_resourcemanager_folder(name: nonprod_env_folder) do
     it { should exist }
-    its('display_name') { should eq 'dev' }
+    its('display_name') { should eq 'nonprod' }
   end
 
   describe google_project(name: nonprod_monitoring_project_id) do

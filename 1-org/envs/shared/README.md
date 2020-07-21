@@ -15,10 +15,10 @@ Enabling Data Access logs might result in your project being charged for the add
 You can choose not to enable the Data Access logs by setting variable `data_access_logs_enabled` to false.
 
 ### Setup to run via Cloud Build
-1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID` (this is from terraform output from the previous section, 0-bootstrap)
+1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID` (this is from terraform output from the previous section, 0-bootstrap).
 1. Navigate into the repo `cd gcp-org` and change to a non prod branch `git checkout -b plan`
-1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/1-org/* .` (modify accordingly based on your current directory)
-1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory)
+1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/1-org/* .` (modify accordingly based on your current directory).
+1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). Make sure that `default_region` is set to a valid [BigQuery dataset region](https://cloud.google.com/bigquery/docs/locations).
 1. Rename backend.tf.example backend.tf and update with your bucket from bootstrap.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
@@ -29,11 +29,11 @@ You can choose not to enable the Data Access logs by setting variable `data_acce
 
 
 ### Run terraform locally
-1. Change into 1-org/envs/shared/ folder
+1. Change into 1-org/envs/shared/ folder.
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
 1. Rename backend.tf.example backend.tf and update with your bucket from bootstrap.
 1. Run `terraform init`
-1. Run `terraform plan` and review output
+1. Run `terraform plan` and review output.
 1. Run `terraform apply`
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

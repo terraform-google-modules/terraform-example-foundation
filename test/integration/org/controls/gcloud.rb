@@ -16,27 +16,25 @@ scc_notifications_project_id = attribute('scc_notifications_project_id')
 scc_notification_name = attribute('scc_notification_name')
 org_id = attribute('org_id')
 
-control "gcloud" do
-    title "gcloud step 1-org tests"
+control 'gcloud' do
+  title 'gcloud step 1-org tests'
 
-    describe command("gcloud alpha scc notifications describe #{scc_notification_name} --organization=#{org_id} --format=json") do
-        its(:exit_status) { should eq 0 }
-        its(:stderr) { should eq '' }
+  describe command("gcloud alpha scc notifications describe #{scc_notification_name} --organization=#{org_id} --format=json") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq '' }
 
-        let(:data) do
-          if subject.exit_status == 0
-            JSON.parse(subject.stdout)
-          else
-            {}
-          end
-        end
-
-        it "SCC notifications PubSub topic should be top-scc-notification" do
-          expect(data).to include(
-            "pubsubTopic" => {"projects/#{scc_notifications_project_id}/topics/top-scc-notification"}
-          )
-        end
+    let(:data) do
+      if subject.exit_status == 0
+        JSON.parse(subject.stdout)
+      else
+        {}
+      end
     end
 
-
+    it 'SCC notifications PubSub topic should be top-scc-notification' do
+      expect(data).to include(
+        'pubsubTopic' => "projects/#{scc_notifications_project_id}/topics/top-scc-notification"
+      )
+    end
+  end
 end

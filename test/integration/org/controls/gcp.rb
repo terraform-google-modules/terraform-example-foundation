@@ -299,7 +299,7 @@ control 'gcp' do
 
     describe google_logging_folder_log_sink(
       folder: parent_resource_id,
-      name: 'bigquery_access_transparency_log'
+      name: 'bigquery_access_transparency_logs'
     ) do
       it { should exist }
       its('filter') {

@@ -73,7 +73,6 @@ variable "jenkins_agent_gce_ssh_user" {
 variable "jenkins_agent_gce_ssh_pub_key" {
   description = "SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'`"
   type        = string
-  default     = ""
 }
 
 variable "jenkins_agent_sa_email" {
@@ -83,7 +82,7 @@ variable "jenkins_agent_sa_email" {
 }
 
 variable "jenkins_master_ip_addresses" {
-  description = "A list of IP Addresses and masks of the Jenkins Master in the form ['0.0.0.0/0']. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
+  description = "A list of CIDR IP ranges of the Jenkins Master in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
   type        = list(string)
 }
 

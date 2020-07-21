@@ -6,7 +6,7 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 
 1. A GCP [Organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization)
 1. A GCP [Billing Account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
-1. Cloud Identity / Gsuite groups for organization and billing admins
+1. Cloud Identity / G Suite groups for organization and billing admins
 1. Membership in the `group_org_admins` group for user running terraform
 1. Grant the roles mentioned in bootstrap [README.md](https://github.com/terraform-google-modules/terraform-google-bootstrap#permissions), as well as `roles/resourcemanager.folderCreator` for the user running the step.
 
@@ -32,7 +32,7 @@ Further details of permissions required and resources created, can be found in t
 | group\_billing\_admins | Google Group for GCP Billing Administrators | string | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |
 | org\_id | GCP Organization ID | string | n/a | yes |
-| org\_project\_creators | Additional list of members to have project creator role accross the organization. Prefix of group: user: or serviceAccount: is required. | list(string) | `<list>` | no |
+| org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | list(string) | `<list>` | no |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
 
@@ -53,6 +53,12 @@ Further details of permissions required and resources created, can be found in t
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Requirements
+
+If you are using `jenkins_bootstrap`, please see the [README](./modules/jenkins-agent/README.md) for the requirements.
+
+## Instructions
+
+If you are using `jenkins_bootstrap`, please follow the instructions on how to run the bootstrap step with the `jenkins_bootstrap` sub-module described in the [README](./modules/jenkins-agent/README.md), which include implementing VPN, configuring your Jenkins Master among other steps.
 
 ### Software
 

@@ -59,6 +59,7 @@ data "template_file" "jenkins_agent_gce_startup_script" {
     tpl_TERRAFORM_DIR               = "/usr/local/bin/"
     tpl_TERRAFORM_VERSION           = var.terraform_version
     tpl_TERRAFORM_VERSION_SHA256SUM = var.terraform_version_sha256sum
+    tpl_SSH_PUB_KEY                 = var.jenkins_agent_gce_ssh_pub_key
   }
 }
 
@@ -110,14 +111,14 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 *******************************************/
 
 resource "google_compute_firewall" "fw_allow_ssh_into_jenkins_agent" {
-  project       = module.cicd_project.project_id
-  name          = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
-  description   = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
-  network       = google_compute_network.jenkins_agents.name
-  source_ranges = var.jenkins_master_ip_addresses
-  target_tags   = local.jenkins_gce_fw_tags
-  priority      = 1000
-
+  project        = module.cicd_project.project_id
+  name           = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
+  description    = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
+  network        = google_compute_network.jenkins_agents.name
+  source_ranges  = var.jenkins_master_ip_addresses
+  target_tags    = local.jenkins_gce_fw_tags
+  priority       = 1000
+  enable_logging = true
   allow {
     protocol = "tcp"
     ports    = ["22"]
@@ -165,7 +166,7 @@ resource "google_compute_router" "nat_router_region1" {
 }
 
 resource "google_compute_address" "nat_external_addresses1" {
-  name    = "ca-${google_compute_network.jenkins_agents.name}-${var.default_region}"
+  name    = "cn-${google_compute_network.jenkins_agents.name}-${var.default_region}"
   project = module.cicd_project.project_id
   region  = var.default_region
 }

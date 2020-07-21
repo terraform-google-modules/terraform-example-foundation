@@ -15,20 +15,20 @@
 
 #!/bin/sh
 
-echo "**** Startup Step 1/6: Update apt-get repositories. ****"
+echo "**** Startup Step 1/9: Update apt-get repositories. ****"
 apt-get update
 
-echo "**** Startup Step 2/6: Install Java. Needed to accept jobs from Jenkins Master. ****"
+echo "**** Startup Step 2/9: Install Java. Needed to accept jobs from Jenkins Master. ****"
 apt-get install -y default-jdk
 
-echo "**** Startup Step 3/6: Install tools needed to run pipeline commands. ****"
+echo "**** Startup Step 3/9: Install tools needed to run pipeline commands. ****"
 apt-get install -y git jq unzip google-cloud-sdk google-cloud-sdk
 
-echo "**** Startup Step 4/6: Create a directory to locate Terraform binaries. ****"
+echo "**** Startup Step 4/9: Create a directory to locate Terraform binaries. ****"
 # shellcheck disable=SC2154
 mkdir -p "${tpl_TERRAFORM_DIR}" && cd "${tpl_TERRAFORM_DIR}" || exit
 
-echo "**** Startup Step 5/6: Download, verify and unzip Terraform binaries. ****"
+echo "**** Startup Step 5/9: Download, verify and unzip Terraform binaries. ****"
 # shellcheck disable=SC2154
 wget "https://releases.hashicorp.com/terraform/${tpl_TERRAFORM_VERSION}/terraform_${tpl_TERRAFORM_VERSION}_linux_amd64.zip" && \
     echo "${tpl_TERRAFORM_VERSION_SHA256SUM} terraform_${tpl_TERRAFORM_VERSION}_linux_amd64.zip" > terraform_SHA256SUMS && \
@@ -41,7 +41,44 @@ wget "https://releases.hashicorp.com/terraform/${tpl_TERRAFORM_VERSION}/terrafor
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-echo "**** Startup Step 6/6: Download and install the Terraform validator ****"
+echo "**** Startup Step 6/9: Download and install the Terraform validator ****"
 gsutil cp gs://terraform-validator/releases/2019-04-04/terraform-validator-linux-amd64 .
 chmod 755 "${tpl_TERRAFORM_DIR}terraform-validator-linux-amd64"
 mv "${tpl_TERRAFORM_DIR}terraform-validator-linux-amd64" "${tpl_TERRAFORM_DIR}terraform-validator"
+
+echo "**** Startup Step 7/9: Set the Linux PATH to point to the Terraform directory. ****"
+export PATH=$PATH:${tpl_TERRAFORM_DIR}
+
+echo "**** Startup Step 8/9: Create jenkins user. ****"
+# Home directory for the jenkins user
+JENKINS_HOME_DIR="/home/jenkins"
+
+# The "Remote Jenkins directory" is used to store Jenkins Agent logs
+JENKINS_AGENT_REMOTE_DIR="$JENKINS_HOME_DIR/jenkins_agent_dir"
+
+# Create  and set the jenkins user as owner
+mkdir -p "$JENKINS_AGENT_REMOTE_DIR" && \
+  chmod 766 "$JENKINS_AGENT_REMOTE_DIR" && \
+
+useradd -d /home/jenkins jenkins
+chown -R jenkins:jenkins /home/jenkins/
+
+echo "**** Startup Step 9/9: Add public SSH key to the list of authorized keys. ****"
+SSHD_CONFIG_DIR="/etc/ssh"
+
+# Setting up the sshd_config file
+sed -i $SSHD_CONFIG_DIR/sshd_config \
+        -e 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/' \
+        -e 's/#AuthorizedKeysFile.*/AuthorizedKeysFile    \/etc\/ssh\/authorized_keys/'
+
+# The Jenkins Agent needs the Master public key. This can be in your github repo
+# shellcheck disable=SC2154
+cat > $SSHD_CONFIG_DIR/authorized_keys <<-EOT
+${tpl_SSH_PUB_KEY}
+EOT
+
+# Configure secure permissions on SSHD_CONFIG_DIR
+chmod 755 $SSHD_CONFIG_DIR && \
+ chmod 655 $SSHD_CONFIG_DIR/authorized_keys
+
+systemctl restart sshd

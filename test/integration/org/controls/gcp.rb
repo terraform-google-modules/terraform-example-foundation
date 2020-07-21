@@ -373,7 +373,7 @@ control 'gcp' do
 
     describe google_logging_organization_log_sink(
       organization: parent_resource_id,
-      name: 'bigquery_access_transparency_log'
+      name: 'bigquery_access_transparency_logs'
     ) do
       it { should exist }
       its('filter') {

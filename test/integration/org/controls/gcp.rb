@@ -23,6 +23,51 @@ parent_resource_type = attribute('parent_resource_type')
 parent_resource_id = attribute('parent_resource_id')
 domains_to_allow = attribute('domains_to_allow')
 
+bigquery_logs_datasets = [
+  'activity_logs',
+  'system_event',
+  'data_access',
+  'vpc_flow',
+  'firewall_rules',
+  'access_transparency'
+]
+
+dns_hub_apis = [
+  'compute.googleapis.com',
+  'dns.googleapis.com',
+  'servicenetworking.googleapis.com',
+  'logging.googleapis.com',
+  'cloudresourcemanager.googleapis.com'
+]
+
+scc_notifications_apis = [
+  'logging.googleapis.com',
+  'pubsub.googleapis.com',
+  'securitycenter.googleapis.com'
+]
+
+org_secrets_apis = [
+  'logging.googleapis.com',
+  'secretmanager.googleapis.com'
+]
+
+logs_apis = [
+  'logging.googleapis.com',
+  'bigquery.googleapis.com'
+]
+
+boolean_policy_constraints = [
+  'constraints/compute.disableNestedVirtualization',
+  'compute.disableSerialPortAccess',
+  'constraints/compute.disableGuestAttributesAccess',
+  'constraints/compute.vmExternalIpAccess',
+  'constraints/compute.skipDefaultNetworkCreation',
+  'constraints/compute.restrictXpnProjectLienRemoval',
+  'constraints/sql.restrictPublicIp',
+  'constraints/iam.disableServiceAccountKeyCreation',
+  'constraints/storage.uniformBucketLevelAccess'
+  ]
+
 control 'gcp' do
   title 'gcp step 1-org tests'
 
@@ -67,116 +112,54 @@ control 'gcp' do
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 
-  describe google_project_service(
-    project: org_audit_logs_project_id,
-    name: 'logging.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
+  logs_apis.each do |api|
+    describe google_project_service(
+      project: org_audit_logs_project_id,
+      name: api
+    ) do
+      it { should exist }
+      its('state') { should cmp 'ENABLED' }
+    end
   end
 
-  describe google_project_service(
-    project: org_audit_logs_project_id,
-    name: 'bigquery.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
+  logs_apis.each do |api|
+    describe google_project_service(
+      project: org_billing_logs_project_id,
+      name: api
+    ) do
+      it { should exist }
+      its('state') { should cmp 'ENABLED' }
+    end
   end
 
-  describe google_project_service(
-    project: org_billing_logs_project_id,
-    name: 'logging.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
+  org_secrets_apis.each do |api|
+    describe google_project_service(
+      project: org_secrets_project_id,
+      name: api
+    ) do
+      it { should exist }
+      its('state') { should cmp 'ENABLED' }
+    end
   end
 
-  describe google_project_service(
-    project: org_billing_logs_project_id,
-    name: 'bigquery.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
+  scc_notifications_apis.each do |api|
+    describe google_project_service(
+      project: scc_notifications_project_id,
+      name: api
+    ) do
+      it { should exist }
+      its('state') { should cmp 'ENABLED' }
+    end
   end
 
-  describe google_project_service(
-    project: org_secrets_project_id,
-    name: 'logging.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: org_secrets_project_id,
-    name: 'secretmanager.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: scc_notifications_project_id,
-    name: 'logging.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: scc_notifications_project_id,
-    name: 'pubsub.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: scc_notifications_project_id,
-    name: 'securitycenter.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: dns_hub_project_id,
-    name: 'logging.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: dns_hub_project_id,
-    name: 'compute.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: dns_hub_project_id,
-    name: 'dns.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: dns_hub_project_id,
-    name: 'servicenetworking.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
-  end
-
-  describe google_project_service(
-    project: dns_hub_project_id,
-    name: 'cloudresourcemanager.googleapis.com'
-  ) do
-    it { should exist }
-    its('state') { should cmp 'ENABLED' }
+  dns_hub_apis.each do |api|
+    describe google_project_service(
+      project: dns_hub_project_id,
+      name: api
+    ) do
+      it { should exist }
+      its('state') { should cmp 'ENABLED' }
+    end
   end
 
   describe google_pubsub_topic(
@@ -193,46 +176,13 @@ control 'gcp' do
     it { should exist }
   end
 
-  describe google_bigquery_dataset(
-    project: org_audit_logs_project_id,
-    name: 'activity_logs'
-  ) do
-    it { should exist }
-  end
-
-  describe google_bigquery_dataset(
-    project: org_audit_logs_project_id,
-    name: 'system_event'
-  ) do
-    it { should exist }
-  end
-
-  describe google_bigquery_dataset(
-    project: org_audit_logs_project_id,
-    name: 'data_access'
-  ) do
-    it { should exist }
-  end
-
-  describe google_bigquery_dataset(
-    project: org_audit_logs_project_id,
-    name: 'vpc_flow'
-  ) do
-    it { should exist }
-  end
-
-  describe google_bigquery_dataset(
-    project: org_audit_logs_project_id,
-    name: 'firewall_rules'
-  ) do
-    it { should exist }
-  end
-
-  describe google_bigquery_dataset(
-    project: org_audit_logs_project_id,
-    name: 'access_transparency'
-  ) do
-    it { should exist }
+  bigquery_logs_datasets.each do |dataset|
+    describe google_bigquery_dataset(
+      project: org_audit_logs_project_id,
+      name: dataset
+    ) do
+      it { should exist }
+    end
   end
 
   if parent_resource_type == 'folder'
@@ -383,76 +333,14 @@ control 'gcp' do
       its('destination') { should match(/access_transparency/) }
     end
 
-    describe google_organization_policy(
-      name: "organizations/#{parent_resource_id}",
-      constraint: 'constraints/compute.disableNestedVirtualization'
-    ) do
-      it { should exist }
-      its('boolean_policy.enforced') { should be true }
-    end
-
-    describe google_organization_policy(
-      name: "organizations/#{parent_resource_id}",
-      constraint: 'compute.disableSerialPortAccess'
-    ) do
-      it { should exist }
-      its('boolean_policy.enforced') { should be true }
-    end
-
-    describe google_organization_policy(
-      name: "organizations/#{parent_resource_id}",
-      constraint: 'constraints/compute.disableGuestAttributesAccess'
-    ) do
-      it { should exist }
-      its('boolean_policy.enforced') { should be true }
-    end
-
-    describe google_organization_policy(
-      name: "organizations/#{parent_resource_id}",
-      constraint: 'constraints/compute.vmExternalIpAccess'
-    ) do
-      it { should exist }
-      its('boolean_policy.enforced') { should be true }
-    end
-
-    describe google_organization_policy(
-      name: "organizations/#{parent_resource_id}",
-      constraint: 'constraints/compute.skipDefaultNetworkCreation'
-    ) do
-      it { should exist }
-      its('boolean_policy.enforced') { should be true }
-    end
-
-    describe google_organization_policy(
-      name: "organizations/#{parent_resource_id}",
-      constraint: 'constraints/compute.restrictXpnProjectLienRemoval'
-    ) do
-      it { should exist }
-      its('boolean_policy.enforced') { should be true }
-    end
-
-    describe google_organization_policy(
-      name: "organizations/#{parent_resource_id}",
-      constraint: 'constraints/sql.restrictPublicIp'
-    ) do
-      it { should exist }
-      its('boolean_policy.enforced') { should be true }
-    end
-
-    describe google_organization_policy(
-      name: "organizations/#{parent_resource_id}",
-      constraint: 'constraints/iam.disableServiceAccountKeyCreation'
-    ) do
-      it { should exist }
-      its('boolean_policy.enforced') { should be true }
-    end
-
-    describe google_organization_policy(
-      name: "organizations/#{parent_resource_id}",
-      constraint: 'constraints/storage.uniformBucketLevelAccess'
-    ) do
-      it { should exist }
-      its('boolean_policy.enforced') { should be true }
+    boolean_policy_constraints.each do |constraint|
+      describe google_organization_policy(
+        name: "organizations/#{parent_resource_id}",
+        constraint: constraint
+      ) do
+        it { should exist }
+        its('boolean_policy.enforced') { should be true }
+      end
     end
 
     describe google_organization_policy(

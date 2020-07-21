@@ -26,22 +26,3 @@ resource "google_folder" "common" {
   display_name = "common"
   parent       = local.parent
 }
-
-/******************************************
-  Common sub-folders
- *****************************************/
-
-resource "google_folder" "logs" {
-  display_name = "logs"
-  parent       = google_folder.common.id
-}
-
-resource "google_folder" "monitoring" {
-  display_name = "monitoring"
-  parent       = google_folder.common.id
-}
-
-resource "google_folder" "networking" {
-  display_name = "networking"
-  parent       = google_folder.common.id
-}

@@ -24,7 +24,7 @@ networking_project_apis = ['compute.googleapis.com',
                            'servicenetworking.googleapis.com',
                            'container.googleapis.com',
                            'logging.googleapis.com']
-secret_project_apis = ['secretmanager.googleapis.com', 'logging.googleapis.com']s
+secret_project_apis = ['secretmanager.googleapis.com', 'logging.googleapis.com']
 
 control dev do
   title 'gcp step 2-envs test dev'

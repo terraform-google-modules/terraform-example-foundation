@@ -47,7 +47,7 @@ variable "parent_folder" {
 }
 
 variable "org_project_creators" {
-  description = "Additional list of members to have project creator role accross the organization. Prefix of group: user: or serviceAccount: is required."
+  description = "Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required."
   type        = list(string)
   default     = []
 }
@@ -59,7 +59,7 @@ variable "skip_gcloud_download" {
 }
 
 /////* ----------------------------------------
-////    Specific to jenkins_module
+////    Specific to jenkins_bootstrap module
 ////   ---------------------------------------- */
 //// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 //variable "jenkins_agent_gce_subnetwork_cidr_range" {
@@ -75,7 +75,6 @@ variable "skip_gcloud_download" {
 //variable "jenkins_agent_gce_ssh_pub_key" {
 //  description = "SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'`"
 //  type        = string
-//  default     = ""
 //}
 //
 //variable "jenkins_agent_sa_email" {

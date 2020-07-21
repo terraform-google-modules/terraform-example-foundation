@@ -64,7 +64,7 @@ output "kms_crypto_key" {
 }
 
 /* ----------------------------------------
-    Specific to jenkins_module
+    Specific to jenkins_bootstrap module
    ---------------------------------------- */
 //// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 //output "cicd_project_id" {

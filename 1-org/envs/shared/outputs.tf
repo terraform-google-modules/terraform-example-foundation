@@ -68,3 +68,8 @@ output "dns_hub_project_id" {
   value       = module.dns_hub.project_id
   description = "The DNS hub project ID"
 }
+
+output "domains_to_allow" {
+  value       = var.domains_to_allow
+  description = "The list of domains to allow users from in IAM."
+}

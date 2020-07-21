@@ -67,6 +67,7 @@ You can choose not to enable the Data Access logs by setting variable `data_acce
 |------|-------------|
 | common\_folder\_name | The common folder name |
 | dns\_hub\_project\_id | The DNS hub project ID |
+| domains\_to\_allow | The list of domains to allow users from in IAM. |
 | interconnect\_project\_id | The interconnect project ID |
 | org\_audit\_logs\_project\_id | The org audit logs project ID |
 | org\_billing\_logs\_project\_id | The org billing logs project ID |

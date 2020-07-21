@@ -34,3 +34,12 @@ attributes:
   - name: dns_hub_project_id
     required: true
     type: string
+  - name: parent_resource_id
+    required: true
+    type: string
+  - name: parent_resource_type
+    required: true
+    type: string
+  - name: domains_to_allow
+    required: true
+    type: array

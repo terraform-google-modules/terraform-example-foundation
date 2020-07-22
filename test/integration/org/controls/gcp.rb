@@ -66,7 +66,7 @@ boolean_policy_constraints = [
   'constraints/sql.restrictPublicIp',
   'constraints/iam.disableServiceAccountKeyCreation',
   'constraints/storage.uniformBucketLevelAccess'
-  ]
+]
 
 control 'gcp' do
   title 'gcp step 1-org tests'

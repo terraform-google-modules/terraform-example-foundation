@@ -20,7 +20,7 @@ policyrepo=$3
 prod_path="prod"
 shared_path="shared"
 
-tf_validator_path="./terraform-validator-linux-amd64"
+tf_validator_path="./terraform-validator"
 
 ##functions
 tf_apply() {
@@ -74,7 +74,7 @@ tf_validate() {
     if [ -d "./envs/${branchname}" ]; then
       cd "./envs/${branchname}" || exit
       terraform show -json "${branchname}.tfplan" > "${branchname}.json" || exit 32
-      terraform-validator-linux-amd64 validate "${branchname}.json" --policy-path="${policyrepo}" || exit 33
+      terraform-validator validate "${branchname}.json" --policy-path="${policyrepo}" || exit 33
       cd ../.. || exit
     else
       echo "ERROR:  ${branchname} does not exist"

@@ -31,6 +31,7 @@ module "log_export_activity_logs" {
   log_sink_name          = "bigquery_activity_logs"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
+  include_children       = true
   unique_writer_identity = true
 }
 
@@ -55,6 +56,7 @@ module "log_export_system_event_logs" {
   log_sink_name          = "bigquery_system_event_logs"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
+  include_children       = true
   unique_writer_identity = true
 }
 
@@ -116,6 +118,7 @@ module "log_export_data_access_logs" {
   log_sink_name          = "bigquery_data_access_logs"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
+  include_children       = true
   unique_writer_identity = true
 }
 
@@ -141,6 +144,7 @@ module "log_export_vpc_flow_logs" {
   log_sink_name          = "bigquery_vpc_flow_logs"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
+  include_children       = true
   unique_writer_identity = true
 }
 
@@ -166,6 +170,7 @@ module "log_export_firewall_rules_logs" {
   log_sink_name          = "bigquery_firewall_rules_logs"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
+  include_children       = true
   unique_writer_identity = true
 }
 
@@ -191,6 +196,7 @@ module "log_export_access_transparency_logs" {
   log_sink_name          = "bigquery_access_transparency_logs"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
+  include_children       = true
   unique_writer_identity = true
 }
 

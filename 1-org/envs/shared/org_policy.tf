@@ -44,7 +44,7 @@ module "org_disable_serial_port_access" {
   policy_for      = local.policy_for
   policy_type     = "boolean"
   enforce         = "true"
-  constraint      = "compute.disableSerialPortAccess"
+  constraint      = "constraints/compute.disableSerialPortAccess"
 }
 
 module "org_compute_disable_guest_attributes_access" {

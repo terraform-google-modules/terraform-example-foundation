@@ -28,9 +28,9 @@ tf_apply() {
   echo "      At environment: ${branchname} "
   echo "***************************************************"
   if [ -d "./envs/${branchname}" ]; then
-    cd "./envs/${branchname}"
+    cd "./envs/${branchname}" || exit
     terraform apply -input=false -auto-approve "${branchname}.tfplan" || exit 1
-    cd ../..
+    cd ../.. || exit
   else
     echo "ERROR:  ${branchname} does not exist"
   fi
@@ -41,9 +41,9 @@ tf_init() {
   echo "      At environment: ${branchname} "
   echo "**************************************************"
   if [ -d "./envs/${branchname}" ]; then
-    cd "./envs/${branchname}"
+    cd "./envs/${branchname}" || exit
     terraform init || exit 11
-    cd ../..
+    cd ../.. || exit
   else
     echo "ERROR:  ${branchname} does not exist"
   fi
@@ -54,12 +54,12 @@ tf_plan() {
   echo "      At environment: ${branchname} "
   echo "**************************************************"
   if [ -d "./envs/${branchname}" ]; then
-    cd "./envs/${branchname}"
+    cd "./envs/${branchname}" || exit
     terraform plan -input=false -out "${branchname}.tfplan" || exit 21
-    cd ../..
+    cd ../.. || exit
   else
     echo "ERROR:  ${branchname} does not exist"
-  fi    
+  fi
 }
 
 tf_validate() {
@@ -72,10 +72,10 @@ tf_validate() {
     echo "https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator"
   else
     if [ -d "./envs/${branchname}" ]; then
-      cd "./envs/${branchname}"
+      cd "./envs/${branchname}" || exit
       terraform show -json "${branchname}.tfplan" > "${branchname}.json" || exit 32
       terraform-validator-linux-amd64 validate "${branchname}.json" --policy-path="${policyrepo}" || exit 33
-      cd ../..
+      cd ../.. || exit
     else
       echo "ERROR:  ${branchname} does not exist"
     fi
@@ -87,7 +87,7 @@ if [ "${branch}" == "${prod_path}" ]; then
   branches=("${shared_path}" "${branch}")
 else
   branches=("${branch}")
-fi 
+fi
 
 case "$1" in
   apply )

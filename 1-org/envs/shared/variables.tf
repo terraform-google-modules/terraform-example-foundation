@@ -119,3 +119,9 @@ variable "data_access_logs_enabled" {
   type        = bool
   default     = true
 }
+
+variable "log_export_storage_location" {
+  description = "The location of the storage bucket used to export logs."
+  type        = string
+  default     = "US"
+}

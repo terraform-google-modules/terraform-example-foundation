@@ -51,6 +51,7 @@ You can choose not to enable the Data Access logs by setting variable `data_acce
 | default\_region | Default region for BigQuery resources. | string | n/a | yes |
 | domains\_to\_allow | The list of domains to allow users from in IAM. | list(string) | n/a | yes |
 | firewall\_rules\_table\_expiration\_ms | Period before tables expire for firewall rules logs in milliseconds. Default is 400 days. | number | `"34560000000"` | no |
+| log\_export\_storage\_location | The location of the storage bucket used to export logs. | string | `"US"` | no |
 | org\_id | The organization id for the associated services | string | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | scc\_notification\_filter | Filter used to SCC Notification, you can see more details how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter | string | `"state=\\\"ACTIVE\\\""` | no |

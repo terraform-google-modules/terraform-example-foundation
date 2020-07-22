@@ -19,11 +19,6 @@ output "env_folder" {
   value       = module.env.env_folder
 }
 
-output "monitoring_editor_role" {
-  description = "Monitorin workspace users added as member for monitoring editor."
-  value       = module.env.monitoring_editor_role
-}
-
 output "monitoring_project_id" {
   description = "Project for monitoring infra."
   value       = module.env.monitoring_project_id

@@ -19,11 +19,6 @@ output "env_folder" {
   value       = google_folder.env.name
 }
 
-output "monitoring_editor_role" {
-  description = "Monitorin workspace users added as member for monitoring editor."
-  value       = google_project_iam_member.monitoring_editor
-}
-
 output "monitoring_project_id" {
   description = "Project for monitoring infra."
   value       = module.monitoring_project.project_id

@@ -24,11 +24,6 @@ output "dev_env_folder" {
   value       = module.dev.env_folder
 }
 
-output "dev_monitoring_role" {
-  description = "Development monitoring workspace users added as member for monitoring editor."
-  value       = module.dev.monitoring_editor_role
-}
-
 output "dev_monitoring_project_id" {
   description = "Development project for monitoring infra."
   value       = module.dev.monitoring_project_id
@@ -54,11 +49,6 @@ output "nonprod_env_folder" {
   value       = module.nonprod.env_folder
 }
 
-output "nonprod_monitoring_editor_role" {
-  description = "Non-production monitoring workspace users added as member for monitoring editor."
-  value       = module.nonprod.monitoring_editor_role
-}
-
 output "nonprod_monitoring_project_id" {
   description = "Non-production project for monitoring infra."
   value       = module.nonprod.monitoring_project_id
@@ -82,11 +72,6 @@ output "nonprod_env_secrets_project_id" {
 output "prod_env_folder" {
   description = "Production environment folder created under parent."
   value       = module.prod.env_folder
-}
-
-output "prod_monitoring_editor_role" {
-  description = "Production monitoring workspace users added as member for monitoring editor."
-  value       = module.prod.monitoring_editor_role
 }
 
 output "prod_monitoring_project_id" {

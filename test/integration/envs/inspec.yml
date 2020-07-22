@@ -9,9 +9,6 @@ attributes:
   - name: dev_env_folder
     required: true
     type: string
-  - name: dev_monitoring_editor_role
-    required: true
-    type: hash
   - name: dev_monitoring_project_id
     required: true
     type: string
@@ -27,9 +24,6 @@ attributes:
   - name: nonprod_env_folder
     required: true
     type: string
-  - name: nonprod_monitoring_editor_role
-    required: true
-    type: hash
   - name: nonprod_monitoring_project_id
     required: true
     type: string
@@ -45,9 +39,6 @@ attributes:
   - name: prod_env_folder
     required: true
     type: string
-  - name: prod_monitoring_editor_role
-    required: true
-    type: hash
   - name: prod_monitoring_project_id
     required: true
     type: string

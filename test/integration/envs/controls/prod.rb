@@ -17,7 +17,6 @@ prod_monitoring_project_id = attribute('prod_monitoring_project_id')
 prod_base_shared_vpc_project_id = attribute('prod_base_shared_vpc_project_id')
 prod_restricted_shared_vpc_project_id = attribute('prod_restricted_shared_vpc_project_id')
 prod_env_secrets_project_id = attribute('prod_env_secrets_project_id')
-prod_monitoring_editor_role = attribute('prod_monitoring_editor_role')
 monitoring_group = attribute('monitoring_group')
 
 monitoring_project_apis = ['logging.googleapis.com', 'monitoring.googleapis.com']

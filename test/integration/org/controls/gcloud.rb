@@ -32,7 +32,7 @@ boolean_policy_constraints = [
 ]
 
 control 'gcloud' do
-  title 'gcloud step 1-org tests'
+  title 'step 1-org tests using gcloud'
 
   describe command("gcloud alpha scc notifications describe #{scc_notification_name} --organization=#{org_id} --format=json") do
     its(:exit_status) { should eq 0 }
@@ -46,7 +46,7 @@ control 'gcloud' do
       end
     end
 
-    it 'SCC notifications PubSub topic should be top-scc-notification' do
+    it 'The SCC notifications PubSub topic should be top-scc-notification' do
       expect(data).to include(
         'pubsubTopic' => "projects/#{scc_notifications_project_id}/topics/top-scc-notification"
       )
@@ -104,7 +104,7 @@ control 'gcloud' do
             end
           end
 
-          it "domain #{domain} should be allowed" do
+          it "#{domain} should be allowed" do
             expect(data['listPolicy']).to include(
               'allowedValues' => [customer_id]
             )

@@ -21,7 +21,7 @@ domains_to_allow = attribute('domains_to_allow')
 
 boolean_policy_constraints = [
   'constraints/compute.disableNestedVirtualization',
-  'compute.disableSerialPortAccess',
+  'constraints/compute.disableSerialPortAccess',
   'constraints/compute.disableGuestAttributesAccess',
   'constraints/compute.vmExternalIpAccess',
   'constraints/compute.skipDefaultNetworkCreation',

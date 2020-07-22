@@ -349,7 +349,8 @@ control 'gcp' do
     ) do
       it { should exist }
       domains_to_allow.each do |domain|
-        its('list_policy.allowed_values') { should include domain }
+        customer_id = google_organization(display_name: domain).directory_customer_id
+        its('list_policy.allowed_values') { should include customer_id }
       end
     end
   end

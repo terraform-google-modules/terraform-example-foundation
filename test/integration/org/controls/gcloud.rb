@@ -94,9 +94,19 @@ control 'gcloud' do
         end
 
         domains_to_allow.each do |domain|
+
+          let(:customer_id) do
+            org = command("gcloud organizations list --filter='display_name = #{domain}' --format json")
+            if org.exit_status == 0
+              JSON.parse(org.stdout)[0]['owner']['directoryCustomerId']
+            else
+              ''
+            end
+          end
+
           it "domain #{domain} should be allowed" do
             expect(data['listPolicy']).to include(
-              'allowedValues' => [domain]
+              'allowedValues' => [customer_id]
             )
           end
         end

@@ -59,10 +59,12 @@ suites:
     verifier:
       color: false
       systems:
-        - name: envs
-          backend: local
+        - name: inspec-gcp
+          backend: gcp
           controls:
-            - envs
+            - dev
+            - nonprod
+            - prod
   - name: dns_hub
     driver:
       root_module_directory: test/fixtures/dns_hub/

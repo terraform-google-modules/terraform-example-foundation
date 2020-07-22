@@ -46,11 +46,13 @@ suites:
         - name: inspec-gcp
           backend: gcp
           controls:
-            - gcp
+            - gcp_logging
+            - gcp_projects
         - name: local
           backend: local
           controls:
-            - gcloud
+            - gcloud_scc
+            - gcloud_policy
   - name: envs
     driver:
       root_module_directory: test/fixtures/envs/

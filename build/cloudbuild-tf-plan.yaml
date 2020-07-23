@@ -22,24 +22,6 @@ steps:
   - |
     gcloud config set auth/impersonate_service_account ${_TF_SA_EMAIL}
 
-# [START tf-init]
-- id: 'tf init'
-  name: gcr.io/${PROJECT_ID}/terraform
-  entrypoint: /bin/bash
-  args:
-  - -c
-  - |
-      ./tf-wrapper.sh init ${BRANCH_NAME}
-
-# [START tf-validate]
-- id: 'tf validate'
-  name: gcr.io/${PROJECT_ID}/terraform
-  entrypoint: /bin/bash
-  args:
-  - -c
-  - |
-      ./tf-wrapper.sh validate ${BRANCH_NAME} ${_POLICY_REPO}
-
 # [START tf-plan]
 - id: 'tf plan'
   name: gcr.io/${PROJECT_ID}/terraform
@@ -47,7 +29,7 @@ steps:
   args:
   - -c
   - |
-      ./tf-wrapper.sh plan ${BRANCH_NAME}
+      ./tf-wrapper.sh planall
 
 artifacts:
   objects:

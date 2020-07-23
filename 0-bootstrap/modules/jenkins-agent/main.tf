@@ -95,10 +95,11 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
   service_account {
     email = google_service_account.jenkins_agent_gce_sa.email
     scopes = [
-      // TODO(caleonardo): These scopes will need to change.
+      // TODO(caleonardo): These scopes should be reduced and avoid using "cloud-platform".
       "https://www.googleapis.com/auth/compute.readonly",
-      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/devstorage.read_write",
       "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/cloud-platform",
     ]
   }
 

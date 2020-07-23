@@ -22,6 +22,11 @@ Further details of permissions required and resources created, can be found in t
 1. Copy the backend by running `cp backend.tf.example backend.tf` and update `backend.tf` with your bucket from the apply step (The value from `terraform output gcs_bucket_tfstate`)
 1. Re-run `terraform init` agree to copy state to gcs when prompted
     1. (Optional) Run `terraform apply` to verify state is configured correctly
+
+### Update all example backends with your bucket information
+1. Rename all backend.tf.example files to backend.tf with this command ```for i in `find -name 'backend.tf.example'`; do mv $i `echo $i | sed 's/.example//'`; done```
+1. Update all backend.tf files with new bucket information from bootstrap ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done``` updating the `GCS_BUCKET_NAME` part of this command.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 

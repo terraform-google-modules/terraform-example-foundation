@@ -1,0 +1,27 @@
+name: bootstrap
+depends:
+  - name: inspec-gcp
+    git: https://github.com/inspec/inspec-gcp.git
+    tag: v1.7.0
+attributes:
+  - name: org_id
+    required: true
+    type: string
+  - name: seed_project_id
+    required: true
+    type: string
+  - name: terraform_sa_email
+    required: true
+    type: string
+  - name: gcs_bucket_tfstate
+    required: true
+    type: string
+  - name: cloudbuild_project_id
+    required: true
+    type: string
+  - name: gcs_bucket_cloudbuild_artifacts
+    required: true
+    type: string
+  - name: csr_repos
+    required: true
+    type: hash

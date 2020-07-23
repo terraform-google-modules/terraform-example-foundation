@@ -33,10 +33,11 @@ suites:
     verifier:
       color: false
       systems:
-        - name: bootstrap
-          backend: local
+        - name: inspec-gcp
+          backend: gcp
           controls:
             - bootstrap
+            - cloudbuild
   - name: org
     driver:
       root_module_directory: test/fixtures/org/

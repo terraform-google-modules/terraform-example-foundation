@@ -14,12 +14,15 @@
 
 cloudbuild_project_id = attribute('cloudbuild_project_id')
 gcs_bucket_cloudbuild_artifacts = attribute('gcs_bucket_cloudbuild_artifacts')
-csr_repos = attribute('csr_repos')
+cloud_source_repos = [
+  'gcp-bootstrap',
+  'gcp-org',
+  'gcp-environments',
+  'gcp-networks',
+  'gcp-projects'
+]
 
-filenames = ['cloudbuild-tf-plan.yaml', 'cloudbuild-tf-apply.yaml']
-branches_regex = ['(dev|nonprod|prod)', '[^dev|nonprod|prod]']
-
-control 'cloudbuild' do
+control 'gcp_cloudbuild' do
   title 'Cloudbuild sub-module GCP Resources'
 
   describe google_project(project: cloudbuild_project_id) do
@@ -30,17 +33,9 @@ control 'cloudbuild' do
     it { should exist }
   end
 
-  csr_repos.each do |repo, _|
+  cloud_source_repos.each do |repo|
     describe google_sourcerepo_repository(project: cloudbuild_project_id, name: repo) do
       it { should exist }
-    end
-  end
-
-  google_cloudbuild_triggers(project: cloudbuild_project_id).ids.each do |id|
-    describe google_cloudbuild_trigger(project: cloudbuild_project_id, id: id) do
-      its('filename') { should be_in filenames }
-      its('trigger_template.branch_name') { should be_in branches_regex }
-      its('trigger_template.repo_name') { should be_in csr_repos.keys }
     end
   end
 end

@@ -22,6 +22,3 @@ attributes:
   - name: gcs_bucket_cloudbuild_artifacts
     required: true
     type: string
-  - name: csr_repos
-    required: true
-    type: hash

@@ -43,9 +43,3 @@ output "gcs_bucket_cloudbuild_artifacts" {
   description = "Bucket used to store Cloud/Build artefacts in CloudBuild project."
   value       = module.bootstrap.gcs_bucket_cloudbuild_artifacts
 }
-
-output "csr_repos" {
-  description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
-  value       = module.bootstrap.csr_repos
-}
-

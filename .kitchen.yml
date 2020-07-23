@@ -36,8 +36,12 @@ suites:
         - name: inspec-gcp
           backend: gcp
           controls:
-            - bootstrap
-            - cloudbuild
+            - gcp_bootstrap
+            - gcp_cloudbuild
+        - name: local
+          backend: local
+          controls:
+            - gcloud_cloudbuild
   - name: org
     driver:
       root_module_directory: test/fixtures/org/

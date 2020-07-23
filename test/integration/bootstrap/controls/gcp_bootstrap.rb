@@ -51,7 +51,7 @@ sa_org_iam_permissions = [
 
 org_name = "organizations/#{org_id}"
 
-control 'bootstrap' do
+control 'gcp_bootstrap' do
   title 'Bootstrap module GCP resources'
 
   describe google_project(project: seed_project_id) do

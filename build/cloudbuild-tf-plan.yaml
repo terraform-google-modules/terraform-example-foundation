@@ -22,6 +22,15 @@ steps:
   - |
     gcloud config set auth/impersonate_service_account ${_TF_SA_EMAIL}
 
+# [START set bucket]
+- id: 'set bucket'
+  name: gcr.io/${PROJECT_ID}/terraform
+  entrypoint: /bin/bash
+  args:
+  - -c
+  - |
+      sed -i "s/UPDATE_ME/${_STATE_BUCKET_NAME}/g" ./envs/*/backend.tf
+
 # [START tf-init]
 - id: 'tf init'
   name: gcr.io/${PROJECT_ID}/terraform
@@ -51,5 +60,5 @@ steps:
 
 artifacts:
   objects:
-    location: 'gs://${_ARTIFACT_BUCKET_NAME}/terraform/cloudbuild/apply/${BUILD_ID}'
-    paths: ['cloudbuild-tf-apply.yaml', 'tmp_plan/${BRANCH_NAME}.tfplan']
+    location: 'gs://${_ARTIFACT_BUCKET_NAME}/terraform/cloudbuild/plan/${BUILD_ID}'
+    paths: ['cloudbuild-tf-plan.yaml', 'tmp_plan/*.tfplan']

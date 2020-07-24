@@ -16,7 +16,6 @@ The purpose of this step is to setup the global [DNS Hub](https://cloud.google.c
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Change cloud build configuration files in order to `terraform init ./envs/shared`, `terraform plan ./envs/shared`, and `terraform apply ./envs/shared`.
 1. Rename ./envs/shared/terraform.example.tfvars to ./envs/shared/terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Rename ./envs/shared/backend.tf.example to ./envs/shared/backend.tf and update with your bucket from bootstrap.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
 1. Push your non master branch to trigger a plan `git push --set-upstream origin plan-shared`
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID

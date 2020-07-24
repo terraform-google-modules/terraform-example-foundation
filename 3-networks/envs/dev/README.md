@@ -18,7 +18,6 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Change cloud build configuration files in order to `terraform init ./envs/dev`, `terraform plan ./envs/dev`, and `terraform apply ./envs/dev`.
 1. Rename ./envs/dev/terraform.example.tfvars to ./envs/dev/terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Rename ./envs/dev/backend.tf.example to ./envs/dev/backend.tf and update with your bucket from bootstrap.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
 1. Push your non master branch to trigger a plan `git push --set-upstream origin plan-dev`
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID

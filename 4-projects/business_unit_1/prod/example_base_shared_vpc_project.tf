@@ -23,7 +23,7 @@ module "base_shared_vpc_project" {
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = local.env
   env_code                    = var.env_code
-  vpc_type                    = "base"
+  vpc_type                    = "private"
 
   # Metadata
   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample"

@@ -15,7 +15,7 @@
  */
 
 locals {
-  prefix         = "${var.env_code}_shared_${var.vpc_type}"
+  prefix         = "${var.env_code}_shared_restricted"
   perimeter_name = "sp_${local.prefix}_default_perimeter_1234"
 }
 
@@ -36,7 +36,7 @@ module "restricted_shared_vpc_project" {
 
   # Metadata
   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample"
-  application_name  = "prj-${local.business_code}-sample-${var.vpc_type}-vpc"
+  application_name  = "prj-${local.business_code}-sample-private-vpc"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"

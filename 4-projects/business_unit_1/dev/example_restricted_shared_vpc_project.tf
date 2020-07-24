@@ -15,7 +15,7 @@
  */
 
 locals {
-  prefix         = "${var.env_code}_shared_${var.vpc_type}"
+  prefix         = "${var.env_code}_shared_restricted"
   perimeter_name = "sp_${local.prefix}_default_perimeter_1234"
 }
 

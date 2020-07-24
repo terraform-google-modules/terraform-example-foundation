@@ -32,6 +32,7 @@ variable "billing_account" {
 variable "default_region" {
   description = "Default region for subnet."
   type        = string
+  default = "us-west1"
 }
 
 /******************************************

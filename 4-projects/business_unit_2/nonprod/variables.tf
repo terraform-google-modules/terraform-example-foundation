@@ -32,6 +32,7 @@ variable "billing_account" {
 variable "default_region" {
   description = "Default region for subnet."
   type        = string
+  default = "us-west1"
 }
 
 variable "skip_gcloud_download" {
@@ -43,11 +44,7 @@ variable "skip_gcloud_download" {
 variable "env_code" {
   description = "A short form of the environment field"
   type        = string
-}
-
-variable "vpc_type" {
-  description = "The type of VPC to attach the project to (base, rest, etc)"
-  type        = string
+  default = "n"
 }
 
 variable "policy_id" {

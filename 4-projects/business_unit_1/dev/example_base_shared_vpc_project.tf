@@ -23,11 +23,11 @@ module "base_shared_vpc_project" {
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = local.env
   env_code                    = var.env_code
-  vpc_type                    = "base"
+  vpc_type                    = "private"
 
   # Metadata
   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample"
-  application_name  = "prj-${local.business_code}-sample-${var.vpc_type}-vpc"
+  application_name  = "prj-${local.business_code}-sample-private-vpc"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"

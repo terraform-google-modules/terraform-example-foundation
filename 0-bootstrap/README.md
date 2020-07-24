@@ -25,7 +25,10 @@ Further details of permissions required and resources created, can be found in t
 
 ### (Optional) State backends for running terraform locally
 
-Currently, the bucket information is replaced in the state backends as a part of the build process when executed by Cloud Build. If you would like to execute terraform locally, you will need to add your GCS bucket to the `backend.tf` files. You can update all of these files with the following command ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done``` where `GCS_BUCKET_NAME` is the name of your bucket from the steps executed above.
+Currently, the bucket information is replaced in the state backends as a part of the build process when executed by Cloud Build. If you would like to execute terraform locally, you will need to add your GCS bucket to the `backend.tf` files. You can update all of these files with the following steps:
+
+1. Change into the main directory for the terraform-example-foundation.
+1. Run this command ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done``` where `GCS_BUCKET_NAME` is the name of your bucket from the steps executed above.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

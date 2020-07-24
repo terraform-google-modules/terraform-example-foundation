@@ -26,7 +26,7 @@ module "base_shared_vpc_project" {
   vpc_type                    = "base"
 
   # Metadata
-  project_prefix    = "prj-${local.business_code}-${var.env_code}-sample-${var.vpc_type}"
+  project_prefix    = "prj-${local.business_code}-${var.env_code}-sample"
   application_name  = "prj-${local.business_code}-sample-${var.vpc_type}-vpc"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

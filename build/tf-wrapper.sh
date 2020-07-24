@@ -27,7 +27,7 @@ tf_apply() {
   local tf_env=$2
   local tf_component=$3
   echo "*************** TERRAFORM APPLY *******************"
-  echo "      At environment: ${tf_env} "
+  echo "      At environment: ${tf_component}/${tf_env} "
   echo "***************************************************"
   if [ -d "$path" ]; then
     cd "$path" || exit

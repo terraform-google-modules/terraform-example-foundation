@@ -25,12 +25,13 @@ environments_regex="^(dev|nonprod|prod|shared)$"
 tf_apply() {
   local path=$1
   local tf_env=$2
+  local tf_component=$3
   echo "*************** TERRAFORM APPLY *******************"
   echo "      At environment: ${tf_env} "
   echo "***************************************************"
   if [ -d "$path" ]; then
     cd "$path" || exit
-    terraform apply -input=false -auto-approve "${tmp_plan}/${tf_env}.tfplan" || exit 1
+    terraform apply -input=false -auto-approve "${tmp_plan}/${tf_component}-${tf_env}.tfplan" || exit 1
     cd "$base_dir" || exit
   else
     echo "ERROR:  ${path} does not exist"
@@ -41,8 +42,9 @@ tf_apply() {
 tf_init() {
   local path=$1
   local tf_env=$2
+  local tf_component=$3
   echo "*************** TERRAFORM INIT *******************"
-  echo "      At environment: ${tf_env} "
+  echo "      At environment: ${tf_component}/${tf_env} "
   echo "**************************************************"
   if [ -d "$path" ]; then
     cd "$path" || exit
@@ -57,31 +59,36 @@ tf_init() {
 tf_plan() {
   local path=$1
   local tf_env=$2
+  local tf_component=$3
   echo "*************** TERRAFORM PLAN *******************"
-  echo "      At environment: ${tf_env} "
+  echo "      At environment: ${tf_component}/${tf_env} "
   echo "**************************************************"
   if [ ! -d "${tmp_plan}" ]; then
     mkdir "${tmp_plan}" || exit
   fi
   if [ -d "$path" ]; then
     cd "$path" || exit
-    terraform plan -input=false -out "${tmp_plan}/${tf_env}.tfplan" || exit 21
+    terraform plan -input=false -out "${tmp_plan}/${tf_component}-${tf_env}.tfplan" || exit 21
     cd "$base_dir" || exit
   else
     echo "ERROR:  ${tf_env} does not exist"
   fi
 }
 
-## terraform init/plan for all valid environments matching regex.
-tf_init_plan_all() {
-  # shellcheck disable=SC2012
-  ls "$base_dir" | while read -r component ; do
-    # shellcheck disable=SC2012
-    ls "$base_dir/$component" | while read -r env ; do
+## terraform init/plan/validate for all valid environments matching regex.
+tf_plan_validate_all() {
+  local env
+  local component
+  find "$base_dir" -mindepth 1 -maxdepth 1 -type d \
+  -not -path "$base_dir/modules" \
+  -not -path "$base_dir/.terraform" | while read -r component_path ; do
+    component="$(basename "$component_path")"
+    find "$component_path" -mindepth 1 -maxdepth 1 -type d | while read -r env_path ; do
+      env="$(basename "$env_path")"
       if [[ "$env" =~ $environments_regex ]] ; then
-       tf_dir="$base_dir/$component/$env"
-       tf_init "$tf_dir" "$env"
-       tf_plan "$tf_dir" "$env"
+        tf_init "$env_path" "$env" "$component"
+        tf_plan "$env_path" "$env" "$component"
+        tf_validate "$env_path" "$env" "$policyrepo" "$component"
       else
         echo "$component/$env doesn't match $environments_regex; skipping"
       fi
@@ -94,17 +101,21 @@ tf_validate() {
   local path=$1
   local tf_env=$2
   local policy_file_path=$3
+  local tf_component=$4
   echo "*************** TERRAFORM VALIDATE ******************"
-  echo "      At environment: ${tf_env} "
+  echo "      At environment: ${tf_component}/${tf_env} "
   echo "      Using policy from: ${policy_file_path} "
   echo "*****************************************************"
   if ! command -v terraform-validator &> /dev/null; then
     echo "terraform-validator not found!  Check path or visit"
     echo "https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator"
+  elif [ -z "$policy_file_path" ]; then
+    echo "no policy repo found! Check the argument provided for policyrepo to this script."
+    echo "https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator"
   else
     if [ -d "$path" ]; then
       cd "$path" || exit
-      terraform show -json "${tmp_plan}/${tf_env}.tfplan" > "${tf_env}.json" || exit 32
+      terraform show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
       terraform-validator validate "${tf_env}.json" --policy-path="${policy_file_path}" || exit 33
       cd "$base_dir" || exit
     else
@@ -115,29 +126,32 @@ tf_validate() {
 
 # Runs single action for each instance of env in folder hierarchy.
 single_action_runner() {
-  # shellcheck disable=SC2012
-  ls "$base_dir" | while read -r component ; do
-    # sort -r is added to ensure shared is first if it exists.
-    # shellcheck disable=SC2012
-    ls "$base_dir/$component" | sort -r | while read -r env ; do
+  local env
+  local component
+  find "$base_dir" -mindepth 1 -maxdepth 1 -type d \
+  -not -path "$base_dir/modules" \
+  -not -path "$base_dir/.terraform" | while read -r component_path ; do
+    component="$(basename "$component_path")"
+     # sort -r is added to ensure shared is first if it exists.
+    find "$component_path" -mindepth 1 -maxdepth 1 -type d | sort -r | while read -r env_path ; do
+      env="$(basename "$env_path")"
       # perform action only if folder matches branch OR folder is shared & branch is prod.
       if [[ "$env" == "$branch" ]] || [[ "$env" == "shared" && "$branch" == "prod" ]]; then
-        tf_dir="$base_dir/$component/$env"
         case "$action" in
           apply )
-            tf_apply "$tf_dir" "$env"
+            tf_apply "$env_path" "$env" "$component"
             ;;
 
           init )
-            tf_init "$tf_dir" "$env"
+            tf_init "$env_path" "$env" "$component"
             ;;
 
           plan )
-            tf_plan "$tf_dir" "$env"
+            tf_plan "$env_path" "$env" "$component"
             ;;
 
           validate )
-            tf_validate "$tf_dir" "$env" "$policyrepo"
+            tf_validate "$env_path" "$env" "$policyrepo" "$component"
             ;;
           * )
             echo "unknown option: ${action}"
@@ -155,8 +169,8 @@ case "$action" in
     single_action_runner
     ;;
 
-  planall )
-    tf_init_plan_all
+  plan_validate_all )
+    tf_plan_validate_all
     ;;
 
   * )

@@ -8,27 +8,14 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 1. 1-org executed successfully.
 1. 2-environments/envs/nonprod executed successfully.
 1. 3-networks/envs/shared executed successfully.
+1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`. It is the value under `name`.
 
 ## Usage
-
-### Setup to run via Cloud Build
-1. Clone repo `gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID`
-1. Change freshly cloned repo and change to non master branch `git checkout -b plan-nonprod`
-1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/3-networks/* .` (modify accordingly based on your current directory)
-1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
-1. Change cloud build configuration files in order to `terraform init ./envs/nonprod`, `terraform plan ./envs/nonprod`, and `terraform apply ./envs/nonprod`.
-1. Rename ./envs/nonprod/terraform.example.tfvars to ./envs/nonprod/terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Commit changes with `git add .` and `git commit -m 'Your message'`
-1. Push your non master branch to trigger a plan `git push --set-upstream origin plan-nonprod`
-    1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to master with `git checkout -b master` and `git push origin master`
-    1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-
 
 ### Run terraform locally
 1. Change into 3-networks/envs/nonprod folder
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Rename backend.tf.example to backend.tf and update with your bucket from bootstrap.
+1. Update backend.tf with your bucket from bootstrap.
 1. Run `terraform init`
 1. Run `terraform plan` and review output
 1. Run `terraform apply`

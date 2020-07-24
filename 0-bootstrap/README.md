@@ -23,9 +23,9 @@ Further details of permissions required and resources created, can be found in t
 1. Re-run `terraform init` agree to copy state to gcs when prompted
     1. (Optional) Run `terraform apply` to verify state is configured correctly
 
-### Update all example backends with your bucket information
-1. Rename all backend.tf.example files to backend.tf with this command ```for i in `find -name 'backend.tf.example'`; do mv $i `echo $i | sed 's/.example//'`; done```
-1. Update all backend.tf files with new bucket information from bootstrap ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done``` updating the `GCS_BUCKET_NAME` part of this command.
+### (Optional) State backends for running terraform locally
+
+Currently, the bucket information is replaced in the state backends as a part of the build process when executed by Cloud Build. If you would like to execute terraform locally, you will need to add your GCS bucket to the `backend.tf` files. You can update all of these files with the following command ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done``` where `GCS_BUCKET_NAME` is the name of your bucket from the steps executed above.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

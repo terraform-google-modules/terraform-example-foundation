@@ -18,6 +18,7 @@ action=$1
 branch=$2
 policyrepo=$3
 base_dir=$(pwd)
+tmp_plan="${base_dir}/tmp_plan" #if you change this, update build triggers
 environments_regex="^(dev|nonprod|prod|shared)$"
 
 ## Terraform apply for single environment.
@@ -29,7 +30,7 @@ tf_apply() {
   echo "***************************************************"
   if [ -d "$path" ]; then
     cd "$path" || exit
-    terraform apply -input=false -auto-approve "${tf_env}.tfplan" || exit 1
+    terraform apply -input=false -auto-approve "${tmp_plan}/${tf_env}.tfplan" || exit 1
     cd "$base_dir" || exit
   else
     echo "ERROR:  ${path} does not exist"
@@ -59,9 +60,12 @@ tf_plan() {
   echo "*************** TERRAFORM PLAN *******************"
   echo "      At environment: ${tf_env} "
   echo "**************************************************"
+  if [ ! -d ${tmp_plan} ]; then
+    mkdir ${tmp_plan} || exit
+  fi
   if [ -d "$path" ]; then
     cd "$path" || exit
-    terraform plan -input=false -out "${tf_env}.tfplan" || exit 21
+    terraform plan -input=false -out "${tmp_plan}/${tf_env}.tfplan" || exit 21
     cd "$base_dir" || exit
   else
     echo "ERROR:  ${tf_env} does not exist"
@@ -100,7 +104,7 @@ tf_validate() {
   else
     if [ -d "$path" ]; then
       cd "$path" || exit
-      terraform show -json "${tf_env}.tfplan" > "${tf_env}.json" || exit 32
+      terraform show -json "${tmp_plan}/${tf_env}.tfplan" > "${tf_env}.json" || exit 32
       terraform-validator validate "${tf_env}.json" --policy-path="${policy_file_path}" || exit 33
       cd "$base_dir" || exit
     else

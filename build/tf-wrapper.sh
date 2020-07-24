@@ -60,8 +60,8 @@ tf_plan() {
   echo "*************** TERRAFORM PLAN *******************"
   echo "      At environment: ${tf_env} "
   echo "**************************************************"
-  if [ ! -d ${tmp_plan} ]; then
-    mkdir ${tmp_plan} || exit
+  if [ ! -d "${tmp_plan}" ]; then
+    mkdir "${tmp_plan}" || exit
   fi
   if [ -d "$path" ]; then
     cd "$path" || exit

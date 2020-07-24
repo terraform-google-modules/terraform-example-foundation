@@ -45,3 +45,13 @@ resource "google_project_iam_member" "billing_bq_viewer" {
   role    = "roles/bigquery.dataViewer"
   member  = "group:${var.billing_data_users}"
 }
+
+/******************************************
+  Billing Cloud Console - IAM
+*****************************************/
+
+resource "google_organization_iam_member" "billing_viewer" {
+  org_id = var.org_id
+  role   = "roles/billing.viewer"
+  member = "group:${var.billing_data_users}"
+}

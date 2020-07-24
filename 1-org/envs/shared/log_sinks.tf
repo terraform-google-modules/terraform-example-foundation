@@ -53,9 +53,9 @@ module "bigquery_destination" {
   source                      = "terraform-google-modules/log-export/google//modules/bigquery"
   version                     = "~> 4.0"
   project_id                  = module.org_audit_logs.project_id
-  dataset_name                = "organization_logs"
+  dataset_name                = "audit_logs"
   log_sink_writer_identity    = module.log_export_to_biqquery.writer_identity
-  default_table_expiration_ms = var.access_table_expiration_ms
+  default_table_expiration_ms = var.audit_logs_table_expiration_ms
 }
 
 /******************************************

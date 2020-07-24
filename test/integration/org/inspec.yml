@@ -40,6 +40,12 @@ attributes:
   - name: parent_resource_type
     required: true
     type: string
+  - name: logs_export_pubsub_topic
+    required: true
+    type: string
+  - name: logs_export_storage_bucket_name
+    required: true
+    type: string
   - name: domains_to_allow
     required: true
     type: array

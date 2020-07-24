@@ -75,11 +75,11 @@ output "domains_to_allow" {
 }
 
 output "logs_export_pubsub_topic" {
-  value       = module.pubsub_destination.topic_name
+  value       = module.pubsub_destination.resource_name
   description = "The Pub/Sub topic for destination of log exports"
 }
 
 output "logs_export_storage_bucket_name" {
-  value       = module.storage_destination.storage_bucket_name
+  value       = module.storage_destination.resource_name
   description = "The storage bucket for destination of log exports"
 }

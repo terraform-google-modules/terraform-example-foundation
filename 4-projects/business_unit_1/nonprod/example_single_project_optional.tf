@@ -21,8 +21,7 @@
 #   billing_account             = var.billing_account
 #   impersonate_service_account = var.terraform_service_account
 #   folder_id                   = var.parent_folder
-#   environment                 = local.env
-#   env_code                    = var.env_code
+#  environment                  = "nonprod"
 #   skip_gcloud_download        = var.skip_gcloud_download
 
 #   # Metadata

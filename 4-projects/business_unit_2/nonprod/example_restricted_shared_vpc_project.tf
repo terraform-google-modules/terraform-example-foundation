@@ -26,7 +26,7 @@ module "restricted_shared_vpc_project" {
   billing_account             = var.billing_account
   folder_id                   = var.parent_folder
   skip_gcloud_download        = var.skip_gcloud_download
-  environment                 = local.env
+  environment                 = "nonprod"
   env_code                    = var.env_code
   vpc_type                    = "restricted"
 

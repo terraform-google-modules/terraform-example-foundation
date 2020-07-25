@@ -25,7 +25,7 @@ module "example_single_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   impersonate_service_account = var.terraform_service_account
-  environment                 = local.env
+  environment                 = "prod"
   env_code                    = var.env_code
   skip_gcloud_download        = var.skip_gcloud_download
 

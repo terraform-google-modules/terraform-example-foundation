@@ -61,3 +61,9 @@ variable "firewall_enable_logging" {
   description = "Toggle firewall logginglogging for VPC Firewalls."
   default     = true
 }
+
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
+}

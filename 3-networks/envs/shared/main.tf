@@ -16,14 +16,20 @@
 
 locals {
   dns_hub_project_id = data.google_projects.dns_hub.projects[0].project_id
+  parent_id = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+}
+
+data "google_active_folder" "env" {
+  display_name = local.env
+  parent       = local.parent_id
 }
 
 /******************************************
   DNS Hub Project
 *****************************************/
 
-data "google_projects" "dns_hub" {
-  filter = "labels.application_name=prj-dns-hub lifecycleState=ACTIVE"
+data "google_projects" "restricted_host_project" {
+  filter = "parent.id:${split("/",data.google_active_folder.env.name)[1]} labels.application_name=prj-dns-hub lifecycleState=ACTIVE"
 }
 
 

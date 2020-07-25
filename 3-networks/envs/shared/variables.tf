@@ -56,3 +56,9 @@ variable "target_name_server_addresses" {
   description = "List of target name servers for forwarding zone."
   type        = list(string)
 }
+
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
+}

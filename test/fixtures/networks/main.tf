@@ -22,6 +22,7 @@ module "dev" {
   default_region1                  = "us-west1"
   domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
+  parent_folder                    = var.parent_folder
 }
 
 module "nonprod" {
@@ -32,6 +33,7 @@ module "nonprod" {
   default_region1                  = "us-west1"
   domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
+  parent_folder                    = var.parent_folder
 }
 
 module "prod" {
@@ -42,4 +44,5 @@ module "prod" {
   default_region1                  = "us-west1"
   domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
+  parent_folder                    = var.parent_folder
 }

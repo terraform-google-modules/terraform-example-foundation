@@ -278,7 +278,7 @@ In your Jenkins Master, you might need to configure credentials to connect to th
 #### 2.2. Run terraform commands.
 
 After the credentials are configured, we will creates the `cicd` project (with the Jenkins Agent and its custom service account) and the `seed` project (with GCS state bucket and Terraform custom service account).
-- Run the terraform script with the commands below: 
+- Run the terraform script with the commands below:
     ```
     terraform plan
     terraform apply

@@ -12,6 +12,7 @@ The purpose of this step is to setup top level shared folders, monitoring & netw
 
 **Disclaimer:** This step enables [Data Access logs](https://cloud.google.com/logging/docs/audit#data-access) for all services in your organization.
 Enabling Data Access logs might result in your project being charged for the additional logs usage.
+For details on costs you might incur, go to [Pricing](https://cloud.google.com/stackdriver/pricing).
 You can choose not to enable the Data Access logs by setting variable `data_access_logs_enabled` to false.
 
 ### Setup to run via Cloud Build

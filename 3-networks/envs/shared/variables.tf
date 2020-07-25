@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+variable "org_id" {
+  type        = string
+  description = "Organization ID"
+}
+
 variable "terraform_service_account" {
   type        = string
   description = "Service account email of the account to impersonate to run Terraform."

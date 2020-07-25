@@ -25,7 +25,7 @@
 #   skip_gcloud_download        = var.skip_gcloud_download
 
 #   # Metadata
-#   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample-single"
+#   project_prefix    = "${local.business_code}-n-sample-single"
 #   application_name  = "${local.business_code}-sample-single"
 #   billing_code      = "1234"
 #   primary_contact   = "example@example.com"

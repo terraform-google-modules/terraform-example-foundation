@@ -20,7 +20,7 @@ locals {
   restricted_project_id     = data.google_projects.restricted_host_project.projects[0].project_id
   restricted_project_number = data.google_project.restricted_host_project.number
   private_project_id        = data.google_projects.private_project.projects[0].project_id
-  parent_id = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+  parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
 }
 
 data "google_active_folder" "env" {
@@ -33,7 +33,7 @@ data "google_active_folder" "env" {
 *****************************************/
 
 data "google_projects" "restricted_host_project" {
-  filter = "parent.id:${split("/",data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host-${local.env}  lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host-${local.env}  lifecycleState=ACTIVE"
 }
 
 data "google_project" "restricted_host_project" {
@@ -41,7 +41,7 @@ data "google_project" "restricted_host_project" {
 }
 
 data "google_projects" "private_project" {
-  filter = "parent.id:${split("/",data.google_active_folder.env.name)[1]} labels.application_name=private-shared-vpc-host-${local.env}  lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=private-shared-vpc-host-${local.env}  lifecycleState=ACTIVE"
 }
 
 /******************************************

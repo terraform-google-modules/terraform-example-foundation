@@ -1,21 +1,21 @@
-# /**
-#  * Copyright 2020 Google LLC
-#  *
-#  * Licensed under the Apache License, Version 2.0 (the "License");
-#  * you may not use this file except in compliance with the License.
-#  * You may obtain a copy of the License at
-#  *
-#  *      http://www.apache.org/licenses/LICENSE-2.0
-#  *
-#  * Unless required by applicable law or agreed to in writing, software
-#  * distributed under the License is distributed on an "AS IS" BASIS,
-#  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  * See the License for the specific language governing permissions and
-#  * limitations under the License.
-#  */
+/**
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 # locals {
-#   prefix         = "${var.env_code}_shared_restricted"
+#   prefix         = "d_shared_restricted"
 #   perimeter_name = "sp_${local.prefix}_default_perimeter_1234"
 # }
 
@@ -27,7 +27,7 @@
 #   folder_id                   = var.parent_folder
 #   skip_gcloud_download        = var.skip_gcloud_download
 #   environment                 = "dev"
-#   env_code                    = var.env_code
+#   env_code                    = "d"
 #   vpc_type                    = "restricted"
 
 #   activate_apis                      = ["accesscontextmanager.googleapis.com"]
@@ -35,7 +35,7 @@
 #   vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${local.perimeter_name}"
 
 #   # Metadata
-#   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample"
+#   project_prefix    = "${local.business_code}-d-sample"
 #   application_name  = "${local.business_code}-restricted-sample-single"
 #   billing_code      = "1234"
 #   primary_contact   = "example@example.com"

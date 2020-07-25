@@ -41,12 +41,6 @@ variable "skip_gcloud_download" {
   default     = true
 }
 
-variable "env_code" {
-  description = "A short form of the environment field"
-  type        = string
-  default     = "d"
-}
-
 variable "policy_id" {
   type        = string
   description = "The ID of the access context manager policy the perimeter lies in"

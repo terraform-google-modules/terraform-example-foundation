@@ -15,7 +15,7 @@
  */
 
 locals {
-  prefix         = "${var.env_code}_shared_restricted"
+  prefix         = "n_shared_restricted"
   perimeter_name = "sp_${local.prefix}_default_perimeter_1234"
 }
 
@@ -27,7 +27,7 @@ module "restricted_shared_vpc_project" {
   folder_id                   = var.parent_folder
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "nonprod"
-  env_code                    = var.env_code
+  env_code                    = "n"
   vpc_type                    = "restricted"
 
   activate_apis                      = ["accesscontextmanager.googleapis.com"]
@@ -35,7 +35,7 @@ module "restricted_shared_vpc_project" {
   vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${local.perimeter_name}"
 
   # Metadata
-  project_prefix    = "prj-${local.business_code}-${var.env_code}-sample"
+  project_prefix    = "${local.business_code}-n-sample"
   application_name  = "${local.business_code}-restricted-sample-single"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

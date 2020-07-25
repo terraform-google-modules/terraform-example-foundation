@@ -22,11 +22,11 @@
 #   impersonate_service_account = var.terraform_service_account
 #   folder_id                   = var.parent_folder
 #   environment                 = "dev"
-#   env_code                    = var.env_code
+#   env_code                    = "d"
 #   skip_gcloud_download        = var.skip_gcloud_download
 
 #   # Metadata
-#   project_prefix    = "prj-${local.business_code}-${var.env_code}-sample-single"
+#   project_prefix    = "${local.business_code}-d-sample-single"
 #   application_name  = "${local.business_code}-sample-single"
 #   billing_code      = "1234"
 #   primary_contact   = "example@example.com"

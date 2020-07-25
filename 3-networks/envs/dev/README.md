@@ -57,6 +57,7 @@ __Note:__ You can get the environment secrets project executing `gcloud projects
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | string | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logginglogging for VPC Firewalls. | bool | `"true"` | no |
 | org\_id | Organization ID | string | n/a | yes |
+| parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetwoks. | bool | `"true"` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 

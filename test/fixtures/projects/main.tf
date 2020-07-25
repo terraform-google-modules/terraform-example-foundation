@@ -25,4 +25,5 @@ module "projects" {
   org_id                    = var.org_id
   billing_account           = var.billing_account
   policy_id                 = var.policy_id
+  parent_folder             = var.parent_folder
 }

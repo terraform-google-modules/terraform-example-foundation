@@ -39,3 +39,18 @@ variable "parent_folder" {
   type        = string
   default     = ""
 }
+
+variable "dev_restricted_service_perimeter_name" {
+  description = "Dev access context manager service perimeter name"
+  type        = string
+}
+
+variable "nonprod_restricted_service_perimeter_name" {
+  description = "Nonprod access context manager service perimeter name"
+  type        = string
+}
+
+variable "prod_restricted_service_perimeter_name" {
+  description = "Prod access context manager service perimeter name"
+  type        = string
+}

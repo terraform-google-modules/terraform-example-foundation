@@ -15,8 +15,7 @@
  */
 
 locals {
-  prefix         = "p_shared_restricted"
-  perimeter_name = "sp_${local.prefix}_default_perimeter_1234"
+  prefix = "p_shared_restricted"
 }
 
 module "restricted_shared_vpc_project" {
@@ -32,7 +31,7 @@ module "restricted_shared_vpc_project" {
 
   activate_apis                      = ["accesscontextmanager.googleapis.com"]
   vpc_service_control_attach_enabled = "true"
-  vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${local.perimeter_name}"
+  vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${var.perimeter_name}"
 
   # Metadata
   project_prefix    = "${local.business_code}-p-sample"

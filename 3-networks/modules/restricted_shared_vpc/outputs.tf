@@ -68,3 +68,13 @@ output "region2_router2" {
   value       = module.region2_router2
   description = "Router 2 for Region 2"
 }
+
+output "access_level_name" {
+  value       = local.access_level_name
+  description = "Access context manager access level name "
+}
+
+output "service_perimeter_name" {
+  value       = local.perimeter_name
+  description = "Access context manager service perimeter name "
+}

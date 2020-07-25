@@ -53,6 +53,16 @@ output "restricted_subnets_secondary_ranges" {
   description = "The secondary ranges associated with these subnets"
 }
 
+output "restricted_access_level_name" {
+  value       = module.restricted_shared_vpc.access_level_name
+  description = "Access context manager access level name"
+}
+
+output "restricted_service_perimeter_name" {
+  value       = module.restricted_shared_vpc.service_perimeter_name
+  description = "Access context manager service perimeter name"
+}
+
 /******************************************
  Private Outputs
 *****************************************/

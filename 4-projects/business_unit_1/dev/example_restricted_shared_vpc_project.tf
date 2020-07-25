@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-# locals {
-#   prefix         = "d_shared_restricted"
-#   perimeter_name = "sp_${local.prefix}_default_perimeter_1234"
-# }
+locals {
+  prefix = "d_shared_restricted"
+}
 
-# module "restricted_shared_vpc_project" {
-#   source                      = "../../modules/single_project"
-#   impersonate_service_account = var.terraform_service_account
-#   org_id                      = var.org_id
-#   billing_account             = var.billing_account
-#   folder_id                   = var.parent_folder
-#   skip_gcloud_download        = var.skip_gcloud_download
-#   environment                 = "dev"
-#   env_code                    = "d"
-#   vpc_type                    = "restricted"
+module "restricted_shared_vpc_project" {
+  source                      = "../../modules/single_project"
+  impersonate_service_account = var.terraform_service_account
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = var.parent_folder
+  skip_gcloud_download        = var.skip_gcloud_download
+  environment                 = "dev"
+  env_code                    = "d"
+  vpc_type                    = "restricted"
 
-#   activate_apis                      = ["accesscontextmanager.googleapis.com"]
-#   vpc_service_control_attach_enabled = "true"
-#   vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${local.perimeter_name}"
+  activate_apis                      = ["accesscontextmanager.googleapis.com"]
+  vpc_service_control_attach_enabled = "true"
+  vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${var.perimeter_name}"
 
-#   # Metadata
-#   project_prefix    = "${local.business_code}-d-sample"
-#   application_name  = "${local.business_code}-restricted-sample-single"
-#   billing_code      = "1234"
-#   primary_contact   = "example@example.com"
-#   secondary_contact = "example2@example.com"
-#   business_code     = local.business_code
-# }
+  # Metadata
+  project_prefix    = "${local.business_code}-d-sample"
+  application_name  = "${local.business_code}-restricted-sample-single"
+  billing_code      = "1234"
+  primary_contact   = "example@example.com"
+  secondary_contact = "example2@example.com"
+  business_code     = local.business_code
+}

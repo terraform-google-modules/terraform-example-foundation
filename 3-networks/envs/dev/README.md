@@ -72,9 +72,11 @@ __Note:__ You can get the environment secrets project executing `gcloud projects
 | private\_subnets\_names | The names of the subnets being created |
 | private\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | private\_subnets\_self\_links | The self-links of subnets being created |
+| restricted\_access\_level\_name | Access context manager access level name |
 | restricted\_host\_project\_id | The restricted host project ID |
 | restricted\_network\_name | The name of the VPC being created |
 | restricted\_network\_self\_link | The URI of the VPC being created |
+| restricted\_service\_perimeter\_name | Access context manager service perimeter name |
 | restricted\_subnets\_ips | The IPs and CIDRs of the subnets being created |
 | restricted\_subnets\_names | The names of the subnets being created |
 | restricted\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |

@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-data "google_projects" "projects" {
-  count = var.vpc_type == "" ? 0 : 1
-  filter = "labels.application_name=${var.vpc_type}-shared-vpc-host-${var.environment} lifecycleState=ACTIVE"
+resource "random_id" "suffix" {
+  byte_length = 4
 }
 
-data "google_compute_network" "shared_vpc" {
-  count = var.vpc_type == "" ? 0 : 1
-  name    = "vpc-${var.env_code}-shared-${var.vpc_type}"
-  project = data.google_projects.projects[0].projects[0].project_id
+
+module "projects" {
+  source                    = "../../../4-projects/business_unit_1/dev"
+  terraform_service_account = var.terraform_sa_email
+  org_id                    = var.org_id
+  billing_account           = var.billing_account
+  policy_id = var.policy_id
 }

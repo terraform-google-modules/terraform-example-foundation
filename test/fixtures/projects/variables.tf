@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-data "google_projects" "projects" {
-  count = var.vpc_type == "" ? 0 : 1
-  filter = "labels.application_name=${var.vpc_type}-shared-vpc-host-${var.environment} lifecycleState=ACTIVE"
+variable "terraform_sa_email" {
+  description = "Service account email of the account to impersonate to run Terraform"
+  type        = string
 }
 
-data "google_compute_network" "shared_vpc" {
-  count = var.vpc_type == "" ? 0 : 1
-  name    = "vpc-${var.env_code}-shared-${var.vpc_type}"
-  project = data.google_projects.projects[0].projects[0].project_id
+variable "org_id" {
+  description = "The organization id for projects"
+  type        = string
+}
+
+variable "billing_account" {
+  description = "The ID of the billing account to associated with projects "
+  type        = string
+}
+
+variable "policy_id" {
+  type        = string
+  description = "The ID of the access context manager policy the perimeter lies in"
 }

@@ -77,3 +77,13 @@ suites:
           backend: local
           controls:
             - networks
+  - name: projects
+    driver:
+      root_module_directory: test/fixtures/projects/
+    verifier:
+      color: false
+      systems:
+        - name: projects
+          backend: local
+          controls:
+            - projects

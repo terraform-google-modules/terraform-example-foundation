@@ -10,7 +10,7 @@ The purpose of this step is to :
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
-1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`. It is the value under `name`.
+1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
 
 ## Usage
 
@@ -44,4 +44,3 @@ The purpose of this step is to :
     1. Run `terraform init`
     1. Run `terraform plan` and review output
     1. Run `terraform apply`
-

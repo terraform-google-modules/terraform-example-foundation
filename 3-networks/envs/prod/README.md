@@ -8,7 +8,7 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 1. 1-org executed successfully.
 1. 2-environments/envs/prod executed successfully.
 1. 3-networks/envs/shared executed successfully.
-1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`. It is the value under `name`.
+1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
 
 ## Usage
 
@@ -37,7 +37,7 @@ __Note:__ You can get the environment secrets project executing `gcloud projects
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID`. | number | n/a | yes |
+| access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`. | number | n/a | yes |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
 | default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |

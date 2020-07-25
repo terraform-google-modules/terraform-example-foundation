@@ -30,6 +30,10 @@ Currently, the bucket information is replaced in the state backends as a part of
 1. Change into the main directory for the terraform-example-foundation.
 1. Run this command ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done``` where `GCS_BUCKET_NAME` is the name of your bucket from the steps executed above.
 
+### If you are using Jenkins
+
+If you are using the `jenkins_bootstrap` sub-module, please see the [README](./modules/jenkins-agent/README.md) for the requirements and instructions on how to run the bootstrap step, which include implementing VPN, configuring your Jenkins Master among other steps.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 

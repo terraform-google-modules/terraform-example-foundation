@@ -17,7 +17,6 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory)
 1. Change cloud build configuration files in order to `terraform init`, `terraform plan`, and `terraform apply` each environment in the envs folder.
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap. Copy terraform.tfvars into each of the folders within the envs/ folder.
-1. Within each envs/ folder, update backend.tf with your bucket name from the bootstrap step.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
 1. Push your non master branch to trigger a plan `git push --set-upstream origin plan`
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID

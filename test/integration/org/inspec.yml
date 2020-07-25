@@ -1,4 +1,45 @@
 name: org
+depends:
+  - name: inspec-gcp
+    git: https://github.com/inspec/inspec-gcp.git
+    tag: v1.7.0
 attributes:
-  - name: foo
+  - name: org_id
     required: true
+    type: string
+  - name: scc_notification_name
+    required: true
+    type: string
+  - name: common_folder_name
+    required: true
+    type: string
+  - name: common_folder_name
+    required: true
+    type: string
+  - name: org_audit_logs_project_id
+    required: true
+    type: string
+  - name: org_billing_logs_project_id
+    required: true
+    type: string
+  - name: org_secrets_project_id
+    required: true
+    type: string
+  - name: interconnect_project_id
+    required: true
+    type: string
+  - name: scc_notifications_project_id
+    required: true
+    type: string
+  - name: dns_hub_project_id
+    required: true
+    type: string
+  - name: parent_resource_id
+    required: true
+    type: string
+  - name: parent_resource_type
+    required: true
+    type: string
+  - name: domains_to_allow
+    required: true
+    type: array

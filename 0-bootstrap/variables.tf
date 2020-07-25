@@ -47,7 +47,7 @@ variable "parent_folder" {
 }
 
 variable "org_project_creators" {
-  description = "Additional list of members to have project creator role accross the organization. Prefix of group: user: or serviceAccount: is required."
+  description = "Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required."
   type        = list(string)
   default     = []
 }
@@ -57,3 +57,38 @@ variable "skip_gcloud_download" {
   type        = bool
   default     = true
 }
+
+/////* ----------------------------------------
+////    Specific to jenkins_bootstrap module
+////   ---------------------------------------- */
+//// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
+//variable "jenkins_agent_gce_subnetwork_cidr_range" {
+//  description = "The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0)"
+//  type        = string
+//}
+//
+//variable "jenkins_agent_gce_private_ip_address" {
+//  description = "The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Master) and GCP (CICD Project, where the Jenkins Agent is located)."
+//  type        = string
+//}
+//
+//variable "jenkins_agent_gce_ssh_pub_key" {
+//  description = "SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'`"
+//  type        = string
+//}
+//
+//variable "jenkins_agent_sa_email" {
+//  description = "Email for Jenkins Agent service account."
+//  type        = string
+//  default     = "jenkins-agent-gce"
+//}
+//
+//variable "jenkins_master_ip_addresses" {
+//  description = "A list of CIDR IP ranges of the Jenkins Master in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
+//  type        = list(string)
+//}
+//
+//variable "nat_bgp_asn" {
+//  type        = number
+//  description = "BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address."
+//}

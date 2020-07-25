@@ -15,11 +15,11 @@
  */
 
 provider "google" {
-  version = "~> 3.30.0"
+  version = "~> 3.30"
 }
 
 provider "google-beta" {
-  version = "~> 3.30.0"
+  version = "~> 3.30"
 }
 
 provider "null" {
@@ -44,7 +44,7 @@ resource "google_folder" "seed" {
 
 module "seed_bootstrap" {
   source                  = "terraform-google-modules/bootstrap/google"
-  version                 = "~> 1.2"
+  version                 = "~> 1.3"
   org_id                  = var.org_id
   folder_id               = google_folder.seed.id
   billing_account         = var.billing_account
@@ -89,9 +89,10 @@ module "seed_bootstrap" {
   ]
 }
 
+// Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 module "cloudbuild_bootstrap" {
   source                    = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
-  version                   = "~> 1.2"
+  version                   = "~> 1.3"
   org_id                    = var.org_id
   folder_id                 = google_folder.seed.id
   billing_account           = var.billing_account
@@ -119,3 +120,23 @@ module "cloudbuild_bootstrap" {
     "prod"
   ]
 }
+
+//// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
+//module "jenkins_bootstrap" {
+//  source                                  = "./modules/jenkins-agent"
+//  org_id                                  = var.org_id
+//  folder_id                               = google_folder.seed.id
+//  billing_account                         = var.billing_account
+//  group_org_admins                        = var.group_org_admins
+//  default_region                          = var.default_region
+//  terraform_sa_email                      = module.seed_bootstrap.terraform_sa_email
+//  terraform_sa_name                       = module.seed_bootstrap.terraform_sa_name
+//  terraform_state_bucket                  = module.seed_bootstrap.gcs_bucket_tfstate
+//  sa_enable_impersonation                 = true
+//  jenkins_master_ip_addresses             = var.jenkins_master_ip_addresses
+//  jenkins_agent_gce_subnetwork_cidr_range = var.jenkins_agent_gce_subnetwork_cidr_range
+//  jenkins_agent_gce_private_ip_address    = var.jenkins_agent_gce_private_ip_address
+//  nat_bgp_asn                             = var.nat_bgp_asn
+//  jenkins_agent_sa_email                  = var.jenkins_agent_sa_email
+//  jenkins_agent_gce_ssh_pub_key           = var.jenkins_agent_gce_ssh_pub_key
+//}

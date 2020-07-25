@@ -33,30 +33,43 @@ suites:
     verifier:
       color: false
       systems:
-        - name: bootstrap
+        - name: inspec-gcp
+          backend: gcp
+          controls:
+            - gcp_bootstrap
+            - gcp_cloudbuild
+        - name: local
           backend: local
           controls:
-            - bootstrap
+            - gcloud_cloudbuild
   - name: org
     driver:
       root_module_directory: test/fixtures/org/
     verifier:
       color: false
       systems:
-        - name: org
+        - name: inspec-gcp
+          backend: gcp
+          controls:
+            - gcp_logging
+            - gcp_projects
+        - name: local
           backend: local
           controls:
-            - org
+            - gcloud_scc
+            - gcloud_policy
   - name: envs
     driver:
       root_module_directory: test/fixtures/envs/
     verifier:
       color: false
       systems:
-        - name: envs
-          backend: local
+        - name: inspec-gcp
+          backend: gcp
           controls:
-            - envs
+            - dev
+            - nonprod
+            - prod
   - name: dns_hub
     driver:
       root_module_directory: test/fixtures/dns_hub/

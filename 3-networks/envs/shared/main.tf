@@ -28,8 +28,8 @@ data "google_active_folder" "env" {
   DNS Hub Project
 *****************************************/
 
-data "google_projects" "restricted_host_project" {
-  filter = "parent.id:${split("/",data.google_active_folder.env.name)[1]} labels.application_name=prj-dns-hub lifecycleState=ACTIVE"
+data "google_projects" "dns_hub" {
+  filter = "parent.id:${split("/",data.google_active_folder.env.name)[1]} labels.application_name=dns-hub lifecycleState=ACTIVE"
 }
 
 

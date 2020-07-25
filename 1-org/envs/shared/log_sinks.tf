@@ -31,6 +31,7 @@ module "log_export_activity_logs" {
   log_sink_name          = "bigquery_activity_logs"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
+  include_children       = true
   unique_writer_identity = true
 }
 
@@ -55,6 +56,7 @@ module "log_export_system_event_logs" {
   log_sink_name          = "bigquery_system_event_logs"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
+  include_children       = true
   unique_writer_identity = true
 }
 
@@ -72,6 +74,42 @@ module "bq_system_event_logs" {
   Audit Logs - Data Access
 *****************************************/
 
+resource "google_organization_iam_audit_config" "organization_data_access_config" {
+  count   = var.data_access_logs_enabled && var.parent_folder == "" ? 1 : 0
+  org_id  = var.org_id
+  service = "allServices"
+
+  audit_log_config {
+    log_type = "DATA_READ"
+  }
+
+  audit_log_config {
+    log_type = "DATA_WRITE"
+  }
+
+  audit_log_config {
+    log_type = "ADMIN_READ"
+  }
+}
+
+resource "google_folder_iam_audit_config" "folder_data_access_config" {
+  count   = var.data_access_logs_enabled && var.parent_folder != "" ? 1 : 0
+  folder  = "folders/${var.parent_folder}"
+  service = "allServices"
+
+  audit_log_config {
+    log_type = "DATA_READ"
+  }
+
+  audit_log_config {
+    log_type = "DATA_WRITE"
+  }
+
+  audit_log_config {
+    log_type = "ADMIN_READ"
+  }
+}
+
 module "log_export_data_access_logs" {
   source                 = "terraform-google-modules/log-export/google"
   version                = "~> 4.0"
@@ -80,6 +118,7 @@ module "log_export_data_access_logs" {
   log_sink_name          = "bigquery_data_access_logs"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
+  include_children       = true
   unique_writer_identity = true
 }
 
@@ -91,6 +130,84 @@ module "bq_data_access_logs" {
   log_sink_writer_identity    = module.log_export_data_access_logs.writer_identity
   location                    = var.default_region
   default_table_expiration_ms = var.data_access_table_expiration_ms
+}
+
+/******************************************
+  VPC Flow Logs
+*****************************************/
+
+module "log_export_vpc_flow_logs" {
+  source                 = "terraform-google-modules/log-export/google"
+  version                = "~> 4.0"
+  destination_uri        = module.bq_vpc_flow_logs.destination_uri
+  filter                 = "logName: \"/logs/compute.googleapis.com%2Fvpc_flows\""
+  log_sink_name          = "bigquery_vpc_flow_logs"
+  parent_resource_id     = local.parent_resource_id
+  parent_resource_type   = local.parent_resource_type
+  include_children       = true
+  unique_writer_identity = true
+}
+
+module "bq_vpc_flow_logs" {
+  source                      = "terraform-google-modules/log-export/google//modules/bigquery"
+  version                     = "~> 4.0"
+  project_id                  = module.org_audit_logs.project_id
+  dataset_name                = "vpc_flow"
+  log_sink_writer_identity    = module.log_export_vpc_flow_logs.writer_identity
+  location                    = var.default_region
+  default_table_expiration_ms = var.vpc_flow_table_expiration_ms
+}
+
+/******************************************
+  Firewall Rules Logging
+*****************************************/
+
+module "log_export_firewall_rules_logs" {
+  source                 = "terraform-google-modules/log-export/google"
+  version                = "~> 4.0"
+  destination_uri        = module.bq_firewall_rules_logs.destination_uri
+  filter                 = "logName: \"/logs/compute.googleapis.com%2Ffirewall\""
+  log_sink_name          = "bigquery_firewall_rules_logs"
+  parent_resource_id     = local.parent_resource_id
+  parent_resource_type   = local.parent_resource_type
+  include_children       = true
+  unique_writer_identity = true
+}
+
+module "bq_firewall_rules_logs" {
+  source                      = "terraform-google-modules/log-export/google//modules/bigquery"
+  version                     = "~> 4.0"
+  project_id                  = module.org_audit_logs.project_id
+  dataset_name                = "firewall_rules"
+  log_sink_writer_identity    = module.log_export_firewall_rules_logs.writer_identity
+  location                    = var.default_region
+  default_table_expiration_ms = var.firewall_rules_table_expiration_ms
+}
+
+/******************************************
+  Access Transparency logs
+*****************************************/
+
+module "log_export_access_transparency_logs" {
+  source                 = "terraform-google-modules/log-export/google"
+  version                = "~> 4.0"
+  destination_uri        = module.bq_access_transparency_logs.destination_uri
+  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Faccess_transparency\""
+  log_sink_name          = "bigquery_access_transparency_logs"
+  parent_resource_id     = local.parent_resource_id
+  parent_resource_type   = local.parent_resource_type
+  include_children       = true
+  unique_writer_identity = true
+}
+
+module "bq_access_transparency_logs" {
+  source                      = "terraform-google-modules/log-export/google//modules/bigquery"
+  version                     = "~> 4.0"
+  project_id                  = module.org_audit_logs.project_id
+  dataset_name                = "access_transparency"
+  log_sink_writer_identity    = module.log_export_access_transparency_logs.writer_identity
+  location                    = var.default_region
+  default_table_expiration_ms = var.access_transparency_table_expiration_ms
 }
 
 /******************************************

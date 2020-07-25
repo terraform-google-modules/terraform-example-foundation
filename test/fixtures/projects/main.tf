@@ -24,5 +24,5 @@ module "projects" {
   terraform_service_account = var.terraform_sa_email
   org_id                    = var.org_id
   billing_account           = var.billing_account
-  policy_id = var.policy_id
+  policy_id                 = var.policy_id
 }

@@ -20,7 +20,7 @@ The purpose of this step is to setup folder structure and projects for applicati
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
 1. Copy terraform.tfvars to each business_unit/envs/ folder.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
-1. Push your plan branch to trigger a plan `git push --set-upstream origin plan`
+1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `dev`, `nonprod` or `prod` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to dev with `git checkout -b dev` and `git push origin dev`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID

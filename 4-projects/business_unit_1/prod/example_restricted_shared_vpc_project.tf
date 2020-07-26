@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-locals {
-  prefix = "p_shared_restricted"
-}
-
 module "restricted_shared_vpc_project" {
   source                      = "../../modules/single_project"
   impersonate_service_account = var.terraform_service_account
@@ -34,12 +30,12 @@ module "restricted_shared_vpc_project" {
   vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${var.perimeter_name}"
 
   # Metadata
-  project_prefix    = "${local.business_code}-p-sample"
-  application_name  = "${local.business_code}-sample-private-vpc"
+  project_prefix    = "bu1-p-sample"
+  application_name  = "bu1-sample-application1"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"
-  business_code     = local.business_code
+  business_code     = "bu1"
 }
 
 #   # Network Setting (Optional)

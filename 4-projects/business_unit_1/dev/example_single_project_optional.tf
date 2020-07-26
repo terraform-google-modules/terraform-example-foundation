@@ -26,12 +26,12 @@
 #   skip_gcloud_download        = var.skip_gcloud_download
 
 #   # Metadata
-#   project_prefix    = "${local.business_code}-d-sample-single"
-#   application_name  = "${local.business_code}-sample-single"
+#   project_prefix    = "bu1-d-sample-single"
+#   application_name  = "bu1-sample-application1"
 #   billing_code      = "1234"
 #   primary_contact   = "example@example.com"
 #   secondary_contact = "example2@example.com"
-#   business_code     = local.business_code
+#   business_code     = "bu1"
 
 #   # Network Setting (Optional)
 #   enable_networking    = true

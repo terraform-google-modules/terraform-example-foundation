@@ -59,3 +59,8 @@ variable "parent_folder" {
   type        = string
   default     = ""
 }
+
+variable "perimeter_name" {
+  description = "Access context manager service perimeter name to attach the restricted svpc project."
+  type        = string
+}

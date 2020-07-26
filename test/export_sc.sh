@@ -22,10 +22,4 @@ pushd /workspace/test/fixtures/networks
 terraform workspace select kitchen-terraform-networks-default
 # shellcheck disable=SC1090
 source <(python /usr/local/bin/export_tf_outputs.py --path=/workspace/test/fixtures/networks)
-# shellcheck disable=SC2154
-echo "${TF_VAR_dev_restricted_service_perimeter_name}"
-# shellcheck disable=SC2154
-echo "${TF_VAR_prod_restricted_service_perimeter_name}"
-# shellcheck disable=SC2154
-echo "${TF_VAR_nonprod_restricted_service_perimeter_name}"
 popd

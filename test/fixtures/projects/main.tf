@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-resource "random_id" "suffix" {
-  byte_length = 4
-}
-
-
-module "projects" {
+module "projects_bu1_dev" {
   source                    = "../../../4-projects/business_unit_1/dev"
   terraform_service_account = var.terraform_sa_email
   org_id                    = var.org_id
@@ -50,3 +45,33 @@ module "projects_bu1_prod" {
   perimeter_name            = var.prod_restricted_service_perimeter_name
 }
 
+module "projects_bu2_dev" {
+  source                    = "../../../4-projects/business_unit_2/dev"
+  terraform_service_account = var.terraform_sa_email
+  org_id                    = var.org_id
+  billing_account           = var.billing_account
+  policy_id                 = var.policy_id
+  parent_folder             = var.parent_folder
+  perimeter_name            = var.dev_restricted_service_perimeter_name
+}
+
+module "projects_bu2_nonprod" {
+  source                    = "../../../4-projects/business_unit_2/nonprod"
+  terraform_service_account = var.terraform_sa_email
+  org_id                    = var.org_id
+  billing_account           = var.billing_account
+  policy_id                 = var.policy_id
+  parent_folder             = var.parent_folder
+  perimeter_name            = var.nonprod_restricted_service_perimeter_name
+}
+
+
+module "projects_bu2_prod" {
+  source                    = "../../../4-projects/business_unit_2/prod"
+  terraform_service_account = var.terraform_sa_email
+  org_id                    = var.org_id
+  billing_account           = var.billing_account
+  policy_id                 = var.policy_id
+  parent_folder             = var.parent_folder
+  perimeter_name            = var.prod_restricted_service_perimeter_name
+}

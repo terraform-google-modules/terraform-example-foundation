@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-locals {
-  env           = "prod"
-  business_code = "bu1"
-}
-
 module "example_single_project" {
   source = "../../modules/single_project"
 
@@ -32,10 +27,10 @@ module "example_single_project" {
   folder_id = var.parent_folder
 
   # Metadata
-  project_prefix    = "${local.business_code}-p-sample-single"
-  application_name  = "${local.business_code}-sample-single"
+  project_prefix    = "bu1-p-sample-single"
+  application_name  = "bu1-sample-application1"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"
-  business_code     = local.business_code
+  business_code     = "bu1"
 }

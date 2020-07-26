@@ -14,37 +14,43 @@
  * limitations under the License.
  */
 
-variable "terraform_service_account" {
+variable "terraform_sa_email" {
   description = "Service account email of the account to impersonate to run Terraform"
   type        = string
 }
 
 variable "org_id" {
-  description = "The organization id for the associated services"
+  description = "The organization id for projects"
   type        = string
 }
 
 variable "billing_account" {
-  description = "The ID of the billing account to associated this project with"
+  description = "The ID of the billing account to associated with projects "
   type        = string
 }
 
-variable "default_region" {
-  description = "Default region for subnet."
+variable "policy_id" {
   type        = string
-  default     = "us-west1"
+  description = "The ID of the access context manager policy the perimeter lies in"
 }
-
-/******************************************
-  Private DNS Management (Optional)
- *****************************************/
-# variable "domain" {
-#   description = "The top level domain name for the organization"
-#   type        = string
-# }
 
 variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
+  description = "Folder for testing."
   type        = string
   default     = ""
+}
+
+variable "dev_restricted_service_perimeter_name" {
+  description = "Dev access context manager service perimeter name"
+  type        = string
+}
+
+variable "nonprod_restricted_service_perimeter_name" {
+  description = "Nonprod access context manager service perimeter name"
+  type        = string
+}
+
+variable "prod_restricted_service_perimeter_name" {
+  description = "Prod access context manager service perimeter name"
+  type        = string
 }

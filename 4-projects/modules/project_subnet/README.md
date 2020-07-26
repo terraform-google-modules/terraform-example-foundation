@@ -53,7 +53,7 @@ To replace the value in the comment for *shared_vpc_subnets* property.
 ```
 module "project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0"
+  version                     = "~> 8.1"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = var.activate_apis
@@ -80,7 +80,7 @@ To replace the value in the comment for *shared_vpc_subnets* property.
 ```
 module "nonprod_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0"
+  version                     = "~> 8.1"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = var.activate_apis
@@ -101,7 +101,7 @@ module "nonprod_project" {
 
 module "prod_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 7.0"
+  version                     = "~> 8.1"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = var.activate_apis

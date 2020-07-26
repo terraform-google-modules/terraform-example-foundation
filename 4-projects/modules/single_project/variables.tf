@@ -83,7 +83,7 @@ variable "env_code" {
 }
 
 variable "vpc_type" {
-  description = "The type of VPC to attach the project to (base, rest, etc)"
+  description = "The type of VPC to attach the project to. Possible options are private or restricted."
   type        = string
   default     = ""
 }
@@ -92,6 +92,18 @@ variable "skip_gcloud_download" {
   description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
   type        = bool
   default     = true
+}
+
+variable "vpc_service_control_attach_enabled" {
+  description = "Whether the project will be attached to a VPC Service Control Perimeter"
+  type        = bool
+  default     = false
+}
+
+variable "vpc_service_control_perimeter_name" {
+  description = "The name of a VPC Service Control Perimeter to add the created project to"
+  type        = string
+  default     = null
 }
 
 /******************************************
@@ -115,20 +127,3 @@ variable "skip_gcloud_download" {
 #     range_name    = string
 #     ip_cidr_range = string
 #   }))
-#   default = []
-# }
-
-/******************************************
-  Private DNS Management (Optional)
- *****************************************/
-# variable "enable_private_dns" {
-#   type        = bool
-#   description = "The flag to create private dns zone in shared VPC"
-#   default     = false
-# }
-
-# variable "domain" {
-#   type        = string
-#   description = "The top level domain name for the organization"
-#   default     = ""
-# }

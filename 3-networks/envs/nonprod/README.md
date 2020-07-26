@@ -57,6 +57,7 @@ __Note:__ You can get the environment secrets project executing `gcloud projects
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | string | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logginglogging for VPC Firewalls. | bool | `"true"` | no |
 | org\_id | Organization ID | string | n/a | yes |
+| parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetwoks. | bool | `"true"` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 
@@ -71,9 +72,11 @@ __Note:__ You can get the environment secrets project executing `gcloud projects
 | private\_subnets\_names | The names of the subnets being created |
 | private\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | private\_subnets\_self\_links | The self-links of subnets being created |
+| restricted\_access\_level\_name | Access context manager access level name |
 | restricted\_host\_project\_id | The restricted host project ID |
 | restricted\_network\_name | The name of the VPC being created |
 | restricted\_network\_self\_link | The URI of the VPC being created |
+| restricted\_service\_perimeter\_name | Access context manager service perimeter name |
 | restricted\_subnets\_ips | The IPs and CIDRs of the subnets being created |
 | restricted\_subnets\_names | The names of the subnets being created |
 | restricted\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |

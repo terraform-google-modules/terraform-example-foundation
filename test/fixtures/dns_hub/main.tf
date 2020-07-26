@@ -21,4 +21,6 @@ module "dns_hub" {
   domain                       = var.domain
   target_name_server_addresses = ["8.8.8.8", "8.8.8.4"]
   terraform_service_account    = var.terraform_sa_email
+  parent_folder                = var.parent_folder
+  org_id                       = var.org_id
 }

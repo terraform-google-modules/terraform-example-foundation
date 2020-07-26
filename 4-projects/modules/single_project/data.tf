@@ -15,10 +15,12 @@
  */
 
 data "google_projects" "projects" {
-  filter = "labels.application_name:${var.vpc_type}-shared-vpc-host-${var.environment}"
+  count  = var.vpc_type == "" ? 0 : 1
+  filter = "labels.application_name=${var.vpc_type}-shared-vpc-host-${var.environment} lifecycleState=ACTIVE"
 }
 
 data "google_compute_network" "shared_vpc" {
-  name    = "${var.env_code}-shared-${var.vpc_type}"
-  project = data.google_projects.projects.projects[0].project_id
+  count   = var.vpc_type == "" ? 0 : 1
+  name    = "vpc-${var.env_code}-shared-${var.vpc_type}"
+  project = data.google_projects.projects[0].projects[0].project_id
 }

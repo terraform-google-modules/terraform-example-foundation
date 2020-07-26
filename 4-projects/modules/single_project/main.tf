@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-locals {
-  host_network = data.google_compute_network.shared_vpc
-}
 
 module "project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.0"
+  version                     = "~> 8.1"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = var.activate_apis
@@ -30,15 +27,18 @@ module "project" {
   folder_id                   = var.folder_id
   skip_gcloud_download        = var.skip_gcloud_download
 
-  shared_vpc         = local.host_network.project
-  shared_vpc_subnets = local.host_network.subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_project.subnetwork_self_link"
+  shared_vpc         = var.vpc_type == "" ? "" : data.google_compute_network.shared_vpc[0].project
+  shared_vpc_subnets = var.vpc_type == "" ? [] : data.google_compute_network.shared_vpc[0].subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_project.subnetwork_self_link"
+
+  vpc_service_control_attach_enabled = var.vpc_service_control_attach_enabled
+  vpc_service_control_perimeter_name = var.vpc_service_control_perimeter_name
 
   labels = {
     environment       = var.environment
     application_name  = var.application_name
     billing_code      = var.billing_code
-    primary_contact   = var.primary_contact
-    secondary_contact = var.secondary_contact
+    primary_contact   = element(split("@", var.primary_contact), 0)
+    secondary_contact = element(split("@", var.secondary_contact), 0)
     business_code     = var.business_code
     env_code          = element(split("", var.environment), 0)
     vpc_type          = var.vpc_type
@@ -56,8 +56,8 @@ module "project" {
 #   application_name = var.application_name
 
 #   enable_networking   = var.enable_networking
-#   vpc_host_project_id = local.host_network.project
-#   vpc_self_link       = local.host_network.self_link
+#   vpc_host_project_id = data.google_compute_network.shared_vpc[0].project
+#   vpc_self_link       = data.google_compute_network.shared_vpc[0].self_link
 #   ip_cidr_range       = var.subnet_ip_cidr_range
 #   secondary_ranges    = var.subnet_secondary_ranges
 # }
@@ -73,6 +73,6 @@ module "project" {
 #   application_name      = var.application_name
 #   environment           = var.environment
 #   top_level_domain      = var.domain
-#   shared_vpc_self_link  = local.host_network.self_link
-#   shared_vpc_project_id = local.host_network.project
+#   shared_vpc_self_link  = data.google_compute_network.shared_vpc[0].self_link
+#   shared_vpc_project_id = data.google_compute_network.shared_vpc[0].project
 # }

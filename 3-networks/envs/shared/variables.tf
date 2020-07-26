@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+variable "org_id" {
+  type        = string
+  description = "Organization ID"
+}
+
 variable "terraform_service_account" {
   type        = string
   description = "Service account email of the account to impersonate to run Terraform."
@@ -55,4 +60,10 @@ variable "bgp_asn_dns" {
 variable "target_name_server_addresses" {
   description = "List of target name servers for forwarding zone."
   type        = list(string)
+}
+
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
 }

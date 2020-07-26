@@ -31,3 +31,9 @@ variable "domain" {
   type        = string
   description = "The DNS name of peering managed zone, for instance 'example.com.'"
 }
+
+variable "parent_folder" {
+  description = "Folder for testing."
+  type        = string
+  default     = ""
+}

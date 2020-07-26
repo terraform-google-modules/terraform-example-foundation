@@ -39,7 +39,7 @@ module "base_shared_vpc_host_project" {
 
   labels = {
     environment      = var.env
-    application_name = "base-shared-vpc-host-${var.env}"
+    application_name = "private-shared-vpc-host-${var.env}"
   }
 }
 

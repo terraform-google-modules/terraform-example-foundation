@@ -32,6 +32,7 @@ variable "billing_account" {
 variable "default_region" {
   description = "Default region for subnet."
   type        = string
+  default     = "us-west1"
 }
 
 variable "skip_gcloud_download" {
@@ -43,11 +44,12 @@ variable "skip_gcloud_download" {
 variable "env_code" {
   description = "A short form of the environment field"
   type        = string
+  default     = "p"
 }
 
-variable "vpc_type" {
-  description = "The type of VPC to attach the project to (base, rest, etc)"
+variable "policy_id" {
   type        = string
+  description = "The ID of the access context manager policy the perimeter lies in"
 }
 
 /******************************************
@@ -62,4 +64,9 @@ variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string
   default     = ""
+}
+
+variable "perimeter_name" {
+  description = "Access context manager service perimeter name to attach the restricted svpc project."
+  type        = string
 }

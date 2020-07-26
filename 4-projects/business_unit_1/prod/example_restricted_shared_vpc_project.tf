@@ -14,22 +14,46 @@
  * limitations under the License.
  */
 
-module "base_shared_vpc_project" {
+locals {
+  prefix = "p_shared_restricted"
+}
+
+module "restricted_shared_vpc_project" {
   source                      = "../../modules/single_project"
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = var.parent_folder
   skip_gcloud_download        = var.skip_gcloud_download
-  environment                 = "dev"
-  env_code                    = "d"
-  vpc_type                    = "private"
+  environment                 = "prod"
+  env_code                    = "p"
+  vpc_type                    = "restricted"
+
+  activate_apis                      = ["accesscontextmanager.googleapis.com"]
+  vpc_service_control_attach_enabled = "true"
+  vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${var.perimeter_name}"
 
   # Metadata
-  project_prefix    = "${local.business_code}-d-sample"
+  project_prefix    = "${local.business_code}-p-sample"
   application_name  = "${local.business_code}-sample-private-vpc"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"
   business_code     = local.business_code
 }
+
+#   # Network Setting (Optional)
+#   enable_networking    = true
+#   subnet_ip_cidr_range = "10.3.0.0/16"
+#   subnet_secondary_ranges = [{
+#     range_name    = "gke-pod",
+#     ip_cidr_range = "10.4.0.0/16"
+#     }, {
+#     range_name    = "gke-svc",
+#     ip_cidr_range = "10.5.0.0/16"
+#   }]
+
+#   # DNS Setting (Optional)
+#   enable_private_dns = true
+#   domain             = var.domain
+# }

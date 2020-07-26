@@ -1,0 +1,4 @@
+name: projects
+attributes:
+  - name: foo
+    required: true

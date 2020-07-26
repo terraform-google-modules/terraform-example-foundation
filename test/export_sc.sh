@@ -20,4 +20,8 @@ set -e
 # used for plumbing service perimeter names into projects while testing
 cd /workspace/test/fixtures/networks
 terraform workspace select kitchen-terraform-networks-default
+# shellcheck disable=SC1091
 source <(python /usr/local/bin/export_tf_outputs.py --path=/workspace/test/fixtures/networks)
+echo $TF_VAR_dev_restricted_service_perimeter_name
+echo $TF_VAR_prod_restricted_service_perimeter_name
+echo $TF_VAR_nonprod_restricted_service_perimeter_name

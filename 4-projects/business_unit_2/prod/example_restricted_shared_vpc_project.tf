@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-locals {
-  prefix         = "p_shared_restricted"
-  perimeter_name = "sp_${local.prefix}_default_perimeter_1234"
-}
-
 module "restricted_shared_vpc_project" {
   source                      = "../../modules/single_project"
   impersonate_service_account = var.terraform_service_account
@@ -32,15 +27,15 @@ module "restricted_shared_vpc_project" {
 
   activate_apis                      = ["accesscontextmanager.googleapis.com"]
   vpc_service_control_attach_enabled = "true"
-  vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${local.perimeter_name}"
+  vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${var.perimeter_name}"
 
   # Metadata
-  project_prefix    = "${local.business_code}-p-sample"
-  application_name  = "${local.business_code}-sample-private-vpc"
+  project_prefix    = "bu2-p-sample"
+  application_name  = "bu2-sample-application2"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"
-  business_code     = local.business_code
+  business_code     = "bu2"
 }
 
 #   # Network Setting (Optional)

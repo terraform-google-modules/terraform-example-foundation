@@ -26,10 +26,10 @@ module "base_shared_vpc_project" {
   vpc_type                    = "private"
 
   # Metadata
-  project_prefix    = "${local.business_code}-n-sample"
-  application_name  = "${local.business_code}-sample-private-vpc"
+  project_prefix    = "bu2-n-sample"
+  application_name  = "bu2-sample-application2"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"
-  business_code     = local.business_code
+  business_code     = "bu2"
 }

@@ -17,197 +17,96 @@
 locals {
   parent_resource_id   = var.parent_folder != "" ? var.parent_folder : var.org_id
   parent_resource_type = var.parent_folder != "" ? "folder" : "organization"
+  all_logs_filter      = <<EOF
+    logName: /logs/cloudaudit.googleapis.com%2Factivity OR
+    logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
+    logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR
+    logName: /logs/compute.googleapis.com%2Fvpc_flows OR
+    logName: /logs/compute.googleapis.com%2Ffirewall OR
+    logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
+EOF
+}
+
+resource "random_string" "suffix" {
+  length  = 4
+  upper   = false
+  special = false
 }
 
 /******************************************
-  Audit Logs - Activity
+  Send logs to BigQury
 *****************************************/
 
-module "log_export_activity_logs" {
+module "log_export_to_biqquery" {
   source                 = "terraform-google-modules/log-export/google"
   version                = "~> 4.0"
-  destination_uri        = module.bq_activity_logs.destination_uri
-  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Factivity\""
-  log_sink_name          = "bigquery_activity_logs"
+  destination_uri        = module.bigquery_destination.destination_uri
+  filter                 = local.all_logs_filter
+  log_sink_name          = "sk-c-logging-bq"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
   include_children       = true
   unique_writer_identity = true
 }
 
-module "bq_activity_logs" {
+module "bigquery_destination" {
   source                      = "terraform-google-modules/log-export/google//modules/bigquery"
   version                     = "~> 4.0"
   project_id                  = module.org_audit_logs.project_id
-  dataset_name                = "activity_logs"
-  log_sink_writer_identity    = module.log_export_activity_logs.writer_identity
-  default_table_expiration_ms = var.access_table_expiration_ms
+  dataset_name                = "audit_logs"
+  log_sink_writer_identity    = module.log_export_to_biqquery.writer_identity
+  default_table_expiration_ms = var.audit_logs_table_expiration_ms
 }
 
 /******************************************
-  Audit Logs - System Event
+  Send logs to Storage
 *****************************************/
 
-module "log_export_system_event_logs" {
+module "log_export_to_storage" {
   source                 = "terraform-google-modules/log-export/google"
   version                = "~> 4.0"
-  destination_uri        = module.bq_system_event_logs.destination_uri
-  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Fsystem_event\""
-  log_sink_name          = "bigquery_system_event_logs"
+  destination_uri        = module.storage_destination.destination_uri
+  filter                 = local.all_logs_filter
+  log_sink_name          = "sk-c-logging-bkt"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
   include_children       = true
   unique_writer_identity = true
 }
 
-module "bq_system_event_logs" {
-  source                      = "terraform-google-modules/log-export/google//modules/bigquery"
-  version                     = "~> 4.0"
-  project_id                  = module.org_audit_logs.project_id
-  dataset_name                = "system_event"
-  log_sink_writer_identity    = module.log_export_system_event_logs.writer_identity
-  location                    = var.default_region
-  default_table_expiration_ms = var.system_event_table_expiration_ms
+module "storage_destination" {
+  source                   = "terraform-google-modules/log-export/google//modules/storage"
+  version                  = "~> 4.0"
+  project_id               = module.org_audit_logs.project_id
+  storage_bucket_name      = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
+  log_sink_writer_identity = module.log_export_to_storage.writer_identity
+  bucket_policy_only       = true
+  location                 = var.log_export_storage_location
 }
 
 /******************************************
-  Audit Logs - Data Access
+  Send logs to Pub\Sub
 *****************************************/
 
-resource "google_organization_iam_audit_config" "organization_data_access_config" {
-  count   = var.data_access_logs_enabled && var.parent_folder == "" ? 1 : 0
-  org_id  = var.org_id
-  service = "allServices"
-
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_WRITE"
-  }
-
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
-}
-
-resource "google_folder_iam_audit_config" "folder_data_access_config" {
-  count   = var.data_access_logs_enabled && var.parent_folder != "" ? 1 : 0
-  folder  = "folders/${var.parent_folder}"
-  service = "allServices"
-
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_WRITE"
-  }
-
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
-}
-
-module "log_export_data_access_logs" {
+module "log_export_to_pubsub" {
   source                 = "terraform-google-modules/log-export/google"
   version                = "~> 4.0"
-  destination_uri        = module.bq_data_access_logs.destination_uri
-  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Fdata_access\""
-  log_sink_name          = "bigquery_data_access_logs"
+  destination_uri        = module.pubsub_destination.destination_uri
+  filter                 = local.all_logs_filter
+  log_sink_name          = "sk-c-logging-pub"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
   include_children       = true
   unique_writer_identity = true
 }
 
-module "bq_data_access_logs" {
-  source                      = "terraform-google-modules/log-export/google//modules/bigquery"
-  version                     = "~> 4.0"
-  project_id                  = module.org_audit_logs.project_id
-  dataset_name                = "data_access"
-  log_sink_writer_identity    = module.log_export_data_access_logs.writer_identity
-  location                    = var.default_region
-  default_table_expiration_ms = var.data_access_table_expiration_ms
-}
-
-/******************************************
-  VPC Flow Logs
-*****************************************/
-
-module "log_export_vpc_flow_logs" {
-  source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 4.0"
-  destination_uri        = module.bq_vpc_flow_logs.destination_uri
-  filter                 = "logName: \"/logs/compute.googleapis.com%2Fvpc_flows\""
-  log_sink_name          = "bigquery_vpc_flow_logs"
-  parent_resource_id     = local.parent_resource_id
-  parent_resource_type   = local.parent_resource_type
-  include_children       = true
-  unique_writer_identity = true
-}
-
-module "bq_vpc_flow_logs" {
-  source                      = "terraform-google-modules/log-export/google//modules/bigquery"
-  version                     = "~> 4.0"
-  project_id                  = module.org_audit_logs.project_id
-  dataset_name                = "vpc_flow"
-  log_sink_writer_identity    = module.log_export_vpc_flow_logs.writer_identity
-  location                    = var.default_region
-  default_table_expiration_ms = var.vpc_flow_table_expiration_ms
-}
-
-/******************************************
-  Firewall Rules Logging
-*****************************************/
-
-module "log_export_firewall_rules_logs" {
-  source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 4.0"
-  destination_uri        = module.bq_firewall_rules_logs.destination_uri
-  filter                 = "logName: \"/logs/compute.googleapis.com%2Ffirewall\""
-  log_sink_name          = "bigquery_firewall_rules_logs"
-  parent_resource_id     = local.parent_resource_id
-  parent_resource_type   = local.parent_resource_type
-  include_children       = true
-  unique_writer_identity = true
-}
-
-module "bq_firewall_rules_logs" {
-  source                      = "terraform-google-modules/log-export/google//modules/bigquery"
-  version                     = "~> 4.0"
-  project_id                  = module.org_audit_logs.project_id
-  dataset_name                = "firewall_rules"
-  log_sink_writer_identity    = module.log_export_firewall_rules_logs.writer_identity
-  location                    = var.default_region
-  default_table_expiration_ms = var.firewall_rules_table_expiration_ms
-}
-
-/******************************************
-  Access Transparency logs
-*****************************************/
-
-module "log_export_access_transparency_logs" {
-  source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 4.0"
-  destination_uri        = module.bq_access_transparency_logs.destination_uri
-  filter                 = "logName: \"/logs/cloudaudit.googleapis.com%2Faccess_transparency\""
-  log_sink_name          = "bigquery_access_transparency_logs"
-  parent_resource_id     = local.parent_resource_id
-  parent_resource_type   = local.parent_resource_type
-  include_children       = true
-  unique_writer_identity = true
-}
-
-module "bq_access_transparency_logs" {
-  source                      = "terraform-google-modules/log-export/google//modules/bigquery"
-  version                     = "~> 4.0"
-  project_id                  = module.org_audit_logs.project_id
-  dataset_name                = "access_transparency"
-  log_sink_writer_identity    = module.log_export_access_transparency_logs.writer_identity
-  location                    = var.default_region
-  default_table_expiration_ms = var.access_transparency_table_expiration_ms
+module "pubsub_destination" {
+  source                   = "terraform-google-modules/log-export/google//modules/pubsub"
+  version                  = "~> 4.0"
+  project_id               = module.org_audit_logs.project_id
+  topic_name               = "tp-org-logs-${random_string.suffix.result}"
+  log_sink_writer_identity = module.log_export_to_pubsub.writer_identity
+  create_subscriber        = true
 }
 
 /******************************************

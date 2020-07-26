@@ -15,26 +15,26 @@
 org_audit_logs_project_id = attribute('org_audit_logs_project_id')
 org_billing_logs_project_id = attribute('org_billing_logs_project_id')
 parent_resource_id = attribute('parent_resource_id')
+logs_export_storage_bucket_name = attribute('logs_export_storage_bucket_name')
+logs_export_pubsub_topic = attribute('logs_export_pubsub_topic')
 
-bigquery_logs_datasets = [
-  'activity_logs',
-  'system_event',
-  'data_access',
-  'vpc_flow',
-  'firewall_rules',
-  'access_transparency'
+all_logs_filter = [
+  'logName: /logs/cloudaudit.googleapis.com%2Factivity',
+  'logName: /logs/cloudaudit.googleapis.com%2Fsystem_event',
+  'logName: /logs/cloudaudit.googleapis.com%2Fdata_access',
+  'logName: /logs/compute.googleapis.com%2Fvpc_flows',
+  'logName: /logs/compute.googleapis.com%2Ffirewall',
+  'logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency'
 ]
 
 control 'gcp_logging' do
   title 'step 1-org logging tests'
 
-  bigquery_logs_datasets.each do |dataset|
-    describe google_bigquery_dataset(
-      project: org_audit_logs_project_id,
-      name: dataset
-    ) do
-      it { should exist }
-    end
+  describe google_bigquery_dataset(
+    project: org_audit_logs_project_id,
+    name: 'audit_logs'
+  ) do
+    it { should exist }
   end
 
   describe google_bigquery_dataset(
@@ -44,75 +44,58 @@ control 'gcp_logging' do
     it { should exist }
   end
 
-  describe google_logging_folder_log_sink(
-    folder: parent_resource_id,
-    name: 'bigquery_activity_logs'
+  describe google_storage_bucket(
+    name: logs_export_storage_bucket_name
   ) do
     it { should exist }
-    its('filter') do
-      should cmp 'logName: "/logs/cloudaudit.googleapis.com%2Factivity"'
-    end
-    its('include_children') { should cmp 'true' }
-    its('destination') { should match(/activity_logs/) }
+  end
+
+  describe google_pubsub_topic(
+    project: org_audit_logs_project_id,
+    name: logs_export_pubsub_topic
+  ) do
+    it { should exist }
   end
 
   describe google_logging_folder_log_sink(
     folder: parent_resource_id,
-    name: 'bigquery_system_event_logs'
+    name: 'sk-c-logging-bq'
   ) do
     it { should exist }
-    its('filter') do
-      should cmp 'logName: "/logs/cloudaudit.googleapis.com%2Fsystem_event"'
+    all_logs_filter.each do |filter|
+      its('filter') do
+        should include filter
+      end
     end
     its('include_children') { should cmp 'true' }
-    its('destination') { should match(/system_event/) }
+    its('destination') { should cmp "bigquery.googleapis.com/projects/#{org_audit_logs_project_id}/datasets/audit_logs" }
   end
 
   describe google_logging_folder_log_sink(
     folder: parent_resource_id,
-    name: 'bigquery_data_access_logs'
+    name: 'sk-c-logging-bkt'
   ) do
     it { should exist }
-    its('filter') do
-      should cmp 'logName: "/logs/cloudaudit.googleapis.com%2Fdata_access"'
+    all_logs_filter.each do |filter|
+      its('filter') do
+        should include filter
+      end
     end
     its('include_children') { should cmp 'true' }
-    its('destination') { should match(/data_access/) }
+    its('destination') { should cmp "storage.googleapis.com/#{logs_export_storage_bucket_name}" }
   end
 
   describe google_logging_folder_log_sink(
     folder: parent_resource_id,
-    name: 'bigquery_vpc_flow_logs'
+    name: 'sk-c-logging-pub'
   ) do
     it { should exist }
-    its('filter') do
-      should cmp 'logName: "/logs/compute.googleapis.com%2Fvpc_flows"'
+    all_logs_filter.each do |filter|
+      its('filter') do
+        should include filter
+      end
     end
     its('include_children') { should cmp 'true' }
-    its('destination') { should match(/vpc_flow/) }
-  end
-
-  describe google_logging_folder_log_sink(
-    folder: parent_resource_id,
-    name: 'bigquery_firewall_rules_logs'
-  ) do
-    it { should exist }
-    its('filter') do
-      should cmp 'logName: "/logs/compute.googleapis.com%2Ffirewall"'
-    end
-    its('include_children') { should cmp 'true' }
-    its('destination') { should match(/firewall_rules/) }
-  end
-
-  describe google_logging_folder_log_sink(
-    folder: parent_resource_id,
-    name: 'bigquery_access_transparency_logs'
-  ) do
-    it { should exist }
-    its('filter') do
-      should cmp 'logName: "/logs/cloudaudit.googleapis.com%2Faccess_transparency"'
-    end
-    its('include_children') { should cmp 'true' }
-    its('destination') { should match(/access_transparency/) }
+    its('destination') { should cmp "pubsub.googleapis.com/projects/#{org_audit_logs_project_id}/topics/#{logs_export_pubsub_topic}" }
   end
 end

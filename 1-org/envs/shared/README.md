@@ -19,18 +19,19 @@ You can choose not to enable the Data Access logs by setting variable `data_acce
 1. Navigate into the repo `cd gcp-org` and change to a non prod branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/1-org/* .` (modify accordingly based on your current directory).
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
+1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` (modify accordingly based on your current directory).
+1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). Make sure that `default_region` is set to a valid [BigQuery dataset region](https://cloud.google.com/bigquery/docs/locations).
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
-1. Push your non prod branch to trigger a plan `git push --set-upstream origin plan`
+1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `dev`, `nonprod` or `prod` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to prod branch with `git checkout -b prod` and `git push origin prod`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
-
 ### Run terraform locally
 1. Change into 1-org/envs/shared/ folder.
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Rename backend.tf.example backend.tf and update with your bucket from bootstrap.
+1. Update backend.tf with your bucket from bootstrap.
 1. Run `terraform init`
 1. Run `terraform plan` and review output.
 1. Run `terraform apply`

@@ -24,9 +24,14 @@ The purpose of this step is to :
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
 1. Within each envs/ folder rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
+1. You will need only once to manually plan + apply the `shared` environment since dev, nonprod and prod depend on it.
+    1. cd to ./envs/shared/
+    1. Update backend.tf with your bucket name from the bootstrap step.
+    1. Run `terraform plan` and review output
+    1. Run `terraform apply`
+    1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME
 1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `dev`, `nonprod` or `prod` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Plan will fail for dev/nonprod/prod until prod has been applied at least once since all envs depend on shared (DNS Hub) that is deployed in the prod branch.
 1. Merge changes to prod with `git checkout -b prod` and `git push origin prod`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. After prod has been applied apply dev and nonprod

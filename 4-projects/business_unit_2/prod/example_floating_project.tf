@@ -21,7 +21,7 @@ module "floating_project" {
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.business_unit_2.name
+  folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "prod"
   env_code                    = "p"

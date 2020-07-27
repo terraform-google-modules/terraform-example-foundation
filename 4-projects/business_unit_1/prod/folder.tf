@@ -19,7 +19,3 @@ data "google_active_folder" "env" {
   parent       = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
 }
 
-resource "google_folder" "business_unit_1" {
-  display_name = "business-unit-1"
-  parent       = data.google_active_folder.env.name
-}

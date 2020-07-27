@@ -19,7 +19,7 @@ module "restricted_shared_vpc_project" {
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.business_unit_1.name
+  folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "nonprod"
   env_code                    = "n"
@@ -38,18 +38,3 @@ module "restricted_shared_vpc_project" {
   business_code     = "bu1"
 }
 
-#   # Network Setting (Optional)
-#   enable_networking    = true
-#   subnet_ip_cidr_range = "10.3.0.0/16"
-#   subnet_secondary_ranges = [{
-#     range_name    = "gke-pod",
-#     ip_cidr_range = "10.4.0.0/16"
-#     }, {
-#     range_name    = "gke-svc",
-#     ip_cidr_range = "10.5.0.0/16"
-#   }]
-
-#   # DNS Setting (Optional)
-#   enable_private_dns = true
-#   domain             = var.domain
-# }

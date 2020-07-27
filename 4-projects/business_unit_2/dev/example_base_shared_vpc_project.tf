@@ -19,7 +19,7 @@ module "base_shared_vpc_project" {
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.business_unit_2.name
+  folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "dev"
   env_code                    = "d"
@@ -27,7 +27,7 @@ module "base_shared_vpc_project" {
 
   # Metadata
   project_prefix    = "bu2-d-sample"
-  application_name  = "bu2-sample-application2"
+  application_name  = "bu2-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"

@@ -143,7 +143,7 @@ module "private_shared_vpc" {
   default_region2            = var.default_region2
   domain                     = var.domain
   bgp_asn_subnet             = "64514"
-  windows_activation_enabled = true
+
   subnets = [
     {
       subnet_name           = "sb-${local.environment_code}-shared-private-${var.default_region1}"

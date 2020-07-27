@@ -4,19 +4,19 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | number | n/a | yes |
-| default\_fw\_rules\_enabled | Toggle creation of default firewall rules. | bool | `"true"` | no |
 | default\_region1 | Default region 1 for subnets and Cloud Routers | string | n/a | yes |
 | default\_region2 | Default region 2 for subnets and Cloud Routers | string | n/a | yes |
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | bool | `"true"` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | string | n/a | yes |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization. | string | n/a | yes |
-| firewall\_enable\_logging | Toggle firewall logginglogging for VPC Firewalls. | bool | `"true"` | no |
+| firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | bool | `"true"` | no |
 | nat\_bgp\_asn | BGP ASN for first NAT cloud routes. | number | `"0"` | no |
 | nat\_enabled | Toggle creation of NAT cloud router. | bool | `"false"` | no |
 | nat\_num\_addresses | Number of external IPs to reserve for Cloud NAT. | number | `"2"` | no |
 | nat\_num\_addresses\_region1 | Number of external IPs to reserve for first Cloud NAT. | number | `"2"` | no |
 | nat\_num\_addresses\_region2 | Number of external IPs to reserve for second Cloud NAT. | number | `"2"` | no |
+| optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | bool | `"false"` | no |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | string | n/a | yes |
 | project\_id | Project ID for Private Shared VPC. | string | n/a | yes |
 | secondary\_ranges | Secondary ranges that will be used in some of the subnets | object | `<map>` | no |

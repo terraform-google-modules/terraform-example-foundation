@@ -94,7 +94,7 @@ variable "dns_enable_logging" {
 
 variable "firewall_enable_logging" {
   type        = bool
-  description = "Toggle firewall logginglogging for VPC Firewalls."
+  description = "Toggle firewall logging for VPC Firewalls."
   default     = true
 }
 
@@ -120,8 +120,8 @@ variable "nat_num_addresses" {
   default     = 2
 }
 
-variable "default_fw_rules_enabled" {
+variable "optional_fw_rules_enabled" {
   type        = bool
-  description = "Toggle creation of default firewall rules."
-  default     = true
+  description = "Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges."
+  default     = false
 }

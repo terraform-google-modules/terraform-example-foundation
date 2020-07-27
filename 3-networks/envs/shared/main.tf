@@ -30,7 +30,7 @@ data "google_active_folder" "env" {
 *****************************************/
 
 data "google_projects" "dns_hub" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=dns-hub lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=org-dns-hub lifecycleState=ACTIVE"
 }
 
 

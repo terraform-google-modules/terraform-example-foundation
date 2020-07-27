@@ -19,7 +19,7 @@ module "base_shared_vpc_project" {
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = var.parent_folder
+  folder_id                   = google_folder.business_unit_2.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "nonprod"
   env_code                    = "n"

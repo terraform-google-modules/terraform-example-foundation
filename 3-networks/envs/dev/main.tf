@@ -33,7 +33,7 @@ data "google_active_folder" "env" {
 *****************************************/
 
 data "google_projects" "restricted_host_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host-${local.env}  lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
 }
 
 data "google_project" "restricted_host_project" {
@@ -41,7 +41,7 @@ data "google_project" "restricted_host_project" {
 }
 
 data "google_projects" "private_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=private-shared-vpc-host-${local.env}  lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=private-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
 }
 
 /******************************************

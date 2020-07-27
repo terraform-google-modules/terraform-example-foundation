@@ -39,7 +39,7 @@ module "base_shared_vpc_host_project" {
 
   labels = {
     environment      = var.env
-    application_name = "private-shared-vpc-host-${var.env}"
+    application_name = "private-shared-vpc-host"
   }
 }
 
@@ -66,6 +66,6 @@ module "restricted_shared_vpc_host_project" {
 
   labels = {
     environment      = var.env
-    application_name = "restricted-shared-vpc-host-${var.env}"
+    application_name = "restricted-shared-vpc-host"
   }
 }

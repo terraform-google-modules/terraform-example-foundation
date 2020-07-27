@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+variable "org_id" {
+  type        = string
+  description = "Organization ID"
+}
+
 variable "project_id" {
   type        = string
   description = "Project ID for Private Shared VPC."
@@ -124,4 +129,10 @@ variable "default_fw_rules_enabled" {
   type        = bool
   description = "Toggle creation of default firewall rules."
   default     = true
+}
+
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
 }

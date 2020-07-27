@@ -57,6 +57,7 @@ module "restricted_shared_vpc" {
   members                          = ["serviceAccount:${var.terraform_service_account}"]
   private_service_cidr             = "10.0.176.0/20"
   org_id                           = var.org_id
+  parent_folder                    = var.parent_folder
   nat_enabled                      = false
   bgp_asn_subnet                   = "64514"
   default_region1                  = var.default_region1
@@ -137,6 +138,8 @@ module "private_shared_vpc" {
   environment_code           = local.environment_code
   vpc_label                  = "private"
   private_service_cidr       = "10.0.144.0/20"
+  org_id                     = var.org_id
+  parent_folder              = var.parent_folder
   nat_enabled                = true
   nat_bgp_asn                = "64514"
   default_region1            = var.default_region1

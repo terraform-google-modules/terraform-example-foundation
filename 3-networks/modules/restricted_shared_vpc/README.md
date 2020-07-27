@@ -19,6 +19,7 @@
 | nat\_num\_addresses\_region2 | Number of external IPs to reserve for region 2 Cloud NAT. | number | `"2"` | no |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules. | bool | `"false"` | no |
 | org\_id | Organization ID | string | n/a | yes |
+| parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | string | n/a | yes |
 | project\_id | Project ID for Restricted Shared VPC. | string | n/a | yes |
 | project\_number | Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter. | number | n/a | yes |

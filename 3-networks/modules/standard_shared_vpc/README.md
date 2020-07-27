@@ -17,6 +17,8 @@
 | nat\_num\_addresses | Number of external IPs to reserve for Cloud NAT. | number | `"2"` | no |
 | nat\_num\_addresses\_region1 | Number of external IPs to reserve for first Cloud NAT. | number | `"2"` | no |
 | nat\_num\_addresses\_region2 | Number of external IPs to reserve for second Cloud NAT. | number | `"2"` | no |
+| org\_id | Organization ID | string | n/a | yes |
+| parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | string | n/a | yes |
 | project\_id | Project ID for Private Shared VPC. | string | n/a | yes |
 | secondary\_ranges | Secondary ranges that will be used in some of the subnets | object | `<map>` | no |

@@ -16,9 +16,9 @@
 
 terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
 
-dns_default_region1 = "us-central1"
+default_region1 = "us-central1"
 
-dns_default_region2 = "us-west1"
+default_region2 = "us-west1"
 
 domain = "example.com."
 

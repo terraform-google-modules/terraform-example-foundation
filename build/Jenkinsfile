@@ -3,6 +3,14 @@ pipeline {
       label "gcp-agent"
   }
   stages {
+    stage('setup') {
+      steps {
+          sh '''
+          ./tf-wrapper.sh setup $BRANCH_NAME
+          '''
+        }
+    }
+  stages {
     stage('TF init') {
       steps {
           sh '''

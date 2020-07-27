@@ -205,39 +205,39 @@ In the Jenkins Master’s Web UI, use the following information to configure a n
 
 Although this infrastructure code is distributed to you as a [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation), you will store it in five different repositories, one for each directory (`0-bootstrap, 1-org, 2-environments, 3-networks, 4-projects`). Here we will work with the first of these repositories <YOUR_NEW_REPO_CLONE-0-bootstrap>.
 
-- 1.3.1. Clone this repository:
+1. Clone this repository:
     ```
     git clone https://github.com/terraform-google-modules/terraform-example-foundation
     ```
 
-- 1.3.2. Clone the repository you created to host the `0-bootstrap` directory:
+1. Clone the repository you created to host the `0-bootstrap` directory:
     ```
     git clone <YOUR_NEW_REPO-0-bootstrap>
     ```
 
-- 1.3.3. Change to freshly cloned repo and change to non master branch:
+1. Change to freshly cloned repo and change to non master branch:
     ```
     cd <YOUR_NEW_REPO_CLONE-0-bootstrap>
     git checkout master
     ```
 
-- 1.3.4. Copy contents of foundation to the new repo (modify accordingly based on your current directory):
+1. Copy contents of foundation to the new repo (modify accordingly based on your current directory):
     ```
     cp -R ../terraform-example-foundation/0-bootstrap/* .
     ```
 
-- 1.3.5. Copy build configuration files to the root of your new repository (modify accordingly based on your current directory):
+1. Copy build configuration files to the root of your new repository (modify accordingly based on your current directory):
     ```
     cp ../terraform-example-foundation/build/Jenkinsfile .
     cp ../terraform-example-foundation/build/tf-wrapper.sh .
     ```
 
-- 1.3.6. Make sure the `tf-wrapper.sh` file has the appropriate executable permissions, since Jenkins might not be able to use during the pipeline (modify accordingly based on your current directory):
+1. Make sure the `tf-wrapper.sh` file has the appropriate executable permissions, since Jenkins might not be able to use during the pipeline (modify accordingly based on your current directory):
     ```
     chmod +x tf-wrapper.sh
     ```
 
-- 1.3.7. Create a `terraform.tfvars` file by copying the provided `0-bootstrap/terraform.example.tfvars` file and add the required values (modify accordingly based on your current directory)
+1. Create a `terraform.tfvars` file by copying the provided `0-bootstrap/terraform.example.tfvars` file and add the required values (modify accordingly based on your current directory)
     ```
     # copy the provided terraform.example.tfvars file
     cp ../terraform-example-foundation/0-bootstrap/terraform.example.tfvars terraform.tfvars
@@ -245,7 +245,7 @@ Although this infrastructure code is distributed to you as a [monorepo](https://
     vi terraform.tfvars
     ```
 
-- 1.3.8. Commit changes and push to your repository <YOUR_NEW_REPO_CLONE-0-bootstrap> with:
+1. Commit changes and push to your repository <YOUR_NEW_REPO_CLONE-0-bootstrap> with:
     ```
     git add .
     git commit -m 'Your message'
@@ -301,29 +301,29 @@ Once the terraform script completes, note that communication between on-prem and
 
 #### 3.1. Move Terraform state to the GCS bucket created in the seed project
 
-- 3.1.1 Copy the backend by running
-    ```
-    cp backend.tf.example backend.tf
-    ```
-
-- 3.1.2 and update the `bucket` value in the `backend.tf` file, which you can see by running
+1. Show the GCS bucket name with this command
     ```
     terraform show | grep gcs_bucket_tfstate
     ```
 
-- 3.1.3 Re-run `terraform init` and agree to copy state to gcs when prompted
+1. Run this command to copy the `backend.tf` file and update the GCS bucket name. Replace the `GCS_BUCKET_NAME` with the name of your bucket from the previous step.
+    ```
+    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done
+    ```
+
+1. Re-run `terraform init` and agree to copy state to gcs when prompted
     ```
     terraform init
     ```
 
-- 3.1.4 agree to copy state to gcs when prompted.
+1. agree to copy state to gcs when prompted.
     - (Optional) Run `terraform apply` to verify state is configured correctly. You can confirm the terraform state is now in that bucket by visiting the bucket url in your seed project.
 
 #### 3.2. Configure VPN Network tunnel
 
 Configure VPN Network tunnel to enable connectivity between the `cicd` project and your on-prem environment. Learn more about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to).
 
-- 3.2.1 Supply the required values for the bash variables below:
+1. Supply the required values for the bash variables below:
     ```
     # Project variables:
     CICD_PROJECT_ID="prj-cicd-*"
@@ -337,7 +337,7 @@ Configure VPN Network tunnel to enable connectivity between the `cicd` project a
     CICD_VPN_NAME="vpn-from-onprem-to-cicd"
     ```
 
-- 3.2.2 Reserve an `EXTERNAL` IP address for the VPN:
+1. Reserve an `EXTERNAL` IP address for the VPN:
     ```
     # Reserve a new external IP for the VPN in the cicd project
     gcloud compute addresses create $CICD_VPN_PUBLIC_IP_NAME \
@@ -347,15 +347,15 @@ Configure VPN Network tunnel to enable connectivity between the `cicd` project a
    | grep $CICD_VPN_PUBLIC_IP_NAME
    ```
 
-- 3.2.3 The above command will show the `EXTERNAL` static IP addresses that have been reserved for your VPN in the `cicd` project. You need to do two things with this IP Address:
-    - 3.2.3.1 Inform your Network administrator of the IP address so they configure the on-prem side of the VPN tunnel.
-    - 3.2.3.2 Set the variable below with the IP address you just obtained so you can create the GCP side of the VPN tunnel in the `cicd` project:
+1. The above command will show the `EXTERNAL` static IP addresses that have been reserved for your VPN in the `cicd` project. You need to do two things with this IP Address:
+    1. Inform your Network administrator of the IP address so they configure the on-prem side of the VPN tunnel.
+    1. Set the variable below with the IP address you just obtained so you can create the GCP side of the VPN tunnel in the `cicd` project:
         ```
         # New VPN variables
         CICD_VPN_PUBLIC_IP_ADDRESS="x.x.x.x"
         ```
 
-- 3.2.4 We now have all the necessary information to create the VPN in the `cicd` project.
+1. We now have all the necessary information to create the VPN in the `cicd` project.
     ```
     # Create the new VPN gateway
     gcloud compute --project $CICD_PROJECT_ID \
@@ -405,13 +405,13 @@ Configure VPN Network tunnel to enable connectivity between the `cicd` project a
       --destination-range $JENKINS_MASTER_NETWORK_CIDR
     ```
 
-The VPN might show the message `First Handshake` for around 5 minutes. When the VPN is ready, the Status will show `Tunnel is up and running`. At this point, your Jenkins Master (on-prem) and Jenkins Agent (in cicd project) must have network connectivity through the VPN.
+    The VPN might show the message `First Handshake` for around 5 minutes. When the VPN is ready, the Status will show `Tunnel is up and running`. At this point, your Jenkins Master (on-prem) and Jenkins Agent (in cicd project) must have network connectivity through the VPN.
 
-- 3.2.5 Using the Jenkins Web UI, connect to the Agent and troubleshoot network connectivity if needed.
+1. Using the Jenkins Web UI, connect to the Agent and troubleshoot network connectivity if needed.
 
-- 3.2.6 Using the Jenkins Web UI, test that your Master can deploy a pipeline to the Jenkins Agent in GCP (you can test by running with a simple `echo "Hello World"` project / job) from the Jenkins Web UI.
+1. Using the Jenkins Web UI, test that your Master can deploy a pipeline to the Jenkins Agent in GCP (you can test by running with a simple `echo "Hello World"` project / job) from the Jenkins Web UI.
 
-- 3.2.7 Use the automated Pipeline provided in the `Jenkinsfile` to deploy new infrastructure in the Step `1-org`
+1. Use the automated Pipeline provided in the `Jenkinsfile` to deploy new infrastructure in the Step `1-org`
 
 ## Contributing
 

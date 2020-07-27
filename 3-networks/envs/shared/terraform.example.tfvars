@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+org_id = "000000000000"
+
 terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
 
 default_region1 = "us-central1"

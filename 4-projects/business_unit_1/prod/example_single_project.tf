@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-module "example_single_project" {
-  source = "../../modules/single_project"
-
+module "example_floating_project" {
+  source                      = "../../modules/single_project"
+  impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  impersonate_service_account = var.terraform_service_account
+  folder_id                   = google_folder.business_unit_1.name
+  skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "prod"
   env_code                    = "p"
-  skip_gcloud_download        = var.skip_gcloud_download
-
-  folder_id = var.parent_folder
 
   # Metadata
-  project_prefix    = "bu1-p-sample-single"
-  application_name  = "bu1-sample-application1"
+  project_prefix    = "bu1-p-sample-floating"
+  application_name  = "bu1-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"

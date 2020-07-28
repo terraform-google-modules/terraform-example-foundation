@@ -24,7 +24,7 @@ module "org_audit_logs" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-org-audit-logs"
+  name                        = "prj-p-org-audit-logs"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -43,7 +43,7 @@ module "org_billing_logs" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-org-billing-logs"
+  name                        = "prj-p-org-billing-logs"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -66,7 +66,7 @@ module "org_secrets" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-org-secrets"
+  name                        = "prj-p-org-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -89,7 +89,7 @@ module "interconnect" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-interconnect"
+  name                        = "prj-p-org-interconnect"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -97,7 +97,7 @@ module "interconnect" {
 
   labels = {
     environment      = "prod"
-    application_name = "interconnect"
+    application_name = "org-interconnect"
   }
 }
 
@@ -111,7 +111,7 @@ module "scc_notifications" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-scc-notifications"
+  name                        = "prj-p-org-scc"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -120,7 +120,7 @@ module "scc_notifications" {
 
   labels = {
     environment      = "prod"
-    application_name = "scc-notification"
+    application_name = "org-scc"
   }
 }
 
@@ -134,7 +134,7 @@ module "dns_hub" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-dns-hub"
+  name                        = "prj-p-org-dns-hub"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -150,6 +150,6 @@ module "dns_hub" {
 
   labels = {
     environment      = "prod"
-    application_name = "dns-hub"
+    application_name = "org-dns-hub"
   }
 }

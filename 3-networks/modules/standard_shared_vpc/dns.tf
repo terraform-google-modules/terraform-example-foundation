@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
+locals {
+  parent_id = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+}
+
+data "google_active_folder" "common" {
+  display_name = "common"
+  parent       = local.parent_id
+}
+
 /******************************************
   DNS Hub Project
 *****************************************/
 
 data "google_projects" "dns_hub" {
-  filter = "labels.application_name=dns-hub lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-dns-hub lifecycleState=ACTIVE"
 }
 
 data "google_compute_network" "vpc_dns_hub" {

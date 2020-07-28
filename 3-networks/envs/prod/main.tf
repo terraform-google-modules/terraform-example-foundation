@@ -33,7 +33,7 @@ data "google_active_folder" "env" {
 *****************************************/
 
 data "google_projects" "restricted_host_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host-${local.env} lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
 }
 
 data "google_project" "restricted_host_project" {
@@ -41,7 +41,7 @@ data "google_project" "restricted_host_project" {
 }
 
 data "google_projects" "private_host_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=private-shared-vpc-host-${local.env} lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=private-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
 }
 
 /******************************************
@@ -57,6 +57,7 @@ module "restricted_shared_vpc" {
   members                          = ["serviceAccount:${var.terraform_service_account}"]
   private_service_cidr             = "10.0.48.0/20"
   org_id                           = var.org_id
+  parent_folder                    = var.parent_folder
   nat_enabled                      = false
   bgp_asn_subnet                   = "64514"
   default_region1                  = var.default_region1
@@ -132,18 +133,20 @@ module "restricted_shared_vpc" {
 *****************************************/
 
 module "private_shared_vpc" {
-  source               = "../../modules/standard_shared_vpc"
-  project_id           = local.private_project_id
-  environment_code     = local.environment_code
-  vpc_label            = "private"
-  private_service_cidr = "10.0.16.0/20"
-  nat_enabled          = false
-  nat_bgp_asn          = "64514"
-  default_region1      = var.default_region1
-  default_region2      = var.default_region2
-  domain               = var.domain
-  bgp_asn_subnet       = "64514"
-
+  source                     = "../../modules/standard_shared_vpc"
+  project_id                 = local.private_project_id
+  environment_code           = local.environment_code
+  vpc_label                  = "private"
+  private_service_cidr       = "10.0.16.0/20"
+  org_id                     = var.org_id
+  parent_folder              = var.parent_folder
+  nat_enabled                = true
+  nat_bgp_asn                = "64514"
+  default_region1            = var.default_region1
+  default_region2            = var.default_region2
+  domain                     = var.domain
+  bgp_asn_subnet             = "64514"
+  windows_activation_enabled = true
   subnets = [
     {
       subnet_name           = "sb-${local.environment_code}-shared-private-${var.default_region1}"

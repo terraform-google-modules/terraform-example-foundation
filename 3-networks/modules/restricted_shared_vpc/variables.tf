@@ -139,3 +139,9 @@ variable "restricted_services" {
   type        = list(string)
   description = "List of services to restrict."
 }
+
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
+}

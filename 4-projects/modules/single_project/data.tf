@@ -16,7 +16,7 @@
 
 data "google_projects" "projects" {
   count  = var.vpc_type == "" ? 0 : 1
-  filter = "labels.application_name=${var.vpc_type}-shared-vpc-host-${var.environment} lifecycleState=ACTIVE"
+  filter = "labels.application_name=${var.vpc_type}-shared-vpc-host labels.environment=${var.environment} lifecycleState=ACTIVE"
 }
 
 data "google_compute_network" "shared_vpc" {

@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-module "dns_hub" {
-  source                       = "../../../3-networks/envs/shared"
-  default_region1              = "us-central1"
-  default_region2              = "us-west1"
-  domain                       = var.domain
-  target_name_server_addresses = ["8.8.8.8", "8.8.8.4"]
-  terraform_service_account    = var.terraform_sa_email
-  parent_folder                = var.parent_folder
-  org_id                       = var.org_id
+data "google_active_folder" "env" {
+  display_name = "dev"
+  parent       = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
 }
+

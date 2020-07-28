@@ -30,7 +30,7 @@ module "restricted_shared_vpc_project" {
   vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${var.perimeter_name}"
 
   # Metadata
-  project_prefix    = "prj-bu2-n-sample-restricted"
+  project_prefix    = "prj-bu2-n-sample-restrict"
   application_name  = "bu2-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

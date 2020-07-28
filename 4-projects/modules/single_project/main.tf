@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+locals {
+  env_code = element(split("", var.environment), 0)
+}
 
 module "project" {
   source                      = "terraform-google-modules/project-factory/google"
@@ -21,7 +24,7 @@ module "project" {
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = var.activate_apis
-  name                        = "prj-${var.business_code}-${element(split("", var.environment), 0)}-${var.project_prefix}"
+  name                        = "prj-${var.business_code}-${local.env_code}-${var.project_prefix}"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
@@ -40,7 +43,7 @@ module "project" {
     primary_contact   = element(split("@", var.primary_contact), 0)
     secondary_contact = element(split("@", var.secondary_contact), 0)
     business_code     = var.business_code
-    env_code          = element(split("", var.environment), 0)
+    env_code          = local.env_code
     vpc_type          = var.vpc_type
   }
 }

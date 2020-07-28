@@ -23,7 +23,7 @@ module "monitoring_project" {
   version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "org-monitoring-${var.env}"
+  name                        = "prj-${var.environment_code}-monitoring"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
@@ -36,6 +36,6 @@ module "monitoring_project" {
 
   labels = {
     environment      = var.env
-    application_name = "org-monitoring-${var.env}"
+    application_name = "env-monitoring"
   }
 }

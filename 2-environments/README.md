@@ -37,3 +37,22 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
     1. Run `terraform init`
     1. Run `terraform plan` and review output
     1. Run `terraform apply`
+
+### Run tf-wrapper.sh script locally
+1. Change into 1-org folder.
+1. Run `cp ../build/tf-wrapper.sh .`
+1. Run `chmod 755 ./tf-wrapper.sh`
+1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
+1. Update backend.tf with your bucket from bootstrap. You can run
+```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```
+1. Run `./tf-wrapper.sh init dev`
+1. Run `./tf-wrapper.sh plan dev` and review output.
+1. Run `./tf-wrapper.sh apply dev`
+1. Run `./tf-wrapper.sh init nonprod`
+1. Run `./tf-wrapper.sh plan nonprod` and review output.
+1. Run `./tf-wrapper.sh apply nonprod`
+1. Run `./tf-wrapper.sh init prod`
+1. Run `./tf-wrapper.sh plan prod` and review output.
+1. Run `./tf-wrapper.sh apply prod`
+
+If you got errors or made any changes on terraform code or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`

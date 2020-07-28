@@ -39,7 +39,7 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
     1. Run `terraform apply`
 
 ### Run tf-wrapper.sh script locally
-1. Change into 1-org folder.
+1. Change into 2-environments folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.

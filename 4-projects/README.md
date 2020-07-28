@@ -8,6 +8,7 @@ The purpose of this step is to setup folder structure and projects for applicati
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
 1. 3-networks executed successfully.
+1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
 
 ## Usage
 ### Setup to run via Cloud Build
@@ -52,6 +53,7 @@ If you have uncommented the Subnetting and Private DNS Management module from pr
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| access\_context\_manager\_policy\_id | The ID of the access context manager policy the perimeter lies in. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`. | string | n/a | yes |
 | billing\_account | The ID of the billing account to associated this project with | string | n/a | yes |
 | default\_region | Default region for subnet. | string | `"us-west1"` | no |
 | org\_id | The organization id for the associated services | string | n/a | yes |

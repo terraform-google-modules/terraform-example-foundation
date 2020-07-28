@@ -22,7 +22,6 @@ module "base_shared_vpc_project" {
   folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "prod"
-  env_code                    = "p"
   vpc_type                    = "private"
 
   # Metadata

@@ -24,7 +24,6 @@ module "floating_project" {
   folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "prod"
-  env_code                    = "p"
 
   # Metadata
   project_prefix    = "sample-floating"

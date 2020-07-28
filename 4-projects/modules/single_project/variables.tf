@@ -77,11 +77,6 @@ variable "environment" {
   type        = string
 }
 
-variable "env_code" {
-  description = "A short form of the environment field"
-  type        = string
-}
-
 variable "vpc_type" {
   description = "The type of VPC to attach the project to. Possible options are private or restricted."
   type        = string

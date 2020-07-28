@@ -22,7 +22,6 @@ module "restricted_shared_vpc_project" {
   folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "nonprod"
-  env_code                    = "n"
   vpc_type                    = "restricted"
 
   activate_apis                      = ["accesscontextmanager.googleapis.com"]

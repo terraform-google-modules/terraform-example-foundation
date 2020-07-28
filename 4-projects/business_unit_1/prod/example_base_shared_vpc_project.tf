@@ -26,7 +26,7 @@ module "base_shared_vpc_project" {
   vpc_type                    = "private"
 
   # Metadata
-  project_prefix    = "prj-bu1-p-sample-private"
+  project_prefix    = "sample-private"
   application_name  = "bu1-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

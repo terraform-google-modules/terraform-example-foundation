@@ -27,7 +27,7 @@ module "floating_project" {
   env_code                    = "p"
 
   # Metadata
-  project_prefix    = "prj-bu2-p-sample-floating"
+  project_prefix    = "sample-floating"
   application_name  = "bu2-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

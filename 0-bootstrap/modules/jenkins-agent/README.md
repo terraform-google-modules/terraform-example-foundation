@@ -4,12 +4,11 @@ The objective of this module is to deploy a Google Cloud Platform project `prj-c
 - The `prj-cicd` project to hold the Jenkins Agent
 - GCE Instance for the Jenkins Agent, assigning SSH public keys in the metadata to allow connectivity from the Jenkins Master.
 - FW rules to allow communication over port 22
-  - TODO: use a fixed IP or no public IP at all
--  Custom Service account to run the Jenkins Agent's GCE Instance
-
+- VPN connection with on-prem (or where ever your Jenkins Master is located)
+- The custom service account `sa-jenkins-agent-gce@prj-cicd-xxxx.com` used by the GCE instance, which is granted the access to generate tokens over the Terraform custom service account
 Please note this module does not include an option to create a Jenkins Master. To deploy a Jenkins Master, you should follow one of the available user guides in https://cloud.google.com/jenkins.
 
-If you don't have a Jenkins implementation and don't want one, then we recommend you to use the Cloud Build module instead of this Jenkins module.
+**If you don't have a Jenkins implementation and don't want one**, then we recommend you to [use the Cloud Build module](../../README.md) instead of this Jenkins module.
 
 ## Usage
 
@@ -34,25 +33,6 @@ module "jenkins_bootstrap" {
   jenkins_agent_sa_email                  = "jenkins-agent-gce" # service_account_prefix will be added
   jenkins_agent_gce_ssh_pub_key           = var.jenkins_agent_gce_ssh_pub_key
 }
-```
-
-1. Run `$ gcloud auth application-default login` before running `$ terraform plan` to avoid the errors below:
-```
-Error: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
-   on <empty> line 0:
-  (source code not available)
-```
-
-```
-Error: Error setting billing account "aaaaaa-bbbbbb-cccccc" for project "projects/cft-jenkins-dc3a": googleapi: Error 400: Precondition check failed., failedPrecondition
-      on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
-      96: resource "google_project" "main" {
-```
-
-```
-Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbbbb-cccccc": billing.resourceAssociations.create
-  on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
-  96: resource "google_project" "main" {
 ```
 
 ## Features
@@ -107,6 +87,7 @@ Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbb
 | jenkins\_agent\_gce\_instance\_id | Jenkins Agent GCE Instance id. |
 | jenkins\_agent\_sa\_email | Email for privileged custom service account for Jenkins Agent GCE instance. |
 | jenkins\_agent\_sa\_name | Fully qualified name for privileged custom service account for Jenkins Agent GCE instance. |
+| jenkins\_agent\_vpc\_id | Jenkins Agent VPC name. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
@@ -114,10 +95,11 @@ Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbb
 
 ### Software
 
--   [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
--   [Terraform](https://www.terraform.io/downloads.html) >= 0.12.6
--   [terraform-provider-google](https://github.com/terraform-providers/terraform-provider-google) plugin 2.1.x
--   [terraform-provider-google-beta](https://github.com/terraform-providers/terraform-provider-google-beta) plugin 2.1.x
+- [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
+- [Terraform](https://www.terraform.io/downloads.html) = 0.12.24
+    - The scripts in this codebase use Terraform v0.12.24. You must use the same version in the manual steps to avoid [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.
+- [terraform-provider-google](https://github.com/terraform-providers/terraform-provider-google) plugin 2.1.x
+- [terraform-provider-google-beta](https://github.com/terraform-providers/terraform-provider-google-beta) plugin 2.1.x
 
 ### Infrastructure
 
@@ -138,6 +120,25 @@ In step [2.1. Get the appropriate credentials](#2.1.gettheappropriatecredentials
 - `roles/resourcemanager.organizationAdmin` on GCP Organization
 - `roles/resourcemanager.projectCreator` on GCP Organization or folder
 
+This is especially important as you might face one of the errors below:
+```
+Error: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
+   on <empty> line 0:
+  (source code not available)
+```
+
+```
+Error: Error setting billing account "aaaaaa-bbbbbb-cccccc" for project "projects/cft-jenkins-dc3a": googleapi: Error 400: Precondition check failed., failedPrecondition
+      on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
+      96: resource "google_project" "main" {
+```
+
+```
+Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbbbb-cccccc": billing.resourceAssociations.create
+  on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
+  96: resource "google_project" "main" {
+```
+
 ### APIs
 
 A project with the following APIs enabled must be used to host the
@@ -153,7 +154,7 @@ resources of this module:
 
 This API can be enabled in the default project created during establishing an organization.
 
-## Instructions
+## Bootstrap instructions using the jenkins_module
 
 You arrived to these instructions because you are using the `jenkins_bootstrap` to run the bootstrap step instead of `cloudbuild_bootstrap`. Please follow the indications below:
 
@@ -218,7 +219,7 @@ Although this infrastructure code is distributed to you as a [monorepo](https://
 1. Change to freshly cloned repo and change to non master branch:
     ```
     cd <YOUR_NEW_REPO_CLONE-0-bootstrap>
-    git checkout master
+    git checkout -b plan
     ```
 
 1. Copy contents of foundation to the new repo (modify accordingly based on your current directory):
@@ -226,9 +227,13 @@ Although this infrastructure code is distributed to you as a [monorepo](https://
     cp -R ../terraform-example-foundation/0-bootstrap/* .
     ```
 
-1. Copy build configuration files to the root of your new repository (modify accordingly based on your current directory):
+1. Copy the `Jenkinsfile` to the root of your new repository (modify accordingly based on your current directory):
+   ```
+   cp ../terraform-example-foundation/build/Jenkinsfile .
+   ```
+
+1. Copy the `tf-wrapper` configuration file to the root of your new repository (modify accordingly based on your current directory):
     ```
-    cp ../terraform-example-foundation/build/Jenkinsfile .
     cp ../terraform-example-foundation/build/tf-wrapper.sh .
     ```
 
@@ -237,34 +242,34 @@ Although this infrastructure code is distributed to you as a [monorepo](https://
     chmod +x tf-wrapper.sh
     ```
 
-1. Create a `terraform.tfvars` file by copying the provided `0-bootstrap/terraform.example.tfvars` file and add the required values (modify accordingly based on your current directory)
+1. Activate the Jenkins module and disable the Cloud Build module:
+    1. Comment-out the `cloudbuild_bootstrap` module in `main.tf`, its variables in `variables.tf` and its outputs in `outputs.tf`
+    1. Un-comment the `jenkins_bootstrap` module in `main.tf`, its variables in `variables.tf` and its outputs in `outputs.tf`
+
+1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
     ```
-    # copy the provided terraform.example.tfvars file
-    cp ../terraform-example-foundation/0-bootstrap/terraform.example.tfvars terraform.tfvars
+    # Rename file
+    mv terraform.example.tfvars terraform.tfvars
     # Edit the file to provide the necessary values
     vi terraform.tfvars
     ```
 
-1. Commit changes and push to your repository <YOUR_NEW_REPO_CLONE-0-bootstrap> with:
+1. Commit changes and push to the `plan` branch in your repository <YOUR_NEW_REPO_CLONE-0-bootstrap> (the branch plan is not a special one. Any branch which name is different from dev, nonprod or prod will trigger a terraform plan):
     ```
     git add .
-    git commit -m 'Your message'
-    git push --set-upstream origin master
+    git commit -m "Your message - Bootstrap configuration using jenkins_module"
+    git push --set-upstream origin plan
     ```
 
-While working with the other directories (`1-org, 2-environments, 3-networks, 4-projects`), you will need to clone and copy them to your other new on-prem repositories. The instructions above can help you as well, specially the last four steps.
-
-#### 1.4. Configure the Git repositories in your Jenkins Master
-
-In your Jenkins Master, you might need to configure credentials to connect to the new five Git repositories.
-- You may also want to configure an automatic build trigger for each one of them (unless you want to run pipelines manually after each commit. Note that this is considered out of the scope of this document, since there are multiple options on how to do this and multiple Jenkins Plugins able to help with the task. You can also simply run the build job manually from the Jenkins Web UI.
+While working with the other directories (`1-org, 2-environments, 3-networks, 4-projects`), you will need to clone and copy them to your other new on-prem repositories. The instructions above can help you as well.
 
 ### 2. Bootstrap scripted steps using terraform
 
 - Required information:
+  - Terraform version 0.12.24 - See [Requirements](#requirements) section for more details.
   - Access to the five Git repositories created in previous step (`0-bootstrap, 1-org, 2-environments, 3-networks, 4-projects`)
   - VPN details from your Network administrator:
-     - VPN public IP
+     - VPN (on-prem end) public IP
      - VPN PSK secret
      - Private IP address for the Jenkins Agent (which will be created in the `cicd` GCP Project in step [2.2. Run terraform commands](#2.2.RunTerraformCommands)). This private IP will be reachable through the VPN connection that you will create in step [3.2. Configure VPN Network tunnel](#3.2.ConfigureVPNNetworktunnel).
 
@@ -277,47 +282,71 @@ In your Jenkins Master, you might need to configure credentials to connect to th
 
 #### 2.2. Run terraform commands.
 
-After the credentials are configured, we will creates the `cicd` project (with the Jenkins Agent and its custom service account) and the `seed` project (with GCS state bucket and Terraform custom service account).
-- Run the terraform script with the commands below:
+After the credentials are configured, we will create the `cicd` project (with the Jenkins Agent and its custom service account) and the `seed` project (with GCS state bucket and Terraform custom service account).
+- **Use Terraform 0.12.24** to run the terraform script with the commands below:
     ```
+    terraform init
     terraform plan
     terraform apply
     ```
 
-Once the terraform script completes, note that communication between on-prem and the `cicd` project won’t happen yet - you will configure the VPN network connectivity in step [3. Manual steps after running bootstrap terraform script](3.Manualstepsafterrunningbootstrapterraformscript), which is done using `gcloud` commands instead of a terraform module.
+The Terraform script will take about 10 to 15 minutes. Once it completes, note that communication between on-prem and the `cicd` project won’t happen yet - you will configure the VPN network connectivity in step [3. Manual steps after running bootstrap terraform script](3.Manualstepsafterrunningbootstrapterraformscript).
 
 ### 3. Manual steps after running bootstrap terraform script
 - Required information:
-  - From previous step [2.2. Run terraform commands](#2.2.RunTerraformCommands):
-    - cicd project ID:
-    - Default region
-    - Jenkins Agent VPC name
-    - Terraform State bucket name: This is the bucket created in the `seed` project, using  which name starts with `cft-tfstate-*`.
+  - From previous step [2.2. Run terraform commands](#2.2.RunTerraformCommands) (you can run `terraform output` to find these values):
+    - CICD project ID
+    - Default region (see it in the `variables.tf` file or in `terraform.tfvars` if you changed it)
+    - Jenkins Agent VPC name, which was created in the `cicd` project
+    - Terraform State bucket name, which was created in the `seed` project
   - Usually, from your network administrator:
     - On-prem VPN public IP Address
     - Jenkins Master’s network CIDR
     - Jenkins Agent network CIDR
     - VPN PSK (pre-shared secret key)
 
-#### 3.1. Move Terraform state to the GCS bucket created in the seed project
+#### 3.1. Update Jenkinsfile and move Terraform state to the GCS bucket created in the seed project
 
-1. Show the GCS bucket name with this command
+1. Update the `Jenkinsfile` by replacing the `_TF_SA_EMAIL` text with the name of your Terraform Service Account in the `seed` project (you can run `terraform output` to find this value). Modify accordingly based on your current directory:
+   ```
+   TF_SERVICE_ACCOUNT_EMAIL=`(terraform output terraform_sa_email)`
+   sed -i "s/_TF_SA_EMAIL/$TF_SERVICE_ACCOUNT_EMAIL/" Jenkinsfile
+   ```
+
+   **If using MacOS:**
     ```
-    terraform show | grep gcs_bucket_tfstate
+    TF_SERVICE_ACCOUNT_EMAIL=`(terraform output terraform_sa_email)`
+    sed -i ".bak" "s/_TF_SA_EMAIL/$TF_SERVICE_ACCOUNT_EMAIL/" Jenkinsfile
+    rm Jenkinsfile.bak
     ```
 
-1. Run this command to copy the `backend.tf` file and update the GCS bucket name. Replace the `GCS_BUCKET_NAME` with the name of your bucket from the previous step.
+1. Run this command to copy the `backend.tf` file and update the GCS bucket name. Replace the `TF_STATE_GCS_BUCKET_NAME` with the name of your bucket (you can run `terraform output` to find these values).
     ```
-    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done
+    TF_STATE_GCS_BUCKET_NAME=`(terraform output gcs_bucket_tfstate)`
+    mv backend.tf.example backend.tf
+    sed -i "s/UPDATE_ME/$TF_STATE_GCS_BUCKET_NAME/" backend.tf
+    ```
+
+   **If using MacOS:**
+    ```
+    TF_STATE_GCS_BUCKET_NAME=`(terraform output gcs_bucket_tfstate)`
+    mv backend.tf.example backend.tf
+    sed -i ".bak" "s/UPDATE_ME/$TF_STATE_GCS_BUCKET_NAME/" backend.tf
+    rm backend.tf.bak
     ```
 
 1. Re-run `terraform init` and agree to copy state to gcs when prompted
     ```
     terraform init
     ```
-
-1. agree to copy state to gcs when prompted.
     - (Optional) Run `terraform apply` to verify state is configured correctly. You can confirm the terraform state is now in that bucket by visiting the bucket url in your seed project.
+
+1. Commit changes and push to the `plan` branch in your repository <YOUR_NEW_REPO_CLONE-0-bootstrap> (the branch plan is not a special one. Any branch which name is different from dev, nonprod or prod will trigger a terraform plan):
+    ```
+    git add backend.tf
+    git commit -m "Your message - Terraform Backend configuration using GCS"
+    git push
+    ```
 
 #### 3.2. Configure VPN Network tunnel
 
@@ -326,12 +355,16 @@ Configure VPN Network tunnel to enable connectivity between the `cicd` project a
 1. Supply the required values for the bash variables below:
     ```
     # Project variables:
-    CICD_PROJECT_ID="prj-cicd-*"
-    DEFAULT_REGION="us-central1"# Jenkins Network environment variables:
-    ONPREM_VPN_PUBLIC_IP_ADDRESS="1.1.1.1"
+    CICD_PROJECT_ID=`(terraform output cicd_project_id)`
+    DEFAULT_REGION="us-central1"
+
+    # Jenkins Network environment variables:
+    ONPREM_VPN_PUBLIC_IP_ADDRESS="x.x.x.x"
     JENKINS_MASTER_NETWORK_CIDR="10.1.0.0/24"
     JENKINS_AGENT_NETWORK_CIDR="10.2.0.0/24"
-    JENKINS_AGENT_VPC_NAME="vpc-b-jenkinsagents"# New VPN variables
+    JENKINS_AGENT_VPC_NAME="vpc-b-jenkinsagents"
+
+    # New VPN variables
     VPN_PSK_SECRET="my-secret"
     CICD_VPN_PUBLIC_IP_NAME="cicd-vpn-external-static-ip"
     CICD_VPN_NAME="vpn-from-onprem-to-cicd"
@@ -405,13 +438,19 @@ Configure VPN Network tunnel to enable connectivity between the `cicd` project a
       --destination-range $JENKINS_MASTER_NETWORK_CIDR
     ```
 
-    The VPN might show the message `First Handshake` for around 5 minutes. When the VPN is ready, the Status will show `Tunnel is up and running`. At this point, your Jenkins Master (on-prem) and Jenkins Agent (in cicd project) must have network connectivity through the VPN.
+    Assuming your network administrator already configured the on-prem end of the VPN, the CICD end of the VPN might show the message `First Handshake` for around 5 minutes. When the VPN is ready, the status will show `Tunnel is up and running`. At this point, your Jenkins Master (on-prem) and Jenkins Agent (in cicd project) must have network connectivity through the VPN.
 
-1. Using the Jenkins Web UI, connect to the Agent and troubleshoot network connectivity if needed.
+1. Using the Jenkins Web UI:
+    1. Connect to the [SSH Agent](https://plugins.jenkins.io/ssh-agent) and troubleshoot network connectivity if needed.
+    1. Test that your Master can deploy a pipeline to the Jenkins Agent in GCP (you can test by running with a simple `echo "Hello World"` project / job) from the Jenkins Web UI.
 
-1. Using the Jenkins Web UI, test that your Master can deploy a pipeline to the Jenkins Agent in GCP (you can test by running with a simple `echo "Hello World"` project / job) from the Jenkins Web UI.
+#### 3.3. Configure the Git repositories and Multibranch Pipeline in your Jenkins Master
 
-1. Use the automated Pipeline provided in the `Jenkinsfile` to deploy new infrastructure in the Step `1-org`
+Note that this is section is considered out of the scope of this document, since there are multiple options on how to configure the Git repositories and **Multibranch Pipeline** in your Jenkins Master. Here we provide some guidance that you should keep in mind while completing this step. Visit the [Jenkins website](www.jenkins.io) for more information, there are plenty of Jenkins Plugins that could help with the task.
+
+1. Assuming your new five Git repositories are private, you will need to configure new "credentials" In your Jenkins Master web UI, so it can connect to the repositories.
+1. You will need to configure a "**Multibranch Pipeline**" for each one of the repositories. Note that the `Jenkinsfile` and `tf-wrapper.sh` files use the `$BRANCH_NAME` environment variable, which is **only available in Multibranch Pipelines** in Jenkins.
+1. You will also want to configure automatic triggers in each one of the Jenkins Multibranch Pipelines, unless you want to run the pipelines manually from the Jenkins Web UI after each commit to your repositories.
 
 ## Contributing
 

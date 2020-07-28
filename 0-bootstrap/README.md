@@ -74,5 +74,6 @@ If you are using `jenkins_bootstrap`, please follow the instructions on how to r
 
 ### Software
 
--   [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
--   [Terraform](https://www.terraform.io/downloads.html) >= 0.12.6
+- [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
+- [Terraform](https://www.terraform.io/downloads.html) = 0.12.24
+    - The scripts in this codebase use Terraform v0.12.24. You must use the same version in the manual steps to avoid [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.

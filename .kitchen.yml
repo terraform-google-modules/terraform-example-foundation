@@ -76,10 +76,14 @@ suites:
     verifier:
       color: false
       systems:
-        - name: dns_hub
+        - name: inspec-gcp
+          backend: gcp
+          controls:
+            - gcp_dns_hub
+        - name: local
           backend: local
           controls:
-            - dns_hub
+            - gcloud_dns_hub
   - name: networks
     driver:
       root_module_directory: test/fixtures/networks/

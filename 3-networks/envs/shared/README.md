@@ -33,4 +33,10 @@ The purpose of this step is to setup the global [DNS Hub](https://cloud.google.c
 | target\_name\_server\_addresses | List of target name servers for forwarding zone. | list(string) | n/a | yes |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| dns\_hub\_project\_id | The DNS hub project ID |
+
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

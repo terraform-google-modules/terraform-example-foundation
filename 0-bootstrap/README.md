@@ -1,6 +1,6 @@
 # 0-bootstrap
 
-The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures Cloud Build & Cloud Source Repos for foundations code in subsequent stages.
+The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a CICD pipeline for foundations code in subsequent stages. The CICD pipeline can use either Cloud Build & Cloud Source Repos or Jenkins & your own Git repos (which might live on-prem).
 
 ## Prerequisites
 
@@ -12,7 +12,11 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 
 Further details of permissions required and resources created, can be found in the bootstrap module [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
-## Usage
+## 0-bootstrap usage to deploy Jenkins
+
+If you are using the `jenkins_bootstrap` sub-module, please see [README-Jenkins](./README-Jenkins.md) for requirements and instructions on how to run the 0-bootstrap step. Using Jenkins requires a few manual steps, including configuring connectivity with your current Jenkins Master environment.
+
+## 0-bootstrap usage to deploy Cloud Build
 
 1. Change into 0-bootstrap folder
 1. Copy tfvars by running `cp terraform.example.tfvars terraform.tfvars` and update `terraform.tfvars` with values from your environment.
@@ -29,10 +33,6 @@ Currently, the bucket information is replaced in the state backends as a part of
 
 1. Change into the main directory for the terraform-example-foundation.
 1. Run this command ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done``` where `GCS_BUCKET_NAME` is the name of your bucket from the steps executed above.
-
-### If you are using Jenkins
-
-If you are using the `jenkins_bootstrap` sub-module, please see the [README](./modules/jenkins-agent/README.md) for the requirements and instructions on how to run the bootstrap step, which include implementing VPN, configuring your Jenkins Master among other steps.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
@@ -66,14 +66,8 @@ If you are using the `jenkins_bootstrap` sub-module, please see the [README](./m
 
 ## Requirements
 
-If you are using `jenkins_bootstrap`, please see the [README](./modules/jenkins-agent/README.md) for the requirements.
-
-## Instructions
-
-If you are using `jenkins_bootstrap`, please follow the instructions on how to run the bootstrap step with the `jenkins_bootstrap` sub-module described in the [README](./modules/jenkins-agent/README.md), which include implementing VPN, configuring your Jenkins Master among other steps.
-
 ### Software
 
 - [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
 - [Terraform](https://www.terraform.io/downloads.html) = 0.12.24
-    - The scripts in this codebase use Terraform v0.12.24. You must use the same version in the manual steps to avoid [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.
+    - The scripts in this codebase use Terraform v0.12.24. You should use the same version in the manual steps during 0-bootstrap to avoid possible  [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.

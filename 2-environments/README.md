@@ -29,22 +29,18 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 
-### Run terraform locally
-1. Change into 2-environments folder
-1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap. Copy terraform.tfvars into each of the folders within the envs/ folder.
-1. Within each envs/ folder, update backend.tf with your bucket name from the bootstrap step.
-1. In sequence, change into each folder within the envs/ folder and run the following commands:
-    1. Run `terraform init`
-    1. Run `terraform plan` and review output
-    1. Run `terraform apply`
-
 ### Run tf-wrapper.sh script locally
 1. Change into 2-environments folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
 1. Update backend.tf with your bucket from bootstrap. You can run
-```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```
+```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
+You can run in the 0-bootstap folder `terraform output gcs_bucket_tfstate` to obtain the bucket name.
+
+We will now deploy each of our environments(dev/prod/stage) using this script.
+When checked into a VCS, each environment corresponds to a branch and only the corresponding environment is applied.
+
 1. Run `./tf-wrapper.sh init dev`
 1. Run `./tf-wrapper.sh plan dev` and review output.
 1. Run `./tf-wrapper.sh apply dev`
@@ -55,4 +51,4 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
 1. Run `./tf-wrapper.sh plan prod` and review output.
 1. Run `./tf-wrapper.sh apply prod`
 
-If you got errors or made any changes on terraform code or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`
+If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`

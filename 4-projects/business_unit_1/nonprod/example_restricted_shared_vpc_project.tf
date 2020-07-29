@@ -22,7 +22,6 @@ module "restricted_shared_vpc_project" {
   folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "nonprod"
-  env_code                    = "n"
   vpc_type                    = "restricted"
 
   activate_apis                      = ["accesscontextmanager.googleapis.com"]
@@ -30,7 +29,7 @@ module "restricted_shared_vpc_project" {
   vpc_service_control_perimeter_name = "accessPolicies/${var.policy_id}/servicePerimeters/${var.perimeter_name}"
 
   # Metadata
-  project_prefix    = "bu1-n-sample-restricted"
+  project_prefix    = "sample-restrict"
   application_name  = "bu1-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

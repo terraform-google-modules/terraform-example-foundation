@@ -25,3 +25,8 @@ default_region2 = "us-west1"
 domain = "example.com."
 
 access_context_manager_policy_id = 000000000000
+
+target_name_server_addresses = ["8.8.8.8", "8.8.8.4"]
+
+//Optional - for development.  Will place all resources under a specific folder instead of org root
+//parent_folder = "000000000000"

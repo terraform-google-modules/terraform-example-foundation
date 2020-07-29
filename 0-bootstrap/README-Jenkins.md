@@ -40,7 +40,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
      - Access to the Jenkins Master host to run `ssh-keygen` command
      - Access to the Jenkins Master Web UI
      - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent) installed in your Jenkins Master
-     - Private IP address for the Jenkins Agent: usually assigned by your network administrator. You will use this IP for the GCE instance that will be created in the `cicd` GCP Project in step [II. Create the SEED and CICD projects using Terraform](#II.CreatetheSEEDandCICDprojectsusingTerraform).
+     - Private IP address for the Jenkins Agent: usually assigned by your network administrator. You will use this IP for the GCE instance that will be created in the `cicd` GCP Project in step [II. Create the SEED and CICD projects using Terraform](#II.-Create-the-SEED-and-CICD-projects-using-Terraform).
      - Access to create five Git repositories, one for each directory in this [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation) (`0-bootstrap, 1-org, 2-environments, 3-networks, 4-projects`). These are usually private repositories that might be on-prem.
 
 1. Generate a SSH key pair. In the Jenkins Master host, use the `ssh-keygen` command to generate a SSH key pair.
@@ -149,7 +149,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
     terraform plan
     terraform apply
     ```
-    - The Terraform script will take about 10 to 15 minutes. Once it finishes, note that communication between on-prem and the `prj-cicd` project won’t happen yet - you will configure the VPN network connectivity in step [III. Create VPN connection](#III.CreateVPNconnection).
+    - The Terraform script will take about 10 to 15 minutes. Once it finishes, note that communication between on-prem and the `prj-cicd` project won’t happen yet - you will configure the VPN network connectivity in step [III. Create VPN connection](#III.-Create-VPN-connection).
 
 1. Move Terraform State to the GCS bucket created in the seed project
     - Run this command to copy the `backend.tf` file and update the GCS bucket name. Replace the `TF_STATE_GCS_BUCKET_NAME` with the name of your bucket (you can run `terraform output` to find these values).

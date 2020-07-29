@@ -36,10 +36,10 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
 1. Update backend.tf with your bucket from bootstrap. You can run
 ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
-You can run in the 0-bootstap folder `terraform output gcs_bucket_tfstate` to obtain the bucket name.
+You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
 
-We will now deploy each of our environments(dev/prod/stage) using this script.
-When checked into a VCS, each environment corresponds to a branch and only the corresponding environment is applied.
+We will now deploy each of our environments(dev/prod/nonprod) using this script.
+When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 2-environments step and only the corresponding environment is applied.
 
 1. Run `./tf-wrapper.sh init dev`
 1. Run `./tf-wrapper.sh plan dev` and review output.

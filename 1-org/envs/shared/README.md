@@ -56,16 +56,7 @@ You can choose not to enable the Data Access logs by setting variable `data_acce
     # Edit the file to provide the necessary values
     vi envs/shared/terraform.tfvars
     ```
-1. Run this command to update the `backend.tf` file with the Terraform State GCS bucket name. Replace the `TF_STATE_GCS_BUCKET_NAME` with the name of your bucket (you can re-run `terraform output` in the 0-bootstrap directory to find these values).
-    ```
-    sed -i 's/UPDATE_ME/TF_STATE_GCS_BUCKET_NAME/' envs/shared/backend.tf
-    ```
 
-   **If using MacOS:**
-    ```
-    sed -i '.bak' 's/UPDATE_ME/TF_STATE_GCS_BUCKET_NAME/' envs/shared/backend.tf
-    rm envs/shared/backend.tf.bak
-    ```
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
 1. Push your plan branch `git push --set-upstream origin plan`. The branch `plan` is not a special one. Any branch which name is different from `dev`, `nonprod` or `prod` will trigger a terraform plan.
     - Assuming you configured an automatic trigger in your Jenkins Master (see [Jenkins sub-module README](../../../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](www.jenkins.io) for more details.

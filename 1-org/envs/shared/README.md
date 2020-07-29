@@ -29,7 +29,8 @@ You can choose not to enable the Data Access logs by setting variable `data_acce
 1. Merge changes to prod branch with `git checkout -b prod` and `git push origin prod`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
-### Run tf-wrapper.sh script locally
+
+### Run terraform locally
 1. Change into 1-org folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`

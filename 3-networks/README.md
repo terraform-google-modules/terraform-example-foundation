@@ -40,7 +40,8 @@ The purpose of this step is to :
 1. Merge changes to nonprod with `git checkout -b nonprod` and `git push origin nonprod`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
-### Run tf-wrapper.sh script locally
+
+### Run terraform locally
 1. Change into 3-networks folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`

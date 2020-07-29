@@ -3,6 +3,8 @@ This is an example repo showing how the CFT Terraform modules can be composed to
 The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the code leverages Google Cloud Build for deployment of the Terraform from step 1 onwards.
 Cloud Build has been chosen to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
 
+**Note:** when running the examples in this repository, you may receive an error like `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.` when applying terraform. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_sa_email` created in `0-bootstrap` should also be listed in Email addresses that will be used to create projects in that support form.
+
 ## Overview
 This repo contains several distinct Terraform projects each within their own directory that must be applied separately, but in sequence.
 Each of these Terraform projects are to be layered on top of each other, running in the following order.

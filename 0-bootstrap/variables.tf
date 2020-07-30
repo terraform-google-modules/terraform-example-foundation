@@ -58,9 +58,9 @@ variable "skip_gcloud_download" {
   default     = true
 }
 
-/////* ----------------------------------------
-////    Specific to jenkins_bootstrap module
-////   ---------------------------------------- */
+/* ----------------------------------------
+    Specific to jenkins_bootstrap module
+   ---------------------------------------- */
 //// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 //variable "jenkins_agent_gce_subnetwork_cidr_range" {
 //  description = "The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0)"

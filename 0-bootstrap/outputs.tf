@@ -77,6 +77,11 @@ output "kms_crypto_key" {
 //  value       = module.jenkins_bootstrap.jenkins_agent_gce_instance_id
 //}
 //
+//output "jenkins_agent_vpc_id" {
+//  description = "Jenkins Agent VPC name."
+//  value       = module.jenkins_bootstrap.jenkins_agent_vpc_id
+//}
+//
 //output "jenkins_agent_sa_email" {
 //  description = "Email for privileged custom service account for Jenkins Agent GCE instance."
 //  value       = module.jenkins_bootstrap.jenkins_agent_sa_email

@@ -16,7 +16,7 @@ The purpose of this step is to set updevelopment,non-production, and production 
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/2-environments/ .` (modify accordingly based on your current directory)
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
-1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . `1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository  (modify accordingly based on your current directory). to the root of your new repository (modify accordingly based on your current directory).
+1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository  (modify accordingly based on your current directory). to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values).
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
@@ -42,7 +42,7 @@ The purpose of this step is to set updevelopment,non-production, and production 
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
     ```
-1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . `1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository  (modify accordingly based on your current directory). to the root of your new repository (modify accordingly based on your current directory).
+1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository  (modify accordingly based on your current directory). to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values).
 1. Commit changes with `git add .` and `git commit -m 'Your message'`

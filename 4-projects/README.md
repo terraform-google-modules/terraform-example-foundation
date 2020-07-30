@@ -48,7 +48,7 @@ If your user does not have access to run the commands above and you are in the o
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
     ```
-1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . `1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository  (modify accordingly based on your current directory). to the root of your new repository (modify accordingly based on your current directory).
+1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository  (modify accordingly based on your current directory). to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
 1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap.
 1. Rename `development.auto.example.tfvars` to `development.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_d_shared_restricted`.

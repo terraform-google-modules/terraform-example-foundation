@@ -7,7 +7,7 @@ The purpose of this step is to setup folder structure and projects for applicati
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
-1. 4-projects executed successfully.
+1. 3-networks executed successfully.
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
 1. Obtain the values for the perimeter_name variable. Can be obteined by running
 `gcloud access-context-manager perimeters list`

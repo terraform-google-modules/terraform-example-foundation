@@ -12,4 +12,3 @@
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform | string | n/a | yes |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-s

@@ -13,7 +13,30 @@ pipeline {
           '''
         }
     }
+    stage('TF plan validate all') {
+      when {
+              not {
+                      anyOf {
+                      branch 'dev'
+                      branch 'prod'
+                      branch 'nonprod'
+                  }
+              }
+      }
+      steps {
+          sh '''
+          ./tf-wrapper.sh plan_validate_all ${BRANCH_NAME} ${_POLICY_REPO}
+          '''
+        }
+    }
     stage('TF init') {
+      when {
+              anyOf {
+                  branch 'dev'
+                  branch 'prod'
+                  branch 'nonprod'
+              }
+      }
       steps {
           sh '''
           ./tf-wrapper.sh init $BRANCH_NAME
@@ -21,6 +44,13 @@ pipeline {
         }
     }
     stage('TF plan') {
+      when {
+              anyOf {
+                  branch 'dev'
+                  branch 'prod'
+                  branch 'nonprod'
+              }
+      }
       steps {
           sh '''
           ./tf-wrapper.sh plan $BRANCH_NAME
@@ -28,6 +58,13 @@ pipeline {
         }
     }
     stage('TF validate') {
+      when {
+              anyOf {
+                  branch 'dev'
+                  branch 'prod'
+                  branch 'nonprod'
+              }
+      }
       steps {
           sh '''
           ./tf-wrapper.sh validate $BRANCH_NAME $POLICY_REPO
@@ -35,6 +72,13 @@ pipeline {
         }
     }
     stage('TF apply') {
+      when {
+              anyOf {
+                  branch 'dev'
+                  branch 'prod'
+                  branch 'nonprod'
+              }
+      }
       steps {
           sh '''
           ./tf-wrapper.sh apply $BRANCH_NAME

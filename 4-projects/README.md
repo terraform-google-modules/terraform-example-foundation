@@ -40,7 +40,11 @@ The purpose of this step is to setup folder structure and projects for applicati
 1. Change into 4-projects folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`
-1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
+1. Rename common.auto.example.tfvars to common.auto.tfvars and update the file with values from your environment and bootstrap.
+1. Run ` gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"` to get the perimeter names for the access context manager policy id.
+1. Rename dev.auto.example.tfvars to dev.auto.tfvars and update the file with the perimeter_name that starts with `sp_d_shared_restricted`.
+1. Rename nonprod.auto.example.tfvars to nonprod.auto.tfvars and update the file with the perimeter_name that starts with `sp_n_shared_restricted`.
+1. Rename prod.auto.example.tfvars to prod.auto.tfvars and update the file with the perimeter_name that starts with `sp_p_shared_restricted`.
 1. Update backend.tf with your bucket from bootstrap. You can run
 ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
 You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.

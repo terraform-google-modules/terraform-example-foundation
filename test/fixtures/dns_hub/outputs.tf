@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
-
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
-
-default_region1 = "us-central1"
-
-default_region2 = "us-west1"
-
-domain = "example.com."
-
-access_context_manager_policy_id = 000000000000
+output "dns_hub_project_id" {
+  value       = module.dns_hub.dns_hub_project_id
+  description = "The DNS hub project ID"
+}

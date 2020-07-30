@@ -6,11 +6,11 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
 
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
-1. Cloud Identity / Gsuite group for monitoring admins.
+1. Cloud Identity / G Suite group for monitoring admins.
 1. Membership in the monitoring admins group for user running terraform
 
 ## Usage
-### Setup to run via Cloud Build
+### Setup to run the automated pipelines
 1. Clone repo `gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID`
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/2-environments/* .` (modify accordingly based on your current directory)
@@ -19,6 +19,8 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
+
+#### If using Cloud Build
 1. Push your plan branch to trigger a plan for all environments `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `dev`, `nonprod` or `prod` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to dev with `git checkout -b dev` and `git push origin dev`
@@ -27,6 +29,16 @@ The purpose of this step is to set up dev, nonprod, and prod environments within
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to prod with `git checkout -b prod` and `git push origin prod`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+
+#### If using Jenkins
+1. Push your plan branch to trigger a plan for all environments `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `dev`, `nonprod` or `prod` will trigger a terraform plan).
+    1. Review the plan output in your Master's web UI.
+1. Merge changes to dev with `git checkout -b dev` and `git push origin dev`
+    1. Review the apply output in your Master's web UI.
+1. Merge changes to nonprod with `git checkout -b nonprod` and `git push origin nonprod`
+    1. Review the apply output in your Master's web UI.
+1. Merge changes to prod with `git checkout -b prod` and `git push origin prod`
+    1. Review the apply output in your Master's web UI.
 
 
 ### Run terraform locally

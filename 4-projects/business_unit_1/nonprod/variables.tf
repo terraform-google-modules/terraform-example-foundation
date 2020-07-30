@@ -29,30 +29,16 @@ variable "billing_account" {
   type        = string
 }
 
-variable "default_region" {
-  description = "Default region for subnet."
-  type        = string
-  default     = "us-west1"
-}
-
 variable "skip_gcloud_download" {
   description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
   type        = bool
   default     = true
 }
 
-variable "policy_id" {
+variable "access_context_manager_policy_id" {
   type        = string
-  description = "The ID of the access context manager policy the perimeter lies in"
+  description = "The ID of the access context manager policy the perimeter lies in. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format=\"value(name)\"`."
 }
-
-/******************************************
-  Private DNS Management (Optional)
- *****************************************/
-# variable "domain" {
-#   description = "The top level domain name for the organization"
-#   type        = string
-# }
 
 variable "parent_folder" {
   description = "Optional - if using a folder for testing."

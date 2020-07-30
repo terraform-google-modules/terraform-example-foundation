@@ -22,10 +22,9 @@ module "example_floating_project" {
   folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "dev"
-  env_code                    = "d"
 
   # Metadata
-  project_prefix    = "bu2-d-sample-floating"
+  project_prefix    = "sample-floating"
   application_name  = "bu2-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

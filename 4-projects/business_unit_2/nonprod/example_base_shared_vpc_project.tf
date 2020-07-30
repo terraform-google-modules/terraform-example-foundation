@@ -22,11 +22,10 @@ module "base_shared_vpc_project" {
   folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "nonprod"
-  env_code                    = "n"
   vpc_type                    = "private"
 
   # Metadata
-  project_prefix    = "bu2-n-sample"
+  project_prefix    = "sample-private"
   application_name  = "bu2-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

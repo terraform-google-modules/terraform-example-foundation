@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+locals {
+  env_code = element(split("", var.environment), 0)
+}
 
 module "project" {
   source                      = "terraform-google-modules/project-factory/google"
@@ -21,7 +24,7 @@ module "project" {
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = var.activate_apis
-  name                        = var.project_prefix
+  name                        = "prj-${var.business_code}-${local.env_code}-${var.project_prefix}"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
@@ -40,39 +43,8 @@ module "project" {
     primary_contact   = element(split("@", var.primary_contact), 0)
     secondary_contact = element(split("@", var.secondary_contact), 0)
     business_code     = var.business_code
-    env_code          = element(split("", var.environment), 0)
+    env_code          = local.env_code
     vpc_type          = var.vpc_type
   }
 }
 
-/******************************************
-  Project subnets (Optional)
- *****************************************/
-# module "networking_project" {
-#   source = "../../modules/project_subnet"
-
-#   default_region   = var.default_region
-#   project_id       = module.project.project_id
-#   application_name = var.application_name
-
-#   enable_networking   = var.enable_networking
-#   vpc_host_project_id = data.google_compute_network.shared_vpc[0].project
-#   vpc_self_link       = data.google_compute_network.shared_vpc[0].self_link
-#   ip_cidr_range       = var.subnet_ip_cidr_range
-#   secondary_ranges    = var.subnet_secondary_ranges
-# }
-
-/******************************************
-  Private DNS Management (Optional)
- *****************************************/
-# module "dns" {
-#   source = "../../modules/private_dns"
-
-#   project_id            = module.project.project_id
-#   enable_private_dns    = var.enable_private_dns
-#   application_name      = var.application_name
-#   environment           = var.environment
-#   top_level_domain      = var.domain
-#   shared_vpc_self_link  = data.google_compute_network.shared_vpc[0].self_link
-#   shared_vpc_project_id = data.google_compute_network.shared_vpc[0].project
-# }

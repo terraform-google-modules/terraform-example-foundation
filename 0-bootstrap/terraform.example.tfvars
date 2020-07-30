@@ -26,3 +26,19 @@ default_region = "australia-southeast1"
 
 //Optional - for development.  Will place all resources under a specific folder instead of org root
 //parent_folder = "01234567890"
+
+/* ----------------------------------------
+    Specific to jenkins_bootstrap module
+   ---------------------------------------- */
+// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
+//jenkins_agent_gce_subnetwork_cidr_range = "10.2.0.0/24"
+//
+//jenkins_agent_gce_private_ip_address = "10.2.0.6"
+//
+//jenkins_agent_gce_ssh_pub_key = "ssh-rsa [KEY_VALUE] [USERNAME]"
+//
+//jenkins_agent_sa_email = "jenkins-agent-gce" # service_account_prefix will be added
+//
+//jenkins_master_ip_addresses = ["10.1.0.6/32"]
+//
+//nat_bgp_asn = "64514"

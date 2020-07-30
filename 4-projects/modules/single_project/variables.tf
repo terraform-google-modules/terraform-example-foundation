@@ -35,7 +35,7 @@ variable "impersonate_service_account" {
 }
 
 variable "project_prefix" {
-  description = "The name of the GCP project"
+  description = "The name of the GCP project. Max 16 characters with 3 character business unit code."
   type        = string
 }
 
@@ -77,11 +77,6 @@ variable "environment" {
   type        = string
 }
 
-variable "env_code" {
-  description = "A short form of the environment field"
-  type        = string
-}
-
 variable "vpc_type" {
   description = "The type of VPC to attach the project to. Possible options are private or restricted."
   type        = string
@@ -106,24 +101,3 @@ variable "vpc_service_control_perimeter_name" {
   default     = null
 }
 
-/******************************************
-  Project subnet (Optional)
- *****************************************/
-# variable "enable_networking" {
-#   description = "The flag to create subnets in shared VPC"
-#   type        = bool
-#   default     = false
-# }
-
-# variable "subnet_ip_cidr_range" {
-#   description = "The CIDR Range of the subnet to get allocated to the project"
-#   type        = string
-#   default     = ""
-# }
-
-# variable "subnet_secondary_ranges" {
-#   description = "The secondary CIDR Ranges of the subnet to get allocated to the project"
-#   type = list(object({
-#     range_name    = string
-#     ip_cidr_range = string
-#   }))

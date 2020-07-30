@@ -41,26 +41,3 @@ The purpose of this step is to setup folder structure and projects for applicati
 1. Run `terraform init`
 1. Run `terraform plan` and review output
 1. Run `terraform apply`
-
-### Subnetting Module (Optional)
-Creates a dedicated subnet per environment, per project and applies org policy to restrict access to only this subnet. Refer to the README [here](./modules/project_subnet/README.md) for details about this module.
-
-### Private DNS Module (Optional)
-Creates a dedicated private DNS zone per environment, per project and makes it available in the Shared VPC through DNS peering. Refer to the README [here](./modules/private_dns/README.md) for details about this module.
-
-### Example Code for Subnetting and Private DNS (Optional)
-If you have uncommented the Subnetting and Private DNS Management module from previous steps. Please also uncomment *single-project-example-optional.tf* and *standard-project-example-optional.tf* for the example code.
-
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-## Inputs
-
-| Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| access\_context\_manager\_policy\_id | The ID of the access context manager policy the perimeter lies in. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`. | string | n/a | yes |
-| billing\_account | The ID of the billing account to associated this project with | string | n/a | yes |
-| default\_region | Default region for subnet. | string | `"us-west1"` | no |
-| org\_id | The organization id for the associated services | string | n/a | yes |
-| parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform | string | n/a | yes |
-
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

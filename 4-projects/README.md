@@ -7,8 +7,10 @@ The purpose of this step is to setup folder structure and projects for applicati
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
-1. 3-networks executed successfully.
+1. 4-projects executed successfully.
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
+1. Obtain the values for the perimeter_name variable. Can be obteined by running
+`gcloud access-context-manager perimeters list`
 
 ## Usage
 ### Setup to run via Cloud Build
@@ -35,12 +37,28 @@ The purpose of this step is to setup folder structure and projects for applicati
 
 
 ### Run terraform locally
-1. Change into 4-projects folder
+1. Change into 4-projects folder.
+1. Run `cp ../build/tf-wrapper.sh .`
+1. Run `chmod 755 ./tf-wrapper.sh`
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Update backend.tf with your bucket from bootstrap.
-1. Run `terraform init`
-1. Run `terraform plan` and review output
-1. Run `terraform apply`
+1. Update backend.tf with your bucket from bootstrap. You can run
+```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
+You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
+
+We will now deploy each of our environments(dev/prod/nonprod) using this script.
+When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied.
+
+1. Run `./tf-wrapper.sh init prod`
+1. Run `./tf-wrapper.sh plan prod` and review output.
+1. Run `./tf-wrapper.sh apply prod`
+1. Run `./tf-wrapper.sh init nonprod`
+1. Run `./tf-wrapper.sh plan nonprod` and review output.
+1. Run `./tf-wrapper.sh apply nonprod`
+1. Run `./tf-wrapper.sh init dev`
+1. Run `./tf-wrapper.sh plan dev` and review output.
+1. Run `./tf-wrapper.sh apply dev`
+
+If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`
 
 ### Subnetting Module (Optional)
 Creates a dedicated subnet per environment, per project and applies org policy to restrict access to only this subnet. Refer to the README [here](./modules/project_subnet/README.md) for details about this module.

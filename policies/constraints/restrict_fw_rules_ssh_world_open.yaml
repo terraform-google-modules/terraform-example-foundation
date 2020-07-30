@@ -1,0 +1,22 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPRestrictedFirewallRulesConstraintV1
+metadata:
+  name: restrict-firewall-rule-ssh-world-open
+  annotations:
+    bundles.validator.forsetisecurity.org/scorecard-v1: security
+    bundles.validator.forsetisecurity.org/cis-v1.1: 3.06
+    description: Checks for open firewall rules allowing SSH from the internet.
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - organizations/**
+  parameters:
+    rules:
+    - direction: INGRESS
+      source_ranges:
+      - 0.0.0.0/0
+      port: '22'
+      protocol: tcp
+      enabled: 'true'
+      rule_type: allowed

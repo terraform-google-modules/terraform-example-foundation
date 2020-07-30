@@ -1,0 +1,63 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Restrict client auth methods on GKE. 
+# https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods
+
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-gke-restrict-client-auth-methods
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPGKERestrictClientAuthenticationMethodsConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties: {}
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: "#\n# Copyright 2018 Google LLC\n#\n# Licensed under the Apache License,
+        Version 2.0 (the \"License\");\n# you may not use this file except in compliance
+        with the License.\n# You may obtain a copy of the License at\n#\n#      http://www.apache.org/licenses/LICENSE-2.0\n#\n#
+        Unless required by applicable law or agreed to in writing, software\n# distributed
+        under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES
+        OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for
+        the specific language governing permissions and\n# limitations under the License.\n#\n\npackage
+        templates.gcp.GCPGKERestrictClientAuthenticationMethodsConstraintV1\n\nimport
+        data.validator.gcp.lib as lib\n\ndeny[{\n\t\"msg\": message,\n\t\"details\":
+        metadata,\n}] {\n\tconstraint := input.constraint\n\tasset := input.asset\n\tasset.asset_type
+        == \"container.googleapis.com/Cluster\"\n\tcluster := asset.resource.data\n\tmaster_auth
+        := lib.get_default(cluster, \"masterAuth\", {})\n\tcluster_version := lib.get_default(cluster,
+        \"currentMasterVersion\", \"\")\n\n\tnot check_all_disabled(master_auth, cluster_version)\n\n\tmessage
+        := sprintf(\"%v has client certificate or static password authentication enabled.\",
+        [asset.name])\n\tmetadata := {\"resource\": asset.name}\n}\n\n###########################\n#
+        Rule Utilities\n###########################\ncheck_all_disabled(master_auth,
+        cluster_version) {\n\t# For clusters before v1.12, if masterAuth is unspecified,
+        username will \n\t# be set to \"admin\", a random password will be generated,
+        and a client certificate \n\t# will be issued.\n\tre_match(\"1\\\\.(1)?[012]\\\\.\",
+        cluster_version)\n\tmaster_auth != {}\n\tauth_with_client_cert_disabled(master_auth)
+        == true\n\tauth_with_static_password_disabled(master_auth) == true\n}\n\ncheck_all_disabled(master_auth,
+        cluster_version) {\n\t# For clusters after v1.12, if masterAuth is unspecified,
+        then we have safe defaults:\n\t# no username auth, no client cert. \n\tnot
+        re_match(\"1\\\\.(1)?[012]\\\\.\", cluster_version)\n\tauth_with_client_cert_disabled(master_auth)
+        == true\n\tauth_with_static_password_disabled(master_auth) == true\n}\n\nauth_with_client_cert_disabled(master_auth)
+        {\n\t# Scan for clientCertificateConfig to make sure issueClientCertificate
+        is false.\n\tclient_cert_config := lib.get_default(master_auth, \"clientCertificateConfig\",
+        {})\n\tclient_cert_enabled := lib.get_default(client_cert_config, \"issueClientCertificate\",
+        false)\n\tclient_cert_enabled == false\n}\n\nauth_with_static_password_disabled(master_auth)
+        {\n\t# Scan for masterAuth to make sure it’s specified and username to \n\t#
+        make sure it’s empty or unspecified.\n\tuser_name := lib.get_default(master_auth,
+        \"username\", \"\")\n\tuser_name == \"\"\n}\n#ENDINLINE\n"

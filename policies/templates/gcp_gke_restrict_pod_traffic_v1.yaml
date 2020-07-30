@@ -1,0 +1,59 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Check to see if GKE pod traffic is restricted with network policy.
+
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-restrict-pod-traffic-v1
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPGKERestrictPodTrafficConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties: {}
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: "#\n# Copyright 2018 Google LLC\n#\n# Licensed under the Apache License,
+        Version 2.0 (the \"License\");\n# you may not use this file except in compliance
+        with the License.\n# You may obtain a copy of the License at\n#\n#      http://www.apache.org/licenses/LICENSE-2.0\n#\n#
+        Unless required by applicable law or agreed to in writing, software\n# distributed
+        under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES
+        OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for
+        the specific language governing permissions and\n# limitations under the License.\n#\n\npackage
+        templates.gcp.GCPGKERestrictPodTrafficConstraintV1\n\nimport data.validator.gcp.lib
+        as lib\n\ndeny[{\n\t\"msg\": message,\n\t\"details\": metadata,\n}] {\n\tconstraint
+        := input.constraint\n\tasset := input.asset\n\tasset.asset_type == \"container.googleapis.com/Cluster\"\n\n\tcontainer
+        := asset.resource.data\n\tnot check_all_enabled(container)\n\n\tmessage :=
+        sprintf(\"%v doesn't restrict traffic among pods with a network policy.\",
+        [asset.name])\n\tmetadata := {\"resource\": asset.name}\n}\n\n###########################\n#
+        Rule Utilities\n###########################\ncheck_all_enabled(container)
+        {\n\tnetwork_policy_config_enabled(container) == true\n\tpod_security_policy_config_enabled(container)
+        == true\n\tnetwork_policy_enabled(container) == true\n}\n\nnetwork_policy_config_enabled(container)
+        {\n\t# URL to network policy config: \n\t# https://cloud.google.com/kubernetes-engine/docs/reference/rest/v1beta1/projects.locations.clusters#Cluster.NetworkPolicyConfig\n\taddons_config
+        := lib.get_default(container, \"addonsConfig\", {})\n\tnetworkPolicyConfig
+        := lib.get_default(addons_config, \"networkPolicyConfig\", {})\n\tnetwork_policy_config_disabled
+        := lib.get_default(networkPolicyConfig, \"disabled\", false)\n\tnetwork_policy_config_disabled
+        == false\n}\n\npod_security_policy_config_enabled(container) = pod_security_policy_config_enabled
+        {\n\t# URL to security policy config:\n\t# https://cloud.google.com/kubernetes-engine/docs/reference/rest/v1beta1/projects.locations.clusters#Cluster.PodSecurityPolicyConfig\n\tpod_security_policy_config
+        := lib.get_default(container, \"podSecurityPolicyConfig\", {})\n\tpod_security_policy_config_enabled
+        := lib.get_default(pod_security_policy_config, \"enabled\", false)\n\tpod_security_policy_config_enabled
+        == true\n}\n\nnetwork_policy_enabled(container) = network_policy_enabled {\n\t#
+        URL to network policy: \n\t# https://cloud.google.com/kubernetes-engine/docs/reference/rest/v1beta1/projects.locations.clusters#Cluster.NetworkPolicy\n\tnetwork_policy
+        := lib.get_default(container, \"networkPolicy\", {})\n\tnetwork_policy_enabled
+        := lib.get_default(network_policy, \"enabled\", false)\n\tnetwork_policy_enabled
+        == true\n}\n#ENDINLINE\n"

@@ -1,0 +1,20 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPRestrictedFirewallRulesConstraintV1
+metadata:
+  name: restrict-firewall-rule-world-open
+  annotations:
+    bundles.validator.forsetisecurity.org/forseti-security: v2.26.0
+    bundles.validator.forsetisecurity.org/scorecard-v1: security
+    description: Checks for open firewall rules allowing ingress from the internet.
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - organizations/**
+  parameters:
+    rules:
+    - direction: INGRESS
+      source_ranges:
+      - 0.0.0.0/0
+      enabled: 'true'
+      rule_type: allowed

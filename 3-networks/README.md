@@ -56,6 +56,7 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
 
 
 ### Run terraform locally
+
 1. Change into 3-networks folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`
@@ -83,4 +84,4 @@ and only the corresponding environment is applied.
 1. Run `./tf-wrapper.sh plan dev` and review output.
 1. Run `./tf-wrapper.sh apply dev`
 
-If you received any errors or made any changes to the Terraform config or any `.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`
+If you received any errors or made any changes to the Terraform config or any `.tfvars`you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`

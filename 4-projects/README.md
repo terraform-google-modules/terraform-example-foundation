@@ -9,6 +9,10 @@ The purpose of this step is to setup folder structure and projects for applicati
 1. 2-environments executed successfully.
 1. 3-networks executed successfully.
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
+1. Obtain the values for the perimeter_name for each environment variable by running `gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"`.
+
+**Troubleshooting:**
+If your user does not have access to run the commands above and you are in the organization admins group, you can append `--impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com` to run the command as the terraform service account.
 
 ## Usage
 ### Setup to run via Cloud Build
@@ -19,7 +23,6 @@ The purpose of this step is to setup folder structure and projects for applicati
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` (modify accordingly based on your current directory)
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
 1. Rename common.auto.example.tfvars to common.auto.tfvars and update the file with values from your environment and bootstrap.
-1. Run ` gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"` to get the perimeter names for the access context manager policy id.
 1. Rename dev.auto.example.tfvars to dev.auto.tfvars and update the file with the perimeter_name that starts with `sp_d_shared_restricted`.
 1. Rename nonprod.auto.example.tfvars to nonprod.auto.tfvars and update the file with the perimeter_name that starts with `sp_n_shared_restricted`.
 1. Rename prod.auto.example.tfvars to prod.auto.tfvars and update the file with the perimeter_name that starts with `sp_p_shared_restricted`.
@@ -35,9 +38,28 @@ The purpose of this step is to setup folder structure and projects for applicati
 
 
 ### Run terraform locally
-1. Change into 4-projects folder
-1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Update backend.tf with your bucket from bootstrap.
-1. Run `terraform init`
-1. Run `terraform plan` and review output
-1. Run `terraform apply`
+1. Change into 4-projects folder.
+1. Run `cp ../build/tf-wrapper.sh .`
+1. Run `chmod 755 ./tf-wrapper.sh`
+1. Rename common.auto.example.tfvars to common.auto.tfvars and update the file with values from your environment and bootstrap.
+1. Rename dev.auto.example.tfvars to dev.auto.tfvars and update the file with the perimeter_name that starts with `sp_d_shared_restricted`.
+1. Rename nonprod.auto.example.tfvars to nonprod.auto.tfvars and update the file with the perimeter_name that starts with `sp_n_shared_restricted`.
+1. Rename prod.auto.example.tfvars to prod.auto.tfvars and update the file with the perimeter_name that starts with `sp_p_shared_restricted`.
+1. Update backend.tf with your bucket from bootstrap. You can run
+```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
+You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
+
+We will now deploy each of our environments(dev/prod/nonprod) using this script.
+When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied.
+
+1. Run `./tf-wrapper.sh init prod`
+1. Run `./tf-wrapper.sh plan prod` and review output.
+1. Run `./tf-wrapper.sh apply prod`
+1. Run `./tf-wrapper.sh init nonprod`
+1. Run `./tf-wrapper.sh plan nonprod` and review output.
+1. Run `./tf-wrapper.sh apply nonprod`
+1. Run `./tf-wrapper.sh init dev`
+1. Run `./tf-wrapper.sh plan dev` and review output.
+1. Run `./tf-wrapper.sh apply dev`
+
+If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`

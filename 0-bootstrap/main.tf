@@ -134,7 +134,7 @@ module "cloudbuild_bootstrap" {
 //  terraform_sa_name                       = module.seed_bootstrap.terraform_sa_name
 //  terraform_state_bucket                  = module.seed_bootstrap.gcs_bucket_tfstate
 //  sa_enable_impersonation                 = true
-//  jenkins_master_ip_addresses             = var.jenkins_master_ip_addresses
+//  jenkins_master_subnetwork_cidr_range    = var.jenkins_master_subnetwork_cidr_range
 //  jenkins_agent_gce_subnetwork_cidr_range = var.jenkins_agent_gce_subnetwork_cidr_range
 //  jenkins_agent_gce_private_ip_address    = var.jenkins_agent_gce_private_ip_address
 //  nat_bgp_asn                             = var.nat_bgp_asn

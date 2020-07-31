@@ -6,7 +6,7 @@ The objective of this module is to deploy a Google Cloud Platform project `prj-c
     - VPC to connect the Jenkins GCE Instance to
     - FW rules to allow communication over port 22
     - VPN connection with on-prem (or where ever your Jenkins Master is located)
-    - Custom service account `sa-jenkins-agent-gce@prj-cicd-xxxx.com` for the GCE instance. This service account is granted the access to generate tokens on the provided Terraform custom service account
+    - Custom service account `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance. This service account is granted the access to generate tokens on the provided Terraform custom service account
 Please note this module does not include an option to create a Jenkins Master. To deploy a Jenkins Master, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins).
 
 **If you don't have a Jenkins implementation and don't want one**, then we recommend you to [use the Cloud Build module](../../README.md) instead.
@@ -27,9 +27,9 @@ module "jenkins_bootstrap" {
   terraform_sa_name                       = "<SERVICE_ACCOUNT_NAME>" # normally module.seed_bootstrap.terraform_sa_name
   terraform_state_bucket                  = "<GCS_STATE_BUCKET_NAME>" # normally module.seed_bootstrap.gcs_bucket_tfstate
   sa_enable_impersonation                 = true
-  jenkins_master_ip_addresses             = ["10.1.0.6/32"]
-  jenkins_agent_gce_subnetwork_cidr_range = "10.2.0.0/24"
-  jenkins_agent_gce_private_ip_address    = "10.2.0.6"
+  jenkins_master_subnetwork_cidr_range    = ["10.1.0.6/32"]
+  jenkins_agent_gce_subnetwork_cidr_range = "172.16.1.0/24"
+  jenkins_agent_gce_private_ip_address    = "172.16.1.6"
   nat_bgp_asn                             = "BGP_ASN_FOR_NAT_CLOUD_ROUTE"
   jenkins_agent_sa_email                  = "jenkins-agent-gce" # service_account_prefix will be added
   jenkins_agent_gce_ssh_pub_key           = var.jenkins_agent_gce_ssh_pub_key

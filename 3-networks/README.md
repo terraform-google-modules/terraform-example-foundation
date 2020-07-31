@@ -18,7 +18,7 @@ The purpose of this step is to :
 
 1. Clone repo `gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID`
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan`
-1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/3-networks/* .` (modify accordingly based on your current directory)
+1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/3-networks/ .` (modify accordingly based on your current directory)
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory)
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` (modify accordingly based on your current directory)
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.

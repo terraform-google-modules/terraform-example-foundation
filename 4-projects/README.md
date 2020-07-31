@@ -16,7 +16,7 @@ The purpose of this step is to setup folder structure and projects for applicati
 ### Setup to run via Cloud Build
 1. Clone repo `gcloud source repos clone gcp-projects --project=YOUR_CLOUD_BUILD_PROJECT_ID`
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan`
-1. Copy contents of foundation to new repo `cp -R ../terraform-example-foundation/4-projects/* .` (modify accordingly based on your current directory)
+1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/4-projects/ .` (modify accordingly based on your current directory)
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` (modify accordingly based on your current directory)
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
@@ -37,6 +37,7 @@ The purpose of this step is to setup folder structure and projects for applicati
 
 
 ### Run terraform locally
+<<<<<<< HEAD
 1. Change into 4-projects folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`
@@ -86,3 +87,11 @@ If you have uncommented the Subnetting and Private DNS Management module from pr
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform | string | n/a | yes |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+=======
+1. Change into 4-projects folder
+1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
+1. Update backend.tf with your bucket from bootstrap.
+1. Run `terraform init`
+1. Run `terraform plan` and review output
+1. Run `terraform apply`
+>>>>>>> upstream/develop

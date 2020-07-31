@@ -22,11 +22,14 @@ The purpose of this step is to :
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory)
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` (modify accordingly based on your current directory)
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
-1. Within each envs/ folder rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
+1. Rename common.auto.example.tfvars to common.auto.tfvars and update the file with values from your environment and bootstrap.
+1. Rename shared.auto.example.tfvars to shared.auto.tfvars and update the file with the target_name_server_addresses.
+1. Rename access_context.auto.example.tfvars to access_context.auto.tfvars and update the file with the access_context_manager_policy_id.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
 1. You will need only once to manually plan + apply the `shared` environment since dev, nonprod and prod depend on it.
     1. cd to ./envs/shared/
     1. Update backend.tf with your bucket name from the bootstrap step.
+    1. Run `terraform init`
     1. Run `terraform plan` and review output
     1. Run `terraform apply`
     1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME
@@ -45,13 +48,16 @@ The purpose of this step is to :
 1. Change into 3-networks folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`
-1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
+1. Rename common.auto.example.tfvars to common.auto.tfvars and update the file with values from your environment and bootstrap.
+1. Rename shared.auto.example.tfvars to shared.auto.tfvars and update the file with the target_name_server_addresses.
+1. Rename access_context.auto.example.tfvars to access_context.auto.tfvars and update the file with the access_context_manager_policy_id.
 1. Update backend.tf with your bucket from bootstrap. You can run
 ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
 You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
 
 We will now deploy each of our environments(dev/prod/nonprod) using this script.
-When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 3-networks step and only the corresponding environment is applied.
+When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 3-networks step
+and only the corresponding environment is applied.
 
 1. Run `./tf-wrapper.sh init shared`
 1. Run `./tf-wrapper.sh plan shared` and review output.
@@ -66,4 +72,4 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 1. Run `./tf-wrapper.sh plan dev` and review output.
 1. Run `./tf-wrapper.sh apply dev`
 
-If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`
+If you received any errors or made any changes to the Terraform config or any `.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`

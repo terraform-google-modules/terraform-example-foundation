@@ -140,13 +140,13 @@ module "private_shared_vpc" {
   private_service_cidr       = "10.0.16.0/20"
   org_id                     = var.org_id
   parent_folder              = var.parent_folder
-  nat_enabled                = true
+  nat_enabled                = false
   nat_bgp_asn                = "64514"
   default_region1            = var.default_region1
   default_region2            = var.default_region2
   domain                     = var.domain
   bgp_asn_subnet             = "64514"
-  windows_activation_enabled = true
+  windows_activation_enabled = false
   subnets = [
     {
       subnet_name           = "sb-${local.environment_code}-shared-private-${var.default_region1}"

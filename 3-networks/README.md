@@ -14,6 +14,17 @@ The purpose of this step is to :
 
 ## Usage
 
+### OPTIONAL - Using High Availability VPN
+
+If you are not able to use dedicated interconnect, you can also use an HA VPN to access onprem.
+
+1. Rename `vpn.tf.example` to `vpn.tf` in each environment folder in `3-networks/envs/<ENV>`
+1. Create secret for VPN private preshared key `echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_PRIVATE_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-`
+1. Create secret for VPN restricted preshared key `echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_RESTRICTED_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-`
+1. Update in the file `vpn.tf` the values for `environment`, `vpn_psk_secret_name`, `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
+1. Verify other default values are valid for your environment.
+
+
 ### Setup to run via Cloud Build
 
 1. Clone repo `gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID`
@@ -32,7 +43,7 @@ The purpose of this step is to :
     1. Run `terraform init`
     1. Run `terraform plan` and review output
     1. Run `terraform apply`
-    1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME
+    1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME`
 1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `dev`, `nonprod` or `prod` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to prod with `git checkout -b prod` and `git push origin prod`
@@ -56,7 +67,7 @@ The purpose of this step is to :
 You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
 
 We will now deploy each of our environments(dev/prod/nonprod) using this script.
-When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 3-networks step
+When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks step
 and only the corresponding environment is applied.
 
 1. Run `./tf-wrapper.sh init shared`

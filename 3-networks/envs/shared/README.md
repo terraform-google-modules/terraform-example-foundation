@@ -7,16 +7,6 @@ The purpose of this step is to setup the global [DNS Hub](https://cloud.google.c
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 
-## Usage
-
-### Run terraform locally
-1. Change into 3-networks/envs/shared folder
-1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Update backend.tf with your bucket from bootstrap.
-1. Run `terraform init`
-1. Run `terraform plan` and review output
-1. Run `terraform apply`
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 

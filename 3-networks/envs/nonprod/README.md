@@ -10,28 +10,6 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 1. 3-networks/envs/shared executed successfully.
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
 
-## Usage
-
-### Run terraform locally
-1. Change into 3-networks/envs/nonprod folder
-1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Update backend.tf with your bucket from bootstrap.
-1. Run `terraform init`
-1. Run `terraform plan` and review output
-1. Run `terraform apply`
-
-
-### Using High Availability VPN
-If you are not able to use dedicated interconnect you can also use an HA VPN to access onprem.
-
-1. Rename `vpn.tf.example` to `vpn.tf` in the environment folder in `3-networks/envs/nonprod`
-1. Create secret for VPN private preshared key `echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_PRIVATE_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-`
-1. Create secret for VPN restricted preshared key `echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_RESTRICTED_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-`
-1. Update in the file `vpn.tf` the values for `environment`, `vpn_psk_secret_name`, `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
-1. Verify other default values are valid for your environment.
-
-__Note:__ You can get the environment secrets project executing `gcloud projects list --filter="labels.environment=nonprod labels.application_name=env-secrets"`
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 

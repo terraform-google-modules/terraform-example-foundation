@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-target_name_server_addresses = ["8.8.8.8", "8.8.8.4"]
+target_name_server_addresses = ["192.168.0.1", "192.168.0.2"]

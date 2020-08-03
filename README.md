@@ -45,7 +45,7 @@ Usage instructions are available in the bootstrap [README](./0-bootstrap/README.
 
 ### [1. org](./1-org/)
 
-The purpose of this stage is to set up the common folder used to house projects which contain shared resources such as DNS Hub, nterconnect, SCC Notification, org level secrets and org level logging.
+The purpose of this stage is to set up the common folder used to house projects which contain shared resources such as DNS Hub, Interconnect, SCC Notification, org level secrets and org level logging.
 This will create the following folder & project structure:
 
 ```
@@ -75,15 +75,17 @@ Under the common folder, one project is created. This project will host the DNS 
 
 Under the common folder, one project is created. This project will host the Interconnect infrastructure for the organization.
 
-### SCC Notification
+#### SCC Notification
 
 Under the common folder, one project is created. This project will host the SCC Notification infra structure at organization level.
 This project will contain a Pub/Sub topic and subscription, a SCC Notification configured to send all new Findings to the topic created.
 
 
-### Secrets
+#### Secrets
 
 Under the common folder, one project is created. This project will host the Secret Manager for secrets shared by the organization.
+
+Usage instructions are available for the org step in the [README](./1-org/README.md).
 
 ### [2. environments](./2-environments/)
 
@@ -111,15 +113,20 @@ example-organization
 
 #### Monitoring
 
-Under the environment folder, a project is created per environment (dev, prod & nonprod) which is intended to be used as a Cloud Monitoring workspace for all projects in that environment. Please note that creating the workspace and linking projects can currently only be completed through the Cloud Console. If you have strong IAM requirements for these monitoring workspaces, it is worth considering creating these at a more granular level such as per business unit or per application.
+Under the environment folder, a project is created per environment (dev, prod & nonprod) which is intended to be used as a [Cloud Monitoring workspace](https://cloud.google.com/monitoring/workspaces) for all projects in that environment.
+Please note that creating the [workspace and linking projects](https://cloud.google.com/monitoring/workspaces/create) can currently only be completed through the Cloud Console.
+If you have strong IAM requirements for these monitoring workspaces, it is worth considering creating these at a more granular level such as per business unit or per application.
 
 #### Networking
 
-Under the environment folder, a project is created per environment (dev, prod & nonprod) which is intended to be used as a Shared VPC Host project for all projects in that environment. This stage only creates the projects and enables the correct APIs, the following networks stage creates the actual Shared VPC networks.
+Under the environment folder, a project is created per environment (dev, prod & nonprod) which is intended to be used as a [Shared VPC Host project](https://cloud.google.com/vpc/docs/shared-vpc) for all projects in that environment.
+This stage only creates the projects and enables the correct APIs, the following networks stage creates the actual Shared VPC networks.
 
 #### Secrets
 
 Under the environment folder, one project is created. This project will host the Secret Manager for secrets shared by the environment.
+
+Usage instructions are available for the org step in the [README](./2-environments/README.md).
 
 ### [3. networks](./3-networks/)
 

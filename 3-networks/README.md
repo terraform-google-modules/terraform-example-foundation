@@ -3,7 +3,7 @@
 The purpose of this step is to :
 
 - Setup the global [DNS Hub](https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones).
-- Setup private and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect and baseline firewall rules for each environment.
+- Setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect and baseline firewall rules for each environment.
 
 ## Prerequisites
 
@@ -34,7 +34,7 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . `1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository  (modify accordingly based on your current directory). to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
 1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap.
-1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with the `target_name_server_addresses`.
+1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with the `target_name_server_addresses` (the list of target name servers for the DNS forwarding zone in the DNS Hub).
 1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
 1. You will need to manually plan + apply the `shared` environment (only once) since dev, nonprod and prod depend on it.

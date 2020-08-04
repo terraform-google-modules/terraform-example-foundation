@@ -19,7 +19,7 @@ locals {
   env                       = "dev"
   restricted_project_id     = data.google_projects.restricted_host_project.projects[0].project_id
   restricted_project_number = data.google_project.restricted_host_project.number
-  private_project_id        = data.google_projects.private_project.projects[0].project_id
+  base_project_id           = data.google_projects.base_project.projects[0].project_id
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
 }
 
@@ -40,8 +40,8 @@ data "google_project" "restricted_host_project" {
   project_id = data.google_projects.restricted_host_project.projects[0].project_id
 }
 
-data "google_projects" "private_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=private-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
+data "google_projects" "base_project" {
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=base-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
 }
 
 /******************************************
@@ -132,11 +132,10 @@ module "restricted_shared_vpc" {
  Base shared VPC
 *****************************************/
 
-module "private_shared_vpc" {
-  source                     = "../../modules/standard_shared_vpc"
-  project_id                 = local.private_project_id
+module "base_shared_vpc" {
+  source                     = "../../modules/base_shared_vpc"
+  project_id                 = local.base_project_id
   environment_code           = local.environment_code
-  vpc_label                  = "private"
   private_service_cidr       = "10.0.144.0/20"
   org_id                     = var.org_id
   parent_folder              = var.parent_folder
@@ -149,7 +148,7 @@ module "private_shared_vpc" {
   windows_activation_enabled = false
   subnets = [
     {
-      subnet_name           = "sb-${local.environment_code}-shared-private-${var.default_region1}"
+      subnet_name           = "sb-${local.environment_code}-shared-base-${var.default_region1}"
       subnet_ip             = "10.0.128.0/21"
       subnet_region         = var.default_region1
       subnet_private_access = "true"
@@ -157,7 +156,7 @@ module "private_shared_vpc" {
       description           = "First ${local.env} subnet example."
     },
     {
-      subnet_name           = "sb-${local.environment_code}-shared-private-${var.default_region2}"
+      subnet_name           = "sb-${local.environment_code}-shared-base-${var.default_region2}"
       subnet_ip             = "10.0.136.0/21"
       subnet_region         = var.default_region2
       subnet_private_access = "true"
@@ -166,12 +165,12 @@ module "private_shared_vpc" {
     }
   ]
   secondary_ranges = {
-    "sb-${local.environment_code}-shared-private-${var.default_region1}" = [{
-      range_name    = "rn-${local.environment_code}-shared-private-${var.default_region1}-gke-pod"
+    "sb-${local.environment_code}-shared-base-${var.default_region1}" = [{
+      range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
       ip_cidr_range = "192.168.96.0/19"
       },
       {
-        range_name    = "rn-${local.environment_code}-shared-private-${var.default_region1}-gke-svc"
+        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-svc"
         ip_cidr_range = "192.168.128.0/23"
       }
     ]
@@ -188,21 +187,21 @@ module "private_shared_vpc" {
 # module "shared_base_interconnect" {
 #   source = "../../modules/dedicated_interconnect"
 
-#   vpc_name = "${local.environment_code}-shared-private"
+#   vpc_name = "${local.environment_code}-shared-base"
 
 #   region1                        = var.default_region1
-#   region1_router1_name           = module.private_shared_vpc.region1_router1.router.name
+#   region1_router1_name           = module.base_shared_vpc.region1_router1.router.name
 #   region1_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-1"
 #   region1_interconnect1_location = "las-zone1-770"
-#   region1_router2_name           = module.private_shared_vpc.region1_router2.router.name
+#   region1_router2_name           = module.base_shared_vpc.region1_router2.router.name
 #   region1_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-2"
 #   region1_interconnect2_location = "las-zone1-770"
 
 #   region2                        = var.default_region2
-#   region2_router1_name           = module.private_shared_vpc.region2_router1.router.name
+#   region2_router1_name           = module.base_shared_vpc.region2_router1.router.name
 #   region2_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-3"
 #   region2_interconnect1_location = "lax-zone2-19"
-#   region2_router2_name           = module.private_shared_vpc.region2_router2.router.name
+#   region2_router2_name           = module.base_shared_vpc.region2_router2.router.name
 #   region2_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-4"
 #   region2_interconnect2_location = "lax-zone1-403"
 

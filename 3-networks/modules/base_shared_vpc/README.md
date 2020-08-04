@@ -23,7 +23,6 @@
 | project\_id | Project ID for Private Shared VPC. | string | n/a | yes |
 | secondary\_ranges | Secondary ranges that will be used in some of the subnets | object | `<map>` | no |
 | subnets | The list of subnets being created | list(map(string)) | `<list>` | no |
-| vpc\_label | Label for VPC. | string | n/a | yes |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | bool | `"false"` | no |
 
 ## Outputs

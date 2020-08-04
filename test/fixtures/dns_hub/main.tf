@@ -19,7 +19,7 @@ module "dns_hub" {
   default_region1              = "us-central1"
   default_region2              = "us-west1"
   domain                       = var.domain
-  target_name_server_addresses = ["8.8.8.8", "8.8.8.4"]
+  target_name_server_addresses = ["192.168.0.1", "192.168.0.2"]
   terraform_service_account    = var.terraform_sa_email
   parent_folder                = var.parent_folder
   org_id                       = var.org_id

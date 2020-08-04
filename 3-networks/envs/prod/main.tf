@@ -24,7 +24,7 @@ locals {
 }
 
 data "google_active_folder" "env" {
-  display_name = local.env
+  display_name = "fldr-${local.env}"
   parent       = local.parent_id
 }
 

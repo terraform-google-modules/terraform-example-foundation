@@ -15,7 +15,7 @@
  */
 
 module "dev" {
-  source                           = "../../../3-networks/envs/dev"
+  source                           = "../../../3-networks/envs/development"
   org_id                           = var.org_id
   access_context_manager_policy_id = var.policy_id
   default_region2                  = "us-central1"
@@ -26,7 +26,7 @@ module "dev" {
 }
 
 module "nonprod" {
-  source                           = "../../../3-networks/envs/nonprod"
+  source                           = "../../../3-networks/envs/non-production"
   org_id                           = var.org_id
   access_context_manager_policy_id = var.policy_id
   default_region2                  = "us-central1"
@@ -37,7 +37,7 @@ module "nonprod" {
 }
 
 module "prod" {
-  source                           = "../../../3-networks/envs/prod"
+  source                           = "../../../3-networks/envs/production"
   org_id                           = var.org_id
   access_context_manager_policy_id = var.policy_id
   default_region2                  = "us-central1"

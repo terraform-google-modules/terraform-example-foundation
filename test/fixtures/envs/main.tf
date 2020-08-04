@@ -15,7 +15,7 @@
  */
 
 module "dev" {
-  source                     = "../../../2-environments/envs/dev"
+  source                     = "../../../2-environments/envs/development"
   org_id                     = var.org_id
   billing_account            = var.billing_account
   monitoring_workspace_users = var.group_email
@@ -24,7 +24,7 @@ module "dev" {
 }
 
 module "nonprod" {
-  source                     = "../../../2-environments/envs/nonprod"
+  source                     = "../../../2-environments/envs/non-production"
   org_id                     = var.org_id
   billing_account            = var.billing_account
   monitoring_workspace_users = var.group_email
@@ -33,7 +33,7 @@ module "nonprod" {
 }
 
 module "prod" {
-  source                     = "../../../2-environments/envs/prod"
+  source                     = "../../../2-environments/envs/production"
   org_id                     = var.org_id
   billing_account            = var.billing_account
   monitoring_workspace_users = var.group_email

@@ -23,6 +23,6 @@ locals {
  *****************************************/
 
 resource "google_folder" "common" {
-  display_name = "common"
+  display_name = "fldr-common"
   parent       = local.parent
 }

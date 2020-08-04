@@ -1,7 +1,8 @@
 # terraform-example-foundation
-This is an example repo showing how the CFT Terraform modules can be composed to build a secure GCP foundation.
+This is an example repo showing how the CFT Terraform modules can be composed to build a secure GCP foundation, following the [Google Cloud security foundations blueprint](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the code leverages Google Cloud Build for deployment of the Terraform from step 1 onwards.
 Cloud Build has been chosen to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
+Jenkins is also avaible to be used instead of Cloud Build.
 
 ## Overview
 This repo contains several distinct Terraform projects each within their own directory that must be applied separately, but in sequence.

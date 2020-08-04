@@ -28,10 +28,10 @@ networking_project_apis = ['compute.googleapis.com',
 secret_project_apis = ['secretmanager.googleapis.com', 'logging.googleapis.com']
 
 control 'nonprod' do
-  title 'gcp step 2-envs test nonprod'
+  title 'gcp step 2-envs test non-production'
   describe google_resourcemanager_folder(name: nonprod_env_folder) do
     it { should exist }
-    its('display_name') { should eq 'nonprod' }
+    its('display_name') { should eq 'fldr-non-production' }
   end
 
   describe google_project(project: nonprod_monitoring_project_id) do

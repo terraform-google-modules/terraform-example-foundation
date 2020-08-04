@@ -28,11 +28,11 @@ networking_project_apis = ['compute.googleapis.com',
 secret_project_apis = ['secretmanager.googleapis.com', 'logging.googleapis.com']
 
 control 'prod' do
-  title 'gcp step 2-envs test prod'
+  title 'gcp step 2-envs test production'
 
   describe google_resourcemanager_folder(name: prod_env_folder) do
     it { should exist }
-    its('display_name') { should eq 'prod' }
+    its('display_name') { should eq 'fldr-production' }
   end
 
   describe google_project(project: prod_monitoring_project_id) do

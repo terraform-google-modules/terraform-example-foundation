@@ -32,7 +32,7 @@ module "org_audit_logs" {
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
 
   labels = {
-    environment      = "prod"
+    environment      = "production"
     application_name = "org-audit-logs"
   }
 }
@@ -51,7 +51,7 @@ module "org_billing_logs" {
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
 
   labels = {
-    environment      = "prod"
+    environment      = "production"
     application_name = "org-billing-logs"
   }
 }
@@ -74,7 +74,7 @@ module "org_secrets" {
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
 
   labels = {
-    environment      = "prod"
+    environment      = "production"
     application_name = "org-secrets"
   }
 }
@@ -96,7 +96,7 @@ module "interconnect" {
   skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
-    environment      = "prod"
+    environment      = "production"
     application_name = "org-interconnect"
   }
 }
@@ -119,7 +119,7 @@ module "scc_notifications" {
   skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
-    environment      = "prod"
+    environment      = "production"
     application_name = "org-scc"
   }
 }
@@ -149,7 +149,7 @@ module "dns_hub" {
   ]
 
   labels = {
-    environment      = "prod"
+    environment      = "production"
     application_name = "org-dns-hub"
   }
 }

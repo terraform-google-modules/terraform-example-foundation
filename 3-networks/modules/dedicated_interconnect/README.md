@@ -17,6 +17,7 @@ Sections with examples of calls to this module are commented in each one of the 
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| cloud\_router\_labels | A map of suffixes for labelling vlans | map(string) | `<map>` | no |
 | peer\_asn | Peer BGP Autonomous System Number (ASN). | number | n/a | yes |
 | peer\_ip\_address | IP address of the BGP interface outside Google Cloud Platform. Only IPv4 is supported. | string | n/a | yes |
 | peer\_name | Name of this BGP peer. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])? | string | n/a | yes |

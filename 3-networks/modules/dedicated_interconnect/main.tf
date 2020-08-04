@@ -16,10 +16,10 @@
 
 locals {
   interconnect_project_id = data.google_projects.interconnect_project.projects[0].project_id
-  suffix1                 = substr(var.region1_router1_name, length(var.region1_router1_name) - 3, 4)
-  suffix2                 = substr(var.region1_router2_name, length(var.region1_router2_name) - 3, 4)
-  suffix3                 = substr(var.region2_router1_name, length(var.region2_router1_name) - 3, 4)
-  suffix4                 = substr(var.region2_router2_name, length(var.region2_router2_name) - 3, 4)
+  suffix1                 = lookup(var.cloud_router_labels, "vlan_1", "cr1")
+  suffix2                 = lookup(var.cloud_router_labels, "vlan_2", "cr2")
+  suffix3                 = lookup(var.cloud_router_labels, "vlan_3", "cr3")
+  suffix4                 = lookup(var.cloud_router_labels, "vlan_4", "cr4")
 }
 
 data "google_projects" "interconnect_project" {

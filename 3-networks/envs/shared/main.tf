@@ -183,11 +183,18 @@ module "dns_hub_region2_router2" {
 #   region2_router1_name           = module.dns_hub_region2_router1.router.name
 #   region2_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-3"
 #   region2_interconnect1_location = "lax-zone2-19"
-#   region2_router2_name           = module.hub_region2_router2.router.name
+#   region2_router2_name           = module.dns_hub_region2_router2.router.name
 #   region2_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-4"
 #   region2_interconnect2_location = "lax-zone1-403"
 
 #   peer_asn        = "64515"
 #   peer_ip_address = "8.8.8.8" # on-prem router ip address
 #   peer_name       = "interconnect-peer"
+
+#   cloud_router_labels = {
+#     vlan_1 = "cr1",
+#     vlan_2 = "cr2",
+#     vlan_3 = "cr3",
+#     vlan_4 = "cr4"
+#   }
 # }

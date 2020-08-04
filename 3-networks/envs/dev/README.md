@@ -1,6 +1,6 @@
 # 3-networks/dev
 
-The purpose of this step is to setup private and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment dev.
+The purpose of this step is to setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment dev.
 
 ## Prerequisites
 
@@ -30,13 +30,13 @@ The purpose of this step is to setup private and restricted shared VPCs with def
 
 | Name | Description |
 |------|-------------|
-| private\_host\_project\_id | The private host project ID |
-| private\_network\_name | The name of the VPC being created |
-| private\_network\_self\_link | The URI of the VPC being created |
-| private\_subnets\_ips | The IPs and CIDRs of the subnets being created |
-| private\_subnets\_names | The names of the subnets being created |
-| private\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
-| private\_subnets\_self\_links | The self-links of subnets being created |
+| base\_host\_project\_id | The base host project ID |
+| base\_network\_name | The name of the VPC being created |
+| base\_network\_self\_link | The URI of the VPC being created |
+| base\_subnets\_ips | The IPs and CIDRs of the subnets being created |
+| base\_subnets\_names | The names of the subnets being created |
+| base\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
+| base\_subnets\_self\_links | The self-links of subnets being created |
 | restricted\_access\_level\_name | Access context manager access level name |
 | restricted\_host\_project\_id | The restricted host project ID |
 | restricted\_network\_name | The name of the VPC being created |

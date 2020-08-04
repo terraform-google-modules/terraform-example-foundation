@@ -68,11 +68,6 @@ variable "bgp_asn_subnet" {
   description = "BGP ASN for Subnets cloud routers."
 }
 
-variable "vpc_label" {
-  type        = string
-  description = "Label for VPC."
-}
-
 variable "subnets" {
   type        = list(map(string))
   description = "The list of subnets being created"

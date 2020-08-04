@@ -63,7 +63,7 @@ example-organization
 
 Among the four projects created under the common folder, two projects (prj-c-logging, prj-c-org-billing-logs) are used for logging. The first one for organization wide audit logs and another for billing logs.
 In both cases the logs are collected into BigQuery datasets which can then be used general querying, dashboarding & reporting. Logs are also exported to Pub/Sub and GCS bucket.
-_The various audit log types being captured in BigQuery, Pub/Sub and GCS, are retained for 30 days._
+_The various audit log types being captured in BigQuery are retained for 30 days._
 
 For billing data, a BigQuery dataset is created with permissions attached however you will need to configure a billing export [manually](https://cloud.google.com/billing/docs/how-to/export-data-bigquery) as there is no easy way to automate this currently.
 
@@ -136,10 +136,9 @@ This step focuses on creating a Shared VPC per environment (development, product
 - Optional - Default firewall rules created to allow remote access to VMs through IAP, without needing public IPs.
     - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively
 - Optional - Default firewall rule created to allow for load balancing using `allow-lb` tag.
-- Optional - [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workloaded dependend.
-- [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for private access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
-- [Restricted service networking](https://cloud.google.com/vpc-service-controls/docs/restricted-vip-services) configured to enable restricted Cloud SQL and Memorystore.
-- [restricted.googleapis.com](https://cloud.google.com/vpc-service-controls/docs/supported-products) configured for restricted access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
+- [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workloaded dependend resources like Cloud SQL.
+- Base Shared VPC with [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for base access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
+- Restricted Shared VPC with [restricted.googleapis.com](https://cloud.google.com/vpc-service-controls/docs/supported-products) configured for restricted access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
 - Default routes to internet removed, with tag based route `egress-internet` required on VMs in order to reach the internet.
 - Optional - Cloud NAT configured for all subnets with logging and static outbound IPs.
 - Default Cloud DNS policy applied, with DNS logging and [inbound query forwarding](https://cloud.google.com/dns/docs/overview#dns-server-policy-in) turned on.

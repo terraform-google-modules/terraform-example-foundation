@@ -37,8 +37,8 @@ locals {
   parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
 }
 
-resource "google_folder" "seed" {
-  display_name = "seed"
+resource "google_folder" "bootstrap" {
+  display_name = "bootstrap"
   parent       = local.parent
 }
 
@@ -46,7 +46,7 @@ module "seed_bootstrap" {
   source                  = "terraform-google-modules/bootstrap/google"
   version                 = "~> 1.3"
   org_id                  = var.org_id
-  folder_id               = google_folder.seed.id
+  folder_id               = google_folder.bootstrap.id
   billing_account         = var.billing_account
   group_org_admins        = var.group_org_admins
   group_billing_admins    = var.group_billing_admins
@@ -55,6 +55,15 @@ module "seed_bootstrap" {
   sa_enable_impersonation = true
   parent_folder           = var.parent_folder == "" ? "" : local.parent
   skip_gcloud_download    = var.skip_gcloud_download
+  project_labels = {
+    environment       = "bootstrap"
+    application_name  = "seed-bootstrap"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "bu1"
+    env_code          = "b"
+  }
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -95,7 +104,7 @@ module "cloudbuild_bootstrap" {
   source                    = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
   version                   = "~> 1.3"
   org_id                    = var.org_id
-  folder_id                 = google_folder.seed.id
+  folder_id                 = google_folder.bootstrap.id
   billing_account           = var.billing_account
   group_org_admins          = var.group_org_admins
   default_region            = var.default_region
@@ -106,6 +115,16 @@ module "cloudbuild_bootstrap" {
   skip_gcloud_download      = var.skip_gcloud_download
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
+
+  project_labels = {
+    environment       = "bootstrap"
+    application_name  = "cloudbuild-bootstrap"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "bu1"
+    env_code          = "b"
+  }
 
   cloud_source_repos = [
     "gcp-bootstrap",
@@ -126,7 +145,7 @@ module "cloudbuild_bootstrap" {
 //module "jenkins_bootstrap" {
 //  source                                  = "./modules/jenkins-agent"
 //  org_id                                  = var.org_id
-//  folder_id                               = google_folder.seed.id
+//  folder_id                               = google_folder.bootstrap.id
 //  billing_account                         = var.billing_account
 //  group_org_admins                        = var.group_org_admins
 //  default_region                          = var.default_region

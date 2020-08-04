@@ -231,6 +231,13 @@ example-organization
     ├── cft-cloudbuild
     └── cft-seed
 ```
+### Branching strategy
+
+There are three main named branches - `dev`, `nonprod` and `prod` that reflect the corresponding environments. These branches should be [protected](https://docs.github.com/en/github/administering-a-repository/about-protected-branches). When the CI pipeline (Jenkins/CloudBuild) runs on a particular named branch (say for instance `dev`), only the corresponding environment (`dev`) is applied. An exception is the `shared` environment which is only applied when triggered on the `prod` branch. This is because any changes in the `shared` environment may affect resources in other environments and can have adverse effects if not validated correctly.
+
+Development happens on feature/bugfix branches (which can be named `feature/new-foo`, `bugfix/fix-bar` etc) and when complete, a [pull request (PR)](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) or [merge request (MR)](https://docs.gitlab.com/ee/user/project/merge_requests/) can be opened targeting the `dev` branch. This will trigger the CI pipeline to perform a plan and validate against all environments (`dev`, `nonprod`, `shared` and `prod`). Once code review is complete and changes are validated, this branch can be merged into `dev`. This will trigger a CI pipeline that applies the latest changes in the `dev` branch on the `dev` environment.
+
+Once validated in `dev`, changes can be promoted to `nonprod` by opening a PR/MR targeting the `nonprod` branch and merging them.  Similarly changes can be promoted from `nonprod` to `prod`.
 
 ## Contributing
 

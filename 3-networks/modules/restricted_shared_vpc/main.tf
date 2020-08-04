@@ -19,9 +19,7 @@
  *****************************************/
 
 locals {
-  vpc_type                   = "shared"
-  vpc_label                  = "restricted"
-  vpc_name                   = "${var.environment_code}-${local.vpc_type}-${local.vpc_label}"
+  vpc_name                   = "${var.environment_code}-shared-restricted"
   network_name               = "vpc-${local.vpc_name}"
   restricted_googleapis_cidr = "199.36.153.4/30"
 }

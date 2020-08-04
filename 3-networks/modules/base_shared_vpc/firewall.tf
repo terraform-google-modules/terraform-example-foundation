@@ -18,7 +18,7 @@
   Mandatory firewall rules
  *****************************************/
 resource "google_compute_firewall" "deny_all_egress" {
-  name           = "fw-${var.environment_code}-shared-private-65535-e-d-all-all-tcp-udp"
+  name           = "fw-${var.environment_code}-shared-base-65535-e-d-all-all-tcp-udp"
   network        = module.main.network_name
   project        = var.project_id
   direction      = "EGRESS"
@@ -38,7 +38,7 @@ resource "google_compute_firewall" "deny_all_egress" {
 
 
 resource "google_compute_firewall" "allow_private_api_egress" {
-  name           = "fw-${var.environment_code}-shared-private-65534-e-a-all-all-tcp-443"
+  name           = "fw-${var.environment_code}-shared-base-65534-e-a-allow-google-apis-all-tcp-443"
   network        = module.main.network_name
   project        = var.project_id
   direction      = "EGRESS"
@@ -51,6 +51,8 @@ resource "google_compute_firewall" "allow_private_api_egress" {
   }
 
   destination_ranges = [local.private_googleapis_cidr]
+
+  target_tags = ["allow-google-apis"]
 }
 
 
@@ -61,7 +63,7 @@ resource "google_compute_firewall" "allow_private_api_egress" {
 // Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
 resource "google_compute_firewall" "allow_iap_ssh" {
   count          = var.optional_fw_rules_enabled ? 1 : 0
-  name           = "fw-${var.environment_code}-shared-private-1000-i-a-all-allow-iap-ssh-tcp-22"
+  name           = "fw-${var.environment_code}-shared-base-1000-i-a-all-allow-iap-ssh-tcp-22"
   network        = module.main.network_name
   project        = var.project_id
   enable_logging = var.firewall_enable_logging
@@ -80,7 +82,7 @@ resource "google_compute_firewall" "allow_iap_ssh" {
 // Allow RDP via IAP when using the allow-iap-rdp tag for Windows workloads.
 resource "google_compute_firewall" "allow_iap_rdp" {
   count          = var.optional_fw_rules_enabled ? 1 : 0
-  name           = "fw-${var.environment_code}-shared-private-1000-i-a-all-allow-iap-rdp-tcp-3389"
+  name           = "fw-${var.environment_code}-shared-base-1000-i-a-all-allow-iap-rdp-tcp-3389"
   network        = module.main.network_name
   project        = var.project_id
   enable_logging = var.firewall_enable_logging
@@ -99,7 +101,7 @@ resource "google_compute_firewall" "allow_iap_rdp" {
 // Allow access to kms.windows.googlecloud.com for Windows license activation
 resource "google_compute_firewall" "allow_windows_activation" {
   count          = var.windows_activation_enabled ? 1 : 0
-  name           = "fw-${var.environment_code}-shared-private-0-e-a-all-tcp-1688"
+  name           = "fw-${var.environment_code}-shared-base-0-e-a-allow-win-activation-all-tcp-1688"
   network        = module.main.network_name
   project        = var.project_id
   direction      = "EGRESS"
@@ -110,12 +112,16 @@ resource "google_compute_firewall" "allow_windows_activation" {
     protocol = "tcp"
     ports    = ["1688"]
   }
+
+  destination_ranges = ["35.190.247.13/32"]
+
+  target_tags = ["allow-win-activation"]
 }
 
 // Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
 resource "google_compute_firewall" "allow_lb" {
   count          = var.optional_fw_rules_enabled ? 1 : 0
-  name           = "fw-${var.environment_code}-shared-private-1000-i-a-all-allow-lb-tcp-80-8080-443"
+  name           = "fw-${var.environment_code}-shared-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
   network        = module.main.network_name
   project        = var.project_id
   enable_logging = var.firewall_enable_logging

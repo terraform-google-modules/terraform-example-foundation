@@ -19,7 +19,7 @@
  *****************************************/
 
 locals {
-  vpc_name                = "${var.environment_code}-shared-${var.vpc_label}"
+  vpc_name                = "${var.environment_code}-shared-base"
   network_name            = "vpc-${local.vpc_name}"
   private_googleapis_cidr = "199.36.153.8/30"
 }

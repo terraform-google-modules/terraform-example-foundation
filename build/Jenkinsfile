@@ -1,0 +1,89 @@
+pipeline {
+  agent {
+      label "gcp-agent"
+  }
+  stages {
+    stage('setup') {
+      steps {
+          sh '''
+          echo "Setting up gcloud for impersonation"
+          gcloud config set auth/impersonate_service_account ${_TF_SA_EMAIL}
+          echo "Adding bucket information to backends"
+          for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/${_STATE_BUCKET_NAME}/' $i; done
+          '''
+        }
+    }
+    stage('TF plan validate all') {
+      when {
+              not {
+                      anyOf {
+                      branch 'dev'
+                      branch 'prod'
+                      branch 'nonprod'
+                  }
+              }
+      }
+      steps {
+          sh '''
+          ./tf-wrapper.sh plan_validate_all ${BRANCH_NAME} ${_POLICY_REPO}
+          '''
+        }
+    }
+    stage('TF init') {
+      when {
+              anyOf {
+                  branch 'dev'
+                  branch 'prod'
+                  branch 'nonprod'
+              }
+      }
+      steps {
+          sh '''
+          ./tf-wrapper.sh init $BRANCH_NAME
+          '''
+        }
+    }
+    stage('TF plan') {
+      when {
+              anyOf {
+                  branch 'dev'
+                  branch 'prod'
+                  branch 'nonprod'
+              }
+      }
+      steps {
+          sh '''
+          ./tf-wrapper.sh plan $BRANCH_NAME
+          '''
+        }
+    }
+    stage('TF validate') {
+      when {
+              anyOf {
+                  branch 'dev'
+                  branch 'prod'
+                  branch 'nonprod'
+              }
+      }
+      steps {
+          sh '''
+          ./tf-wrapper.sh validate $BRANCH_NAME $POLICY_REPO
+          '''
+        }
+    }
+    stage('TF apply') {
+      when {
+              anyOf {
+                  branch 'dev'
+                  branch 'prod'
+                  branch 'nonprod'
+              }
+      }
+      steps {
+          sh '''
+          ./tf-wrapper.sh apply $BRANCH_NAME
+          '''
+        }
+    }
+  }
+}

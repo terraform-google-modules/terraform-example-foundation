@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-module "dns_hub" {
-  source                       = "../../../3-networks/envs/shared"
-  default_region1              = "us-central1"
-  default_region2              = "us-west1"
-  domain                       = var.domain
-  target_name_server_addresses = ["192.168.0.1", "192.168.0.2"]
-  terraform_service_account    = var.terraform_sa_email
-  parent_folder                = var.parent_folder
-  org_id                       = var.org_id
-}
+billing_account = "000000-000000-000000"
+
+org_id = "000000000000"
+
+terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
+
+access_context_manager_policy_id = "000000000000"
+
+//Optional - for development.  Will place all resources under a specific folder instead of org root
+//parent_folder = "01234567890"

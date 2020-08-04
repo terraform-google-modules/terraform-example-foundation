@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "STATE_BUCKET"
+    bucket = "UPDATE_ME"
     prefix = "terraform/bootstrap/state"
   }
 }

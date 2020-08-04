@@ -35,12 +35,12 @@ variable "default_region" {
 }
 
 variable "billing_data_users" {
-  description = "Gsuite or Cloud Identity group that have access to billing data set."
+  description = "G Suite or Cloud Identity group that have access to billing data set."
   type        = string
 }
 
 variable "audit_data_users" {
-  description = "Gsuite or Cloud Identity group that have access to audit logs."
+  description = "G Suite or Cloud Identity group that have access to audit logs."
   type        = string
 }
 

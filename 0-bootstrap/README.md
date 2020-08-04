@@ -1,6 +1,6 @@
 # 0-bootstrap
 
-The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures Cloud Build & Cloud Source Repos for foundations code in subsequent stages.
+The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a CICD pipeline for foundations code in subsequent stages. The CICD pipeline can use either Cloud Build & Cloud Source Repos or Jenkins & your own Git repos (which might live on-prem).
 
 ## Prerequisites
 
@@ -12,7 +12,13 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 
 Further details of permissions required and resources created, can be found in the bootstrap module [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
-## Usage
+**Note:** when running the examples in this repository, you may receive an error like `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.` when applying terraform. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_sa_email` created in `0-bootstrap` should also be listed in "Email addresses that will be used to create projects" in that support form.
+
+## 0-bootstrap usage to deploy Jenkins
+
+If you are using the `jenkins_bootstrap` sub-module, please see [README-Jenkins](./README-Jenkins.md) for requirements and instructions on how to run the 0-bootstrap step. Using Jenkins requires a few manual steps, including configuring connectivity with your current Jenkins Master environment.
+
+## 0-bootstrap usage to deploy Cloud Build
 
 1. Change into 0-bootstrap folder
 1. Copy tfvars by running `cp terraform.example.tfvars terraform.tfvars` and update `terraform.tfvars` with values from your environment.
@@ -62,13 +68,8 @@ Currently, the bucket information is replaced in the state backends as a part of
 
 ## Requirements
 
-If you are using `jenkins_bootstrap`, please see the [README](./modules/jenkins-agent/README.md) for the requirements.
-
-## Instructions
-
-If you are using `jenkins_bootstrap`, please follow the instructions on how to run the bootstrap step with the `jenkins_bootstrap` sub-module described in the [README](./modules/jenkins-agent/README.md), which include implementing VPN, configuring your Jenkins Master among other steps.
-
 ### Software
 
--   [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
--   [Terraform](https://www.terraform.io/downloads.html) >= 0.12.6
+- [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
+- [Terraform](https://www.terraform.io/downloads.html) >= 0.12.6
+    - You should use the same version in the manual steps during 0-bootstrap to avoid possible  [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions. This can usually be resolved with a version upgrade.

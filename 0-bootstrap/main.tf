@@ -83,6 +83,7 @@ module "seed_bootstrap" {
     "roles/iam.serviceAccountAdmin",
     "roles/logging.configWriter",
     "roles/orgpolicy.policyAdmin",
+    "roles/resourcemanager.projectCreator",
     "roles/resourcemanager.folderAdmin",
     "roles/securitycenter.notificationConfigEditor",
     "roles/resourcemanager.organizationViewer"

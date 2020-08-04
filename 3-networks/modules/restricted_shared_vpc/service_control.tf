@@ -33,19 +33,24 @@ module "access_level_members" {
   members     = var.members
 }
 
-module "vpc_service_perimeter" {
-  source         = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
-  version        = "~> 2.0.0"
-  policy         = var.access_context_manager_policy_id
-  perimeter_name = local.perimeter_name
+resource "google_access_context_manager_service_perimeter" "regular_service_perimeter" {
+  parent         = "accessPolicies/${var.access_context_manager_policy_id}"
+  perimeter_type = "PERIMETER_TYPE_REGULAR"
+  name           = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${local.perimeter_name}"
+  title          = local.perimeter_name
   description    = "Default VPC Service Controls perimeter"
-  resources      = [var.project_number]
 
-  restricted_services = var.restricted_services
+  status {
+    restricted_services = var.restricted_services
+    resources           = formatlist("projects/%s", [var.project_number])
 
-  access_levels = [module.access_level_members.name]
+    access_levels = formatlist(
+      "accessPolicies/${var.access_context_manager_policy_id}/accessLevels/%s",
+      [module.access_level_members.name]
+    )
+  }
 
-  shared_resources = {
-    all = [var.project_number]
+  lifecycle {
+    ignore_changes = [status[0].resources]
   }
 }

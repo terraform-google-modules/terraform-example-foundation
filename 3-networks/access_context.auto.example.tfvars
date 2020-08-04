@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 0.12"
-}
+access_context_manager_policy_id = 000000000000

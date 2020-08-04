@@ -14,9 +14,4 @@
  * limitations under the License.
  */
 
-terraform {
-  backend "gcs" {
-    bucket = "UPDATE_ME"
-    prefix = "terraform/projects/state"
-  }
-}
+perimeter_name = "sp_d_shared_restricted_default_perimeter_????"

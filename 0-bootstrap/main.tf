@@ -38,7 +38,7 @@ locals {
 }
 
 resource "google_folder" "bootstrap" {
-  display_name = "bootstrap"
+  display_name = "fldr-bootstrap"
   parent       = local.parent
 }
 
@@ -61,7 +61,7 @@ module "seed_bootstrap" {
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "bu1"
+    business_code     = "abcd"
     env_code          = "b"
   }
 
@@ -122,7 +122,7 @@ module "cloudbuild_bootstrap" {
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "bu1"
+    business_code     = "abcd"
     env_code          = "b"
   }
 

@@ -16,6 +16,10 @@
 
 locals {
   interconnect_project_id = data.google_projects.interconnect_project.projects[0].project_id
+  suffix1                 = substr(var.region1_router1_name, length(var.region1_router1_name) - 3, 4)
+  suffix2                 = substr(var.region1_router2_name, length(var.region1_router2_name) - 3, 4)
+  suffix3                 = substr(var.region2_router1_name, length(var.region2_router1_name) - 3, 4)
+  suffix4                 = substr(var.region2_router2_name, length(var.region2_router2_name) - 3, 4)
 }
 
 data "google_projects" "interconnect_project" {
@@ -26,7 +30,7 @@ module "interconnect_attachment1_region1" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
   version = "~> 0.2.0"
 
-  name    = "vl-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-cr1"
+  name    = "vl-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-${local.suffix1}"
   project = local.interconnect_project_id
   region  = var.region1
   router  = var.region1_router1_name
@@ -34,7 +38,7 @@ module "interconnect_attachment1_region1" {
   interconnect = var.region1_interconnect1
 
   interface = {
-    name = "if-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}"
+    name = "if-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-${local.suffix1}"
   }
 
   peer = {
@@ -48,7 +52,7 @@ module "interconnect_attachment2_region1" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
   version = "~> 0.2.0"
 
-  name    = "vl-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-cr2"
+  name    = "vl-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-${local.suffix2}"
   project = local.interconnect_project_id
   region  = var.region1
   router  = var.region1_router2_name
@@ -56,7 +60,7 @@ module "interconnect_attachment2_region1" {
   interconnect = var.region1_interconnect2
 
   interface = {
-    name = "if-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}"
+    name = "if-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-${local.suffix2}"
   }
 
   peer = {
@@ -70,7 +74,7 @@ module "interconnect_attachment1_region2" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
   version = "~> 0.2.0"
 
-  name    = "vl-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-cr1"
+  name    = "vl-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-${local.suffix3}"
   project = local.interconnect_project_id
   region  = var.region2
   router  = var.region2_router1_name
@@ -78,7 +82,7 @@ module "interconnect_attachment1_region2" {
   interconnect = var.region2_interconnect1
 
   interface = {
-    name = "if-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}"
+    name = "if-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-${local.suffix3}"
   }
 
   peer = {
@@ -92,7 +96,7 @@ module "interconnect_attachment2_region2" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
   version = "~> 0.2.0"
 
-  name    = "vl-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-cr2"
+  name    = "vl-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-${local.suffix4}"
   project = local.interconnect_project_id
   region  = var.region2
   router  = var.region2_router2_name
@@ -100,7 +104,7 @@ module "interconnect_attachment2_region2" {
   interconnect = var.region2_interconnect2
 
   interface = {
-    name = "if-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}"
+    name = "if-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-${local.suffix4}"
   }
 
   peer = {

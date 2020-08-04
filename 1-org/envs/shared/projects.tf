@@ -24,7 +24,7 @@ module "org_audit_logs" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-audit-logs"
+  name                        = "prj-c-logging"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -33,7 +33,7 @@ module "org_audit_logs" {
 
   labels = {
     environment      = "prod"
-    application_name = "org-audit-logs"
+    application_name = "org-logging"
   }
 }
 
@@ -43,7 +43,7 @@ module "org_billing_logs" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-billing-logs"
+  name                        = "prj-c-billing-logs"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -66,7 +66,7 @@ module "org_secrets" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-secrets"
+  name                        = "prj-c-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -89,7 +89,7 @@ module "interconnect" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-interconnect"
+  name                        = "prj-c-interconnect"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -111,7 +111,7 @@ module "scc_notifications" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-scc"
+  name                        = "prj-c-scc"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -134,7 +134,7 @@ module "dns_hub" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-dns-hub"
+  name                        = "prj-c-dns-hub"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id

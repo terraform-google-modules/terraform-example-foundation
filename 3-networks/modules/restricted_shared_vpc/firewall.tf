@@ -38,7 +38,7 @@ resource "google_compute_firewall" "deny_all_egress" {
 }
 
 resource "google_compute_firewall" "allow_restricted_api_egress" {
-  name           = "fw-${var.environment_code}-shared-restricted-65534-e-a-all-all-tcp-443"
+  name           = "fw-${var.environment_code}-shared-restricted-65534-e-a-allow-google-api-all-tcp-443"
   network        = module.main.network_name
   project        = var.project_id
   direction      = "EGRESS"
@@ -51,6 +51,8 @@ resource "google_compute_firewall" "allow_restricted_api_egress" {
   }
 
   destination_ranges = [local.restricted_googleapis_cidr]
+
+  target_tags = ["allow-google-api"]
 }
 
 /******************************************
@@ -117,7 +119,7 @@ resource "google_compute_firewall" "allow_lb" {
 // Allow access to kms.windows.googlecloud.com for Windows license activation
 resource "google_compute_firewall" "allow_windows_activation" {
   count          = var.windows_activation_enabled ? 1 : 0
-  name           = "fw-${var.environment_code}-shared-restricted-0-e-a-all-tcp-1688"
+  name           = "fw-${var.environment_code}-shared-restricted-0-e-a-allow-win-all-tcp-1688"
   network        = module.main.network_name
   project        = var.project_id
   direction      = "EGRESS"
@@ -130,4 +132,6 @@ resource "google_compute_firewall" "allow_windows_activation" {
   }
 
   destination_ranges = ["35.190.247.13/32"]
+
+  target_tags = ["allow-win"]
 }

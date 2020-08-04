@@ -15,7 +15,7 @@
  */
 
 data "google_active_folder" "env" {
-  display_name = "dev"
+  display_name = "development"
   parent       = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
 }
 

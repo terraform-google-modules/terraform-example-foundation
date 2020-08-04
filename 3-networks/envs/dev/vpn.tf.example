@@ -25,7 +25,7 @@ module "shared_private_vpn" {
   region1_router2_name = module.private_shared_vpc.region1_router2.router.name
   region2_router1_name = module.private_shared_vpc.region2_router1.router.name
   region2_router2_name = module.private_shared_vpc.region2_router2.router.name
-  environment          = "dev"
+  environment          = "development"
   vpn_psk_secret_name  = "<VPN_PRIVATE_PSK_SECRET_NAME>"
 
 
@@ -69,7 +69,7 @@ module "shared_restricted_vpn" {
   region1_router2_name = module.restricted_shared_vpc.region1_router2.router.name
   region2_router1_name = module.restricted_shared_vpc.region2_router1.router.name
   region2_router2_name = module.restricted_shared_vpc.region2_router2.router.name
-  environment          = "dev"
+  environment          = "development"
   vpn_psk_secret_name  = "<VPN_RESTRICTED_PSK_SECRET_NAME>"
 
   on_prem_router_ip_address1 = "<8.8.8.8>" # on-prem router ip address 1

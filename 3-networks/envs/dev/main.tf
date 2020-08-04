@@ -16,7 +16,7 @@
 
 locals {
   environment_code          = "d"
-  env                       = "dev"
+  env                       = "development"
   restricted_project_id     = data.google_projects.restricted_host_project.projects[0].project_id
   restricted_project_number = data.google_project.restricted_host_project.number
   private_project_id        = data.google_projects.private_project.projects[0].project_id

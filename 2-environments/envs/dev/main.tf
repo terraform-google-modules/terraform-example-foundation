@@ -17,7 +17,7 @@
 module "env" {
   source = "../../modules/env_baseline"
 
-  env              = "dev"
+  env              = "development"
   environment_code = "d"
 
   parent_id                  = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"

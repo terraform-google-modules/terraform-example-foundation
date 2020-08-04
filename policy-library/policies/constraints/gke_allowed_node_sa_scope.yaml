@@ -24,7 +24,7 @@ spec:
   severity: high
   match:
     target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
-    - organizations/**
+    - organizations/*
   # By default, the scopes listed here is being used:
   # https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#reduce_node_sa_scopes
   parameters: {}

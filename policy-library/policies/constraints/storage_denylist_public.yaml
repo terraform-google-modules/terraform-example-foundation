@@ -24,7 +24,7 @@ spec:
   severity: high
   match:
     target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
-    - organizations/**
+    - organizations/*
     exclude: [] # optional, default is no exclusions
   parameters:
     exemptions: [] # optional, default is no exemptions

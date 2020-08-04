@@ -27,5 +27,5 @@ spec:
   severity: high
   match:
     target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
-    - organizations/**
+    - organizations/*
   parameters: {}

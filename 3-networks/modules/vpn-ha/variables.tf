@@ -31,7 +31,7 @@ variable "default_region2" {
 
 variable "environment" {
   type        = string
-  description = "Environment for the VPN configuration. Valid options are dev, nonprod, prod"
+  description = "Environment for the VPN configuration. Valid options are development, non-production, production"
 }
 
 variable "vpn_psk_secret_name" {

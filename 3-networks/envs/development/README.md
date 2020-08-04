@@ -1,12 +1,12 @@
-# 3-networks/dev
+# 3-networks/development
 
-The purpose of this step is to setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment dev.
+The purpose of this step is to setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment development.
 
 ## Prerequisites
 
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
-1. 2-environments/envs/dev executed successfully.
+1. 2-environments/envs/development executed successfully.
 1. 3-networks/envs/shared executed successfully.
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
 

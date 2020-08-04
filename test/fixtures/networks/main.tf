@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-module "dev" {
+module "development" {
   source                           = "../../../3-networks/envs/development"
   org_id                           = var.org_id
   access_context_manager_policy_id = var.policy_id
@@ -25,7 +25,7 @@ module "dev" {
   parent_folder                    = var.parent_folder
 }
 
-module "nonprod" {
+module "non-production" {
   source                           = "../../../3-networks/envs/non-production"
   org_id                           = var.org_id
   access_context_manager_policy_id = var.policy_id
@@ -36,7 +36,7 @@ module "nonprod" {
   parent_folder                    = var.parent_folder
 }
 
-module "prod" {
+module "production" {
   source                           = "../../../3-networks/envs/production"
   org_id                           = var.org_id
   access_context_manager_policy_id = var.policy_id

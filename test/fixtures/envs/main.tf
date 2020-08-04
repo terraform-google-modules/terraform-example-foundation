@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-module "dev" {
+module "development" {
   source                     = "../../../2-environments/envs/development"
   org_id                     = var.org_id
   billing_account            = var.billing_account
@@ -23,7 +23,7 @@ module "dev" {
   terraform_service_account  = var.terraform_sa_email
 }
 
-module "nonprod" {
+module "non-production" {
   source                     = "../../../2-environments/envs/non-production"
   org_id                     = var.org_id
   billing_account            = var.billing_account
@@ -32,7 +32,7 @@ module "nonprod" {
   terraform_service_account  = var.terraform_sa_email
 }
 
-module "prod" {
+module "production" {
   source                     = "../../../2-environments/envs/production"
   org_id                     = var.org_id
   billing_account            = var.billing_account

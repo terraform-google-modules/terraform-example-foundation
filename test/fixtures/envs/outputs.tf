@@ -21,75 +21,75 @@ output "monitoring_group" {
 
 output "dev_env_folder" {
   description = "Development environment folder created under parent."
-  value       = module.dev.env_folder
+  value       = module.development.env_folder
 }
 
 output "dev_monitoring_project_id" {
   description = "Development project for monitoring infra."
-  value       = module.dev.monitoring_project_id
+  value       = module.development.monitoring_project_id
 }
 
 output "dev_base_shared_vpc_project_id" {
   description = "Development project for monitoring infra."
-  value       = module.dev.base_shared_vpc_project_id
+  value       = module.development.base_shared_vpc_project_id
 }
 
 output "dev_restricted_shared_vpc_project_id" {
   description = "Development project for monitoring infra."
-  value       = module.dev.restricted_shared_vpc_project_id
+  value       = module.development.restricted_shared_vpc_project_id
 }
 
 output "dev_env_secrets_project_id" {
   description = "Development project for monitoring infra."
-  value       = module.dev.env_secrets_project_id
+  value       = module.development.env_secrets_project_id
 }
 
 output "nonprod_env_folder" {
   description = "Non-production environment folder created under parent."
-  value       = module.nonprod.env_folder
+  value       = module.non-production.env_folder
 }
 
 output "nonprod_monitoring_project_id" {
   description = "Non-production project for monitoring infra."
-  value       = module.nonprod.monitoring_project_id
+  value       = module.non-production.monitoring_project_id
 }
 
 output "nonprod_base_shared_vpc_project_id" {
   description = "Non-production project for monitoring infra."
-  value       = module.nonprod.base_shared_vpc_project_id
+  value       = module.non-production.base_shared_vpc_project_id
 }
 
 output "nonprod_restricted_shared_vpc_project_id" {
   description = "Non-production project for monitoring infra."
-  value       = module.nonprod.restricted_shared_vpc_project_id
+  value       = module.non-production.restricted_shared_vpc_project_id
 }
 
 output "nonprod_env_secrets_project_id" {
   description = "Non-production project for monitoring infra."
-  value       = module.nonprod.env_secrets_project_id
+  value       = module.non-production.env_secrets_project_id
 }
 
 output "prod_env_folder" {
   description = "Production environment folder created under parent."
-  value       = module.prod.env_folder
+  value       = module.production.env_folder
 }
 
 output "prod_monitoring_project_id" {
   description = "Production project for monitoring infra."
-  value       = module.prod.monitoring_project_id
+  value       = module.production.monitoring_project_id
 }
 
 output "prod_base_shared_vpc_project_id" {
   description = "Production project for monitoring infra."
-  value       = module.prod.base_shared_vpc_project_id
+  value       = module.production.base_shared_vpc_project_id
 }
 
 output "prod_restricted_shared_vpc_project_id" {
   description = "Production project for monitoring infra."
-  value       = module.prod.restricted_shared_vpc_project_id
+  value       = module.production.restricted_shared_vpc_project_id
 }
 
 output "prod_env_secrets_project_id" {
   description = "Production project for monitoring infra."
-  value       = module.prod.env_secrets_project_id
+  value       = module.production.env_secrets_project_id
 }

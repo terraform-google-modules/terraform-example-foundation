@@ -54,11 +54,11 @@ example-organization
     │   ├── org-audit-logs
     │   └── org-billing-logs
     ├── monitoring
-    │   ├── org-monitoring-nonprod
-    │   └── org-monitoring-prod
+    │   ├── org-monitoring-non-production
+    │   └── org-monitoring-production
     └── networking
-        ├── org-shared-vpc-nonprod
-        └── org-shared-vpc-prod
+        ├── org-shared-vpc-non-production
+        └── org-shared-vpc-production
 ```
 
 #### Logs
@@ -71,13 +71,13 @@ For billing data, a BigQuery dataset is created with permissions attached howeve
 
 #### Monitoring
 
-Under the monitoring folder, a project is created per environment (prod & nonprod) which is intended to be used as a [Cloud Monitoring workspace](https://cloud.google.com/monitoring/workspaces) for all projects in that environment.
+Under the monitoring folder, a project is created per environment (production & non-production) which is intended to be used as a [Cloud Monitoring workspace](https://cloud.google.com/monitoring/workspaces) for all projects in that environment.
 Please note that creating the [workspace and linking projects](https://cloud.google.com/monitoring/workspaces/create) can currently only be completed through the Cloud Console.
 If you have strong IAM requirements for these monitoring workspaces, it is worth considering creating these at a more granular level such as per business unit or per application.
 
 #### Networking
 
-Under the networking folder, a project is created per environment (prod & nonprod) which is intended to be used as a [Shared VPC Host project](https://cloud.google.com/vpc/docs/shared-vpc) for all projects in that environment.
+Under the networking folder, a project is created per environment (production & non-production) which is intended to be used as a [Shared VPC Host project](https://cloud.google.com/vpc/docs/shared-vpc) for all projects in that environment.
 This stage only creates the projects and enables the correct APIs, the following networks stage creates the actual Shared VPC networks.
 
 #### Organization Policies
@@ -90,9 +90,9 @@ Usage instructions are available for the org step in the [README](./1-org/README
 
 ### [3. networks](./3-networks/)
 
-This step focuses on creating a Shared VPC per environment (prod & nonprod) in a standard configuration with a reasonable security baseline. Currently this includes:
+This step focuses on creating a Shared VPC per environment (production & non-production) in a standard configuration with a reasonable security baseline. Currently this includes:
 
-- Example subnets for prod & non-prod inclusive of secondary ranges for those that want to use GKE.
+- Example subnets for production & non-production inclusive of secondary ranges for those that want to use GKE.
 - Default firewall rules created to allow remote access to VMs through IAP, without needing public IPs.
     - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively
 - Default firewall rule created to allow for load balancing using `allow-lb` tag.
@@ -113,11 +113,11 @@ Running this code as-is should generate a structure as shown below:
 example-organization/
 └── example-business-unit
     └── example-team
-        ├── nonprod
-        │   └── sample-standard-nonprod
-        └── prod
-            ├── sample-single-prod
-            └── sample-standard-prod
+        ├── non-production
+        │   └── sample-standard-non-production
+        └── production
+            ├── sample-single-production
+            └── sample-standard-production
 ```
 The code in this step includes two options for creating projects.
 The first is the standard projects module which creates a project per environment and the second creates a standalone project for one environment.
@@ -138,26 +138,26 @@ example-organization/
 │   │   ├── org-audit-logs
 │   │   └── org-billing-logs
 │   ├── monitoring
-│   │   ├── org-monitoring-nonprod
-│   │   └── org-monitoring-prod
+│   │   ├── org-monitoring-non-production
+│   │   └── org-monitoring-production
 │   └── networking
-│       ├── org-shared-vpc-nonprod
-│       └── org-shared-vpc-prod
+│       ├── org-shared-vpc-non-production
+│       └── org-shared-vpc-production
 └── example-business-unit
     └── example-team
-        ├── nonprod
-        │   └── sample-standard-nonprod
-        └── prod
-            ├── sample-single-prod
-            └── sample-standard-prod
+        ├── non-production
+        │   └── sample-standard-non-production
+        └── production
+            ├── sample-single-production
+            └── sample-standard-production
 ```
 ### Branching strategy
 
-There are three main named branches - `dev`, `nonprod` and `prod` that reflect the corresponding environments. These branches should be [protected](https://docs.github.com/en/github/administering-a-repository/about-protected-branches). When the CI pipeline (Jenkins/CloudBuild) runs on a particular named branch (say for instance `dev`), only the corresponding environment (`dev`) is applied. An exception is the `shared` environment which is only applied when triggered on the `prod` branch. This is because any changes in the `shared` environment may affect resources in other environments and can have adverse effects if not validated correctly.
+There are three main named branches - `development`, `non-production` and `production` that reflect the corresponding environments. These branches should be [protected](https://docs.github.com/en/github/administering-a-repository/about-protected-branches). When the CI pipeline (Jenkins/CloudBuild) runs on a particular named branch (say for instance `development`), only the corresponding environment (`development`) is applied. An exception is the `shared` environment which is only applied when triggered on the `production` branch. This is because any changes in the `shared` environment may affect resources in other environments and can have adverse effects if not validated correctly.
 
-Development happens on feature/bugfix branches (which can be named `feature/new-foo`, `bugfix/fix-bar` etc) and when complete, a [pull request (PR)](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) or [merge request (MR)](https://docs.gitlab.com/ee/user/project/merge_requests/) can be opened targeting the `dev` branch. This will trigger the CI pipeline to perform a plan and validate against all environments (`dev`, `nonprod`, `shared` and `prod`). Once code review is complete and changes are validated, this branch can be merged into `dev`. This will trigger a CI pipeline that applies the latest changes in the `dev` branch on the `dev` environment.
+Development happens on feature/bugfix branches (which can be named `feature/new-foo`, `bugfix/fix-bar` etc) and when complete, a [pull request (PR)](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) or [merge request (MR)](https://docs.gitlab.com/ee/user/project/merge_requests/) can be opened targeting the `development` branch. This will trigger the CI pipeline to perform a plan and validate against all environments (`development`, `non-production`, `shared` and `production`). Once code review is complete and changes are validated, this branch can be merged into `development`. This will trigger a CI pipeline that applies the latest changes in the `development` branch on the `development` environment.
 
-Once validated in `dev`, changes can be promoted to `nonprod` by opening a PR/MR targeting the `nonprod` branch and merging them.  Similarly changes can be promoted from `nonprod` to `prod`.
+Once validated in `development`, changes can be promoted to `non-production` by opening a PR/MR targeting the `non-production` branch and merging them.  Similarly changes can be promoted from `non-production` to `production`.
 
 ## Contributing
 

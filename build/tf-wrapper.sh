@@ -21,7 +21,7 @@ branch=$2
 policyrepo=$3
 base_dir=$(pwd)
 tmp_plan="${base_dir}/tmp_plan" #if you change this, update build triggers
-environments_regex="^(dev|nonprod|prod|shared)$"
+environments_regex="^(development|non-production|production|shared)$"
 
 ## Terraform apply for single environment.
 tf_apply() {
@@ -137,8 +137,8 @@ single_action_runner() {
      # sort -r is added to ensure shared is first if it exists.
     find "$component_path" -mindepth 1 -maxdepth 1 -type d | sort -r | while read -r env_path ; do
       env="$(basename "$env_path")"
-      # perform action only if folder matches branch OR folder is shared & branch is prod.
-      if [[ "$env" == "$branch" ]] || [[ "$env" == "shared" && "$branch" == "prod" ]]; then
+      # perform action only if folder matches branch OR folder is shared & branch is production.
+      if [[ "$env" == "$branch" ]] || [[ "$env" == "shared" && "$branch" == "production" ]]; then
         case "$action" in
           apply )
             tf_apply "$env_path" "$env" "$component"

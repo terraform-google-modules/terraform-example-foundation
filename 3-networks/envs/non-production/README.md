@@ -1,12 +1,12 @@
-# 3-networks/nonprod
+# 3-networks/non-production
 
-The purpose of this step is to setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment nonprod.
+The purpose of this step is to setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment non-production.
 
 ## Prerequisites
 
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
-1. 2-environments/envs/nonprod executed successfully.
+1. 2-environments/envs/non-production executed successfully.
 1. 3-networks/envs/shared executed successfully.
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
 

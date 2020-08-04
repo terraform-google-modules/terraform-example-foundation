@@ -37,21 +37,21 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
 1. Rename shared.auto.example.tfvars to shared.auto.tfvars and update the file with the target_name_server_addresses (the list of target name servers for the DNS forwarding zone in the DNS Hub).
 1. Rename access_context.auto.example.tfvars to access_context.auto.tfvars and update the file with the access_context_manager_policy_id.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
-1. You will need only once to manually plan + apply the `shared` environment since dev, nonprod and prod depend on it.
+1. You will need only once to manually plan + apply the `shared` environment sincedevelopment, non-production and production depend on it.
     1. cd to ./envs/shared/
     1. Update backend.tf with your bucket name from the bootstrap step.
     1. Run `terraform init`
     1. Run `terraform plan` and review output
     1. Run `terraform apply`
     1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME`
-1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `dev`, `nonprod` or `prod` will trigger a terraform plan).
+1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to prod with `git checkout -b prod` and `git push origin prod`
+1. Merge changes to production with `git checkout -b production` and `git push origin production`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. After prod has been applied apply dev and nonprod
-1. Merge changes to dev with `git checkout -b dev` and `git push origin dev`
+1. After production has been applied apply development and non-production
+1. Merge changes to development with `git checkout -b development` and `git push origin development`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to nonprod with `git checkout -b nonprod` and `git push origin nonprod`
+1. Merge changes to non-production with `git checkout -b non-production` and `git push origin non-production`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 
@@ -67,21 +67,21 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
 ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
 You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
 
-We will now deploy each of our environments(dev/prod/nonprod) using this script.
+We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks step
 and only the corresponding environment is applied.
 
 1. Run `./tf-wrapper.sh init shared`
 1. Run `./tf-wrapper.sh plan shared` and review output.
 1. Run `./tf-wrapper.sh apply shared`
-1. Run `./tf-wrapper.sh init prod`
-1. Run `./tf-wrapper.sh plan prod` and review output.
-1. Run `./tf-wrapper.sh apply prod`
-1. Run `./tf-wrapper.sh init nonprod`
-1. Run `./tf-wrapper.sh plan nonprod` and review output.
-1. Run `./tf-wrapper.sh apply nonprod`
-1. Run `./tf-wrapper.sh init dev`
-1. Run `./tf-wrapper.sh plan dev` and review output.
-1. Run `./tf-wrapper.sh apply dev`
+1. Run `./tf-wrapper.sh init production`
+1. Run `./tf-wrapper.sh plan production` and review output.
+1. Run `./tf-wrapper.sh apply production`
+1. Run `./tf-wrapper.sh init non-production`
+1. Run `./tf-wrapper.sh plan non-production` and review output.
+1. Run `./tf-wrapper.sh apply non-production`
+1. Run `./tf-wrapper.sh init development`
+1. Run `./tf-wrapper.sh plan development` and review output.
+1. Run `./tf-wrapper.sh apply development`
 
 If you received any errors or made any changes to the Terraform config or any `.tfvars`you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`

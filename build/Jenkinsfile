@@ -17,9 +17,9 @@ pipeline {
       when {
               not {
                       anyOf {
-                      branch 'dev'
-                      branch 'prod'
-                      branch 'nonprod'
+                      branch 'development'
+                      branch 'production'
+                      branch 'non-production'
                   }
               }
       }
@@ -32,9 +32,9 @@ pipeline {
     stage('TF init') {
       when {
               anyOf {
-                  branch 'dev'
-                  branch 'prod'
-                  branch 'nonprod'
+                  branch 'development'
+                  branch 'production'
+                  branch 'non-production'
               }
       }
       steps {
@@ -46,9 +46,9 @@ pipeline {
     stage('TF plan') {
       when {
               anyOf {
-                  branch 'dev'
-                  branch 'prod'
-                  branch 'nonprod'
+                  branch 'development'
+                  branch 'production'
+                  branch 'non-production'
               }
       }
       steps {
@@ -60,9 +60,9 @@ pipeline {
     stage('TF validate') {
       when {
               anyOf {
-                  branch 'dev'
-                  branch 'prod'
-                  branch 'nonprod'
+                  branch 'development'
+                  branch 'production'
+                  branch 'non-production'
               }
       }
       steps {
@@ -74,9 +74,9 @@ pipeline {
     stage('TF apply') {
       when {
               anyOf {
-                  branch 'dev'
-                  branch 'prod'
-                  branch 'nonprod'
+                  branch 'development'
+                  branch 'production'
+                  branch 'non-production'
               }
       }
       steps {

@@ -37,4 +37,7 @@ module "env_secrets" {
     environment      = var.env
     application_name = "env-secrets"
   }
+  budget_alert_pubsub_topic   = var.secret_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.secret_project_alert_spent_percents
+  budget_amount               = var.secret_project_budget_amount
 }

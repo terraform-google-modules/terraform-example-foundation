@@ -4,9 +4,12 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | activate\_apis | The api to activate for the GCP project | list(string) | `<list>` | no |
+| alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` | string | `"null"` | no |
+| alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded | list(number) | `<list>` | no |
 | application\_name | The name of application where GCP resources relate | string | n/a | yes |
 | billing\_account | The ID of the billing account to associated this project with | string | n/a | yes |
 | billing\_code | The code that's used to provide chargeback information | string | n/a | yes |
+| budget\_amount | The amount to use as the budget | number | `"1000"` | no |
 | business\_code | The code that describes which business unit owns the project | string | `"abcd"` | no |
 | environment | The environment the single project belongs to | string | n/a | yes |
 | folder\_id | The folder id where project will be created | string | n/a | yes |

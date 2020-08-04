@@ -23,7 +23,7 @@ module "project" {
   version                     = "~> 8.1"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
-  activate_apis               = var.activate_apis
+  activate_apis               = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
   name                        = "prj-${var.business_code}-${local.env_code}-${var.project_prefix}"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -46,5 +46,8 @@ module "project" {
     env_code          = local.env_code
     vpc_type          = var.vpc_type
   }
+  budget_alert_pubsub_topic   = var.alert_pubsub_topic
+  budget_alert_spent_percents = var.alert_spent_percents
+  budget_amount               = var.budget_amount
 }
 

@@ -58,37 +58,93 @@ variable "skip_gcloud_download" {
   default     = true
 }
 
+variable "seed_project_alert_spent_percents" {
+  description = "A list of percentages of the budget to alert on when threshold is exceeded for the seed project."
+  type        = list(number)
+  default     = [0.5, 0.75, 0.9, 0.95]
+}
+
+variable "seed_project_alert_pubsub_topic" {
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the seed project."
+  type        = string
+  default     = null
+}
+
+variable "seed_project_budget_amount" {
+  description = "The amount to use as the budget for the seed project."
+  type        = number
+  default     = 1000
+}
+
+variable "cloudbuild_project_alert_spent_percents" {
+  description = "A list of percentages of the budget to alert on when threshold is exceeded for the cloudbuild project."
+  type        = list(number)
+  default     = [0.5, 0.75, 0.9, 0.95]
+}
+
+variable "cloudbuild_project_alert_pubsub_topic" {
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the cloudbuild project."
+  type        = string
+  default     = null
+}
+
+variable "cloudbuild_project_budget_amount" {
+  description = "The amount to use as the budget for the cloudbuild project."
+  type        = number
+  default     = 1000
+}
+
+
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */
-//// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
-//variable "jenkins_agent_gce_subnetwork_cidr_range" {
-//  description = "The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0)"
-//  type        = string
-//}
-//
-//variable "jenkins_agent_gce_private_ip_address" {
-//  description = "The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Master) and GCP (CICD Project, where the Jenkins Agent is located)."
-//  type        = string
-//}
-//
-//variable "jenkins_agent_gce_ssh_pub_key" {
-//  description = "SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'`"
-//  type        = string
-//}
-//
-//variable "jenkins_agent_sa_email" {
-//  description = "Email for Jenkins Agent service account."
-//  type        = string
-//  default     = "jenkins-agent-gce"
-//}
-//
-//variable "jenkins_master_subnetwork_cidr_range" {
-//  description = "A list of CIDR IP ranges of the Jenkins Master in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
-//  type        = list(string)
-//}
-//
-//variable "nat_bgp_asn" {
-//  type        = number
-//  description = "BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address."
-//}
+
+# # Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
+# variable "jenkins_agent_gce_subnetwork_cidr_range" {
+#  description = "The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0)"
+#  type        = string
+# }
+
+# variable "jenkins_agent_gce_private_ip_address" {
+#  description = "The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Master) and GCP (CICD Project, where the Jenkins Agent is located)."
+#  type        = string
+# }
+
+# variable "jenkins_agent_gce_ssh_pub_key" {
+#  description = "SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'`"
+#  type        = string
+# }
+
+# variable "jenkins_agent_sa_email" {
+#  description = "Email for Jenkins Agent service account."
+#  type        = string
+#  default     = "jenkins-agent-gce"
+# }
+
+# variable "jenkins_master_subnetwork_cidr_range" {
+#  description = "A list of CIDR IP ranges of the Jenkins Master in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
+#  type        = list(string)
+# }
+
+# variable "nat_bgp_asn" {
+#  type        = number
+#  description = "BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address."
+# }
+
+# variable "jenkins_project_alert_spent_percents" {
+#   description = "A list of percentages of the budget to alert on when threshold is exceeded for the jenkins project."
+#   type        = list(number)
+#   default     = [0.5, 0.75, 0.9, 0.95]
+# }
+
+# variable "jenkins_project_alert_pubsub_topic" {
+#   description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the jenkins project."
+#   type        = string
+#   default     = null
+# }
+
+# variable "jenkins_project_budget_amount" {
+#   description = "The amount to use as the budget for the jenkins project."
+#   type        = number
+#   default     = 1000
+# }

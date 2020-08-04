@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-module "private_shared_vpc_project" {
+module "base_shared_vpc_project" {
   source                      = "../../modules/single_project"
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
@@ -22,10 +22,10 @@ module "private_shared_vpc_project" {
   folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "prod"
-  vpc_type                    = "private"
+  vpc_type                    = "base"
 
   # Metadata
-  project_prefix    = "sample-private"
+  project_prefix    = "sample-base"
   application_name  = "bu2-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

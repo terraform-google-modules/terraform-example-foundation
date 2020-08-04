@@ -18,6 +18,6 @@
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
 | vpc\_service\_control\_attach\_enabled | Whether the project will be attached to a VPC Service Control Perimeter | bool | `"false"` | no |
 | vpc\_service\_control\_perimeter\_name | The name of a VPC Service Control Perimeter to add the created project to | string | `"null"` | no |
-| vpc\_type | The type of VPC to attach the project to. Possible options are private or restricted. | string | `""` | no |
+| vpc\_type | The type of VPC to attach the project to. Possible options are base or restricted. | string | `""` | no |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

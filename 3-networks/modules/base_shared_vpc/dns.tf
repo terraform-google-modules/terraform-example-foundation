@@ -42,7 +42,7 @@ data "google_compute_network" "vpc_dns_hub" {
 
 resource "google_dns_policy" "default_policy" {
   project                   = var.project_id
-  name                      = "dp-${var.environment_code}-shared-private-default-policy"
+  name                      = "dp-${var.environment_code}-shared-base-default-policy"
   enable_inbound_forwarding = var.dns_enable_inbound_forwarding
   enable_logging            = var.dns_enable_logging
   networks {
@@ -59,7 +59,7 @@ module "private_googleapis" {
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "private"
-  name        = "dz-${var.environment_code}-shared-private-apis"
+  name        = "dz-${var.environment_code}-shared-base-apis"
   domain      = "googleapis.com."
   description = "Private DNS zone to configure private.googleapis.com"
 
@@ -87,12 +87,12 @@ module "private_googleapis" {
   Private GCR DNS Zone & records.
  *****************************************/
 
-module "private_gcr" {
+module "base_gcr" {
   source      = "terraform-google-modules/cloud-dns/google"
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "private"
-  name        = "dz-${var.environment_code}-shared-private-gcr"
+  name        = "dz-${var.environment_code}-shared-base-gcr"
   domain      = "gcr.io."
   description = "Private DNS zone to configure gcr.io"
 
@@ -124,7 +124,7 @@ module "peering_zone" {
   version     = "~> 3.0"
   project_id  = var.project_id
   type        = "peering"
-  name        = "dz-${var.environment_code}-shared-private-to-dns-hub"
+  name        = "dz-${var.environment_code}-shared-base-to-dns-hub"
   domain      = var.domain
   description = "Private DNS peering zone."
 

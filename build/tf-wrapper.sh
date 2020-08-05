@@ -108,7 +108,7 @@ tf_validate() {
   echo "      At environment: ${tf_component}/${tf_env} "
   echo "      Using policy from: ${policy_file_path} "
   echo "*****************************************************"
-  if ! command -v terraform-validator &> /development/null; then
+  if ! command -v terraform-validator &> /dev/null; then
     echo "terraform-validator not found!  Check path or visit"
     echo "https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator"
   elif [ -z "$policy_file_path" ]; then

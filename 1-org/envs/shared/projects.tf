@@ -103,7 +103,7 @@ module "interconnect" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
-  activate_apis               = ["billingbudgets.googleapis.com"]
+  activate_apis               = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
 
   labels = {
     environment      = "prod"

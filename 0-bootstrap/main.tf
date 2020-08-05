@@ -126,7 +126,21 @@ module "cloudbuild_bootstrap" {
   skip_gcloud_download      = var.skip_gcloud_download
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
-  activate_apis             = ["billingbudgets.googleapis.com"]
+
+  activate_apis = [
+    "serviceusage.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "compute.googleapis.com",
+    "logging.googleapis.com",
+    "bigquery.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "cloudbilling.googleapis.com",
+    "iam.googleapis.com",
+    "admin.googleapis.com",
+    "appengine.googleapis.com",
+    "storage-api.googleapis.com",
+    "billingbudgets.googleapis.com"
+  ]
 
   project_labels = {
     environment       = "bootstrap"

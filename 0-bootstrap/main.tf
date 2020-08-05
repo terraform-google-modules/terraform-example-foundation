@@ -100,14 +100,10 @@ module "seed_bootstrap" {
   ]
 }
 
-module "seed_project_budget" {
-  source               = "terraform-google-modules/project-factory/google//modules/budget"
-  version              = "~> 8.1"
-  billing_account      = var.billing_account
-  projects             = [module.seed_bootstrap.seed_project_id]
-  amount               = var.seed_project_budget_amount
-  alert_spent_percents = var.seed_project_alert_spent_percents
-  alert_pubsub_topic   = var.seed_project_alert_pubsub_topic
+resource "google_billing_account_iam_member" "tf_billing_admin" {
+  billing_account_id = var.billing_account
+  role               = "roles/billing.admin"
+  member             = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
 }
 
 // Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
@@ -167,16 +163,6 @@ module "cloudbuild_bootstrap" {
   ]
 }
 
-module "cloudbuild_project_budget" {
-  source               = "terraform-google-modules/project-factory/google//modules/budget"
-  version              = "~> 8.1"
-  billing_account      = var.billing_account
-  projects             = [module.cloudbuild_bootstrap.cloudbuild_project_id]
-  amount               = var.cloudbuild_project_budget_amount
-  alert_spent_percents = var.cloudbuild_project_alert_spent_percents
-  alert_pubsub_topic   = var.cloudbuild_project_alert_pubsub_topic
-}
-
 ## Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 # module "jenkins_bootstrap" {
 #  source                                  = "./modules/jenkins-agent"
@@ -195,14 +181,4 @@ module "cloudbuild_project_budget" {
 #  nat_bgp_asn                             = var.nat_bgp_asn
 #  jenkins_agent_sa_email                  = var.jenkins_agent_sa_email
 #  jenkins_agent_gce_ssh_pub_key           = var.jenkins_agent_gce_ssh_pub_key
-# }
-
-# module "jenkins_project_budget" {
-#   source               = "terraform-google-modules/project-factory/google//modules/budget"
-#   version              = "~> 8.1"
-#   billing_account      = var.billing_account
-#   projects             = [module.jenkins_bootstrap.cicd_project_id]
-#   amount               = var.jenkins_project_budget_amount
-#   alert_spent_percents = var.jenkins_project_alert_spent_percents
-#   alert_pubsub_topic   = var.jenkins_project_alert_pubsub_topic
 # }

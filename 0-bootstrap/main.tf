@@ -162,7 +162,7 @@ module "cloudbuild_bootstrap" {
 
   terraform_apply_branches = [
     "development",
-    "non-production",
+    "non\\-production", //non-production needs a \ to ensure regex matches correct branches.
     "production"
   ]
 }

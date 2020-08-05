@@ -14,7 +14,7 @@
 
 dns_hub_project_id = attribute('dns_hub_project_id')
 policy_name = 'dp-dns-hub-default-policy'
-dns_hub_network_url = "https://www.googleapis.com/compute/v1/projects/#{dns_hub_project_id}/global/networks/vpc-dns-hub"
+dns_hub_network_url = "https://www.googleapis.com/compute/v1/projects/#{dns_hub_project_id}/global/networks/vpc-c-dns-hub"
 
 control 'gcloud_dns_hub' do
   title 'step 3 dns hub gcloud tests'

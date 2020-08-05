@@ -112,7 +112,7 @@ resource "google_compute_firewall" "fw_allow_ssh_into_jenkins_agent" {
   name           = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
   description    = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
   network        = google_compute_network.jenkins_agents.name
-  source_ranges  = var.jenkins_master_ip_addresses
+  source_ranges  = var.jenkins_master_subnetwork_cidr_range
   target_tags    = local.jenkins_gce_fw_tags
   priority       = 1000
   enable_logging = true
@@ -129,7 +129,7 @@ resource "google_compute_network" "jenkins_agents" {
 
 resource "google_compute_subnetwork" "jenkins_agents_subnet" {
   project       = module.cicd_project.project_id
-  name          = "jenkins-agents-subnet"
+  name          = "sb-b-jenkinsagents-${var.default_region}"
   ip_cidr_range = var.jenkins_agent_gce_subnetwork_cidr_range
   region        = var.default_region
   network       = google_compute_network.jenkins_agents.self_link

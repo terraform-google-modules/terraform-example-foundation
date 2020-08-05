@@ -24,7 +24,7 @@ module "org_audit_logs" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-audit-logs"
+  name                        = "prj-c-logging"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -32,8 +32,13 @@ module "org_audit_logs" {
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
 
   labels = {
-    environment      = "prod"
-    application_name = "org-audit-logs"
+    environment       = "prod"
+    application_name  = "org-logging"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -43,7 +48,7 @@ module "org_billing_logs" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-billing-logs"
+  name                        = "prj-c-billing-logs"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -51,8 +56,13 @@ module "org_billing_logs" {
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
 
   labels = {
-    environment      = "prod"
-    application_name = "org-billing-logs"
+    environment       = "prod"
+    application_name  = "org-billing-logs"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -66,7 +76,7 @@ module "org_secrets" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-secrets"
+  name                        = "prj-c-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -74,8 +84,13 @@ module "org_secrets" {
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
 
   labels = {
-    environment      = "prod"
-    application_name = "org-secrets"
+    environment       = "prod"
+    application_name  = "org-secrets"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -89,15 +104,20 @@ module "interconnect" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-interconnect"
+  name                        = "prj-c-interconnect"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
-    environment      = "prod"
-    application_name = "org-interconnect"
+    environment       = "prod"
+    application_name  = "org-interconnect"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -111,7 +131,7 @@ module "scc_notifications" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-scc"
+  name                        = "prj-c-scc"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -119,8 +139,13 @@ module "scc_notifications" {
   skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
-    environment      = "prod"
-    application_name = "org-scc"
+    environment       = "prod"
+    application_name  = "org-scc"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -134,7 +159,7 @@ module "dns_hub" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-p-org-dns-hub"
+  name                        = "prj-c-dns-hub"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -149,7 +174,12 @@ module "dns_hub" {
   ]
 
   labels = {
-    environment      = "prod"
-    application_name = "org-dns-hub"
+    environment       = "prod"
+    application_name  = "org-dns-hub"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }

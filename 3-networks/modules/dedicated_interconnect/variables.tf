@@ -103,3 +103,9 @@ variable "region2_router2_name" {
   type        = string
   description = "Name of the Router 2 for Region 2 where the attachment resides"
 }
+
+variable "cloud_router_labels" {
+  type        = map(string)
+  description = "A map of suffixes for labelling vlans with four entries like \"vlan_1\" => \"suffix1\" with keys from `vlan_1` to `vlan_4`."
+  default     = {}
+}

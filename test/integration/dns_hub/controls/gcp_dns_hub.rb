@@ -17,16 +17,16 @@ dns_hub_project_id = attribute('dns_hub_project_id')
 dns_default_region1 = 'us-central1'
 dns_default_region2 = 'us-west1'
 
-network_name = 'vpc-dns-hub'
+network_name = 'vpc-c-dns-hub'
 dns_fw_zone_name = 'fz-dns-hub'
 
-subnet_name1 = "sb-dns-hub-#{dns_default_region1}"
-subnet_name2 = "sb-dns-hub-#{dns_default_region2}"
+subnet_name1 = "sb-c-dns-hub-#{dns_default_region1}"
+subnet_name2 = "sb-c-dns-hub-#{dns_default_region2}"
 
-region1_router1 = "cr-dns-hub-#{dns_default_region1}-cr1"
-region1_router2 = "cr-dns-hub-#{dns_default_region1}-cr2"
-region2_router1 = "cr-dns-hub-#{dns_default_region2}-cr3"
-region2_router2 = "cr-dns-hub-#{dns_default_region2}-cr4"
+region1_router1 = "cr-c-dns-hub-#{dns_default_region1}-cr1"
+region1_router2 = "cr-c-dns-hub-#{dns_default_region1}-cr2"
+region2_router1 = "cr-c-dns-hub-#{dns_default_region2}-cr3"
+region2_router2 = "cr-c-dns-hub-#{dns_default_region2}-cr4"
 
 region1_ip_cidr_range = '172.16.0.0/25'
 region2_ip_cidr_range = '172.16.0.128/25'

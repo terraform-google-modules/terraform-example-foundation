@@ -35,7 +35,12 @@ module "monitoring_project" {
   ]
 
   labels = {
-    environment      = var.env
-    application_name = "env-monitoring"
+    environment       = var.env
+    application_name  = "env-monitoring"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = var.environment_code
   }
 }

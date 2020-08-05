@@ -37,6 +37,8 @@ module "interconnect_attachment1_region1" {
 
   interconnect = var.region1_interconnect1
 
+  candidate_subnets = var.region1_interconnect1_candidate_subnets
+
   interface = {
     name = "if-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-${local.suffix1}"
   }
@@ -58,6 +60,8 @@ module "interconnect_attachment2_region1" {
   router  = var.region1_router2_name
 
   interconnect = var.region1_interconnect2
+
+  candidate_subnets = var.region1_interconnect2_candidate_subnets
 
   interface = {
     name = "if-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-${local.suffix2}"
@@ -81,6 +85,8 @@ module "interconnect_attachment1_region2" {
 
   interconnect = var.region2_interconnect1
 
+  candidate_subnets = var.region2_interconnect1_candidate_subnets
+
   interface = {
     name = "if-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-${local.suffix3}"
   }
@@ -102,6 +108,8 @@ module "interconnect_attachment2_region2" {
   router  = var.region2_router2_name
 
   interconnect = var.region2_interconnect2
+
+  candidate_subnets = var.region2_interconnect2_candidate_subnets
 
   interface = {
     name = "if-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-${local.suffix4}"

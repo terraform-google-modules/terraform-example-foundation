@@ -23,15 +23,19 @@ Sections with examples of calls to this module are commented in each one of the 
 | peer\_name | Name of this BGP peer. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])? | string | n/a | yes |
 | region1 | First subnet region. The dedicated Interconnect module only configures two regions. | string | n/a | yes |
 | region1\_interconnect1 | URL of the underlying Interconnect object that this attachment's traffic will traverse through. | string | n/a | yes |
+| region1\_interconnect1\_candidate\_subnets | Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc). | list(string) | `"null"` | no |
 | region1\_interconnect1\_location | Name of the interconnect location used in the creation of the Interconnect for the first location of region1 | string | n/a | yes |
 | region1\_interconnect2 | URL of the underlying Interconnect object that this attachment's traffic will traverse through. | string | n/a | yes |
+| region1\_interconnect2\_candidate\_subnets | Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc). | list(string) | `"null"` | no |
 | region1\_interconnect2\_location | Name of the interconnect location used in the creation of the Interconnect for the second location of region1 | string | n/a | yes |
 | region1\_router1\_name | Name of the Router 1 for Region 1 where the attachment resides. | string | n/a | yes |
 | region1\_router2\_name | Name of the Router 2 for Region 1 where the attachment resides. | string | n/a | yes |
 | region2 | Second subnet region. The dedicated Interconnect module only configures two regions. | string | n/a | yes |
 | region2\_interconnect1 | URL of the underlying Interconnect object that this attachment's traffic will traverse through. | string | n/a | yes |
+| region2\_interconnect1\_candidate\_subnets | Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc). | list(string) | `"null"` | no |
 | region2\_interconnect1\_location | Name of the interconnect location used in the creation of the Interconnect for the first location of region2 | string | n/a | yes |
 | region2\_interconnect2 | URL of the underlying Interconnect object that this attachment's traffic will traverse through. | string | n/a | yes |
+| region2\_interconnect2\_candidate\_subnets | Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc). | list(string) | `"null"` | no |
 | region2\_interconnect2\_location | Name of the interconnect location used in the creation of the Interconnect for the second location of region2 | string | n/a | yes |
 | region2\_router1\_name | Name of the Router 1 for Region 2 where the attachment resides. | string | n/a | yes |
 | region2\_router2\_name | Name of the Router 2 for Region 2 where the attachment resides | string | n/a | yes |

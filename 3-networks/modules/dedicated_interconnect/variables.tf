@@ -109,3 +109,25 @@ variable "cloud_router_labels" {
   description = "A map of suffixes for labelling vlans with four entries like \"vlan_1\" => \"suffix1\" with keys from `vlan_1` to `vlan_4`."
   default     = {}
 }
+
+variable "region1_interconnect1_candidate_subnets" {
+  type        = list(string)
+  description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
+  default     = null
+}
+
+variable "region1_interconnect2_candidate_subnets" {
+  type        = list(string)
+  description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
+  default     = null
+}
+variable "region2_interconnect1_candidate_subnets" {
+  type        = list(string)
+  description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
+  default     = null
+}
+variable "region2_interconnect2_candidate_subnets" {
+  type        = list(string)
+  description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
+  default     = null
+}

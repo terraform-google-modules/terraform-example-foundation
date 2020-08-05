@@ -34,13 +34,22 @@ module "base_shared_vpc_host_project" {
     "dns.googleapis.com",
     "servicenetworking.googleapis.com",
     "container.googleapis.com",
-    "logging.googleapis.com"
+    "logging.googleapis.com",
+    "billingbudgets.googleapis.com"
   ]
 
   labels = {
-    environment      = var.env
-    application_name = "base-shared-vpc-host"
+    environment       = var.env
+    application_name  = "base-shared-vpc-host"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = var.environment_code
   }
+  budget_alert_pubsub_topic   = var.base_network_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.base_network_project_alert_spent_percents
+  budget_amount               = var.base_network_project_budget_amount
 }
 
 module "restricted_shared_vpc_host_project" {
@@ -61,11 +70,20 @@ module "restricted_shared_vpc_host_project" {
     "container.googleapis.com",
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "accesscontextmanager.googleapis.com"
+    "accesscontextmanager.googleapis.com",
+    "billingbudgets.googleapis.com"
   ]
 
   labels = {
-    environment      = var.env
-    application_name = "restricted-shared-vpc-host"
+    environment       = var.env
+    application_name  = "restricted-shared-vpc-host"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = var.environment_code
   }
+  budget_alert_pubsub_topic   = var.restricted_network_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.restricted_network_project_alert_spent_percents
+  budget_amount               = var.restricted_network_project_budget_amount
 }

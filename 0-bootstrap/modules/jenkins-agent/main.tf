@@ -17,7 +17,7 @@
 locals {
   cicd_project_name           = format("%s-%s", var.project_prefix, "cicd")
   impersonation_enabled_count = var.sa_enable_impersonation ? 1 : 0
-  activate_apis               = distinct(var.activate_apis)
+  activate_apis               = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
   jenkins_gce_fw_tags         = ["ssh-jenkins-agent"]
 }
 

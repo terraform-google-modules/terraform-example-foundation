@@ -58,43 +58,6 @@ variable "skip_gcloud_download" {
   default     = true
 }
 
-variable "seed_project_alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded for the seed project."
-  type        = list(number)
-  default     = [0.5, 0.75, 0.9, 0.95]
-}
-
-variable "seed_project_alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the seed project."
-  type        = string
-  default     = null
-}
-
-variable "seed_project_budget_amount" {
-  description = "The amount to use as the budget for the seed project."
-  type        = number
-  default     = 1000
-}
-
-variable "cloudbuild_project_alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded for the cloudbuild project."
-  type        = list(number)
-  default     = [0.5, 0.75, 0.9, 0.95]
-}
-
-variable "cloudbuild_project_alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the cloudbuild project."
-  type        = string
-  default     = null
-}
-
-variable "cloudbuild_project_budget_amount" {
-  description = "The amount to use as the budget for the cloudbuild project."
-  type        = number
-  default     = 1000
-}
-
-
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */
@@ -129,22 +92,4 @@ variable "cloudbuild_project_budget_amount" {
 # variable "nat_bgp_asn" {
 #  type        = number
 #  description = "BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address."
-# }
-
-# variable "jenkins_project_alert_spent_percents" {
-#   description = "A list of percentages of the budget to alert on when threshold is exceeded for the jenkins project."
-#   type        = list(number)
-#   default     = [0.5, 0.75, 0.9, 0.95]
-# }
-
-# variable "jenkins_project_alert_pubsub_topic" {
-#   description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the jenkins project."
-#   type        = string
-#   default     = null
-# }
-
-# variable "jenkins_project_budget_amount" {
-#   description = "The amount to use as the budget for the jenkins project."
-#   type        = number
-#   default     = 1000
 # }

@@ -42,18 +42,12 @@ Currently, the bucket information is replaced in the state backends as a part of
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | billing\_account | The ID of the billing account to associate projects with. | string | n/a | yes |
-| cloudbuild\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the cloudbuild project. | string | `"null"` | no |
-| cloudbuild\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the cloudbuild project. | list(number) | `<list>` | no |
-| cloudbuild\_project\_budget\_amount | The amount to use as the budget for the cloudbuild project. | number | `"1000"` | no |
 | default\_region | Default region to create resources where applicable. | string | `"us-central1"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | string | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |
 | org\_id | GCP Organization ID | string | n/a | yes |
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | list(string) | `<list>` | no |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
-| seed\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the seed project. | string | `"null"` | no |
-| seed\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the seed project. | list(number) | `<list>` | no |
-| seed\_project\_budget\_amount | The amount to use as the budget for the seed project. | number | `"1000"` | no |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
 
 ## Outputs

@@ -2,6 +2,13 @@ pipeline {
   agent {
       label "gcp-agent"
   }
+
+  environment {
+    _POLICY_REPO=""
+    _TF_SA_EMAIL=""
+    _STATE_BUCKET_NAME=""
+  }
+
   stages {
     stage('setup') {
       steps {
@@ -9,7 +16,7 @@ pipeline {
           echo "Setting up gcloud for impersonation"
           gcloud config set auth/impersonate_service_account ${_TF_SA_EMAIL}
           echo "Adding bucket information to backends"
-          for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/${_STATE_BUCKET_NAME}/' $i; done
+          for i in `find -name "backend.tf"`; do sed -i "s/UPDATE_ME/${_STATE_BUCKET_NAME}/" $i; done
           '''
         }
     }

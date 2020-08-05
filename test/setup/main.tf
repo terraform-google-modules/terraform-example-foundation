@@ -47,5 +47,6 @@ module "project" {
     "accesscontextmanager.googleapis.com",
     "securitycenter.googleapis.com",
     "servicenetworking.googleapis.com",
+    "billingbudgets.googleapis.com",
   ]
 }

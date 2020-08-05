@@ -54,3 +54,75 @@ variable "skip_gcloud_download" {
   type        = bool
   default     = true
 }
+
+variable "base_network_project_alert_spent_percents" {
+  description = "A list of percentages of the budget to alert on when threshold is exceeded for the base networks project"
+  type        = list(number)
+  default     = [0.5, 0.75, 0.9, 0.95]
+}
+
+variable "base_network_project_alert_pubsub_topic" {
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the base networks project"
+  type        = string
+  default     = null
+}
+
+variable "base_network_project_budget_amount" {
+  description = "The amount to use as the budget for the base networks project"
+  type        = number
+  default     = 1000
+}
+
+variable "restricted_network_project_alert_spent_percents" {
+  description = "A list of percentages of the budget to alert on when threshold is exceeded for the restricted networks project."
+  type        = list(number)
+  default     = [0.5, 0.75, 0.9, 0.95]
+}
+
+variable "restricted_network_project_alert_pubsub_topic" {
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the restricted networks project"
+  type        = string
+  default     = null
+}
+
+variable "restricted_network_project_budget_amount" {
+  description = "The amount to use as the budget for the restricted networks project."
+  type        = number
+  default     = 1000
+}
+
+variable "monitoring_project_alert_spent_percents" {
+  description = "A list of percentages of the budget to alert on when threshold is exceeded for the monitoring project."
+  type        = list(number)
+  default     = [0.5, 0.75, 0.9, 0.95]
+}
+
+variable "monitoring_project_alert_pubsub_topic" {
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the monitoring project."
+  type        = string
+  default     = null
+}
+
+variable "monitoring_project_budget_amount" {
+  description = "The amount to use as the budget for the monitoring project."
+  type        = number
+  default     = 1000
+}
+
+variable "secret_project_alert_spent_percents" {
+  description = "A list of percentages of the budget to alert on when threshold is exceeded for the secrets project."
+  type        = list(number)
+  default     = [0.5, 0.75, 0.9, 0.95]
+}
+
+variable "secret_project_alert_pubsub_topic" {
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the secrets project."
+  type        = string
+  default     = null
+}
+
+variable "secret_project_budget_amount" {
+  description = "The amount to use as the budget for the secrets project."
+  type        = number
+  default     = 1000
+}

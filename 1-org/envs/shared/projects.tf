@@ -29,7 +29,7 @@ module "org_audit_logs" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
-  activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
+  activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
     environment       = "prod"
@@ -40,6 +40,9 @@ module "org_audit_logs" {
     business_code     = "abcd"
     env_code          = "p"
   }
+  budget_alert_pubsub_topic   = var.org_audit_logs_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.org_audit_logs_project_alert_spent_percents
+  budget_amount               = var.org_audit_logs_project_budget_amount
 }
 
 module "org_billing_logs" {
@@ -53,7 +56,7 @@ module "org_billing_logs" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
-  activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
+  activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
     environment       = "prod"
@@ -64,6 +67,9 @@ module "org_billing_logs" {
     business_code     = "abcd"
     env_code          = "p"
   }
+  budget_alert_pubsub_topic   = var.org_billing_logs_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.org_billing_logs_project_alert_spent_percents
+  budget_amount               = var.org_billing_logs_project_budget_amount
 }
 
 /******************************************
@@ -81,7 +87,7 @@ module "org_secrets" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
-  activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
+  activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
     environment       = "prod"
@@ -92,6 +98,9 @@ module "org_secrets" {
     business_code     = "abcd"
     env_code          = "p"
   }
+  budget_alert_pubsub_topic   = var.org_secrets_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.org_secrets_project_alert_spent_percents
+  budget_amount               = var.org_secrets_project_budget_amount
 }
 
 /******************************************
@@ -109,6 +118,7 @@ module "interconnect" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
+  activate_apis               = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
 
   labels = {
     environment       = "prod"
@@ -119,6 +129,9 @@ module "interconnect" {
     business_code     = "abcd"
     env_code          = "p"
   }
+  budget_alert_pubsub_topic   = var.interconnect_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.interconnect_project_alert_spent_percents
+  budget_amount               = var.interconnect_project_budget_amount
 }
 
 /******************************************
@@ -135,7 +148,7 @@ module "scc_notifications" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
-  activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com"]
+  activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com"]
   skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
@@ -147,6 +160,9 @@ module "scc_notifications" {
     business_code     = "abcd"
     env_code          = "p"
   }
+  budget_alert_pubsub_topic   = var.scc_notifications_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.scc_notifications_project_alert_spent_percents
+  budget_amount               = var.scc_notifications_project_budget_amount
 }
 
 /******************************************
@@ -170,7 +186,8 @@ module "dns_hub" {
     "dns.googleapis.com",
     "servicenetworking.googleapis.com",
     "logging.googleapis.com",
-    "cloudresourcemanager.googleapis.com"
+    "cloudresourcemanager.googleapis.com",
+    "billingbudgets.googleapis.com"
   ]
 
   labels = {
@@ -182,4 +199,7 @@ module "dns_hub" {
     business_code     = "abcd"
     env_code          = "p"
   }
+  budget_alert_pubsub_topic   = var.dns_hub_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.dns_hub_project_alert_spent_percents
+  budget_amount               = var.dns_hub_project_budget_amount
 }

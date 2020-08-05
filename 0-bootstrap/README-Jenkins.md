@@ -265,6 +265,12 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 - **Note:** this section is considered out of the scope of this document. Since there are multiple options on how to configure the Git repositories and **Multibranch Pipeline** in your Jenkins Master, here we can only provide some guidance that you should keep in mind while completing this step. Visit the [Jenkins website](http://jenkins.io) for more information, there are plenty of Jenkins Plugins that could help with the task.
     - You need to configure a **"Multibranch Pipeline"**. Note that the `Jenkinsfile` and `tf-wrapper.sh` files use the `$BRANCH_NAME` environment variable. **the `$BRANCH_NAME` variable is only available in Jenkins' Multibranch Pipelines**.
 
+
+- **Jenkinsfile:** A [Jenkinsfile](../build/Jenkinsfile) has been included which closely aligns with the Cloud Build pipeline. Additionally, the stage `TF wait for approval` which lets you confirm via Jenkins UI before proceeding with `terraform apply` has been disabled by default. It can be enabled by un-commenting that stage in the file.
+
+1. Create Multibranch pipelines for your new repos (`YOUR_NEW_REPO-1-org, YOUR_NEW_REPO-2-environments, YOUR_NEW_REPO-3-networks, YOUR_NEW_REPO-4-projects`).
+    - **DO NOT configure an automatic pipeline for your `YOUR_NEW_REPO-0-bootstrap` repository**
+
 1. In your Jenkins Master Web UI, **create Multibranch Pipelines only for the following repositories:**
     ```
     YOUR_NEW_REPO-1-org
@@ -272,8 +278,6 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
     YOUR_NEW_REPO-3-networks
     YOUR_NEW_REPO-4-projects
     ```
-    - **Reminder: DO NOT configure an automatic pipeline for `YOUR_NEW_REPO-0-bootstrap`**
-
 1. Assuming your new Git repositories are private, you may need to configure new credentials In your Jenkins Master web UI, so it can connect to the repositories.
 
 1. You will also want to configure automatic triggers in each one of the Jenkins Multibranch Pipelines, unless you want to run the pipelines manually from the Jenkins Web UI after each commit to your repositories.

@@ -78,6 +78,20 @@ pipeline {
           '''
         }
     }
+    // stage('TF wait for approval') {
+    //   when {
+    //           anyOf {
+    //               branch 'dev'
+    //               branch 'prod'
+    //               branch 'nonprod'
+    //           }
+    //   }
+    //   steps {
+    //       script {
+    //       def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+    //       }
+    //     }
+    // }
     stage('TF apply') {
       when {
               anyOf {

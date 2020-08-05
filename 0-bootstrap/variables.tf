@@ -83,7 +83,7 @@ variable "skip_gcloud_download" {
 //  default     = "jenkins-agent-gce"
 //}
 //
-//variable "jenkins_master_ip_addresses" {
+//variable "jenkins_master_subnetwork_cidr_range" {
 //  description = "A list of CIDR IP ranges of the Jenkins Master in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance."
 //  type        = list(string)
 //}

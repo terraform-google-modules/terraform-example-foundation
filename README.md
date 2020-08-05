@@ -10,10 +10,7 @@ Each of these Terraform projects are to be layered on top of each other, running
 
 ### [0. bootstrap](./0-bootstrap/)
 
-This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT). You can use either of these two tools for your CICD pipelines: Cloud Build (by default) or Jenkins. If you want to use Jenkins instead of Cloud Build, please:
-   - Comment-out the `cloudbuild_bootstrap` module in `main.tf`, its variables in `variables.tf` and its outputs in `outputs.tf`
-   - Un-comment the `jenkins_bootstrap` module in `main.tf`, its variables in `variables.tf` and its outputs in `outputs.tf`
-   - Follow the instructions on how to run the bootstrap step with the `jenkins_bootstrap` sub-module described in the [README](./0-bootstrap/modules/jenkins-agent/README.md), which include implementing VPN, configuring your Jenkins Master among other steps.
+This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT). You can use either of these two tools for your CICD pipelines: Cloud Build (by default) or Jenkins. If you want to use Jenkins instead of Cloud Build, please see [README-Jenkins](./0-bootstrap/README-Jenkins.md).
 
 The bootstrap step includes:
 - The `cft-seed` project, which contains:

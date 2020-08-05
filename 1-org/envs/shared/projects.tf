@@ -32,7 +32,7 @@ module "org_audit_logs" {
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
-    environment       = "prod"
+    environment       = "production"
     application_name  = "org-logging"
     billing_code      = "1234"
     primary_contact   = "example1"
@@ -59,7 +59,7 @@ module "org_billing_logs" {
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
-    environment       = "prod"
+    environment       = "production"
     application_name  = "org-billing-logs"
     billing_code      = "1234"
     primary_contact   = "example1"
@@ -90,7 +90,7 @@ module "org_secrets" {
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
-    environment       = "prod"
+    environment       = "production"
     application_name  = "org-secrets"
     billing_code      = "1234"
     primary_contact   = "example1"
@@ -121,7 +121,7 @@ module "interconnect" {
   activate_apis               = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
 
   labels = {
-    environment       = "prod"
+    environment       = "production"
     application_name  = "org-interconnect"
     billing_code      = "1234"
     primary_contact   = "example1"
@@ -152,7 +152,7 @@ module "scc_notifications" {
   skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
-    environment       = "prod"
+    environment       = "production"
     application_name  = "org-scc"
     billing_code      = "1234"
     primary_contact   = "example1"
@@ -191,7 +191,7 @@ module "dns_hub" {
   ]
 
   labels = {
-    environment       = "prod"
+    environment       = "production"
     application_name  = "org-dns-hub"
     billing_code      = "1234"
     primary_contact   = "example1"

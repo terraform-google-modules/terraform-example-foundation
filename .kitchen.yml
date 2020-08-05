@@ -67,9 +67,9 @@ suites:
         - name: inspec-gcp
           backend: gcp
           controls:
-            - dev
-            - nonprod
-            - prod
+            - development
+            - non-production
+            - production
   - name: dns_hub
     driver:
       root_module_directory: test/fixtures/dns_hub/

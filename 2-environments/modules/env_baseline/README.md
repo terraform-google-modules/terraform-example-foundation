@@ -7,7 +7,7 @@
 | base\_network\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the base networks project | list(number) | `<list>` | no |
 | base\_network\_project\_budget\_amount | The amount to use as the budget for the base networks project | number | `"1000"` | no |
 | billing\_account | The ID of the billing account to associate this project with | string | n/a | yes |
-| env | The environment to prepare (ex. dev) | string | n/a | yes |
+| env | The environment to prepare (ex. development) | string | n/a | yes |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization (ex. d). | string | n/a | yes |
 | monitoring\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the monitoring project. | string | `"null"` | no |
 | monitoring\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the monitoring project. | list(number) | `<list>` | no |

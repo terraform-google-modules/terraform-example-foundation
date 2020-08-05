@@ -49,7 +49,7 @@ control 'gcp_projects' do
 
   describe google_resourcemanager_folder(name: common_folder_name) do
     it { should exist }
-    its('display_name') { should eq 'common' }
+    its('display_name') { should eq 'fldr-common' }
   end
 
   describe google_project(project: org_audit_logs_project_id) do

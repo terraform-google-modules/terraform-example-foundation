@@ -15,7 +15,7 @@
  */
 
 variable "env" {
-  description = "The environment to prepare (ex. dev)"
+  description = "The environment to prepare (ex. development)"
   type        = string
 }
 

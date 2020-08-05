@@ -15,7 +15,7 @@
  */
 
 module "projects_bu1_dev" {
-  source                           = "../../../4-projects/business_unit_1/dev"
+  source                           = "../../../4-projects/business_unit_1//development"
   terraform_service_account        = var.terraform_sa_email
   org_id                           = var.org_id
   billing_account                  = var.billing_account
@@ -25,7 +25,7 @@ module "projects_bu1_dev" {
 }
 
 module "projects_bu1_nonprod" {
-  source                           = "../../../4-projects/business_unit_1/nonprod"
+  source                           = "../../../4-projects/business_unit_1//non-production"
   terraform_service_account        = var.terraform_sa_email
   org_id                           = var.org_id
   billing_account                  = var.billing_account
@@ -36,7 +36,7 @@ module "projects_bu1_nonprod" {
 
 
 module "projects_bu1_prod" {
-  source                           = "../../../4-projects/business_unit_1/prod"
+  source                           = "../../../4-projects/business_unit_1/production"
   terraform_service_account        = var.terraform_sa_email
   org_id                           = var.org_id
   billing_account                  = var.billing_account
@@ -46,7 +46,7 @@ module "projects_bu1_prod" {
 }
 
 module "projects_bu2_dev" {
-  source                           = "../../../4-projects/business_unit_2/dev"
+  source                           = "../../../4-projects/business_unit_2/development"
   terraform_service_account        = var.terraform_sa_email
   org_id                           = var.org_id
   billing_account                  = var.billing_account
@@ -56,7 +56,7 @@ module "projects_bu2_dev" {
 }
 
 module "projects_bu2_nonprod" {
-  source                           = "../../../4-projects/business_unit_2/nonprod"
+  source                           = "../../../4-projects/business_unit_2/non-production"
   terraform_service_account        = var.terraform_sa_email
   org_id                           = var.org_id
   billing_account                  = var.billing_account
@@ -67,7 +67,7 @@ module "projects_bu2_nonprod" {
 
 
 module "projects_bu2_prod" {
-  source                           = "../../../4-projects/business_unit_2/prod"
+  source                           = "../../../4-projects/business_unit_2/production"
   terraform_service_account        = var.terraform_sa_email
   org_id                           = var.org_id
   billing_account                  = var.billing_account

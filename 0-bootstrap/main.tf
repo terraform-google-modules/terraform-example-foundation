@@ -161,9 +161,9 @@ module "cloudbuild_bootstrap" {
   ]
 
   terraform_apply_branches = [
-    "dev",
-    "nonprod",
-    "prod"
+    "development",
+    "non-production",
+    "production"
   ]
 }
 

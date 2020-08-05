@@ -41,16 +41,16 @@ variable "parent_folder" {
 }
 
 variable "dev_restricted_service_perimeter_name" {
-  description = "Dev access context manager service perimeter name"
+  description = "development access context manager service perimeter name"
   type        = string
 }
 
 variable "nonprod_restricted_service_perimeter_name" {
-  description = "Nonprod access context manager service perimeter name"
+  description = "non-production access context manager service perimeter name"
   type        = string
 }
 
 variable "prod_restricted_service_perimeter_name" {
-  description = "Prod access context manager service perimeter name"
+  description = "production access context manager service perimeter name"
   type        = string
 }

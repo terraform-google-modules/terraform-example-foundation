@@ -15,31 +15,31 @@
  */
 
 output "dev_restricted_access_level_name" {
-  description = "Dev access context manager access level name"
-  value       = module.dev.restricted_access_level_name
+  description = "development access context manager access level name"
+  value       = module.development.restricted_access_level_name
 }
 
 output "dev_restricted_service_perimeter_name" {
-  description = "Dev access context manager service perimeter name"
-  value       = module.dev.restricted_service_perimeter_name
+  description = "development access context manager service perimeter name"
+  value       = module.development.restricted_service_perimeter_name
 }
 
 output "nonprod_restricted_access_level_name" {
-  description = "Nonprod access context manager access level name"
-  value       = module.nonprod.restricted_access_level_name
+  description = "non-production access context manager access level name"
+  value       = module.non-production.restricted_access_level_name
 }
 
 output "nonprod_restricted_service_perimeter_name" {
-  description = "Nonprod access context manager service perimeter name"
-  value       = module.nonprod.restricted_service_perimeter_name
+  description = "non-production access context manager service perimeter name"
+  value       = module.non-production.restricted_service_perimeter_name
 }
 
 output "prod_restricted_access_level_name" {
-  description = "Prod access context manager access level name"
-  value       = module.prod.restricted_access_level_name
+  description = "production access context manager access level name"
+  value       = module.production.restricted_access_level_name
 }
 
 output "prod_restricted_service_perimeter_name" {
-  description = "Prod access context manager service perimeter name"
-  value       = module.prod.restricted_service_perimeter_name
+  description = "production access context manager service perimeter name"
+  value       = module.production.restricted_service_perimeter_name
 }

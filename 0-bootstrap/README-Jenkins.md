@@ -48,7 +48,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 1. Generate a SSH key pair. In the Jenkins Master host, use the `ssh-keygen` command to generate a SSH key pair.
    - You will need this key pair to enable authentication between the Master and Agent. Although the key pair can be generated in any linux machine, it is recommended not to copy the secret private key from one host to another, so you probably want to do this in the Jenkins Master host command line.
 
-    - Note the `ssh-keygen` command uses the `-N` option to protect the private key with a password. In this example, we are using `-N ""` which means we are not setting a password to protect this private key.
+    - Note the `ssh-keygen` command uses the `-N` option to protect the private key with a password. In this example, we are using `-N "my-password"`. This is important because you will need both, the private key and the password when configuring the SSH Agent in you Jenkins Master Web UI.
         ```
         SSH_LOCAL_CONFIG_DIR="$HOME/.ssh"
         JENKINS_USER="jenkins"
@@ -56,7 +56,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
         SSH_KEY_FILE_PATH="$SSH_LOCAL_CONFIG_DIR/$JENKINS_USER-${JENKINS_AGENT_NAME}_rsa"
 
         mkdir "$SSH_LOCAL_CONFIG_DIR"
-        ssh-keygen -t rsa -m PEM -N "" -C $JENKINS_USER -f $SSH_KEY_FILE_PATH
+        ssh-keygen -t rsa -m PEM -N "my-password" -C $JENKINS_USER -f $SSH_KEY_FILE_PATH
         cat $SSH_KEY_FILE_PATH
         ```
 
@@ -73,7 +73,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 1. Configure a new SSH Jenkins Agent in the Jenkins Master’s Web UI. You need the following information:
     - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent/) installed in your Master
     - SSH private key you just generated in the previous step
-    - Passphrase that protects the private key (if you used the `-N ""` option)
+    - Passphrase that protects the private key (the one you used in the `-N` option)
     - Jenkins Agent’s private IP address (usually assigned by your Network Administrator. In the provided examples this IP is "172.16.1.6"). This private IP will be reachable through the VPN connection that you will create later.
 
 1. Create five individual Git repositories in your Git server (This might be a task delegated to your infrastructure team)

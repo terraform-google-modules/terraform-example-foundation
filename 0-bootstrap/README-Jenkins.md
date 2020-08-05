@@ -289,6 +289,8 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
 - **Note:** this section is considered out of the scope of this document, since there are multiple options on how to configure the Git repositories and **Multibranch Pipeline** in your Jenkins Master. Here we provide some guidance that you should keep in mind while completing this step. Visit the [Jenkins website](http://jenkins.io) for more information, there are plenty of Jenkins Plugins that could help with the task.
 
+- **Jenkinsfile:** A [Jenkinsfile](../build/Jenkinsfile) has been included which closely aligns with the Cloud Build pipeline. Additionally, the stage `TF wait for approval` which lets you confirm via Jenkins UI before proceeding with `terraform apply` has been disabled by default. It can be enabled by un-commenting that stage in the file.
+
 1. Create Multibranch pipelines for your new repos (`YOUR_NEW_REPO-1-org, YOUR_NEW_REPO-2-environments, YOUR_NEW_REPO-3-networks, YOUR_NEW_REPO-4-projects`).
     - **DO NOT configure an automatic pipeline for your `YOUR_NEW_REPO-0-bootstrap` repository**
 

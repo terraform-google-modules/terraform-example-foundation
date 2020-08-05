@@ -13,8 +13,8 @@
 # limitations under the License.
 
 cloudbuild_project_id = attribute('cloudbuild_project_id')
-apply_branches_regex = '(development|non-production|production)'
-plan_branches_regex = '[^development|non-production|production]'
+apply_branches_regex = '(development|non\-production|production)'
+plan_branches_regex = '[^development|non\-production|production]'
 cloud_source_repos = [
   'gcp-bootstrap',
   'gcp-org',

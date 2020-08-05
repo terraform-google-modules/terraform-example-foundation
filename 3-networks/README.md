@@ -35,6 +35,7 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
 1. Rename common.auto.example.tfvars to common.auto.tfvars and update the file with values from your environment and bootstrap.
 1. Rename shared.auto.example.tfvars to shared.auto.tfvars and update the file with the target_name_server_addresses (the list of target name servers for the DNS forwarding zone in the DNS Hub).
+1. Rename access_context.auto.example.tfvars to access_context.auto.tfvars and update the file with the access_context_manager_policy_id.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
 1. You will need only once to manually plan + apply the `shared` environment sincedevelopment, non-production and production depend on it.
     1. cd to ./envs/shared/
@@ -97,6 +98,7 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
 1. Run `chmod 755 ./tf-wrapper.sh`
 1. Rename common.auto.example.tfvars to common.auto.tfvars and update the file with values from your environment and bootstrap.
 1. Rename shared.auto.example.tfvars to shared.auto.tfvars and update the file with the target_name_server_addresses.
+1. Rename access_context.auto.example.tfvars to access_context.auto.tfvars and update the file with the access_context_manager_policy_id.
 1. Update backend.tf with your bucket from bootstrap. You can run
 ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
 You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.

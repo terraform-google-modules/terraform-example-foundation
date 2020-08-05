@@ -32,8 +32,13 @@ module "org_audit_logs" {
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
 
   labels = {
-    environment      = "prod"
-    application_name = "org-logging"
+    environment       = "prod"
+    application_name  = "org-logging"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -51,8 +56,13 @@ module "org_billing_logs" {
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com"]
 
   labels = {
-    environment      = "prod"
-    application_name = "org-billing-logs"
+    environment       = "prod"
+    application_name  = "org-billing-logs"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -74,8 +84,13 @@ module "org_secrets" {
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
 
   labels = {
-    environment      = "prod"
-    application_name = "org-secrets"
+    environment       = "prod"
+    application_name  = "org-secrets"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -96,8 +111,13 @@ module "interconnect" {
   skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
-    environment      = "prod"
-    application_name = "org-interconnect"
+    environment       = "prod"
+    application_name  = "org-interconnect"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -119,8 +139,13 @@ module "scc_notifications" {
   skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
-    environment      = "prod"
-    application_name = "org-scc"
+    environment       = "prod"
+    application_name  = "org-scc"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }
 
@@ -149,7 +174,12 @@ module "dns_hub" {
   ]
 
   labels = {
-    environment      = "prod"
-    application_name = "org-dns-hub"
+    environment       = "prod"
+    application_name  = "org-dns-hub"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
   }
 }

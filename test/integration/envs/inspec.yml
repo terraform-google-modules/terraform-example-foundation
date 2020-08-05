@@ -1,0 +1,53 @@
+depends:
+  - name: inspec-gcp
+    git: https://github.com/inspec/inspec-gcp.git
+    tag: v1.7.0
+attributes:
+  - name: monitoring_group
+    required: true
+    type: string
+  - name: dev_env_folder
+    required: true
+    type: string
+  - name: dev_monitoring_project_id
+    required: true
+    type: string
+  - name: dev_base_shared_vpc_project_id
+    required: true
+    type: string
+  - name: dev_restricted_shared_vpc_project_id
+    required: true
+    type: string
+  - name: dev_env_secrets_project_id
+    required: true
+    type: string
+  - name: nonprod_env_folder
+    required: true
+    type: string
+  - name: nonprod_monitoring_project_id
+    required: true
+    type: string
+  - name: nonprod_base_shared_vpc_project_id
+    required: true
+    type: string
+  - name: nonprod_restricted_shared_vpc_project_id
+    required: true
+    type: string
+  - name: nonprod_env_secrets_project_id
+    required: true
+    type: string
+  - name: prod_env_folder
+    required: true
+    type: string
+  - name: prod_monitoring_project_id
+    required: true
+    type: string
+  - name: prod_base_shared_vpc_project_id
+    required: true
+    type: string
+  - name: prod_restricted_shared_vpc_project_id
+    required: true
+    type: string
+  - name: prod_env_secrets_project_id
+    required: true
+    type: string

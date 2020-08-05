@@ -1,8 +1,29 @@
+# OSX leaves these everywhere on SMB shares
+._*
 
-# Created by https://www.gitignore.io/api/terraform
-# Edit at https://www.gitignore.io/?templates=terraform
+# OSX trash
+.DS_Store
 
-### Terraform ###
+# Python
+*.pyc
+
+# Emacs save files
+*~
+\#*\#
+.\#*
+
+# Vim-related files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+
+# IntelliJ IDEA files:
+.idea/
+
+### https://raw.github.com/github/gitignore/90f149de451a5433aebd94d02d11b0e28843a1af/Terraform.gitignore
+
 # Local .terraform directories
 **/.terraform/*
 
@@ -26,11 +47,20 @@ override.tf.json
 *_override.tf
 *_override.tf.json
 .idea/
+.vscode/
+# Kitchen files
+**/inspec.lock
+**.gem
+**/.kitchen
+**/.kitchen.local.yml
+**/Gemfile.lock
 
-# Include override files you do wish to add to version control using negated pattern
-# !example_override.tf
+test/fixtures/shared/terraform.tfvars
 
-# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
-# example: *tfplan*
+test/integration/gcloud/config.sh
+test/integration/tmp
 
-# End of https://www.gitignore.io/api/terraform
+credentials.json
+
+# File to populate env vars used by Docker test runs
+.envrc

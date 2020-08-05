@@ -1,0 +1,9 @@
+name: dns_hub
+depends:
+  - name: inspec-gcp
+    git: https://github.com/inspec/inspec-gcp.git
+    tag: v1.7.0
+attributes:
+  - name: dns_hub_project_id
+    required: true
+    type: string

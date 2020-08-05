@@ -127,6 +127,13 @@ module "restricted_shared_vpc" {
 #   peer_asn        = "64515"
 #   peer_ip_address = "8.8.8.8" # on-prem router ip address
 #   peer_name       = "interconnect-peer"
+
+#   cloud_router_labels = {
+#     vlan_1 = "cr5",
+#     vlan_2 = "cr6",
+#     vlan_3 = "cr7",
+#     vlan_4 = "cr8"
+#   }
 # }
 
 /******************************************
@@ -211,4 +218,11 @@ module "base_shared_vpc" {
 #   peer_asn        = "64515"
 #   peer_ip_address = "8.8.8.8" # on-prem router ip address
 #   peer_name       = "interconnect-peer"
+
+#   cloud_router_labels = {
+#     vlan_1 = "cr1",
+#     vlan_2 = "cr2",
+#     vlan_3 = "cr3",
+#     vlan_4 = "cr4"
+#   }
 # }

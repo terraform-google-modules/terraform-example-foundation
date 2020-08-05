@@ -129,7 +129,7 @@ resource "google_compute_network" "jenkins_agents" {
 
 resource "google_compute_subnetwork" "jenkins_agents_subnet" {
   project       = module.cicd_project.project_id
-  name          = "jenkins-agents-subnet"
+  name          = "sb-b-jenkinsagents-${var.default_region}"
   ip_cidr_range = var.jenkins_agent_gce_subnetwork_cidr_range
   region        = var.default_region
   network       = google_compute_network.jenkins_agents.self_link

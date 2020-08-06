@@ -24,7 +24,6 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
 1. Update in the file `vpn.tf` the values for `environment`, `vpn_psk_secret_name`, `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
 1. Verify other default values are valid for your environment.
 
-
 ### Setup to run via Cloud Build
 
 1. Clone repo `gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID`

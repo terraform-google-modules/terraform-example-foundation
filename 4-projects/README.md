@@ -1,6 +1,6 @@
 # 4-projects
 
-The purpose of this step is to setup folder structure and projects for applications, which are connected as service projects to the shared VPC created in the previous stage. Optionally, you can also create dedicated DNS zones and subnets for these applications.
+The purpose of this step is to set up folder structure and projects for applications, which are connected as service projects to the shared VPC created in the previous stage.
 
 ## Prerequisites
 

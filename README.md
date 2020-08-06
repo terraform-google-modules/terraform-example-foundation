@@ -24,7 +24,7 @@ The bootstrap step includes:
     - Custom Service Account to run Jenkins Agents GCE instances
     - VPN connection with on-prem (or where ever your Jenkins Master is located)
 
-It is a best practice to separate concerns by having two projects here: one for the Infrastructure as Code tool and one for the CICD tool. On one hand, `cft-seed` project stores terraform state and has the Service Account able to create / modify infrastructure. On the other hand, the deployment of that infrastructure is coordinated by a CICD tool of your choice, which is implemented in the `cft-cloudbuild` project (`prj-cicd` if using Jenkins).
+It is a best practice to separate concerns by having two projects here: one for the Infrastructure as Code tool and one for the CICD tool. On one hand, `cft-seed` project stores terraform state and has the Service Account able to create / modify infrastructure. On the other hand, the deployment of that infrastructure is coordinated by a CICD tool of your choice allocated in a second project (named `cft-cloudbuild` project if using Google Cloud Build and `prj-cicd` project if using Jenkins).
 
 To further separate the concerns at the IAM level as well, the service account of the CICD tool is given different permissions than the Terraform account. The CICD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account. On the other hand, the Terraform custom Service Account is the one able to create / modify infrastructure.
 

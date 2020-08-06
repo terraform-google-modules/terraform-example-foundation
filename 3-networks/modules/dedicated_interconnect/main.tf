@@ -15,6 +15,7 @@
  */
 
 locals {
+  parent_id               = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
   interconnect_project_id = data.google_projects.interconnect_project.projects[0].project_id
   suffix1                 = lookup(var.cloud_router_labels, "vlan_1", "cr1")
   suffix2                 = lookup(var.cloud_router_labels, "vlan_2", "cr2")
@@ -22,8 +23,13 @@ locals {
   suffix4                 = lookup(var.cloud_router_labels, "vlan_4", "cr4")
 }
 
+data "google_active_folder" "common" {
+  display_name = "fldr-common"
+  parent       = local.parent_id
+}
+
 data "google_projects" "interconnect_project" {
-  filter = "labels.application_name=org-interconnect lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-interconnect lifecycleState=ACTIVE"
 }
 
 module "interconnect_attachment1_region1" {
@@ -35,9 +41,9 @@ module "interconnect_attachment1_region1" {
   region  = var.region1
   router  = var.region1_router1_name
 
-  interconnect = var.region1_interconnect1
-
+  interconnect      = var.region1_interconnect1
   candidate_subnets = var.region1_interconnect1_candidate_subnets
+  vlan_tag8021q     = var.region1_interconnect1_vlan_tag8021q
 
   interface = {
     name = "if-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-${local.suffix1}"
@@ -59,9 +65,9 @@ module "interconnect_attachment2_region1" {
   region  = var.region1
   router  = var.region1_router2_name
 
-  interconnect = var.region1_interconnect2
-
+  interconnect      = var.region1_interconnect2
   candidate_subnets = var.region1_interconnect2_candidate_subnets
+  vlan_tag8021q     = var.region1_interconnect2_vlan_tag8021q
 
   interface = {
     name = "if-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-${local.suffix2}"
@@ -83,9 +89,9 @@ module "interconnect_attachment1_region2" {
   region  = var.region2
   router  = var.region2_router1_name
 
-  interconnect = var.region2_interconnect1
-
+  interconnect      = var.region2_interconnect1
   candidate_subnets = var.region2_interconnect1_candidate_subnets
+  vlan_tag8021q     = var.region2_interconnect1_vlan_tag8021q
 
   interface = {
     name = "if-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-${local.suffix3}"
@@ -107,9 +113,9 @@ module "interconnect_attachment2_region2" {
   region  = var.region2
   router  = var.region2_router2_name
 
-  interconnect = var.region2_interconnect2
-
+  interconnect      = var.region2_interconnect2
   candidate_subnets = var.region2_interconnect2_candidate_subnets
+  vlan_tag8021q     = var.region2_interconnect2_vlan_tag8021q
 
   interface = {
     name = "if-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-${local.suffix4}"

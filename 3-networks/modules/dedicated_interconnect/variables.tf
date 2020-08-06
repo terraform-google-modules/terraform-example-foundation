@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+variable "org_id" {
+  type        = string
+  description = "Organization ID"
+}
+
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
+}
+
 variable "vpc_name" {
   type        = string
   description = "Label to identify the VPC associated with shared VPC that will use the Interconnect."
@@ -129,5 +140,29 @@ variable "region2_interconnect1_candidate_subnets" {
 variable "region2_interconnect2_candidate_subnets" {
   type        = list(string)
   description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
+  default     = null
+}
+
+variable "region1_interconnect1_vlan_tag8021q" {
+  type        = string
+  description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
+  default     = null
+}
+
+variable "region1_interconnect2_vlan_tag8021q" {
+  type        = string
+  description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
+  default     = null
+}
+
+variable "region2_interconnect1_vlan_tag8021q" {
+  type        = string
+  description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
+  default     = null
+}
+
+variable "region2_interconnect2_vlan_tag8021q" {
+  type        = string
+  description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
   default     = null
 }

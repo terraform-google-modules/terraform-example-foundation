@@ -27,6 +27,8 @@ If you don't have Dedicated Interconnect you can use High Availability VPN to co
 | environment | Environment for the VPN configuration. Valid options are development, non-production, production | string | n/a | yes |
 | on\_prem\_router\_ip\_address1 | On-Prem Router IP address | string | n/a | yes |
 | on\_prem\_router\_ip\_address2 | On-Prem Router IP address | string | n/a | yes |
+| org\_id | Organization ID | string | n/a | yes |
+| parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | project\_id | VPC Project ID | string | n/a | yes |
 | region1\_router1\_name | Name of the Router 1 for Region 1 where the attachment resides. | string | n/a | yes |
 | region1\_router1\_tunnel0\_bgp\_peer\_address | BGP session address for router 1 in region 1 tunnel 0 | string | n/a | yes |

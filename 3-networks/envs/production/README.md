@@ -1,6 +1,6 @@
 # 3-networks/production
 
-The purpose of this step is to setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment production.
+The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment production.
 
 ## Prerequisites
 

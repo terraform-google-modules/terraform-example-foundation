@@ -50,11 +50,11 @@ This will create the following folder & project structure:
 example-organization
 └── fldr-common
     ├── prj-c-logging
-    ├── prj-c-org-billing-logs
+    ├── prj-c-billing-logs
     ├── prj-c-dns-hub
-    ├── prj-c-org-interconnect
+    ├── prj-c-interconnect
     ├── prj-c-scc
-    └── prj-c-org-secrets
+    └── prj-c-secrets
 ```
 
 #### Logs
@@ -158,19 +158,19 @@ example-organization/
     ├── prj-bu2-d-sample-base
     └── prj-bu2-d-sample-restrict
 └── fldr-non-production
-    ├── prj-bu1-d-sample-floating
-    ├── prj-bu1-d-sample-base
-    ├── prj-bu1-d-sample-restrict
-    ├── prj-bu2-d-sample-floating
-    ├── prj-bu2-d-sample-base
-    └── prj-bu2-d-sample-restrict
+    ├── prj-bu1-n-sample-floating
+    ├── prj-bu1-n-sample-base
+    ├── prj-bu1-n-sample-restrict
+    ├── prj-bu2-n-sample-floating
+    ├── prj-bu2-n-sample-base
+    └── prj-bu2-n-sample-restrict
 └── fldr-production
-    ├── prj-bu1-d-sample-floating
-    ├── prj-bu1-d-sample-base
-    ├── prj-bu1-d-sample-restrict
-    ├── prj-bu2-d-sample-floating
-    ├── prj-bu2-d-sample-base
-    └── prj-bu2-d-sample-restrict
+    ├── prj-bu1-p-sample-floating
+    ├── prj-bu1-p-sample-base
+    ├── prj-bu1-p-sample-restrict
+    ├── prj-bu2-p-sample-floating
+    ├── prj-bu2-p-sample-base
+    └── prj-bu2-p-sample-restrict
 ```
 The code in this step includes two options for creating projects.
 The first is the standard projects module which creates a project per environment and the second creates a standalone project for one environment.
@@ -185,12 +185,12 @@ Once all steps above have been executed your GCP organization should represent t
 ```
 example-organization
 └── fldr-common
-    ├── prj-p-org-audit-logs
-    ├── prj-p-org-billing-logs
-    ├── prj-p-org-dns-hub
-    ├── prj-p-org-interconnect
-    ├── prj-p-org-scc
-    └── prj-p-org-secrets
+    ├── prj-c-logging
+    ├── prj-c-billing-logs
+    ├── prj-c-dns-hub
+    ├── prj-c-interconnect
+    ├── prj-c-scc
+    └── prj-c-secrets
 └── fldr-development
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
@@ -203,23 +203,23 @@ example-organization
     ├── prj-d-shared-base
     └── prj-d-shared-restricted
 └── fldr-non-production
-    ├── prj-bu1-d-sample-floating
-    ├── prj-bu1-d-sample-base
-    ├── prj-bu1-d-sample-restrict
-    ├── prj-bu2-d-sample-floating
-    ├── prj-bu2-d-sample-base
-    ├── prj-bu2-d-sample-restrict
+    ├── prj-bu1-n-sample-floating
+    ├── prj-bu1-n-sample-base
+    ├── prj-bu1-n-sample-restrict
+    ├── prj-bu2-n-sample-floating
+    ├── prj-bu2-n-sample-base
+    ├── prj-bu2-n-sample-restrict
     ├── prj-n-monitoring
     ├── prj-n-secrets
     ├── prj-n-shared-base
     └── prj-n-shared-restricted
 └── fldr-production
-    ├── prj-bu1-d-sample-floating
-    ├── prj-bu1-d-sample-base
-    ├── prj-bu1-d-sample-restrict
-    ├── prj-bu2-d-sample-floating
-    ├── prj-bu2-d-sample-base
-    ├── prj-bu2-d-sample-restrict
+    ├── prj-bu1-p-sample-floating
+    ├── prj-bu1-p-sample-base
+    ├── prj-bu1-p-sample-restrict
+    ├── prj-bu2-p-sample-floating
+    ├── prj-bu2-p-sample-base
+    ├── prj-bu2-p-sample-restrict
     ├── prj-p-monitoring
     ├── prj-p-secrets
     ├── prj-p-shared-base

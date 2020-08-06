@@ -25,8 +25,9 @@ If you are using the `jenkins_bootstrap` sub-module, please see [README-Jenkins]
 1. Run `terraform init`
 1. Run `terraform plan` and review output
 1. Run `terraform apply`
-1. Copy the backend by running `cp backend.tf.example backend.tf` and update `backend.tf` with your bucket from the apply step (The value from `terraform output gcs_bucket_tfstate`)
-1. Re-run `terraform init` agree to copy state to gcs when prompted
+1. Run `terraform output gcs_bucket_tfstate` to get your GCS bucket from the apply step
+1. Copy the backend by running `cp backend.tf.example backend.tf` and update `backend.tf` with your GCS bucket.
+1. Re-run `terraform init` agree to copy state to GCS when prompted
     1. (Optional) Run `terraform apply` to verify state is configured correctly
 
 ### (Optional) State backends for running terraform locally

@@ -1,6 +1,6 @@
 # 3-networks/development
 
-The purpose of this step is to setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment development.
+The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment development.
 
 ## Prerequisites
 

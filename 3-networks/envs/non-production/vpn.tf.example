@@ -28,7 +28,7 @@ module "shared_base_vpn" {
   environment          = "non-production"
   parent_folder        = var.parent_folder
   org_id               = var.org_id
-  vpn_psk_secret_name  = "<VPN_PRIVATE_PSK_SECRET_NAME"
+  vpn_psk_secret_name  = "<VPN_PRIVATE_PSK_SECRET_NAME>"
 
   on_prem_router_ip_address1 = "<8.8.8.8>" # on-prem router ip address 1
   on_prem_router_ip_address2 = "<8.8.8.8>" # on-prem router ip address 2

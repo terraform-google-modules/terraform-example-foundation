@@ -19,7 +19,8 @@ The purpose of this step is to :
 If you have the prerequisites listed in the [Dedicated Interconnect README](./modules/dedicated_interconnect/README.md) follow this steps to enable Dedicated Interconnect to access onprem.
 
 1. Rename `interconnect.tf.example` to `interconnect.tf` in each environment folder in `3-networks/envs/<ENV>`
-1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks and peer info.
+1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
+1. The candidate subnetworks and vlan_tag8021q variables can be set to `null` to allow the interconnect module to auto generate these values.
 
 ### OPTIONAL - Using High Availability VPN
 

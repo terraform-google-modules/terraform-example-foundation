@@ -27,7 +27,7 @@ The bootstrap step includes:
     - VPN connection with on-prem (or where ever your Jenkins Master is located)
 
 It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CI/CD tool.
-The `cft-seed` project stores terraform state and has the Service Account able to create / modify infrastructure.
+The `cft-seed` project stores Terraform state and has the Service Account able to create / modify infrastructure.
 On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project (named `cft-cloudbuild` project if using Google Cloud Build and `prj-cicd` project if using Jenkins).
 
 To further separate the concerns at the IAM level as well, the service account of the CI/CD tool is given different permissions than the Terraform account.

@@ -98,45 +98,6 @@ module "restricted_shared_vpc" {
 }
 
 /******************************************
- Interconnect for restricted shared VPC
-*****************************************/
-# uncommnet if you have done the requirement steps listed in ../../modules/dedicated_interconnect/README.md
-# update the interconnect, interconnect locations, and peer field with actual values.
-
-# module "shared_restricted_interconnect" {
-#   source = "../../modules/dedicated_interconnect"
-
-#   vpc_name = "${local.environment_code}-shared-restricted"
-
-#   region1                        = var.default_region1
-#   region1_router1_name           = module.restricted_shared_vpc.region1_router1.router.name
-#   region1_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-1"
-#   region1_interconnect1_location = "las-zone1-770"
-#   region1_router2_name           = module.restricted_shared_vpc.region1_router2.router.name
-#   region1_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-2"
-#   region1_interconnect2_location = "las-zone1-770"
-
-#   region2                        = var.default_region2
-#   region2_router1_name           = module.restricted_shared_vpc.region2_router1.router.name
-#   region2_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-3"
-#   region2_interconnect1_location = "lax-zone2-19"
-#   region2_router2_name           = module.restricted_shared_vpc.region2_router2.router.name
-#   region2_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-4"
-#   region2_interconnect2_location = "lax-zone1-403"
-
-#   peer_asn        = "64515"
-#   peer_ip_address = "8.8.8.8" # on-prem router ip address
-#   peer_name       = "interconnect-peer"
-
-#   cloud_router_labels = {
-#     vlan_1 = "cr5",
-#     vlan_2 = "cr6",
-#     vlan_3 = "cr7",
-#     vlan_4 = "cr8"
-#   }
-# }
-
-/******************************************
  Private shared VPC
 *****************************************/
 
@@ -186,43 +147,3 @@ module "base_shared_vpc" {
     ]
   }
 }
-
-/******************************************
- Interconnect for base shared VPC
-*****************************************/
-
-# uncommnet if you have done the requirement steps listed in ../../modules/dedicated_interconnect/README.md
-# update the interconnect, interconnect locations, and peer field with actual values.
-
-# module "shared_base_interconnect" {
-#   source = "../../modules/dedicated_interconnect"
-
-#   vpc_name = "${local.environment_code}-shared-base"
-
-#   region1                        = var.default_region1
-#   region1_router1_name           = module.base_shared_vpc.region1_router1.router.name
-#   region1_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-1"
-#   region1_interconnect1_location = "las-zone1-770"
-#   region1_router2_name           = module.base_shared_vpc.region1_router2.router.name
-#   region1_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-2"
-#   region1_interconnect2_location = "las-zone1-770"
-
-#   region2                        = var.default_region2
-#   region2_router1_name           = module.base_shared_vpc.region2_router1.router.name
-#   region2_interconnect1          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-3"
-#   region2_interconnect1_location = "lax-zone2-19"
-#   region2_router2_name           = module.base_shared_vpc.region2_router2.router.name
-#   region2_interconnect2          = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-4"
-#   region2_interconnect2_location = "lax-zone1-403"
-
-#   peer_asn        = "64515"
-#   peer_ip_address = "8.8.8.8" # on-prem router ip address
-#   peer_name       = "interconnect-peer"
-
-#   cloud_router_labels = {
-#     vlan_1 = "cr1",
-#     vlan_2 = "cr2",
-#     vlan_3 = "cr3",
-#     vlan_4 = "cr4"
-#   }
-# }

@@ -13,8 +13,7 @@
 # limitations under the License.
 
 cloudbuild_project_id = attribute('cloudbuild_project_id')
-apply_branches_regex = '(development|non\-production|production)'
-plan_branches_regex = '[^development|non\-production|production]'
+branches_regex = '^(development|non\\-production|production)$'
 cloud_source_repos = [
   'gcp-bootstrap',
   'gcp-org',
@@ -30,8 +29,9 @@ control 'gcloud_cloudbuild' do
     describe command(
       "gcloud beta builds triggers list \
       --project #{cloudbuild_project_id} \
-      --filter \"trigger_template.branch_name='#{apply_branches_regex}' AND \
-      trigger_template.repo_name='#{repo}'\" --format=json"
+      --filter \"trigger_template.branch_name='#{branches_regex}' AND \
+      trigger_template.repo_name='#{repo}' AND \
+      substitutions._TF_ACTION='apply'\" --format=json"
     ) do
       its(:exit_status) { should eq 0 }
       its(:stderr) { should eq '' }
@@ -44,7 +44,7 @@ control 'gcloud_cloudbuild' do
         end
       end
 
-      describe "trigger for repo #{repo} and branch name #{apply_branches_regex}" do
+      describe "trigger for repo #{repo} and branch name #{branches_regex}" do
         it 'should exist' do
           expect(data).to_not be_empty
         end
@@ -54,8 +54,10 @@ control 'gcloud_cloudbuild' do
     describe command(
       "gcloud beta builds triggers list \
       --project #{cloudbuild_project_id} \
-      --filter \"trigger_template.branch_name='#{plan_branches_regex}' AND \
-      trigger_template.repo_name='#{repo}'\" --format=json"
+      --filter \"trigger_template.branch_name='#{branches_regex}' AND \
+      trigger_template.repo_name='#{repo}' AND \
+      substitutions._TF_ACTION='plan' AND \
+      trigger_template.invert_regex=true\" --format=json"
     ) do
       its(:exit_status) { should eq 0 }
       its(:stderr) { should eq '' }
@@ -68,7 +70,7 @@ control 'gcloud_cloudbuild' do
         end
       end
 
-      describe "trigger for repo #{repo} and branch name #{plan_branches_regex}" do
+      describe "trigger for repo #{repo} and branch name #{branches_regex}" do
         it 'should exist' do
           expect(data).to_not be_empty
         end

@@ -11,14 +11,14 @@ Each of these Terraform projects are to be layered on top of each other, running
 ### [0. bootstrap](./0-bootstrap/)
 
 This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing GCP organization, creating all the required GCP resources & permissions to start using the Cloud Foundation Toolkit (CFT).
-For CICD pipelines, you can use either Cloud Build (by default) or Jenkins. If you want to use Jenkins instead of Cloud Build, please see [README-Jenkins](./0-bootstrap/README-Jenkins.md) on how to use the included Jenkins sub-module.
+For CI/CD pipelines, you can use either Cloud Build (by default) or Jenkins. If you want to use Jenkins instead of Cloud Build, please see [README-Jenkins](./0-bootstrap/README-Jenkins.md) on how to use the included Jenkins sub-module.
 
 The bootstrap step includes:
 - The `cft-seed` project, which contains:
   - Terraform state bucket
   - Custom Service Account used by Terraform to create new resources in GCP
 - The `cft-cloudbuild` project (`prj-cicd` if using Jenkins), which contains:
-  - A CICD pipeline implemented with either Cloud Build or Jenkins
+  - A CI/CD pipeline implemented with either Cloud Build or Jenkins
   - If using Cloud Build:
     - Cloud Source Repository
   - If using Jenkins:
@@ -26,13 +26,13 @@ The bootstrap step includes:
     - Custom Service Account to run Jenkins Agents GCE instances
     - VPN connection with on-prem (or where ever your Jenkins Master is located)
 
-It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CICD tool.
+It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CI/CD tool.
 The `cft-seed` project stores terraform state and has the Service Account able to create / modify infrastructure.
-On the other hand, the deployment of that infrastructure is coordinated by a CICD tool of your choice allocated in a second project (named `cft-cloudbuild` project if using Google Cloud Build and `prj-cicd` project if using Jenkins).
+On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project (named `cft-cloudbuild` project if using Google Cloud Build and `prj-cicd` project if using Jenkins).
 
-To further separate the concerns at the IAM level as well, the service account of the CICD tool is given different permissions than the Terraform account.
-The CICD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account.
-In this configuration, the baseline permissions of the CICD tool are limited and the Terraform custom Service Account is granted the IAM permissions required to build the foundation.
+To further separate the concerns at the IAM level as well, the service account of the CI/CD tool is given different permissions than the Terraform account.
+The CI/CD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account.
+In this configuration, the baseline permissions of the CI/CD tool are limited and the Terraform custom Service Account is granted the IAM permissions required to build the foundation.
 
 After executing this step, you will have the following structure:
 
@@ -44,7 +44,7 @@ example-organization/
 ```
 
 When this step uses the Cloud Build submodule, it sets up Cloud Build and Cloud Source Repositories for each of the stages below.
-Triggers are configured to run a `terraform plan` for any non environment branch branch and `terraform apply` when changes are merged to an environment branch (`development`, `non-production` & `production`).
+Triggers are configured to run a `terraform plan` for any non environment branch and `terraform apply` when changes are merged to an environment branch (`development`, `non-production` & `production`).
 Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/README.md).
 
 ### [1. org](./1-org/)
@@ -65,7 +65,7 @@ example-organization
 
 #### Logs
 
-Among the four projects created under the common folder, two projects (`prj-c-logging`, `prj-c-org-billing-logs`) are used for logging.
+Among the six projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
 The first one for organization wide audit logs and the latter for billing logs.
 In both cases the logs are collected into BigQuery datasets which can then be used general querying, dashboarding & reporting. Logs are also exported to Pub/Sub and GCS bucket.
 _The various audit log types being captured in BigQuery are retained for 30 days._
@@ -237,7 +237,7 @@ example-organization
 ```
 ### Branching strategy
 
-There are three main named branches - `development`, `non-production` and `production` that reflect the corresponding environments. These branches should be [protected](https://docs.github.com/en/github/administering-a-repository/about-protected-branches). When the CICD pipeline (Jenkins/CloudBuild) runs on a particular named branch (say for instance `development`), only the corresponding environment (`development`) is applied. An exception is the `shared` environment which is only applied when triggered on the `production` branch. This is because any changes in the `shared` environment may affect resources in other environments and can have adverse effects if not validated correctly.
+There are three main named branches - `development`, `non-production` and `production` that reflect the corresponding environments. These branches should be [protected](https://docs.github.com/en/github/administering-a-repository/about-protected-branches). When the CI/CD pipeline (Jenkins/CloudBuild) runs on a particular named branch (say for instance `development`), only the corresponding environment (`development`) is applied. An exception is the `shared` environment which is only applied when triggered on the `production` branch. This is because any changes in the `shared` environment may affect resources in other environments and can have adverse effects if not validated correctly.
 
 Development happens on feature/bugfix branches (which can be named `feature/new-foo`, `bugfix/fix-bar`, etc.) and when complete, a [pull request (PR)](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) or [merge request (MR)](https://docs.gitlab.com/ee/user/project/merge_requests/) can be opened targeting the `development` branch. This will trigger the CI pipeline to perform a plan and validate against all environments (`development`, `non-production`, `shared` and `production`). Once code review is complete and changes are validated, this branch can be merged into `development`. This will trigger a CI pipeline that applies the latest changes in the `development` branch on the `development` environment.
 

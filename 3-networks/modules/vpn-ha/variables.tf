@@ -34,6 +34,11 @@ variable "environment" {
   description = "Environment for the VPN configuration. Valid options are development, non-production, production"
 }
 
+variable "org_id" {
+  type        = string
+  description = "Organization ID"
+}
+
 variable "vpn_psk_secret_name" {
   type        = string
   description = "The name of the secret to retrieve from secret manager. This will be retrieved from the environment secrets project."
@@ -157,4 +162,10 @@ variable "region2_router2_tunnel1_bgp_peer_address" {
 variable "region2_router2_tunnel1_bgp_peer_range" {
   type        = string
   description = "BGP session range for router 2 in region 1 tunnel 1"
+}
+
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
 }

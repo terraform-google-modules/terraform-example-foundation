@@ -24,7 +24,7 @@ Run `make generate_docs` to generate new Inputs and Outputs tables.
 
 ## Integration Testing
 
-Integration tests are used to verify the behaviour of each stage in this repo. 
+Integration tests are used to verify the behaviour of each stage in this repo.
 Additions, changes, and fixes should be accompanied with tests.
 
 The integration tests are run using [Kitchen][kitchen],

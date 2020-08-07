@@ -19,6 +19,7 @@ set -e
 action=$1
 branch=$2
 policyrepo=$3
+project_id=$4
 base_dir=$(pwd)
 tmp_plan="${base_dir}/tmp_plan" #if you change this, update build triggers
 environments_regex="^(development|non-production|production|shared)$"
@@ -118,7 +119,7 @@ tf_validate() {
     if [ -d "$path" ]; then
       cd "$path" || exit
       terraform show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
-      terraform-validator validate "${tf_env}.json" --policy-path="${policy_file_path}" || exit 33
+      terraform-validator validate "${tf_env}.json" --policy-path="${policy_file_path}" --project="${project_id}" || exit 33
       cd "$base_dir" || exit
     else
       echo "ERROR:  ${path} does not exist"

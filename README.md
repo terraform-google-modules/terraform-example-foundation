@@ -243,6 +243,10 @@ Development happens on feature/bugfix branches (which can be named `feature/new-
 
 Once validated in `development`, changes can be promoted to `non-production` by opening a PR/MR targeting the `non-production` branch and merging them.  Similarly changes can be promoted from `non-production` to `production`.
 
+## Errata Summary
+
+Refer to the [Errata Summary](./ERRATA.md) for an overview of the delta between the example foundation repository and the [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
+
 ## Contributing
 
 Refer to the [contribution guidelines](./CONTRIBUTING.md) for

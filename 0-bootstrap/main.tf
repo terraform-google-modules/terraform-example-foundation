@@ -164,6 +164,24 @@ module "cloudbuild_bootstrap" {
   ]
 }
 
+data "google_project" "cloudbuild" {
+  project_id = module.cloudbuild_bootstrap.cloudbuild_project_id
+}
+
+resource "google_organization_iam_member" "org_cb_sa_browser" {
+  count  = var.parent_folder == "" ? 1 : 0
+  org_id = var.org_id
+  role   = "roles/browser"
+  member = "serviceAccount:${data.google_project.cloudbuild.number}@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_folder_iam_member" "folder_cb_sa_browser" {
+  count  = var.parent_folder != "" ? 1 : 0
+  folder = var.parent_folder
+  role   = "roles/browser"
+  member = "serviceAccount:${data.google_project.cloudbuild.number}@cloudbuild.gserviceaccount.com"
+}
+
 ## Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 # module "jenkins_bootstrap" {
 #  source                                  = "./modules/jenkins-agent"

@@ -50,9 +50,8 @@ module "interconnect_attachment1_region1" {
   }
 
   peer = {
-    name            = var.peer_name
-    peer_ip_address = var.peer_ip_address
-    peer_asn        = var.peer_asn
+    name     = var.peer_name
+    peer_asn = var.peer_asn
   }
 }
 
@@ -74,9 +73,8 @@ module "interconnect_attachment2_region1" {
   }
 
   peer = {
-    name            = var.peer_name
-    peer_ip_address = var.peer_ip_address
-    peer_asn        = var.peer_asn
+    name     = var.peer_name
+    peer_asn = var.peer_asn
   }
 }
 
@@ -98,9 +96,8 @@ module "interconnect_attachment1_region2" {
   }
 
   peer = {
-    name            = var.peer_name
-    peer_ip_address = var.peer_ip_address
-    peer_asn        = var.peer_asn
+    name     = var.peer_name
+    peer_asn = var.peer_asn
   }
 }
 
@@ -122,8 +119,7 @@ module "interconnect_attachment2_region2" {
   }
 
   peer = {
-    name            = var.peer_name
-    peer_ip_address = var.peer_ip_address
-    peer_asn        = var.peer_asn
+    name     = var.peer_name
+    peer_asn = var.peer_asn
   }
 }

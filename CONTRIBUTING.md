@@ -31,7 +31,7 @@ The integration tests are run using [Kitchen][kitchen],
 [Kitchen-Terraform][kitchen-terraform], and [InSpec][inspec]. These
 tools are packaged within a Docker image for convenience.
 
-Six test-kitchen instances are defined and show be executed in serial order:
+Six test-kitchen instances are defined and should be executed in serial order:
 
 - `bootstrap`
 - `org`

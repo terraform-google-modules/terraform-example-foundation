@@ -101,6 +101,6 @@ suites:
       color: false
       systems:
         - name: projects
-          backend: local
+          backend: gcp
           controls:
-            - projects
+            - development

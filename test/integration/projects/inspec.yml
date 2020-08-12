@@ -1,4 +1,23 @@
-name: projects
+depends:
+  - name: inspec-gcp
+    git: https://github.com/inspec/inspec-gcp.git
+    tag: v1.7.0
 attributes:
-  - name: foo
+  - name: dev_bu1_project_base
     required: true
+    type: string
+  - name: dev_bu1_project_floating
+    required: true
+    type: string
+  - name: dev_bu1_project_restricted
+    required: true
+    type: string
+  - name: dev_bu2_project_base
+    required: true
+    type: string
+  - name: dev_bu2_project_floating
+    required: true
+    type: string
+  - name: dev_bu2_project_restricted
+    required: true
+    type: string

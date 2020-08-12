@@ -135,4 +135,4 @@ tags:
 - 'integration'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '0'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '0.12.0'

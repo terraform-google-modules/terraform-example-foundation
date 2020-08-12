@@ -17,13 +17,23 @@
 /******************************************
   Mandatory firewall rules
  *****************************************/
+
 resource "google_compute_firewall" "deny_all_egress" {
-  name           = "fw-${var.environment_code}-shared-base-65535-e-d-all-all-tcp-udp"
-  network        = module.main.network_name
-  project        = var.project_id
-  direction      = "EGRESS"
-  priority       = 65535
-  enable_logging = var.firewall_enable_logging
+  name      = "fw-${var.environment_code}-shared-base-65535-e-d-all-all-tcp-udp"
+  network   = module.main.network_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 65535
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
 
   deny {
     protocol = "tcp"
@@ -38,12 +48,21 @@ resource "google_compute_firewall" "deny_all_egress" {
 
 
 resource "google_compute_firewall" "allow_private_api_egress" {
-  name           = "fw-${var.environment_code}-shared-base-65534-e-a-allow-google-apis-all-tcp-443"
-  network        = module.main.network_name
-  project        = var.project_id
-  direction      = "EGRESS"
-  priority       = 65534
-  enable_logging = var.firewall_enable_logging
+  name      = "fw-${var.environment_code}-shared-base-65534-e-a-allow-google-apis-all-tcp-443"
+  network   = module.main.network_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 65534
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
 
   allow {
     protocol = "tcp"
@@ -62,11 +81,20 @@ resource "google_compute_firewall" "allow_private_api_egress" {
 
 // Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
 resource "google_compute_firewall" "allow_iap_ssh" {
-  count          = var.optional_fw_rules_enabled ? 1 : 0
-  name           = "fw-${var.environment_code}-shared-base-1000-i-a-all-allow-iap-ssh-tcp-22"
-  network        = module.main.network_name
-  project        = var.project_id
-  enable_logging = var.firewall_enable_logging
+  count   = var.optional_fw_rules_enabled ? 1 : 0
+  name    = "fw-${var.environment_code}-shared-base-1000-i-a-all-allow-iap-ssh-tcp-22"
+  network = module.main.network_name
+  project = var.project_id
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
 
   // Cloud IAP's TCP forwarding netblock
   source_ranges = concat(data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4)
@@ -81,11 +109,20 @@ resource "google_compute_firewall" "allow_iap_ssh" {
 
 // Allow RDP via IAP when using the allow-iap-rdp tag for Windows workloads.
 resource "google_compute_firewall" "allow_iap_rdp" {
-  count          = var.optional_fw_rules_enabled ? 1 : 0
-  name           = "fw-${var.environment_code}-shared-base-1000-i-a-all-allow-iap-rdp-tcp-3389"
-  network        = module.main.network_name
-  project        = var.project_id
-  enable_logging = var.firewall_enable_logging
+  count   = var.optional_fw_rules_enabled ? 1 : 0
+  name    = "fw-${var.environment_code}-shared-base-1000-i-a-all-allow-iap-rdp-tcp-3389"
+  network = module.main.network_name
+  project = var.project_id
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
 
   // Cloud IAP's TCP forwarding netblock
   source_ranges = concat(data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4)
@@ -100,13 +137,22 @@ resource "google_compute_firewall" "allow_iap_rdp" {
 
 // Allow access to kms.windows.googlecloud.com for Windows license activation
 resource "google_compute_firewall" "allow_windows_activation" {
-  count          = var.windows_activation_enabled ? 1 : 0
-  name           = "fw-${var.environment_code}-shared-base-0-e-a-allow-win-activation-all-tcp-1688"
-  network        = module.main.network_name
-  project        = var.project_id
-  direction      = "EGRESS"
-  priority       = 0
-  enable_logging = var.firewall_enable_logging
+  count     = var.windows_activation_enabled ? 1 : 0
+  name      = "fw-${var.environment_code}-shared-base-0-e-a-allow-win-activation-all-tcp-1688"
+  network   = module.main.network_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 0
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
 
   allow {
     protocol = "tcp"
@@ -120,11 +166,20 @@ resource "google_compute_firewall" "allow_windows_activation" {
 
 // Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
 resource "google_compute_firewall" "allow_lb" {
-  count          = var.optional_fw_rules_enabled ? 1 : 0
-  name           = "fw-${var.environment_code}-shared-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
-  network        = module.main.network_name
-  project        = var.project_id
-  enable_logging = var.firewall_enable_logging
+  count   = var.optional_fw_rules_enabled ? 1 : 0
+  name    = "fw-${var.environment_code}-shared-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
+  network = module.main.network_name
+  project = var.project_id
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
 
   source_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
 

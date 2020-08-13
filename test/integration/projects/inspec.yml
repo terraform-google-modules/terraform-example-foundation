@@ -21,3 +21,39 @@ attributes:
   - name: dev_bu2_project_restricted
     required: true
     type: string
+  - name: nonprod_bu1_project_base
+    required: true
+    type: string
+  - name: nonprod_bu1_project_floating
+    required: true
+    type: string
+  - name: nonprod_bu1_project_restricted
+    required: true
+    type: string
+  - name: nonprod_bu2_project_base
+    required: true
+    type: string
+  - name: nonprod_bu2_project_floating
+    required: true
+    type: string
+  - name: nonprod_bu2_project_restricted
+    required: true
+    type: string
+  - name: prod_bu1_project_base
+    required: true
+    type: string
+  - name: prod_bu1_project_floating
+    required: true
+    type: string
+  - name: prod_bu1_project_restricted
+    required: true
+    type: string
+  - name: prod_bu2_project_base
+    required: true
+    type: string
+  - name: prod_bu2_project_floating
+    required: true
+    type: string
+  - name: prod_bu2_project_restricted
+    required: true
+    type: string

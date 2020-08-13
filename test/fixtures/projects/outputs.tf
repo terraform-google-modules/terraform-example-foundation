@@ -43,3 +43,63 @@ output "dev_bu2_project_restricted" {
   description = "Project sample restricted project."
   value       = module.projects_bu2_dev.restricted_shared_vpc_project
 }
+
+output "nonprod_bu1_project_base" {
+  description = "Project sample base project."
+  value       = module.projects_bu1_nonprod.base_shared_vpc_project
+}
+
+output "nonprod_bu1_project_floating" {
+  description = "Project sample floating project."
+  value       = module.projects_bu1_nonprod.example_floating_project
+}
+
+output "nonprod_bu1_project_restricted" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu1_nonprod.restricted_shared_vpc_project
+}
+
+output "nonprod_bu2_project_base" {
+  description = "Project sample base project."
+  value       = module.projects_bu2_nonprod.base_shared_vpc_project
+}
+
+output "nonprod_bu2_project_floating" {
+  description = "Project sample floating project."
+  value       = module.projects_bu2_nonprod.example_floating_project
+}
+
+output "nonprod_bu2_project_restricted" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu2_nonprod.restricted_shared_vpc_project
+}
+
+output "prod_bu1_project_base" {
+  description = "Project sample base project."
+  value       = module.projects_bu1_prod.base_shared_vpc_project
+}
+
+output "prod_bu1_project_floating" {
+  description = "Project sample floating project."
+  value       = module.projects_bu1_prod.example_floating_project
+}
+
+output "prod_bu1_project_restricted" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu1_prod.restricted_shared_vpc_project
+}
+
+output "prod_bu2_project_base" {
+  description = "Project sample base project."
+  value       = module.projects_bu2_prod.base_shared_vpc_project
+}
+
+output "prod_bu2_project_floating" {
+  description = "Project sample floating project."
+  value       = module.projects_bu2_prod.example_floating_project
+}
+
+output "prod_bu2_project_restricted" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu2_prod.restricted_shared_vpc_project
+}

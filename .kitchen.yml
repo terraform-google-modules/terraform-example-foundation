@@ -104,3 +104,5 @@ suites:
           backend: gcp
           controls:
             - development
+            - non-production
+            - production

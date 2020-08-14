@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-module "example_floating_project" {
+module "floating_project" {
   source                      = "../../modules/single_project"
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id

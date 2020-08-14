@@ -18,3 +18,13 @@ output "project_id" {
   description = "Project sample project id."
   value       = module.project.project_id
 }
+
+output "project_number" {
+  description = "Project sample project number."
+  value       = module.project.project_number
+}
+
+output "vpc_service_control_perimeter_services" {
+  description = "VPC Service Control services."
+  value       = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
+}

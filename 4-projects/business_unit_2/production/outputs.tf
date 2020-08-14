@@ -19,12 +19,37 @@ output "base_shared_vpc_project" {
   value       = module.base_shared_vpc_project.project_id
 }
 
-output "example_floating_project" {
-  description = "Project sample base project."
+output "floating_project" {
+  description = "Project sample floating project."
   value       = module.floating_project.project_id
 }
 
 output "restricted_shared_vpc_project" {
-  description = "Project sample base project."
+  description = "Project sample restricted project id."
   value       = module.restricted_shared_vpc_project.project_id
+}
+
+output "restricted_shared_vpc_project_number" {
+  description = "Project sample restricted project."
+  value       = module.restricted_shared_vpc_project.project_number
+}
+
+output "vpc_service_control_attach_enabled" {
+  description = "Enable or disable VPC Service Control Attach."
+  value       = module.restricted_shared_vpc_project.vpc_service_control_attach_enabled
+}
+
+output "vpc_service_control_perimeter_name" {
+  description = "VPC Service Control name."
+  value       = var.perimeter_name
+}
+
+output "vpc_service_control_perimeter_services" {
+  description = "VPC Service Control services."
+  value       = module.restricted_shared_vpc_project.vpc_service_control_perimeter_services
+}
+
+output "access_context_manager_policy_id" {
+  description = "Access Context Manager Policy ID."
+  value       = var.access_context_manager_policy_id
 }

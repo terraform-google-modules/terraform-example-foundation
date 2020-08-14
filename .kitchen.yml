@@ -103,6 +103,10 @@ suites:
         - name: projects
           backend: gcp
           controls:
-            - development
+            - gcp-development
             - non-production
             - production
+        - name: gcloud
+          backend: local
+          controls:
+            - gcloud-development

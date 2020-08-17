@@ -1,4 +1,45 @@
-name: org
+name: networks
+depends:
+  - name: inspec-gcp
+    git: https://github.com/inspec/inspec-gcp.git
+    tag: v1.7.0
 attributes:
-  - name: foo
+  - name: access_context_manager_policy_id
     required: true
+    type: numeric
+  - name: dev_restricted_access_level_name
+    required: true
+    type: string
+  - name: dev_restricted_service_perimeter_name
+    required: true
+    type: string
+  - name: dev_restricted_host_project_id
+    required: true
+    type: string
+  - name: dev_base_host_project_id
+    required: true
+    type: string
+  - name: nonprod_restricted_access_level_name
+    required: true
+    type: string
+  - name: nonprod_restricted_service_perimeter_name
+    required: true
+    type: string
+  - name: nonprod_restricted_host_project_id
+    required: true
+    type: string
+  - name: nonprod_base_host_project_id
+    required: true
+    type: string
+  - name: prod_restricted_access_level_name
+    required: true
+    type: string
+  - name: prod_restricted_service_perimeter_name
+    required: true
+    type: string
+  - name: prod_restricted_host_project_id
+    required: true
+    type: string
+  - name: prod_base_host_project_id
+    required: true
+    type: string

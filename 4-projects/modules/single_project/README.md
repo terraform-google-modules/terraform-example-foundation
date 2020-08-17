@@ -23,4 +23,12 @@
 | vpc\_service\_control\_perimeter\_name | The name of a VPC Service Control Perimeter to add the created project to | string | `"null"` | no |
 | vpc\_type | The type of VPC to attach the project to. Possible options are base or restricted. | string | `""` | no |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| enabled\_apis | VPC Service Control services. |
+| project\_id | Project sample project id. |
+| project\_number | Project sample project number. |
+
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

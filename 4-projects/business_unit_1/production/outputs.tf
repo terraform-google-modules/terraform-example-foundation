@@ -34,19 +34,14 @@ output "restricted_shared_vpc_project_number" {
   value       = module.restricted_shared_vpc_project.project_number
 }
 
-output "vpc_service_control_attach_enabled" {
-  description = "Enable or disable VPC Service Control Attach."
-  value       = module.restricted_shared_vpc_project.vpc_service_control_attach_enabled
-}
-
 output "vpc_service_control_perimeter_name" {
   description = "VPC Service Control name."
   value       = var.perimeter_name
 }
 
-output "vpc_service_control_perimeter_services" {
-  description = "VPC Service Control services."
-  value       = module.restricted_shared_vpc_project.vpc_service_control_perimeter_services
+output "restricted_enabled_apis" {
+  description = "Activated APIs."
+  value       = module.restricted_shared_vpc_project.enabled_apis
 }
 
 output "access_context_manager_policy_id" {

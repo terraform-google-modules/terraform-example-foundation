@@ -24,7 +24,7 @@ output "project_number" {
   value       = module.project.project_number
 }
 
-output "vpc_service_control_perimeter_services" {
+output "enabled_apis" {
   description = "VPC Service Control services."
   value       = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
 }

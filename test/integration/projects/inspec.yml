@@ -15,13 +15,10 @@ attributes:
   - name: dev_bu1_project_restricted_number
     required: true
     type: string
-  - name: dev_bu1_restricted_vpc_service_control_attach_enabled
-    required: true
-    type: boolean
   - name: dev_bu1_restricted_vpc_service_control_perimeter_name
     required: true
     type: string
-  - name: dev_bu1_restricted_vpc_service_control_perimeter_services
+  - name: dev_bu1_restricted_enabled_apis
     required: true
     type: array
   - name: access_context_manager_policy_id
@@ -36,13 +33,13 @@ attributes:
   - name: dev_bu2_project_restricted
     required: true
     type: string
+  - name: dev_bu2_project_restricted_number
+    required: true
+    type: string
   - name: dev_bu2_restricted_vpc_service_control_perimeter_name
     required: true
     type: string
-  - name: dev_bu2_restricted_vpc_service_control_attach_enabled
-    required: true
-    type: boolean
-  - name: dev_bu2_restricted_vpc_service_control_perimeter_services
+  - name: dev_bu2_restricted_enabled_apis
     required: true
     type: array
   - name: nonprod_bu1_project_base
@@ -54,6 +51,18 @@ attributes:
   - name: nonprod_bu1_project_restricted
     required: true
     type: string
+  - name: nonprod_bu1_project_restricted_number
+    required: true
+    type: string
+  - name: nonprod_bu1_restricted_vpc_service_control_perimeter_name
+    required: true
+    type: string
+  - name: nonprod_bu1_restricted_enabled_apis
+    required: true
+    type: array
+  - name: access_context_manager_policy_id
+    required: true
+    type: string
   - name: nonprod_bu2_project_base
     required: true
     type: string
@@ -63,6 +72,15 @@ attributes:
   - name: nonprod_bu2_project_restricted
     required: true
     type: string
+  - name: nonprod_bu2_project_restricted_number
+    required: true
+    type: string
+  - name: nonprod_bu2_restricted_vpc_service_control_perimeter_name
+    required: true
+    type: string
+  - name: nonprod_bu2_restricted_enabled_apis
+    required: true
+    type: array
   - name: prod_bu1_project_base
     required: true
     type: string
@@ -70,6 +88,18 @@ attributes:
     required: true
     type: string
   - name: prod_bu1_project_restricted
+    required: true
+    type: string
+  - name: prod_bu1_project_restricted_number
+    required: true
+    type: string
+  - name: prod_bu1_restricted_vpc_service_control_perimeter_name
+    required: true
+    type: string
+  - name: prod_bu1_restricted_enabled_apis
+    required: true
+    type: array
+  - name: access_context_manager_policy_id
     required: true
     type: string
   - name: prod_bu2_project_base
@@ -81,3 +111,12 @@ attributes:
   - name: prod_bu2_project_restricted
     required: true
     type: string
+  - name: prod_bu2_project_restricted_number
+    required: true
+    type: string
+  - name: prod_bu2_restricted_vpc_service_control_perimeter_name
+    required: true
+    type: string
+  - name: prod_bu2_restricted_enabled_apis
+    type: array
+    required: true

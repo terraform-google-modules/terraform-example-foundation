@@ -24,7 +24,7 @@ output "dev_bu1_project_floating" {
   value       = module.projects_bu1_dev.floating_project
 }
 
-output "dev_bu1_project_restricted_id" {
+output "dev_bu1_project_restricted" {
   description = "Project sample restricted project."
   value       = module.projects_bu1_dev.restricted_shared_vpc_project
 }
@@ -39,29 +39,30 @@ output "dev_bu2_project_base" {
   value       = module.projects_bu2_dev.base_shared_vpc_project
 }
 
+output "dev_bu2_project_restricted" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu2_dev.restricted_shared_vpc_project
+}
+
+output "dev_bu2_project_restricted_number" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu2_dev.restricted_shared_vpc_project_number
+}
+
 output "dev_bu2_project_floating" {
   description = "Project sample floating project."
   value       = module.projects_bu2_dev.floating_project
 }
 
-output "dev_bu1_restricted_vpc_service_control_attach_enabled" {
-  description = "Enable or disable VPC Service Control Attach."
-  value       = module.projects_bu1_dev.vpc_service_control_attach_enabled
-}
 
 output "dev_bu1_restricted_vpc_service_control_perimeter_name" {
   description = "VPC Service Control name."
   value       = module.projects_bu1_dev.vpc_service_control_perimeter_name
 }
 
-output "dev_bu1_restricted_vpc_service_control_perimeter_services" {
-  description = "VPC Service Control services."
-  value       = module.projects_bu1_dev.vpc_service_control_perimeter_services
-}
-
-output "dev_bu2_restricted_vpc_service_control_attach_enabled" {
-  description = "Enable or disable VPC Service Control Attach."
-  value       = module.projects_bu2_dev.vpc_service_control_attach_enabled
+output "dev_bu1_restricted_apis" {
+  description = "Activated APIs."
+  value       = module.projects_bu1_dev.restricted_enabled_apis
 }
 
 output "dev_bu2_restricted_vpc_service_control_perimeter_name" {
@@ -69,9 +70,9 @@ output "dev_bu2_restricted_vpc_service_control_perimeter_name" {
   value       = module.projects_bu2_dev.vpc_service_control_perimeter_name
 }
 
-output "dev_bu2_restricted_vpc_service_control_perimeter_services" {
-  description = "VPC Service Control services."
-  value       = module.projects_bu2_dev.vpc_service_control_perimeter_services
+output "dev_bu2_restricted_apis" {
+  description = "Activated APIs."
+  value       = module.projects_bu2_dev.restricted_enabled_apis
 }
 
 output "nonprod_bu1_project_base" {
@@ -89,9 +90,24 @@ output "nonprod_bu1_project_restricted" {
   value       = module.projects_bu1_nonprod.restricted_shared_vpc_project
 }
 
+output "nonprod_bu1_project_restricted_number" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu1_nonprod.restricted_shared_vpc_project_number
+}
+
 output "nonprod_bu2_project_base" {
   description = "Project sample base project."
   value       = module.projects_bu2_nonprod.base_shared_vpc_project
+}
+
+output "nonprod_bu2_project_restricted" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu2_nonprod.restricted_shared_vpc_project
+}
+
+output "nonprod_bu2_project_restricted_number" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu2_nonprod.restricted_shared_vpc_project_number
 }
 
 output "nonprod_bu2_project_floating" {
@@ -99,9 +115,24 @@ output "nonprod_bu2_project_floating" {
   value       = module.projects_bu2_nonprod.floating_project
 }
 
-output "nonprod_bu2_project_restricted" {
-  description = "Project sample restricted project."
-  value       = module.projects_bu2_nonprod.restricted_shared_vpc_project
+output "nonprod_bu1_restricted_vpc_service_control_perimeter_name" {
+  description = "VPC Service Control name."
+  value       = module.projects_bu1_nonprod.vpc_service_control_perimeter_name
+}
+
+output "nonprod_bu1_restricted_apis" {
+  description = "Activated APIs."
+  value       = module.projects_bu1_nonprod.restricted_enabled_apis
+}
+
+output "nonprod_bu2_restricted_vpc_service_control_perimeter_name" {
+  description = "VPC Service Control name."
+  value       = module.projects_bu2_nonprod.vpc_service_control_perimeter_name
+}
+
+output "nonprod_bu2_restricted_apis" {
+  description = "Activated APIs."
+  value       = module.projects_bu2_nonprod.restricted_enabled_apis
 }
 
 output "prod_bu1_project_base" {
@@ -119,9 +150,24 @@ output "prod_bu1_project_restricted" {
   value       = module.projects_bu1_prod.restricted_shared_vpc_project
 }
 
+output "prod_bu1_project_restricted_number" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu1_prod.restricted_shared_vpc_project_number
+}
+
 output "prod_bu2_project_base" {
   description = "Project sample base project."
   value       = module.projects_bu2_prod.base_shared_vpc_project
+}
+
+output "prod_bu2_project_restricted" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu2_prod.restricted_shared_vpc_project
+}
+
+output "prod_bu2_project_restricted_number" {
+  description = "Project sample restricted project."
+  value       = module.projects_bu2_prod.restricted_shared_vpc_project_number
 }
 
 output "prod_bu2_project_floating" {
@@ -129,9 +175,24 @@ output "prod_bu2_project_floating" {
   value       = module.projects_bu2_prod.floating_project
 }
 
-output "prod_bu2_project_restricted" {
-  description = "Project sample restricted project."
-  value       = module.projects_bu2_prod.restricted_shared_vpc_project
+output "prod_bu1_restricted_vpc_service_control_perimeter_name" {
+  description = "VPC Service Control name."
+  value       = module.projects_bu1_prod.vpc_service_control_perimeter_name
+}
+
+output "prod_bu1_restricted_apis" {
+  description = "Activated APIs."
+  value       = module.projects_bu1_prod.restricted_enabled_apis
+}
+
+output "prod_bu2_restricted_vpc_service_control_perimeter_name" {
+  description = "VPC Service Control name."
+  value       = module.projects_bu2_prod.vpc_service_control_perimeter_name
+}
+
+output "prod_bu2_restricted_apis" {
+  description = "Activated APIs."
+  value       = module.projects_bu2_prod.restricted_enabled_apis
 }
 
 output "access_context_manager_policy_id" {

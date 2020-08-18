@@ -111,7 +111,7 @@ control 'gcloud-non-production' do
     end
   end
 
-  describe command("gcloud access-context-manager perimeters describe #{nonprod_bu2_restricted_vpc_service_control_perimeter_name} --format=json") do
+  describe command("gcloud access-context-manager perimeters describe #{nonprod_bu2_restricted_vpc_service_control_perimeter_name} --policy #{access_context_manager_policy_id} --format=json") do
     its(:exit_status) { should eq 0 }
     its(:stderr) { should eq '' }
 

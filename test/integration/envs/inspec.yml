@@ -3,6 +3,9 @@ depends:
     git: https://github.com/inspec/inspec-gcp.git
     tag: v1.7.0
 attributes:
+  - name: monitoring_group
+    required: true
+    type: string
   - name: dev_env_folder
     required: true
     type: string

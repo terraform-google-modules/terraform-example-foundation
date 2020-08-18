@@ -86,7 +86,7 @@ end
 control 'gcloud-production' do
   title 'gcloud step 4-projects test production'
 
-  describe command("gcloud access-context-manager perimeters describe #{prod_bu1_restricted_vpc_service_control_perimeter_name} --format=json") do
+  describe command("gcloud access-context-manager perimeters describe #{prod_bu1_restricted_vpc_service_control_perimeter_name}  --policy #{access_context_manager_policy_id} --format=json") do
     its(:exit_status) { should eq 0 }
     its(:stderr) { should eq '' }
 

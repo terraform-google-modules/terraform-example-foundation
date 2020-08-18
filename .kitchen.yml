@@ -90,10 +90,14 @@ suites:
     verifier:
       color: false
       systems:
-        - name: networks
+        - name: inspec-gcp
+          backend: gcp
+          controls:
+            - gcp_networks
+        - name: local
           backend: local
           controls:
-            - networks
+            - gcloud_networks
   - name: projects
     driver:
       root_module_directory: test/fixtures/projects/

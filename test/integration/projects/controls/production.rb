@@ -135,5 +135,118 @@ control 'gcloud-production' do
       end
     end
   end
+  describe command("gcloud compute shared-vpc get-host-project #{prod_bu1_project_floating} --format=json") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq '' }
+
+    let(:data) do
+      if subject.exit_status.zero?
+        JSON.parse(subject.stdout)
+      else
+        {}
+      end
+    end
+
+    describe "Verifies if #{prod_bu1_project_floating}" do
+      it 'is not attached to any host project' do
+        expect(data).to be_empty
+      end
+    end
+  end
+
+  describe command("gcloud compute shared-vpc get-host-project #{prod_bu2_project_floating} --format=json") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq '' }
+
+    let(:data) do
+      if subject.exit_status.zero?
+        JSON.parse(subject.stdout)
+      else
+        {}
+      end
+    end
+
+    describe "Verifies if #{prod_bu2_project_floating}" do
+      it 'is not attached to any host project' do
+        expect(data).to be_empty
+      end
+    end
+  end
+
+  describe command("gcloud compute shared-vpc get-host-project #{prod_bu1_project_restricted_id} --format=json") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq '' }
+
+    let(:data) do
+      if subject.exit_status.zero?
+        JSON.parse(subject.stdout)
+      else
+        {}
+      end
+    end
+
+    describe "Verifies if #{prod_bu1_project_restricted_id}" do
+      it 'is attached to a host project' do
+        expect(data).to_not be_empty
+      end
+    end
+  end
+
+  describe command("gcloud compute shared-vpc get-host-project #{prod_bu2_project_restricted_id} --format=json") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq '' }
+
+    let(:data) do
+      if subject.exit_status.zero?
+        JSON.parse(subject.stdout)
+      else
+        {}
+      end
+    end
+
+    describe "Verifies if #{prod_bu2_project_restricted_id}" do
+      it 'is attached to a host project' do
+        expect(data).to_not be_empty
+      end
+    end
+  end
+
+  describe command("gcloud compute shared-vpc get-host-project #{prod_bu1_project_base} --format=json") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq '' }
+
+    let(:data) do
+      if subject.exit_status.zero?
+        JSON.parse(subject.stdout)
+      else
+        {}
+      end
+    end
+
+    describe "Verifies if #{prod_bu1_project_base}" do
+      it 'is attached to a host project' do
+        expect(data).to_not be_empty
+      end
+    end
+  end
+
+  describe command("gcloud compute shared-vpc get-host-project #{prod_bu2_project_base} --format=json") do
+    its(:exit_status) { should eq 0 }
+    its(:stderr) { should eq '' }
+
+    let(:data) do
+      if subject.exit_status.zero?
+        JSON.parse(subject.stdout)
+      else
+        {}
+      end
+    end
+
+    describe "Verifies if #{prod_bu2_project_base}" do
+      it 'is attached to a host project' do
+        expect(data).to_not be_empty
+      end
+    end
+  end
 end
 

@@ -189,6 +189,10 @@ control 'gcloud-non-production' do
       it 'is attached to a host project' do
         expect(data).to_not be_empty
       end
+
+      it 'is attached to a restricted host project' do
+        expect(/restricted/).to match(data['name'])
+      end
     end
   end
 
@@ -207,6 +211,10 @@ control 'gcloud-non-production' do
     describe "Verifies if #{nonprod_bu2_project_restricted_id}" do
       it 'is attached to a host project' do
         expect(data).to_not be_empty
+      end
+
+      it 'is attached to a restricted host project' do
+        expect(/restricted/).to match(data['name'])
       end
     end
   end
@@ -227,6 +235,10 @@ control 'gcloud-non-production' do
       it 'is attached to a host project' do
         expect(data).to_not be_empty
       end
+
+      it 'is attached to a base host project' do
+        expect(/base/).to match(data['name'])
+      end
     end
   end
 
@@ -245,6 +257,10 @@ control 'gcloud-non-production' do
     describe "Verifies if #{nonprod_bu2_project_base}" do
       it 'is attached to a host project' do
         expect(data).to_not be_empty
+      end
+
+      it 'is attached to a base host project' do
+        expect(/base/).to match(data['name'])
       end
     end
   end

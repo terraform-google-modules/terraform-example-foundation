@@ -41,6 +41,7 @@ module "scc_notification" {
     --description "SCC Notification for all active findings" \
     --pubsub-topic projects/${module.scc_notifications.project_id}/topics/${google_pubsub_topic.scc_notification_topic.name} \
     --filter "${var.scc_notification_filter}" \
+    --project "${module.scc_notifications.project_id}" \
     --impersonate-service-account=${var.terraform_service_account}
 EOF
 
@@ -48,6 +49,7 @@ EOF
   destroy_cmd_body       = <<-EOF
   alpha scc notifications delete organizations/${var.org_id}/notificationConfigs/${var.scc_notification_name} \
   --impersonate-service-account ${var.terraform_service_account} \
+  --project "${module.scc_notifications.project_id}" \
   --quiet
   EOF
   skip_download          = var.skip_gcloud_download

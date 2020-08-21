@@ -56,7 +56,7 @@ floating_projects_id = {
 }
 
 control 'gcp-projects' do
-  title 'gcp step 4-projects test development'
+  title 'gcp step 4-projects tests'
 
   environment_codes.each do |environment_code|
     business_units.each do |business_unit|

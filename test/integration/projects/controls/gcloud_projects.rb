@@ -48,6 +48,12 @@ prod_bu2_restricted_vpc_service_control_perimeter_name = attribute('prod_bu2_res
 access_context_manager_policy_id = attribute('access_context_manager_policy_id')
 
 environment_codes = %w[d n p]
+
+environment_name = {
+  'd' => 'development',
+  'n' => 'non-production',
+  'p' => 'production'
+}
 business_units = %w[bu1 bu2]
 
 restricted_vpc_service_control_perimeter_name = {
@@ -81,10 +87,10 @@ restricted_projects_number = {
 }
 
 control 'gcloud-projects' do
-  title 'gcloud step 4-projects test development'
-
+  title 'gcloud step 4-projects tests'
   environment_codes.each do |environment_code|
     business_units.each do |business_unit|
+
       describe command("gcloud access-context-manager perimeters describe #{restricted_vpc_service_control_perimeter_name[environment_code][business_unit]} --policy #{access_context_manager_policy_id} --format=json") do
         its(:exit_status) { should eq 0 }
         its(:stderr) { should eq '' }
@@ -110,7 +116,7 @@ control 'gcloud-projects' do
         end
       end
 
-      describe command("gcloud compute shared-vpc get-host-project #{floating_projects_id[environment_code][business_unit]} --format=json") do
+      describe command("gcloud compute shared-vpc get-host-project #{restricted_projects_id[environment_code][business_unit]} --format=json") do
         its(:exit_status) { should eq 0 }
         its(:stderr) { should eq '' }
 
@@ -121,9 +127,22 @@ control 'gcloud-projects' do
             {}
           end
         end
-        describe "Verifies if #{floating_projects_id[environment_code][business_unit]}" do
-          it 'is NOT attached to a host project' do
-            expect(data).to be_empty
+
+        describe "Verifies if #{restricted_projects_id[environment_code][business_unit]}" do
+          it 'is attached to a host project' do
+            expect(data).to_not be_empty
+          end
+
+          it 'is attached to a project with application_name label equals to restricted-shared-vpc-host' do
+            expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['application_name'].should eq 'restricted-shared-vpc-host'
+          end
+
+          it "is attached to a project with environment label equals to #{environment_name[environment_code]}" do
+            expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['environment'].should eq environment_name[environment_code]
+          end
+
+          it "is attached to the VPC with name equals to vpc-#{environment_code}-shared-restricted" do
+            expect JSON.parse(command("gcloud compute networks list --project #{data['name']} --format=json").stdout)[0]['name'].should eq "vpc-#{environment_code}-shared-restricted"
           end
         end
       end
@@ -145,18 +164,21 @@ control 'gcloud-projects' do
             expect(data).to_not be_empty
           end
 
-          it 'is attached to a shared vpc host project' do
-            expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['application_name'].match('base-shared-vpc-host')
-            expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['environment'].match('development')
+          it 'is attached to a project with application_name label equals to base-shared-vpc-host' do
+            expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['application_name'].should eq 'base-shared-vpc-host'
           end
 
-          it 'is attached to the correct VPC' do
-            expect JSON.parse(command("gcloud compute networks list --project #{data['name']} --format=json").stdout)[0]['name'].match('vpc-d-shared-base')
+          it "is attached to a project with environment label equals to #{environment_name[environment_code]}" do
+            expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['environment'].should eq environment_name[environment_code]
+          end
+
+          it "is attached to the VPC with name equals to vpc-#{environment_code}-shared-base" do
+            expect JSON.parse(command("gcloud compute networks list --project #{data['name']} --format=json").stdout)[0]['name'].should eq "vpc-#{environment_code}-shared-base"
           end
         end
       end
 
-      describe command("gcloud compute shared-vpc get-host-project #{restricted_projects_id[environment_code][business_unit]} --format=json") do
+      describe command("gcloud compute shared-vpc get-host-project #{floating_projects_id[environment_code][business_unit]} --format=json") do
         its(:exit_status) { should eq 0 }
         its(:stderr) { should eq '' }
 
@@ -167,19 +189,9 @@ control 'gcloud-projects' do
             {}
           end
         end
-
-        describe "Verifies if #{restricted_projects_id[environment_code][business_unit]}" do
-          it 'is attached to a host project' do
-            expect(data).to_not be_empty
-          end
-
-          it 'is attached to a shared vpc host project' do
-            expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['application_name'].match('restricted-shared-vpc-host')
-            expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['environment'].match('development')
-          end
-
-          it 'is attached to the correct VPC' do
-            expect JSON.parse(command("gcloud compute networks list --project #{data['name']} --format=json").stdout)[0]['name'].match('vpc-d-shared-restricted')
+        describe "Verifies if #{floating_projects_id[environment_code][business_unit]}" do
+          it 'is NOT attached to a host project' do
+            expect(data).to be_empty
           end
         end
       end

@@ -107,12 +107,8 @@ suites:
         - name: projects
           backend: gcp
           controls:
-            - gcp-development
-            - gcp-non-production
-            - gcp-production
+            - gcp-projects
         - name: gcloud
           backend: local
           controls:
-            - gcloud-development
-            - gcloud-non-production
-            - gcloud-production
+            - gcloud-projects

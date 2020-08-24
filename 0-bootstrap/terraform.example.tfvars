@@ -42,3 +42,7 @@ default_region = "australia-southeast1"
 //jenkins_master_subnetwork_cidr_range = ["10.1.0.6/32"]
 //
 //nat_bgp_asn = "64514"
+//
+//vpn_shared_secret = "shared_secret"
+//
+//jenkins_master_vpn_public_ip_address = ""

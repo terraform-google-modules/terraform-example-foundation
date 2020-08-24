@@ -181,4 +181,6 @@ module "cloudbuild_bootstrap" {
 #  nat_bgp_asn                             = var.nat_bgp_asn
 #  jenkins_agent_sa_email                  = var.jenkins_agent_sa_email
 #  jenkins_agent_gce_ssh_pub_key           = var.jenkins_agent_gce_ssh_pub_key
+#  vpn_shared_secret                       = var.vpn_shared_secret
+#  jenkins_master_vpn_public_ip_address    = var.jenkins_master_vpn_public_ip_address
 # }

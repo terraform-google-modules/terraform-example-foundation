@@ -96,3 +96,8 @@ output "kms_crypto_key" {
 //  description = "Bucket used to store Jenkins artifacts in Jenkins project."
 //  value       = module.jenkins_bootstrap.gcs_bucket_jenkins_artifacts
 //}
+//
+//output "vpn_gw_ip" {
+//  description = "The VPN Gateway Public IP"
+//  value       = module.jenkins_bootstrap.vpn_gw_ip
+//}

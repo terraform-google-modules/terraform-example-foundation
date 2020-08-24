@@ -93,3 +93,13 @@ variable "skip_gcloud_download" {
 #  type        = number
 #  description = "BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address."
 # }
+
+# variable "vpn_shared_secret" {
+#   description = "The shared secret used in the VPN"
+#   type        = string
+# }
+
+# variable "jenkins_master_vpn_public_ip_address" {
+#   description = "The public IP Address of the Jenkins Master."
+#   type        = string
+# }

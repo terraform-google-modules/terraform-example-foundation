@@ -46,3 +46,8 @@ output "gcs_bucket_jenkins_artifacts" {
   description = "Bucket used to store Jenkins artifacts in Jenkins project."
   value       = google_storage_bucket.gcs_jenkins_artifacts.name
 }
+
+output "vpn_gw_ip" {
+  description = "The VPN Gateway Public IP"
+  value       = module.vpn_agent_to_onprem.gateway_ip
+}

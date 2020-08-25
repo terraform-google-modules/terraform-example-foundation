@@ -19,10 +19,10 @@ module "vpn_agent_to_onprem" {
   project_id         = module.cicd_project.project_id
   network            = google_compute_network.jenkins_agents.name
   region             = var.default_region
-  gateway_name       = "vpn-from-onprem-to-cicd"
+  gateway_name       = "gw-vpn-from-onprem-to-cicd"
   tunnel_name_prefix = "vpn-from-onprem-to-cicd-tunnel-1"
   shared_secret      = var.vpn_shared_secret
   tunnel_count       = 1
-  peer_ips           = [var.jenkins_master_vpn_public_ip_address] // the vpn-onprem-to-agent.gateway_ip
+  peer_ips           = [var.jenkins_master_vpn_public_ip_address]
   remote_subnet      = var.jenkins_master_subnetwork_cidr_range
 }

@@ -189,7 +189,7 @@ module "cloudbuild_bootstrap" {
 #  # router_asn                               = var.router_asn
 #  # bgp_peer_asn                             = var.bgp_peer_asn
 #  # tunnel0_bgp_peer_address                 = var.tunnel0_bgp_peer_address
-#  # tunnel0_bgp_session_range                   = var.tunnel0_bgp_session_range
+#  # tunnel0_bgp_session_range                = var.tunnel0_bgp_session_range
 #  # tunnel1_bgp_peer_address                 = var.tunnel1_bgp_peer_address
-#  # tunnel1_bgp_session_range                   = var.tunnel1_bgp_session_range
+#  # tunnel1_bgp_session_range                = var.tunnel1_bgp_session_range
 # }

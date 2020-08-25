@@ -105,6 +105,10 @@ suites:
       color: false
       systems:
         - name: projects
+          backend: gcp
+          controls:
+            - gcp-projects
+        - name: gcloud
           backend: local
           controls:
-            - projects
+            - gcloud-projects

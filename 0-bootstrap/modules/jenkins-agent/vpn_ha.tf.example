@@ -21,11 +21,15 @@ module "vpn_ha_agent_to_onprem" {
   network    = google_compute_network.jenkins_agents.name
   name       = "vpn-b-${var.default_region}-cr1"
   peer_external_gateway = {
-    redundancy_type = "SINGLE_IP_INTERNALLY_REDUNDANT"
+    redundancy_type = "TWO_IPS_REDUNDANCY"
     interfaces = [{
       id         = 0
-      ip_address = var.jenkins_master_vpn_public_ip_address
-      }]
+      ip_address = var.on_prem_vpn_public_ip_address
+      },
+      {
+        id         = 1
+        ip_address = var.on_prem_vpn_public_ip_address2
+    }]
   }
   router_asn = var.router_asn
   tunnels = {

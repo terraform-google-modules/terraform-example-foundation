@@ -182,10 +182,10 @@ module "cloudbuild_bootstrap" {
 #  jenkins_agent_sa_email                  = var.jenkins_agent_sa_email
 #  jenkins_agent_gce_ssh_pub_key           = var.jenkins_agent_gce_ssh_pub_key
 #  vpn_shared_secret                       = var.vpn_shared_secret
-#  jenkins_master_vpn_public_ip_address    = var.jenkins_master_vpn_public_ip_address
+#  on_prem_vpn_public_ip_address           = var.on_prem_vpn_public_ip_address
 
 ## Un-comment if you want to use a HA VPN
-
+#  # on_prem_vpn_public_ip_address2           = var.on_prem_vpn_public_ip_address2
 #  # router_asn                               = var.router_asn
 #  # bgp_peer_asn                             = var.bgp_peer_asn
 #  # tunnel0_bgp_peer_address                 = var.tunnel0_bgp_peer_address

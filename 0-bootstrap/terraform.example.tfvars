@@ -45,12 +45,14 @@ default_region = "australia-southeast1"
 //
 //vpn_shared_secret = "shared_secret"
 //
-//jenkins_master_vpn_public_ip_address = ""
+//on_prem_vpn_public_ip_address = ""
 
 /* ----------------------------------------
     Specific to High Availability (HA) VPN
    ---------------------------------------- */
 # # Un-comment if you want to use a HA VPN
+
+# on_prem_vpn_public_ip_address2 = ""
 
 # router_asn = "64515"
 

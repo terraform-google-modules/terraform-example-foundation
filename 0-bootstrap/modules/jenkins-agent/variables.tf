@@ -96,7 +96,7 @@ variable "vpn_shared_secret" {
   type        = string
 }
 
-variable "jenkins_master_vpn_public_ip_address" {
+variable "on_prem_vpn_public_ip_address" {
   description = "The public IP Address of the Jenkins Master."
   type        = string
 }
@@ -105,6 +105,11 @@ variable "jenkins_master_vpn_public_ip_address" {
     Specific to High Availability (HA) VPN
    ---------------------------------------- */
 # # Un-comment if you want to use a HA VPN
+
+# variable "on_prem_vpn_public_ip_address2" {
+#   description = "The secondpublic IP Address of the Jenkins Master."
+#   type        = string
+# }
 
 # variable "router_asn" {
 #   type        = number

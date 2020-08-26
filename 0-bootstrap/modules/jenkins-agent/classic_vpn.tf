@@ -23,6 +23,6 @@ module "vpn_agent_to_onprem" {
   tunnel_name_prefix = "vpn-from-onprem-to-cicd-tunnel-1"
   shared_secret      = var.vpn_shared_secret
   tunnel_count       = 1
-  peer_ips           = [var.jenkins_master_vpn_public_ip_address]
+  peer_ips           = [var.on_prem_vpn_public_ip_address]
   remote_subnet      = var.jenkins_master_subnetwork_cidr_range
 }

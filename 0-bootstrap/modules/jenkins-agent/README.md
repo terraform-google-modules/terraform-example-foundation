@@ -64,8 +64,8 @@ module "jenkins_bootstrap" {
 | jenkins\_agent\_gce\_subnetwork\_cidr\_range | The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0) | string | n/a | yes |
 | jenkins\_agent\_sa\_email | Email for Jenkins Agent service account. | string | `"jenkins-agent-gce"` | no |
 | jenkins\_master\_subnetwork\_cidr\_range | A list of CIDR IP ranges of the Jenkins Master in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | list(string) | n/a | yes |
-| jenkins\_master\_vpn\_public\_ip\_address | The public IP Address of the Jenkins Master. | string | n/a | yes |
 | nat\_bgp\_asn | BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address. | number | n/a | yes |
+| on\_prem\_vpn\_public\_ip\_address | The public IP Address of the Jenkins Master. | string | n/a | yes |
 | org\_id | GCP Organization ID | string | n/a | yes |
 | project\_labels | Labels to apply to the project. | map(string) | `<map>` | no |
 | project\_prefix | Name prefix to use for projects created. | string | `"prj"` | no |

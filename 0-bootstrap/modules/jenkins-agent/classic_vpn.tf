@@ -16,6 +16,7 @@
 
 module "vpn_agent_to_onprem" {
   source             = "terraform-google-modules/vpn/google"
+  version            = "~> 1.4.0"
   project_id         = module.cicd_project.project_id
   network            = google_compute_network.jenkins_agents.name
   region             = var.default_region

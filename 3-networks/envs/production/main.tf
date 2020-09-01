@@ -71,7 +71,6 @@ module "restricted_shared_vpc" {
   nat_bgp_asn                      = var.nat_bgp_asn
   nat_num_addresses_region1        = var.nat_num_addresses_region1
   nat_num_addresses_region2        = var.nat_num_addresses_region2
-  nat_num_addresses                = var.nat_num_addresses
 
   subnets = [
     {

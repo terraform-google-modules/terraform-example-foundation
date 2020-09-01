@@ -128,3 +128,14 @@ and only the corresponding environment is applied.
 1. Run `./tf-wrapper.sh apply development`
 
 If you received any errors or made any changes to the Terraform config or any `.tfvars`you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`
+
+### Optionals
+
+This module provides some optional network configurations. You can check below what are they and what will be created if you enable each one:
+
+1. **nat_enabled:** by default, this option is `false`. If you change to `true`, it will create: Compute Cloud router, Compute Address, Compute Router NAT and tag based static route through IGW to access internet. For this, you have to input also `nat_bgp_asn, nat_num_addresses_region1, nat_num_addresses_region2`.
+1. **dns_enable_inbound_forwarding:** by default, this option is `true`. It enables inbound query forwarding for VPC DNS.
+1. **dns_enable_logging:** by default, this option is `true`. It enables the DNS Logging for VPC DNS.
+1. **firewall_enable_logging:** by default, this option is `true`. It enables the logging for VPC Firewalls.
+1. **windows_activation_enabled:** by default, this option is `false`. If changed to true, it enables Windows license activation for Windows workloads, creating egress firewall rules for the range `35.190.247.13/32`
+1. **optional_fw_rules_enabled:** by default, this option is `false`. If changed to true, it enables firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges.

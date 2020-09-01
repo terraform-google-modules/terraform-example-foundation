@@ -18,13 +18,21 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`. | number | n/a | yes |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
 | default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | string | n/a | yes |
+| dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | bool | `"true"` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | bool | `"true"` | no |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | string | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logginglogging for VPC Firewalls. | bool | `"true"` | no |
+| nat\_bgp\_asn | BGP ASN for first NAT cloud routes. | number | `"64514"` | no |
+| nat\_enabled | Toggle creation of NAT cloud router. | bool | `"false"` | no |
+| nat\_num\_addresses | Number of external IPs to reserve for Cloud NAT. | number | `"2"` | no |
+| nat\_num\_addresses\_region1 | Number of external IPs to reserve for first Cloud NAT. | number | `"2"` | no |
+| nat\_num\_addresses\_region2 | Number of external IPs to reserve for second Cloud NAT. | number | `"2"` | no |
+| optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | bool | `"false"` | no |
 | org\_id | Organization ID | string | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
 | subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetwoks. | bool | `"true"` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | string | n/a | yes |
+| windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | bool | `"false"` | no |
 
 ## Outputs
 

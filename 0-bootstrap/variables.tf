@@ -104,11 +104,6 @@ variable "skip_gcloud_download" {
 #   type        = string
 # }
 
-/* ----------------------------------------
-    Specific to High Availability (HA) VPN
-   ---------------------------------------- */
-# # Un-comment if you want to use a HA VPN
-
 # variable "on_prem_vpn_public_ip_address2" {
 #   description = "The secondpublic IP Address of the Jenkins Master."
 #   type        = string

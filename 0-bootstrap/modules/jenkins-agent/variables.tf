@@ -101,46 +101,42 @@ variable "on_prem_vpn_public_ip_address" {
   type        = string
 }
 
-/* ----------------------------------------
-    Specific to High Availability (HA) VPN
-   ---------------------------------------- */
-# # Un-comment if you want to use a HA VPN
+variable "on_prem_vpn_public_ip_address2" {
+  description = "The secondpublic IP Address of the Jenkins Master."
+  type        = string
+}
 
-# variable "on_prem_vpn_public_ip_address2" {
-#   description = "The secondpublic IP Address of the Jenkins Master."
-#   type        = string
-# }
+variable "router_asn" {
+  type        = number
+  description = "BGP ASN for cloud routes."
+  default     = "64515"
+}
 
-# variable "router_asn" {
-#   type        = number
-#   description = "BGP ASN for cloud routes."
-#   default     = "64515"
-# }
+variable "bgp_peer_asn" {
+  type        = number
+  description = "BGP ASN for peer cloud routes."
+  default     = "64513"
+}
 
-# variable "bgp_peer_asn" {
-#   type        = number
-#   description = "BGP ASN for peer cloud routes."
-# }
+variable "tunnel0_bgp_peer_address" {
+  type        = string
+  description = "BGP peer address for tunnel 0"
+}
 
-# variable "tunnel0_bgp_peer_address" {
-#   type        = string
-#   description = "BGP session address for tunnel 0"
-# }
+variable "tunnel0_bgp_session_range" {
+  type        = string
+  description = "BGP session range for tunnel 0"
+}
 
-# variable "tunnel0_bgp_session_range" {
-#   type        = string
-#   description = "BGP session range for tunnel 0"
-# }
+variable "tunnel1_bgp_peer_address" {
+  type        = string
+  description = "BGP peer address for tunnel 1"
+}
 
-# variable "tunnel1_bgp_peer_address" {
-#   type        = string
-#   description = "BGP session address for tunnel 1"
-# }
-
-# variable "tunnel1_bgp_session_range" {
-#   type        = string
-#   description = "BGP session range for tunnel 1"
-# }
+variable "tunnel1_bgp_session_range" {
+  type        = string
+  description = "BGP session range for tunnel 1"
+}
 
 /* ----------------------------------------
     Specific to Seed Project

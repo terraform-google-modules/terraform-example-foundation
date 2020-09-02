@@ -46,22 +46,17 @@ default_region = "australia-southeast1"
 //vpn_shared_secret = "shared_secret"
 //
 //on_prem_vpn_public_ip_address = ""
-
-/* ----------------------------------------
-    Specific to High Availability (HA) VPN
-   ---------------------------------------- */
-# # Un-comment if you want to use a HA VPN
-
-# on_prem_vpn_public_ip_address2 = ""
-
-# router_asn = "64515"
-
-# bgp_peer_asn = "64513"
-
-# tunnel0_bgp_peer_address = "169.254.1.1"
-
-# tunnel0_bgp_session_range = "169.254.1.2/30"
-
-# tunnel1_bgp_peer_address = "169.254.2.1"
-
-# tunnel1_bgp_session_range = "169.254.2.2/30"
+//
+//on_prem_vpn_public_ip_address2 = ""
+//
+//router_asn = "64515"
+//
+//bgp_peer_asn = "64513"
+//
+//tunnel0_bgp_peer_address = "169.254.1.1"
+//
+//tunnel0_bgp_session_range = "169.254.1.2/30"
+//
+//tunnel1_bgp_peer_address = "169.254.2.1"
+//
+//tunnel1_bgp_session_range = "169.254.2.2/30"

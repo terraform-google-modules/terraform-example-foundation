@@ -113,15 +113,6 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
     1. Un-comment the `jenkins_bootstrap` module in `./main.tf`
     1. Un-comment the `jenkins_bootstrap` variables in `./variables.tf`
     1. Un-comment the `jenkins_bootstrap` outputs in `./outputs.tf`
-1. Your Jenkins agent **needs** to communicate with the master on-prem via ssh connection through a **VPN tunnel**. The default configuration is to use a **Classic VPN**. Only do the following steps **if you want to use a High Availability VPN**:
-    1. Un-comment the section of HA VPN inputs in `jenkins_bootstrap` module in `./main.tf`
-    1. Un-comment the section of HA VPN variables in `./variables.tf`
-    1. Un-comment the section of HA VPN variables in `./modules/jenkins-agent/variables.tf`
-    1. Un-comment the the section of HA VPN variables in `./terraform.example.tfvars`
-    1. Comment-out the `jenkins_bootstrap` output `vpn_gw_ip` in `./outputs.tf`
-    1. Comment-out the `jenkins_bootstrap` output `vpn_gw_ip` in `./modules/jenkins-agent/outputs.tf`
-    1. Rename `classic_vpn.tf` to `classic_vpn.tf.example`
-    1. Rename `vpn_ha.tf.example` to `vpn_ha.tf`
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment.
     - One of the value to supply (variable `jenkins_agent_gce_ssh_pub_key`) is the **public SSH key** you generated in the first step.
         - **Note: this is not the secret private key**. The public SSH key can be in your repository code.
@@ -167,8 +158,6 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
 ### III. Configure VPN connection
 
-- **Note:** This sections assumes that you chose to use a **Classic VPN**.
-
 Here you will configure a VPN Network tunnel to enable connectivity between the `prj-cicd` project and your on-prem environment. Learn more about [a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to).
 - Required information:
     - On-prem VPN public IP Address
@@ -176,7 +165,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
     - Jenkins Agent network CIDR (the example code uses "172.16.1.0/24")
     - VPN PSK (pre-shared secret key)
 
-1. Run the command `terraform output`. It will show the `vpn_gw_ip` which is the gateway static IP address that has been reserved for your VPN in the `prj-cicd` project. You **NEED** to inform your Network administrator this IP address so they configure the on-prem side of the VPN tunnel.
+1. Check in the `prj-cicd` project which are the gateway static IP address that has been reserved for your VPN. You **NEED** to inform your Network administrator those IP address so they configure the on-prem side of the VPN tunnels.
 
   - Assuming your network administrator already configured the on-prem end of the VPN, the CICD end of the VPN might show the message `First Handshake` for around 5 minutes.
   - When the VPN is ready, the status will show `Tunnel is up and running`. At this point, your Jenkins Master (on-prem) and Jenkins Agent (in `prj-cicd` project) must have network connectivity through the VPN.

@@ -52,7 +52,7 @@ module "jenkins_bootstrap" {
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | activate\_apis | List of APIs to enable in the CICD project. | list(string) | `<list>` | no |
-| bgp\_peer\_asn | BGP ASN for peer cloud routes. | number | n/a | yes |
+| bgp\_peer\_asn | BGP ASN for peer cloud routes. | number | `"64513"` | no |
 | billing\_account | The ID of the billing account to associate projects with. | string | n/a | yes |
 | default\_region | Default region to create resources where applicable. | string | `"us-central1"` | no |
 | folder\_id | The ID of a folder to host this project | string | `""` | no |
@@ -82,9 +82,9 @@ module "jenkins_bootstrap" {
 | terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the seed project | string | n/a | yes |
 | terraform\_version | Default terraform version. | string | `"0.12.24"` | no |
 | terraform\_version\_sha256sum | sha256sum for default terraform version. | string | `"602d2529aafdaa0f605c06adb7c72cfb585d8aa19b3f4d8d189b42589e27bf11"` | no |
-| tunnel0\_bgp\_peer\_address | BGP session address for tunnel 0 | string | n/a | yes |
+| tunnel0\_bgp\_peer\_address | BGP peer address for tunnel 0 | string | n/a | yes |
 | tunnel0\_bgp\_session\_range | BGP session range for tunnel 0 | string | n/a | yes |
-| tunnel1\_bgp\_peer\_address | BGP session address for tunnel 1 | string | n/a | yes |
+| tunnel1\_bgp\_peer\_address | BGP peer address for tunnel 1 | string | n/a | yes |
 | tunnel1\_bgp\_session\_range | BGP session range for tunnel 1 | string | n/a | yes |
 | vpn\_shared\_secret | The shared secret used in the VPN | string | n/a | yes |
 
@@ -98,7 +98,6 @@ module "jenkins_bootstrap" {
 | jenkins\_agent\_sa\_email | Email for privileged custom service account for Jenkins Agent GCE instance. |
 | jenkins\_agent\_sa\_name | Fully qualified name for privileged custom service account for Jenkins Agent GCE instance. |
 | jenkins\_agent\_vpc\_id | Jenkins Agent VPC name. |
-| vpn\_gw\_ip | The VPN Gateway Public IP |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

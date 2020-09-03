@@ -284,6 +284,12 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
 1. You can now move to the instructions in the step [1-org](../1-org/README.md).
 
+### Optional Variables
+
+Some variables used to deploy the step have default values. Check if you want to change those values before doing the deploy:
+
+- **skip_gcloud_download:** By default this option is `true`. If you change to false it will download gcloud. The default value assumes gcloud is already available outside the module.
+
 ## Contributing
 
 Refer to the [contribution guidelines](../CONTRIBUTING.md) for

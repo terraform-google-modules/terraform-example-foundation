@@ -183,13 +183,11 @@ module "cloudbuild_bootstrap" {
 #  jenkins_agent_gce_ssh_pub_key           = var.jenkins_agent_gce_ssh_pub_key
 #  vpn_shared_secret                       = var.vpn_shared_secret
 #  on_prem_vpn_public_ip_address           = var.on_prem_vpn_public_ip_address
-
-## Un-comment if you want to use a HA VPN
-#  # on_prem_vpn_public_ip_address2           = var.on_prem_vpn_public_ip_address2
-#  # router_asn                               = var.router_asn
-#  # bgp_peer_asn                             = var.bgp_peer_asn
-#  # tunnel0_bgp_peer_address                 = var.tunnel0_bgp_peer_address
-#  # tunnel0_bgp_session_range                = var.tunnel0_bgp_session_range
-#  # tunnel1_bgp_peer_address                 = var.tunnel1_bgp_peer_address
-#  # tunnel1_bgp_session_range                = var.tunnel1_bgp_session_range
+#  on_prem_vpn_public_ip_address2          = var.on_prem_vpn_public_ip_address2
+#  router_asn                              = var.router_asn
+#  bgp_peer_asn                            = var.bgp_peer_asn
+#  tunnel0_bgp_peer_address                = var.tunnel0_bgp_peer_address
+#  tunnel0_bgp_session_range               = var.tunnel0_bgp_session_range
+#  tunnel1_bgp_peer_address                = var.tunnel1_bgp_peer_address
+#  tunnel1_bgp_session_range               = var.tunnel1_bgp_session_range
 # }

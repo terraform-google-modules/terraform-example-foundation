@@ -165,7 +165,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
     - Jenkins Agent network CIDR (the example code uses "172.16.1.0/24")
     - VPN PSK (pre-shared secret key)
 
-1. Check in the `prj-cicd` project which are the gateway static IP address that has been reserved for your VPN. You **NEED** to inform your Network administrator those IP address so they configure the on-prem side of the VPN tunnels.
+1. Check in the `prj-cicd` project for the VPN gateway static IP addresses which have been reserved. These addresses are required by the Network Administrator for the configuration of the on-prem side of the VPN tunnels to GCP.
 
   - Assuming your network administrator already configured the on-prem end of the VPN, the CICD end of the VPN might show the message `First Handshake` for around 5 minutes.
   - When the VPN is ready, the status will show `Tunnel is up and running`. At this point, your Jenkins Master (on-prem) and Jenkins Agent (in `prj-cicd` project) must have network connectivity through the VPN.

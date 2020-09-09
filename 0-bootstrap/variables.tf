@@ -93,3 +93,49 @@ variable "skip_gcloud_download" {
 #  type        = number
 #  description = "BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address."
 # }
+
+# variable "vpn_shared_secret" {
+#   description = "The shared secret used in the VPN"
+#   type        = string
+# }
+
+# variable "on_prem_vpn_public_ip_address" {
+#   description = "The public IP Address of the Jenkins Master."
+#   type        = string
+# }
+
+# variable "on_prem_vpn_public_ip_address2" {
+#   description = "The secondpublic IP Address of the Jenkins Master."
+#   type        = string
+# }
+
+# variable "router_asn" {
+#   type        = number
+#   description = "BGP ASN for cloud routes."
+#   default     = "64515"
+# }
+
+# variable "bgp_peer_asn" {
+#   type        = number
+#   description = "BGP ASN for cloud routes."
+# }
+
+# variable "tunnel0_bgp_peer_address" {
+#   type        = string
+#   description = "BGP session address for tunnel 0"
+# }
+
+# variable "tunnel0_bgp_session_range" {
+#   type        = string
+#   description = "BGP session range for tunnel 0"
+# }
+
+# variable "tunnel1_bgp_peer_address" {
+#   type        = string
+#   description = "BGP session address for tunnel 1"
+# }
+
+# variable "tunnel1_bgp_session_range" {
+#   type        = string
+#   description = "BGP session range for tunnel 1"
+# }

@@ -129,13 +129,6 @@ and only the corresponding environment is applied.
 
 If you received any errors or made any changes to the Terraform config or any `.tfvars`you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`
 
-### Optionals
+### Optional Variables
 
-This module provides some optional network configurations. You can check below what are they and what will be created if you enable each one:
-
-- **nat_enabled:** by default, this option is `false`. If you change to `true`, it will create: Compute Cloud router, Compute Address, Compute Router NAT and tag based static route through IGW to access internet. For this, you have to input also `nat_bgp_asn, nat_num_addresses_region1, nat_num_addresses_region2`.
-- **dns_enable_inbound_forwarding:** by default, this option is `true`. It enables inbound query forwarding for VPC DNS.
-- **dns_enable_logging:** by default, this option is `true`. It enables the DNS Logging for VPC DNS.
-- **firewall_enable_logging:** by default, this option is `true`. It enables the logging for VPC Firewalls.
-- **windows_activation_enabled:** by default, this option is `false`. If changed to true, it enables Windows license activation for Windows workloads, creating egress firewall rules for the range `35.190.247.13/32`
-- **optional_fw_rules_enabled:** by default, this option is `false`. If changed to true, it enables firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges.
+Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check in the section **Inputs** the variables not required for the environments [development](./envs/development/README.md#Inputs), [non-production](./envs/non-production/README.md#Inputs) and [production](./envs/production/README.md#Inputs).

@@ -95,13 +95,6 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`
 
-### Optionals
+### Optional Variables
 
-This module provides some optional projects configurations. You can check below what are they and what will be created if you enable each one:
-
-- **skip_gcloud_download:** by default, this option is `true`. It will skip download gcloud (assumes gcloud is already available outside the module).
-- **vpc_service_control_attach_enabled:** by default, this option is `false`. If changed to `true`, the project will be attached to a VPC Service Control Perimeter. You must provide a value for `vpc_service_control_perimeter_name` variable.
-- **vpc_service_control_perimeter_name:** by default, the value is `null` value. The name of a VPC Service Control Perimeter to add the created project to.
-- **alert_spent_percents:** by default, the value is`[0.5, 0.75, 0.9, 0.95]`. A list of percentages of the budget to alert on when threshold is exceeded.
-- **alert_pubsub_topic:** by default, the value is `null`. It will configure a Pub/Sub Topic to receive budget related messages, provided in the form of `projects/{project_id}/topics/{topic_id}`.
-- **budget_amount:** by default, the value is `1000`. The amount to use as the budget.
+Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check in the section **Inputs** the variables not required for the environments [development](./business_unit_1/development/README.md#Inputs), [non-production](./business_unit_1/non-production/README.md#Inputs) and [production](./business_unit_1/production/README.md#Inputs).

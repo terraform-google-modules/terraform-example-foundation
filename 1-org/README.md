@@ -75,4 +75,4 @@ If you received any errors or made any changes to the Terraform config or `terra
 
 ### Optional Variables
 
-Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check the section [Inputs](./envs/shared/README.md#Inputs)
+Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check in the section [Inputs](./envs/shared/README.md#Inputs) the variables not required.

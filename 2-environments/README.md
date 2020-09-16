@@ -82,4 +82,4 @@ If you received any errors or made any changes to the Terraform config or `terra
 
 ### Optional Variables
 
-Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check the section [Inputs](./modules/env_baseline/README.md#Inputs) the variables not required.
+Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check in the section **Inputs** the variables not required for the environments [development](./envs/development/README.md#Inputs), [non-production](./envs/non-production/README.md#Inputs) and [production](./envs/production/README.md#Inputs).

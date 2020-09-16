@@ -113,7 +113,6 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
     1. Un-comment the `jenkins_bootstrap` module in `./main.tf`
     1. Un-comment the `jenkins_bootstrap` variables in `./variables.tf`
     1. Un-comment the `jenkins_bootstrap` outputs in `./outputs.tf`
-
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment.
     - One of the value to supply (variable `jenkins_agent_gce_ssh_pub_key`) is the **public SSH key** you generated in the first step.
         - **Note: this is not the secret private key**. The public SSH key can be in your repository code.
@@ -157,101 +156,16 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 1. Commit changes with `git add backend.tf` and `git commit -m 'Your message - Terraform Backend configuration using GCS'`
 1. Push my-0-bootstrap branch to your repository YOUR_NEW_REPO-0-bootstrap with `git push`
 
-### III. Create VPN connection
-Here you will configure a VPN Network tunnel to enable connectivity between the `prj-cicd` project and your on-prem environment. Learn more about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to).
+### III. Configure VPN connection
+
+Here you will configure a VPN Network tunnel to enable connectivity between the `prj-cicd` project and your on-prem environment. Learn more about [a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to).
 - Required information:
-  - From previous step (you can run `terraform output` to find these values):
-    - CICD project ID
-    - Default region (see it in the `variables.tf` file or in `terraform.tfvars` if you changed it)
-    - Jenkins Agent VPC name, which was created in the `prj-cicd` project
-  - Usually, from your network administrator:
     - On-prem VPN public IP Address
     - Jenkins Master’s network CIDR (the example code uses "10.1.0.0/24")
     - Jenkins Agent network CIDR (the example code uses "172.16.1.0/24")
     - VPN PSK (pre-shared secret key)
 
-1. Supply the required values for the bash variables below:
-    ```
-    CICD_PROJECT_ID=`(terraform output cicd_project_id)`
-    DEFAULT_REGION="us-central1"
-    JENKINS_AGENT_VPC_NAME="vpc-b-jenkinsagents"
-
-    # New VPN variables
-    ONPREM_VPN_PUBLIC_IP_ADDRESS="x.x.x.x"
-    JENKINS_MASTER_NETWORK_CIDR="10.1.0.0/24"
-    JENKINS_AGENT_NETWORK_CIDR="172.16.1.0/24"
-    VPN_PSK_SECRET="my-secret"
-    CICD_VPN_PUBLIC_IP_NAME="cicd-vpn-external-static-ip"
-    CICD_VPN_NAME="vpn-from-onprem-to-cicd"
-    ```
-
-1. Reserve an `EXTERNAL` IP address for the VPN in the `prj-cicd` project (Your network administrator will need this IP address):
-    ```
-    # Reserve a new external IP for the VPN in the cicd project
-    gcloud compute addresses create $CICD_VPN_PUBLIC_IP_NAME \
-    --project="${CICD_PROJECT_ID}" --region="${DEFAULT_REGION}"
-
-    gcloud compute addresses list  --project="${CICD_PROJECT_ID}" \
-   | grep $CICD_VPN_PUBLIC_IP_NAME
-   ```
-
-1. The above command showed the `EXTERNAL` static IP address that has been reserved for your VPN in the `prj-cicd` project. **You need to do two things with this IP Address:**
-    1. Inform your Network administrator of the IP address so they configure the on-prem side of the VPN tunnel.
-    1. Set the variable below with the IP address you just obtained so you can create the GCP side of the VPN tunnel in the `cicd` project:
-        ```
-        # New VPN variables
-        CICD_VPN_PUBLIC_IP_ADDRESS="x.x.x.x"
-        ```
-
-1. We now have all the necessary information to create the VPN in the `cicd` project.
-    ```
-    # Create the new VPN gateway
-    gcloud compute --project $CICD_PROJECT_ID \
-      target-vpn-gateways create $CICD_VPN_NAME \
-      --region $DEFAULT_REGION \
-      --network $JENKINS_AGENT_VPC_NAME
-
-    # Create the forwarding rules
-    gcloud compute --project $CICD_PROJECT_ID \
-      forwarding-rules create "${CICD_VPN_NAME}-rule-esp" \
-      --region $DEFAULT_REGION \
-      --address $CICD_VPN_PUBLIC_IP_ADDRESS \
-      --ip-protocol "ESP" \
-      --target-vpn-gateway $CICD_VPN_NAME
-
-    gcloud compute --project $CICD_PROJECT_ID \
-      forwarding-rules create "${CICD_VPN_NAME}-rule-udp500" \
-      --region $DEFAULT_REGION \
-      --address $CICD_VPN_PUBLIC_IP_ADDRESS \
-      --ip-protocol "UDP" --ports "500" \
-      --target-vpn-gateway $CICD_VPN_NAME
-
-    gcloud compute --project $CICD_PROJECT_ID \
-      forwarding-rules create "${CICD_VPN_NAME}-rule-udp4500" \
-      --region $DEFAULT_REGION \
-      --address $CICD_VPN_PUBLIC_IP_ADDRESS \
-      --ip-protocol "UDP" --ports "4500" \
-      --target-vpn-gateway $CICD_VPN_NAME
-
-    # Create a Route-Based VPN tunnel
-    gcloud compute --project $CICD_PROJECT_ID \
-      vpn-tunnels create "${CICD_VPN_NAME}-tunnel-1" \
-      --region $DEFAULT_REGION \
-      --peer-address $ONPREM_VPN_PUBLIC_IP_ADDRESS \
-      --shared-secret $VPN_PSK_SECRET  \
-      --ike-version "2" \
-      --local-traffic-selector="0.0.0.0/0" \
-      --remote-traffic-selector="0.0.0.0/0" \
-      --target-vpn-gateway $CICD_VPN_NAME
-
-    # Create the necessary Route
-    gcloud compute --project $CICD_PROJECT_ID \
-      routes create "${CICD_VPN_NAME}-tunnel-1-route-1" \
-      --network $JENKINS_AGENT_VPC_NAME \
-      --next-hop-vpn-tunnel "${CICD_VPN_NAME}-tunnel-1" \
-      --next-hop-vpn-tunnel-region $DEFAULT_REGION \
-      --destination-range $JENKINS_MASTER_NETWORK_CIDR
-    ```
+1. Check in the `prj-cicd` project for the VPN gateway static IP addresses which have been reserved. These addresses are required by the Network Administrator for the configuration of the on-prem side of the VPN tunnels to GCP.
 
   - Assuming your network administrator already configured the on-prem end of the VPN, the CICD end of the VPN might show the message `First Handshake` for around 5 minutes.
   - When the VPN is ready, the status will show `Tunnel is up and running`. At this point, your Jenkins Master (on-prem) and Jenkins Agent (in `prj-cicd` project) must have network connectivity through the VPN.

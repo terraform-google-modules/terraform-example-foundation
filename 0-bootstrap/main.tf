@@ -181,4 +181,13 @@ module "cloudbuild_bootstrap" {
 #  nat_bgp_asn                             = var.nat_bgp_asn
 #  jenkins_agent_sa_email                  = var.jenkins_agent_sa_email
 #  jenkins_agent_gce_ssh_pub_key           = var.jenkins_agent_gce_ssh_pub_key
+#  vpn_shared_secret                       = var.vpn_shared_secret
+#  on_prem_vpn_public_ip_address           = var.on_prem_vpn_public_ip_address
+#  on_prem_vpn_public_ip_address2          = var.on_prem_vpn_public_ip_address2
+#  router_asn                              = var.router_asn
+#  bgp_peer_asn                            = var.bgp_peer_asn
+#  tunnel0_bgp_peer_address                = var.tunnel0_bgp_peer_address
+#  tunnel0_bgp_session_range               = var.tunnel0_bgp_session_range
+#  tunnel1_bgp_peer_address                = var.tunnel1_bgp_peer_address
+#  tunnel1_bgp_session_range               = var.tunnel1_bgp_session_range
 # }

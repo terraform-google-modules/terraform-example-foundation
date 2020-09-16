@@ -75,27 +75,4 @@ If you received any errors or made any changes to the Terraform config or `terra
 
 ### Optional Variables
 
-Some variables used to deploy the step have default values. Check if you want to change those values before doing the deploy:
-
-- **skip_gcloud_download:** By default this option is `true`. The default value assumes gcloud is already available outside the module, if you change to false it will download gcloud.
-- **create_access_context_manager_access_policy:** By default this option is `true`. The default allows to create access context manager access policy.
-- **data_access_logs_enabled:** By default this option is `true`. The default value enables Data Access logs of types DATA_READ, DATA_WRITE and ADMIN_READ for all GCP services.
-- **log_export_storage_location:** By default this option is `"US"`. This is the location of the storage bucket used to export logs.
-- **dns_hub_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the DNS hub project.
-- **dns_hub_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the DNS hub project.
-- **dns_hub_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the DNS hub project.
-- **interconnect_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the interconnect project.
-- **interconnect_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the interconnect project.
-- **interconnect_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the interconnect project.
-- **org_secrets_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the org secrets project.
-- **org_secrets_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the org secrets project.
-- **org_secrets_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the org secrets project.
-- **org_billing_logs_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the org billing logs project.
-- **org_billing_logs_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the org billing logs project.
-- **org_billing_logs_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the org billing logs project.
-- **org_audit_logs_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the org audit logs project.
-- **org_audit_logs_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the org audit logs project.
-- **org_audit_logs_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the org audit logs project.
-- **scc_notifications_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the SCC notifications project.
-- **scc_notifications_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the SCC notifications project.
-- **scc_notifications_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the SCC notifications project.
+Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check the section [Inputs](./envs/shared/README.md#Inputs)

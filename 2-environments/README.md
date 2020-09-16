@@ -82,18 +82,4 @@ If you received any errors or made any changes to the Terraform config or `terra
 
 ### Optional Variables
 
-Some variables used to deploy the step have default values. Check if you want to change those values before doing the deploy:
-
-- **skip_gcloud_download:** By default this option is `true`. The default value assumes gcloud is already available outside the module, if you change to false it will download gcloud.
-- **base_network_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the base networks project
-- **base_network_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the base networks project
-- **base_network_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the base networks project
-- **restricted_network_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the restricted networks project.
-- **restricted_network_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the restricted networks project
-- **restricted_network_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the restricted networks project.
-- **monitoring_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the monitoring project.
-- **monitoring_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the monitoring project.
-- **monitoring_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the monitoring project.
-- **secret_project_alert_spent_percents:** By default this value is this list of percentages `[0.5, 0.75, 0.9, 0.95]`. This is a list of percentages of the budget to alert on when threshold is exceeded for the secrets project.
-- **secret_project_alert_pubsub_topic:** By default this value is `null`. This is the name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the secrets project.
-- **secret_project_budget_amount:** By default this value is `1000`. This is the amount to use as the budget for the secrets project.
+Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check the section [Inputs](./modules/env_baseline/README.md#Inputs) the variables not required.

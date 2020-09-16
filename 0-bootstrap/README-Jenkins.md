@@ -286,9 +286,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
 ### Optional Variables
 
-Some variables used to deploy the step have default values. Check if you want to change those values before doing the deploy:
-
-- **skip_gcloud_download:** By default this option is `true`. If you change to false it will download gcloud. The default value assumes gcloud is already available outside the module.
+Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check in the section [Inputs](./modules/jenkins-agent/README.md#Inputs) the variables not required.
 
 ## Contributing
 

@@ -39,9 +39,7 @@ Currently, the bucket information is replaced in the state backends as a part of
 
 ### Optional Variables
 
-Some variables used to deploy the step have default values. Check if you want to change those values before doing the deploy:
-
-- **skip_gcloud_download:** By default this option is `true`. If you change to false it will download gcloud. The default value assumes gcloud is already available outside the module.
+Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check in the section [Inputs](./README.md#Inputs) the variables not required.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

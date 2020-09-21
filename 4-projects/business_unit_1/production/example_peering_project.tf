@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
+
 locals {
   vpc_name      = "${local.env_code}-peering-base"
   network_name  = "vpc-${local.vpc_name}"
-  env_code      = "d"
-  environment   = "development"
+  env_code      = "p"
+  environment   = "production"
   vpc_type      = "base"
-  business_code = "bu2"
+  business_code = "bu1"
 }
 
 data "google_projects" "projects" {

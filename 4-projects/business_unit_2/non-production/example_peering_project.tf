@@ -17,8 +17,8 @@
 locals {
   vpc_name      = "${local.env_code}-peering-base"
   network_name  = "vpc-${local.vpc_name}"
-  env_code      = "d"
-  environment   = "development"
+  env_code      = "n"
+  environment   = "non-production"
   vpc_type      = "base"
   business_code = "bu2"
 }

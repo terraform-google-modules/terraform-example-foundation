@@ -243,6 +243,16 @@ Development happens on feature/bugfix branches (which can be named `feature/new-
 
 Once validated in `development`, changes can be promoted to `non-production` by opening a PR/MR targeting the `non-production` branch and merging them.  Similarly changes can be promoted from `non-production` to `production`.
 
+### Optional Variables
+
+Some variables used to deploy the steps have default values, check those **before deployment** to ensure they match your requirements. For more information, there are tables of inputs and outputs for the Terraform modules, each with a detailed description of their variables. Look for variables marked as **not required** in the section **Inputs** of these READMEs:
+
+- Step 0-bootstrap: If you are using Cloud Build in the CICD pipeline, check the main [README](./0-bootstrap/README.md#Inputs) of the step. If you are using Jenkins, check the [README](./0-bootstrap/modules/jenkins-agent/README.md#Inputs) of the module `jenkins-agent`.
+- Step 1-org: The [README](./1-org/envs/shared/README.md#Inputs) of the module `shared`.
+- Step 2-environments: The README's of the environments [development](./2-environments/envs/development/README.md#Inputs), [non-production](./2-environments/envs/non-production/README.md#Inputs) and [production](./2-environments/envs/production/README.md#Inputs)
+- Step 3-networks: The README's of the environments [development](./3-networks/envs/development/README.md#Inputs), [non-production](./3-networks/envs/non-production/README.md#Inputs) and [production](./3-networks/envs/production/README.md#Inputs)
+- Step 4-projects: The README's of the environments [development](./4-projects/business_unit_1/development/README.md#Inputs), [non-production](./4-projects/business_unit_1/non-production/README.md#Inputs) and [production](./4-projects/business_unit_1/production/README.md#Inputs)
+
 ## Errata Summary
 
 Refer to the [Errata Summary](./ERRATA.md) for an overview of the delta between the example foundation repository and the [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).

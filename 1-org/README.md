@@ -72,7 +72,3 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 1. Run `./tf-wrapper.sh apply production`
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan production` before run `./tf-wrapper.sh apply production`
-
-### Optional Variables
-
-Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check in the section [Inputs](./envs/shared/README.md#Inputs) the variables not required.

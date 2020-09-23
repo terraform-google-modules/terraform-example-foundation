@@ -94,7 +94,3 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 1. Run `./tf-wrapper.sh apply development`
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`
-
-### Optional Variables
-
-Some variables used to deploy the step have default values, check if you want to change those values before doing the deploy. For more information check in the section **Inputs** the variables not required for the environments [development](./business_unit_1/development/README.md#Inputs), [non-production](./business_unit_1/non-production/README.md#Inputs) and [production](./business_unit_1/production/README.md#Inputs).

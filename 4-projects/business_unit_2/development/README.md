@@ -23,6 +23,7 @@
 | base\_shared\_vpc\_project | Project sample base project. |
 | floating\_project | Project sample floating project. |
 | peering\_complete | Output to be used as a module dependency. |
+| peering\_project | Project sample peering project id. |
 | restricted\_enabled\_apis | Activated APIs. |
 | restricted\_shared\_vpc\_project | Project sample restricted project id. |
 | restricted\_shared\_vpc\_project\_number | Project sample restricted project. |

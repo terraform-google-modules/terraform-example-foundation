@@ -14,23 +14,29 @@
 
 dev_bu1_project_base = attribute('dev_bu1_project_base')
 dev_bu1_project_floating = attribute('dev_bu1_project_floating')
+dev_bu1_project_peering = attribute('dev_bu1_project_peering')
 dev_bu1_project_restricted_id = attribute('dev_bu1_project_restricted')
 dev_bu2_project_base = attribute('dev_bu2_project_base')
 dev_bu2_project_floating = attribute('dev_bu2_project_floating')
+dev_bu2_project_peering = attribute('dev_bu2_project_peering')
 dev_bu2_project_restricted_id = attribute('dev_bu2_project_restricted')
 
 nonprod_bu1_project_base = attribute('nonprod_bu1_project_base')
 nonprod_bu1_project_floating = attribute('nonprod_bu1_project_floating')
+nonprod_bu1_project_peering = attribute('nonprod_bu1_project_peering')
 nonprod_bu1_project_restricted_id = attribute('nonprod_bu1_project_restricted')
 nonprod_bu2_project_base = attribute('nonprod_bu2_project_base')
 nonprod_bu2_project_floating = attribute('nonprod_bu2_project_floating')
+nonprod_bu2_project_peering = attribute('nonprod_bu2_project_peering')
 nonprod_bu2_project_restricted_id = attribute('nonprod_bu2_project_restricted')
 
 prod_bu1_project_base = attribute('prod_bu1_project_base')
 prod_bu1_project_floating = attribute('prod_bu1_project_floating')
+prod_bu1_project_peering = attribute('prod_bu1_project_peering')
 prod_bu1_project_restricted_id = attribute('prod_bu1_project_restricted')
 prod_bu2_project_base = attribute('prod_bu2_project_base')
 prod_bu2_project_floating = attribute('prod_bu2_project_floating')
+prod_bu2_project_peering = attribute('prod_bu2_project_peering')
 prod_bu2_project_restricted_id = attribute('prod_bu2_project_restricted')
 restricted_enabled_apis = ['accesscontextmanager.googleapis.com', 'billingbudgets.googleapis.com']
 
@@ -55,6 +61,12 @@ floating_projects_id = {
   'p' => { 'bu1' => prod_bu1_project_floating, 'bu2' => prod_bu2_project_floating }
 }
 
+peering_projects_id = {
+  'd' => { 'bu1' => dev_bu1_project_peering, 'bu2' => dev_bu2_project_peering },
+  'n' => { 'bu1' => nonprod_bu1_project_peering, 'bu2' => nonprod_bu2_project_peering },
+  'p' => { 'bu1' => prod_bu1_project_peering, 'bu2' => prod_bu2_project_peering }
+}
+
 control 'gcp-projects' do
   title 'gcp step 4-projects tests'
 
@@ -71,6 +83,11 @@ control 'gcp-projects' do
       end
 
       describe google_project(project: restricted_projects_id[environment_code][business_unit]) do
+        it { should exist }
+        its('lifecycle_state') { should cmp 'ACTIVE' }
+      end
+
+      describe google_project(project: peering_projects_id[environment_code][business_unit]) do
         it { should exist }
         its('lifecycle_state') { should cmp 'ACTIVE' }
       end

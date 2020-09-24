@@ -24,6 +24,11 @@ output "floating_project" {
   value       = module.floating_project.project_id
 }
 
+output "peering_project" {
+  description = "Project sample peering project id."
+  value       = module.peering_project.project_id
+}
+
 output "restricted_shared_vpc_project" {
   description = "Project sample restricted project id."
   value       = module.restricted_shared_vpc_project.project_id

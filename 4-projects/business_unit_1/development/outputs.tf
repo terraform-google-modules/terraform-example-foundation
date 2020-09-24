@@ -48,3 +48,8 @@ output "access_context_manager_policy_id" {
   description = "Access Context Manager Policy ID."
   value       = var.access_context_manager_policy_id
 }
+
+output "peering_complete" {
+  description = "Output to be used as a module dependency."
+  value       = module.peering.complete
+}

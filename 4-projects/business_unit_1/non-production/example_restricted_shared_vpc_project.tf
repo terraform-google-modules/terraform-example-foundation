@@ -23,6 +23,9 @@ module "restricted_shared_vpc_project" {
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "non-production"
   vpc_type                    = "restricted"
+  alert_spent_percents        = var.alert_spent_percents
+  alert_pubsub_topic          = var.alert_pubsub_topic
+  budget_amount               = var.budget_amount
 
   activate_apis                      = ["accesscontextmanager.googleapis.com"]
   vpc_service_control_attach_enabled = "true"

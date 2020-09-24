@@ -24,6 +24,9 @@ module "floating_project" {
   folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "production"
+  alert_spent_percents        = var.alert_spent_percents
+  alert_pubsub_topic          = var.alert_pubsub_topic
+  budget_amount               = var.budget_amount
 
   # Metadata
   project_prefix    = "sample-floating"

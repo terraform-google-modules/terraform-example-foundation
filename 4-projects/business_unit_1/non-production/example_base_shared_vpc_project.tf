@@ -23,6 +23,9 @@ module "base_shared_vpc_project" {
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "non-production"
   vpc_type                    = "base"
+  alert_spent_percents        = var.alert_spent_percents
+  alert_pubsub_topic          = var.alert_pubsub_topic
+  budget_amount               = var.budget_amount
 
   # Metadata
   project_prefix    = "sample-base"

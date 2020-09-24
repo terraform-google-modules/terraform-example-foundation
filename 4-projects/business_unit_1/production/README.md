@@ -8,6 +8,7 @@
 | env\_code | A short form of the environment field | string | `"p"` | no |
 | org\_id | The organization id for the associated services | string | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
+| peering\_module\_depends\_on | List of modules or resources peering module depends on. | list | `<list>` | no |
 | perimeter\_name | Access context manager service perimeter name to attach the restricted svpc project. | string | n/a | yes |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform | string | n/a | yes |

@@ -56,3 +56,9 @@ variable "perimeter_name" {
   description = "Access context manager service perimeter name to attach the restricted svpc project."
   type        = string
 }
+
+variable "peering_module_depends_on" {
+  description = "List of modules or resources peering module depends on."
+  type        = list
+  default     = []
+}

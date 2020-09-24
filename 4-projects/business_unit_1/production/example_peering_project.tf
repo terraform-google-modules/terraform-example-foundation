@@ -56,4 +56,6 @@ module "peering" {
   prefix        = "bu1-p"
   local_network = module.peering_network.network_self_link
   peer_network  = data.google_compute_network.shared_vpc.self_link
+
+  module_depends_on = var.peering_module_depends_on
 }

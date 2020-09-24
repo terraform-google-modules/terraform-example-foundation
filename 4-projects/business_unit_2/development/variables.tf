@@ -56,3 +56,21 @@ variable "peering_module_depends_on" {
   type        = list
   default     = []
 }
+
+variable "firewall_enable_logging" {
+  type        = bool
+  description = "Toggle firewall logging for VPC Firewalls."
+  default     = true
+}
+
+variable "optional_fw_rules_enabled" {
+  type        = bool
+  description = "Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges."
+  default     = false
+}
+
+variable "windows_activation_enabled" {
+  type        = bool
+  description = "Enable Windows license activation for Windows workloads."
+  default     = false
+}

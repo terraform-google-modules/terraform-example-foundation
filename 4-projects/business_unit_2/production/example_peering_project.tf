@@ -78,7 +78,7 @@ module "peering" {
 
 resource "google_compute_firewall" "deny_all_egress" {
   name      = "fw-p-peering-base-65535-e-p-all-all-tcp-udp"
-  network   = "vpc-p-peering-base"
+  network   = module.peering_network.network_name
   project   = module.peering_project.project_id
   direction = "EGRESS"
   priority  = 65535
@@ -107,7 +107,7 @@ resource "google_compute_firewall" "deny_all_egress" {
 
 resource "google_compute_firewall" "allow_private_api_egress" {
   name      = "fw-p-peering-base-65534-e-a-allow-google-apis-all-tcp-443"
-  network   = "vpc-p-peering-base"
+  network   = module.peering_network.network_name
   project   = module.peering_project.project_id
   direction = "EGRESS"
   priority  = 65534
@@ -141,7 +141,7 @@ resource "google_compute_firewall" "allow_private_api_egress" {
 resource "google_compute_firewall" "allow_iap_ssh" {
   count   = var.optional_fw_rules_enabled ? 1 : 0
   name    = "fw-p-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
-  network = "vpc-p-peering-base"
+  network = module.peering_network.network_name
   project = module.peering_project.project_id
 
   dynamic "log_config" {
@@ -169,7 +169,7 @@ resource "google_compute_firewall" "allow_iap_ssh" {
 resource "google_compute_firewall" "allow_iap_rdp" {
   count   = var.optional_fw_rules_enabled ? 1 : 0
   name    = "fw-p-peering-base-1000-i-a-all-allow-iap-rdp-tcp-3389"
-  network = "vpc-p-peering-base"
+  network = module.peering_network.network_name
   project = module.peering_project.project_id
 
   dynamic "log_config" {
@@ -197,7 +197,7 @@ resource "google_compute_firewall" "allow_iap_rdp" {
 resource "google_compute_firewall" "allow_windows_activation" {
   count     = var.windows_activation_enabled ? 1 : 0
   name      = "fw-p-peering-base-0-e-a-allow-win-activation-all-tcp-1688"
-  network   = "vpc-p-peering-base"
+  network   = module.peering_network.network_name
   project   = module.peering_project.project_id
   direction = "EGRESS"
   priority  = 0
@@ -226,7 +226,7 @@ resource "google_compute_firewall" "allow_windows_activation" {
 resource "google_compute_firewall" "allow_lb" {
   count   = var.optional_fw_rules_enabled ? 1 : 0
   name    = "fw-p-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
-  network = "vpc-p-peering-base"
+  network = module.peering_network.network_name
   project = module.peering_project.project_id
 
   dynamic "log_config" {

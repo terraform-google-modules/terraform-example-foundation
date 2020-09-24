@@ -62,6 +62,54 @@ variable "firewall_enable_logging" {
   default     = true
 }
 
+variable "dns_enable_inbound_forwarding" {
+  type        = bool
+  description = "Toggle inbound query forwarding for VPC DNS."
+  default     = true
+}
+
+variable "windows_activation_enabled" {
+  type        = bool
+  description = "Enable Windows license activation for Windows workloads."
+  default     = false
+}
+
+variable "nat_enabled" {
+  type        = bool
+  description = "Toggle creation of NAT cloud router."
+  default     = false
+}
+
+variable "nat_bgp_asn" {
+  type        = number
+  description = "BGP ASN for first NAT cloud routes."
+  default     = 64514
+}
+
+variable "nat_num_addresses_region1" {
+  type        = number
+  description = "Number of external IPs to reserve for first Cloud NAT."
+  default     = 2
+}
+
+variable "nat_num_addresses_region2" {
+  type        = number
+  description = "Number of external IPs to reserve for second Cloud NAT."
+  default     = 2
+}
+
+variable "nat_num_addresses" {
+  type        = number
+  description = "Number of external IPs to reserve for Cloud NAT."
+  default     = 2
+}
+
+variable "optional_fw_rules_enabled" {
+  type        = bool
+  description = "Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges."
+  default     = false
+}
+
 variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string

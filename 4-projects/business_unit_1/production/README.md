@@ -20,6 +20,7 @@
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | base\_shared\_vpc\_project | Project sample base project. |
 | floating\_project | Project sample floating project. |
+| peering\_complete | Output to be used as a module dependency. |
 | restricted\_enabled\_apis | Activated APIs. |
 | restricted\_shared\_vpc\_project | Project sample restricted project id. |
 | restricted\_shared\_vpc\_project\_number | Project sample restricted project. |

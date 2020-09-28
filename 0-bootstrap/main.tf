@@ -63,7 +63,7 @@ module "seed_bootstrap" {
 
   default_region = module.constants.values.default_region
 
-  org_project_creators = module.constants.values.bootstrap.org_project_creators
+  org_project_creators = lookup(module.constants.values.bootstrap, "org_project_creators", [])
 
   sa_enable_impersonation = true
   skip_gcloud_download    = true

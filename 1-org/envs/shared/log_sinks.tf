@@ -15,8 +15,8 @@
  */
 
 locals {
-  parent_resource_id   = var.parent_folder != "" ? var.parent_folder : var.org_id
-  parent_resource_type = var.parent_folder != "" ? "folder" : "organization"
+  parent_resource_id   = module.constants.deploy_at_root ? module.constants.values.org_id : module.constants.values.parent_folder
+  parent_resource_type = module.constants.deploy_at_root ? "organization": "folder"
   all_logs_filter      = <<EOF
     logName: /logs/cloudaudit.googleapis.com%2Factivity OR
     logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
@@ -117,5 +117,5 @@ resource "google_bigquery_dataset" "billing_dataset" {
   dataset_id    = "billing_data"
   project       = module.org_billing_logs.project_id
   friendly_name = "GCP Billing Data"
-  location      = var.default_region
+  location      = module.constants.values.default_region
 }

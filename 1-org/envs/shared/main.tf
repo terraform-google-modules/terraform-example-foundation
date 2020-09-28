@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-/******************************************
-  Top level folders
- *****************************************/
-
-resource "google_folder" "common" {
-  display_name = "fldr-common"
-  parent       = module.constants.parent
+/*************************************************
+  Import Constants.
+*************************************************/
+module "constants" {
+  source = "../../../modules/constants"
 }

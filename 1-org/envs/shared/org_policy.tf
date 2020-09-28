@@ -15,9 +15,8 @@
  */
 
 locals {
-  organization_id = var.parent_folder != "" ? null : var.org_id
-  folder_id       = var.parent_folder != "" ? var.parent_folder : null
-  policy_for      = var.parent_folder != "" ? "folder" : "organization"
+  organization_id = module.constants.deploy_at_root ? module.constants.values.org_id : null
+  folder_id       = module.constants.deploy_at_root ? null : module.constants.values.parent_folder
 }
 
 
@@ -30,7 +29,7 @@ module "org_disable_nested_virtualization" {
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
-  policy_for      = local.policy_for
+  policy_for      = local.parent_resource_type
   policy_type     = "boolean"
   enforce         = "true"
   constraint      = "constraints/compute.disableNestedVirtualization"
@@ -41,7 +40,7 @@ module "org_disable_serial_port_access" {
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
-  policy_for      = local.policy_for
+  policy_for      = local.parent_resource_type
   policy_type     = "boolean"
   enforce         = "true"
   constraint      = "constraints/compute.disableSerialPortAccess"
@@ -52,7 +51,7 @@ module "org_compute_disable_guest_attributes_access" {
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
-  policy_for      = local.policy_for
+  policy_for      = local.parent_resource_type
   policy_type     = "boolean"
   enforce         = "true"
   constraint      = "constraints/compute.disableGuestAttributesAccess"
@@ -63,7 +62,7 @@ module "org_vm_external_ip_access" {
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
-  policy_for      = local.policy_for
+  policy_for      = local.parent_resource_type
   policy_type     = "list"
   enforce         = "true"
   constraint      = "constraints/compute.vmExternalIpAccess"
@@ -74,7 +73,7 @@ module "org_skip_default_network" {
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
-  policy_for      = local.policy_for
+  policy_for      = local.parent_resource_type
   policy_type     = "boolean"
   enforce         = "true"
   constraint      = "constraints/compute.skipDefaultNetworkCreation"
@@ -85,7 +84,7 @@ module "org_shared_vpc_lien_removal" {
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
-  policy_for      = local.policy_for
+  policy_for      = local.parent_resource_type
   policy_type     = "boolean"
   enforce         = "true"
   constraint      = "constraints/compute.restrictXpnProjectLienRemoval"
@@ -100,7 +99,7 @@ module "org_cloudsql_external_ip_access" {
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
-  policy_for      = local.policy_for
+  policy_for      = local.parent_resource_type
   policy_type     = "boolean"
   enforce         = "true"
   constraint      = "constraints/sql.restrictPublicIp"
@@ -115,8 +114,8 @@ module "org_domain_restricted_sharing" {
   version          = "~> 3.0"
   organization_id  = local.organization_id
   folder_id        = local.folder_id
-  policy_for       = local.policy_for
-  domains_to_allow = var.domains_to_allow
+  policy_for       = local.parent_resource_type
+  domains_to_allow = module.constants.values.domains_to_allow
 }
 
 module "org_disable_sa_key_creation" {
@@ -124,7 +123,7 @@ module "org_disable_sa_key_creation" {
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
-  policy_for      = local.policy_for
+  policy_for      = local.parent_resource_type
   policy_type     = "boolean"
   enforce         = "true"
   constraint      = "constraints/iam.disableServiceAccountKeyCreation"
@@ -139,7 +138,7 @@ module "org_enforce_bucket_level_access" {
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
-  policy_for      = local.policy_for
+  policy_for      = local.parent_resource_type
   policy_type     = "boolean"
   enforce         = "true"
   constraint      = "constraints/storage.uniformBucketLevelAccess"
@@ -151,6 +150,6 @@ module "org_enforce_bucket_level_access" {
 
 resource "google_access_context_manager_access_policy" "access_policy" {
   count  = var.create_access_context_manager_access_policy ? 1 : 0
-  parent = "organizations/${var.org_id}"
+  parent = "organizations/${module.constants.values.org_id}"
   title  = "default policy"
 }

@@ -19,9 +19,13 @@ locals {
     org_id          = "816421441114"
     billing_account = "018E0A-48857B-79EB94"
 
+    domains_to_allow = ["clearify.co"]
+
     groups = {
       org_admins     = "test-gcp-org-admins@test.infra.cft.tips"
       billing_admins = "test-gcp-billing-admins@test.infra.cft.tips"
+      billing_data_users = "test-gcp-billing-admins@test.infra.cft.tips"
+      audit_data_users = "test-gcp-billing-admins@test.infra.cft.tips"
     }
 
     default_region = "us-east4"

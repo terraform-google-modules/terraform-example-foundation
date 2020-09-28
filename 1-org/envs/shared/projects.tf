@@ -25,8 +25,8 @@ module "org_audit_logs" {
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
   name                        = "prj-c-logging"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
+  org_id                      = module.constants.values.org_id
+  billing_account             = module.constants.values.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
@@ -52,8 +52,8 @@ module "org_billing_logs" {
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
   name                        = "prj-c-billing-logs"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
+  org_id                      = module.constants.values.org_id
+  billing_account             = module.constants.values.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
@@ -83,8 +83,8 @@ module "org_secrets" {
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
   name                        = "prj-c-secrets"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
+  org_id                      = module.constants.values.org_id
+  billing_account             = module.constants.values.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
@@ -114,8 +114,8 @@ module "interconnect" {
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
   name                        = "prj-c-interconnect"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
+  org_id                      = module.constants.values.org_id
+  billing_account             = module.constants.values.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
@@ -145,8 +145,8 @@ module "scc_notifications" {
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
   name                        = "prj-c-scc"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
+  org_id                      = module.constants.values.org_id
+  billing_account             = module.constants.values.billing_account
   folder_id                   = google_folder.common.id
   activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com"]
   skip_gcloud_download        = var.skip_gcloud_download
@@ -176,8 +176,8 @@ module "dns_hub" {
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
   name                        = "prj-c-dns-hub"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
+  org_id                      = module.constants.values.org_id
+  billing_account             = module.constants.values.billing_account
   folder_id                   = google_folder.common.id
   skip_gcloud_download        = var.skip_gcloud_download
 

@@ -14,39 +14,9 @@
  * limitations under the License.
  */
 
-variable "org_id" {
-  description = "The organization id for the associated services"
-  type        = string
-}
-
-variable "billing_account" {
-  description = "The ID of the billing account to associate this project with"
-  type        = string
-}
-
 variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform."
   type        = string
-}
-
-variable "default_region" {
-  description = "Default region for BigQuery resources."
-  type        = string
-}
-
-variable "billing_data_users" {
-  description = "G Suite or Cloud Identity group that have access to billing data set."
-  type        = string
-}
-
-variable "audit_data_users" {
-  description = "G Suite or Cloud Identity group that have access to audit logs."
-  type        = string
-}
-
-variable "domains_to_allow" {
-  description = "The list of domains to allow users from in IAM."
-  type        = list(string)
 }
 
 variable "audit_logs_table_expiration_ms" {

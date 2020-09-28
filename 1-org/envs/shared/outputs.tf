@@ -15,7 +15,7 @@
  */
 
 output "org_id" {
-  value       = var.org_id
+  value       = module.constants.values.org_id
   description = "The organization id"
 }
 
@@ -70,7 +70,7 @@ output "dns_hub_project_id" {
 }
 
 output "domains_to_allow" {
-  value       = var.domains_to_allow
+  value       = module.constants.values.domains_to_allow
   description = "The list of domains to allow users from in IAM."
 }
 

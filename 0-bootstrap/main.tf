@@ -31,10 +31,17 @@ provider "random" {
 }
 
 /*************************************************
+  Import Constants.
+*************************************************/
+module "constants" {
+  source = "../modules/constants"
+}
+
+/*************************************************
   Bootstrap GCP Organization.
 *************************************************/
 locals {
-  parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+  parent = module.constants.deploy_at_root ? "organizations/${module.constants.values.org_id}" : "folders/${module.constants.values.parent_folder}"
 }
 
 resource "google_folder" "bootstrap" {
@@ -43,18 +50,24 @@ resource "google_folder" "bootstrap" {
 }
 
 module "seed_bootstrap" {
-  source                  = "terraform-google-modules/bootstrap/google"
-  version                 = "~> 1.3"
-  org_id                  = var.org_id
-  folder_id               = google_folder.bootstrap.id
-  billing_account         = var.billing_account
-  group_org_admins        = var.group_org_admins
-  group_billing_admins    = var.group_billing_admins
-  default_region          = var.default_region
-  org_project_creators    = var.org_project_creators
+  source          = "terraform-google-modules/bootstrap/google"
+  version         = "~> 1.3"
+  org_id          = module.constants.values.org_id
+  billing_account = module.constants.values.billing_account
+
+  folder_id     = google_folder.bootstrap.id
+  parent_folder = module.constants.deploy_at_root ? "" : local.parent
+
+  group_org_admins     = module.constants.values.groups.org_admins
+  group_billing_admins = module.constants.values.groups.billing_admins
+
+  default_region = module.constants.values.default_region
+
+  org_project_creators = module.constants.values.bootstrap.org_project_creators
+
   sa_enable_impersonation = true
-  parent_folder           = var.parent_folder == "" ? "" : local.parent
-  skip_gcloud_download    = var.skip_gcloud_download
+  skip_gcloud_download    = true
+
   project_labels = {
     environment       = "bootstrap"
     application_name  = "seed-bootstrap"
@@ -101,25 +114,32 @@ module "seed_bootstrap" {
 }
 
 resource "google_billing_account_iam_member" "tf_billing_admin" {
-  billing_account_id = var.billing_account
+  billing_account_id = module.constants.values.billing_account
   role               = "roles/billing.admin"
   member             = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
 }
 
 // Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 module "cloudbuild_bootstrap" {
-  source                    = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
-  version                   = "~> 1.3"
-  org_id                    = var.org_id
-  folder_id                 = google_folder.bootstrap.id
-  billing_account           = var.billing_account
-  group_org_admins          = var.group_org_admins
-  default_region            = var.default_region
-  terraform_sa_email        = module.seed_bootstrap.terraform_sa_email
-  terraform_sa_name         = module.seed_bootstrap.terraform_sa_name
-  terraform_state_bucket    = module.seed_bootstrap.gcs_bucket_tfstate
-  sa_enable_impersonation   = true
-  skip_gcloud_download      = var.skip_gcloud_download
+  source  = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
+  version = "~> 1.3"
+
+  org_id          = module.constants.values.org_id
+  billing_account = module.constants.values.billing_account
+
+  folder_id = google_folder.bootstrap.id
+
+  group_org_admins = module.constants.values.groups.org_admins
+
+  default_region = module.constants.values.default_region
+
+  terraform_sa_email     = module.seed_bootstrap.terraform_sa_email
+  terraform_sa_name      = module.seed_bootstrap.terraform_sa_name
+  terraform_state_bucket = module.seed_bootstrap.gcs_bucket_tfstate
+
+  sa_enable_impersonation = true
+  skip_gcloud_download    = true
+
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
 

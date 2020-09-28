@@ -21,7 +21,6 @@ If you are using the `jenkins_bootstrap` sub-module, please see [README-Jenkins]
 ## 0-bootstrap usage to deploy Cloud Build
 
 1. Change into 0-bootstrap folder
-1. Copy tfvars by running `cp terraform.example.tfvars terraform.tfvars` and update `terraform.tfvars` with values from your environment.
 1. Run `terraform init`
 1. Run `terraform plan` and review output
 1. Run `terraform apply`

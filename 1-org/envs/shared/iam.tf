@@ -18,6 +18,22 @@
   Audit Logs - IAM
 *****************************************/
 
+resource "google_organization_iam_audit_config" "config" {
+  count = var.data_access_logs_enabled ? 1 : 0
+  org_id  = var.org_id
+  service = "allServices"
+
+  audit_log_config {
+    log_type = "DATA_READ"
+  }
+  audit_log_config {
+    log_type = "DATA_WRITE"
+  }
+  audit_log_config {
+    log_type = "ADMIN_READ"
+  }
+}
+
 resource "google_project_iam_member" "audit_log_bq_user" {
   project = module.org_audit_logs.project_id
   role    = "roles/bigquery.user"

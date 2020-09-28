@@ -19,7 +19,7 @@
 *****************************************/
 
 resource "google_organization_iam_audit_config" "config" {
-  count = var.data_access_logs_enabled ? 1 : 0
+  count   = var.data_access_logs_enabled ? 1 : 0
   org_id  = var.org_id
   service = "allServices"
 

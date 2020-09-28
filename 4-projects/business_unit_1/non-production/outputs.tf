@@ -29,6 +29,11 @@ output "peering_project" {
   value       = module.peering_project.project_id
 }
 
+output "peering_network" {
+  description = "Peer network peering resource."
+  value       = module.peering.peer_network_peering
+}
+
 output "restricted_shared_vpc_project" {
   description = "Project sample restricted project id."
   value       = module.restricted_shared_vpc_project.project_id

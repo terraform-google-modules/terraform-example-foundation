@@ -14,33 +14,45 @@
 
 dev_bu1_project_base = attribute('dev_bu1_project_base')
 dev_bu1_project_floating = attribute('dev_bu1_project_floating')
+dev_bu1_project_peering = attribute('dev_bu1_project_peering')
+dev_bu1_network_peering = attribute('dev_bu1_network_peering')
 dev_bu1_project_restricted_id = attribute('dev_bu1_project_restricted')
 dev_bu1_project_restricted_number = attribute('dev_bu1_project_restricted_number')
 dev_bu1_restricted_vpc_service_control_perimeter_name = attribute('dev_bu1_restricted_vpc_service_control_perimeter_name')
 dev_bu2_project_base = attribute('dev_bu2_project_base')
 dev_bu2_project_floating = attribute('dev_bu2_project_floating')
+dev_bu2_project_peering = attribute('dev_bu2_project_peering')
+dev_bu2_network_peering = attribute('dev_bu2_network_peering')
 dev_bu2_project_restricted_id = attribute('dev_bu2_project_restricted')
 dev_bu2_project_restricted_number = attribute('dev_bu2_project_restricted_number')
 dev_bu2_restricted_vpc_service_control_perimeter_name = attribute('dev_bu2_restricted_vpc_service_control_perimeter_name')
 
 nonprod_bu1_project_base = attribute('nonprod_bu1_project_base')
 nonprod_bu1_project_floating = attribute('nonprod_bu1_project_floating')
+nonprod_bu1_project_peering = attribute('nonprod_bu1_project_peering')
+nonprod_bu1_network_peering = attribute('nonprod_bu1_network_peering')
 nonprod_bu1_project_restricted_id = attribute('nonprod_bu1_project_restricted')
 nonprod_bu1_project_restricted_number = attribute('nonprod_bu1_project_restricted_number')
 nonprod_bu1_restricted_vpc_service_control_perimeter_name = attribute('nonprod_bu1_restricted_vpc_service_control_perimeter_name')
 nonprod_bu2_project_base = attribute('nonprod_bu2_project_base')
 nonprod_bu2_project_floating = attribute('nonprod_bu2_project_floating')
+nonprod_bu2_project_peering = attribute('nonprod_bu2_project_peering')
+nonprod_bu2_network_peering = attribute('nonprod_bu2_network_peering')
 nonprod_bu2_project_restricted_id = attribute('nonprod_bu2_project_restricted')
 nonprod_bu2_project_restricted_number = attribute('nonprod_bu2_project_restricted_number')
 nonprod_bu2_restricted_vpc_service_control_perimeter_name = attribute('nonprod_bu2_restricted_vpc_service_control_perimeter_name')
 
 prod_bu1_project_base = attribute('prod_bu1_project_base')
 prod_bu1_project_floating = attribute('prod_bu1_project_floating')
+prod_bu1_project_peering = attribute('prod_bu1_project_peering')
+prod_bu1_network_peering = attribute('prod_bu1_network_peering')
 prod_bu1_project_restricted_id = attribute('prod_bu1_project_restricted')
 prod_bu1_project_restricted_number = attribute('prod_bu1_project_restricted_number')
 prod_bu1_restricted_vpc_service_control_perimeter_name = attribute('prod_bu1_restricted_vpc_service_control_perimeter_name')
 prod_bu2_project_base = attribute('prod_bu2_project_base')
 prod_bu2_project_floating = attribute('prod_bu2_project_floating')
+prod_bu2_project_peering = attribute('prod_bu2_project_peering')
+prod_bu2_network_peering = attribute('prod_bu2_network_peering')
 prod_bu2_project_restricted_id = attribute('prod_bu2_project_restricted')
 prod_bu2_project_restricted_number = attribute('prod_bu2_project_restricted_number')
 prod_bu2_restricted_vpc_service_control_perimeter_name = attribute('prod_bu2_restricted_vpc_service_control_perimeter_name')
@@ -80,10 +92,22 @@ floating_projects_id = {
   'p' => { 'bu1' => prod_bu1_project_floating, 'bu2' => prod_bu2_project_floating }
 }
 
+peering_projects_id = {
+  'd' => { 'bu1' => dev_bu1_project_peering, 'bu2' => dev_bu2_project_peering },
+  'n' => { 'bu1' => nonprod_bu1_project_peering, 'bu2' => nonprod_bu2_project_peering },
+  'p' => { 'bu1' => prod_bu1_project_peering, 'bu2' => prod_bu2_project_peering }
+}
+
 restricted_projects_number = {
   'd' => { 'bu1' => dev_bu1_project_restricted_number, 'bu2' => dev_bu2_project_restricted_number },
   'n' => { 'bu1' => nonprod_bu1_project_restricted_number, 'bu2' => nonprod_bu2_project_restricted_number },
   'p' => { 'bu1' => prod_bu1_project_restricted_number, 'bu2' => prod_bu2_project_restricted_number }
+}
+
+peering_networks = {
+  'd' => { 'bu1' => dev_bu1_network_peering, 'bu2' => dev_bu2_network_peering },
+  'n' => { 'bu1' => nonprod_bu1_network_peering, 'bu2' => nonprod_bu2_network_peering },
+  'p' => { 'bu1' => prod_bu1_network_peering, 'bu2' => prod_bu2_network_peering }
 }
 
 control 'gcloud-projects' do
@@ -192,6 +216,29 @@ control 'gcloud-projects' do
         describe "Verifies if #{floating_projects_id[environment_code][business_unit]}" do
           it 'is NOT attached to a host project' do
             expect(data).to be_empty
+          end
+        end
+      end
+
+      describe command("gcloud compute networks peerings list --project #{peering_projects_id[environment_code][business_unit]} --format=json") do
+        its(:exit_status) { should eq 0 }
+        its(:stderr) { should eq '' }
+
+        let(:data) do
+          if subject.exit_status.zero?
+            JSON.parse(subject.stdout)
+          else
+            {}
+          end
+        end
+
+        describe "Verifies if #{peering_projects_id[environment_code][business_unit]}" do
+          it 'has a network' do
+            expect(data).to_not be_empty
+          end
+
+          it "has a peering with #{peering_networks[environment_code][business_unit]['network']}" do
+            expect(data[0]['peerings'][0]['network'].should eq peering_networks[environment_code][business_unit]['network'])
           end
         end
       end

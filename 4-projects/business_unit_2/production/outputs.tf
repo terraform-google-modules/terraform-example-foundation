@@ -24,6 +24,16 @@ output "floating_project" {
   value       = module.floating_project.project_id
 }
 
+output "peering_project" {
+  description = "Project sample peering project id."
+  value       = module.peering_project.project_id
+}
+
+output "peering_network" {
+  description = "Peer network peering resource."
+  value       = module.peering.peer_network_peering
+}
+
 output "restricted_shared_vpc_project" {
   description = "Project sample restricted project id."
   value       = module.restricted_shared_vpc_project.project_id
@@ -47,4 +57,9 @@ output "restricted_enabled_apis" {
 output "access_context_manager_policy_id" {
   description = "Access Context Manager Policy ID."
   value       = var.access_context_manager_policy_id
+}
+
+output "peering_complete" {
+  description = "Output to be used as a module dependency."
+  value       = module.peering.complete
 }

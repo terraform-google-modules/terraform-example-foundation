@@ -53,6 +53,7 @@ module "projects_bu2_dev" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.dev_restricted_service_perimeter_name
+  peering_module_depends_on        = [module.projects_bu1_dev.peering_complete]
 }
 
 module "projects_bu2_nonprod" {
@@ -63,6 +64,7 @@ module "projects_bu2_nonprod" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.nonprod_restricted_service_perimeter_name
+  peering_module_depends_on        = [module.projects_bu1_nonprod.peering_complete]
 }
 
 
@@ -74,4 +76,5 @@ module "projects_bu2_prod" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.prod_restricted_service_perimeter_name
+  peering_module_depends_on        = [module.projects_bu1_prod.peering_complete]
 }

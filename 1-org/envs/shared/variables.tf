@@ -49,10 +49,16 @@ variable "domains_to_allow" {
   type        = list(string)
 }
 
-variable "audit_logs_table_expiration_ms" {
-  description = "Period before tables expire for all audit logs in milliseconds. Default is 30 days."
+variable "bigquery_audit_logs_expiration_days" {
+  description = "Days to retain logs in BigQuery."
   type        = number
-  default     = 2592000000
+  default     = 365 # 1 year
+}
+
+variable "storage_audit_logs_expiration_days" {
+  description = "Days to retain logs in GCS."
+  type        = number
+  default     = 7*365 # 7 years
 }
 
 variable "scc_notification_name" {

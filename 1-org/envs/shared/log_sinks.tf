@@ -34,7 +34,8 @@ resource "random_string" "suffix" {
 }
 
 /******************************************
-  Send logs to BigQury
+  Send logs to BigQuery.
+  These logs should be used for general querying beyond Stackdriver.
 *****************************************/
 
 module "log_export_to_biqquery" {
@@ -60,6 +61,7 @@ module "bigquery_destination" {
 
 /******************************************
   Send logs to Storage
+  These logs should be used for long term retention for compliance requirements.
 *****************************************/
 
 module "log_export_to_storage" {

@@ -108,20 +108,21 @@ resource "google_billing_account_iam_member" "tf_billing_admin" {
 
 // Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 module "cloudbuild_bootstrap" {
-  source                    = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
-  version                   = "~> 1.3"
-  org_id                    = var.org_id
-  folder_id                 = google_folder.bootstrap.id
-  billing_account           = var.billing_account
-  group_org_admins          = var.group_org_admins
-  default_region            = var.default_region
-  terraform_sa_email        = module.seed_bootstrap.terraform_sa_email
-  terraform_sa_name         = module.seed_bootstrap.terraform_sa_name
-  terraform_state_bucket    = module.seed_bootstrap.gcs_bucket_tfstate
-  sa_enable_impersonation   = true
-  skip_gcloud_download      = var.skip_gcloud_download
-  cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
-  cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
+  source                      = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
+  version                     = "~> 1.3"
+  org_id                      = var.org_id
+  folder_id                   = google_folder.bootstrap.id
+  billing_account             = var.billing_account
+  group_org_admins            = var.group_org_admins
+  default_region              = var.default_region
+  terraform_sa_email          = module.seed_bootstrap.terraform_sa_email
+  terraform_sa_name           = module.seed_bootstrap.terraform_sa_name
+  terraform_state_bucket      = module.seed_bootstrap.gcs_bucket_tfstate
+  terraform_validator_release = "2020-09-24"
+  sa_enable_impersonation     = true
+  skip_gcloud_download        = var.skip_gcloud_download
+  cloudbuild_plan_filename    = "cloudbuild-tf-plan.yaml"
+  cloudbuild_apply_filename   = "cloudbuild-tf-apply.yaml"
 
   activate_apis = [
     "serviceusage.googleapis.com",

@@ -77,7 +77,7 @@ control 'gcp_networks' do
         region2_router2 = "#{region2_router2}-cr8"
       end
 
-      fw_deny_all_egress = "fw-#{environment_code}-shared-#{type}-65535-e-d-all-all-tcp-udp"
+      fw_deny_all_egress = "fw-#{environment_code}-shared-#{type}-65535-e-d-all-all-all"
       fw_allow_api_egress = "fw-#{environment_code}-shared-#{type}-65534-e-a-allow-google-apis-all-tcp-443"
 
       describe google_dns_managed_zone(

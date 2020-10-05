@@ -17,14 +17,7 @@
 locals {
   parent_resource_id   = var.parent_folder != "" ? var.parent_folder : var.org_id
   parent_resource_type = var.parent_folder != "" ? "folder" : "organization"
-  all_logs_filter      = <<EOF
-    logName: /logs/cloudaudit.googleapis.com%2Factivity OR
-    logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
-    logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR
-    logName: /logs/compute.googleapis.com%2Fvpc_flows OR
-    logName: /logs/compute.googleapis.com%2Ffirewall OR
-    logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
-EOF
+  all_logs_filter      = ""
 }
 
 resource "random_string" "suffix" {

@@ -19,7 +19,7 @@
   Mandatory firewall rules
  *****************************************/
 resource "google_compute_firewall" "deny_all_egress" {
-  name      = "fw-${var.environment_code}-shared-restricted-65535-e-d-all-all-tcp-udp"
+  name      = "fw-${var.environment_code}-shared-restricted-65535-e-d-all-all-all"
   network   = module.main.network_name
   project   = var.project_id
   direction = "EGRESS"
@@ -36,11 +36,7 @@ resource "google_compute_firewall" "deny_all_egress" {
   }
 
   deny {
-    protocol = "tcp"
-  }
-
-  deny {
-    protocol = "udp"
+    protocol = "all"
   }
 
   destination_ranges = ["0.0.0.0/0"]

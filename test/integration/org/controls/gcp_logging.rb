@@ -55,7 +55,7 @@ control 'gcp_logging' do
   ) do
     it { should exist }
     its('filter') do
-      should be_empty
+      should be_blank
     end
     its('include_children') { should cmp 'true' }
     its('destination') { should cmp "bigquery.googleapis.com/projects/#{org_audit_logs_project_id}/datasets/audit_logs" }
@@ -67,7 +67,7 @@ control 'gcp_logging' do
   ) do
     it { should exist }
     its('filter') do
-      should be_empty
+      should be_blank
     end
     its('include_children') { should cmp 'true' }
     its('destination') { should cmp "storage.googleapis.com/#{logs_export_storage_bucket_name}" }
@@ -79,7 +79,7 @@ control 'gcp_logging' do
   ) do
     it { should exist }
     its('filter') do
-      should be_empty
+      should be_blank
     end
     its('include_children') { should cmp 'true' }
     its('destination') { should cmp "pubsub.googleapis.com/projects/#{org_audit_logs_project_id}/topics/#{logs_export_pubsub_topic}" }

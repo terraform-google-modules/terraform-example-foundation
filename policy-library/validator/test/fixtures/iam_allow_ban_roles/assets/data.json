@@ -1,0 +1,35 @@
+[
+    {
+        "name": "//cloudresourcemanager.googleapis.com/projects/12345",
+        "asset_type": "cloudresourcemanager.googleapis.com/Project",
+        "iam_policy": {
+            "version": 1,
+            "etag": "CdWC1qPLfdw=",
+            "bindings": [
+                {
+                    "role": "roles/iam.serviceAccountUser",
+                    "members": [
+                        "user:bad@notgoogle.com",
+                        "serviceAccount:service-12345@notiam.gserviceaccount.com"
+                    ]
+                },
+                {
+                    "role": "roles/owner",
+                    "members": [
+                        "user:powerful@google.com",
+                        "group:admins@google.com",
+                        "user:evil@notgoogle.com"
+                    ]
+                },
+                {
+                    "role": "roles/viewer",
+                    "members": [
+                        "allUsers",
+                        "allAuthenticatedUsers",
+                        "user:okay@google.com"
+                    ]
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,12 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPAppengineLocationConstraintV1
+metadata:
+  name: allow_appengine_applications_in_australia_and_south_america
+spec:
+  severity: high
+  match:
+    target: ["organizations/**"]
+  parameters:
+    locations:
+    - "australia*"
+    - "southamerica*"

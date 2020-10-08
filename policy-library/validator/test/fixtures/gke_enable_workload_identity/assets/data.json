@@ -1,0 +1,383 @@
+[
+  {
+    "name": "//container.googleapis.com/projects/testproject/zones/us-central1-c/clusters/workloadidentity-enabled",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/1111111111",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "authenticatorGroupsConfig": {},
+        "clusterIpv4Cidr": "10.32.0.0/14",
+        "createTime": "2020-03-07T04:23:46+00:00",
+        "currentMasterVersion": "1.14.10-gke.17",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.14.10-gke.17",
+        "databaseEncryption": {
+          "state": "DECRYPTED"
+        },
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "35.238.1.191",
+        "initialClusterVersion": "1.14.10-gke.17",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/testproject/zones/us-central1-c/instanceGroupManagers/gke-workloadidentity-ena-default-pool-a62cc6f6-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.32.0.0/14",
+          "clusterIpv4CidrBlock": "10.32.0.0/14",
+          "clusterSecondaryRangeName": "gke-workloadidentity-enabled-pods-19f71452",
+          "servicesIpv4Cidr": "10.0.0.0/20",
+          "servicesIpv4CidrBlock": "10.0.0.0/20",
+          "servicesSecondaryRangeName": "gke-workloadidentity-enabled-services-19f71452",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-c",
+        "locations": [
+          "us-central1-c"
+        ],
+        "loggingService": "logging.googleapis.com/kubernetes",
+        "maintenancePolicy": {
+          "resourceVersion": "e3b0c442"
+        },
+        "masterAuthorizedNetworksConfig": {},
+        "monitoringService": "monitoring.googleapis.com/kubernetes",
+        "name": "workloadidentity-enabled",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/testproject/global/networks/default",
+          "subnetwork": "projects/testproject/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/monitoring",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default",
+              "shieldedInstanceConfig": {
+                "enableIntegrityMonitoring": true
+              },
+              "workloadMetadataConfig": {
+                "mode": "GKE_METADATA"
+              }
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/testproject/zones/us-central1-c/instanceGroupManagers/gke-workloadidentity-ena-default-pool-a62cc6f6-grp"
+            ],
+            "locations": [
+              "us-central1-c"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/testproject/zones/us-central1-c/clusters/workloadidentity-enabled/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.14.10-gke.17"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/testproject/zones/us-central1-c/clusters/workloadidentity-enabled",
+        "servicesIpv4Cidr": "10.0.0.0/20",
+        "shieldedNodes": {},
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "workloadIdentityConfig": {
+          "workloadPool": "testproject.svc.id.goog"
+        },
+        "zone": "us-central1-c"
+      }
+    },
+    "ancestors": [
+      "projects/1111111111",
+      "folders/11111111",
+      "organizations/11111111"
+    ]
+  },
+  {
+    "name": "//container.googleapis.com/projects/testproject/zones/us-central1-c/clusters/workloadidentity-disabled",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/1111111111",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "authenticatorGroupsConfig": {},
+        "clusterIpv4Cidr": "10.24.0.0/14",
+        "createTime": "2020-03-07T04:24:11+00:00",
+        "currentMasterVersion": "1.14.10-gke.17",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.14.10-gke.17",
+        "databaseEncryption": {
+          "state": "DECRYPTED"
+        },
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "34.70.118.78",
+        "initialClusterVersion": "1.14.10-gke.17",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/testproject/zones/us-central1-c/instanceGroupManagers/gke-workloadidentity-dis-default-pool-cc31d8dd-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.24.0.0/14",
+          "clusterIpv4CidrBlock": "10.24.0.0/14",
+          "clusterSecondaryRangeName": "gke-workloadidentity-disabled-pods-ad4bc069",
+          "servicesIpv4Cidr": "10.88.0.0/20",
+          "servicesIpv4CidrBlock": "10.88.0.0/20",
+          "servicesSecondaryRangeName": "gke-workloadidentity-disabled-services-ad4bc069",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-c",
+        "locations": [
+          "us-central1-c"
+        ],
+        "loggingService": "logging.googleapis.com/kubernetes",
+        "maintenancePolicy": {
+          "resourceVersion": "e3b0c442"
+        },
+        "masterAuthorizedNetworksConfig": {},
+        "monitoringService": "monitoring.googleapis.com/kubernetes",
+        "name": "workloadidentity-disabled",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/testproject/global/networks/default",
+          "subnetwork": "projects/testproject/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/monitoring",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default",
+              "shieldedInstanceConfig": {
+                "enableIntegrityMonitoring": true
+              }
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/testproject/zones/us-central1-c/instanceGroupManagers/gke-workloadidentity-dis-default-pool-cc31d8dd-grp"
+            ],
+            "locations": [
+              "us-central1-c"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/testproject/zones/us-central1-c/clusters/workloadidentity-disabled/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.14.10-gke.17"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/testproject/zones/us-central1-c/clusters/workloadidentity-disabled",
+        "servicesIpv4Cidr": "10.88.0.0/20",
+        "shieldedNodes": {},
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-central1-c"
+      }
+    },
+    "ancestors": [
+      "projects/1111111111",
+      "folders/11111111",
+      "organizations/11111111"
+    ]
+  },
+  {
+    "name": "//container.googleapis.com/projects/testproject/zones/us-central1-c/clusters/workloadidentity-enabled-beta",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/1111111111",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "authenticatorGroupsConfig": {},
+        "clusterIpv4Cidr": "10.32.0.0/14",
+        "createTime": "2020-03-07T04:23:46+00:00",
+        "currentMasterVersion": "1.14.10-gke.17",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.14.10-gke.17",
+        "databaseEncryption": {
+          "state": "DECRYPTED"
+        },
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "35.238.1.191",
+        "initialClusterVersion": "1.14.10-gke.17",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/testproject/zones/us-central1-c/instanceGroupManagers/gke-workloadidentity-ena-default-pool-a62cc6f6-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.32.0.0/14",
+          "clusterIpv4CidrBlock": "10.32.0.0/14",
+          "clusterSecondaryRangeName": "gke-workloadidentity-enabled-pods-19f71452",
+          "servicesIpv4Cidr": "10.0.0.0/20",
+          "servicesIpv4CidrBlock": "10.0.0.0/20",
+          "servicesSecondaryRangeName": "gke-workloadidentity-enabled-services-19f71452",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-c",
+        "locations": [
+          "us-central1-c"
+        ],
+        "loggingService": "logging.googleapis.com/kubernetes",
+        "maintenancePolicy": {
+          "resourceVersion": "e3b0c442"
+        },
+        "masterAuthorizedNetworksConfig": {},
+        "monitoringService": "monitoring.googleapis.com/kubernetes",
+        "name": "workloadidentity-enabled",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/testproject/global/networks/default",
+          "subnetwork": "projects/testproject/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/monitoring",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default",
+              "shieldedInstanceConfig": {
+                "enableIntegrityMonitoring": true
+              },
+              "workloadMetadataConfig": {
+                "mode": "GKE_METADATA"
+              }
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/testproject/zones/us-central1-c/instanceGroupManagers/gke-workloadidentity-ena-default-pool-a62cc6f6-grp"
+            ],
+            "locations": [
+              "us-central1-c"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/testproject/zones/us-central1-c/clusters/workloadidentity-enabled-beta/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.14.10-gke.17"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/testproject/zones/us-central1-c/clusters/workloadidentity-enabled-beta",
+        "servicesIpv4Cidr": "10.0.0.0/20",
+        "shieldedNodes": {},
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "workloadIdentityConfig": {
+          "identityNamespace": "testproject.svc.id.goog"
+        },
+        "zone": "us-central1-c"
+      }
+    },
+    "ancestors": [
+      "projects/1111111111",
+      "folders/11111111",
+      "organizations/11111111"
+    ]
+  }
+]

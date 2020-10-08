@@ -1,0 +1,162 @@
+[{
+  "name": "//cloudsql.googleapis.com/projects/noble-history-87417/instances/no-authorized-networks",
+  "asset_type": "sqladmin.googleapis.com/Instance",
+  "resource": {
+    "data": {
+      "settings": {
+        "activationPolicy": "ALWAYS",
+        "backupConfiguration": {
+          "binaryLogEnabled": true,
+          "enabled": true,
+          "kind": "sql#backupConfiguration",
+          "startTime": "08:00"
+        },
+        "dataDiskSizeGb": "50",
+        "dataDiskType": "PD_SSD",
+        "ipConfiguration": {
+          "ipv4Enabled": true,
+          "requireSsl": true
+        },
+        "kind": "sql#settings",
+        "locationPreference": {
+          "kind": "sql#locationPreference",
+          "zone": "us-central1-b"
+        },
+        "maintenanceWindow": {
+          "day": 6,
+          "hour": 10,
+          "kind": "sql#maintenanceWindow"
+        },
+        "pricingPlan": "PER_USE",
+        "replicationType": "SYNCHRONOUS",
+        "settingsVersion": "36",
+        "storageAutoResize": true,
+        "storageAutoResizeLimit": "0",
+        "tier": "db-n1-standard-1"
+      },
+      "state": "RUNNABLE"
+    }
+  }
+},
+{
+  "name": "//cloudsql.googleapis.com/projects/noble-history-87417/instances/authorized-networks-35",
+  "asset_type": "sqladmin.googleapis.com/Instance",
+  "resource": {
+    "data":{
+      "settings": {
+        "activationPolicy": "ALWAYS",
+        "backupConfiguration": {
+          "binaryLogEnabled": true,
+          "enabled": true,
+          "kind": "sql#backupConfiguration",
+          "startTime": "04:39"
+        },
+        "dataDiskSizeGb": "10",
+        "dataDiskType": "PD_HDD",
+        "databaseFlags": [
+          {
+            "name": "slow_query_log",
+            "value": "on"
+          },
+          {
+            "name": "general_log",
+            "value": "on"
+          },
+          {
+            "name": "log_output",
+            "value": "FILE"
+          }
+        ],
+        "ipConfiguration": {
+          "authorizedNetworks": [
+            {
+              "expirationTime": "1970-01-01T00:00:00Z",
+              "kind": "sql#aclEntry",
+              "value": "35.187.118.0/24"
+            }
+          ],
+          "ipv4Enabled": true,
+          "requireSsl": false
+        },
+        "kind": "sql#settings",
+        "locationPreference": {
+          "kind": "sql#locationPreference",
+          "zone": "europe-west1-b"
+        },
+        "maintenanceWindow": {
+          "day": 0,
+          "hour": 0,
+          "kind": "sql#maintenanceWindow"
+        },
+        "pricingPlan": "PACKAGE",
+        "replicationType": "SYNCHRONOUS",
+        "settingsVersion": "69",
+        "storageAutoResize": true,
+        "storageAutoResizeLimit": "0",
+        "tier": "db-g1-small"
+      },
+      "state": "RUNNABLE"
+    }
+  }
+},
+{
+  "name": "//cloudsql.googleapis.com/projects/noble-history-87417/instances/authorized-networks-0",
+  "asset_type": "sqladmin.googleapis.com/Instance",
+  "resource": {
+    "data":{
+      "settings": {
+        "activationPolicy": "ALWAYS",
+        "backupConfiguration": {
+          "binaryLogEnabled": true,
+          "enabled": true,
+          "kind": "sql#backupConfiguration",
+          "startTime": "04:39"
+        },
+        "dataDiskSizeGb": "10",
+        "dataDiskType": "PD_HDD",
+        "databaseFlags": [
+          {
+            "name": "slow_query_log",
+            "value": "on"
+          },
+          {
+            "name": "general_log",
+            "value": "on"
+          },
+          {
+            "name": "log_output",
+            "value": "FILE"
+          }
+        ],
+        "ipConfiguration": {
+          "authorizedNetworks": [
+            {
+              "expirationTime": "2020-01-01T00:00:00Z",
+              "kind": "sql#aclEntry",
+              "value": "0.0.0.0/0"
+            }
+          ],
+          "ipv4Enabled": true,
+          "requireSsl": false
+        },
+        "kind": "sql#settings",
+        "locationPreference": {
+          "kind": "sql#locationPreference",
+          "zone": "europe-west1-b"
+        },
+        "maintenanceWindow": {
+          "day": 0,
+          "hour": 0,
+          "kind": "sql#maintenanceWindow"
+        },
+        "pricingPlan": "PACKAGE",
+        "replicationType": "SYNCHRONOUS",
+        "settingsVersion": "69",
+        "storageAutoResize": true,
+        "storageAutoResizeLimit": "0",
+        "tier": "db-g1-small"
+      },
+      "state": "RUNNABLE"
+    }
+  }
+}]

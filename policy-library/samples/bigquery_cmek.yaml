@@ -1,0 +1,12 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPBigQueryCMEKEncryptionConstraintV1
+metadata:
+  name: gcp-bq-cmek-encryption-v1
+  annotations:
+    description: Checks if BigQuery datasets have a CMEK key set.
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - "organizations/**"
+  parameters: {}

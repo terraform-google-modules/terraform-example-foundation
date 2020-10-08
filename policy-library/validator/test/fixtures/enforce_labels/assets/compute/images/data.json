@@ -1,0 +1,190 @@
+[
+    {
+        "name": "//compute.googleapis.com/projects/my-own-project/global/images/test-valid-image",
+        "asset_type": "compute.googleapis.com/Image",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Image",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "archiveSizeBytes": "1709589952",
+                "creationTimestamp": "2019-05-15T09:00:22.657-07:00",
+                "diskSizeGb": "10",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "8858092298948413817",
+                "labelFingerprint": "bdw3YK9Nc14=",
+                "labels": {
+                    "image-label": "value",
+                    "label1": "label1-value",
+                    "label2": "label2-valueOK"
+                },
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "test-valid-image",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-own-project/global/images/test-image-1",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "sourceType": "RAW",
+                "status": "READY"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-own-project/global/images/test-invalid-image-missing-labels",
+        "asset_type": "compute.googleapis.com/Image",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Image",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "archiveSizeBytes": "1709589952",
+                "creationTimestamp": "2019-05-15T09:00:22.657-07:00",
+                "diskSizeGb": "10",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "8858092298948413817",
+                "labelFingerprint": "bdw3YK9Nc14=",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "test-invalid-image-missing-labels",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-own-project/global/images/test-image-1",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "sourceType": "RAW",
+                "status": "READY"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-own-project/global/images/test-invalid-image-missing-label1",
+        "asset_type": "compute.googleapis.com/Image",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Image",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "archiveSizeBytes": "1709589952",
+                "creationTimestamp": "2019-05-15T09:00:22.657-07:00",
+                "diskSizeGb": "10",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "8858092298948413817",
+                "labelFingerprint": "bdw3YK9Nc14=",
+                "labels": {
+                    "image-label": "value",
+                    "label2": "label2-valueOKTOO"
+                },
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "test-invalid-image-missing-label1",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-own-project/global/images/test-image-1",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "sourceType": "RAW",
+                "status": "READY"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-own-project/global/images/test-invalid-image-missing-label2",
+        "asset_type": "compute.googleapis.com/Image",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Image",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "archiveSizeBytes": "1709589952",
+                "creationTimestamp": "2019-05-15T09:00:22.657-07:00",
+                "diskSizeGb": "10",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "8858092298948413817",
+                "labelFingerprint": "bdw3YK9Nc14=",
+                "labels": {
+                    "image-label": "value",
+                    "label1": "label1-value"
+                },
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "test-invalid-image-missing-label2",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-own-project/global/images/test-image-1",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "sourceType": "RAW",
+                "status": "READY"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-own-project/global/images/test-invalid-image-label1-and-label2-bad-values",
+        "asset_type": "compute.googleapis.com/Image",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Image",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "archiveSizeBytes": "1709589952",
+                "creationTimestamp": "2019-05-15T09:00:22.657-07:00",
+                "diskSizeGb": "10",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "8858092298948413817",
+                "labelFingerprint": "bdw3YK9Nc14=",
+                "labels": {
+                    "image-label": "value",
+                    "label1": "label1-bad-value",
+                    "label2": "label2-bad-value"
+                },
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "test-invalid-image-label1-and-label2-bad-values",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-own-project/global/images/test-image-1",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "sourceType": "RAW",
+                "status": "READY"
+            }
+        }
+    }
+]

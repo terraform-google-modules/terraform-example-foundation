@@ -1,0 +1,9 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPNetworkRoutingConstraintV1
+metadata:
+  name: require_global_routing
+spec:
+  severity: high
+  match:
+    target: ["organizations/**"]
+  parameters: {}

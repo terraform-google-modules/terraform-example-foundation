@@ -1,0 +1,49 @@
+[
+  {
+    "name": "//compute.googleapis.com/projects/test-project/global/networks/global-example",
+    "asset_type": "compute.googleapis.com/Network",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Network",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/68478495408",
+      "data": {
+        "autoCreateSubnetworks": false,
+        "creationTimestamp": "2018-05-02T06:30:59.060-07:00",
+        "id": "5854901408696107900",
+        "name": "global-example",
+        "routingConfig": {
+          "routingMode": "GLOBAL"
+        },
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/test-project/global/networks/global-example",
+        "subnetwork": [
+          "https://www.googleapis.com/compute/v1/projects/tes-tproject/regions/us-east1/subnetworks/global-example-us-east1"
+        ]
+      }
+    }
+  },
+  {
+    "name": "//compute.googleapis.com/projects/test-project/global/networks/regional-example",
+    "asset_type": "compute.googleapis.com/Network",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Network",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/68478495408",
+      "data": {
+        "autoCreateSubnetworks": true,
+        "creationTimestamp": "2018-04-03T16:36:49.742-07:00",
+        "description": "Network with regional routing",
+        "id": "5854901408696107901",
+        "name": "regional-example",
+        "routingConfig": {
+          "routingMode": "REGIONAL"
+        },
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/test-project/global/networks/regional-example",
+        "subnetwork": [
+          "https://www.googleapis.com/compute/v1/projects/test-project/regions/us-east1/subnetworks/regional-example-us-east1"
+        ]
+      }
+    }
+  }
+]

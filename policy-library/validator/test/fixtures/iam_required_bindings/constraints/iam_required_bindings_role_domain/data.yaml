@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPIAMRequiredBindingsConstraintV1
+metadata:
+  name: require_owner_role
+  annotations:
+    description: All projects must have owner from at least the following domains
+spec:
+  severity: high
+  parameters:
+    role: roles/owner
+    members:
+    - "user:*@google.com"
+    - "group:*@google.com"
+    - "user:*@required-group.com"

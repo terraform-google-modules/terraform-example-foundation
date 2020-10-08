@@ -1,0 +1,97 @@
+[
+  {
+    "ancestors": [
+      "projects/449045403945",
+      "folders/889196584114",
+      "organizations/1082147662149"
+    ],
+    "asset_type": "compute.googleapis.com/Firewall",
+    "name": "//compute.googleapis.com/projects/test-shared-network/global/firewalls/bad",
+    "resource": {
+      "data": {
+        "creationTimestamp": "2019-04-26T00:09:33.666-07:00",
+        "denied": [
+          {
+            "IPProtocol": "icmp",
+            "ipProtocol": "icmp"
+          },
+          {
+            "IPProtocol": "udp",
+            "ipProtocol": "udp"
+          },
+          {
+            "IPProtocol": "tcp",
+            "ipProtocol": "tcp"
+          }
+        ],
+        "description": "",
+        "direction": "INGRESS",
+        "disabled": false,
+        "id": "4295329101938364482",
+        "logConfig": {
+          "enable": false
+        },
+        "name": "bad",
+        "network": "https://www.googleapis.com/compute/v1/projects/test-shared-network/global/networks/shared-network-6",
+        "priority": 200,
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/test-shared-network/global/firewalls/bad",
+        "sourceRange": [
+          "0.0.0.0/0"
+        ],
+        "sourceRanges": [
+          "0.0.0.0/0"
+        ],
+        "targetServiceAccount": [
+          "forseti-client-gcp-5131f4ff@test-forseti-cft.iam.gserviceaccount.com"
+        ],
+        "targetServiceAccounts": [
+          "forseti-client-gcp-5131f4ff@test-forseti-cft.iam.gserviceaccount.com"
+        ]
+      },
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Firewall",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/449045403945",
+      "version": "v1"
+    }
+  },
+  {
+    "ancestors": [
+      "projects/547416369877",
+      "organizations/1082147662149"
+    ],
+    "asset_type": "compute.googleapis.com/Firewall",
+    "name": "//compute.googleapis.com/projects/test-data-1/global/firewalls/good",
+    "resource": {
+      "data": {
+        "allowed": [
+          {
+            "IPProtocol": "icmp",
+            "ipProtocol": "icmp"
+          }
+        ],
+        "creationTimestamp": "2019-02-17T17:19:42.469-08:00",
+        "description": "Allow ICMP from anywhere",
+        "direction": "INGRESS",
+        "disabled": false,
+        "id": "7866650088524199617",
+        "logConfig": {
+          "enable": true
+        },
+        "name": "good",
+        "network": "https://www.googleapis.com/compute/v1/projects/test-data-1/global/networks/default",
+        "priority": 65534,
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/test-data-1/global/firewalls/good",
+        "sourceRange": [
+          "0.0.0.0/0"
+        ],
+        "sourceRanges": [
+          "0.0.0.0/0"
+        ]
+      },
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Firewall",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/547416369877",
+      "version": "v1"
+    }
+  }
+]

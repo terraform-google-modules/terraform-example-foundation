@@ -1,0 +1,5 @@
+steps:
+- name: 'gcr.io/kpt-dev/kpt'
+  args: ['fn', 'source', './samples/', './policies/']
+- name: 'gcr.io/config-validator/generate-docs:dev'
+  args: ['-d', 'sink_dir=/workspace/docs/', '-d', 'overwrite=true']

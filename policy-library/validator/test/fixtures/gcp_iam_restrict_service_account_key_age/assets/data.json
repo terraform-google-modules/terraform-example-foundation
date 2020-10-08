@@ -1,0 +1,46 @@
+[
+  {
+    "asset_type": "iam.googleapis.com/ServiceAccountKey",
+    "name": "//iam.googleapis.com/projects/forseti-system-test/serviceAccounts/111111-compute@developer.gserviceaccount.com/keys/testkeyageover90days",
+    "resource": {
+      "data": {
+            "validAfterTime": "2017-08-21T07:55:36Z",
+            "validBeforeTime": "2200-08-22T19:55:36Z",
+            "keyAlgorithm": "KEY_ALG_RSA_2048"
+          }
+      }
+  },
+  {
+    "asset_type": "iam.googleapis.com/ServiceAccountKey",
+    "name": "//iam.googleapis.com/projects/forseti-system-test/serviceAccounts/111111-compute@developer.gserviceaccount.com/keys/testkeyageover100days",
+    "resource": {
+      "data": {
+            "validAfterTime": "2018-03-24T10:00:00Z",
+            "validBeforeTime": "2200-08-22T19:55:36Z",
+            "keyAlgorithm": "KEY_ALG_RSA_2048"
+          }
+      }
+  },
+  {
+    "asset_type": "iam.googleapis.com/ServiceAccountKey",
+    "name": "//iam.googleapis.com/projects/forseti-system-test/serviceAccounts/111111-compute@developer.gserviceaccount.com/keys/testkeyagefuture",
+    "resource": {
+      "data": {
+            "validAfterTime": "2200-08-21T07:55:36Z",
+            "validBeforeTime": "2200-08-22T19:55:36Z",
+            "keyAlgorithm": "KEY_ALG_RSA_2048"
+          }
+      }
+  },
+  {
+    "asset_type": "iam.googleapis.com/ServiceAccountKey",
+    "name": "//iam.googleapis.com/projects/forseti-system-test/serviceAccounts/111111-compute@developer.gserviceaccount.com/keys/testkeyexpired",
+    "resource": {
+      "data": {
+            "validAfterTime": "2017-08-21T07:55:36Z",
+            "validBeforeTime": "2017-08-22T19:55:36Z",
+            "keyAlgorithm": "KEY_ALG_RSA_2048"
+          }
+      }
+  }
+]

@@ -1,0 +1,99 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-external-ip-access-v1
+  annotations:
+    # Example of tying a template to a CIS benchmark
+    benchmark: CIS11_5.03
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPExternalIpAccessConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties:
+            mode:
+              type: string
+              enum: [blacklist, whitelist]
+            instances:
+              type: array
+              items:
+                type: string
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: |
+        #
+        # Copyright 2018 Google LLC
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #      http://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+        #
+
+        package templates.gcp.GCPExternalIpAccessConstraintV1
+
+        import data.validator.gcp.lib as lib
+
+        ###########################
+        # Find Whitelist Violations
+        ###########################
+        deny[{
+        	"msg": message,
+        	"details": metadata,
+        }] {
+        	constraint := input.constraint
+        	lib.get_constraint_params(constraint, params)
+        	asset := input.asset
+        	asset.asset_type == "compute.googleapis.com/Instance"
+
+        	# Find network access config block w/ external IP
+        	instance := asset.resource.data
+        	access_config := instance.networkInterface[_].accessConfig
+        	external_ip := access_config[_].externalIp
+
+        	# Check if instance is in blacklist/whitelist
+        	target_instances := params.instances
+        	matches := {asset.name} & cast_set(target_instances)
+        	target_instance_match_count(params.mode, desired_count)
+        	count(matches) == desired_count
+
+        	message := sprintf("%v is not allowed to have an external IP.", [asset.name])
+        	metadata := {"external_ip": external_ip}
+        }
+
+        ###########################
+        # Rule Utilities
+        ###########################
+
+        # Determine the overlap between instances under test and constraint
+        # By default (whitelist), we violate if there isn't overlap
+        target_instance_match_count(mode) = 0 {
+        	mode != "blacklist"
+        }
+
+        target_instance_match_count(mode) = 1 {
+        	mode == "blacklist"
+        }

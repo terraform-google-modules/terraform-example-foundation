@@ -1,0 +1,12 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPServiceUsageConstraintV1
+metadata:
+  name: deny_cloudvision
+  annotations:
+    description: Prevents the cloud vision API from being enabled
+spec:
+  severity: high
+  parameters:
+    mode: deny
+    services:
+    - "cloudvision.googleapis.com"

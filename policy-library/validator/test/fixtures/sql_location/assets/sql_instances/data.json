@@ -1,0 +1,102 @@
+[
+    {
+        "name": "//cloudsql.googleapis.com/projects/test-project-1/instances/test-instance-1-singapore",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "test-project-1:asia-southeast1:test-instance",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "asia-southeast1-b",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "test-instance",
+                "project": "test-project-1",
+                "region": "asia-southeast1",
+                "state": "RUNNABLE"
+            }
+        }
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/test-project-2/instances/test-instance-2-singapore",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "test-project-2:asia-southeast1:test-instance-2",
+                "databaseVersion": "POSTGRES_9_6",
+                "gceZone": "asia-southeast1-b",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "test-instance-2",
+                "project": "test-project-2",
+                "region": "asia-southeast1",
+                "state": "RUNNABLE"
+            }
+        }
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/test-project-2/instances/mysql-2nd-gen-singapore",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "test-project-2:asia-southeast1:mysql-2nd-gen-test-1",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "asia-southeast1-b",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "mysql-2nd-gen-test-1",
+                "project": "test-project-2",
+                "region": "asia-southeast1",
+                "state": "RUNNABLE"
+            }
+        }
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/test-project-2/instances/mysql-2nd-gen-sydney",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "test-project-2:australia-southeast1:mysql-2nd-gen-test-2",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "australia-southeast1-a",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "mysql-2nd-gen-test-2",
+                "project": "test-project-2",
+                "region": "australia-southeast1",
+                "state": "RUNNABLE"
+            }
+        }
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/test-project-2/instances/postgres-11-sydney",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "test-project-2:australia-southeast1:postgres-11-test-2",
+                "databaseVersion": "POSTGRES_11",
+                "gceZone": "australia-southeast1-a",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "postgres-11-test-2",
+                "project": "test-project-2",
+                "region": "australia-southeast1",
+                "state": "RUNNABLE"
+            }
+        }
+    }
+]

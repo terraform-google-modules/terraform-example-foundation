@@ -1,0 +1,180 @@
+[
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/global/snapshots/snapshot-1-valid",
+        "asset_type": "compute.googleapis.com/Snapshot",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Snapshot",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2019-06-07T07:46:35.102-07:00",
+                "diskSizeGb": "10",
+                "id": "6214628013742999077",
+                "labelFingerprint": "WwfUv8tjyW8=",
+                "labels": {
+                    "snapshot-label": "some-value",
+                    "label1": "label1-value",
+                    "label2": "label2-valueOK"
+                },
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "snapshot-1-valid",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/global/snapshots/snapshot-1-valid",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "status": "READY",
+                "storageBytes": "1709589952",
+                "storageBytesStatus": "UP_TO_DATE",
+                "storageLocation": [
+                    "us-east1"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/global/snapshots/snapshot-1-invalid-missing-labels",
+        "asset_type": "compute.googleapis.com/Snapshot",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Snapshot",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2019-06-07T07:46:35.102-07:00",
+                "diskSizeGb": "10",
+                "id": "6214628013742999077",
+                "labelFingerprint": "WwfUv8tjyW8=",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "snapshot-1-invalid-missing-labels",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/global/snapshots/snapshot-1-invalid-missing-labels",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "status": "READY",
+                "storageBytes": "1709589952",
+                "storageBytesStatus": "UP_TO_DATE",
+                "storageLocation": [
+                    "us-east1"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/global/snapshots/snapshot-1-invalid-missing-label1",
+        "asset_type": "compute.googleapis.com/Snapshot",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Snapshot",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2019-06-07T07:46:35.102-07:00",
+                "diskSizeGb": "10",
+                "id": "6214628013742999077",
+                "labelFingerprint": "WwfUv8tjyW8=",
+                "labels": {
+                    "snapshot-label": "some-value",
+                    "label2": "label2-valueOKTOO"
+                },
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "snapshot-1-invalid-missing-label1",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/global/snapshots/snapshot-1-invalid-missing-label1",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "status": "READY",
+                "storageBytes": "1709589952",
+                "storageBytesStatus": "UP_TO_DATE",
+                "storageLocation": [
+                    "us-east1"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/global/snapshots/snapshot-1-invalid-missing-label2",
+        "asset_type": "compute.googleapis.com/Snapshot",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Snapshot",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2019-06-07T07:46:35.102-07:00",
+                "diskSizeGb": "10",
+                "id": "6214628013742999077",
+                "labelFingerprint": "WwfUv8tjyW8=",
+                "labels": {
+                    "snapshot-label": "some-value",
+                    "label1": "label1-value"
+                },
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "snapshot-1-invalid-missing-label2",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/global/snapshots/snapshot-1-invalid-missing-label2",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "status": "READY",
+                "storageBytes": "1709589952",
+                "storageBytesStatus": "UP_TO_DATE",
+                "storageLocation": [
+                    "us-east1"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/global/snapshots/snapshot-1-invalid-label1-and-label2-bad-values",
+        "asset_type": "compute.googleapis.com/Snapshot",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Snapshot",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2019-06-07T07:46:35.102-07:00",
+                "diskSizeGb": "10",
+                "id": "6214628013742999077",
+                "labelFingerprint": "WwfUv8tjyW8=",
+                "labels": {
+                    "snapshot-label": "some-value",
+                    "label1": "label1-bad-value",
+                    "label2": "label2-bad-value"
+                },
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "snapshot-1-invalid-label1-and-label2-bad-values",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/global/snapshots/snapshot-1-invalid-label1-and-label2-bad-values",
+                "sourceDisk": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sourceDiskId": "5899079137373394452",
+                "status": "READY",
+                "storageBytes": "1709589952",
+                "storageBytesStatus": "UP_TO_DATE",
+                "storageLocation": [
+                    "us-east1"
+                ]
+            }
+        }
+    }
+]

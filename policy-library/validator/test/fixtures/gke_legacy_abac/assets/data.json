@@ -1,0 +1,161 @@
+[
+  {
+    "name": "//container.googleapis.com/projects/transfer-repos/zones/us-central1-c/clusters/joe-clust",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/282148707733",
+      "data": {
+        "addonsConfig": {
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "clusterIpv4Cidr": "10.44.0.0/14",
+        "createTime": "2016-11-19T05:58:02+00:00",
+        "currentMasterVersion": "1.10.11-gke.1",
+        "currentNodeCount": 4,
+        "currentNodeVersion": "1.4.6",
+        "endpoint": "104.196.229.72",
+        "initialClusterVersion": "1.4.6",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/pso-cicd8/zones/us-west1-b/instanceGroupManagers/gke-canary-west-default-pool-496ebc1d-grp"
+        ],
+        "legacyAbac": {
+          "enabled": true
+        },
+        "location": "us-west1-b",
+        "locations": [
+          "us-west1-b"
+        ],
+        "loggingService": "logging.googleapis.com",
+        "monitoringService": "none",
+        "name": "canary-west",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/pso-cicd8/global/networks/default",
+          "subnetwork": "projects/pso-cicd8/regions/us-west1/subnetworks/default"
+        },
+        "nodeIpv4CidrSize": 24,
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/compute",
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default"
+            },
+            "initialNodeCount": 2,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/pso-cicd8/zones/us-west1-b/instanceGroupManagers/gke-canary-west-default-pool-496ebc1d-grp"
+            ],
+            "management": {
+              "autoUpgrade": "true"
+            },
+            "name": "default-pool",
+            "selfLink": "https://container.googleapis.com/v1/projects/pso-cicd8/zones/us-west1-b/clusters/canary-west/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.4.6"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/pso-cicd8/zones/us-west1-b/clusters/canary-west",
+        "servicesIpv4Cidr": "10.47.240.0/20",
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-west1-b"
+      }
+    }
+  },
+  {
+    "name": "//container.googleapis.com/projects/transfer-repos/zones/us-central1-c/clusters/joe-clust2",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/282148707733",
+      "data": {
+        "addonsConfig": {
+          "networkPolicyConfig": {
+            "disabled": true
+          },
+          "kubernetesDashboard": {
+            "disabled": true
+          }
+        },
+        "clusterIpv4Cidr": "10.44.0.0/14",
+        "createTime": "2016-11-19T05:58:02+00:00",
+        "currentMasterVersion": "1.10.11-gke.1",
+        "currentNodeCount": 4,
+        "currentNodeVersion": "1.4.6",
+        "endpoint": "104.196.229.72",
+        "initialClusterVersion": "1.4.6",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/pso-cicd8/zones/us-west1-b/instanceGroupManagers/gke-canary-west-default-pool-496ebc1d-grp"
+        ],
+        "legacyAbac": {
+          "enabled": false
+        },
+        "location": "us-west1-b",
+        "locations": [
+          "us-west1-b"
+        ],
+        "loggingService": "logging.googleapis.com",
+        "monitoringService": "none",
+        "name": "canary-west",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/pso-cicd8/global/networks/default",
+          "subnetwork": "projects/pso-cicd8/regions/us-west1/subnetworks/default"
+        },
+        "nodeIpv4CidrSize": 24,
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/compute",
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default"
+            },
+            "initialNodeCount": 2,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/pso-cicd8/zones/us-west1-b/instanceGroupManagers/gke-canary-west-default-pool-496ebc1d-grp"
+            ],
+            "management": {
+              "autoUpgrade": "true"
+            },
+            "name": "default-pool",
+            "selfLink": "https://container.googleapis.com/v1/projects/pso-cicd8/zones/us-west1-b/clusters/canary-west/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.4.6"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/pso-cicd8/zones/us-west1-b/clusters/canary-west",
+        "servicesIpv4Cidr": "10.47.240.0/20",
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-west1-b"
+      }
+    }
+  }
+]

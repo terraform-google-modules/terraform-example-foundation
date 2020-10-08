@@ -1,0 +1,268 @@
+[
+    {
+        "name": "//storage.googleapis.com/bucket-with-valid-labels",
+        "asset_type": "storage.googleapis.com/Bucket",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+            "discovery_name": "Bucket",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/318576589455",
+            "data": {
+                "acl": [],
+                "billing": {},
+                "cors": [],
+                "defaultObjectAcl": [],
+                "encryption": {},
+                "etag": "CAU=",
+                "iamConfiguration": {
+                    "bucketPolicyOnly": {
+                        "enabled": true,
+                        "lockedTime": "2019-08-13T15:22:00.617Z"
+                    }
+                },
+                "id": "bucket-with-valid-labels",
+                "kind": "storage#bucket",
+                "lifecycle": {
+                    "rule": []
+                },
+                "location": "US-CENTRAL1",
+                "logging": {},
+                "metageneration": 5,
+                "name": "cf-sample-bucket-test",
+                "owner": {},
+                "projectNumber": 318576589455,
+                "retentionPolicy": {},
+                "selfLink": "https://www.googleapis.com/storage/v1/b/bucket-with-valid-labels",
+                "storageClass": "REGIONAL",
+                "timeCreated": "2019-05-15T15:05:56.580Z",
+                "updated": "2019-05-15T15:56:44.899Z",
+                "versioning": {},
+                "website": {}
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/zones/us-central1-b/instances/valid-instance-8hz5",
+        "asset_type": "compute.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/216968792402",
+            "data": {
+                "canIpForward": false,
+                "cpuPlatform": "Intel Haswell",
+                "creationTimestamp": "2018-11-01T12:44:57.303-07:00",
+                "deletionProtection": false,
+                "description": "InstanceTemplate created for Dataflow job: 2018-10-02_12_46_57-16714086278907465014",
+                "disk": [
+                    {
+                        "autoDelete": true,
+                        "boot": true,
+                        "deviceName": "persistent-disk-0",
+                        "index": 0,
+                        "interface": "SCSI",
+                        "license": [
+                            "https://www.googleapis.com/compute/v1/projects/clouddataflow-readonly/global/licenses/dataflow-owned-resource",
+                            "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/licenses/cos"
+                        ],
+                        "mode": "READ_WRITE",
+                        "source": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-central1-b/disks/valid-instance-8hz5",
+                        "type": "PERSISTENT"
+                    }
+                ],
+                "id": "1153916624998689114",
+                "labelFingerprint": "C1H1XlV7n1k=",
+                "machineType": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-central1-b/machineTypes/n1-standard-4",
+                "name": "valid-instance-8hz5",
+                "networkInterface": [
+                    {
+                        "accessConfig": [
+                            {
+                                "externalIp": "35.226.29.59",
+                                "name": "EXTERNAL NAT",
+                                "networkTier": "PREMIUM",
+                                "type": "ONE_TO_ONE_NAT"
+                            }
+                        ],
+                        "fingerprint": "BZYSgscuzgc=",
+                        "ipAddress": "10.128.0.3",
+                        "name": "nic0",
+                        "network": "https://www.googleapis.com/compute/v1/projects/my-test-project/global/networks/default",
+                        "subnetwork": "https://www.googleapis.com/compute/v1/projects/my-test-project/regions/us-central1/subnetworks/default"
+                    }
+                ],
+                "scheduling": {
+                    "automaticRestart": true,
+                    "onHostMaintenance": "MIGRATE",
+                    "preemptible": false
+                },
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-central1-b/instances/valid-instance-8hz5",
+                "serviceAccount": [
+                    {
+                        "email": "216968792402-compute@developer.gserviceaccount.com",
+                        "scope": [
+                            "https://www.googleapis.com/auth/any-api",
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/cloud-platform",
+                            "https://www.googleapis.com/auth/compute",
+                            "https://www.googleapis.com/auth/datastore",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/logging.write",
+                            "https://www.googleapis.com/auth/monitoring",
+                            "https://www.googleapis.com/auth/ndev.cloudman",
+                            "https://www.googleapis.com/auth/pubsub",
+                            "https://www.googleapis.com/auth/userinfo.email"
+                        ]
+                    }
+                ],
+                "startRestricted": false,
+                "status": "RUNNING",
+                "tags": {
+                    "fingerprint": "Loc0dSkS+b8=",
+                    "tag": [
+                        "dataflow"
+                    ]
+                },
+                "zone": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-central1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/zones/us-east1-b/disks/instance-1-valid-disk",
+        "asset_type": "compute.googleapis.com/Disk",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Disk",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2018-09-19T12:52:28.128-07:00",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "5899079137373394452",
+                "labelFingerprint": "Iv/ZLuyPnZw=",
+                "lastAttachTimestamp": "2018-09-19T12:52:28.130-07:00",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "instance-1-valid-disk",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sizeGb": "10",
+                "sourceImage": "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20180911",
+                "sourceImageId": "6964739134299892958",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/diskTypes/pd-standard",
+                "user": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/instances/instance-1"
+                ],
+                "zone": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b"
+            }
+        }
+    },
+    {
+        "name": "//bigtable.googleapis.com/projects/my-test-project/instances/test-bigtable-id-valid-labels",
+        "asset_type": "google.bigtable.Instance",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://bigtableadmin.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "data": {
+                "displayName": "test-bigtable-id-valid-labels",
+                "labels": {
+                    "label1": "label1-value",
+                    "label2": "label2-valueOK"
+                },
+                "name": "projects/my-test-project/instances/test-bigtable-id-valid-labels",
+                "state": "READY",
+                "type": "PRODUCTION"
+            }
+        }
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/my-test-project/instances/cloudsql-instance-1-valid",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "my-test-project:us-central1:cloudsql-instance-1-valid",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "us-central1-a",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "cloudsql-instance-1-valid",
+                "project": "my-test-project",
+                "region": "us-central1",
+                "selfLink": "https://www.googleapis.com/sql/v1beta4/projects/my-test-project/instances/cloudsql-instance-1-valid",
+                "settings": {
+                    "activationPolicy": "ALWAYS",
+                    "backupConfiguration": {
+                        "binaryLogEnabled": true,
+                        "enabled": true,
+                        "kind": "sql#backupConfiguration",
+                        "startTime": "15:00"
+                    },
+                    "dataDiskSizeGb": "10",
+                    "dataDiskType": "PD_SSD",
+                    "ipConfiguration": {
+                        "ipv4Enabled": true
+                    },
+                    "kind": "sql#settings",
+                    "locationPreference": {
+                        "kind": "sql#locationPreference",
+                        "zone": "us-central1-a"
+                    },
+                    "maintenanceWindow": {
+                        "day": 0,
+                        "hour": 0,
+                        "kind": "sql#maintenanceWindow"
+                    },
+                    "pricingPlan": "PER_USE",
+                    "replicationType": "SYNCHRONOUS",
+                    "settingsVersion": "0",
+                    "storageAutoResize": true,
+                    "storageAutoResizeLimit": "0",
+                    "tier": "db-n1-standard-1"
+                },
+                "state": "PENDING_CREATE"
+            }
+        }
+    },
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/jobs/job-b068791b-dataproc-job-ok",
+        "asset_type": "dataproc.googleapis.com/Job",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Job",
+            "data": {
+                "hadoopJob": {
+                    "mainClass": "test"
+                },
+                "jobUuid": "d93eecfb-26f8-441b-91fd-bef1fdb3648b",
+                "placement": {
+                    "clusterName": "cluster-a1b6-test-dataproc",
+                    "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771e"
+                },
+                "reference": {
+                    "jobId": "job-b068791b-dataproc-job-ok",
+                    "projectId": "my-own-project"
+                },
+                "status": {
+                    "state": "PENDING",
+                    "stateStartTime": "2019-07-12T20:22:50.38Z"
+                }
+            }
+        }
+    }
+]

@@ -1,0 +1,94 @@
+[
+    {
+        "name": "//cloudresourcemanager.googleapis.com/projects/186783260185",
+        "asset_type": "cloudresourcemanager.googleapis.com/Project",
+        "iam_policy": {
+            "version": 1,
+            "etag": "BwWC1qPLfdw=",
+            "bindings": [
+                {
+                    "role": "roles/cloudasset.serviceAgent",
+                    "members": [
+                        "serviceAccount:service-186783260185@gcp-sa-cloudasset.iam.gserviceaccount.com"
+                    ]
+                },
+                {
+                    "role": "roles/cloudasset.viewer",
+                    "members": [
+                        "serviceAccount:cai-292@noble-history-87417.iam.gserviceaccount.com",
+                        "user:specific-@google.com",
+                        "domain:google.com"
+                    ]
+                },
+                {
+                    "role": "roles/cloudsql.client",
+                    "members": [
+                        "serviceAccount:forseti-server-gcp-3c922c1@noble-history-87417.iam.gserviceaccount.com",
+                        "serviceAccount:sql-k8s@noble-history-87417.iam.gserviceaccount.com"
+                    ]
+                },
+                {
+                    "role": "roles/compute.serviceAgent",
+                    "members": [
+                        "serviceAccount:service-186783260185@compute-system.iam.gserviceaccount.com"
+                    ]
+                },
+                {
+                    "role": "roles/container.serviceAgent",
+                    "members": [
+                        "serviceAccount:service-186783260185@container-engine-robot.iam.gserviceaccount.com"
+                    ]
+                },
+                {
+                    "role": "roles/dataflow.serviceAgent",
+                    "members": [
+                        "serviceAccount:service-186783260185@dataflow-service-producer-prod.iam.gserviceaccount.com"
+                    ]
+                },
+                {
+                    "role": "roles/file.serviceAgent",
+                    "members": [
+                        "serviceAccount:service-186783260185@cloud-filer.iam.gserviceaccount.com"
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "name": "//cloudresourcemanager.googleapis.com/projects/12345",
+        "asset_type": "cloudresourcemanager.googleapis.com/Project",
+        "iam_policy": {
+            "version": 1,
+            "etag": "CdWC1qPLfdw=",
+            "bindings": [
+                {
+                    "role": "roles/cloudasset.serviceAgent",
+                    "members": [
+                        "user:bad@notgoogle.com",
+                        "serviceAccount:service-12345@gcp-sa-cloudasset.iam.gserviceaccount.com"
+                    ]
+                },
+                {
+                    "role": "roles/cloudasset.viewer",
+                    "members": [
+                        "user:bad@notgoogle.com",
+                        "serviceAccount:service-12345@notiam.gserviceaccount.com"
+                    ]
+                },
+                {
+                    "role": "roles/storage.admin",
+                    "members": [
+                        "user:bad@sub.google.com"
+                    ]
+                },
+                {
+                    "role": "roles/dataflow.serviceAgent",
+                    "members": [
+                        "serviceAccount:service-12345@dataflow-service-producer-prod.iam.gserviceaccount.com",
+                        "projectViewer:my-project"
+                    ]
+                }
+            ]
+        }
+    }
+]

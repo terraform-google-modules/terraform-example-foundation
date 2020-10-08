@@ -1,0 +1,93 @@
+[
+  {
+    "name": "//compute.googleapis.com/projects/fake-project/global/networks/default",
+    "asset_type": "compute.googleapis.com/Network",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Network",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/12345678990",
+      "data": {
+        "autoCreateSubnetworks": true,
+        "creationTimestamp": "2019-11-12T16:26:54.666-08:00",
+        "description": "Default network for the project",
+        "id": "2797169918412780321",
+        "name": "default",
+        "routingConfig": {
+          "routingMode": "REGIONAL"
+        },
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/fake-project/global/networks/default",
+        "subnetwork": [
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-east1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west6/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-southeast1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-east2/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/northamerica-northeast1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-west1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/southamerica-east1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-north1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-west2/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west3/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-east1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-central1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-east4/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-northeast2/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-south1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-northeast1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west4/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west2/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/australia-southeast1/subnetworks/default"
+        ],
+        "subnetworks": [
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-east1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west6/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-southeast1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-east2/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/northamerica-northeast1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-west1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/southamerica-east1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-north1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-west2/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west3/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-east1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-central1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-east4/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-northeast2/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-south1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/asia-northeast1/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west4/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/europe-west2/subnetworks/default",
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/australia-southeast1/subnetworks/default"
+        ]
+      }
+    }
+  },
+  {
+    "name": "//compute.googleapis.com/projects/fake-project/global/networks/test-network",
+    "asset_type": "compute.googleapis.com/Network",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Network",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/12345678990",
+      "data": {
+        "autoCreateSubnetworks": false,
+        "creationTimestamp": "2019-11-14T15:59:43.658-08:00",
+        "id": "3956817964574987392",
+        "name": "test-network",
+        "routingConfig": {
+          "routingMode": "REGIONAL"
+        },
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/fake-project/global/networks/test-network",
+        "subnetwork": [
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-west1/subnetworks/test-subnet"
+        ],
+        "subnetworks": [
+          "https://www.googleapis.com/compute/v1/projects/fake-project/regions/us-west1/subnetworks/test-subnet"
+        ]
+      }
+    }
+  }
+]

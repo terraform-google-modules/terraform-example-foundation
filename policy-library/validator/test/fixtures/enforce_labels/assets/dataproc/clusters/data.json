@@ -1,0 +1,338 @@
+[
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/clusters/cluster-a1b6-test-dataproc-ok",
+        "asset_type": "dataproc.googleapis.com/Cluster",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Cluster",
+            "data": {
+                "clusterName": "cluster-a1b6-test-dataproc-ok",
+                "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771e",
+                "config": {
+                    "gceClusterConfig": {
+                        "serviceAccountScopes": [
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/bigtable.admin.table",
+                            "https://www.googleapis.com/auth/bigtable.data",
+                            "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/devstorage.read_write",
+                            "https://www.googleapis.com/auth/logging.write"
+                        ],
+                        "subnetworkUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/regions/europe-north1/subnetworks/default",
+                        "zoneUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c"
+                    },
+                    "masterConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-ok-m"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 1
+                    },
+                    "softwareConfig": {
+                        "imageVersion": "1.3.40-debian9"
+                    },
+                    "workerConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-ok-w-0",
+                            "cluster-a1b6-test-dataproc-ok-w-1"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 2
+                    }
+                },
+                "labels": {
+                    "label1": "label1-value",
+                    "label2": "label2-valueOK",
+                    "goog-dataproc-cluster-name": "cluster-a1b6-test-dataproc-ok",
+                    "goog-dataproc-cluster-uuid": "aca4794f-5d05-4350-9bd5-cc569aa7771e",
+                    "goog-dataproc-location": "global"
+                },
+                "projectId": "my-own-project",
+                "status": {
+                    "state": "CREATING",
+                    "stateStartTime": "2019-07-12T20:21:58.502Z"
+                }
+            }
+        }
+    },
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/clusters/cluster-a1b6-test-dataproc-missing-labels",
+        "asset_type": "dataproc.googleapis.com/Cluster",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Cluster",
+            "data": {
+                "clusterName": "cluster-a1b6-test-dataproc-missing-labels",
+                "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771f",
+                "config": {
+                    "gceClusterConfig": {
+                        "serviceAccountScopes": [
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/bigtable.admin.table",
+                            "https://www.googleapis.com/auth/bigtable.data",
+                            "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/devstorage.read_write",
+                            "https://www.googleapis.com/auth/logging.write"
+                        ],
+                        "subnetworkUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/regions/europe-north1/subnetworks/default",
+                        "zoneUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c"
+                    },
+                    "masterConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-missing-labels-m"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 1
+                    },
+                    "softwareConfig": {
+                        "imageVersion": "1.3.40-debian9"
+                    },
+                    "workerConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-missing-labels-w-0",
+                            "cluster-a1b6-test-dataproc-missing-labels-w-1"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 2
+                    }
+                },
+                "labels": {
+                    "goog-dataproc-cluster-name": "cluster-a1b6-test-dataproc-missing-labels",
+                    "goog-dataproc-cluster-uuid": "aca4794f-5d05-4350-9bd5-cc569aa7771f",
+                    "goog-dataproc-location": "global"
+                },
+                "projectId": "my-own-project",
+                "status": {
+                    "state": "CREATING",
+                    "stateStartTime": "2019-07-12T20:21:58.502Z"
+                }
+            }
+        }
+    },
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/clusters/cluster-a1b6-test-dataproc-missing-label1",
+        "asset_type": "dataproc.googleapis.com/Cluster",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Cluster",
+            "data": {
+                "clusterName": "cluster-a1b6-test-dataproc-missing-label1",
+                "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771a",
+                "config": {
+                    "gceClusterConfig": {
+                        "serviceAccountScopes": [
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/bigtable.admin.table",
+                            "https://www.googleapis.com/auth/bigtable.data",
+                            "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/devstorage.read_write",
+                            "https://www.googleapis.com/auth/logging.write"
+                        ],
+                        "subnetworkUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/regions/europe-north1/subnetworks/default",
+                        "zoneUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c"
+                    },
+                    "masterConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-missing-label1-m"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 1
+                    },
+                    "softwareConfig": {
+                        "imageVersion": "1.3.40-debian9"
+                    },
+                    "workerConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-missing-label1-w-0",
+                            "cluster-a1b6-test-dataproc-missing-label1-w-1"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 2
+                    }
+                },
+                "labels": {
+                    "label2": "label2-valueOK",
+                    "goog-dataproc-cluster-name": "cluster-a1b6-test-dataproc-missing-label1",
+                    "goog-dataproc-cluster-uuid": "aca4794f-5d05-4350-9bd5-cc569aa7771a",
+                    "goog-dataproc-location": "global"
+                },
+                "projectId": "my-own-project",
+                "status": {
+                    "state": "CREATING",
+                    "stateStartTime": "2019-07-12T20:21:58.502Z"
+                }
+            }
+        }
+    },
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/clusters/cluster-a1b6-test-dataproc-missing-label2",
+        "asset_type": "dataproc.googleapis.com/Cluster",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Cluster",
+            "data": {
+                "clusterName": "cluster-a1b6-test-dataproc-missing-label2",
+                "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771b",
+                "config": {
+                    "gceClusterConfig": {
+                        "serviceAccountScopes": [
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/bigtable.admin.table",
+                            "https://www.googleapis.com/auth/bigtable.data",
+                            "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/devstorage.read_write",
+                            "https://www.googleapis.com/auth/logging.write"
+                        ],
+                        "subnetworkUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/regions/europe-north1/subnetworks/default",
+                        "zoneUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c"
+                    },
+                    "masterConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-missing-label1-m"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 1
+                    },
+                    "softwareConfig": {
+                        "imageVersion": "1.3.40-debian9"
+                    },
+                    "workerConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-missing-label1-w-0",
+                            "cluster-a1b6-test-dataproc-missing-label1-w-1"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 2
+                    }
+                },
+                "labels": {
+                    "label1": "label1-value",
+                    "goog-dataproc-cluster-name": "cluster-a1b6-test-dataproc-missing-label2",
+                    "goog-dataproc-cluster-uuid": "aca4794f-5d05-4350-9bd5-cc569aa7771b",
+                    "goog-dataproc-location": "global"
+                },
+                "projectId": "my-own-project",
+                "status": {
+                    "state": "CREATING",
+                    "stateStartTime": "2019-07-12T20:21:58.502Z"
+                }
+            }
+        }
+    },
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/clusters/cluster-a1b6-test-dataproc-bad-values",
+        "asset_type": "dataproc.googleapis.com/Cluster",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Cluster",
+            "data": {
+                "clusterName": "cluster-a1b6-test-dataproc-bad-values",
+                "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771d",
+                "config": {
+                    "gceClusterConfig": {
+                        "serviceAccountScopes": [
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/bigtable.admin.table",
+                            "https://www.googleapis.com/auth/bigtable.data",
+                            "https://www.googleapis.com/auth/cloud.useraccounts.readonly",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/devstorage.read_write",
+                            "https://www.googleapis.com/auth/logging.write"
+                        ],
+                        "subnetworkUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/regions/europe-north1/subnetworks/default",
+                        "zoneUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c"
+                    },
+                    "masterConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-bad-values-m"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 1
+                    },
+                    "softwareConfig": {
+                        "imageVersion": "1.3.40-debian9"
+                    },
+                    "workerConfig": {
+                        "diskConfig": {
+                            "bootDiskSizeGb": 500,
+                            "bootDiskType": "pd-standard"
+                        },
+                        "imageUri": "https://www.googleapis.com/compute/v1/projects/cloud-dataproc/global/images/dataproc-1-3-deb9-20190627-000000-rc02",
+                        "instanceNames": [
+                            "cluster-a1b6-test-dataproc-bad-values-w-0",
+                            "cluster-a1b6-test-dataproc-bad-values-w-1"
+                        ],
+                        "machineTypeUri": "https://www.googleapis.com/compute/v1/projects/my-own-project/zones/europe-north1-c/machineTypes/n1-standard-4",
+                        "numInstances": 2
+                    }
+                },
+                "labels": {
+                    "label1": "label1-bad-value",
+                    "label2": "label2-bad-value",
+                    "goog-dataproc-cluster-name": "cluster-a1b6-test-dataproc-bad-values",
+                    "goog-dataproc-cluster-uuid": "aca4794f-5d05-4350-9bd5-cc569aa7771d",
+                    "goog-dataproc-location": "global"
+                },
+                "projectId": "my-own-project",
+                "status": {
+                    "state": "CREATING",
+                    "stateStartTime": "2019-07-12T20:21:58.502Z"
+                }
+            }
+        }
+    }
+]

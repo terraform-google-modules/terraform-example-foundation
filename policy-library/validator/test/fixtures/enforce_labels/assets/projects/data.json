@@ -1,0 +1,124 @@
+[
+  {
+    "name": "//cloudresourcemanager.googleapis.com/projects/216968792402",
+    "asset_type": "cloudresourcemanager.googleapis.com/Project",
+    "resource": {
+      "version": "v1beta1",
+      "discovery_document_uri": "https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1",
+      "discovery_name": "Project",
+      "parent": "//cloudresourcemanager.googleapis.com/organizations/382777088978",
+      "data": {
+        "createTime": "2018-09-19T19:32:59.43Z",
+        "labels": {
+          "label1": "label1-value",
+          "label2": "label2-valueOK"
+        },
+        "lifecycleState": "ACTIVE",
+        "name": "valid-project-test",
+        "parent": {
+          "id": "382777088978",
+          "type": "organization"
+        },
+        "projectId": "valid-project-test",
+        "projectNumber": "216968792402"
+      }
+    }
+  },
+  {
+    "name": "//cloudresourcemanager.googleapis.com/projects/169463810970",
+    "asset_type": "cloudresourcemanager.googleapis.com/Project",
+    "resource": {
+      "version": "v1beta1",
+      "discovery_document_uri": "https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1",
+      "discovery_name": "Project",
+      "parent": "//cloudresourcemanager.googleapis.com/folders/655583390968",
+      "data": {
+        "createTime": "2018-10-30T19:46:31.035Z",
+        "lifecycleState": "ACTIVE",
+        "name": "invalid-project-missing-labels-test",
+        "parent": {
+          "id": "655583390968",
+          "type": "folder"
+        },
+        "projectId": "invalid-project-missing-labels-test-514f",
+        "projectNumber": "169463810970"
+      }
+    }
+  },
+  {
+    "name": "//cloudresourcemanager.googleapis.com/projects/357960133769",
+    "asset_type": "cloudresourcemanager.googleapis.com/Project",
+    "resource": {
+      "version": "v1beta1",
+      "discovery_document_uri": "https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1",
+      "discovery_name": "Project",
+      "parent": "//cloudresourcemanager.googleapis.com/organizations/382777088978",
+      "data": {
+        "createTime": "2019-03-02T01:59:22.288Z",
+        "labels": {
+          "test-label": "test-label-value",
+          "label1": "label1-value"
+        },
+        "lifecycleState": "ACTIVE",
+        "name": "invalid-project-missing-label2",
+        "parent": {
+          "id": "382777088978",
+          "type": "organization"
+        },
+        "projectId": "invalid-project-missing-label2",
+        "projectNumber": "357960133769"
+      }
+    }
+  },
+  {
+    "name": "//cloudresourcemanager.googleapis.com/projects/357960133899",
+    "asset_type": "cloudresourcemanager.googleapis.com/Project",
+    "resource": {
+      "version": "v1beta1",
+      "discovery_document_uri": "https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1",
+      "discovery_name": "Project",
+      "parent": "//cloudresourcemanager.googleapis.com/organizations/382777088978",
+      "data": {
+        "createTime": "2019-03-02T01:59:22.288Z",
+        "labels": {
+          "test-label": "test-label-matching-value",
+          "label2": "label2-valueOKTOO"
+        },
+        "lifecycleState": "ACTIVE",
+        "name": "invalid-project-missing-label2",
+        "parent": {
+          "id": "382777088978",
+          "type": "organization"
+        },
+        "projectId": "invalid-project-missing-label1",
+        "projectNumber": "357960133899"
+      }
+    }
+  },
+  {
+    "name": "//cloudresourcemanager.googleapis.com/projects/357960133233",
+    "asset_type": "cloudresourcemanager.googleapis.com/Project",
+    "resource": {
+      "version": "v1beta1",
+      "discovery_document_uri": "https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1",
+      "discovery_name": "Project",
+      "parent": "//cloudresourcemanager.googleapis.com/organizations/382777088978",
+      "data": {
+        "createTime": "2019-03-02T01:59:22.288Z",
+        "labels": {
+          "label1": "test-label1-bad-value",
+          "label2": "test-label2-bad-value"
+        },
+        "lifecycleState": "ACTIVE",
+        "name": "invalid-project-label1-and-label2-with-bad-values",
+        "parent": {
+          "id": "382777088978",
+          "type": "organization"
+        },
+        "projectId": "invalid-project-label-issues",
+        "projectNumber": "357960133233"
+      }
+    }
+  }
+]
+

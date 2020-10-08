@@ -1,0 +1,43 @@
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPRestrictedFirewallRulesConstraintV1
+metadata:
+  name: restrict-firewall-rule-allow-ingress-demo
+  annotations:
+    description: Checks that every firewall rule matches certain settings.
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - "organizations/**"
+  parameters:
+    rules:
+    - direction: "INGRESS"
+      rule_type: "allowed"
+      protocol: "all"
+      source_tags:
+      - "second-source-tag"
+      source_ranges:
+      - "192.168.1.1/32"
+      - "0.0.0.0/0"
+      target_tags:
+      - "target-tag"
+      source_service_accounts:
+      - "cf-gcp-challenge-dev-sa@cf-gcp-challenge-dev.iam.gserviceaccount.com"
+    exemptions_mode: "exact"
+    exemptions: []

@@ -1,0 +1,41 @@
+{
+  "name": "policy-bundle",
+  "version": "0.2.0",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -Rf node_modules/ dist/",
+    "pretest": "npm run build",
+    "test": "jasmine --config=jasmine.json",
+    "lint": "tslint -p package.json",
+    "kpt:docker-create": "kpt docker-create",
+    "kpt:docker-build": "kpt docker-build",
+    "kpt:docker-push": "kpt docker-push",
+    "kpt:function-create": "kpt function-create",
+    "kpt:type-create": "kpt type-create"
+  },
+  "dependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/lodash": "^4.14.157",
+    "@types/markdown-table": "^2.0.0",
+    "glob": "^7.1.6",
+    "kpt-functions": "^0.12.0",
+    "lodash": "^4.17.19",
+    "markdown-table": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^8.0.1",
+    "@types/jasmine": "^3.3.12",
+    "@types/node": "^12.7.2",
+    "create-kpt-functions": "^0.17.0",
+    "jasmine": "^3.4.0",
+    "tslint": "^5.19.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-consistent-codestyle": "^1.16.0",
+    "typescript": "^3.5.3"
+  },
+  "kpt": {
+    "docker_repo_base": "gcr.io/config-validator"
+  }
+}

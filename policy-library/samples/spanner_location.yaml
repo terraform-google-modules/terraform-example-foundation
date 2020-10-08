@@ -1,0 +1,16 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPSpannerLocationConstraintV1
+metadata:
+  name: allow_spanner_clusters_in_asia_and_europe
+  annotations:
+    description: Checks Cloud Spanner locations.
+    bundles.validator.forsetisecurity.org/healthcare-baseline-v1: security
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - "organizations/**"
+  parameters:
+    locations:
+    - "asia*"
+    - "eur*"

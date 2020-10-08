@@ -1,0 +1,276 @@
+[
+    {
+        "name": "//cloudsql.googleapis.com/projects/my-test-project/instances/cloudsql-instance-1-valid",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "my-test-project:us-central1:cloudsql-instance-1-valid",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "us-central1-a",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "cloudsql-instance-1-valid",
+                "project": "my-test-project",
+                "region": "us-central1",
+                "selfLink": "https://www.googleapis.com/sql/v1beta4/projects/my-test-project/instances/cloudsql-instance-1-valid",
+                "settings": {
+                    "activationPolicy": "ALWAYS",
+                    "backupConfiguration": {
+                        "binaryLogEnabled": true,
+                        "enabled": true,
+                        "kind": "sql#backupConfiguration",
+                        "startTime": "15:00"
+                    },
+                    "dataDiskSizeGb": "10",
+                    "dataDiskType": "PD_SSD",
+                    "ipConfiguration": {
+                        "ipv4Enabled": true
+                    },
+                    "kind": "sql#settings",
+                    "locationPreference": {
+                        "kind": "sql#locationPreference",
+                        "zone": "us-central1-a"
+                    },
+                    "maintenanceWindow": {
+                        "day": 0,
+                        "hour": 0,
+                        "kind": "sql#maintenanceWindow"
+                    },
+                    "pricingPlan": "PER_USE",
+                    "replicationType": "SYNCHRONOUS",
+                    "settingsVersion": "0",
+                    "storageAutoResize": true,
+                    "storageAutoResizeLimit": "0",
+                    "tier": "db-n1-standard-1",
+                    "userLabels": {
+                        "label1": "label1-value",
+                        "label2": "label2-valueOK"
+                    }
+                },
+                "state": "PENDING_CREATE"
+            }
+        }
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/my-test-project/instances/cloudsql-instance-1-invalid-missing-labels",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "my-test-project:us-central1:cloudsql-instance-1-invalid-missing-labels",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "us-central1-a",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "cloudsql-instance-1-invalid-missing-labels",
+                "project": "my-test-project",
+                "region": "us-central1",
+                "selfLink": "https://www.googleapis.com/sql/v1beta4/projects/my-test-project/instances/cloudsql-instance-1-invalid-missing-labels",
+                "settings": {
+                    "activationPolicy": "ALWAYS",
+                    "backupConfiguration": {
+                        "binaryLogEnabled": true,
+                        "enabled": true,
+                        "kind": "sql#backupConfiguration",
+                        "startTime": "15:00"
+                    },
+                    "dataDiskSizeGb": "10",
+                    "dataDiskType": "PD_SSD",
+                    "ipConfiguration": {
+                        "ipv4Enabled": true
+                    },
+                    "kind": "sql#settings",
+                    "locationPreference": {
+                        "kind": "sql#locationPreference",
+                        "zone": "us-central1-a"
+                    },
+                    "maintenanceWindow": {
+                        "day": 0,
+                        "hour": 0,
+                        "kind": "sql#maintenanceWindow"
+                    },
+                    "pricingPlan": "PER_USE",
+                    "replicationType": "SYNCHRONOUS",
+                    "settingsVersion": "0",
+                    "storageAutoResize": true,
+                    "storageAutoResizeLimit": "0",
+                    "tier": "db-n1-standard-1"
+                },
+                "state": "PENDING_CREATE"
+            }
+        }
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/my-test-project/instances/cloudsql-instance-1-invalid-missing-label1",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "my-test-project:us-central1:cloudsql-instance-1-invalid-missing-label1",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "us-central1-a",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "cloudsql-instance-1-invalid-missing-label1",
+                "project": "my-test-project",
+                "region": "us-central1",
+                "selfLink": "https://www.googleapis.com/sql/v1beta4/projects/my-test-project/instances/cloudsql-instance-1-invalid-missing-label1",
+                "settings": {
+                    "activationPolicy": "ALWAYS",
+                    "backupConfiguration": {
+                        "binaryLogEnabled": true,
+                        "enabled": true,
+                        "kind": "sql#backupConfiguration",
+                        "startTime": "15:00"
+                    },
+                    "dataDiskSizeGb": "10",
+                    "dataDiskType": "PD_SSD",
+                    "ipConfiguration": {
+                        "ipv4Enabled": true
+                    },
+                    "kind": "sql#settings",
+                    "locationPreference": {
+                        "kind": "sql#locationPreference",
+                        "zone": "us-central1-a"
+                    },
+                    "maintenanceWindow": {
+                        "day": 0,
+                        "hour": 0,
+                        "kind": "sql#maintenanceWindow"
+                    },
+                    "pricingPlan": "PER_USE",
+                    "replicationType": "SYNCHRONOUS",
+                    "settingsVersion": "0",
+                    "storageAutoResize": true,
+                    "storageAutoResizeLimit": "0",
+                    "tier": "db-n1-standard-1",
+                    "userLabels": {
+                        "label2": "label2-valueOKTOO"
+                    }
+                },
+                "state": "PENDING_CREATE"
+            }
+        }
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/my-test-project/instances/cloudsql-instance-1-invalid-missing-label2",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "my-test-project:us-central1:cloudsql-instance-1-invalid-missing-label2",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "us-central1-a",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "cloudsql-instance-1-invalid-missing-label2",
+                "project": "my-test-project",
+                "region": "us-central1",
+                "selfLink": "https://www.googleapis.com/sql/v1beta4/projects/my-test-project/instances/cloudsql-instance-1-invalid-missing-label2",
+                "settings": {
+                    "activationPolicy": "ALWAYS",
+                    "backupConfiguration": {
+                        "binaryLogEnabled": true,
+                        "enabled": true,
+                        "kind": "sql#backupConfiguration",
+                        "startTime": "15:00"
+                    },
+                    "dataDiskSizeGb": "10",
+                    "dataDiskType": "PD_SSD",
+                    "ipConfiguration": {
+                        "ipv4Enabled": true
+                    },
+                    "kind": "sql#settings",
+                    "locationPreference": {
+                        "kind": "sql#locationPreference",
+                        "zone": "us-central1-a"
+                    },
+                    "maintenanceWindow": {
+                        "day": 0,
+                        "hour": 0,
+                        "kind": "sql#maintenanceWindow"
+                    },
+                    "pricingPlan": "PER_USE",
+                    "replicationType": "SYNCHRONOUS",
+                    "settingsVersion": "0",
+                    "storageAutoResize": true,
+                    "storageAutoResizeLimit": "0",
+                    "tier": "db-n1-standard-1",
+                    "userLabels": {
+                        "label1": "label1-value"
+                    }
+                },
+                "state": "PENDING_CREATE"
+            }
+        }
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/my-test-project/instances/cloudsql-instance-1-invalid-label1-and-label2-bad-values",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+            "discovery_name": "DatabaseInstance",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "my-test-project:us-central1:cloudsql-instance-1-invalid-label1-and-label2-bad-values",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "us-central1-a",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "kind": "sql#instance",
+                "name": "cloudsql-instance-1-invalid-label1-and-label2-bad-values",
+                "project": "my-test-project",
+                "region": "us-central1",
+                "selfLink": "https://www.googleapis.com/sql/v1beta4/projects/my-test-project/instances/cloudsql-instance-1-invalid-label1-and-label2-bad-values",
+                "settings": {
+                    "activationPolicy": "ALWAYS",
+                    "backupConfiguration": {
+                        "binaryLogEnabled": true,
+                        "enabled": true,
+                        "kind": "sql#backupConfiguration",
+                        "startTime": "15:00"
+                    },
+                    "dataDiskSizeGb": "10",
+                    "dataDiskType": "PD_SSD",
+                    "ipConfiguration": {
+                        "ipv4Enabled": true
+                    },
+                    "kind": "sql#settings",
+                    "locationPreference": {
+                        "kind": "sql#locationPreference",
+                        "zone": "us-central1-a"
+                    },
+                    "maintenanceWindow": {
+                        "day": 0,
+                        "hour": 0,
+                        "kind": "sql#maintenanceWindow"
+                    },
+                    "pricingPlan": "PER_USE",
+                    "replicationType": "SYNCHRONOUS",
+                    "settingsVersion": "0",
+                    "storageAutoResize": true,
+                    "storageAutoResizeLimit": "0",
+                    "tier": "db-n1-standard-1",
+                    "userLabels": {
+                        "label1": "label1-bad-value",
+                        "label2": "label2-bad-value"
+                    }
+                },
+                "state": "PENDING_CREATE"
+            }
+        }
+    }
+]

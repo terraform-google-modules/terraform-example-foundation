@@ -1,0 +1,16 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPAppengineLocationConstraintV1
+metadata:
+  name: allow_appengine_applications_in_australia_and_south_america
+  annotations:
+    description: Restrict locations (regions) where App Engine applications are deployed.
+    bundles.validator.forsetisecurity.org/healthcare-baseline-v1: security
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - "organizations/**"
+  parameters:
+    locations:
+    - "australia*"
+    - "southamerica*"

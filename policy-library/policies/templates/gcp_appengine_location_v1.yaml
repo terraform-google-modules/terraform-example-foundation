@@ -1,0 +1,61 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# This template is for policies restricting the locations of
+# Appengine applications in GCP. You can specify a list of regions in the
+# "locations" parameter. A cluster in the wrong region will raise a violation.
+
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-appengine-location-v1
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPAppengineLocationConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties:
+            locations:
+              type: array
+              items:
+                type: string
+              description: "List of GCP regions (or region patterns) for Appengine
+                applications locations (i.e 'asia*', 'europe-west2' etc.)."
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: "#\n# Copyright 2019 Google LLC\n#\n# Licensed under the Apache License,
+        Version 2.0 (the \"License\");\n# you may not use this file except in compliance
+        with the License.\n# You may obtain a copy of the License at\n#\n#      http://www.apache.org/licenses/LICENSE-2.0\n#\n#
+        Unless required by applicable law or agreed to in writing, software\n# distributed
+        under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES
+        OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for
+        the specific language governing permissions and\n# limitations under the License.\n#\n\npackage
+        templates.gcp.GCPAppengineLocationConstraintV1\n\nimport data.validator.gcp.lib
+        as lib\n\ndeny[{\n\t\"msg\": message,\n\t\"details\": metadata,\n}] {\n\tconstraint
+        := input.constraint\n\tlib.get_constraint_params(constraint, params)\n\n\tasset
+        := input.asset\n\n\t# Applies to appengine applications only\n\tasset.asset_type
+        == \"appengine.googleapis.com/Application\"\n\n\t# Retrieve the list of allowed
+        locations\n\tlocations := params.locations\n\n\t# The asset raises a violation
+        if location_is_valid is evaluated to false\n\tnot location_is_valid(asset,
+        locations)\n\n\tmessage := sprintf(\"%v is in violation.\", [asset.name])\n\tmetadata
+        := {\n\t\t\"resource\": asset.name,\n\t\t\"valid-locations\": locations,\n\t}\n}\n\n###########################\n#
+        Rule Utilities\n###########################\n\nlocation_is_valid(asset, locations)
+        {\n\t# ensure we have a data object\n\tresource := asset.resource.data\n\n\t#
+        Retrieve the location \n\tresource_location := resource.locationId\n\n\t#
+        iterate through the locations\n\tlocation := locations[_]\n\n\t# the resource
+        location is valid if it matches one of the passed locations\n\tre_match(location,
+        resource_location)\n}\n#ENDINLINE"

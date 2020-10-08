@@ -1,0 +1,151 @@
+[
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/jobs/job-b068791b-dataproc-job-ok",
+        "asset_type": "dataproc.googleapis.com/Job",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Job",
+            "data": {
+                "hadoopJob": {
+                    "mainClass": "test"
+                },
+                "jobUuid": "d93eecfb-26f8-441b-91fd-bef1fdb3648b",
+                "labels": {
+                    "label1": "label1-value",
+                    "label2": "label2-valueOK"
+                },
+                "placement": {
+                    "clusterName": "cluster-a1b6-test-dataproc",
+                    "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771e"
+                },
+                "reference": {
+                    "jobId": "job-b068791b-dataproc-job-ok",
+                    "projectId": "my-own-project"
+                },
+                "status": {
+                    "state": "PENDING",
+                    "stateStartTime": "2019-07-12T20:22:50.38Z"
+                }
+            }
+        }
+    },
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/jobs/job-b068791b-dataproc-job-missing-labels",
+        "asset_type": "dataproc.googleapis.com/Job",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Job",
+            "data": {
+                "hadoopJob": {
+                    "mainClass": "test"
+                },
+                "jobUuid": "d93eecfb-26f8-441b-91fd-bef1fdb3648b",
+                "placement": {
+                    "clusterName": "cluster-a1b6-test-dataproc",
+                    "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771e"
+                },
+                "reference": {
+                    "jobId": "job-b068791b-dataproc-job-missing-labels",
+                    "projectId": "my-own-project"
+                },
+                "status": {
+                    "state": "PENDING",
+                    "stateStartTime": "2019-07-12T20:22:50.38Z"
+                }
+            }
+        }
+    },
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/jobs/job-b068791b-dataproc-job-missing-label1",
+        "asset_type": "dataproc.googleapis.com/Job",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Job",
+            "data": {
+                "hadoopJob": {
+                    "mainClass": "test"
+                },
+                "jobUuid": "d93eecfb-26f8-441b-91fd-bef1fdb3648b",
+                "labels": {
+                    "label2": "label2-valueOKTOO"
+                },
+                "placement": {
+                    "clusterName": "cluster-a1b6-test-dataproc",
+                    "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771e"
+                },
+                "reference": {
+                    "jobId": "job-b068791b-dataproc-job-missing-label1",
+                    "projectId": "my-own-project"
+                },
+                "status": {
+                    "state": "PENDING",
+                    "stateStartTime": "2019-07-12T20:22:50.38Z"
+                }
+            }
+        }
+    },
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/jobs/job-b068791b-dataproc-job-missing-label2",
+        "asset_type": "dataproc.googleapis.com/Job",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Job",
+            "data": {
+                "hadoopJob": {
+                    "mainClass": "test"
+                },
+                "jobUuid": "d93eecfb-26f8-441b-91fd-bef1fdb3648b",
+                "labels": {
+                    "label1": "label1-value"
+                },
+                "placement": {
+                    "clusterName": "cluster-a1b6-test-dataproc",
+                    "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771e"
+                },
+                "reference": {
+                    "jobId": "job-b068791b-test-dataproc-job-missing-label2",
+                    "projectId": "my-own-project"
+                },
+                "status": {
+                    "state": "PENDING",
+                    "stateStartTime": "2019-07-12T20:22:50.38Z"
+                }
+            }
+        }
+    },
+    {
+        "name": "//dataproc.googleapis.com/projects/my-own-project/regions/global/jobs/job-b068791b-dataproc-job-bad-values",
+        "asset_type": "dataproc.googleapis.com/Job",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dataproc/v1/rest",
+            "discovery_name": "Job",
+            "data": {
+                "hadoopJob": {
+                    "mainClass": "test"
+                },
+                "jobUuid": "d93eecfb-26f8-441b-91fd-bef1fdb3648b",
+                "labels": {
+                    "label1": "label1-bad-value",
+                    "label2": "label2-bad-value"
+                },
+                "placement": {
+                    "clusterName": "cluster-a1b6-test-dataproc",
+                    "clusterUuid": "aca4794f-5d05-4350-9bd5-cc569aa7771e"
+                },
+                "reference": {
+                    "jobId": "job-b068791b-dataproc-job-bad-values",
+                    "projectId": "my-own-project"
+                },
+                "status": {
+                    "state": "PENDING",
+                    "stateStartTime": "2019-07-12T20:22:50.38Z"
+                }
+            }
+        }
+    }
+]

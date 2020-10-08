@@ -1,0 +1,91 @@
+[
+    {
+        "name": "//bigtable.googleapis.com/projects/my-test-project/instances/test-bigtable-id-valid-labels",
+        "asset_type": "bigtableadmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://bigtableadmin.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "data": {
+                "displayName": "test-bigtable-id-valid-labels",
+                "labels": {
+                    "label1": "label1-value",
+                    "label2": "label2-valueOK"
+                },
+                "name": "projects/my-test-project/instances/test-bigtable-id-valid-labels",
+                "state": "READY",
+                "type": "PRODUCTION"
+            }
+        }
+    },
+    {
+        "name": "//bigtable.googleapis.com/projects/my-test-project/instances/test-bigtable-invalid-missing-labels",
+        "asset_type": "bigtableadmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://bigtableadmin.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "data": {
+                "displayName": "test-bigtable-invalid-missing-labels",
+                "name": "projects/my-test-project/instances/test-bigtable-invalid-missing-labels",
+                "state": "READY",
+                "type": "PRODUCTION"
+            }
+        }
+    },
+    {
+        "name": "//bigtable.googleapis.com/projects/my-test-project/instances/test-bigtable-invalid-missing-label1",
+        "asset_type": "bigtableadmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://bigtableadmin.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "data": {
+                "displayName": "test-bigtable-invalid-missing-label1",
+                "labels": {
+                    "label2": "label2-valueOKTOO"
+                },
+                "name": "projects/my-test-project/instances/test-bigtable-invalid-missing-label1",
+                "state": "READY",
+                "type": "PRODUCTION"
+            }
+        }
+    },
+    {
+        "name": "//bigtable.googleapis.com/projects/my-test-project/instances/test-bigtable-invalid-missing-label2",
+        "asset_type": "bigtableadmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://bigtableadmin.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "data": {
+                "displayName": "test-bigtable-invalid-missing-label2",
+                "labels": {
+                    "label1": "label1-value"
+                },
+                "name": "projects/my-test-project/instances/test-bigtable-invalid-missing-label2",
+                "state": "READY",
+                "type": "PRODUCTION"
+            }
+        }
+    },
+    {
+        "name": "//bigtable.googleapis.com/projects/my-test-project/instances/test-bigtable-invalid-label1-and-label2-bad-values",
+        "asset_type": "bigtableadmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://bigtableadmin.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "data": {
+                "displayName": "test-bigtable-invalid-label1-and-label2-bad-values",
+                "labels": {
+                    "label1": "label1-bad-value",
+                    "label2": "label2-bad-value"
+                },
+                "name": "projects/my-test-project/instances/test-bigtable-invalid-label1-and-label2-bad-values",
+                "state": "READY",
+                "type": "PRODUCTION"
+            }
+        }
+    }
+]

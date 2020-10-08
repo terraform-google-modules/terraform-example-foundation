@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: constraints.gatekeeper.sh/v1alpha1
+  kind: GCPStorageBucketWorldReadableConstraintV1
+  metadata:
+    name: denylist_public_users
+    annotations:
+      description: Prevent public users from having access to resources via IAM
+      bundles.validator.forsetisecurity.org/forseti-security: v2.26.0
+      bundles.validator.forsetisecurity.org/scorecard-v1: security
+  spec:
+    severity: high
+    match:
+      target: ["organization/*"]
+      exclude: [] # optional, default is no exclusions
+    parameters: {}
+- apiVersion: constraints.gatekeeper.sh/v1alpha1
+  kind: GCPRestrictedFirewallRulesConstraintV1
+  metadata:
+    name: restrict-firewall-rule-world-open
+    annotations:
+      bundles.validator.forsetisecurity.org/forseti-security: v2.26.0
+      bundles.validator.forsetisecurity.org/scorecard-v1: security
+  spec:
+    severity: high
+    match:
+      target: ["organization/*"]
+    parameters:
+      rules:
+      - direction: "INGRESS"
+        source_ranges:
+        - "0.0.0.0/0"
+        enabled: "true"
+        rule_type: "allowed"
+- apiVersion: constraints.gatekeeper.sh/v1alpha1
+  kind: GCPIAMAllowedBindingsConstraintV1
+  metadata:
+    name: denylist-gmail-bigquery-dataset
+    annotations:
+      description: Enforce corporate domain by banning gmail.com addresses access
+        to BigQuery datasets
+      bundles.validator.forsetisecurity.org/forseti-security: v2.26.0
+  spec:
+    severity: high
+    match:
+      target: ["organization/*"]
+      exclude: []
+    parameters:
+      mode: denylist
+      assetType: bigquery.googleapis.com/Dataset
+      role: roles/*
+      members:
+      - "user:*@gmail.com"

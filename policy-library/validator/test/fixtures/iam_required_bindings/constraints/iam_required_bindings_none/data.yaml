@@ -1,0 +1,11 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPIAMRequiredBindingsConstraintV1
+metadata:
+  name: require_no_members
+  annotations:
+    description: No required members
+spec:
+  severity: high
+  parameters:
+    role: "roles/*"
+    members: []

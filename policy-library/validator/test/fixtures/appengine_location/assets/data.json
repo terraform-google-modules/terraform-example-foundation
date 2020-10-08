@@ -1,0 +1,101 @@
+[
+    {
+        "name": "//appengine.googleapis.com/apps/cf-test-project-1",
+        "asset_type": "appengine.googleapis.com/Application",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest",
+            "discovery_name": "Application",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "authDomain": "gmail.com",
+                "codeBucket": "staging.cf-test-project-1.appspot.com",
+                "defaultBucket": "cf-test-project-1.appspot.com",
+                "defaultHostname": "cf-test-project-1.appspot.com",
+                "featureSettings": {
+                    "splitHealthChecks": true
+                },
+                "gcrDomain": "us.gcr.io",
+                "id": "cf-test-project-1",
+                "locationId": "us-central",
+                "name": "apps/cf-test-project-1",
+                "servingStatus": "SERVING"
+            }
+        }
+    },
+    {
+        "name": "//appengine.googleapis.com/apps/cf-test-project-2",
+        "asset_type": "appengine.googleapis.com/Application",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest",
+            "discovery_name": "Application",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/14147973750",
+            "data": {
+                "authDomain": "gmail.com",
+                "codeBucket": "staging.cf-test-project-2.appspot.com",
+                "defaultBucket": "cf-test-project-2.appspot.com",
+                "defaultHostname": "cf-test-project-2.appspot.com",
+                "featureSettings": {
+                    "splitHealthChecks": true,
+                    "useContainerOptimizedOs": true
+                },
+                "gcrDomain": "eu.gcr.io",
+                "id": "cf-test-project-2",
+                "locationId": "europe-west6",
+                "name": "apps/cf-test-project-2",
+                "servingStatus": "SERVING"
+            }
+        }
+    },
+    {
+        "name": "//appengine.googleapis.com/apps/cf-test-project-3",
+        "asset_type": "appengine.googleapis.com/Application",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest",
+            "discovery_name": "Application",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/766908199042",
+            "data": {
+                "authDomain": "gmail.com",
+                "codeBucket": "staging.cf-test-project-3.appspot.com",
+                "defaultBucket": "cf-test-project-3.appspot.com",
+                "defaultHostname": "cf-test-project-3.appspot.com",
+                "featureSettings": {
+                    "splitHealthChecks": true,
+                    "useContainerOptimizedOs": true
+                },
+                "gcrDomain": "asia.gcr.io",
+                "id": "cf-test-project-3",
+                "locationId": "australia-southeast1",
+                "name": "apps/cf-test-project-3",
+                "servingStatus": "SERVING"
+            }
+        }
+    },
+    {
+        "name": "//appengine.googleapis.com/apps/cf-test-project-4",
+        "asset_type": "appengine.googleapis.com/Application",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest",
+            "discovery_name": "Application",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/738726033501",
+            "data": {
+                "authDomain": "gmail.com",
+                "codeBucket": "staging.cf-test-project-4.appspot.com",
+                "defaultBucket": "cf-test-project-4.appspot.com",
+                "defaultHostname": "cf-test-project-4.appspot.com",
+                "featureSettings": {
+                    "splitHealthChecks": true,
+                    "useContainerOptimizedOs": true
+                },
+                "gcrDomain": "us.gcr.io",
+                "id": "cf-test-project-4",
+                "locationId": "southamerica-east1",
+                "name": "apps/cf-test-project-4",
+                "servingStatus": "SERVING"
+            }
+        }
+    }
+]

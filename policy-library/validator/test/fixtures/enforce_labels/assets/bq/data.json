@@ -1,0 +1,303 @@
+[
+    {
+        "name": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_1_no_labels",
+        "asset_type": "bigquery.googleapis.com/Dataset",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Dataset",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/246618495851",
+            "data": {
+                "creationTime": "1575345742585",
+                "datasetReference": {
+                    "datasetId": "test_dataset_1_no_labels",
+                    "projectId": "cf-test-project-aw"
+                },
+                "id": "cf-test-project-aw:test_dataset_1_no_labels",
+                "kind": "bigquery#dataset",
+                "lastModifiedTime": "1575345742585",
+                "location": "US"
+            }
+        },
+        "ancestors": [
+            "projects/246618495851",
+            "organizations/852514890226"
+        ]
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_2_wrong_labels",
+        "asset_type": "bigquery.googleapis.com/Dataset",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Dataset",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/246618495851",
+            "data": {
+                "creationTime": "1575345798490",
+                "datasetReference": {
+                    "datasetId": "test_dataset_2_wrong_labels",
+                    "projectId": "cf-test-project-aw"
+                },
+                "id": "cf-test-project-aw:test_dataset_2_wrong_labels",
+                "kind": "bigquery#dataset",
+                "labels": {
+                    "wrong-label": "some-value"
+                },
+                "lastModifiedTime": "1575345819759",
+                "location": "US"
+            }
+        },
+        "ancestors": [
+            "projects/246618495851",
+            "organizations/852514890226"
+        ]
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_good_labels",
+        "asset_type": "bigquery.googleapis.com/Dataset",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Dataset",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/246618495851",
+            "data": {
+                "creationTime": "1575345864387",
+                "datasetReference": {
+                    "datasetId": "test_dataset_good_labels",
+                    "projectId": "cf-test-project-aw"
+                },
+                "id": "cf-test-project-aw:test_dataset_good_labels",
+                "kind": "bigquery#dataset",
+                "labels": {
+                    "label1": "label1-value",
+                    "label2": "label2-value"
+                },
+                "lastModifiedTime": "1575345950529",
+                "location": "US"
+            }
+        },
+        "ancestors": [
+            "projects/246618495851",
+            "organizations/852514890226"
+        ]
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_good_labels/tables/table_wrong_labels",
+        "asset_type": "bigquery.googleapis.com/Table",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Table",
+            "parent": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_good_labels",
+            "data": {
+                "id": "cf-test-project-aw:test_dataset_good_labels.table_wrong_labels",
+                "kind": "bigquery#table",
+                "labels": {
+                    "label1": "some-value"
+                },
+                "location": "US",
+                "schema": {},
+                "tableReference": {
+                    "datasetId": "test_dataset_good_labels",
+                    "projectId": "cf-test-project-aw",
+                    "tableId": "table_wrong_labels"
+                }
+            }
+        },
+        "ancestors": [
+            "projects/246618495851",
+            "organizations/852514890226"
+        ]
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_good_labels/tables/table_no_labels",
+        "asset_type": "bigquery.googleapis.com/Table",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Table",
+            "parent": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_good_labels",
+            "data": {
+                "id": "cf-test-project-aw:test_dataset_good_labels.table_no_labels",
+                "kind": "bigquery#table",
+                "location": "US",
+                "schema": {
+                    "fields": [
+                        {
+                            "description": "",
+                            "name": "custom_field",
+                            "type": "TYPE_STRING"
+                        }
+                    ]
+                },
+                "tableReference": {
+                    "datasetId": "test_dataset_good_labels",
+                    "projectId": "cf-test-project-aw",
+                    "tableId": "table_no_labels"
+                }
+            }
+        },
+        "ancestors": [
+            "projects/246618495851",
+            "organizations/852514890226"
+        ]
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_good_labels/tables/table_no_labels",
+        "asset_type": "bigquery.googleapis.com/Table",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Table",
+            "parent": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_good_labels",
+            "data": {
+                "id": "cf-test-project-aw:test_dataset_good_labels.table_no_labels",
+                "kind": "bigquery#table",
+                "labels": {
+                    "label1": "label1-value",
+                    "label2": "label2-value"
+                },
+                "location": "US",
+                "schema": {
+                    "fields": [
+                        {
+                            "description": "",
+                            "name": "test_field_1",
+                            "type": "TYPE_STRING"
+                        },
+                        {
+                            "description": "",
+                            "name": "test_field_2",
+                            "type": "TYPE_STRING"
+                        }
+                    ]
+                },
+                "tableReference": {
+                    "datasetId": "test_dataset_good_labels",
+                    "projectId": "cf-test-project-aw",
+                    "tableId": "table_no_labels"
+                }
+            }
+        },
+        "ancestors": [
+            "projects/246618495851",
+            "organizations/852514890226"
+        ]
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_good_labels/tables/table_valid_labels_view_valid_labels",
+        "asset_type": "bigquery.googleapis.com/Table",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Table",
+            "parent": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_good_labels",
+            "data": {
+                "id": "cf-test-project-aw:test_dataset_good_labels.table_valid_labels_view_valid_labels",
+                "kind": "bigquery#table",
+                "labels": {
+                    "label1": "label1-value",
+                    "label2": "label2-value"
+                },
+                "location": "US",
+                "schema": {
+                    "fields": [
+                        {
+                            "description": "",
+                            "name": "custom_field",
+                            "type": "TYPE_STRING"
+                        }
+                    ]
+                },
+                "tableReference": {
+                    "datasetId": "test_dataset_good_labels",
+                    "projectId": "cf-test-project-aw",
+                    "tableId": "table_valid_labels_view_valid_labels"
+                },
+                "view": {
+                    "query": "SELECT custom_field FROM `cf-test-project-aw.test_dataset_good_labels.table_valid_labels`"
+                }
+            }
+        },
+        "ancestors": [
+            "projects/246618495851",
+            "organizations/852514890226"
+        ]
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_1_no_labels/tables/table_valid_labels_view_no_labels",
+        "asset_type": "bigquery.googleapis.com/Table",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Table",
+            "parent": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_1_no_labels",
+            "data": {
+                "id": "cf-test-project-aw:test_dataset_1_no_labels.table_valid_labels_view_no_labels",
+                "kind": "bigquery#table",
+                "location": "US",
+                "schema": {
+                    "fields": [
+                        {
+                            "description": "",
+                            "name": "custom_field",
+                            "type": "TYPE_STRING"
+                        }
+                    ]
+                },
+                "tableReference": {
+                    "datasetId": "test_dataset_1_no_labels",
+                    "projectId": "cf-test-project-aw",
+                    "tableId": "table_valid_labels_view_no_labels"
+                },
+                "view": {
+                    "query": "SELECT custom_field FROM `cf-test-project-aw.test_dataset_good_labels.table_valid_labels`"
+                }
+            }
+        },
+        "ancestors": [
+            "projects/246618495851",
+            "organizations/852514890226"
+        ]
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_2_wrong_labels/tables/table_valid_labels_view_wrong_labels",
+        "asset_type": "bigquery.googleapis.com/Table",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Table",
+            "parent": "//bigquery.googleapis.com/projects/cf-test-project-aw/datasets/test_dataset_2_wrong_labels",
+            "data": {
+                "id": "cf-test-project-aw:test_dataset_2_wrong_labels.table_valid_labels_view_wrong_labels",
+                "kind": "bigquery#table",
+                "labels": {
+                    "label1": "some-value"
+                },
+                "location": "US",
+                "schema": {
+                    "fields": [
+                        {
+                            "description": "",
+                            "name": "custom_field",
+                            "type": "TYPE_STRING"
+                        }
+                    ]
+                },
+                "tableReference": {
+                    "datasetId": "test_dataset_2_wrong_labels",
+                    "projectId": "cf-test-project-aw",
+                    "tableId": "table_valid_labels_view_wrong_labels"
+                },
+                "view": {
+                    "query": "SELECT custom_field FROM `cf-test-project-aw.test_dataset_good_labels.table_valid_labels`"
+                }
+            }
+        },
+        "ancestors": [
+            "projects/246618495851",
+            "organizations/852514890226"
+        ]
+    }
+]
+

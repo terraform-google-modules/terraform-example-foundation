@@ -1,0 +1,73 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-sql-maintenance-window-v1
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPSQLMaintenanceWindowConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties:
+            hours:
+              type: array
+              items:
+                type: number
+              description: "Array of UTC hours when the maintenance window is authorised.
+                Example night hours Optional, when not specified any hour is authorized
+                from 0 to 23"
+            exemptions:
+              type: array
+              items:
+                type: string
+              description: "Array of Cloud SQL instances to exempt from maintenance
+                window restriction. String values in the array should correspond to
+                the full name values of exempted Cloud SQL instances. Optional"
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: "#\n# Copyright 2019 Google LLC \n#\n# Licensed under the Apache License,
+        Version 2.0 (the \"License\");\n# you may not use this file except in compliance
+        with the License.\n# You may obtain a copy of the License at\n#\n#      http://www.apache.org/licenses/LICENSE-2.0\n#\n#
+        Unless required by applicable law or agreed to in writing, software\n# distributed
+        under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES
+        OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for
+        the specific language governing permissions and\n# limitations under the License.\n#
+        \n\npackage templates.gcp.GCPSQLMaintenanceWindowConstraintV1\n\nimport data.validator.gcp.lib
+        as lib\n\n# A violation is generated only when the rule body evaluates to
+        true.\ndeny[{\n\t\"msg\": message,\n\t\"details\": metadata,\n}] {\n\t# by
+        default any hour accepted\n\tdefault_hours := {0, 1, 2, 3, 4, 5, 6, 7, 8,
+        9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}\n\tspec := lib.get_default(input.constraint,
+        \"spec\", \"\")\n\tparameters := lib.get_default(spec, \"parameters\", \"\")\n\tmaintenance_window_hours
+        := lib.get_default(parameters, \"hours\", default_hours)\n\tdesired_maintenance_window_hours
+        := get_default_when_empty(maintenance_window_hours, default_hours)\n\texempt_list
+        := lib.get_default(parameters, \"exemptions\", [])\n\n\t# Verify that resource
+        is Cloud SQL instance and is not a first gen\n\t# Maintenance window is supported
+        only on 2nd generation instances\n\tasset := input.asset\n\tasset.asset_type
+        == \"sqladmin.googleapis.com/Instance\"\n\tasset.resource.data.backendType
+        != \"FIRST_GEN\"\n\n\t# Check if resource is in exempt list\n\tmatches :=
+        {asset.name} & cast_set(exempt_list)\n\tcount(matches) == 0\n\n\t# get instance
+        settings\n\tsettings := lib.get_default(asset.resource.data, \"settings\",
+        {})\n\tinstance_maintenance_window := lib.get_default(settings, \"maintenanceWindow\",
+        {})\n\tinstance_maintenance_window_hour := lib.get_default(instance_maintenance_window,
+        \"hour\", \"\")\n\n\t# check compliance\n\thour_matches := {instance_maintenance_window_hour}
+        & cast_set(desired_maintenance_window_hours)\n\tcount(hour_matches) == 0\n\n\tmessage
+        := sprintf(\"%v missing or incorrect maintenance window. Hour: '%v'\", [asset.name,
+        instance_maintenance_window_hour])\n\tmetadata := {\"resource\": asset.name}\n}\n\n#
+        Rule utilities\nget_default_when_empty(value, default_value) = output {\n\tcount(value)
+        != 0\n\toutput := value\n}\n\nget_default_when_empty(value, default_value)
+        = output {\n\tcount(value) == 0\n\toutput := default_value\n}\n#ENDINLINE\n"

@@ -1,0 +1,59 @@
+ [
+    {
+        "name": "//bigquery.googleapis.com/projects/sandbox2/datasets/us_west2_test_dataset",
+        "asset_type": "bigquery.googleapis.com/Dataset",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Dataset",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/0000000000",
+            "data": {
+                "datasetReference": {
+                    "datasetId": "us_west2_test_dataset",
+                    "projectId": "sandbox2"
+                },
+                "id": "sandbox2:us_west2_test_dataset",
+                "kind": "bigquery#dataset",
+                "location": "us-west2"
+            }
+        }
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/sandbox2/datasets/eu_test_dataset",
+        "asset_type": "bigquery.googleapis.com/Dataset",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Dataset",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/000000000",
+            "data": {
+                "datasetReference": {
+                    "datasetId": "eu_test_dataset",
+                    "projectId": "sandbox2"
+                },
+                "id": "sandbox2:eu_test_dataset",
+                "kind": "bigquery#dataset",
+                "location": "EU"
+            }
+        }
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/sandbox2/datasets/us_east4_test_dataset",
+        "asset_type": "bigquery.googleapis.com/Dataset",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Dataset",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/0000000000",
+            "data": {
+                "datasetReference": {
+                    "datasetId": "us_east4_test_dataset",
+                    "projectId": "sandbox2"
+                },
+                "id": "sandbox2:us_east4_test_dataset",
+                "kind": "bigquery#dataset",
+                "location": "us-east4"
+            }
+        }
+    }
+ ]

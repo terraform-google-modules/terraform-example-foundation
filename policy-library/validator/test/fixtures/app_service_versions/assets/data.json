@@ -1,0 +1,66 @@
+[
+    {
+      "name": "//appengine.googleapis.com/apps/test-ae-example/services/three-versions",
+      "asset_type": "appengine.googleapis.com/Service",
+      "resource": {
+        "version": "v1",
+        "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest",
+        "discovery_name": "Service",
+        "parent": "//appengine.googleapis.com/apps/test-ae-example",
+        "data": {
+          "id": "three-versions",
+          "name": "apps/clearify-ae-example/services/three-versions",
+          "split": {
+            "allocations": {
+              "20190617t202903": 0.33,
+              "20190617t202943": 0.33,
+              "20190617t203428": 0.34
+            },
+            "shardBy": "RANDOM"
+          }
+        }
+      }
+    },
+    {
+      "name": "//appengine.googleapis.com/apps/test-ae-example/services/two-versions",
+      "asset_type": "appengine.googleapis.com/Service",
+      "resource": {
+        "version": "v1",
+        "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest",
+        "discovery_name": "Service",
+        "parent": "//appengine.googleapis.com/apps/test-ae-example",
+        "data": {
+          "id": "three-versions",
+          "name": "apps/clearify-ae-example/services/two-versions",
+          "split": {
+            "allocations": {
+              "20190617t202903": 0.5,
+              "20190617t202943": 0.5
+            },
+            "shardBy": "RANDOM"
+          }
+        }
+      }
+    },
+    {
+      "name": "//appengine.googleapis.com/apps/test-ae-example/services/one-version",
+      "asset_type": "appengine.googleapis.com/Service",
+      "resource": {
+        "version": "v1",
+        "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/appengine/v1/rest",
+        "discovery_name": "Service",
+        "parent": "//appengine.googleapis.com/apps/test-ae-example",
+        "data": {
+          "id": "three-versions",
+          "name": "apps/clearify-ae-example/services/one-version",
+          "split": {
+            "allocations": {
+              "20190617t202903": 1
+            },
+            "shardBy": "RANDOM"
+          }
+        }
+      }
+    }
+  ]
+  

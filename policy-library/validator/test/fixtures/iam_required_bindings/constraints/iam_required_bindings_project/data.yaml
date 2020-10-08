@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPIAMRequiredBindingsConstraintV1
+metadata:
+  name: require_project
+  annotations:
+    description: Restrict by asset type
+spec:
+  severity: high
+  parameters:
+    assetType: cloudresourcemanager.googleapis.com/Project
+    assetNames: []
+    role: "roles/*"
+    members:
+    - "user:required@google.com"

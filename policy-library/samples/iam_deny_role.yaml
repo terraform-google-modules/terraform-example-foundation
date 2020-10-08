@@ -1,0 +1,20 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPIAMAllowedBindingsConstraintV3
+metadata:
+  name: deny_role
+  annotations:
+    description: Ban any users from being granted Service Account User access
+    # This constraint is not certified by CIS.
+    bundles.validator.forsetisecurity.org/cis-v1.1: 1.05
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - "organizations/**"
+    exclude: [] # optional, default is no exclusions
+  parameters:
+    mode: denylist
+    assetType: cloudresourcemanager.googleapis.com/Project
+    role: roles/iam.serviceAccountUser
+    members:
+    - "*"

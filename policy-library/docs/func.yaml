@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: generate-docs-config
+data:
+  sink_dir: /docs/
+  overwrite: "true"
+  index: |
+    # Config Validator Policy Library
+
+    Constraint templates specify the logic to be used by constraints.
+    This repository contains pre-defined constraint templates that you can implement or modify for your own needs.
+
+    ## Creating a constraint template
+    You can create and implement your own custom constraint templates.
+    For instructions on how to write constraint templates, see [How to write your own constraint templates](./constraint_template_authoring.md).
+
+    ## Policy Bundles
+    In addition to browsing all [Available Templates](#available-templates) and [Sample Constraints](#sample-constraints),
+    you can explore these policy bundles:
+
+    - [CFT Scorecard](./bundles/scorecard-v1.md)
+    - [CIS v1.0](./bundles/cis-v1.0.md)
+    - [CIS v1.1](./bundles/cis-v1.1.md)
+    - [Forseti Security](./bundles/forseti-security.md)
+    - [GKE Hardening](./bundles/gke-hardening-v2019.11.11.md)
+    - [Healthcare Baseline](./bundles/healthcare-baseline-v1.md)

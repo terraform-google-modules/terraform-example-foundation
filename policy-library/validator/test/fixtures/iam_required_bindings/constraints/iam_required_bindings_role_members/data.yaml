@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPIAMRequiredBindingsConstraintV1
+metadata:
+  name: require_owner_role_members
+  annotations:
+    description: Require all known members
+spec:
+  severity: high
+  parameters:
+    role: roles/owner
+    members:
+    - "user:*@google.com"
+    - "group:*@google.com"
+    - "user:required@notgoogle.com"

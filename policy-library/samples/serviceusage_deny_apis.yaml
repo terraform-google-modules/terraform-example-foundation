@@ -1,0 +1,17 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPServiceUsageConstraintV1
+metadata:
+  name: deny_some_apis
+  annotations:
+    description: Deny a set of APIS
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - "organizations/**"
+    exclude: []
+  parameters:
+    mode: deny
+    services:
+    - "cloudvision.googleapis.com"
+    - "translate.googleapis.com"

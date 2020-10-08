@@ -1,0 +1,12 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPServiceUsageConstraintV1
+metadata:
+  name: allow_only_computeapi
+  annotations:
+    description: Only allow the compute API to be enabled
+spec:
+  severity: high
+  parameters:
+    mode: allow
+    services:
+    - "compute.googleapis.com"

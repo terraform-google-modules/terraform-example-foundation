@@ -1,0 +1,11 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPIAMAuditLogConstraintV1
+metadata:
+  name: audit_log_all
+  annotations:
+    description: Checks that all services have all types of audit logs enabled.
+    bundles.validator.forsetisecurity.org/healthcare-baseline-v1: security
+spec:
+  parameters:
+    services: [allServices]
+    log_types: [DATA_READ, DATA_WRITE, ADMIN_READ]

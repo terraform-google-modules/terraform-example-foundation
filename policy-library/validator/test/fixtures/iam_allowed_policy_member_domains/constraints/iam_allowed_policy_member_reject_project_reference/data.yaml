@@ -1,0 +1,12 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPIAMAllowedPolicyMemberDomainsConstraintV2
+metadata:
+  name: reject_project_reference
+spec:
+  severity: high
+  parameters:
+    member_type_allowlist: []
+    domains:
+    - gserviceaccount.com
+    - google.com
+    - notgoogle.com

@@ -1,0 +1,230 @@
+[
+  {
+    "name": "//storage.googleapis.com/bucket-with-valid-labels",
+    "asset_type": "storage.googleapis.com/Bucket",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+      "discovery_name": "Bucket",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/318576589455",
+      "data": {
+        "acl": [],
+        "billing": {},
+        "cors": [],
+        "defaultObjectAcl": [],
+        "encryption": {},
+        "etag": "CAU=",
+        "iamConfiguration": {
+          "bucketPolicyOnly": {
+            "enabled": true,
+            "lockedTime": "2019-08-13T15:22:00.617Z"
+          }
+        },
+        "id": "bucket-with-valid-labels",
+        "kind": "storage#bucket",
+        "labels": {
+          "my-label-key": "some-value",
+          "label2": "label2-value",
+          "label1": "label1-value"
+        },
+        "lifecycle": {
+          "rule": []
+        },
+        "location": "US-CENTRAL1",
+        "logging": {},
+        "metageneration": 5,
+        "name": "bucket-with-valid-labels",
+        "owner": {},
+        "projectNumber": 318576589455,
+        "retentionPolicy": {},
+        "selfLink": "https://www.googleapis.com/storage/v1/b/bucket-with-valid-labels",
+        "storageClass": "REGIONAL",
+        "timeCreated": "2019-05-15T15:05:56.580Z",
+        "updated": "2019-05-15T15:56:44.899Z",
+        "versioning": {},
+        "website": {}
+      }
+    }
+  },
+  {
+    "name": "//storage.googleapis.com/bucket-with-no-labels",
+    "asset_type": "storage.googleapis.com/Bucket",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+      "discovery_name": "Bucket",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/318576589455",
+      "data": {
+        "acl": [],
+        "billing": {},
+        "cors": [],
+        "defaultObjectAcl": [],
+        "encryption": {},
+        "etag": "CAU=",
+        "iamConfiguration": {
+          "bucketPolicyOnly": {
+            "enabled": true,
+            "lockedTime": "2019-08-13T15:22:00.617Z"
+          }
+        },
+        "id": "bucket-with-no-labels",
+        "kind": "storage#bucket",
+        "lifecycle": {
+          "rule": []
+        },
+        "location": "US-CENTRAL1",
+        "logging": {},
+        "metageneration": 5,
+        "name": "bucket-with-no-labels",
+        "owner": {},
+        "projectNumber": 318576589455,
+        "retentionPolicy": {},
+        "selfLink": "https://www.googleapis.com/storage/v1/b/bucket-with-no-labels",
+        "storageClass": "REGIONAL",
+        "timeCreated": "2019-05-15T15:05:56.580Z",
+        "updated": "2019-05-15T15:56:44.899Z",
+        "versioning": {},
+        "website": {}
+      }
+    }
+  },
+  {
+    "name": "//storage.googleapis.com/bucket-with-label2-missing",
+    "asset_type": "storage.googleapis.com/Bucket",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+      "discovery_name": "Bucket",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/318576589455",
+      "data": {
+        "acl": [],
+        "billing": {},
+        "cors": [],
+        "defaultObjectAcl": [],
+        "encryption": {},
+        "etag": "CAU=",
+        "iamConfiguration": {
+          "bucketPolicyOnly": {
+            "enabled": true,
+            "lockedTime": "2019-08-13T15:22:00.617Z"
+          }
+        },
+        "id": "bucket-with-label2-missing",
+        "kind": "storage#bucket",
+        "labels": {
+          "my-label-key": "some-value",
+          "label1": "label1-value"
+        },
+        "lifecycle": {
+          "rule": []
+        },
+        "location": "US-CENTRAL1",
+        "logging": {},
+        "metageneration": 5,
+        "name": "bucket-with-label2-missing",
+        "owner": {},
+        "projectNumber": 318576589455,
+        "retentionPolicy": {},
+        "selfLink": "https://www.googleapis.com/storage/v1/b/bucket-with-label2-missing",
+        "storageClass": "REGIONAL",
+        "timeCreated": "2019-05-15T15:05:56.580Z",
+        "updated": "2019-05-15T15:56:44.899Z",
+        "versioning": {},
+        "website": {}
+      }
+    }
+  },
+  {
+    "name": "//storage.googleapis.com/bucket-with-label1-missing",
+    "asset_type": "storage.googleapis.com/Bucket",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+      "discovery_name": "Bucket",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/318576589455",
+      "data": {
+        "acl": [],
+        "billing": {},
+        "cors": [],
+        "defaultObjectAcl": [],
+        "encryption": {},
+        "etag": "CAU=",
+        "iamConfiguration": {
+          "bucketPolicyOnly": {
+            "enabled": true,
+            "lockedTime": "2019-08-13T15:22:00.617Z"
+          }
+        },
+        "id": "bucket-with-label1-missing",
+        "kind": "storage#bucket",
+        "labels": {
+          "my-label-key": "some-value",
+          "label2": "label2-valueOK"
+        },
+        "lifecycle": {
+          "rule": []
+        },
+        "location": "US-CENTRAL1",
+        "logging": {},
+        "metageneration": 5,
+        "name": "bucket-with-label1-missing",
+        "owner": {},
+        "projectNumber": 318576589455,
+        "retentionPolicy": {},
+        "selfLink": "https://www.googleapis.com/storage/v1/b/bucket-with-label1-missing",
+        "storageClass": "REGIONAL",
+        "timeCreated": "2019-05-15T15:05:56.580Z",
+        "updated": "2019-05-15T15:56:44.899Z",
+        "versioning": {},
+        "website": {}
+      }
+    }
+  },
+  {
+    "name": "//storage.googleapis.com/bucket-with-label1-and-label2-bad-values",
+    "asset_type": "storage.googleapis.com/Bucket",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+      "discovery_name": "Bucket",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/318576589455",
+      "data": {
+        "acl": [],
+        "billing": {},
+        "cors": [],
+        "defaultObjectAcl": [],
+        "encryption": {},
+        "etag": "CAU=",
+        "iamConfiguration": {
+          "bucketPolicyOnly": {
+            "enabled": true,
+            "lockedTime": "2019-08-13T15:22:00.617Z"
+          }
+        },
+        "id": "bucket-with-label1-and-label2-bad-values",
+        "kind": "storage#bucket",
+        "labels": {
+          "my-label-key": "some-value",
+          "label2": "label2-with-bad-value",
+          "label1": "label1-with-bad-value"
+        },
+        "lifecycle": {
+          "rule": []
+        },
+        "location": "US-CENTRAL1",
+        "logging": {},
+        "metageneration": 5,
+        "name": "bucket-with-label1-missing",
+        "owner": {},
+        "projectNumber": 318576589455,
+        "retentionPolicy": {},
+        "selfLink": "https://www.googleapis.com/storage/v1/b/bucket-with-label1-and-label2-bad-values",
+        "storageClass": "REGIONAL",
+        "timeCreated": "2019-05-15T15:05:56.580Z",
+        "updated": "2019-05-15T15:56:44.899Z",
+        "versioning": {},
+        "website": {}
+      }
+    }
+  }
+]

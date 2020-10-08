@@ -1,0 +1,192 @@
+[
+  {
+    "name": "//container.googleapis.com/projects/transfer-repos/zones/us-central1-c/clusters/joe-clust",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/282148707733",
+      "data": {
+        "addonsConfig": {
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "clusterIpv4Cidr": "10.44.0.0/14",
+        "createTime": "2016-11-19T05:58:02+00:00",
+        "currentMasterVersion": "1.10.11-gke.1",
+        "currentNodeCount": 4,
+        "currentNodeVersion": "1.4.6",
+        "endpoint": "104.196.229.72",
+        "initialClusterVersion": "1.4.6",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/pso-cicd8/zones/us-west1-b/instanceGroupManagers/gke-canary-west-default-pool-496ebc1d-grp"
+        ],
+        "legacyAbac": {
+          "enabled": true
+        },
+        "location": "us-west1-b",
+        "locations": [
+          "us-west1-b"
+        ],
+        "loggingService": "logging.googleapis.com",
+        "monitoringService": "none",
+        "name": "canary-west",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/pso-cicd8/global/networks/default",
+          "subnetwork": "projects/pso-cicd8/regions/us-west1/subnetworks/default"
+        },
+        "nodeIpv4CidrSize": 24,
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/compute",
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default"
+            },
+            "initialNodeCount": 2,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/pso-cicd8/zones/us-west1-b/instanceGroupManagers/gke-canary-west-default-pool-496ebc1d-grp"
+            ],
+            "management": {
+              "autoUpgrade": "true"
+            },
+            "name": "default-pool",
+            "selfLink": "https://container.googleapis.com/v1/projects/pso-cicd8/zones/us-west1-b/clusters/canary-west/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.4.6"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/pso-cicd8/zones/us-west1-b/clusters/canary-west",
+        "servicesIpv4Cidr": "10.47.240.0/20",
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-west1-b"
+      }
+    }
+  },
+  {
+    "name": "//container.googleapis.com/projects/transfer-repos/zones/us-central1-c/clusters/joe-clust2",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/282148707733",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "clusterIpv4Cidr": "10.8.0.0/14",
+        "createTime": "2019-06-10T19:53:56+00:00",
+        "currentMasterVersion": "1.12.8-gke.6",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.12.8-gke.6",
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "130.211.231.220",
+        "initialClusterVersion": "1.12.8-gke.6",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/transfer-repos/zones/us-central1-a/instanceGroupManagers/gke-joe-clust5-default-pool-5b754b0f-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.8.0.0/14",
+          "clusterIpv4CidrBlock": "10.8.0.0/14",
+          "clusterSecondaryRangeName": "gke-joe-clust5-pods-aba6b191",
+          "servicesIpv4Cidr": "10.12.0.0/20",
+          "servicesIpv4CidrBlock": "10.12.0.0/20",
+          "servicesSecondaryRangeName": "gke-joe-clust5-services-aba6b191",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-a",
+        "locations": [
+          "us-central1-a"
+        ],
+        "loggingService": "logging.googleapis.com",
+        "masterAuthorizedNetworksConfig": {
+          "enabled": true
+        },
+        "monitoringService": "monitoring.googleapis.com",
+        "name": "joe-clust5",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/transfer-repos/global/networks/default",
+          "subnetwork": "projects/transfer-repos/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/monitoring",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default"
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/transfer-repos/zones/us-central1-a/instanceGroupManagers/gke-joe-clust5-default-pool-5b754b0f-grp"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/transfer-repos/zones/us-central1-a/clusters/joe-clust5/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.12.8-gke.6"
+          }
+        ],
+        "privateClusterConfig": {
+          "enablePrivateNodes": true,
+          "masterIpv4CidrBlock": "172.16.0.0/28",
+          "privateEndpoint": "172.16.0.2",
+          "publicEndpoint": "130.211.231.220"
+        },
+        "selfLink": "https://container.googleapis.com/v1/projects/transfer-repos/zones/us-central1-a/clusters/joe-clust5",
+        "servicesIpv4Cidr": "10.12.0.0/20",
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-central1-a"
+      }
+    }
+  }
+]

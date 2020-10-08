@@ -1,0 +1,157 @@
+[
+  {
+  "name": "//storage.googleapis.com/forseti-cai-export-c9e3dd73-multiple-delete-actions",
+  "asset_type": "storage.googleapis.com/Bucket",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+    "discovery_name": "Bucket",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/242032014983",
+    "data": {
+      "acl": [],
+      "billing": {},
+      "cors": [],
+      "defaultObjectAcl": [],
+      "encryption": {},
+      "etag": "CAU=",
+      "iamConfiguration": {
+        "bucketPolicyOnly": {
+          "enabled": false
+        },
+        "uniformBucketLevelAccess": {
+          "enabled": false
+        }
+      },
+      "id": "forseti-cai-export-c9e3dd73-multiple-delete-actions",
+      "kind": "storage#bucket",
+      "labels": {},
+      "lifecycle": {
+        "rule": [
+          {
+            "action": {
+              "type": "Delete"
+            },
+            "condition": {
+              "age": 14,
+              "isLive": false,
+              "matchesStorageClass": []
+            }
+          },
+          {
+            "action": {
+              "type": "Delete"
+            },
+            "condition": {
+              "age": 20,
+              "createdBefore": "2019-08-05",
+              "matchesStorageClass": [],
+              "numNewerVersions": 2
+            }
+          },
+          {
+            "action": {
+              "storageClass": "NEARLINE",
+              "type": "SetStorageClass"
+            },
+            "condition": {
+              "age": 40,
+              "createdBefore": "2019-06-10",
+              "matchesStorageClass": [],
+              "numNewerVersions": 1
+            }
+          }
+        ]
+      },
+      "location": "US-EAST4",
+      "locationType": "region",
+      "logging": {},
+      "metageneration": 5,
+      "name": "forseti-cai-export-c9e3dd73-multiple-delete-actions",
+      "owner": {},
+      "projectNumber": 242032014983,
+      "retentionPolicy": {},
+      "selfLink": "https://www.googleapis.com/storage/v1/b/forseti-cai-export-c9e3dd73-multiple-delete-actions",
+      "storageClass": "STANDARD",
+      "timeCreated": "2020-02-03T19:37:57.659Z",
+      "updated": "2020-03-06T17:27:44.221Z",
+      "versioning": {},
+      "website": {}
+    }
+  },
+  "ancestors": [
+    "projects/242032014983",
+    "organizations/660570133860"
+  ]
+},
+  {
+  "name": "//storage.googleapis.com/forseti-client-c9e3dd73-multiple-delete-actions",
+  "asset_type": "storage.googleapis.com/Bucket",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+    "discovery_name": "Bucket",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/242032014983",
+    "data": {
+      "acl": [],
+      "billing": {},
+      "cors": [],
+      "defaultObjectAcl": [],
+      "encryption": {},
+      "etag": "CAM=",
+      "iamConfiguration": {
+        "bucketPolicyOnly": {
+          "enabled": false
+        },
+        "uniformBucketLevelAccess": {
+          "enabled": false
+        }
+      },
+      "id": "forseti-client-c9e3dd73-multiple-delete-actions",
+      "kind": "storage#bucket",
+      "labels": {},
+      "lifecycle": {
+        "rule": [
+          {
+            "action": {
+              "type": "Delete"
+            },
+            "condition": {
+              "age": 10,
+              "createdBefore": "2019-10-08",
+              "matchesStorageClass": [],
+              "numNewerVersions": 3
+            }
+          },
+          {
+            "action": {
+              "type": "Delete"
+            },
+            "condition": {
+              "age": 200,
+              "matchesStorageClass": []
+            }
+          }
+        ]
+      },
+      "location": "US-EAST4",
+      "locationType": "region",
+      "logging": {},
+      "metageneration": 3,
+      "name": "forseti-client-c9e3dd73-multiple-delete-actions",
+      "owner": {},
+      "projectNumber": 242032014983,
+      "retentionPolicy": {},
+      "selfLink": "https://www.googleapis.com/storage/v1/b/forseti-client-c9e3dd73-multiple-delete-actions",
+      "storageClass": "STANDARD",
+      "timeCreated": "2020-02-03T19:37:57.600Z",
+      "updated": "2020-03-06T17:20:29.997Z",
+      "versioning": {},
+      "website": {}
+    }
+  },
+  "ancestors": [
+    "projects/242032014983",
+    "organizations/660570133860"
+  ]
+}
+]

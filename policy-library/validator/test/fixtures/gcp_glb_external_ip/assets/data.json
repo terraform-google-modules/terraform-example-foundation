@@ -1,0 +1,48 @@
+{
+    "name": "//compute.googleapis.com/projects/test-project/global/forwardingRules/ext-ip",
+    "asset_type": "compute.googleapis.com/GlobalForwardingRule",
+    "resource": {
+        "version": "v1",
+        "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+        "discovery_name": "GlobalForwardingRule",
+        "parent": "//cloudresourcemanager.googleapis.com/projects/123456789012",
+        "data": {
+            "creationTimestamp": "2019-02-27T09:12:12.910-08:00",
+            "description": "",
+            "id": "2807208141737654787",
+            "ipAddress": "34.95.94.170",
+            "ipProtocol": "TCP",
+            "ipVersion": "IPV4",
+            "loadBalancingScheme": "EXTERNAL",
+            "name": "ext-ip",
+            "networkTier": "PREMIUM",
+            "portRange": "80-80",
+            "selfLink": "https://www.googleapis.com/compute/v1/projects/test-project/global/forwardingRules/ext-ip",
+            "target": "https://www.googleapis.com/compute/v1/projects/test-project/global/targetHttpProxies/test-noip-target-proxy"
+        }
+    }
+}
+{
+    "name": "//compute.googleapis.com/projects/test-project/global/forwardingRules/ext-ip2",
+    "asset_type": "compute.googleapis.com/GlobalForwardingRule",
+    "resource": {
+        "version": "v1",
+        "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+        "discovery_name": "GlobalForwardingRule",
+        "parent": "//cloudresourcemanager.googleapis.com/projects/123456789012",
+        "data": {
+            "creationTimestamp": "2019-02-27T09:12:12.910-08:00",
+            "description": "",
+            "id": "2807208141737654787",
+            "ipAddress": "34.95.94.177",
+            "ipProtocol": "TCP",
+            "ipVersion": "IPV4",
+            "loadBalancingScheme": "EXTERNAL",
+            "name": "ext-ip2",
+            "networkTier": "PREMIUM",
+            "portRange": "80-80",
+            "selfLink": "https://www.googleapis.com/compute/v1/projects/test-project/global/forwardingRules/ext-ip2",
+            "target": "https://www.googleapis.com/compute/v1/projects/test-project/global/targetHttpProxies/test-noip-target-proxy2"
+        }
+    }
+}

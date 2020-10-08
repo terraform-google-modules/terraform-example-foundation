@@ -1,0 +1,50 @@
+#
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+package templates.gcp.GCPComputeAllowedNetworksConstraintV2
+
+import data.validator.gcp.lib as lib
+
+deny[{
+	"msg": message,
+	"details": metadata,
+}] {
+	constraint := input.constraint
+	asset := input.asset
+	asset.asset_type == "compute.googleapis.com/Instance"
+
+	lib.get_constraint_params(input.constraint, params)
+
+	instance := asset.resource.data
+
+	interfaces := lib.get_default(instance, "networkInterfaces", [])
+	interface := interfaces[_]
+	full_network_uri := interface.network
+
+	allowlist := lib.get_default(params, "allowed", [])
+	allowed_networks := {n | n = allowlist[_]}
+
+	access_configs := lib.get_default(interface, "accessConfigs", [])
+
+	is_external_network := count(access_configs) > 0
+	is_network_allowed := count({full_network_uri} - allowed_networks) == 0
+
+	is_external_network == true
+	is_network_allowed == false
+
+	message := sprintf("Compute instance %v has interface %v with invalid access configuration.", [asset.name, interface.name])
+	metadata := {"resource": asset.name}
+}

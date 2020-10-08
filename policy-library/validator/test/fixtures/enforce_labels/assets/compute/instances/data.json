@@ -1,0 +1,459 @@
+[
+    {
+        "name": "//compute.googleapis.com/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/valid-instance-8hz5",
+        "asset_type": "compute.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/216968792402",
+            "data": {
+                "canIpForward": false,
+                "cpuPlatform": "Intel Haswell",
+                "creationTimestamp": "2018-11-01T12:44:57.303-07:00",
+                "deletionProtection": false,
+                "description": "InstanceTemplate created for Dataflow job: 2018-10-02_12_46_57-16714086278907465014",
+                "disk": [
+                    {
+                        "autoDelete": true,
+                        "boot": true,
+                        "deviceName": "persistent-disk-0",
+                        "index": 0,
+                        "interface": "SCSI",
+                        "license": [
+                            "https://www.googleapis.com/compute/v1/projects/clouddataflow-readonly/global/licenses/dataflow-owned-resource",
+                            "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/licenses/cos"
+                        ],
+                        "mode": "READ_WRITE",
+                        "source": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/disks/valid-instance-8hz5",
+                        "type": "PERSISTENT"
+                    }
+                ],
+                "id": "1153916624998689114",
+                "labelFingerprint": "C1H1XlV7n1k=",
+                "labels": {
+                    "dataflow_job_id": "2018-10-02_12_46_57-16714086278907465014",
+                    "dataflow_job_name": "ps-to-bq-new-testing-topic",
+                    "label1": "label1-value",
+                    "label2": "label2-valueOK"
+                },
+                "machineType": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/machineTypes/n1-standard-4",
+                "name": "valid-instance-8hz5",
+                "networkInterfaces": [
+                    {
+                        "accessConfigs": [
+                            {
+                                "externalIp": "35.226.29.59",
+                                "name": "EXTERNAL NAT",
+                                "networkTier": "PREMIUM",
+                                "type": "ONE_TO_ONE_NAT"
+                            }
+                        ],
+                        "fingerprint": "BZYSgscuzgc=",
+                        "ipAddress": "10.128.0.3",
+                        "name": "nic0",
+                        "network": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/global/networks/default",
+                        "subnetwork": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/regions/us-central1/subnetworks/default"
+                    }
+                ],
+                "scheduling": {
+                    "automaticRestart": true,
+                    "onHostMaintenance": "MIGRATE",
+                    "preemptible": false
+                },
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/valid-instance-8hz5",
+                "serviceAccount": [
+                    {
+                        "email": "216968792402-compute@developer.gserviceaccount.com",
+                        "scope": [
+                            "https://www.googleapis.com/auth/any-api",
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/cloud-platform",
+                            "https://www.googleapis.com/auth/compute",
+                            "https://www.googleapis.com/auth/datastore",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/logging.write",
+                            "https://www.googleapis.com/auth/monitoring",
+                            "https://www.googleapis.com/auth/ndev.cloudman",
+                            "https://www.googleapis.com/auth/pubsub",
+                            "https://www.googleapis.com/auth/userinfo.email"
+                        ]
+                    }
+                ],
+                "startRestricted": false,
+                "status": "RUNNING",
+                "tags": {
+                    "fingerprint": "Loc0dSkS+b8=",
+                    "tag": [
+                        "dataflow"
+                    ]
+                },
+                "zone": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/invalid-instance-missing-labels-8hz5",
+        "asset_type": "compute.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/216968792402",
+            "data": {
+                "canIpForward": false,
+                "cpuPlatform": "Intel Haswell",
+                "creationTimestamp": "2018-11-01T12:44:57.303-07:00",
+                "deletionProtection": false,
+                "description": "InstanceTemplate created for Dataflow job: 2018-10-02_12_46_57-16714086278907465014",
+                "disk": [
+                    {
+                        "autoDelete": true,
+                        "boot": true,
+                        "deviceName": "persistent-disk-0",
+                        "index": 0,
+                        "interface": "SCSI",
+                        "license": [
+                            "https://www.googleapis.com/compute/v1/projects/clouddataflow-readonly/global/licenses/dataflow-owned-resource",
+                            "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/licenses/cos"
+                        ],
+                        "mode": "READ_WRITE",
+                        "source": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/disks/invalid-instance-missing-labels-8hz5",
+                        "type": "PERSISTENT"
+                    }
+                ],
+                "id": "1153916624998689114",
+                "labelFingerprint": "C1H1XlV7n1k=",
+                "machineType": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/machineTypes/n1-standard-4",
+                "name": "invalid-instance-missing-labels-8hz5",
+                "networkInterfaces": [
+                    {
+                        "accessConfigs": [
+                            {
+                                "externalIp": "35.226.29.59",
+                                "name": "EXTERNAL NAT",
+                                "networkTier": "PREMIUM",
+                                "type": "ONE_TO_ONE_NAT"
+                            }
+                        ],
+                        "fingerprint": "BZYSgscuzgc=",
+                        "ipAddress": "10.128.0.3",
+                        "name": "nic0",
+                        "network": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/global/networks/default",
+                        "subnetwork": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/regions/us-central1/subnetworks/default"
+                    }
+                ],
+                "scheduling": {
+                    "automaticRestart": true,
+                    "onHostMaintenance": "MIGRATE",
+                    "preemptible": false
+                },
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/invalid-instance-missing-labels-8hz5",
+                "serviceAccount": [
+                    {
+                        "email": "216968792402-compute@developer.gserviceaccount.com",
+                        "scope": [
+                            "https://www.googleapis.com/auth/any-api",
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/cloud-platform",
+                            "https://www.googleapis.com/auth/compute",
+                            "https://www.googleapis.com/auth/datastore",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/logging.write",
+                            "https://www.googleapis.com/auth/monitoring",
+                            "https://www.googleapis.com/auth/ndev.cloudman",
+                            "https://www.googleapis.com/auth/pubsub",
+                            "https://www.googleapis.com/auth/userinfo.email"
+                        ]
+                    }
+                ],
+                "startRestricted": false,
+                "status": "RUNNING",
+                "tags": {
+                    "fingerprint": "Loc0dSkS+b8=",
+                    "tag": [
+                        "dataflow"
+                    ]
+                },
+                "zone": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/invalid-instance-missing-label1-8hz5",
+        "asset_type": "compute.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/216968792402",
+            "data": {
+                "canIpForward": false,
+                "cpuPlatform": "Intel Haswell",
+                "creationTimestamp": "2018-11-01T12:44:57.303-07:00",
+                "deletionProtection": false,
+                "description": "InstanceTemplate created for Dataflow job: 2018-10-02_12_46_57-16714086278907465014",
+                "disk": [
+                    {
+                        "autoDelete": true,
+                        "boot": true,
+                        "deviceName": "persistent-disk-0",
+                        "index": 0,
+                        "interface": "SCSI",
+                        "license": [
+                            "https://www.googleapis.com/compute/v1/projects/clouddataflow-readonly/global/licenses/dataflow-owned-resource",
+                            "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/licenses/cos"
+                        ],
+                        "mode": "READ_WRITE",
+                        "source": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/disks/invalid-instance-missing-label1-8hz5",
+                        "type": "PERSISTENT"
+                    }
+                ],
+                "id": "1153916624998689114",
+                "labelFingerprint": "C1H1XlV7n1k=",
+                "labels": {
+                    "dataflow_job_id": "2018-10-02_12_46_57-16714086278907465014",
+                    "dataflow_job_name": "ps-to-bq-new-testing-topic",
+                    "label2": "label2-valueOK"
+                },
+                "machineType": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/machineTypes/n1-standard-4",
+                "name": "invalid-instance-missing-label1-8hz5",
+                "networkInterfaces": [
+                    {
+                        "accessConfigs": [
+                            {
+                                "externalIp": "35.226.29.59",
+                                "name": "EXTERNAL NAT",
+                                "networkTier": "PREMIUM",
+                                "type": "ONE_TO_ONE_NAT"
+                            }
+                        ],
+                        "fingerprint": "BZYSgscuzgc=",
+                        "ipAddress": "10.128.0.3",
+                        "name": "nic0",
+                        "network": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/global/networks/default",
+                        "subnetwork": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/regions/us-central1/subnetworks/default"
+                    }
+                ],
+                "scheduling": {
+                    "automaticRestart": true,
+                    "onHostMaintenance": "MIGRATE",
+                    "preemptible": false
+                },
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/invalid-instance-missing-label1-8hz5",
+                "serviceAccount": [
+                    {
+                        "email": "216968792402-compute@developer.gserviceaccount.com",
+                        "scope": [
+                            "https://www.googleapis.com/auth/any-api",
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/cloud-platform",
+                            "https://www.googleapis.com/auth/compute",
+                            "https://www.googleapis.com/auth/datastore",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/logging.write",
+                            "https://www.googleapis.com/auth/monitoring",
+                            "https://www.googleapis.com/auth/ndev.cloudman",
+                            "https://www.googleapis.com/auth/pubsub",
+                            "https://www.googleapis.com/auth/userinfo.email"
+                        ]
+                    }
+                ],
+                "startRestricted": false,
+                "status": "RUNNING",
+                "tags": {
+                    "fingerprint": "Loc0dSkS+b8=",
+                    "tag": [
+                        "dataflow"
+                    ]
+                },
+                "zone": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/invalid-instance-missing-label2-8hz5",
+        "asset_type": "compute.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/216968792402",
+            "data": {
+                "canIpForward": false,
+                "cpuPlatform": "Intel Haswell",
+                "creationTimestamp": "2018-11-01T12:44:57.303-07:00",
+                "deletionProtection": false,
+                "description": "InstanceTemplate created for Dataflow job: 2018-10-02_12_46_57-16714086278907465014",
+                "disk": [
+                    {
+                        "autoDelete": true,
+                        "boot": true,
+                        "deviceName": "persistent-disk-0",
+                        "index": 0,
+                        "interface": "SCSI",
+                        "license": [
+                            "https://www.googleapis.com/compute/v1/projects/clouddataflow-readonly/global/licenses/dataflow-owned-resource",
+                            "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/licenses/cos"
+                        ],
+                        "mode": "READ_WRITE",
+                        "source": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/disks/invalid-instance-missing-label2-8hz5",
+                        "type": "PERSISTENT"
+                    }
+                ],
+                "id": "1153916624998689114",
+                "labelFingerprint": "C1H1XlV7n1k=",
+                "labels": {
+                    "dataflow_job_id": "2018-10-02_12_46_57-16714086278907465014",
+                    "dataflow_job_name": "ps-to-bq-new-testing-topic",
+                    "label1": "label1-value"
+                },
+                "machineType": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/machineTypes/n1-standard-4",
+                "name": "invalid-instance-missing-label2-8hz5",
+                "networkInterfaces": [
+                    {
+                        "accessConfigs": [
+                            {
+                                "externalIp": "35.226.29.59",
+                                "name": "EXTERNAL NAT",
+                                "networkTier": "PREMIUM",
+                                "type": "ONE_TO_ONE_NAT"
+                            }
+                        ],
+                        "fingerprint": "BZYSgscuzgc=",
+                        "ipAddress": "10.128.0.3",
+                        "name": "nic0",
+                        "network": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/global/networks/default",
+                        "subnetwork": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/regions/us-central1/subnetworks/default"
+                    }
+                ],
+                "scheduling": {
+                    "automaticRestart": true,
+                    "onHostMaintenance": "MIGRATE",
+                    "preemptible": false
+                },
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/invalid-instance-missing-label2-8hz5",
+                "serviceAccount": [
+                    {
+                        "email": "216968792402-compute@developer.gserviceaccount.com",
+                        "scope": [
+                            "https://www.googleapis.com/auth/any-api",
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/cloud-platform",
+                            "https://www.googleapis.com/auth/compute",
+                            "https://www.googleapis.com/auth/datastore",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/logging.write",
+                            "https://www.googleapis.com/auth/monitoring",
+                            "https://www.googleapis.com/auth/ndev.cloudman",
+                            "https://www.googleapis.com/auth/pubsub",
+                            "https://www.googleapis.com/auth/userinfo.email"
+                        ]
+                    }
+                ],
+                "startRestricted": false,
+                "status": "RUNNING",
+                "tags": {
+                    "fingerprint": "Loc0dSkS+b8=",
+                    "tag": [
+                        "dataflow"
+                    ]
+                },
+                "zone": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/invalid-instance-with-label1-and-label2-bad-values",
+        "asset_type": "compute.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/216968792402",
+            "data": {
+                "canIpForward": false,
+                "cpuPlatform": "Intel Haswell",
+                "creationTimestamp": "2018-11-01T12:44:57.303-07:00",
+                "deletionProtection": false,
+                "description": "InstanceTemplate created for Dataflow job: 2018-10-02_12_46_57-16714086278907465014",
+                "disk": [
+                    {
+                        "autoDelete": true,
+                        "boot": true,
+                        "deviceName": "persistent-disk-0",
+                        "index": 0,
+                        "interface": "SCSI",
+                        "license": [
+                            "https://www.googleapis.com/compute/v1/projects/clouddataflow-readonly/global/licenses/dataflow-owned-resource",
+                            "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/licenses/cos"
+                        ],
+                        "mode": "READ_WRITE",
+                        "source": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/disks/invalid-instance-with-label1-and-label2-bad-values",
+                        "type": "PERSISTENT"
+                    }
+                ],
+                "id": "1153916624998689114",
+                "labelFingerprint": "C1H1XlV7n1k=",
+                "labels": {
+                    "dataflow_job_id": "2018-10-02_12_46_57-16714086278907465014",
+                    "dataflow_job_name": "ps-to-bq-new-testing-topic",
+                    "label1": "label1-with-bad-value",
+                    "label2": "label2-with-bad-value"
+                },
+                "machineType": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/machineTypes/n1-standard-4",
+                "name": "invalid-instance-missing-label1-and-label2-bad-values",
+                "networkInterfaces": [
+                    {
+                        "accessConfigs": [
+                            {
+                                "externalIp": "35.226.29.59",
+                                "name": "EXTERNAL NAT",
+                                "networkTier": "PREMIUM",
+                                "type": "ONE_TO_ONE_NAT"
+                            }
+                        ],
+                        "fingerprint": "BZYSgscuzgc=",
+                        "ipAddress": "10.128.0.3",
+                        "name": "nic0",
+                        "network": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/global/networks/default",
+                        "subnetwork": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/regions/us-central1/subnetworks/default"
+                    }
+                ],
+                "scheduling": {
+                    "automaticRestart": true,
+                    "onHostMaintenance": "MIGRATE",
+                    "preemptible": false
+                },
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b/instances/invalid-instance-with-label1-and-label2-bad-values",
+                "serviceAccount": [
+                    {
+                        "email": "216968792402-compute@developer.gserviceaccount.com",
+                        "scope": [
+                            "https://www.googleapis.com/auth/any-api",
+                            "https://www.googleapis.com/auth/bigquery",
+                            "https://www.googleapis.com/auth/cloud-platform",
+                            "https://www.googleapis.com/auth/compute",
+                            "https://www.googleapis.com/auth/datastore",
+                            "https://www.googleapis.com/auth/devstorage.full_control",
+                            "https://www.googleapis.com/auth/logging.write",
+                            "https://www.googleapis.com/auth/monitoring",
+                            "https://www.googleapis.com/auth/ndev.cloudman",
+                            "https://www.googleapis.com/auth/pubsub",
+                            "https://www.googleapis.com/auth/userinfo.email"
+                        ]
+                    }
+                ],
+                "startRestricted": false,
+                "status": "RUNNING",
+                "tags": {
+                    "fingerprint": "Loc0dSkS+b8=",
+                    "tag": [
+                        "dataflow"
+                    ]
+                },
+                "zone": "https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/zones/us-central1-b"
+            }
+        }
+    }
+]

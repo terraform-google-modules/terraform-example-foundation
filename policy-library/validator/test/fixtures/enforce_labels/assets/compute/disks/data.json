@@ -1,0 +1,215 @@
+[
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/zones/us-east1-b/disks/instance-1-valid-disk",
+        "asset_type": "compute.googleapis.com/Disk",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Disk",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2018-09-19T12:52:28.128-07:00",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "5899079137373394452",
+                "labelFingerprint": "Iv/ZLuyPnZw=",
+                "labels": {
+                    "disk-label": "value",
+                    "label1": "label1-value",
+                    "label2": "label2-valueOK"
+                },
+                "lastAttachTimestamp": "2018-09-19T12:52:28.130-07:00",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "instance-1-valid-disk",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sizeGb": "10",
+                "sourceImage": "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20180911",
+                "sourceImageId": "6964739134299892958",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/diskTypes/pd-standard",
+                "user": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/instances/instance-1"
+                ],
+                "zone": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/zones/us-east1-b/disks/instance-1-invalid-disk-missing-labels",
+        "asset_type": "compute.googleapis.com/Disk",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Disk",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2018-09-19T12:52:28.128-07:00",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "5899079137373394452",
+                "labelFingerprint": "Iv/ZLuyPnZw=",
+                "lastAttachTimestamp": "2018-09-19T12:52:28.130-07:00",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "instance-1-invalid-disk-missing-labels",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sizeGb": "10",
+                "sourceImage": "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20180911",
+                "sourceImageId": "6964739134299892958",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/diskTypes/pd-standard",
+                "user": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/instances/instance-1"
+                ],
+                "zone": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/zones/us-east1-b/disks/instance-1-invalid-disk-missing-label1",
+        "asset_type": "compute.googleapis.com/Disk",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Disk",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2018-09-19T12:52:28.128-07:00",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "5899079137373394452",
+                "labelFingerprint": "Iv/ZLuyPnZw=",
+                "labels": {
+                    "disk-label": "value",
+                    "label2": "label2-valueOKTOO"
+                },
+                "lastAttachTimestamp": "2018-09-19T12:52:28.130-07:00",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "instance-1-invalid-disk-missing-label1",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sizeGb": "10",
+                "sourceImage": "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20180911",
+                "sourceImageId": "6964739134299892958",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/diskTypes/pd-standard",
+                "user": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/instances/instance-1"
+                ],
+                "zone": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/zones/us-east1-b/disks/instance-1-invalid-disk-missing-label2",
+        "asset_type": "compute.googleapis.com/Disk",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Disk",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2018-09-19T12:52:28.128-07:00",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "5899079137373394452",
+                "labelFingerprint": "Iv/ZLuyPnZw=",
+                "labels": {
+                    "disk-label": "value",
+                    "label1": "label1-value"
+                },
+                "lastAttachTimestamp": "2018-09-19T12:52:28.130-07:00",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "instance-1-invalid-disk-missing-label2",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sizeGb": "10",
+                "sourceImage": "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20180911",
+                "sourceImageId": "6964739134299892958",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/diskTypes/pd-standard",
+                "user": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/instances/instance-1"
+                ],
+                "zone": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/my-test-project/zones/us-east1-b/disks/instance-1-invalid-disk-label1-and-label2-bad-values",
+        "asset_type": "compute.googleapis.com/Disk",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Disk",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2018-09-19T12:52:28.128-07:00",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "5899079137373394452",
+                "labelFingerprint": "Iv/ZLuyPnZw=",
+                "labels": {
+                    "disk-label": "value",
+                    "label1": "label1-bad-value",
+                    "label2": "label2-bad-value"
+                },
+                "lastAttachTimestamp": "2018-09-19T12:52:28.130-07:00",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "name": "instance-1-invalid-disk-label1-and-label2-bad",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/disks/instance-1",
+                "sizeGb": "10",
+                "sourceImage": "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20180911",
+                "sourceImageId": "6964739134299892958",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/diskTypes/pd-standard",
+                "user": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b/instances/instance-1"
+                ],
+                "zone": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/us-east1-b"
+            }
+        }
+    }
+]

@@ -1,0 +1,20 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPIAMAllowedBindingsConstraintV3
+metadata:
+  name: deny_allusers
+  annotations:
+    description: Prevent public users from having access to resources via IAM
+    bundles.validator.forsetisecurity.org/scorecard-v1: security
+    bundles.validator.forsetisecurity.org/healthcare-baseline-v1: security
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - "organizations/**"
+    exclude: [] # optional, default is no exclusions
+  parameters:
+    mode: denylist
+    role: "roles/*"
+    members:
+    - "allUsers"
+    - "allAuthenticatedUsers"

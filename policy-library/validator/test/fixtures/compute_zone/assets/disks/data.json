@@ -1,0 +1,68 @@
+[
+    {
+        "name": "//compute.googleapis.com/projects/sandbox2/zones/us-central1-f/disks/disk-central1-f",
+        "asset_type": "compute.googleapis.com/Disk",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Disk",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/142577876613",
+            "data": {
+                "creationTimestamp": "2019-05-15T13:05:05.798-07:00",
+                "id": "1552167583433739806",
+                "labelFingerprint": "42WmSpB8rSM=",
+                "name": "disk-central1-f",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/sandbox2/zones/us-central1-f/disks/disk-central1-f",
+                "sizeGb": "200",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/sandbox2/zones/us-central1-f/diskTypes/pd-standard",
+                "zone": "https://www.googleapis.com/compute/v1/projects/sandbox2/zones/us-central1-f"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/sandbox2/zones/us-east1-b/disks/disk-east1-b",
+        "asset_type": "compute.googleapis.com/Disk",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Disk",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/142577876613",
+            "data": {
+                "creationTimestamp": "2019-05-15T13:04:46.971-07:00",
+                "id": "2960011150998228529",
+                "labelFingerprint": "42WmSpB8rSM=",
+                "name": "disk-east1-b",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/sandbox2/zones/us-east1-b/disks/disk-east1-b",
+                "sizeGb": "200",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/sandbox2/zones/us-east1-b/diskTypes/pd-standard",
+                "zone": "https://www.googleapis.com/compute/v1/projects/sandbox2/zones/us-east1-b"
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/sandbox2/zones/asia-east1-b/disks/disk-asia-east1-b",
+        "asset_type": "compute.googleapis.com/Disk",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Disk",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/142577876613",
+            "data": {
+                "creationTimestamp": "2019-05-15T13:05:17.462-07:00",
+                "id": "720230790405934610",
+                "labelFingerprint": "42WmSpB8rSM=",
+                "name": "disk-asia-east1-b",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/sandbox2/zones/asia-east1-b/disks/disk-asia-east1-b",
+                "sizeGb": "500",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/sandbox2/zones/asia-east1-b/diskTypes/pd-standard",
+                "zone": "https://www.googleapis.com/compute/v1/projects/sandbox2/zones/asia-east1-b"
+            }
+        }
+    }
+]

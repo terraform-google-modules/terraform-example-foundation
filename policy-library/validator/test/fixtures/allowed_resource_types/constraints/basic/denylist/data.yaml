@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPAllowedResourceTypesConstraintV2
+metadata:
+  name: allow_all_resource_types
+spec:
+  severity: high
+  match:
+    target: ["organizations/**"]
+  parameters:
+    mode: "denylist"
+    resource_type_list:
+    - sqladmin.googleapis.com/Instance
+    - compute.googleapis.com/Instance
+    - dataproc.googleapis.com/Job

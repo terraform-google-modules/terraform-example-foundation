@@ -1,0 +1,147 @@
+[
+	{
+		"name": "//cloudresourcemanager.googleapis.com/projects/1510025652",
+		"asset_type": "cloudresourcemanager.googleapis.com/Project",
+		"resource": {
+			"version": "v1beta1",
+			"discovery_document_uri": "https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1",
+			"discovery_name": "Project",
+			"parent": "//cloudresourcemanager.googleapis.com/folders/1119836588",
+			"data": {
+				"createTime": "2019-05-16T22:19:51.276Z",
+				"labels": {
+					"billing_id": "1111",
+					"owner": "john_doe"
+				},
+				"lifecycleState": "ACTIVE",
+				"name": "valid-field-1111",
+				"parent": {
+					"id": "1119836588",
+					"type": "folder"
+				},
+				"projectId": "valid-field-1111-d4b9d374",
+				"projectNumber": "1510025652"
+			}
+		}
+	},
+	{
+		"name": "//cloudresourcemanager.googleapis.com/projects/1510025653",
+		"asset_type": "cloudresourcemanager.googleapis.com/Project",
+		"resource": {
+			"version": "v1beta1",
+			"discovery_document_uri": "https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1",
+			"discovery_name": "Project",
+			"parent": "//cloudresourcemanager.googleapis.com/folders/1119836588",
+			"data": {
+				"createTime": "2019-05-16T22:19:51.276Z",
+				"labels": {
+					"owner": "john_doe"
+				},
+				"lifecycleState": "ACTIVE",
+				"name": "no-field",
+				"parent": {
+					"id": "1119836588",
+					"type": "folder"
+				},
+				"projectId": "no-field-d4b9d374",
+				"projectNumber": "1510025653"
+			}
+		}
+	},
+	{
+		"name": "//cloudresourcemanager.googleapis.com/projects/15100256534",
+		"asset_type": "cloudresourcemanager.googleapis.com/Project",
+		"resource": {
+			"version": "v1beta1",
+			"discovery_document_uri": "https://cloudresourcemanager.googleapis.com/$discovery/rest?version=v1beta1",
+			"discovery_name": "Project",
+			"parent": "//cloudresourcemanager.googleapis.com/folders/1119836588",
+			"data": {
+				"createTime": "2019-05-16T22:19:51.276Z",
+				"labels": {
+					"billing_id": "abcd",
+					"owner": "john_doe"
+				},
+				"lifecycleState": "ACTIVE",
+				"name": "bad-field",
+				"parent": {
+					"id": "1119836588",
+					"type": "folder"
+				},
+				"projectId": "bad-field-d4b9d374",
+				"projectNumber": "1510025654"
+			}
+		}
+	},
+	{
+		"name": "//compute.googleapis.com/projects/test-project/zones/us-east1-c/instances/vm-no-ip",
+		"asset_type": "compute.googleapis.com/Instance",
+		"resource": {
+			"version": "v1",
+			"discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+			"discovery_name": "Instance",
+			"parent": "//cloudresourcemanager.googleapis.com/projects/68478495408",
+			"data": {
+				"cpuPlatform": "Intel Haswell",
+				"creationTimestamp": "2018-01-18T12:16:22.261-08:00",
+				"labels": {
+					"billing_id": "abcd"
+				},
+				"deletionProtection": false,
+				"disk": [
+					{
+						"autoDelete": true,
+						"boot": true,
+						"deviceName": "persistent-disk-0",
+						"guestOsFeature": [
+							{
+								"type": "VIRTIO_SCSI_MULTIQUEUE"
+							}
+						],
+						"index": 0,
+						"interface": "SCSI",
+						"license": [
+							"https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+						],
+						"mode": "READ_WRITE",
+						"source": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-c/disks/vm-no-ip",
+						"type": "PERSISTENT"
+					}
+				],
+				"id": "8987947392482197114",
+				"labelFingerprint": "42WmSpB8rSM=",
+				"machineType": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-c/machineTypes/g1-small",
+				"name": "vm-no-ip",
+				"networkInterface": [
+					{
+						"fingerprint": "+QCnSman4bQ=",
+						"ipAddress": "10.1.0.2",
+						"name": "nic0",
+						"network": "https://www.googleapis.com/compute/v1/projects/test-project/global/networks/default",
+						"subnetwork": "https://www.googleapis.com/compute/v1/projects/test-project/regions/us-east1/subnetworks/default-us-east1"
+					}
+				],
+				"scheduling": {
+					"automaticRestart": true,
+					"onHostMaintenance": "MIGRATE",
+					"preemptible": false
+				},
+				"selfLink": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-c/instances/vm-no-ip",
+				"serviceAccount": [
+					{
+						"email": "66666666666-compute@developer.gserviceaccount.com",
+						"scope": [
+							"https://www.googleapis.com/auth/cloud-platform"
+						]
+					}
+				],
+				"startRestricted": false,
+				"status": "RUNNING",
+				"tags": {
+					"fingerprint": "42WmSpB8rSM="
+				},
+				"zone": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-c"
+			}
+		}
+	}
+]

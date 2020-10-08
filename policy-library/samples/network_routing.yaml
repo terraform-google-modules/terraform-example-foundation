@@ -1,0 +1,12 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPNetworkRoutingConstraintV1
+metadata:
+  name: require_global_routing
+  annotations:
+    description: Checks that every VPC is in global routing mode.
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - "organizations/**"
+  parameters: {}

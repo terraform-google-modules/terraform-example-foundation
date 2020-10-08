@@ -1,0 +1,93 @@
+[
+  {
+  "name": "//iam.googleapis.com/organizations/123456/roles/test_role_1",
+  "asset_type": "iam.googleapis.com/Role",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://iam.googleapis.com/$discovery/rest",
+    "discovery_name": "Role",
+    "parent": "//cloudresourcemanager.googleapis.com/organizations/123456",
+    "data": {
+      "description": "Set this role to test role visibility ",
+      "etag": "BwWJmlmObBw=",
+      "groupName": "custom",
+      "groupTitle": "Custom",
+      "includedPermissions": [
+        "bigquery.config.get",
+        "bigquery.datasets.create",
+        "bigquery.datasets.get",
+        "bigquery.datasets.getIamPolicy",
+        "bigquery.jobs.list",
+        "bigquery.models.list",
+        "bigquery.readsessions.create",
+        "bigquery.savedqueries.get",
+        "bigquery.savedqueries.list"
+      ],
+      "name": "organizations/123456/roles/test_role_1",
+      "stage": "BETA",
+      "title": "Test Role 1"
+    }
+  },
+  "ancestors": [
+    "organizations/123456"
+  ]
+},
+  {
+  "name": "//iam.googleapis.com/organizations/123456/roles/test_role_3",
+  "asset_type": "iam.googleapis.com/Role",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://iam.googleapis.com/$discovery/rest",
+    "discovery_name": "Role",
+    "parent": "//cloudresourcemanager.googleapis.com/organizations/123456",
+    "data": {
+      "description": "Created on: 5/16/17",
+      "etag": "BwVPrIoF4pg=",
+      "groupName": "custom",
+      "groupTitle": "Custom",
+      "includedPermissions": [
+        "appengine.applications.get",
+        "bigquery.config.get",
+        "bigquery.config.update",
+        "bigquery.datasets.create",
+        "bigquery.datasets.delete",
+        "bigquery.datasets.get",
+        "cloudsql.instances.clone",
+        "cloudsql.instances.create",
+        "cloudsql.instances.delete",
+        "cloudsql.instances.export",
+        "cloudsql.instances.failover",
+        "cloudsql.instances.get",
+        "cloudsql.instances.getIamPolicy",
+        "cloudsql.instances.import",
+        "compute.disks.list",
+        "compute.disks.resize",
+        "compute.globalOperations.get",
+        "compute.globalOperations.list",
+        "compute.images.getFromFamily",
+        "compute.images.list",
+        "compute.images.setLabels",
+        "datastore.entities.allocateIds",
+        "datastore.entities.create",
+        "datastore.entities.delete",
+        "datastore.entities.get",
+        "datastore.entities.list",
+        "datastore.entities.update",
+        "datastore.operations.delete",
+        "datastore.operations.get",
+        "datastore.operations.list",
+        "datastore.statistics.get",
+        "datastore.statistics.list",
+        "resourcemanager.projects.get",
+        "resourcemanager.projects.list"
+      ],
+      "name": "organizations/123456/roles/test_role_3",
+      "stage": "GA",
+      "title": "Test Role 3"
+    }
+  },
+  "ancestors": [
+    "organizations/123456"
+  ]
+}
+]

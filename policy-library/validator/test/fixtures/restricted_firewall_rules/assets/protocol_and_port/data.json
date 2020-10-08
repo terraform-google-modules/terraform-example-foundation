@@ -1,0 +1,332 @@
+[
+    {
+        "name": "//compute.googleapis.com/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-0",
+        "asset_type": "compute.googleapis.com/Firewall",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Firewall",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/573988288153",
+            "data": {
+                "allowed": [
+                    {
+                        "IPProtocol": "icmp"
+                    },
+                    {
+                        "IPProtocol": "tcp",
+                        "ports": [
+                            "123"
+                        ]
+                    },
+                    {
+                        "IPProtocol": "udp",
+                        "ports": [
+                            "1000-7000"
+                        ]
+                    }
+                ],
+                "creationTimestamp": "2019-01-03T18:17:04.307-08:00",
+                "description": "Allow TCP:123 + ICMP from anywhere",
+                "direction": "INGRESS",
+                "disabled": false,
+                "id": "1973316202281532623",
+                "logConfig": {
+                    "enable": false
+                },
+                "name": "cf-test-fw-rule-0",
+                "network": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/networks/default",
+                "priority": 65534,
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/firewalls/default-allow-rdp",
+                "sourceRanges": [
+                    "0.0.0.0/0"
+                ],
+                "targetServiceAccounts": [
+                    "cf-gcp-challenge-dev-sa@cf-gcp-challenge-dev.iam.gserviceaccount.com"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-1",
+        "asset_type": "compute.googleapis.com/Firewall",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Firewall",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "allowed": [
+                    {
+                        "IPProtocol": "tcp",
+                        "ports": [
+                            "20",
+                            "50-160",
+                            "3000-3010"
+                        ]
+                    },
+                    {
+                        "IPProtocol": "icmp"
+                    },
+                    {
+                        "IPProtocol": "sctp"
+                    }
+                ],
+                "creationTimestamp": "2019-08-01T12:29:43.984-07:00",
+                "description": "",
+                "direction": "INGRESS",
+                "disabled": true,
+                "id": "1567682096253535048",
+                "logConfig": {
+                    "enable": false
+                },
+                "name": "cf-test-fw-rule-1",
+                "network": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/networks/default",
+                "priority": 1000,
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-1",
+                "sourceRanges": [
+                    "0.0.0.0/0"
+                ],
+                "targetServiceAccounts": [
+                    "cf-gcp-challenge-dev-sa@cf-gcp-challenge-dev.iam.gserviceaccount.com"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-2",
+        "asset_type": "compute.googleapis.com/Firewall",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Firewall",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2019-08-01T12:33:34.710-07:00",
+                "allowed": [
+                    {
+                        "IPProtocol": "all"
+                    }
+                ],
+                "description": "",
+                "direction": "INGRESS",
+                "disabled": true,
+                "id": "258211949990281313",
+                "logConfig": {
+                    "enable": false
+                },
+                "name": "cf-test-fw-rule-2",
+                "network": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/networks/default",
+                "priority": 1000,
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-2",
+                "sourceRanges": [
+                    "0.0.0.0/0"
+                ],
+                "targetServiceAccounts": [
+                    "cf-gcp-challenge-dev-sa@cf-gcp-challenge-dev.iam.gserviceaccount.com"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-3",
+        "asset_type": "compute.googleapis.com/Firewall",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Firewall",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "creationTimestamp": "2019-08-01T12:34:29.409-07:00",
+                "denied": [
+                    {
+                        "IPProtocol": "all"
+                    }
+                ],
+                "description": "",
+                "direction": "INGRESS",
+                "disabled": true,
+                "id": "7741139668001783850",
+                "logConfig": {
+                    "enable": false
+                },
+                "name": "cf-test-fw-rule-3",
+                "network": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/networks/default",
+                "priority": 1000,
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-3",
+                "sourceRanges": [
+                    "0.0.0.0/0"
+                ],
+                "targetServiceAccounts": [
+                    "cf-gcp-challenge-dev-sa@cf-gcp-challenge-dev.iam.gserviceaccount.com"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-4",
+        "asset_type": "compute.googleapis.com/Firewall",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Firewall",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "allowed": [
+                    {
+                        "IPProtocol": "udp",
+                        "ports": [
+                            "234"
+                        ]
+                    },
+                    {
+                        "IPProtocol": "tcp",
+                        "ports": [
+                            "22", "100-300", "2000-6100"
+                        ]
+                    }
+                ],
+                "creationTimestamp": "2019-08-01T12:52:26.839-07:00",
+                "description": "",
+                "direction": "INGRESS",
+                "disabled": true,
+                "id": "5091400122046020629",
+                "logConfig": {
+                    "enable": false
+                },
+                "name": "cf-test-fw-rule-4",
+                "network": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/networks/default",
+                "priority": 1000,
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-4",
+                "sourceRanges": [
+                    "0.0.0.0/0"
+                ],
+                "targetServiceAccounts": [
+                    "cf-gcp-challenge-dev-sa@cf-gcp-challenge-dev.iam.gserviceaccount.com"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-5",
+        "asset_type": "compute.googleapis.com/Firewall",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Firewall",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "allowed": [
+                    {
+                        "IPProtocol": "all"
+                    }
+                ],
+                "creationTimestamp": "2019-08-01T15:32:41.698-07:00",
+                "description": "",
+                "direction": "INGRESS",
+                "disabled": false,
+                "id": "4881368052243813990",
+                "logConfig": {
+                    "enable": false
+                },
+                "name": "cf-test-fw-rule-5",
+                "network": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/networks/default",
+                "priority": 1000,
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-5",
+                "sourceRanges": [
+                    "0.0.0.0/0"
+                ],
+                "targetServiceAccounts": [
+                    "cf-gcp-challenge-dev-sa@cf-gcp-challenge-dev.iam.gserviceaccount.com"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-6",
+        "asset_type": "compute.googleapis.com/Firewall",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Firewall",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "allowed": [
+                    {
+                        "IPProtocol": "tcp"
+                    },
+                    {
+                        "IPProtocol": "udp",
+                        "ports": [
+                            "5200"
+                        ]
+                    },
+                    {
+                        "IPProtocol": "ah"
+                    },
+                    {
+                        "IPProtocol": "sctp"
+                    },
+                    {
+                        "IPProtocol": "icmp"
+                    }
+                ],
+                "creationTimestamp": "2019-08-09T09:28:30.215-07:00",
+                "description": "",
+                "direction": "INGRESS",
+                "disabled": false,
+                "id": "1947592599491584449",
+                "logConfig": {
+                    "enable": false
+                },
+                "name": "cf-test-fw-rule-6",
+                "network": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/networks/default",
+                "priority": 1000,
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-6",
+                "sourceRanges": [
+                    "0.0.0.0/0"
+                ],
+                "targetServiceAccounts": [
+                    "cf-gcp-challenge-dev-sa@cf-gcp-challenge-dev.iam.gserviceaccount.com"
+                ]
+            }
+        }
+    },
+    {
+        "name": "//compute.googleapis.com/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-7",
+        "asset_type": "compute.googleapis.com/Firewall",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+            "discovery_name": "Firewall",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "allowed": [
+                    {
+                        "IPProtocol": "tcp",
+                        "ports": [
+                            "234"
+                        ]
+                    }
+                ],
+                "creationTimestamp": "2019-08-09T12:53:34.847-07:00",
+                "description": "",
+                "direction": "INGRESS",
+                "disabled": true,
+                "id": "12407153413353937",
+                "logConfig": {
+                    "enable": false
+                },
+                "name": "cf-test-fw-rule-7",
+                "network": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/networks/default",
+                "priority": 1000,
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/cf-gcp-challenge-dev/global/firewalls/cf-test-fw-rule-7",
+                "sourceRanges": [
+                    "0.0.0.0/0"
+                ],
+                "targetServiceAccounts": [
+                    "cf-gcp-challenge-dev-sa@cf-gcp-challenge-dev.iam.gserviceaccount.com"
+                ]
+            }
+        }
+    }
+]

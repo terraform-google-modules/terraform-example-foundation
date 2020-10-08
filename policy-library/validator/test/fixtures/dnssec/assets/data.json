@@ -1,0 +1,122 @@
+[
+  {
+    "name": "//dns.googleapis.com/projects/186783260185/managedZones/correct",
+    "asset_type": "dns.googleapis.com/ManagedZone",
+    "resource": {
+      "version": "v1alpha2",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dns/v1alpha2/rest",
+      "discovery_name": "ManagedZone",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/186783260185",
+      "data": {
+        "creationTime": "2019-05-03T05:47:02.253Z",
+        "description": "",
+        "dnsName": "myzone.1bot2.info.",
+        "dnssecConfig": {
+          "defaultKeySpecs": [
+            {
+              "algorithm": "RSASHA256",
+              "keyLength": 2048,
+              "keyType": "KEY_SIGNING"
+            },
+            {
+              "algorithm": "RSASHA256",
+              "keyLength": 1024,
+              "keyType": "ZONE_SIGNING"
+            }
+          ],
+          "nonExistence": "NSEC3",
+          "state": "ON"
+        },
+        "id": "6687558620196482988",
+        "name": "test",
+        "nameServers": [
+          "ns-cloud-b1.googledomains.com.",
+          "ns-cloud-b2.googledomains.com.",
+          "ns-cloud-b3.googledomains.com.",
+          "ns-cloud-b4.googledomains.com."
+        ],
+        "visibility": "PUBLIC"
+      }
+    }
+  },
+  {
+    "name": "//dns.googleapis.com/projects/186783260185/managedZones/wrong-off",
+    "asset_type": "dns.googleapis.com/ManagedZone",
+    "resource": {
+      "version": "v1alpha2",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dns/v1alpha2/rest",
+      "discovery_name": "ManagedZone",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/186783260185",
+      "data": {
+        "creationTime": "2019-05-03T05:47:02.253Z",
+        "description": "",
+        "dnsName": "myzone.1bot2.info.",
+        "dnssecConfig": {
+          "defaultKeySpecs": [
+            {
+              "algorithm": "RSASHA256",
+              "keyLength": 2048,
+              "keyType": "KEY_SIGNING"
+            },
+            {
+              "algorithm": "RSASHA256",
+              "keyLength": 1024,
+              "keyType": "ZONE_SIGNING"
+            }
+          ],
+          "nonExistence": "NSEC3",
+          "state": "OFF"
+        },
+        "id": "6687558620196482988",
+        "name": "test",
+        "nameServers": [
+          "ns-cloud-b1.googledomains.com.",
+          "ns-cloud-b2.googledomains.com.",
+          "ns-cloud-b3.googledomains.com.",
+          "ns-cloud-b4.googledomains.com."
+        ],
+        "visibility": "PUBLIC"
+      }
+    }
+  },
+  {
+    "name": "//dns.googleapis.com/projects/186783260185/managedZones/wrong-transfer",
+    "asset_type": "dns.googleapis.com/ManagedZone",
+    "resource": {
+      "version": "v1alpha2",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/dns/v1alpha2/rest",
+      "discovery_name": "ManagedZone",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/186783260185",
+      "data": {
+        "creationTime": "2019-05-03T05:47:02.253Z",
+        "description": "",
+        "dnsName": "myzone.1bot2.info.",
+        "dnssecConfig": {
+          "defaultKeySpecs": [
+            {
+              "algorithm": "RSASHA256",
+              "keyLength": 2048,
+              "keyType": "KEY_SIGNING"
+            },
+            {
+              "algorithm": "RSASHA256",
+              "keyLength": 1024,
+              "keyType": "ZONE_SIGNING"
+            }
+          ],
+          "nonExistence": "NSEC3",
+          "state": "TRANSFER"
+        },
+        "id": "6687558620196482988",
+        "name": "test",
+        "nameServers": [
+          "ns-cloud-b1.googledomains.com.",
+          "ns-cloud-b2.googledomains.com.",
+          "ns-cloud-b3.googledomains.com.",
+          "ns-cloud-b4.googledomains.com."
+        ],
+        "visibility": "PUBLIC"
+      }
+    }
+  }
+]

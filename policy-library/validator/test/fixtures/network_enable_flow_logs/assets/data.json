@@ -1,0 +1,48 @@
+[
+  {
+    "name": "//compute.googleapis.com/projects/pso-cicd8/regions/us-west1/subnetworks/bad",
+    "asset_type": "compute.googleapis.com/Subnetwork",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Subnetwork",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/13428609260",
+      "data": {
+        "creationTimestamp": "2019-03-13T12:20:27.884-07:00",
+        "fingerprint": "gHOs7GmZw+Q=",
+        "gatewayAddress": "10.140.0.1",
+        "id": "7589039100605557012",
+        "ipCidrRange": "10.140.0.0/20",
+        "name": "default",
+        "network": "https://www.googleapis.com/compute/v1/projects/pso-cicd8/global/networks/default",
+        "enableFlowLogs": false,
+        "privateIpGoogleAccess": true,
+        "region": "https://www.googleapis.com/compute/v1/projects/pso-cicd8/regions/us-west1-b",
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/pso-cicd8/regions/us-west1-b/subnetworks/default"
+      }
+    }
+  },
+  {
+    "name": "//compute.googleapis.com/projects/pso-cicd8/regions/us-west1/subnetworks/correct",
+    "asset_type": "compute.googleapis.com/Subnetwork",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Subnetwork",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/13428609260",
+      "data": {
+        "creationTimestamp": "2019-03-13T12:20:27.884-07:00",
+        "fingerprint": "gHOs7GmZw+Q=",
+        "gatewayAddress": "10.140.0.1",
+        "id": "7589039100605557012",
+        "ipCidrRange": "10.140.0.0/20",
+        "name": "default",
+        "network": "https://www.googleapis.com/compute/v1/projects/pso-cicd8/global/networks/default",
+        "privateIpGoogleAccess": true,
+        "enableFlowLogs": true,
+        "region": "https://www.googleapis.com/compute/v1/projects/pso-cicd8/regions/us-west1-b",
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/pso-cicd8/regions/us-west1-b/subnetworks/default"
+      }
+    }
+  }
+]

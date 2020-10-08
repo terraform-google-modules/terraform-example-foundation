@@ -1,0 +1,1 @@
+This directory should contain deprecated template .yaml files. When a new version of a template comes out (vN), the existing template (vN - 1) will be moved to this directory, and the previous versino (vN - 2) will be deleted from the master repository.

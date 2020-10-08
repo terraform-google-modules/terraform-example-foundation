@@ -1,0 +1,147 @@
+[
+    {
+        "asset_type": "compute.googleapis.com/Disk",
+        "name": "//compute.googleapis.com/projects/my-test-project/zones/europe-north1-c/disks/no-resource-policies",
+        "resource": {
+            "data": {
+                "creationTimestamp": "2020-03-03T03:29:52.602-08:00",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "guestOsFeatures": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "6213023151944859968",
+                "labelFingerprint": "42WmSpB8rSM=",
+                "lastAttachTimestamp": "2020-03-03T03:29:52.603-08:00",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "licenseCodes": [
+                    "1000205"
+                ],
+                "licenses": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "name": "no-resource-policies",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/disks/no-resource-policies",
+                "sizeGb": "10",
+                "sourceImage": "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20200210",
+                "sourceImageId": "5678238726467047158",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/diskTypes/pd-standard",
+                "user": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/instances/no-resource-policies"
+                ],
+                "users": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/instances/no-resource-policies"
+                ],
+                "zone": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c"
+            }
+        }
+    },
+    {
+        "asset_type": "compute.googleapis.com/RegionDisk",
+        "name": "//compute.googleapis.com/projects/my-test-project/regions/europe-north1/disks/has-correct-resource-policies",
+        "resource": {
+            "data": {
+                "creationTimestamp": "2019-11-20T02:01:51.039-08:00",
+                "description": "",
+                "id": "7162702857072325089",
+                "labelFingerprint": "42WmSpB8rSM=",
+                "lastAttachTimestamp": "2020-03-06T21:54:55.999-08:00",
+                "lastDetachTimestamp": "2020-03-06T21:54:51.651-08:00",
+                "name": "has-correct-resource-policies",
+                "physicalBlockSizeBytes": "4096",
+                "region": "https://www.googleapis.com/compute/v1/projects/my-test-project/regions/europe-north1",
+                "replicaZone": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c",
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-a"
+                ],
+                "replicaZones": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c",
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-a"
+                ],
+                "resourcePolicies": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/regions/europe-north1/resourcePolicies/test-schedule"
+                ],
+                "resourcePolicy": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/regions/europe-north1/resourcePolicies/test-schedule"
+                ],
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/regions/europe-north1/disks/has-correct-resource-policies",
+                "sizeGb": "200",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/my-test-project/regions/europe-north1/diskTypes/pd-ssd",
+                "user": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/instances/has-correct-resource-policies"
+                ],
+                "users": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/instances/has-correct-resource-policies"
+                ]
+            }
+        }
+    },
+    {
+        "asset_type": "compute.googleapis.com/Disk",
+        "name": "//compute.googleapis.com/projects/my-test-project/zones/europe-north1-c/disks/incorrect-resource-policies",
+        "resource": {
+            "data": {
+                "creationTimestamp": "2020-03-03T03:29:52.602-08:00",
+                "guestOsFeature": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "guestOsFeatures": [
+                    {
+                        "type": "VIRTIO_SCSI_MULTIQUEUE"
+                    }
+                ],
+                "id": "6213023151944859968",
+                "labelFingerprint": "42WmSpB8rSM=",
+                "lastAttachTimestamp": "2020-03-03T03:29:52.603-08:00",
+                "license": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "licenseCode": [
+                    "1000205"
+                ],
+                "licenseCodes": [
+                    "1000205"
+                ],
+                "licenses": [
+                    "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+                ],
+                "name": "incorrect-resource-policies",
+                "physicalBlockSizeBytes": "4096",
+                "selfLink": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/disks/incorrect-resource-policies",
+                "sizeGb": "10",
+                "sourceImage": "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20200210",
+                "sourceImageId": "5678238726467047158",
+                "status": "READY",
+                "type": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/diskTypes/pd-standard",
+                "user": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/instances/incorrect-resource-policies"
+                ],
+                "users": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c/instances/incorrect-resource-policies"
+                ],
+                "resourcePolicies": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/regions/europe-north1/resourcePolicies/wrong-schedule"
+                ],
+                "resourcePolicy": [
+                    "https://www.googleapis.com/compute/v1/projects/my-test-project/regions/europe-north1/resourcePolicies/wrong-schedule"
+                ],
+                "zone": "https://www.googleapis.com/compute/v1/projects/my-test-project/zones/europe-north1-c"
+            }
+        }
+    }
+]

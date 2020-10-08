@@ -1,0 +1,335 @@
+[
+  {
+    "name": "//cloudsql.googleapis.com/projects/brunore-db-test/instances/mysqlv1-nomaintenance",
+    "asset_type": "sqladmin.googleapis.com/Instance",
+    "resource": {
+      "version": "v1beta4",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+      "discovery_name": "DatabaseInstance",
+      "data": {
+        "backendType": "FIRST_GEN",
+        "connectionName": "brunore-db-test:mysqlv1-nomaintenance",
+        "databaseVersion": "MYSQL_5_6",
+        "instanceType": "CLOUD_SQL_INSTANCE",
+        "kind": "sql#instance",
+        "maxDiskSize": "268435456000",
+        "name": "mysqlv1-nomaintenance",
+        "project": "brunore-db-test",
+        "region": "europe-west1",
+        "settings": {
+          "activationPolicy": "ON_DEMAND",
+          "backupConfiguration": {
+            "enabled": true,
+            "kind": "sql#backupConfiguration",
+            "startTime": "15:00"
+          },
+          "ipConfiguration": {
+            "ipv4Enabled": false
+          },
+          "kind": "sql#settings",
+          "pricingPlan": "PER_USE",
+          "replicationType": "SYNCHRONOUS",
+          "settingsVersion": "1",
+          "tier": "D0"
+        },
+        "state": "RUNNABLE"
+      }
+    }
+  },
+  {
+    "name": "//cloudsql.googleapis.com/projects/brunore-db-test/instances/mysqlv2-nomaintenance",
+    "asset_type": "sqladmin.googleapis.com/Instance",
+    "resource": {
+      "version": "v1beta4",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+      "discovery_name": "DatabaseInstance",
+      "data": {
+        "backendType": "SECOND_GEN",
+        "connectionName": "brunore-db-test:europe-west1:mysqlv2-nomaintenance",
+        "databaseVersion": "MYSQL_5_7",
+        "gceZone": "europe-west1-d",
+        "instanceType": "CLOUD_SQL_INSTANCE",
+        "kind": "sql#instance",
+        "name": "mysqlv2-nomaintenance",
+        "project": "brunore-db-test",
+        "region": "europe-west1",
+        "serviceAccountEmailAddress": "p801948786423-9ttrq3@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+        "settings": {
+          "activationPolicy": "ALWAYS",
+          "backupConfiguration": {
+            "enabled": false,
+            "kind": "sql#backupConfiguration",
+            "startTime": "05:00"
+          },
+          "dataDiskSizeGb": "10",
+          "dataDiskType": "PD_SSD",
+          "ipConfiguration": {
+            "ipv4Enabled": true
+          },
+          "kind": "sql#settings",
+          "locationPreference": {
+            "kind": "sql#locationPreference",
+            "zone": "europe-west1-d"
+          },
+          "pricingPlan": "PER_USE",
+          "replicationType": "SYNCHRONOUS",
+          "settingsVersion": "1",
+          "storageAutoResize": true,
+          "storageAutoResizeLimit": "0",
+          "tier": "db-f1-micro"
+        },
+        "state": "RUNNABLE"
+      }
+    }
+  },
+  {
+    "name": "//cloudsql.googleapis.com/projects/brunore-db-test/instances/mysqlv2-withmaintenance",
+    "asset_type": "sqladmin.googleapis.com/Instance",
+    "resource": {
+      "version": "v1beta4",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+      "discovery_name": "DatabaseInstance",
+      "data": {
+        "backendType": "SECOND_GEN",
+        "connectionName": "brunore-db-test:europe-west1:mysqlv2-withmaintenance",
+        "databaseVersion": "MYSQL_5_7",
+        "gceZone": "europe-west1-d",
+        "instanceType": "CLOUD_SQL_INSTANCE",
+        "kind": "sql#instance",
+        "name": "mysqlv2-withmaintenance",
+        "project": "brunore-db-test",
+        "region": "europe-west1",
+        "serviceAccountEmailAddress": "p801948786423-2c2xwc@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+        "settings": {
+          "activationPolicy": "ALWAYS",
+          "backupConfiguration": {
+            "enabled": true,
+            "kind": "sql#backupConfiguration",
+            "startTime": "21:00"
+          },
+          "dataDiskSizeGb": "10",
+          "dataDiskType": "PD_SSD",
+          "ipConfiguration": {
+            "ipv4Enabled": true
+          },
+          "kind": "sql#settings",
+          "locationPreference": {
+            "kind": "sql#locationPreference",
+            "zone": "europe-west1-d"
+          },
+          "maintenanceWindow": {
+            "day": 2,
+            "hour": 22,
+            "kind": "sql#maintenanceWindow"
+          },
+          "pricingPlan": "PER_USE",
+          "replicationType": "SYNCHRONOUS",
+          "settingsVersion": "1",
+          "storageAutoResize": true,
+          "storageAutoResizeLimit": "0",
+          "tier": "db-f1-micro"
+        },
+        "state": "RUNNABLE"
+      }
+    }
+  },
+  {
+    "name": "//cloudsql.googleapis.com/projects/brunore-db-test/instances/postgres-nomaintenance",
+    "asset_type": "sqladmin.googleapis.com/Instance",
+    "resource": {
+      "version": "v1beta4",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+      "discovery_name": "DatabaseInstance",
+      "data": {
+        "backendType": "SECOND_GEN",
+        "connectionName": "brunore-db-test:europe-west1:postgres-nomaintenance",
+        "databaseVersion": "POSTGRES_9_6",
+        "gceZone": "europe-west1-d",
+        "instanceType": "CLOUD_SQL_INSTANCE",
+        "kind": "sql#instance",
+        "name": "postgres-nomaintenance",
+        "project": "brunore-db-test",
+        "region": "europe-west1",
+        "serviceAccountEmailAddress": "p801948786423-6ivn5e@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+        "settings": {
+          "activationPolicy": "ALWAYS",
+          "backupConfiguration": {
+            "enabled": false,
+            "kind": "sql#backupConfiguration",
+            "startTime": "22:00"
+          },
+          "dataDiskSizeGb": "10",
+          "dataDiskType": "PD_SSD",
+          "ipConfiguration": {
+            "ipv4Enabled": true
+          },
+          "kind": "sql#settings",
+          "locationPreference": {
+            "kind": "sql#locationPreference",
+            "zone": "europe-west1-d"
+          },
+          "pricingPlan": "PER_USE",
+          "replicationType": "SYNCHRONOUS",
+          "settingsVersion": "1",
+          "storageAutoResize": true,
+          "storageAutoResizeLimit": "0",
+          "tier": "db-custom-1-3840"
+        },
+        "state": "RUNNABLE"
+      }
+    }
+  },
+  {
+    "name": "//cloudsql.googleapis.com/projects/brunore-db-test/instances/postgres-withmaintenance",
+    "asset_type": "sqladmin.googleapis.com/Instance",
+    "resource": {
+      "version": "v1beta4",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+      "discovery_name": "DatabaseInstance",
+      "data": {
+        "backendType": "SECOND_GEN",
+        "connectionName": "brunore-db-test:europe-west1:postgres-withmaintenance",
+        "databaseVersion": "POSTGRES_9_6",
+        "gceZone": "europe-west1-d",
+        "instanceType": "CLOUD_SQL_INSTANCE",
+        "kind": "sql#instance",
+        "name": "postgres-withmaintenance",
+        "project": "brunore-db-test",
+        "region": "europe-west1",
+        "serviceAccountEmailAddress": "p801948786423-bu22h4@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+        "settings": {
+          "activationPolicy": "ALWAYS",
+          "backupConfiguration": {
+            "enabled": true,
+            "kind": "sql#backupConfiguration",
+            "startTime": "01:00"
+          },
+          "dataDiskSizeGb": "10",
+          "dataDiskType": "PD_SSD",
+          "ipConfiguration": {
+            "ipv4Enabled": true
+          },
+          "kind": "sql#settings",
+          "locationPreference": {
+            "kind": "sql#locationPreference",
+            "zone": "europe-west1-d"
+          },
+          "maintenanceWindow": {
+            "day": 3,
+            "hour": 21,
+            "kind": "sql#maintenanceWindow"
+          },
+          "pricingPlan": "PER_USE",
+          "replicationType": "SYNCHRONOUS",
+          "settingsVersion": "1",
+          "storageAutoResize": true,
+          "storageAutoResizeLimit": "0",
+          "tier": "db-custom-1-3840"
+        },
+        "state": "RUNNABLE"
+      }
+    }
+  },
+  {
+    "name": "//cloudsql.googleapis.com/projects/brunore-cai-test/instances/brunore-mon-3pm",
+    "asset_type": "sqladmin.googleapis.com/Instance",
+    "resource": {
+      "version": "v1beta4",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+      "discovery_name": "DatabaseInstance",
+      "data": {
+        "backendType": "SECOND_GEN",
+        "connectionName": "brunore-cai-test:europe-west1:brunore-mon-3pm",
+        "databaseVersion": "MYSQL_5_7",
+        "gceZone": "europe-west1-d",
+        "instanceType": "CLOUD_SQL_INSTANCE",
+        "kind": "sql#instance",
+        "name": "brunore-mon-3pm",
+        "project": "brunore-cai-test",
+        "region": "europe-west1",
+        "serviceAccountEmailAddress": "p242393143757-8rgyeq@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+        "settings": {
+          "activationPolicy": "ALWAYS",
+          "backupConfiguration": {
+            "enabled": false,
+            "kind": "sql#backupConfiguration",
+            "startTime": "15:00"
+          },
+          "dataDiskSizeGb": "10",
+          "dataDiskType": "PD_SSD",
+          "ipConfiguration": {
+            "ipv4Enabled": true
+          },
+          "kind": "sql#settings",
+          "locationPreference": {
+            "kind": "sql#locationPreference",
+            "zone": "europe-west1-d"
+          },
+          "maintenanceWindow": {
+            "day": 1,
+            "hour": 15,
+            "kind": "sql#maintenanceWindow"
+          },
+          "pricingPlan": "PER_USE",
+          "replicationType": "SYNCHRONOUS",
+          "settingsVersion": "0",
+          "storageAutoResize": true,
+          "storageAutoResizeLimit": "0",
+          "tier": "db-f1-micro"
+        },
+        "state": "PENDING_CREATE"
+      }
+    }
+  },
+  {
+    "name": "//cloudsql.googleapis.com/projects/brunore-cai-test/instances/brunore-sun-3am",
+    "asset_type": "sqladmin.googleapis.com/Instance",
+    "resource": {
+      "version": "v1beta4",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+      "discovery_name": "DatabaseInstance",
+      "data": {
+        "backendType": "SECOND_GEN",
+        "connectionName": "brunore-cai-test:europe-west1:brunore-sun-3am",
+        "databaseVersion": "MYSQL_5_7",
+        "gceZone": "europe-west1-d",
+        "instanceType": "CLOUD_SQL_INSTANCE",
+        "kind": "sql#instance",
+        "name": "brunore-sun-3am",
+        "project": "brunore-cai-test",
+        "region": "europe-west1",
+        "serviceAccountEmailAddress": "p242393143757-xinwy6@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+        "settings": {
+          "activationPolicy": "ALWAYS",
+          "backupConfiguration": {
+            "enabled": false,
+            "kind": "sql#backupConfiguration",
+            "startTime": "16:00"
+          },
+          "dataDiskSizeGb": "10",
+          "dataDiskType": "PD_SSD",
+          "ipConfiguration": {
+            "ipv4Enabled": true
+          },
+          "kind": "sql#settings",
+          "locationPreference": {
+            "kind": "sql#locationPreference",
+            "zone": "europe-west1-d"
+          },
+          "maintenanceWindow": {
+            "day": 7,
+            "hour": 3,
+            "kind": "sql#maintenanceWindow"
+          },
+          "pricingPlan": "PER_USE",
+          "replicationType": "SYNCHRONOUS",
+          "settingsVersion": "1",
+          "storageAutoResize": true,
+          "storageAutoResizeLimit": "0",
+          "tier": "db-f1-micro"
+        },
+        "state": "RUNNABLE"
+      }
+    }
+  }
+]

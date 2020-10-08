@@ -1,0 +1,49 @@
+[
+{
+  "name": "//cloudresourcemanager.googleapis.com/organizations/660570133860",
+  "asset_type": "cloudresourcemanager.googleapis.com/Organization",
+  "access_level": {
+    "name": "accessPolicies/1008882730433/accessLevels/good",
+    "title": "good",
+    "basic": {
+      "conditions": [
+        {
+          "ip_subnetworks": [
+            "0.0.0.0/0"
+          ],
+          "regions": [
+            "US", "IE"
+          ]
+        }
+      ]
+    }
+  },
+  "ancestors": [
+    "organizations/660570133860"
+  ]
+},
+{
+  "name": "//cloudresourcemanager.googleapis.com/organizations/660570133860",
+  "asset_type": "cloudresourcemanager.googleapis.com/Organization",
+  "access_level": {
+    "name": "accessPolicies/1008882730433/accessLevels/bad",
+    "title": "bad",
+    "basic": {
+      "conditions": [
+        {
+          "ip_subnetworks": [
+            "0.0.0.0/0"
+          ],
+          "regions": [
+            "US", "IE", "GB"
+          ]
+        }
+      ]
+    }
+  },
+  "ancestors": [
+    "organizations/660570133860"
+  ]
+}
+
+]

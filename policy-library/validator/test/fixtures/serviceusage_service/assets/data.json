@@ -1,0 +1,32 @@
+[
+  {
+    "name": "//serviceusage.googleapis.com/projects/123/services/compute.googleapis.com",
+    "asset_type": "serviceusage.googleapis.com/Service",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/serviceusage/v1/rest",
+      "discovery_name": "Service",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/123",
+      "data": {
+        "name": "compute.googleapis.com",
+        "parent": "projects/123",
+        "state": "ENABLED"
+      }
+    }
+  },
+  {
+    "name": "//serviceusage.googleapis.com/projects/123/services/cloudvision.googleapis.com",
+    "asset_type": "serviceusage.googleapis.com/Service",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/serviceusage/v1/rest",
+      "discovery_name": "Service",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/123",
+      "data": {
+        "name": "cloudvision.googleapis.com",
+        "parent": "projects/123",
+        "state": "ENABLED"
+      }
+    }
+  }
+]

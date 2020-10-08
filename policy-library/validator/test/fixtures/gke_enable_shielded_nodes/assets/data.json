@@ -1,0 +1,372 @@
+[
+  {
+    "name": "//container.googleapis.com/projects/transfer-repo/zones/us-central1-c/clusters/shielded-nodes-enabled",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/321240941520",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "authenticatorGroupsConfig": {},
+        "clusterIpv4Cidr": "10.56.0.0/14",
+        "createTime": "2020-03-05T17:35:40+00:00",
+        "currentMasterVersion": "1.14.10-gke.17",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.14.10-gke.17",
+        "databaseEncryption": {
+          "state": "DECRYPTED"
+        },
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "35.188.34.99",
+        "initialClusterVersion": "1.14.10-gke.17",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/transfer-repo/zones/us-central1-c/instanceGroupManagers/gke-shielded-nodes-enabl-default-pool-86295a0a-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.56.0.0/14",
+          "clusterIpv4CidrBlock": "10.56.0.0/14",
+          "clusterSecondaryRangeName": "gke-shielded-nodes-enabled-pods-fd0a23a7",
+          "servicesIpv4Cidr": "10.0.0.0/20",
+          "servicesIpv4CidrBlock": "10.0.0.0/20",
+          "servicesSecondaryRangeName": "gke-shielded-nodes-enabled-services-fd0a23a7",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-c",
+        "locations": [
+          "us-central1-c"
+        ],
+        "loggingService": "logging.googleapis.com/kubernetes",
+        "maintenancePolicy": {
+          "resourceVersion": "e3b0c442"
+        },
+        "masterAuthorizedNetworksConfig": {},
+        "monitoringService": "monitoring.googleapis.com/kubernetes",
+        "name": "shielded-nodes-enabled",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/transfer-repo/global/networks/default",
+          "subnetwork": "projects/transfer-repo/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/monitoring",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default",
+              "shieldedInstanceConfig": {
+                "enableIntegrityMonitoring": true,
+                "enableSecureBoot": true
+              }
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/transfer-repo/zones/us-central1-c/instanceGroupManagers/gke-shielded-nodes-enabl-default-pool-86295a0a-grp"
+            ],
+            "locations": [
+              "us-central1-c"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/transfer-repo/zones/us-central1-c/clusters/shielded-nodes-enabled/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.14.10-gke.17"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/transfer-repo/zones/us-central1-c/clusters/shielded-nodes-enabled",
+        "servicesIpv4Cidr": "10.0.0.0/20",
+        "shieldedNodes": {
+          "enabled": true
+        },
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-central1-c"
+      }
+    },
+    "ancestors": [
+      "projects/321240941520",
+      "folders/396521612403",
+      "organizations/433637338589"
+    ]
+  },
+  {
+    "name": "//container.googleapis.com/projects/transfer-repo/zones/us-central1-c/clusters/shielded-nodes-disabled",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/321240941520",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "authenticatorGroupsConfig": {},
+        "clusterIpv4Cidr": "10.60.0.0/14",
+        "createTime": "2020-03-05T17:27:14+00:00",
+        "currentMasterVersion": "1.14.10-gke.17",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.14.10-gke.17",
+        "databaseEncryption": {
+          "state": "DECRYPTED"
+        },
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "34.69.80.111",
+        "initialClusterVersion": "1.14.10-gke.17",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/transfer-repo/zones/us-central1-c/instanceGroupManagers/gke-shielded-nodes-disab-default-pool-bfdd437d-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.60.0.0/14",
+          "clusterIpv4CidrBlock": "10.60.0.0/14",
+          "clusterSecondaryRangeName": "gke-shielded-nodes-disabled-pods-6e3cfb21",
+          "servicesIpv4Cidr": "10.64.0.0/20",
+          "servicesIpv4CidrBlock": "10.64.0.0/20",
+          "servicesSecondaryRangeName": "gke-shielded-nodes-disabled-services-6e3cfb21",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-c",
+        "locations": [
+          "us-central1-c"
+        ],
+        "loggingService": "logging.googleapis.com/kubernetes",
+        "maintenancePolicy": {
+          "resourceVersion": "e3b0c442"
+        },
+        "masterAuthorizedNetworksConfig": {},
+        "monitoringService": "monitoring.googleapis.com/kubernetes",
+        "name": "shielded-nodes-disabled",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/transfer-repo/global/networks/default",
+          "subnetwork": "projects/transfer-repo/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/cloud-platform"
+              ],
+              "serviceAccount": "gke-cluster@transfer-repo.iam.gserviceaccount.com",
+              "shieldedInstanceConfig": {
+                "enableIntegrityMonitoring": true,
+                "enableSecureBoot": true
+              }
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/transfer-repo/zones/us-central1-c/instanceGroupManagers/gke-shielded-nodes-disab-default-pool-bfdd437d-grp"
+            ],
+            "locations": [
+              "us-central1-c"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/transfer-repo/zones/us-central1-c/clusters/shielded-nodes-disabled/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.14.10-gke.17"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/transfer-repo/zones/us-central1-c/clusters/shielded-nodes-disabled",
+        "servicesIpv4Cidr": "10.64.0.0/20",
+        "shieldedNodes": {},
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-central1-c"
+      }
+    },
+    "ancestors": [
+      "projects/321240941520",
+      "folders/396521612403",
+      "organizations/433637338589"
+    ]
+  },
+  {
+    "name": "//container.googleapis.com/projects/transfer-repo/zones/us-central1-c/clusters/shielded-nodes-enabled-noboot",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/321240941520",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "authenticatorGroupsConfig": {},
+        "clusterIpv4Cidr": "10.56.0.0/14",
+        "createTime": "2020-03-05T17:35:40+00:00",
+        "currentMasterVersion": "1.14.10-gke.17",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.14.10-gke.17",
+        "databaseEncryption": {
+          "state": "DECRYPTED"
+        },
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "35.188.34.99",
+        "initialClusterVersion": "1.14.10-gke.17",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/transfer-repo/zones/us-central1-c/instanceGroupManagers/gke-shielded-nodes-enabl-default-pool-86295a0a-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.56.0.0/14",
+          "clusterIpv4CidrBlock": "10.56.0.0/14",
+          "clusterSecondaryRangeName": "gke-shielded-nodes-enabled-pods-fd0a23a7",
+          "servicesIpv4Cidr": "10.0.0.0/20",
+          "servicesIpv4CidrBlock": "10.0.0.0/20",
+          "servicesSecondaryRangeName": "gke-shielded-nodes-enabled-services-fd0a23a7",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-c",
+        "locations": [
+          "us-central1-c"
+        ],
+        "loggingService": "logging.googleapis.com/kubernetes",
+        "maintenancePolicy": {
+          "resourceVersion": "e3b0c442"
+        },
+        "masterAuthorizedNetworksConfig": {},
+        "monitoringService": "monitoring.googleapis.com/kubernetes",
+        "name": "shielded-nodes-enabled",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/transfer-repo/global/networks/default",
+          "subnetwork": "projects/transfer-repo/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/monitoring",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default",
+              "shieldedInstanceConfig": {
+                "enableIntegrityMonitoring": true
+              }
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/transfer-repo/zones/us-central1-c/instanceGroupManagers/gke-shielded-nodes-enabl-default-pool-86295a0a-grp"
+            ],
+            "locations": [
+              "us-central1-c"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/transfer-repo/zones/us-central1-c/clusters/shielded-nodes-enabled/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.14.10-gke.17"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/transfer-repo/zones/us-central1-c/clusters/shielded-nodes-enabled",
+        "servicesIpv4Cidr": "10.0.0.0/20",
+        "shieldedNodes": {
+          "enabled": true
+        },
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-central1-c"
+      }
+    },
+    "ancestors": [
+      "projects/321240941520",
+      "folders/396521612403",
+      "organizations/433637338589"
+    ]
+  }
+]

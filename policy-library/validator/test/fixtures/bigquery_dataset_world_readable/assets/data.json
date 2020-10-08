@@ -1,0 +1,114 @@
+[
+  {
+    "name": "//bigquery.googleapis.com/projects/test-project/datasets/world-readable-allAuthenticatedUsers",
+    "asset_type": "bigquery.googleapis.com/Dataset",
+    "iam_policy": {
+      "etag": "BwWV9DYRcXA=",
+      "bindings": [
+        {
+          "role": "roles/bigquery.dataEditor",
+          "members": [
+            "projectEditor:test-editor"
+          ]
+        },
+        {
+          "role": "roles/bigquery.dataOwner",
+          "members": [
+            "projectOwner:test-owner"
+          ]
+        },
+        {
+          "role": "roles/bigquery.dataViewer",
+          "members": [
+            "allAuthenticatedUsers",
+            "projectViewer:test-viewer"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "//bigquery.googleapis.com/projects/test-project/datasets/world-readable-allUsers",
+    "asset_type": "bigquery.googleapis.com/Dataset",
+    "iam_policy": {
+      "etag": "BwWV9DYRcXA=",
+      "bindings": [
+        {
+          "role": "roles/bigquery.dataEditor",
+          "members": [
+            "projectEditor:test-editor"
+          ]
+        },
+        {
+          "role": "roles/bigquery.dataOwner",
+          "members": [
+            "projectOwner:test-owner"
+          ]
+        },
+        {
+          "role": "roles/bigquery.dataViewer",
+          "members": [
+            "allUsers",
+            "projectViewer:test-viewer"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "//bigquery.googleapis.com/projects/test-project/datasets/world-readable-both",
+    "asset_type": "bigquery.googleapis.com/Dataset",
+    "iam_policy": {
+      "etag": "BwWV9DYRcXA=",
+      "bindings": [
+        {
+          "role": "roles/bigquery.dataEditor",
+          "members": [
+            "projectEditor:test-editor"
+          ]
+        },
+        {
+          "role": "roles/bigquery.dataOwner",
+          "members": [
+            "projectOwner:test-owner"
+          ]
+        },
+        {
+          "role": "roles/bigquery.dataViewer",
+          "members": [
+            "allAuthenticatedUsers",
+            "allUsers",
+            "projectViewer:test-viewer"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "//bigquery.googleapis.com/projects/test-project/datasets/not-world-readable",
+    "asset_type": "bigquery.googleapis.com/Dataset",
+    "iam_policy": {
+      "etag": "BwWV9DYRcXA=",
+      "bindings": [
+        {
+          "role": "roles/bigquery.dataEditor",
+          "members": [
+            "projectEditor:test-editor"
+          ]
+        },
+        {
+          "role": "roles/bigquery.dataOwner",
+          "members": [
+            "projectOwner:test-owner"
+          ]
+        },
+        {
+          "role": "roles/bigquery.dataViewer",
+          "members": [
+            "projectViewer:test-viewer"
+          ]
+        }
+      ]
+    }
+  }
+]

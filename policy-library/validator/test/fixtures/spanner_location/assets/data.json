@@ -1,0 +1,70 @@
+[
+    {
+        "name": "//spanner.googleapis.com/projects/cf-my-test-project/instances/multi-regional-spanner-inst",
+        "asset_type": "spanner.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://spanner.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "config": "projects/cf-my-test-project/instanceConfigs/nam-eur-asia1",
+                "displayName": "multi-regional-spanner-inst",
+                "name": "projects/cf-my-test-project/instances/multi-regional-spanner-inst",
+                "nodeCount": 1,
+                "state": "READY"
+            }
+        }
+    },
+    {
+        "name": "//spanner.googleapis.com/projects/cf-my-test-project/instances/test-euro-spanner",
+        "asset_type": "spanner.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://spanner.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "config": "projects/cf-my-test-project/instanceConfigs/regional-europe-north1",
+                "displayName": "test-euro-spanner",
+                "name": "projects/cf-my-test-project/instances/test-euro-spanner",
+                "nodeCount": 1,
+                "state": "READY"
+            }
+        }
+    },
+    {
+        "name": "//spanner.googleapis.com/projects/cf-my-test-project/instances/test-multi-region-spanner",
+        "asset_type": "spanner.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://spanner.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "config": "projects/cf-my-test-project/instanceConfigs/nam3",
+                "displayName": "test-multi-region-spanner",
+                "name": "projects/cf-my-test-project/instances/test-multi-region-spanner",
+                "nodeCount": 1,
+                "state": "READY"
+            }
+        }
+    },
+    {
+        "name": "//spanner.googleapis.com/projects/cf-my-test-project/instances/test-regional-spanner-instance",
+        "asset_type": "spanner.googleapis.com/Instance",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://spanner.googleapis.com/$discovery/rest",
+            "discovery_name": "Instance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/402901960755",
+            "data": {
+                "config": "projects/cf-my-test-project/instanceConfigs/regional-us-central1",
+                "displayName": "test-regional-spanner-instance",
+                "name": "projects/cf-my-test-project/instances/test-regional-spanner-instance",
+                "nodeCount": 1,
+                "state": "READY"
+            }
+        }
+    }
+]

@@ -1,0 +1,162 @@
+[{
+  "name": "//cloudsql.googleapis.com/projects/test-project/instances/sql-instance-with-ssl",
+  "asset_type": "sqladmin.googleapis.com/Instance",
+  "resource": {
+    "version": "v1beta4",
+    "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+    "discovery_name": "DatabaseInstance",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/111",
+    "data": {
+      "backendType": "SECOND_GEN",
+      "connectionName": "test-project:us-central1:sql-instance-with-ssl",
+      "databaseVersion": "MYSQL_5_7",
+      "gceZone": "us-central1-f",
+      "instanceType": "CLOUD_SQL_INSTANCE",
+      "ipAddresses": [
+        {
+          "ipAddress": "35.238.155.204",
+          "type": "PRIMARY"
+        }
+      ],
+      "kind": "sql#instance",
+      "name": "sql-instance-with-ssl",
+      "project": "test-project",
+      "region": "us-central1",
+      "serviceAccountEmailAddress": "p111@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+      "settings": {
+        "activationPolicy": "ALWAYS",
+        "backupConfiguration": {
+          "binaryLogEnabled": true,
+          "enabled": true,
+          "kind": "sql#backupConfiguration",
+          "startTime": "06:00"
+        },
+        "dataDiskSizeGb": "25",
+        "dataDiskType": "PD_SSD",
+        "ipConfiguration": {
+          "ipv4Enabled": true,
+          "requireSsl": true
+        },
+        "kind": "sql#settings",
+        "locationPreference": {
+          "kind": "sql#locationPreference",
+          "zone": "us-central1-f"
+        },
+        "pricingPlan": "PER_USE",
+        "replicationType": "SYNCHRONOUS",
+        "settingsVersion": "1",
+        "storageAutoResize": true,
+        "storageAutoResizeLimit": "0",
+        "tier": "db-n1-standard-1"
+      },
+      "state": "RUNNABLE"
+    }
+  }
+},
+{
+  "name": "//cloudsql.googleapis.com/projects/test-project/instances/sql-instance-without-ssl",
+  "asset_type": "sqladmin.googleapis.com/Instance",
+  "resource": {
+    "version": "v1beta4",
+    "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+    "discovery_name": "DatabaseInstance",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/111",
+    "data": {
+      "backendType": "SECOND_GEN",
+      "connectionName": "test-project:us-central1:sql-instance-without-ssl",
+      "databaseVersion": "MYSQL_5_7",
+      "gceZone": "us-central1-f",
+      "instanceType": "CLOUD_SQL_INSTANCE",
+      "ipAddresses": [
+        {
+          "ipAddress": "35.238.155.204",
+          "type": "PRIMARY"
+        }
+      ],
+      "kind": "sql#instance",
+      "name": "sql-instance-without-ssl",
+      "project": "test-project",
+      "region": "us-central1",
+      "serviceAccountEmailAddress": "p111@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+      "settings": {
+        "activationPolicy": "ALWAYS",
+        "backupConfiguration": {
+          "binaryLogEnabled": true,
+          "enabled": true,
+          "kind": "sql#backupConfiguration",
+          "startTime": "06:00"
+        },
+        "dataDiskSizeGb": "25",
+        "dataDiskType": "PD_SSD",
+        "ipConfiguration": {
+          "ipv4Enabled": true,
+          "requireSsl": false
+        },
+        "kind": "sql#settings",
+        "locationPreference": {
+          "kind": "sql#locationPreference",
+          "zone": "us-central1-f"
+        },
+        "pricingPlan": "PER_USE",
+        "replicationType": "SYNCHRONOUS",
+        "settingsVersion": "1",
+        "storageAutoResize": true,
+        "storageAutoResizeLimit": "0",
+        "tier": "db-n1-standard-1"
+      },
+      "state": "RUNNABLE"
+    }
+  }
+},
+{
+  "name": "//cloudsql.googleapis.com/projects/test-project/instances/sql-instance-without-ipconfig",
+  "asset_type": "sqladmin.googleapis.com/Instance",
+  "resource": {
+    "version": "v1beta4",
+    "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+    "discovery_name": "DatabaseInstance",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/111",
+    "data": {
+      "backendType": "SECOND_GEN",
+      "connectionName": "test-project:us-central1:sql-instance-without-ipconfig",
+      "databaseVersion": "MYSQL_5_7",
+      "gceZone": "us-central1-f",
+      "instanceType": "CLOUD_SQL_INSTANCE",
+      "ipAddresses": [
+        {
+          "ipAddress": "35.238.155.204",
+          "type": "PRIMARY"
+        }
+      ],
+      "kind": "sql#instance",
+      "name": "sql-instance-without-ipconfig",
+      "project": "test-project",
+      "region": "us-central1",
+      "serviceAccountEmailAddress": "p111@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+      "settings": {
+        "activationPolicy": "ALWAYS",
+        "backupConfiguration": {
+          "binaryLogEnabled": true,
+          "enabled": true,
+          "kind": "sql#backupConfiguration",
+          "startTime": "06:00"
+        },
+        "dataDiskSizeGb": "25",
+        "dataDiskType": "PD_SSD",
+        "kind": "sql#settings",
+        "locationPreference": {
+          "kind": "sql#locationPreference",
+          "zone": "us-central1-f"
+        },
+        "pricingPlan": "PER_USE",
+        "replicationType": "SYNCHRONOUS",
+        "settingsVersion": "1",
+        "storageAutoResize": true,
+        "storageAutoResizeLimit": "0",
+        "tier": "db-n1-standard-1"
+      },
+      "state": "RUNNABLE"
+    }
+  }
+}
+]

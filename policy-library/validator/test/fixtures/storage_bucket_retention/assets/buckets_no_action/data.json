@@ -1,0 +1,105 @@
+[
+  {
+  "name": "//storage.googleapis.com/forseti-server-612d6ab-no-action",
+  "asset_type": "storage.googleapis.com/Bucket",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+    "discovery_name": "Bucket",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/13428609260",
+    "data": {
+      "acl": [],
+      "billing": {},
+      "cors": [],
+      "defaultObjectAcl": [],
+      "encryption": {},
+      "etag": "CAI=",
+      "iamConfiguration": {
+        "bucketPolicyOnly": {
+          "enabled": false
+        },
+        "uniformBucketLevelAccess": {
+          "enabled": false
+        }
+      },
+      "id": "forseti-server-612d6ab-no-action",
+      "kind": "storage#bucket",
+      "labels": {
+        "goog-dm": "forseti-server-612d6ab-no-action"
+      },
+      "lifecycle": {
+        "rule": []
+      },
+      "location": "US-CENTRAL1",
+      "locationType": "region",
+      "logging": {},
+      "metageneration": 2,
+      "name": "forseti-server-612d6ab-no-action",
+      "owner": {},
+      "projectNumber": 13428609260,
+      "retentionPolicy": {},
+      "selfLink": "https://www.googleapis.com/storage/v1/b/forseti-server-612d6ab-no-action",
+      "storageClass": "STANDARD",
+      "timeCreated": "2019-03-14T00:51:47.300Z",
+      "updated": "2019-03-14T00:51:49.446Z",
+      "versioning": {},
+      "website": {}
+    }
+  },
+  "ancestors": [
+    "projects/13428609260",
+    "folders/882716860580",
+    "organizations/660570133860"
+  ]
+},
+  {
+  "name": "//storage.googleapis.com/forseti-client-c9e3dd73-no-action",
+  "asset_type": "storage.googleapis.com/Bucket",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/storage/v1/rest",
+    "discovery_name": "Bucket",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/242032014983",
+    "data": {
+      "acl": [],
+      "billing": {},
+      "cors": [],
+      "defaultObjectAcl": [],
+      "encryption": {},
+      "etag": "CAI=",
+      "iamConfiguration": {
+        "bucketPolicyOnly": {
+          "enabled": false
+        },
+        "uniformBucketLevelAccess": {
+          "enabled": false
+        }
+      },
+      "id": "forseti-client-c9e3dd73-no-action",
+      "kind": "storage#bucket",
+      "labels": {},
+      "lifecycle": {
+        "rule": []
+      },
+      "location": "US-EAST4",
+      "locationType": "region",
+      "logging": {},
+      "metageneration": 2,
+      "name": "forseti-client-c9e3dd73-no-action",
+      "owner": {},
+      "projectNumber": 242032014983,
+      "retentionPolicy": {},
+      "selfLink": "https://www.googleapis.com/storage/v1/b/forseti-client-c9e3dd73-no-action",
+      "storageClass": "STANDARD",
+      "timeCreated": "2020-02-03T19:37:57.600Z",
+      "updated": "2020-03-03T23:51:59.491Z",
+      "versioning": {},
+      "website": {}
+    }
+  },
+  "ancestors": [
+    "projects/242032014983",
+    "organizations/660570133860"
+  ]
+}
+]

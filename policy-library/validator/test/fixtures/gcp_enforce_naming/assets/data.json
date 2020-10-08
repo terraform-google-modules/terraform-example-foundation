@@ -1,0 +1,226 @@
+[
+  {
+    "name": "//compute.googleapis.com/projects/test-project/zones/us-east1-b/instances/vm-external-ip",
+    "asset_type": "compute.googleapis.com/Instance",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Instance",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/68478495408",
+      "data": {
+        "canIpForward": false,
+        "cpuPlatform": "Unknown CPU Platform",
+        "creationTimestamp": "2018-06-20T14:46:40.689-07:00",
+        "deletionProtection": false,
+        "description": "",
+        "disk": [
+          {
+            "autoDelete": true,
+            "boot": true,
+            "deviceName": "vm-external-ip",
+            "guestOsFeature": [
+              {
+                "type": "VIRTIO_SCSI_MULTIQUEUE"
+              }
+            ],
+            "index": 0,
+            "interface": "SCSI",
+            "license": [
+              "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+            ],
+            "mode": "READ_WRITE",
+            "source": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-b/disks/vm-external-ip",
+            "type": "PERSISTENT"
+          }
+        ],
+        "id": "108591614595134928",
+        "labelFingerprint": "42WmSpB8rSM=",
+        "machineType": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-b/machineTypes/n1-standard-1",
+        "name": "vm-external-ip",
+        "networkInterfaces": [
+          {
+            "accessConfigs": [
+              {
+                "externalIp": "35.196.151.107",
+                "name": "external-nat",
+                "networkTier": "PREMIUM",
+                "type": "ONE_TO_ONE_NAT"
+              }
+            ],
+            "fingerprint": "FKYLBaTiCF0=",
+            "ipAddress": "10.142.0.2",
+            "name": "nic0",
+            "network": "https://www.googleapis.com/compute/v1/projects/test-project/global/networks/default",
+            "subnetwork": "https://www.googleapis.com/compute/v1/projects/test-project/regions/us-east1/subnetworks/default"
+          }
+        ],
+        "scheduling": {
+          "automaticRestart": true,
+          "onHostMaintenance": "MIGRATE",
+          "preemptible": false
+        },
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-b/instances/vm-external-ip",
+        "serviceAccount": [
+          {
+            "email": "77777777-compute@developer.gserviceaccount.com",
+            "scope": [
+              "https://www.googleapis.com/auth/cloud-platform"
+            ]
+          }
+        ],
+        "startRestricted": false,
+        "status": "TERMINATED",
+        "tags": {
+          "fingerprint": "42WmSpB8rSM="
+        },
+        "zone": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-b"
+      }
+    }
+  },
+  {
+    "name": "//compute.googleapis.com/projects/test-project/zones/us-east1-b/instances/vm-external-ip-two",
+    "asset_type": "compute.googleapis.com/Instance",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Instance",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/68478495408",
+      "data": {
+        "canIpForward": false,
+        "cpuPlatform": "Unknown CPU Platform",
+        "creationTimestamp": "2018-06-20T14:46:40.689-07:00",
+        "deletionProtection": false,
+        "description": "",
+        "disk": [
+          {
+            "autoDelete": true,
+            "boot": true,
+            "deviceName": "vm-external-ip-two",
+            "guestOsFeature": [
+              {
+                "type": "VIRTIO_SCSI_MULTIQUEUE"
+              }
+            ],
+            "index": 0,
+            "interface": "SCSI",
+            "license": [
+              "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/licenses/debian-9-stretch"
+            ],
+            "mode": "READ_WRITE",
+            "source": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-b/disks/vm-external-ip-two",
+            "type": "PERSISTENT"
+          }
+        ],
+        "id": "108591614595134928",
+        "labelFingerprint": "42WmSpB8rSM=",
+        "machineType": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-b/machineTypes/n1-standard-1",
+        "name": "vm-external-ip",
+        "networkInterfaces": [
+          {
+            "accessConfigs": [
+              {
+                "externalIp": "35.196.151.110",
+                "name": "external-nat",
+                "networkTier": "PREMIUM",
+                "type": "ONE_TO_ONE_NAT"
+              }
+            ],
+            "fingerprint": "FKYLBaTiCF0=",
+            "ipAddress": "10.142.0.2",
+            "name": "nic0",
+            "network": "https://www.googleapis.com/compute/v1/projects/test-project/global/networks/default",
+            "subnetwork": "https://www.googleapis.com/compute/v1/projects/test-project/regions/us-east1/subnetworks/default"
+          }
+        ],
+        "scheduling": {
+          "automaticRestart": true,
+          "onHostMaintenance": "MIGRATE",
+          "preemptible": false
+        },
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-b/instances/vm-external-ip-two",
+        "serviceAccount": [
+          {
+            "email": "77777777-compute@developer.gserviceaccount.com",
+            "scope": [
+              "https://www.googleapis.com/auth/cloud-platform"
+            ]
+          }
+        ],
+        "startRestricted": false,
+        "status": "TERMINATED",
+        "tags": {
+          "fingerprint": "42WmSpB8rSM="
+        },
+        "zone": "https://www.googleapis.com/compute/v1/projects/test-project/zones/us-east1-b"
+      }
+    }
+  },
+  {
+    "name": "//compute.googleapis.com/projects/test-project/global/firewalls/gke-firewall-allow-all",
+    "asset_type": "compute.googleapis.com/Firewall",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/compute/v1/rest",
+      "discovery_name": "Firewall",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/12345678",
+      "data": {
+        "allowed": [
+          {
+            "IPProtocol": "icmp",
+            "ipProtocol": "icmp"
+          },
+          {
+            "IPProtocol": "tcp",
+            "ipProtocol": "tcp",
+            "port": [
+              "1-65535"
+            ],
+            "ports": [
+              "1-65535"
+            ]
+          },
+          {
+            "IPProtocol": "udp",
+            "ipProtocol": "udp",
+            "port": [
+              "1-65535"
+            ],
+            "ports": [
+              "1-65535"
+            ]
+          }
+        ],
+        "creationTimestamp": "2019-09-11T14:22:52.101-07:00",
+        "description": "",
+        "direction": "INGRESS",
+        "disabled": false,
+        "id": "5433143896623602499",
+        "logConfig": {
+          "enable": false
+        },
+        "name": "gke-firewall-allow-all",
+        "network": "https://www.googleapis.com/compute/v1/projects/test-project/global/networks/gke-net",
+        "priority": 1000,
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/test-project/global/firewalls/gke-firewall-allow-all",
+        "sourceRange": [
+          "10.10.10.0/24"
+        ],
+        "sourceRanges": [
+          "10.10.10.0/24"
+        ],
+        "targetTag": [
+          "gke-node"
+        ],
+        "targetTags": [
+          "gke--node"
+        ]
+      }
+    },
+    "ancestors": [
+      "projects/12345667",
+      "folders/89101112",
+      "organizations/13141516"
+    ]
+  }
+ 
+]

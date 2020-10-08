@@ -1,0 +1,388 @@
+[
+  {
+    "name": "//container.googleapis.com/projects/gkeexposure/zones/us-central1-c/clusters/private-endpoint-public",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/1111111111",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "authenticatorGroupsConfig": {},
+        "clusterIpv4Cidr": "10.60.0.0/14",
+        "createTime": "2020-03-06T06:14:36+00:00",
+        "currentMasterVersion": "1.14.10-gke.17",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.14.10-gke.17",
+        "databaseEncryption": {
+          "state": "DECRYPTED"
+        },
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "35.239.255.240",
+        "initialClusterVersion": "1.14.10-gke.17",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/gkeexposure/zones/us-central1-c/instanceGroupManagers/gke-private-endpoint-pub-default-pool-88c0ba1c-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.60.0.0/14",
+          "clusterIpv4CidrBlock": "10.60.0.0/14",
+          "clusterSecondaryRangeName": "gke-private-endpoint-public-pods-e4770c3c",
+          "servicesIpv4Cidr": "10.0.16.0/20",
+          "servicesIpv4CidrBlock": "10.0.16.0/20",
+          "servicesSecondaryRangeName": "gke-private-endpoint-public-services-e4770c3c",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-c",
+        "locations": [
+          "us-central1-c"
+        ],
+        "loggingService": "logging.googleapis.com/kubernetes",
+        "maintenancePolicy": {
+          "resourceVersion": "e3b0c442"
+        },
+        "masterAuthorizedNetworksConfig": {},
+        "monitoringService": "monitoring.googleapis.com/kubernetes",
+        "name": "private-endpoint-public",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/gkeexposure/global/networks/default",
+          "subnetwork": "projects/gkeexposure/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/monitoring",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default",
+              "shieldedInstanceConfig": {
+                "enableIntegrityMonitoring": true
+              }
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/gkeexposure/zones/us-central1-c/instanceGroupManagers/gke-private-endpoint-pub-default-pool-88c0ba1c-grp"
+            ],
+            "locations": [
+              "us-central1-c"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/gkeexposure/zones/us-central1-c/clusters/private-endpoint-public/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.14.10-gke.17"
+          }
+        ],
+        "privateClusterConfig": {
+          "enablePrivateNodes": true,
+          "masterIpv4CidrBlock": "10.100.30.0/28",
+          "peeringName": "gke-na33ca6265fed70d0491-8b61-0fe5-peer",
+          "privateEndpoint": "10.100.30.2",
+          "publicEndpoint": "35.239.255.240"
+        },
+        "selfLink": "https://container.googleapis.com/v1/projects/gkeexposure/zones/us-central1-c/clusters/private-endpoint-public",
+        "servicesIpv4Cidr": "10.0.16.0/20",
+        "shieldedNodes": {},
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-central1-c"
+      }
+    },
+    "ancestors": [
+      "projects/1111111111",
+      "folders/11111111",
+      "organizations/1111111111"
+    ]
+  },
+  {
+    "name": "//container.googleapis.com/projects/gkeexposure/zones/us-central1-c/clusters/public",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/1111111111",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "authenticatorGroupsConfig": {},
+        "clusterIpv4Cidr": "10.4.0.0/14",
+        "createTime": "2020-03-06T04:53:42+00:00",
+        "currentMasterVersion": "1.14.10-gke.17",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.14.10-gke.17",
+        "databaseEncryption": {
+          "state": "DECRYPTED"
+        },
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "35.192.146.132",
+        "initialClusterVersion": "1.14.10-gke.17",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/gkeexposure/zones/us-central1-c/instanceGroupManagers/gke-public-default-pool-1b4e482c-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.4.0.0/14",
+          "clusterIpv4CidrBlock": "10.4.0.0/14",
+          "clusterSecondaryRangeName": "gke-public-pods-3256ea47",
+          "servicesIpv4Cidr": "10.71.0.0/20",
+          "servicesIpv4CidrBlock": "10.71.0.0/20",
+          "servicesSecondaryRangeName": "gke-public-services-3256ea47",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-c",
+        "locations": [
+          "us-central1-c"
+        ],
+        "loggingService": "logging.googleapis.com/kubernetes",
+        "maintenancePolicy": {
+          "resourceVersion": "e3b0c442"
+        },
+        "masterAuthorizedNetworksConfig": {},
+        "monitoringService": "monitoring.googleapis.com/kubernetes",
+        "name": "public",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/gkeexposure/global/networks/default",
+          "subnetwork": "projects/gkeexposure/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/monitoring",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default",
+              "shieldedInstanceConfig": {
+                "enableIntegrityMonitoring": true
+              }
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/gkeexposure/zones/us-central1-c/instanceGroupManagers/gke-public-default-pool-1b4e482c-grp"
+            ],
+            "locations": [
+              "us-central1-c"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/gkeexposure/zones/us-central1-c/clusters/public/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.14.10-gke.17"
+          }
+        ],
+        "selfLink": "https://container.googleapis.com/v1/projects/gkeexposure/zones/us-central1-c/clusters/public",
+        "servicesIpv4Cidr": "10.71.0.0/20",
+        "shieldedNodes": {},
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-central1-c"
+      }
+    },
+    "ancestors": [
+      "projects/1111111111",
+      "folders/11111111",
+      "organizations/1111111111"
+    ]
+  },
+  {
+    "name": "//container.googleapis.com/projects/gkeexposure/zones/us-central1-c/clusters/private-endpoint-private",
+    "asset_type": "container.googleapis.com/Cluster",
+    "resource": {
+      "version": "v1",
+      "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+      "discovery_name": "Cluster",
+      "parent": "//cloudresourcemanager.googleapis.com/projects/1111111111",
+      "data": {
+        "addonsConfig": {
+          "horizontalPodAutoscaling": {},
+          "httpLoadBalancing": {},
+          "kubernetesDashboard": {
+            "disabled": true
+          },
+          "networkPolicyConfig": {
+            "disabled": true
+          }
+        },
+        "authenticatorGroupsConfig": {},
+        "clusterIpv4Cidr": "10.12.0.0/14",
+        "createTime": "2020-03-06T06:08:36+00:00",
+        "currentMasterVersion": "1.14.10-gke.17",
+        "currentNodeCount": 3,
+        "currentNodeVersion": "1.14.10-gke.17",
+        "databaseEncryption": {
+          "state": "DECRYPTED"
+        },
+        "defaultMaxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "endpoint": "10.100.28.2",
+        "initialClusterVersion": "1.14.10-gke.17",
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/gkeexposure/zones/us-central1-c/instanceGroupManagers/gke-private-endpoint-pri-default-pool-e6d448ae-grp"
+        ],
+        "ipAllocationPolicy": {
+          "clusterIpv4Cidr": "10.12.0.0/14",
+          "clusterIpv4CidrBlock": "10.12.0.0/14",
+          "clusterSecondaryRangeName": "gke-private-endpoint-private-pods-59b8f3ff",
+          "servicesIpv4Cidr": "10.0.0.0/20",
+          "servicesIpv4CidrBlock": "10.0.0.0/20",
+          "servicesSecondaryRangeName": "gke-private-endpoint-private-services-59b8f3ff",
+          "useIpAliases": true
+        },
+        "labelFingerprint": "a9dc16a7",
+        "legacyAbac": {},
+        "location": "us-central1-c",
+        "locations": [
+          "us-central1-c"
+        ],
+        "loggingService": "logging.googleapis.com/kubernetes",
+        "maintenancePolicy": {
+          "resourceVersion": "e3b0c442"
+        },
+        "masterAuthorizedNetworksConfig": {
+          "enabled": true
+        },
+        "monitoringService": "monitoring.googleapis.com/kubernetes",
+        "name": "private-endpoint-private",
+        "network": "default",
+        "networkConfig": {
+          "network": "projects/gkeexposure/global/networks/default",
+          "subnetwork": "projects/gkeexposure/regions/us-central1/subnetworks/default"
+        },
+        "networkPolicy": {},
+        "nodePools": [
+          {
+            "autoscaling": {},
+            "config": {
+              "diskSizeGb": 100,
+              "diskType": "pd-standard",
+              "imageType": "COS",
+              "machineType": "n1-standard-1",
+              "metadata": {
+                "disable-legacy-endpoints": "true"
+              },
+              "oauthScopes": [
+                "https://www.googleapis.com/auth/devstorage.read_only",
+                "https://www.googleapis.com/auth/logging.write",
+                "https://www.googleapis.com/auth/monitoring",
+                "https://www.googleapis.com/auth/servicecontrol",
+                "https://www.googleapis.com/auth/service.management.readonly",
+                "https://www.googleapis.com/auth/trace.append"
+              ],
+              "serviceAccount": "default",
+              "shieldedInstanceConfig": {
+                "enableIntegrityMonitoring": true
+              }
+            },
+            "initialNodeCount": 3,
+            "instanceGroupUrls": [
+              "https://www.googleapis.com/compute/v1/projects/gkeexposure/zones/us-central1-c/instanceGroupManagers/gke-private-endpoint-pri-default-pool-e6d448ae-grp"
+            ],
+            "locations": [
+              "us-central1-c"
+            ],
+            "management": {
+              "autoRepair": true,
+              "autoUpgrade": true
+            },
+            "maxPodsConstraint": {
+              "maxPodsPerNode": "110"
+            },
+            "name": "default-pool",
+            "podIpv4CidrSize": 24,
+            "selfLink": "https://container.googleapis.com/v1/projects/gkeexposure/zones/us-central1-c/clusters/private-endpoint-private/nodePools/default-pool",
+            "status": "RUNNING",
+            "version": "1.14.10-gke.17"
+          }
+        ],
+        "privateClusterConfig": {
+          "enablePrivateEndpoint": true,
+          "enablePrivateNodes": true,
+          "masterIpv4CidrBlock": "10.100.28.0/28",
+          "peeringName": "gke-na33ca6265fed70d0491-8b61-0fe5-peer",
+          "privateEndpoint": "10.100.28.2",
+          "publicEndpoint": "35.239.60.88"
+        },
+        "selfLink": "https://container.googleapis.com/v1/projects/gkeexposure/zones/us-central1-c/clusters/private-endpoint-private",
+        "servicesIpv4Cidr": "10.0.0.0/20",
+        "shieldedNodes": {},
+        "status": "RUNNING",
+        "subnetwork": "default",
+        "zone": "us-central1-c"
+      }
+    },
+    "ancestors": [
+      "projects/1111111111",
+      "folders/11111111",
+      "organizations/1111111111"
+    ]
+  }
+]

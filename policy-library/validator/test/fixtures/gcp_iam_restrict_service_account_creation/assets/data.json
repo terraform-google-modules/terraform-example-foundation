@@ -1,0 +1,59 @@
+[
+    {
+        "asset_type": "iam.googleapis.com/ServiceAccount",
+        "name": "//iam.googleapis.com/projects/test-project/serviceAccounts/102628377948083709745",
+        "resource": {
+            "data": {
+                "displayName": "myserviceaccount",
+                "email": "myserviceaccount@test-project.iam.gserviceaccount.com",
+                "etag": "BwUvOZdP/Kc=",
+                "name": "projects/test-project/serviceAccounts/myserviceaccount@test-project.iam.gserviceaccount.com",
+                "oauth2ClientId": "102628377948083709745",
+                "projectId": "test-project",
+                "uniqueId": "102628377948083709745"
+            },
+            "discovery_document_uri": "https://iam.googleapis.com/$discovery/rest",
+            "discovery_name": "ServiceAccount",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/773711848681",
+            "version": "v1"
+        }
+    },
+    {
+        "asset_type": "iam.googleapis.com/ServiceAccount",
+        "name": "//iam.googleapis.com/projects/test-project/serviceAccounts/103713983260897258813",
+        "resource": {
+            "data": {
+                "displayName": "Service account 6",
+                "email": "773711848681-ke5v18ndptc8j6cb5rraooik5kh0plcs@developer.gserviceaccount.com",
+                "etag": "BwUg/lN2CL8=",
+                "name": "projects/test-project/serviceAccounts/773711848681-ke5v18ndptc8j6cb5rraooik5kh0plcs@developer.gserviceaccount.com",
+                "oauth2ClientId": "773711848681-ke5v18ndptc8j6cb5rraooik5kh0plcs.apps.googleusercontent.com",
+                "projectId": "test-project",
+                "uniqueId": "103713983260897258813"
+            },
+            "discovery_document_uri": "https://iam.googleapis.com/$discovery/rest",
+            "discovery_name": "ServiceAccount",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/773711848681",
+            "version": "v1"
+        }
+    },
+    {
+        "asset_type": "iam.googleapis.com/ServiceAccount",
+        "name": "//iam.googleapis.com/projects/test-project/serviceAccounts/117792594799353095848",
+        "resource": {
+            "data": {
+                "email": "my-account@test-project.iam.gserviceaccount.com",
+                "etag": "BwVkyv5Uzbw=",
+                "name": "projects/test-project/serviceAccounts/my-account@test-project.iam.gserviceaccount.com",
+                "oauth2ClientId": "117792594799353095848",
+                "projectId": "test-project",
+                "uniqueId": "117792594799353095848"
+            },
+            "discovery_document_uri": "https://iam.googleapis.com/$discovery/rest",
+            "discovery_name": "ServiceAccount",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/773711848681",
+            "version": "v1"
+        }
+    }
+
+]

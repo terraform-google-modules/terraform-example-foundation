@@ -1,0 +1,13 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: GCPStorageLoggingConstraintV1
+metadata:
+  name: storage_logging
+  annotations:
+    description: Ensure storage logs are delivered to a separate bucket
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - "organizations/**"
+    exclude: [] # optional, default is no exclusions
+  parameters: {}

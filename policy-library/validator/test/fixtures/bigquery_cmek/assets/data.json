@@ -1,0 +1,140 @@
+[
+    {
+        "name": "//bigquery.googleapis.com/projects/anand-spanner/datasets/anand_bq_test_3",
+        "asset_type": "bigquery.googleapis.com/Dataset",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Dataset",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/734817249001",
+            "data": {
+                "datasetReference": {
+                    "datasetId": "anand_bq_test_3",
+                    "projectId": "anand-spanner"
+                },
+                "id": "anand-spanner:anand_bq_test_3",
+                "kind": "bigquery#dataset",
+                "location": "US"
+            }
+        }
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/anand-spanner/datasets/anand_bq_test_3/tables/test_cmek",
+        "asset_type": "bigquery.googleapis.com/Table",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Table",
+            "parent": "//bigquery.googleapis.com/projects/anand-spanner/datasets/anand_bq_test_3",
+            "data": {
+                "encryptionConfiguration": {
+                    "kmsKeyName": "projects/anand-spanner/locations/us/keyRings/test-us/cryptoKeys/test-1"
+                },
+                "id": "anand-spanner:anand_bq_test_3.test_cmek",
+                "kind": "bigquery#table",
+                "schema": {
+                    "fields": [
+                        {
+                            "description": "",
+                            "name": "string_field_0",
+                            "type": "TYPE_STRING"
+                        }
+                    ]
+                },
+                "tableReference": {
+                    "datasetId": "anand_bq_test_3",
+                    "projectId": "anand-spanner",
+                    "tableId": "test_cmek"
+                }
+            }
+        }
+    },
+    {
+        "name": "//bigquery.googleapis.com/projects/anand-spanner/datasets/anand_bq_test_3/tables/test_google_encryption_key",
+        "asset_type": "bigquery.googleapis.com/Table",
+        "resource": {
+            "version": "v2",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/bigquery/v2/rest",
+            "discovery_name": "Table",
+            "parent": "//bigquery.googleapis.com/projects/anand-spanner/datasets/anand_bq_test_3",
+            "data": {
+                "id": "anand-spanner:anand_bq_test_3.test_google_encryption_key",
+                "kind": "bigquery#table",
+                "schema": {
+                    "fields": [
+                        {
+                            "description": "",
+                            "name": "string_field_0",
+                            "type": "TYPE_STRING"
+                        }
+                    ]
+                },
+                "tableReference": {
+                    "datasetId": "anand_bq_test_3",
+                    "projectId": "anand-spanner",
+                    "tableId": "test_google_encryption_key"
+                }
+            }
+        }
+    },
+    {
+        "name": "//cloudkms.googleapis.com/projects/anand-spanner/locations/global/keyRings/test/cryptoKeys/test-1/cryptoKeyVersions/1",
+        "asset_type": "cloudkms.googleapis.com/CryptoKeyVersion",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://cloudkms.googleapis.com/$discovery/rest",
+            "discovery_name": "CryptoKeyVersion",
+            "data": {
+                "algorithm": "GOOGLE_SYMMETRIC_ENCRYPTION",
+                "createTime": "2019-05-15T17:01:01.882806557Z",
+                "generateTime": "2019-05-15T17:01:01.882806557Z",
+                "name": "projects/anand-spanner/locations/global/keyRings/test/cryptoKeys/test-1/cryptoKeyVersions/1",
+                "protectionLevel": "SOFTWARE",
+                "state": "ENABLED"
+            }
+        }
+    },
+    {
+        "name": "//cloudkms.googleapis.com/projects/anand-spanner/locations/global/keyRings/test/cryptoKeys/test-1",
+        "asset_type": "cloudkms.googleapis.com/CryptoKey",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://cloudkms.googleapis.com/$discovery/rest",
+            "discovery_name": "CryptoKey",
+            "parent": "//cloudkms.googleapis.com/projects/anand-spanner/locations/global/keyRings/test",
+            "data": {
+                "createTime": "2019-05-15T17:01:01.882806557Z",
+                "name": "projects/anand-spanner/locations/global/keyRings/test/cryptoKeys/test-1",
+                "nextRotationTime": "2019-08-13T05:00:00Z",
+                "primary": {
+                    "algorithm": "GOOGLE_SYMMETRIC_ENCRYPTION",
+                    "createTime": "2019-05-15T17:01:01.882806557Z",
+                    "generateTime": "2019-05-15T17:01:01.882806557Z",
+                    "name": "projects/anand-spanner/locations/global/keyRings/test/cryptoKeys/test-1/cryptoKeyVersions/1",
+                    "protectionLevel": "SOFTWARE",
+                    "state": "ENABLED"
+                },
+                "purpose": "ENCRYPT_DECRYPT",
+                "rotationPeriod": "7776000s",
+                "versionTemplate": {
+                    "algorithm": "GOOGLE_SYMMETRIC_ENCRYPTION",
+                    "protectionLevel": "SOFTWARE"
+                }
+            }
+        }
+    },
+    {
+        "name": "//spanner.googleapis.com/projects/anand-spanner/instances/demo/databases/test",
+        "asset_type": "spanner.googleapis.com/Database",
+        "resource": {
+            "version": "v1",
+            "discovery_document_uri": "https://spanner.googleapis.com/$discovery/rest",
+            "discovery_name": "Database",
+            "parent": "//spanner.googleapis.com/projects/anand-spanner/instances/demo",
+            "data": {
+                "name": "projects/anand-spanner/instances/demo/databases/test",
+                "state": "READY"
+            }
+        }
+    }
+]

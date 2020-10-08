@@ -1,0 +1,220 @@
+[
+    {
+        "name": "//cloudsql.googleapis.com/projects/cf-gcp-forseti-project/instances/test-sql-server",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+            "discovery_name": "DatabaseInstance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/766908199042",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "cf-gcp-forseti-project:us-central1:test-sql-server",
+                "databaseVersion": "SQLSERVER_2017_STANDARD",
+                "gceZone": "us-central1-c",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "ipAddresses": [
+                    {
+                        "ipAddress": "35.192.139.6",
+                        "type": "PRIMARY"
+                    }
+                ],
+                "kind": "sql#instance",
+                "name": "test-sql-server",
+                "project": "cf-gcp-forseti-project",
+                "region": "us-central1",
+                "selfLink": "https://www.googleapis.com/sql/v1beta4/projects/cf-gcp-forseti-project/instances/test-sql-server",
+                "serverCaCert": {
+                    "certSerialNumber": "0",
+                    "commonName": "C=US,O=Google\\, Inc,CN=Google Cloud SQL Server CA,dnQualifier=c959b070-8d7f-45f0-8ff3-b1b2c3d35c74",
+                    "createTime": "2020-02-12T21:48:51.259Z",
+                    "expirationTime": "2030-02-09T21:49:51.259Z",
+                    "instance": "test-sql-server",
+                    "kind": "sql#sslCert",
+                    "sha1Fingerprint": "b9550b8e21914a56b533045b55c6e5d71702aa47"
+                },
+                "serviceAccountEmailAddress": "p766908199042-p52a52@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+                "settings": {
+                    "activationPolicy": "ALWAYS",
+                    "availabilityType": "ZONAL",
+                    "backupConfiguration": {
+                        "binaryLogEnabled": false,
+                        "enabled": false,
+                        "kind": "sql#backupConfiguration",
+                        "startTime": "15:00"
+                    },
+                    "dataDiskSizeGb": "20",
+                    "dataDiskType": "PD_SSD",
+                    "ipConfiguration": {
+                        "ipv4Enabled": true
+                    },
+                    "kind": "sql#settings",
+                    "locationPreference": {
+                        "kind": "sql#locationPreference",
+                        "zone": "us-central1-c"
+                    },
+                    "maintenanceWindow": {
+                        "day": 0,
+                        "hour": 0,
+                        "kind": "sql#maintenanceWindow"
+                    },
+                    "pricingPlan": "PER_USE",
+                    "replicationType": "SYNCHRONOUS",
+                    "settingsVersion": "1",
+                    "storageAutoResize": true,
+                    "storageAutoResizeLimit": "0",
+                    "tier": "db-custom-1-4096"
+                },
+                "state": "RUNNABLE"
+            }
+        },
+        "ancestors": [
+            "projects/766908199042",
+            "organizations/382777088978"
+        ]
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/cf-gcp-forseti-project/instances/forseti-server-db-7c2ae462",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+            "discovery_name": "DatabaseInstance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/766908199042",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "cf-gcp-forseti-project:us-central1:forseti-server-db-7c2ae462",
+                "databaseVersion": "MYSQL_5_7",
+                "gceZone": "us-central1-f",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "ipAddresses": [
+                    {
+                        "ipAddress": "35.238.24.91",
+                        "type": "PRIMARY"
+                    }
+                ],
+                "kind": "sql#instance",
+                "name": "forseti-server-db-7c2ae462",
+                "project": "cf-gcp-forseti-project",
+                "region": "us-central1",
+                "selfLink": "https://www.googleapis.com/sql/v1beta4/projects/cf-gcp-forseti-project/instances/forseti-server-db-7c2ae462",
+                "serverCaCert": {
+                    "certSerialNumber": "0",
+                    "commonName": "C=US,O=Google\\, Inc,CN=Google Cloud SQL Server CA,dnQualifier=fb7f9c12-dc35-4a07-957c-1931037b26c2",
+                    "createTime": "2019-10-01T19:48:33.603Z",
+                    "expirationTime": "2029-09-28T19:49:33.603Z",
+                    "instance": "forseti-server-db-7c2ae462",
+                    "kind": "sql#sslCert",
+                    "sha1Fingerprint": "6894a3e7aa91f1f4a72c147a9dd784aa18f5bd83"
+                },
+                "serviceAccountEmailAddress": "p766908199042-y999w9@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+                "settings": {
+                    "activationPolicy": "ALWAYS",
+                    "backupConfiguration": {
+                        "binaryLogEnabled": true,
+                        "enabled": true,
+                        "kind": "sql#backupConfiguration",
+                        "startTime": "15:00"
+                    },
+                    "dataDiskSizeGb": "25",
+                    "dataDiskType": "PD_SSD",
+                    "ipConfiguration": {
+                        "ipv4Enabled": true,
+                        "requireSsl": true
+                    },
+                    "kind": "sql#settings",
+                    "locationPreference": {
+                        "kind": "sql#locationPreference",
+                        "zone": "us-central1-f"
+                    },
+                    "pricingPlan": "PER_USE",
+                    "replicationType": "SYNCHRONOUS",
+                    "settingsVersion": "16",
+                    "storageAutoResize": true,
+                    "storageAutoResizeLimit": "0",
+                    "tier": "db-n1-standard-1"
+                },
+                "state": "RUNNABLE"
+            }
+        },
+        "ancestors": [
+            "projects/766908199042",
+            "organizations/382777088978"
+        ]
+    },
+    {
+        "name": "//cloudsql.googleapis.com/projects/cf-gcp-forseti-project/instances/test-postgres-instance",
+        "asset_type": "sqladmin.googleapis.com/Instance",
+        "resource": {
+            "version": "v1beta4",
+            "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/sqladmin/v1beta4/rest",
+            "discovery_name": "DatabaseInstance",
+            "parent": "//cloudresourcemanager.googleapis.com/projects/766908199042",
+            "data": {
+                "backendType": "SECOND_GEN",
+                "connectionName": "cf-gcp-forseti-project:us-central1:test-postgres-instance",
+                "databaseVersion": "POSTGRES_11",
+                "gceZone": "us-central1-c",
+                "instanceType": "CLOUD_SQL_INSTANCE",
+                "ipAddresses": [
+                    {
+                        "ipAddress": "35.225.199.66",
+                        "type": "PRIMARY"
+                    }
+                ],
+                "kind": "sql#instance",
+                "name": "test-postgres-instance",
+                "project": "cf-gcp-forseti-project",
+                "region": "us-central1",
+                "selfLink": "https://www.googleapis.com/sql/v1beta4/projects/cf-gcp-forseti-project/instances/test-postgres-instance",
+                "serverCaCert": {
+                    "certSerialNumber": "0",
+                    "commonName": "C=US,O=Google\\, Inc,CN=Google Cloud SQL Server CA,dnQualifier=21b1c0e7-7a52-442e-b254-11535e4bf9d7",
+                    "createTime": "2020-02-12T21:48:39.946Z",
+                    "expirationTime": "2030-02-09T21:49:39.946Z",
+                    "instance": "test-postgres-instance",
+                    "kind": "sql#sslCert",
+                    "sha1Fingerprint": "fa9ffb3bbabc6844fd4d955693a16c24d9384684"
+                },
+                "serviceAccountEmailAddress": "p766908199042-q799fo@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+                "settings": {
+                    "activationPolicy": "ALWAYS",
+                    "availabilityType": "ZONAL",
+                    "backupConfiguration": {
+                        "enabled": true,
+                        "kind": "sql#backupConfiguration",
+                        "pointInTimeRecoveryEnabled": false,
+                        "replicationLogArchivingEnabled": false,
+                        "startTime": "17:00"
+                    },
+                    "dataDiskSizeGb": "10",
+                    "dataDiskType": "PD_SSD",
+                    "ipConfiguration": {
+                        "ipv4Enabled": true
+                    },
+                    "kind": "sql#settings",
+                    "locationPreference": {
+                        "kind": "sql#locationPreference",
+                        "zone": "us-central1-c"
+                    },
+                    "maintenanceWindow": {
+                        "day": 0,
+                        "hour": 0,
+                        "kind": "sql#maintenanceWindow"
+                    },
+                    "pricingPlan": "PER_USE",
+                    "replicationType": "SYNCHRONOUS",
+                    "settingsVersion": "1",
+                    "storageAutoResize": true,
+                    "storageAutoResizeLimit": "0",
+                    "tier": "db-custom-1-3840"
+                },
+                "state": "RUNNABLE"
+            }
+        },
+        "ancestors": [
+            "projects/766908199042",
+            "organizations/382777088978"
+        ]
+    }
+]

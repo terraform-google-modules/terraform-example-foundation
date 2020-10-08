@@ -1,0 +1,322 @@
+[
+  {
+  "name": "//container.googleapis.com/projects/pso-cicd8/zones/us-west1-b/clusters/canary-west",
+  "asset_type": "container.googleapis.com/Cluster",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+    "discovery_name": "Cluster",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/94226340476",
+    "data": {
+      "addonsConfig": {
+        "networkPolicyConfig": {
+          "disabled": true
+        }
+      },
+      "clusterIpv4Cidr": "10.44.0.0/14",
+      "createTime": "2016-11-19T05:58:02+00:00",
+      "currentMasterVersion": "1.12.10-gke.17",
+      "currentNodeCount": 4,
+      "currentNodeVersion": "1.4.6",
+      "endpoint": "104.196.229.72",
+      "initialClusterVersion": "1.4.6",
+      "instanceGroupUrls": [
+        "https://www.googleapis.com/compute/v1/projects/pso-cicd8/zones/us-west1-b/instanceGroupManagers/gke-canary-west-default-pool-496ebc1d-grp"
+      ],
+      "legacyAbac": {
+        "enabled": true
+      },
+      "location": "us-west1-b",
+      "locations": [
+        "us-west1-b"
+      ],
+      "loggingService": "logging.googleapis.com",
+      "monitoringService": "none",
+      "name": "canary-west",
+      "network": "default",
+      "networkConfig": {
+        "network": "projects/pso-cicd8/global/networks/default",
+        "subnetwork": "projects/pso-cicd8/regions/us-west1/subnetworks/default"
+      },
+      "nodeIpv4CidrSize": 24,
+      "nodePools": [
+        {
+          "autoscaling": {},
+          "config": {
+            "diskSizeGb": 100,
+            "imageType": "COS",
+            "machineType": "n1-standard-1",
+            "oauthScopes": [
+              "https://www.googleapis.com/auth/compute",
+              "https://www.googleapis.com/auth/devstorage.read_only",
+              "https://www.googleapis.com/auth/logging.write",
+              "https://www.googleapis.com/auth/servicecontrol",
+              "https://www.googleapis.com/auth/service.management.readonly",
+              "https://www.googleapis.com/auth/trace.append"
+            ],
+            "serviceAccount": "default"
+          },
+          "initialNodeCount": 2,
+          "instanceGroupUrls": [
+            "https://www.googleapis.com/compute/v1/projects/pso-cicd8/zones/us-west1-b/instanceGroupManagers/gke-canary-west-default-pool-496ebc1d-grp"
+          ],
+          "management": {},
+          "name": "default-pool",
+          "podIpv4CidrSize": 24,
+          "selfLink": "https://container.googleapis.com/v1/projects/pso-cicd8/zones/us-west1-b/clusters/canary-west/nodePools/default-pool",
+          "status": "RUNNING",
+          "version": "1.4.6"
+        }
+      ],
+      "selfLink": "https://container.googleapis.com/v1/projects/pso-cicd8/zones/us-west1-b/clusters/canary-west",
+      "servicesIpv4Cidr": "10.47.240.0/20",
+      "status": "RUNNING",
+      "subnetwork": "default",
+      "zone": "us-west1-b"
+    }
+  },
+  "ancestors": [
+    "projects/94226340476",
+    "organizations/660570133860"
+  ]
+},
+  {
+  "name": "//container.googleapis.com/projects/cicd-prod/zones/us-west1-a/clusters/redditmobile-canary-west",
+  "asset_type": "container.googleapis.com/Cluster",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+    "discovery_name": "Cluster",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/25621943694",
+    "data": {
+      "addonsConfig": {
+        "networkPolicyConfig": {
+          "disabled": true
+        }
+      },
+      "clusterIpv4Cidr": "10.8.0.0/14",
+      "createTime": "2016-11-12T18:15:16+00:00",
+      "currentMasterVersion": "1.13.12-gke.13",
+      "currentNodeCount": 2,
+      "currentNodeVersion": "1.4.5",
+      "endpoint": "104.198.104.76",
+      "initialClusterVersion": "1.4.5",
+      "instanceGroupUrls": [
+        "https://www.googleapis.com/compute/v1/projects/cicd-prod/zones/us-west1-a/instanceGroupManagers/gke-redditmobile-canary--default-pool-bb6ef461-grp"
+      ],
+      "legacyAbac": {
+        "enabled": true
+      },
+      "location": "us-west1-a",
+      "locations": [
+        "us-west1-a"
+      ],
+      "loggingService": "logging.googleapis.com",
+      "monitoringService": "none",
+      "name": "redditmobile-canary-west",
+      "network": "default",
+      "networkConfig": {
+        "network": "projects/cicd-prod/global/networks/default",
+        "subnetwork": "projects/cicd-prod/regions/us-west1/subnetworks/default"
+      },
+      "nodeIpv4CidrSize": 24,
+      "nodePools": [
+        {
+          "autoscaling": {},
+          "config": {
+            "diskSizeGb": 100,
+            "imageType": "COS",
+            "machineType": "n1-standard-1",
+            "oauthScopes": [
+              "https://www.googleapis.com/auth/compute",
+              "https://www.googleapis.com/auth/devstorage.read_only",
+              "https://www.googleapis.com/auth/logging.write",
+              "https://www.googleapis.com/auth/servicecontrol",
+              "https://www.googleapis.com/auth/service.management.readonly",
+              "https://www.googleapis.com/auth/trace.append"
+            ],
+            "serviceAccount": "default"
+          },
+          "initialNodeCount": 2,
+          "instanceGroupUrls": [
+            "https://www.googleapis.com/compute/v1/projects/cicd-prod/zones/us-west1-a/instanceGroupManagers/gke-redditmobile-canary--default-pool-bb6ef461-grp"
+          ],
+          "management": {},
+          "name": "default-pool",
+          "podIpv4CidrSize": 24,
+          "selfLink": "https://container.googleapis.com/v1/projects/cicd-prod/zones/us-west1-a/clusters/redditmobile-canary-west/nodePools/default-pool",
+          "status": "RUNNING",
+          "version": "1.4.5"
+        }
+      ],
+      "selfLink": "https://container.googleapis.com/v1/projects/cicd-prod/zones/us-west1-a/clusters/redditmobile-canary-west",
+      "servicesIpv4Cidr": "10.11.240.0/20",
+      "status": "RUNNING",
+      "subnetwork": "default",
+      "zone": "us-west1-a"
+    }
+  },
+  "ancestors": [
+    "projects/25621943694",
+    "organizations/660570133860"
+  ]
+},
+  {
+  "name": "//container.googleapis.com/projects/release-2-19-0-gke/zones/us-central1-a/clusters/forseti-cluster",
+  "asset_type": "container.googleapis.com/Cluster",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+    "discovery_name": "Cluster",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/119616589499",
+    "data": {
+      "addonsConfig": {
+        "horizontalPodAutoscaling": {},
+        "httpLoadBalancing": {},
+        "kubernetesDashboard": {
+          "disabled": true
+        },
+        "networkPolicyConfig": {}
+      },
+      "clusterIpv4Cidr": "10.2.0.0/20",
+      "createTime": "2019-08-07T03:39:14+00:00",
+      "currentMasterVersion": "1.13.11-gke.14",
+      "currentNodeVersion": "1.13.7-gke.8",
+      "databaseEncryption": {
+        "state": "DECRYPTED"
+      },
+      "defaultMaxPodsConstraint": {
+        "maxPodsPerNode": "110"
+      },
+      "endpoint": "34.66.70.112",
+      "initialClusterVersion": "1.13.7-gke.8",
+      "ipAllocationPolicy": {
+        "clusterIpv4Cidr": "10.2.0.0/20",
+        "clusterIpv4CidrBlock": "10.2.0.0/20",
+        "clusterSecondaryRangeName": "gke-pod-ip-range",
+        "servicesIpv4Cidr": "10.3.0.0/20",
+        "servicesIpv4CidrBlock": "10.3.0.0/20",
+        "servicesSecondaryRangeName": "gke-service-ip-range",
+        "useIpAliases": true
+      },
+      "labelFingerprint": "a9dc16a7",
+      "legacyAbac": {},
+      "location": "us-central1-a",
+      "locations": [
+        "us-central1-a"
+      ],
+      "loggingService": "logging.googleapis.com",
+      "maintenancePolicy": {
+        "window": {
+          "dailyMaintenanceWindow": {
+            "duration": "PT4H0M0S",
+            "startTime": "05:00"
+          }
+        }
+      },
+      "monitoringService": "monitoring.googleapis.com",
+      "name": "forseti-cluster",
+      "network": "forseti-gke-network",
+      "networkConfig": {
+        "network": "projects/release-2-19-0-gke/global/networks/forseti-gke-network",
+        "subnetwork": "projects/release-2-19-0-gke/regions/us-central1/subnetworks/gke-sub-network"
+      },
+      "networkPolicy": {
+        "enabled": true,
+        "provider": "CALICO"
+      },
+      "selfLink": "https://container.googleapis.com/v1/projects/release-2-19-0-gke/zones/us-central1-a/clusters/forseti-cluster",
+      "servicesIpv4Cidr": "10.3.0.0/20",
+      "shieldedNodes": {},
+      "status": "RUNNING",
+      "subnetwork": "gke-sub-network",
+      "zone": "us-central1-a"
+    }
+  },
+  "ancestors": [
+    "projects/119616589499",
+    "organizations/660570133860"
+  ]
+},
+  {
+  "name": "//container.googleapis.com/projects/cicd-staging/zones/us-west1-a/clusters/redditmobile-staging",
+  "asset_type": "container.googleapis.com/Cluster",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://container.googleapis.com/$discovery/rest",
+    "discovery_name": "Cluster",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/556890176902",
+    "data": {
+      "addonsConfig": {
+        "networkPolicyConfig": {
+          "disabled": true
+        }
+      },
+      "clusterIpv4Cidr": "10.0.0.0/14",
+      "createTime": "2016-10-22T17:41:48+00:00",
+      "currentMasterVersion": "1.12.10-gke.17",
+      "currentNodeCount": 4,
+      "currentNodeVersion": "1.4.4",
+      "endpoint": "104.199.113.104",
+      "initialClusterVersion": "1.4.4",
+      "instanceGroupUrls": [
+        "https://www.googleapis.com/compute/v1/projects/cicd-staging/zones/us-west1-a/instanceGroupManagers/gke-redditmobile-staging-default-pool-cb6fb0ef-grp"
+      ],
+      "legacyAbac": {
+        "enabled": true
+      },
+      "location": "us-west1-a",
+      "locations": [
+        "us-west1-a"
+      ],
+      "loggingService": "logging.googleapis.com",
+      "monitoringService": "none",
+      "name": "redditmobile-staging",
+      "network": "default",
+      "networkConfig": {
+        "network": "projects/cicd-staging/global/networks/default",
+        "subnetwork": "projects/cicd-staging/regions/us-west1/subnetworks/default"
+      },
+      "nodeIpv4CidrSize": 24,
+      "nodePools": [
+        {
+          "autoscaling": {},
+          "config": {
+            "diskSizeGb": 100,
+            "imageType": "COS",
+            "machineType": "n1-standard-1",
+            "oauthScopes": [
+              "https://www.googleapis.com/auth/compute",
+              "https://www.googleapis.com/auth/devstorage.read_only",
+              "https://www.googleapis.com/auth/logging.write",
+              "https://www.googleapis.com/auth/servicecontrol",
+              "https://www.googleapis.com/auth/service.management.readonly",
+              "https://www.googleapis.com/auth/trace.append"
+            ],
+            "serviceAccount": "default"
+          },
+          "initialNodeCount": 2,
+          "instanceGroupUrls": [
+            "https://www.googleapis.com/compute/v1/projects/cicd-staging/zones/us-west1-a/instanceGroupManagers/gke-redditmobile-staging-default-pool-cb6fb0ef-grp"
+          ],
+          "management": {},
+          "name": "default-pool",
+          "podIpv4CidrSize": 24,
+          "selfLink": "https://container.googleapis.com/v1/projects/cicd-staging/zones/us-west1-a/clusters/redditmobile-staging/nodePools/default-pool",
+          "status": "RUNNING",
+          "version": "1.4.4"
+        }
+      ],
+      "selfLink": "https://container.googleapis.com/v1/projects/cicd-staging/zones/us-west1-a/clusters/redditmobile-staging",
+      "servicesIpv4Cidr": "10.3.240.0/20",
+      "status": "RUNNING",
+      "subnetwork": "default",
+      "zone": "us-west1-a"
+    }
+  },
+  "ancestors": [
+    "projects/556890176902",
+    "organizations/660570133860"
+  ]
+}
+]

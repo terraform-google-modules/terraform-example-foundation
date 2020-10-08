@@ -1,0 +1,85 @@
+[
+{
+  "name": "//spanner.googleapis.com/projects/foobar/instances/spanner-instance-api-ok",
+  "asset_type": "spanner.googleapis.com/Instance",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest",
+    "discovery_name": "Instance",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/foobar",
+    "data": {
+      "instance": {
+        "config": "projects/foobar/instanceConfigs/regional-us-central1",
+        "displayName": "spanner-instance",
+        "labels": {
+          "label1": "label1-value",
+          "label2": "label2-value2"
+        },
+        "nodeCount": 1
+      },
+      "instanceId": "spanner-instance"
+      }	
+  }
+},
+{
+  "name": "//spanner.googleapis.com/projects/foobar/instances/spanner-instance-api-nolabel",
+  "asset_type": "spanner.googleapis.com/Instance",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://www.googleapis.com/discovery/v1/apis/spanner/v1/rest",
+    "discovery_name": "Instance",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/foobar",
+    "data": {
+      "instance": {
+        "config": "projects/foobar/instanceConfigs/regional-us-central1",
+        "displayName": "spanner-instance",
+        "nodeCount": 1
+      },
+      "instanceId": "spanner-instance"
+      }	
+  }
+},
+
+{
+  "name": "//spanner.googleapis.com/projects/foobar/instances/spanner-instance-cai-ok",
+  "asset_type": "spanner.googleapis.com/Instance",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://spanner.googleapis.com/$discovery/rest",
+    "discovery_name": "Instance",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/foobar",
+    "data": {
+      "config": "projects/foobar/instanceConfigs/regional-us-central1",
+      "displayName": "spanner-instance",
+      "labels": {
+        "label1": "label1-value",
+        "label2": "label2-value2"
+      },
+      "name": "projects/foobar/instances/spanner-instance",
+      "nodeCount": 1,
+      "state": "READY"
+    }
+  }
+},
+{
+  "name": "//spanner.googleapis.com/projects/foobar/instances/spanner-instance-cai-incorrectvalue",
+  "asset_type": "spanner.googleapis.com/Instance",
+  "resource": {
+    "version": "v1",
+    "discovery_document_uri": "https://spanner.googleapis.com/$discovery/rest",
+    "discovery_name": "Instance",
+    "parent": "//cloudresourcemanager.googleapis.com/projects/foobar",
+    "data": {
+      "config": "projects/foobar/instanceConfigs/regional-us-central1",
+      "displayName": "spanner-instance",
+      "labels": {
+        "label2": "incorrect"
+      },
+      "name": "projects/foobar/instances/spanner-instance",
+      "nodeCount": 1,
+      "state": "READY"
+    }
+  }
+}
+]
+

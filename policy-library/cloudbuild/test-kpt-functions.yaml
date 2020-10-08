@@ -1,0 +1,27 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+steps:
+- name: 'docker.io/library/node:10.20.1-alpine3.11'
+  id: 'npm-install'
+  entrypoint: 'npm'
+  args: ['--prefix', '/workspace/bundler', 'install']
+- name: 'docker.io/library/node:10.20.1-alpine3.11'
+  entrypoint: 'npm'
+  args: ['--prefix', '/workspace/bundler', 'run', 'lint']
+  waitFor: ['npm-install']
+- name: 'docker.io/library/node:10.20.1-alpine3.11'
+  entrypoint: 'npm'
+  args: ['--prefix', '/workspace/bundler', 'test']
+  waitFor: ['npm-install']

@@ -210,3 +210,17 @@ resource "google_folder_iam_member" "folder_cb_sa_browser" {
 #  tunnel1_bgp_peer_address                = var.tunnel1_bgp_peer_address
 #  tunnel1_bgp_session_range               = var.tunnel1_bgp_session_range
 # }
+
+# resource "google_organization_iam_member" "org_jenkins_sa_browser" {
+#   count  = var.parent_folder == "" ? 1 : 0
+#   org_id = var.org_id
+#   role   = "roles/browser"
+#   member = "serviceAccount:${module.jenkins_bootstrap.jenkins_agent_sa_email}"
+# }
+
+# resource "google_folder_iam_member" "folder_jenkins_sa_browser" {
+#   count  = var.parent_folder != "" ? 1 : 0
+#   folder = var.parent_folder
+#   role   = "roles/browser"
+#   member = "serviceAccount:${module.jenkins_bootstrap.jenkins_agent_sa_email}"
+# }

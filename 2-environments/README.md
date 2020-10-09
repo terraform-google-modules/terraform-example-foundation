@@ -40,7 +40,7 @@ The purpose of this step is to set up development, non-production and production
     ```
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
-    _PROJECT_ID
+    _PROJECT_ID (the cicd project id)
     ```
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.

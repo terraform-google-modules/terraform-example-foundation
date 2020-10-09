@@ -48,7 +48,7 @@ If your user does not have access to run the commands above and you are in the o
     ```
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
-    _PROJECT_ID
+    _PROJECT_ID (the cicd project id)
     ```
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.

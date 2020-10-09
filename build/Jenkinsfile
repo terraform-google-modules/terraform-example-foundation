@@ -4,7 +4,7 @@ pipeline {
   }
 
   environment {
-    _POLICY_REPO="./policy-library"
+    _POLICY_REPO="policy-library"
     _TF_SA_EMAIL=""
     _STATE_BUCKET_NAME=""
     _PROJECT_ID=""
@@ -33,7 +33,7 @@ pipeline {
       }
       steps {
           sh '''
-          ./tf-wrapper.sh plan_validate_all ${BRANCH_NAME} ${_POLICY_REPO} ${_PROJECT_ID}
+          ./tf-wrapper.sh plan_validate_all ${BRANCH_NAME} ${WORKSPACE}/${_POLICY_REPO} ${_PROJECT_ID}
           '''
         }
     }
@@ -75,7 +75,7 @@ pipeline {
       }
       steps {
           sh '''
-          ./tf-wrapper.sh validate $BRANCH_NAME $POLICY_REPO $_PROJECT_ID
+          ./tf-wrapper.sh validate ${BRANCH_NAME} ${WORKSPACE}/${_POLICY_REPO} ${_PROJECT_ID}
           '''
         }
     }

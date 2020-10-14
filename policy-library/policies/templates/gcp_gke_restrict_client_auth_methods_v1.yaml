@@ -29,35 +29,76 @@ spec:
           properties: {}
   targets:
     validation.gcp.forsetisecurity.org:
-      rego: "#\n# Copyright 2018 Google LLC\n#\n# Licensed under the Apache License,
-        Version 2.0 (the \"License\");\n# you may not use this file except in compliance
-        with the License.\n# You may obtain a copy of the License at\n#\n#     https://www.apache.org/licenses/LICENSE-2.0\n#\n#
-        Unless required by applicable law or agreed to in writing, software\n# distributed
-        under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES
-        OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for
-        the specific language governing permissions and\n# limitations under the License.\n#\n\npackage
-        templates.gcp.GCPGKERestrictClientAuthenticationMethodsConstraintV1\n\nimport
-        data.validator.gcp.lib as lib\n\ndeny[{\n\t\"msg\": message,\n\t\"details\":
-        metadata,\n}] {\n\tconstraint := input.constraint\n\tasset := input.asset\n\tasset.asset_type
-        == \"container.googleapis.com/Cluster\"\n\tcluster := asset.resource.data\n\tmaster_auth
-        := lib.get_default(cluster, \"masterAuth\", {})\n\tcluster_version := lib.get_default(cluster,
-        \"currentMasterVersion\", \"\")\n\n\tnot check_all_disabled(master_auth, cluster_version)\n\n\tmessage
-        := sprintf(\"%v has client certificate or static password authentication enabled.\",
-        [asset.name])\n\tmetadata := {\"resource\": asset.name}\n}\n\n###########################\n#
-        Rule Utilities\n###########################\ncheck_all_disabled(master_auth,
-        cluster_version) {\n\t# For clusters before v1.12, if masterAuth is unspecified,
-        username will \n\t# be set to \"admin\", a random password will be generated,
-        and a client certificate \n\t# will be issued.\n\tre_match(\"1\\\\.(1)?[012]\\\\.\",
-        cluster_version)\n\tmaster_auth != {}\n\tauth_with_client_cert_disabled(master_auth)
-        == true\n\tauth_with_static_password_disabled(master_auth) == true\n}\n\ncheck_all_disabled(master_auth,
-        cluster_version) {\n\t# For clusters after v1.12, if masterAuth is unspecified,
-        then we have safe defaults:\n\t# no username auth, no client cert. \n\tnot
-        re_match(\"1\\\\.(1)?[012]\\\\.\", cluster_version)\n\tauth_with_client_cert_disabled(master_auth)
-        == true\n\tauth_with_static_password_disabled(master_auth) == true\n}\n\nauth_with_client_cert_disabled(master_auth)
-        {\n\t# Scan for clientCertificateConfig to make sure issueClientCertificate
-        is false.\n\tclient_cert_config := lib.get_default(master_auth, \"clientCertificateConfig\",
-        {})\n\tclient_cert_enabled := lib.get_default(client_cert_config, \"issueClientCertificate\",
-        false)\n\tclient_cert_enabled == false\n}\n\nauth_with_static_password_disabled(master_auth)
-        {\n\t# Scan for masterAuth to make sure it’s specified and username to \n\t#
-        make sure it’s empty or unspecified.\n\tuser_name := lib.get_default(master_auth,
-        \"username\", \"\")\n\tuser_name == \"\"\n}\n#ENDINLINE\n"
+      rego: | #INLINE("validator/gke_restrict_client_auth_methods.rego")
+            #
+            # Copyright 2018 Google LLC
+            #
+            # Licensed under the Apache License, Version 2.0 (the "License");
+            # you may not use this file except in compliance with the License.
+            # You may obtain a copy of the License at
+            #
+            #     https://www.apache.org/licenses/LICENSE-2.0
+            #
+            # Unless required by applicable law or agreed to in writing, software
+            # distributed under the License is distributed on an "AS IS" BASIS,
+            # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            # See the License for the specific language governing permissions and
+            # limitations under the License.
+            #
+
+            package templates.gcp.GCPGKERestrictClientAuthenticationMethodsConstraintV1
+
+            import data.validator.gcp.lib as lib
+
+            deny[{
+            	"msg": message,
+            	"details": metadata,
+            }] {
+            	constraint := input.constraint
+            	asset := input.asset
+            	asset.asset_type == "container.googleapis.com/Cluster"
+            	cluster := asset.resource.data
+            	master_auth := lib.get_default(cluster, "masterAuth", {})
+            	cluster_version := lib.get_default(cluster, "currentMasterVersion", "")
+
+            	not check_all_disabled(master_auth, cluster_version)
+
+            	message := sprintf("%v has client certificate or static password authentication enabled.", [asset.name])
+            	metadata := {"resource": asset.name}
+            }
+
+            ###########################
+            # Rule Utilities
+            ###########################
+            check_all_disabled(master_auth, cluster_version) {
+            	# For clusters before v1.12, if masterAuth is unspecified, username will
+            	# be set to "admin", a random password will be generated, and a client certificate
+            	# will be issued.
+            	re_match("1\\.(1)?[012]\\.", cluster_version)
+            	master_auth != {}
+            	auth_with_client_cert_disabled(master_auth) == true
+            	auth_with_static_password_disabled(master_auth) == true
+            }
+
+            check_all_disabled(master_auth, cluster_version) {
+            	# For clusters after v1.12, if masterAuth is unspecified, then we have safe defaults:
+            	# no username auth, no client cert.
+            	not re_match("1\\.(1)?[012]\\.", cluster_version)
+            	auth_with_client_cert_disabled(master_auth) == true
+            	auth_with_static_password_disabled(master_auth) == true
+            }
+
+            auth_with_client_cert_disabled(master_auth) {
+            	# Scan for clientCertificateConfig to make sure issueClientCertificate is false.
+            	client_cert_config := lib.get_default(master_auth, "clientCertificateConfig", {})
+            	client_cert_enabled := lib.get_default(client_cert_config, "issueClientCertificate", false)
+            	client_cert_enabled == false
+            }
+
+            auth_with_static_password_disabled(master_auth) {
+            	# Scan for masterAuth to make sure it’s specified and username to
+            	# make sure it’s empty or unspecified.
+            	user_name := lib.get_default(master_auth, "username", "")
+            	user_name == ""
+            }
+            #ENDINLINE

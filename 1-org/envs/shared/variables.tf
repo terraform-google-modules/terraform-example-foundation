@@ -49,10 +49,10 @@ variable "domains_to_allow" {
   type        = list(string)
 }
 
-variable "audit_logs_table_expiration_ms" {
+variable "audit_logs_table_expiration_days" {
   description = "Period before tables expire for all audit logs in milliseconds. Default is 30 days."
   type        = number
-  default     = 2592000000
+  default     = 30
 }
 
 variable "scc_notification_name" {

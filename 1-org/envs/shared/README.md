@@ -4,7 +4,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | audit\_data\_users | G Suite or Cloud Identity group that have access to audit logs. | string | n/a | yes |
-| audit\_logs\_table\_expiration\_ms | Period before tables expire for all audit logs in milliseconds. Default is 30 days. | number | `"2592000000"` | no |
+| audit\_logs\_table\_expiration\_days | Period before tables expire for all audit logs in milliseconds. Default is 30 days. | number | `"30"` | no |
 | billing\_account | The ID of the billing account to associate this project with | string | n/a | yes |
 | billing\_data\_users | G Suite or Cloud Identity group that have access to billing data set. | string | n/a | yes |
 | create\_access\_context\_manager\_access\_policy | Whether to create access context manager access policy | bool | `"true"` | no |

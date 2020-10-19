@@ -35,6 +35,9 @@ provider "random" {
 *************************************************/
 locals {
   parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+  org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
+    "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
+  ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
 }
 
 resource "google_folder" "bootstrap" {
@@ -55,7 +58,8 @@ module "seed_bootstrap" {
   sa_enable_impersonation        = true
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
   skip_gcloud_download           = var.skip_gcloud_download
-  org_admins_org_iam_permissions = ["roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"]
+  org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
+
   project_labels = {
     environment       = "bootstrap"
     application_name  = "seed-bootstrap"

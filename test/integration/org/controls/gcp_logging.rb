@@ -17,7 +17,14 @@ org_billing_logs_project_id = attribute('org_billing_logs_project_id')
 parent_resource_id = attribute('parent_resource_id')
 logs_export_storage_bucket_name = attribute('logs_export_storage_bucket_name')
 logs_export_pubsub_topic = attribute('logs_export_pubsub_topic')
-
+main_logs_filter = [
+  'logName: /logs/cloudaudit.googleapis.com%2Factivity',
+  'logName: /logs/cloudaudit.googleapis.com%2Fsystem_event',
+  'logName: /logs/cloudaudit.googleapis.com%2Fdata_access',
+  'logName: /logs/compute.googleapis.com%2Fvpc_flows',
+  'logName: /logs/compute.googleapis.com%2Ffirewall',
+  'logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency'
+]
 
 control 'gcp_logging' do
   title 'step 1-org logging tests'
@@ -54,8 +61,10 @@ control 'gcp_logging' do
     name: 'sk-c-logging-bq'
   ) do
     it { should exist }
-    its('filter') do
-      should be_nil
+    main_logs_filter.each do |filter|
+      its('filter') do
+        should include filter
+      end
     end
     its('include_children') { should cmp 'true' }
     its('destination') { should cmp "bigquery.googleapis.com/projects/#{org_audit_logs_project_id}/datasets/audit_logs" }
@@ -78,8 +87,10 @@ control 'gcp_logging' do
     name: 'sk-c-logging-pub'
   ) do
     it { should exist }
-    its('filter') do
-      should be_nil
+    main_logs_filter.each do |filter|
+      its('filter') do
+        should include filter
+      end
     end
     its('include_children') { should cmp 'true' }
     its('destination') { should cmp "pubsub.googleapis.com/projects/#{org_audit_logs_project_id}/topics/#{logs_export_pubsub_topic}" }

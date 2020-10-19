@@ -64,7 +64,7 @@ module "bigquery_destination" {
 
 module "log_export_to_storage" {
   source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 4.0"
+  version                = "~> 5.0"
   destination_uri        = module.storage_destination.destination_uri
   filter                 = local.all_logs_filter
   log_sink_name          = "sk-c-logging-bkt"
@@ -75,13 +75,14 @@ module "log_export_to_storage" {
 }
 
 module "storage_destination" {
-  source                   = "terraform-google-modules/log-export/google//modules/storage"
-  version                  = "~> 4.0"
-  project_id               = module.org_audit_logs.project_id
-  storage_bucket_name      = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
-  log_sink_writer_identity = module.log_export_to_storage.writer_identity
-  bucket_policy_only       = true
-  location                 = var.log_export_storage_location
+  source                      = "terraform-google-modules/log-export/google//modules/storage"
+  version                     = "~> 5.0"
+  project_id                  = module.org_audit_logs.project_id
+  storage_bucket_name         = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
+  log_sink_writer_identity    = module.log_export_to_storage.writer_identity
+  uniform_bucket_level_access = true
+  location                    = var.log_export_storage_location
+  retention_policy            = var.log_export_storage_retention_policy
 }
 
 /******************************************

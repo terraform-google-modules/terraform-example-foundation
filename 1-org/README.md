@@ -15,6 +15,8 @@ Enabling Data Access logs might result in your project being charged for the add
 For details on costs you might incur, go to [Pricing](https://cloud.google.com/stackdriver/pricing).
 You can choose not to enable the Data Access logs by setting variable `data_access_logs_enabled` to false.
 
+**Note:** Currently, this module does not enable bucket policy retention for organization logs, please, enable it if needed.
+
 ### Setup to run via Cloud Build
 1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID` (this is from terraform output from the previous section, 0-bootstrap).
 1. Navigate into the repo `cd gcp-org` and change to a non production branch `git checkout -b plan`

@@ -96,6 +96,16 @@ variable "log_export_storage_location" {
   default     = "US"
 }
 
+variable "log_export_storage_retention_policy" {
+  description = "Configuration of the bucket's data retention policy for how long objects in the bucket should be retained."
+  type = object({
+    is_locked             = bool
+    retention_period_days = number
+  })
+  default = null
+}
+
+
 
 variable "dns_hub_project_alert_spent_percents" {
   description = "A list of percentages of the budget to alert on when threshold is exceeded for the DNS hub project."

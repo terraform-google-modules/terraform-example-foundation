@@ -98,6 +98,24 @@ tf_plan_validate_all() {
   done
 }
 
+
+## terraform show for single environment.
+tf_show() {
+  local path=$1
+  local tf_env=$2
+  local tf_component=$3
+  echo "*************** TERRAFORM SHOW *******************"
+  echo "      At environment: ${tf_component}/${tf_env} "
+  echo "**************************************************"
+  if [ -d "$path" ]; then
+    cd "$path" || exit
+    terraform show "${tmp_plan}/${tf_component}-${tf_env}.tfplan" || exit 41
+    cd "$base_dir" || exit
+  else
+    echo "ERROR:  ${path} does not exist"
+  fi
+}
+
 ## terraform validate for single environment.
 tf_validate() {
   local path=$1
@@ -151,6 +169,10 @@ single_action_runner() {
           plan )
             tf_plan "$env_path" "$env" "$component"
             ;;
+          
+          show )
+            tf_show "$env_path" "$env" "$component"
+            ;;
 
           validate )
             tf_validate "$env_path" "$env" "$policyrepo" "$component"
@@ -167,7 +189,7 @@ single_action_runner() {
 }
 
 case "$action" in
-  init|plan|apply|validate )
+  init|plan|apply|show|validate )
     single_action_runner
     ;;
 

@@ -53,7 +53,7 @@ variable "org_project_creators" {
 }
 
 variable "org_policy_admin_role" {
-  description = "Additional Org Policy Admin role for admin group. You can use this for testing prourpose."
+  description = "Additional Org Policy Admin role for admin group. You can use this for testing purposes."
   type        = bool
   default     = false
 }

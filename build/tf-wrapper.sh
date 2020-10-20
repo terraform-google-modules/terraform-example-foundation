@@ -98,7 +98,6 @@ tf_plan_validate_all() {
   done
 }
 
-
 ## terraform show for single environment.
 tf_show() {
   local path=$1
@@ -169,7 +168,7 @@ single_action_runner() {
           plan )
             tf_plan "$env_path" "$env" "$component"
             ;;
-          
+
           show )
             tf_show "$env_path" "$env" "$component"
             ;;

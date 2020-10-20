@@ -4,6 +4,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | audit\_data\_users | G Suite or Cloud Identity group that have access to audit logs. | string | n/a | yes |
+| audit\_logs\_table\_delete\_contents\_on\_destroy | (Optional) If set to true, delete all the tables in the dataset when destroying the resource; otherwise, destroying the resource will fail if tables are present. | bool | `"false"` | no |
 | audit\_logs\_table\_expiration\_days | Period before tables expire for all audit logs in milliseconds. Default is 30 days. | number | `"30"` | no |
 | billing\_account | The ID of the billing account to associate this project with | string | n/a | yes |
 | billing\_data\_users | G Suite or Cloud Identity group that have access to billing data set. | string | n/a | yes |

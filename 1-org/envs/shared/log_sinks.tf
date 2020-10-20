@@ -50,12 +50,13 @@ module "log_export_to_biqquery" {
 }
 
 module "bigquery_destination" {
-  source                   = "terraform-google-modules/log-export/google//modules/bigquery"
-  version                  = "~> 5.0"
-  project_id               = module.org_audit_logs.project_id
-  dataset_name             = "audit_logs"
-  log_sink_writer_identity = module.log_export_to_biqquery.writer_identity
-  expiration_days          = var.audit_logs_table_expiration_days
+  source                     = "terraform-google-modules/log-export/google//modules/bigquery"
+  version                    = "~> 5.0"
+  project_id                 = module.org_audit_logs.project_id
+  dataset_name               = "audit_logs"
+  log_sink_writer_identity   = module.log_export_to_biqquery.writer_identity
+  expiration_days            = var.audit_logs_table_expiration_days
+  delete_contents_on_destroy = var.audit_logs_table_delete_contents_on_destroy
 }
 
 /******************************************

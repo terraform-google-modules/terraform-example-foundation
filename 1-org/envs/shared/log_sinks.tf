@@ -83,6 +83,7 @@ module "storage_destination" {
   log_sink_writer_identity    = module.log_export_to_storage.writer_identity
   uniform_bucket_level_access = true
   location                    = var.log_export_storage_location
+  retention_policy            = var.log_export_storage_retention_policy
 }
 
 /******************************************

@@ -77,7 +77,7 @@ control 'gcp_networks' do
         region2_router2 = "#{region2_router2}-cr8"
       end
 
-      fw_deny_all_egress = "fw-#{environment_code}-shared-#{type}-65535-e-d-all-all-tcp-udp"
+      fw_deny_all_egress = "fw-#{environment_code}-shared-#{type}-65535-e-d-all-all-all"
       fw_allow_api_egress = "fw-#{environment_code}-shared-#{type}-65534-e-a-allow-google-apis-all-tcp-443"
 
       describe google_dns_managed_zone(
@@ -188,10 +188,9 @@ control 'gcp_networks' do
         its('log_config_enabled?') { should be true }
         its('direction') { should cmp 'EGRESS' }
         its('destination_ranges') { should eq ['0.0.0.0/0'] }
-        it 'denies TCP and UDP' do
+        it 'denies all protocols' do
           expect(subject.denied).to contain_exactly(
-            an_object_having_attributes(ip_protocol: 'tcp', ports: nil),
-            an_object_having_attributes(ip_protocol: 'udp', ports: nil)
+            an_object_having_attributes(ip_protocol: 'all', ports: nil)
           )
         end
       end

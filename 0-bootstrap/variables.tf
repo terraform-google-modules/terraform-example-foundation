@@ -52,6 +52,12 @@ variable "org_project_creators" {
   default     = []
 }
 
+variable "org_policy_admin_role" {
+  description = "Additional Org Policy Admin role for admin group. You can use this for testing purposes."
+  type        = bool
+  default     = false
+}
+
 variable "skip_gcloud_download" {
   description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
   type        = bool

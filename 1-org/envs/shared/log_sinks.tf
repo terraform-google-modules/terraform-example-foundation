@@ -39,7 +39,7 @@ resource "random_string" "suffix" {
 
 module "log_export_to_biqquery" {
   source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 4.0"
+  version                = "~> 5.0"
   destination_uri        = module.bigquery_destination.destination_uri
   filter                 = local.all_logs_filter
   log_sink_name          = "sk-c-logging-bq"
@@ -50,12 +50,13 @@ module "log_export_to_biqquery" {
 }
 
 module "bigquery_destination" {
-  source                      = "terraform-google-modules/log-export/google//modules/bigquery"
-  version                     = "~> 4.0"
-  project_id                  = module.org_audit_logs.project_id
-  dataset_name                = "audit_logs"
-  log_sink_writer_identity    = module.log_export_to_biqquery.writer_identity
-  default_table_expiration_ms = var.audit_logs_table_expiration_ms
+  source                     = "terraform-google-modules/log-export/google//modules/bigquery"
+  version                    = "~> 5.0"
+  project_id                 = module.org_audit_logs.project_id
+  dataset_name               = "audit_logs"
+  log_sink_writer_identity   = module.log_export_to_biqquery.writer_identity
+  expiration_days            = var.audit_logs_table_expiration_days
+  delete_contents_on_destroy = var.audit_logs_table_delete_contents_on_destroy
 }
 
 /******************************************
@@ -91,7 +92,7 @@ module "storage_destination" {
 
 module "log_export_to_pubsub" {
   source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 4.0"
+  version                = "~> 5.0"
   destination_uri        = module.pubsub_destination.destination_uri
   filter                 = local.all_logs_filter
   log_sink_name          = "sk-c-logging-pub"
@@ -103,7 +104,7 @@ module "log_export_to_pubsub" {
 
 module "pubsub_destination" {
   source                   = "terraform-google-modules/log-export/google//modules/pubsub"
-  version                  = "~> 4.0"
+  version                  = "~> 5.0"
   project_id               = module.org_audit_logs.project_id
   topic_name               = "tp-org-logs-${random_string.suffix.result}"
   log_sink_writer_identity = module.log_export_to_pubsub.writer_identity

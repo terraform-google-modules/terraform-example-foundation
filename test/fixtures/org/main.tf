@@ -32,4 +32,5 @@ module "test" {
   domains_to_allow                            = [var.domain_to_allow]
   create_access_context_manager_access_policy = false
   audit_logs_table_delete_contents_on_destroy = true
+  log_export_storage_force_destroy            = true
 }

@@ -17,7 +17,7 @@
 locals {
   parent_resource_id   = var.parent_folder != "" ? var.parent_folder : var.org_id
   parent_resource_type = var.parent_folder != "" ? "folder" : "organization"
-  all_logs_filter      = <<EOF
+  main_logs_filter     = <<EOF
     logName: /logs/cloudaudit.googleapis.com%2Factivity OR
     logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
     logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR
@@ -25,6 +25,7 @@ locals {
     logName: /logs/compute.googleapis.com%2Ffirewall OR
     logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
 EOF
+  all_logs_filter      = ""
 }
 
 resource "random_string" "suffix" {
@@ -41,7 +42,7 @@ module "log_export_to_biqquery" {
   source                 = "terraform-google-modules/log-export/google"
   version                = "~> 5.0"
   destination_uri        = module.bigquery_destination.destination_uri
-  filter                 = local.all_logs_filter
+  filter                 = local.main_logs_filter
   log_sink_name          = "sk-c-logging-bq"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type
@@ -84,6 +85,7 @@ module "storage_destination" {
   uniform_bucket_level_access = true
   location                    = var.log_export_storage_location
   retention_policy            = var.log_export_storage_retention_policy
+  force_destroy               = var.log_export_storage_force_destroy
 }
 
 /******************************************
@@ -94,7 +96,7 @@ module "log_export_to_pubsub" {
   source                 = "terraform-google-modules/log-export/google"
   version                = "~> 5.0"
   destination_uri        = module.pubsub_destination.destination_uri
-  filter                 = local.all_logs_filter
+  filter                 = local.main_logs_filter
   log_sink_name          = "sk-c-logging-pub"
   parent_resource_id     = local.parent_resource_id
   parent_resource_type   = local.parent_resource_type

@@ -166,6 +166,8 @@ module "cloudbuild_bootstrap" {
 
 data "google_project" "cloudbuild" {
   project_id = module.cloudbuild_bootstrap.cloudbuild_project_id
+
+  depends_on = [module.cloudbuild_bootstrap.csr_repos]
 }
 
 resource "google_organization_iam_member" "org_cb_sa_browser" {

@@ -97,7 +97,7 @@ variable "log_export_storage_location" {
 }
 
 variable "log_export_storage_force_destroy" {
-  description = "(Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if tables are present."
+  description = "(Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present."
   type        = bool
   default     = false
 }

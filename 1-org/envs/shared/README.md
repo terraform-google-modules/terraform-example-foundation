@@ -4,7 +4,8 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | audit\_data\_users | G Suite or Cloud Identity group that have access to audit logs. | string | n/a | yes |
-| audit\_logs\_table\_expiration\_ms | Period before tables expire for all audit logs in milliseconds. Default is 30 days. | number | `"2592000000"` | no |
+| audit\_logs\_table\_delete\_contents\_on\_destroy | (Optional) If set to true, delete all the tables in the dataset when destroying the resource; otherwise, destroying the resource will fail if tables are present. | bool | `"false"` | no |
+| audit\_logs\_table\_expiration\_days | Period before tables expire for all audit logs in milliseconds. Default is 30 days. | number | `"30"` | no |
 | billing\_account | The ID of the billing account to associate this project with | string | n/a | yes |
 | billing\_data\_users | G Suite or Cloud Identity group that have access to billing data set. | string | n/a | yes |
 | create\_access\_context\_manager\_access\_policy | Whether to create access context manager access policy | bool | `"true"` | no |
@@ -17,7 +18,9 @@
 | interconnect\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the interconnect project. | string | `"null"` | no |
 | interconnect\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the interconnect project. | list(number) | `<list>` | no |
 | interconnect\_project\_budget\_amount | The amount to use as the budget for the interconnect project. | number | `"1000"` | no |
+| log\_export\_storage\_force\_destroy | (Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present. | bool | `"false"` | no |
 | log\_export\_storage\_location | The location of the storage bucket used to export logs. | string | `"US"` | no |
+| log\_export\_storage\_retention\_policy | Configuration of the bucket's data retention policy for how long objects in the bucket should be retained. | object | `"null"` | no |
 | org\_audit\_logs\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the org audit logs project. | string | `"null"` | no |
 | org\_audit\_logs\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the org audit logs project. | list(number) | `<list>` | no |
 | org\_audit\_logs\_project\_budget\_amount | The amount to use as the budget for the org audit logs project. | number | `"1000"` | no |

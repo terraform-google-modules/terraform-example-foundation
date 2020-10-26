@@ -17,8 +17,7 @@ org_billing_logs_project_id = attribute('org_billing_logs_project_id')
 parent_resource_id = attribute('parent_resource_id')
 logs_export_storage_bucket_name = attribute('logs_export_storage_bucket_name')
 logs_export_pubsub_topic = attribute('logs_export_pubsub_topic')
-
-all_logs_filter = [
+main_logs_filter = [
   'logName: /logs/cloudaudit.googleapis.com%2Factivity',
   'logName: /logs/cloudaudit.googleapis.com%2Fsystem_event',
   'logName: /logs/cloudaudit.googleapis.com%2Fdata_access',
@@ -62,7 +61,7 @@ control 'gcp_logging' do
     name: 'sk-c-logging-bq'
   ) do
     it { should exist }
-    all_logs_filter.each do |filter|
+    main_logs_filter.each do |filter|
       its('filter') do
         should include filter
       end
@@ -76,10 +75,8 @@ control 'gcp_logging' do
     name: 'sk-c-logging-bkt'
   ) do
     it { should exist }
-    all_logs_filter.each do |filter|
-      its('filter') do
-        should include filter
-      end
+    its('filter') do
+      should be_nil
     end
     its('include_children') { should cmp 'true' }
     its('destination') { should cmp "storage.googleapis.com/#{logs_export_storage_bucket_name}" }
@@ -90,7 +87,7 @@ control 'gcp_logging' do
     name: 'sk-c-logging-pub'
   ) do
     it { should exist }
-    all_logs_filter.each do |filter|
+    main_logs_filter.each do |filter|
       its('filter') do
         should include filter
       end

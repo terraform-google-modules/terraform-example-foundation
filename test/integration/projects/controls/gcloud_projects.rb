@@ -238,7 +238,7 @@ control 'gcloud-projects' do
           end
 
           it "has a peering with #{peering_networks[environment_code][business_unit]['network']}" do
-            expect(data[0]['peerings'][0]['network'].should eq peering_networks[environment_code][business_unit]['network'])
+            expect(data[0]['peerings'][0]['network'].should eq peering_networks[environment_code][business_unit][:network])
           end
         end
       end

@@ -21,7 +21,7 @@ tags:
 - 'lint'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '0.12.2'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '0.13'
 options:
   machineType: 'N1_HIGHCPU_8'
   env:

@@ -20,7 +20,7 @@ locals {
 
 module "project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.1"
+  version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))

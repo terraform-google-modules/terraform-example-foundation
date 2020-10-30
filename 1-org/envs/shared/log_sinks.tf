@@ -41,9 +41,6 @@ resource "random_string" "suffix" {
 module "log_export_to_biqquery" {
   source                 = "terraform-google-modules/log-export/google"
   version                = "~> 5.0"
-  bigquery_options       = {
-    use_partitioned_tables = true
-  }
   destination_uri        = module.bigquery_destination.destination_uri
   filter                 = local.main_logs_filter
   log_sink_name          = "sk-c-logging-bq"
@@ -51,6 +48,9 @@ module "log_export_to_biqquery" {
   parent_resource_type   = local.parent_resource_type
   include_children       = true
   unique_writer_identity = true
+  bigquery_options = {
+    use_partitioned_tables = true
+  }
 }
 
 module "bigquery_destination" {

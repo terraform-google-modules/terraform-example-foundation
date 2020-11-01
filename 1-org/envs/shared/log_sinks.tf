@@ -35,7 +35,7 @@ resource "random_string" "suffix" {
 }
 
 /******************************************
-  Send logs to BigQury
+  Send logs to BigQuery
 *****************************************/
 
 module "log_export_to_biqquery" {
@@ -48,6 +48,9 @@ module "log_export_to_biqquery" {
   parent_resource_type   = local.parent_resource_type
   include_children       = true
   unique_writer_identity = true
+  bigquery_options = {
+    use_partitioned_tables = true
+  }
 }
 
 module "bigquery_destination" {

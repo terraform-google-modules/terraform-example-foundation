@@ -23,7 +23,7 @@ module "org_audit_logs" {
   version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "prj-c-logging"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -50,7 +50,7 @@ module "org_billing_logs" {
   version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "prj-c-billing-logs"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -81,7 +81,7 @@ module "org_secrets" {
   version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "prj-c-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -112,7 +112,7 @@ module "interconnect" {
   version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "prj-c-interconnect"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -143,7 +143,7 @@ module "scc_notifications" {
   version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "prj-c-scc"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -174,7 +174,7 @@ module "dns_hub" {
   version                     = "~> 8.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "prj-c-dns-hub"
   org_id                      = var.org_id
   billing_account             = var.billing_account

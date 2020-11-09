@@ -49,6 +49,18 @@ variable "domains_to_allow" {
   type        = list(string)
 }
 
+variable "enable_shielded_vm_policy" {
+  description = "Enable Shielded VMs policy."
+  type        = bool
+  default     = false
+}
+
+variable "enable_os_login_policy" {
+  description = "Enable OS Login policy."
+  type        = bool
+  default     = false
+}
+
 variable "audit_logs_table_expiration_days" {
   description = "Period before tables expire for all audit logs in milliseconds. Default is 30 days."
   type        = number

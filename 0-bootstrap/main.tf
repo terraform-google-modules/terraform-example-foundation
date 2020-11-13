@@ -15,7 +15,7 @@
  */
 
 provider "google" {
-  version = "~> 3.30"
+  version = "~> 3.38"
 }
 
 provider "google-beta" {
@@ -35,6 +35,9 @@ provider "random" {
 *************************************************/
 locals {
   parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+  org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
+    "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
+  ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
 }
 
 resource "google_folder" "bootstrap" {
@@ -43,18 +46,20 @@ resource "google_folder" "bootstrap" {
 }
 
 module "seed_bootstrap" {
-  source                  = "terraform-google-modules/bootstrap/google"
-  version                 = "~> 1.3"
-  org_id                  = var.org_id
-  folder_id               = google_folder.bootstrap.id
-  billing_account         = var.billing_account
-  group_org_admins        = var.group_org_admins
-  group_billing_admins    = var.group_billing_admins
-  default_region          = var.default_region
-  org_project_creators    = var.org_project_creators
-  sa_enable_impersonation = true
-  parent_folder           = var.parent_folder == "" ? "" : local.parent
-  skip_gcloud_download    = var.skip_gcloud_download
+  source                         = "terraform-google-modules/bootstrap/google"
+  version                        = "~> 1.5"
+  org_id                         = var.org_id
+  folder_id                      = google_folder.bootstrap.id
+  billing_account                = var.billing_account
+  group_org_admins               = var.group_org_admins
+  group_billing_admins           = var.group_billing_admins
+  default_region                 = var.default_region
+  org_project_creators           = var.org_project_creators
+  sa_enable_impersonation        = true
+  parent_folder                  = var.parent_folder == "" ? "" : local.parent
+  skip_gcloud_download           = var.skip_gcloud_download
+  org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
+
   project_labels = {
     environment       = "bootstrap"
     application_name  = "seed-bootstrap"

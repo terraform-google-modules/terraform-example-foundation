@@ -49,10 +49,22 @@ variable "domains_to_allow" {
   type        = list(string)
 }
 
-variable "audit_logs_table_expiration_ms" {
+variable "enable_shielded_vm_policy" {
+  description = "Enable Shielded VMs policy."
+  type        = bool
+  default     = false
+}
+
+variable "enable_os_login_policy" {
+  description = "Enable OS Login policy."
+  type        = bool
+  default     = false
+}
+
+variable "audit_logs_table_expiration_days" {
   description = "Period before tables expire for all audit logs in milliseconds. Default is 30 days."
   type        = number
-  default     = 2592000000
+  default     = 30
 }
 
 variable "scc_notification_name" {
@@ -96,6 +108,26 @@ variable "log_export_storage_location" {
   default     = "US"
 }
 
+variable "log_export_storage_force_destroy" {
+  description = "(Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present."
+  type        = bool
+  default     = false
+}
+
+variable "audit_logs_table_delete_contents_on_destroy" {
+  description = "(Optional) If set to true, delete all the tables in the dataset when destroying the resource; otherwise, destroying the resource will fail if tables are present."
+  type        = bool
+  default     = false
+}
+
+variable "log_export_storage_retention_policy" {
+  description = "Configuration of the bucket's data retention policy for how long objects in the bucket should be retained."
+  type = object({
+    is_locked             = bool
+    retention_period_days = number
+  })
+  default = null
+}
 
 variable "dns_hub_project_alert_spent_percents" {
   description = "A list of percentages of the budget to alert on when threshold is exceeded for the DNS hub project."

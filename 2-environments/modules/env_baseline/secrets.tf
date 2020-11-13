@@ -21,7 +21,7 @@
 
 module "env_secrets" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.0"
+  version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"

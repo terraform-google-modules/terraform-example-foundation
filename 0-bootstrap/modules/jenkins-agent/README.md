@@ -50,43 +50,43 @@ module "jenkins_bootstrap" {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| activate\_apis | List of APIs to enable in the CICD project. | list(string) | `<list>` | no |
-| bgp\_peer\_asn | BGP ASN for peer cloud routes. | number | `"64513"` | no |
-| billing\_account | The ID of the billing account to associate projects with. | string | n/a | yes |
-| default\_region | Default region to create resources where applicable. | string | `"us-central1"` | no |
-| folder\_id | The ID of a folder to host this project | string | `""` | no |
-| group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |
-| jenkins\_agent\_gce\_machine\_type | Jenkins Agent GCE Instance type. | string | `"n1-standard-1"` | no |
-| jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name. | string | `"jenkins-agent-01"` | no |
-| jenkins\_agent\_gce\_private\_ip\_address | The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Master) and GCP (CICD Project, where the Jenkins Agent is located). | string | n/a | yes |
-| jenkins\_agent\_gce\_ssh\_pub\_key | SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'` | string | n/a | yes |
-| jenkins\_agent\_gce\_ssh\_user | Jenkins Agent GCE Instance SSH username. | string | `"jenkins"` | no |
-| jenkins\_agent\_gce\_subnetwork\_cidr\_range | The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0) | string | n/a | yes |
-| jenkins\_agent\_sa\_email | Email for Jenkins Agent service account. | string | `"jenkins-agent-gce"` | no |
-| jenkins\_master\_subnetwork\_cidr\_range | A list of CIDR IP ranges of the Jenkins Master in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | list(string) | n/a | yes |
-| nat\_bgp\_asn | BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address. | number | n/a | yes |
-| on\_prem\_vpn\_public\_ip\_address | The public IP Address of the Jenkins Master. | string | n/a | yes |
-| on\_prem\_vpn\_public\_ip\_address2 | The secondpublic IP Address of the Jenkins Master. | string | n/a | yes |
-| org\_id | GCP Organization ID | string | n/a | yes |
-| project\_labels | Labels to apply to the project. | map(string) | `<map>` | no |
-| project\_prefix | Name prefix to use for projects created. | string | `"prj"` | no |
-| router\_asn | BGP ASN for cloud routes. | number | `"64515"` | no |
-| sa\_enable\_impersonation | Allow org_admins group to impersonate service account & enable APIs required. | bool | `"false"` | no |
-| service\_account\_prefix | Name prefix to use for service accounts. | string | `"sa"` | no |
-| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
-| storage\_bucket\_labels | Labels to apply to the storage bucket. | map(string) | `<map>` | no |
-| storage\_bucket\_prefix | Name prefix to use for storage buckets. | string | `"bkt"` | no |
-| terraform\_sa\_email | Email for terraform service account. It must be supplied by the seed project | string | n/a | yes |
-| terraform\_sa\_name | Fully-qualified name of the terraform service account. It must be supplied by the seed project | string | n/a | yes |
-| terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the seed project | string | n/a | yes |
-| terraform\_version | Default terraform version. | string | `"0.12.24"` | no |
-| terraform\_version\_sha256sum | sha256sum for default terraform version. | string | `"602d2529aafdaa0f605c06adb7c72cfb585d8aa19b3f4d8d189b42589e27bf11"` | no |
-| tunnel0\_bgp\_peer\_address | BGP peer address for tunnel 0 | string | n/a | yes |
-| tunnel0\_bgp\_session\_range | BGP session range for tunnel 0 | string | n/a | yes |
-| tunnel1\_bgp\_peer\_address | BGP peer address for tunnel 1 | string | n/a | yes |
-| tunnel1\_bgp\_session\_range | BGP session range for tunnel 1 | string | n/a | yes |
-| vpn\_shared\_secret | The shared secret used in the VPN | string | n/a | yes |
+|------|-------------|------|---------|:--------:|
+| activate\_apis | List of APIs to enable in the CICD project. | `list(string)` | <pre>[<br>  "serviceusage.googleapis.com",<br>  "servicenetworking.googleapis.com",<br>  "compute.googleapis.com",<br>  "logging.googleapis.com",<br>  "bigquery.googleapis.com",<br>  "cloudresourcemanager.googleapis.com",<br>  "cloudbilling.googleapis.com",<br>  "iam.googleapis.com",<br>  "admin.googleapis.com",<br>  "appengine.googleapis.com",<br>  "storage-api.googleapis.com"<br>]</pre> | no |
+| bgp\_peer\_asn | BGP ASN for peer cloud routes. | `number` | `"64513"` | no |
+| billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
+| folder\_id | The ID of a folder to host this project | `string` | `""` | no |
+| group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
+| jenkins\_agent\_gce\_machine\_type | Jenkins Agent GCE Instance type. | `string` | `"n1-standard-1"` | no |
+| jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name. | `string` | `"jenkins-agent-01"` | no |
+| jenkins\_agent\_gce\_private\_ip\_address | The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Master) and GCP (CICD Project, where the Jenkins Agent is located). | `string` | n/a | yes |
+| jenkins\_agent\_gce\_ssh\_pub\_key | SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Master holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'` | `string` | n/a | yes |
+| jenkins\_agent\_gce\_ssh\_user | Jenkins Agent GCE Instance SSH username. | `string` | `"jenkins"` | no |
+| jenkins\_agent\_gce\_subnetwork\_cidr\_range | The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0) | `string` | n/a | yes |
+| jenkins\_agent\_sa\_email | Email for Jenkins Agent service account. | `string` | `"jenkins-agent-gce"` | no |
+| jenkins\_master\_subnetwork\_cidr\_range | A list of CIDR IP ranges of the Jenkins Master in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | `list(string)` | n/a | yes |
+| nat\_bgp\_asn | BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address. | `number` | n/a | yes |
+| on\_prem\_vpn\_public\_ip\_address | The public IP Address of the Jenkins Master. | `string` | n/a | yes |
+| on\_prem\_vpn\_public\_ip\_address2 | The secondpublic IP Address of the Jenkins Master. | `string` | n/a | yes |
+| org\_id | GCP Organization ID | `string` | n/a | yes |
+| project\_labels | Labels to apply to the project. | `map(string)` | `{}` | no |
+| project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
+| router\_asn | BGP ASN for cloud routes. | `number` | `"64515"` | no |
+| sa\_enable\_impersonation | Allow org\_admins group to impersonate service account & enable APIs required. | `bool` | `false` | no |
+| service\_account\_prefix | Name prefix to use for service accounts. | `string` | `"sa"` | no |
+| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | `bool` | `true` | no |
+| storage\_bucket\_labels | Labels to apply to the storage bucket. | `map(string)` | `{}` | no |
+| storage\_bucket\_prefix | Name prefix to use for storage buckets. | `string` | `"bkt"` | no |
+| terraform\_sa\_email | Email for terraform service account. It must be supplied by the seed project | `string` | n/a | yes |
+| terraform\_sa\_name | Fully-qualified name of the terraform service account. It must be supplied by the seed project | `string` | n/a | yes |
+| terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the seed project | `string` | n/a | yes |
+| terraform\_version | Default terraform version. | `string` | `"0.12.24"` | no |
+| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"602d2529aafdaa0f605c06adb7c72cfb585d8aa19b3f4d8d189b42589e27bf11"` | no |
+| tunnel0\_bgp\_peer\_address | BGP peer address for tunnel 0 | `string` | n/a | yes |
+| tunnel0\_bgp\_session\_range | BGP session range for tunnel 0 | `string` | n/a | yes |
+| tunnel1\_bgp\_peer\_address | BGP peer address for tunnel 1 | `string` | n/a | yes |
+| tunnel1\_bgp\_session\_range | BGP session range for tunnel 1 | `string` | n/a | yes |
+| vpn\_shared\_secret | The shared secret used in the VPN | `string` | n/a | yes |
 
 ## Outputs
 

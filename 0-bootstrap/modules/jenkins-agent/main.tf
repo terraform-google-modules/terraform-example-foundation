@@ -30,7 +30,7 @@ resource "random_id" "suffix" {
 *******************************************/
 module "cicd_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.0"
+  version                     = "~> 9.2"
   name                        = local.cicd_project_name
   random_project_id           = true
   disable_services_on_destroy = false
@@ -214,11 +214,11 @@ resource "google_project_iam_member" "org_admins_jenkins_viewer" {
 *******************************************/
 
 resource "google_storage_bucket" "gcs_jenkins_artifacts" {
-  project            = module.cicd_project.project_id
-  name               = format("%s-%s-%s-%s", var.storage_bucket_prefix, module.cicd_project.project_id, "jenkins-artifacts", random_id.suffix.hex)
-  location           = var.default_region
-  labels             = var.storage_bucket_labels
-  bucket_policy_only = true
+  project                     = module.cicd_project.project_id
+  name                        = format("%s-%s-%s-%s", var.storage_bucket_prefix, module.cicd_project.project_id, "jenkins-artifacts", random_id.suffix.hex)
+  location                    = var.default_region
+  labels                      = var.storage_bucket_labels
+  uniform_bucket_level_access = true
   versioning {
     enabled = true
   }

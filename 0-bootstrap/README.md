@@ -41,15 +41,16 @@ Currently, the bucket information is replaced in the state backends as a part of
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| billing\_account | The ID of the billing account to associate projects with. | string | n/a | yes |
-| default\_region | Default region to create resources where applicable. | string | `"us-central1"` | no |
-| group\_billing\_admins | Google Group for GCP Billing Administrators | string | n/a | yes |
-| group\_org\_admins | Google Group for GCP Organization Administrators | string | n/a | yes |
-| org\_id | GCP Organization ID | string | n/a | yes |
-| org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | list(string) | `<list>` | no |
-| parent\_folder | Optional - if using a folder for testing. | string | `""` | no |
-| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | bool | `"true"` | no |
+|------|-------------|------|---------|:--------:|
+| billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
+| group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
+| group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
+| org\_id | GCP Organization ID | `string` | n/a | yes |
+| org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
+| org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
+| parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
+| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | `bool` | `true` | no |
 
 ## Outputs
 

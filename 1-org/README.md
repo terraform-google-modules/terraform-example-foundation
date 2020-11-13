@@ -15,6 +15,16 @@ Enabling Data Access logs might result in your project being charged for the add
 For details on costs you might incur, go to [Pricing](https://cloud.google.com/stackdriver/pricing).
 You can choose not to enable the Data Access logs by setting variable `data_access_logs_enabled` to false.
 
+**Note:** This module creates sink to export all logs to Google Storage. It's also create sinks to export a subset of security related logs
+to Bigquery and Pub/Sub. This will result in additional charges for those copies of logs.
+You can change the filters & sinks by modifying the configuration in `envs/shared/log_sinks.tf`.
+
+**Note:** Currently, this module does not enable bucket policy retention for organization logs, please, enable it if needed.
+
+**Note:** It is possible to enable an organization policy for [OS Login](https://cloud.google.com/compute/docs/oslogin/manage-oslogin-in-an-org) with this module.
+OS Login has some [limitations](https://cloud.google.com/compute/docs/instances/managing-instance-access#limitations).
+If those limitations do not apply to your workload/environment you can choose to enable the OS Login policy by setting variable `enable_os_login_policy` to `true`.
+
 ### Setup to run via Cloud Build
 1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID` (this is from terraform output from the previous section, 0-bootstrap).
 1. Navigate into the repo `cd gcp-org` and change to a non production branch `git checkout -b plan`

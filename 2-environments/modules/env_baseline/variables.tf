@@ -126,3 +126,9 @@ variable "secret_project_budget_amount" {
   type        = number
   default     = 1000
 }
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}

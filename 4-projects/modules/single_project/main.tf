@@ -24,7 +24,7 @@ module "project" {
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
-  name                        = "prj-${var.business_code}-${local.env_code}-${var.project_prefix}"
+  name                        = "${var.project_prefix}-${var.business_code}-${local.env_code}-${var.project_prefix}"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = var.folder_id

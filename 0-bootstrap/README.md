@@ -50,6 +50,7 @@ Currently, the bucket information is replaced in the state backends as a part of
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
+| project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | `bool` | `true` | no |
 
 ## Outputs

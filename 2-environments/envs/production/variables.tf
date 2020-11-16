@@ -40,3 +40,9 @@ variable "monitoring_workspace_users" {
   type        = string
 }
 
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}
+

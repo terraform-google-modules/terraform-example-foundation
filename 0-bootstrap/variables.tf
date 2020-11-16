@@ -64,6 +64,12 @@ variable "skip_gcloud_download" {
   default     = true
 }
 
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}
+
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */

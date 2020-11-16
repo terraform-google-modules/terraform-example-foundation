@@ -128,7 +128,7 @@ module "cloudbuild_bootstrap" {
   skip_gcloud_download      = var.skip_gcloud_download
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
-  project_prefix                 = var.project_prefix
+  project_prefix            = var.project_prefix
 
   activate_apis = [
     "serviceusage.googleapis.com",

@@ -45,7 +45,7 @@ module "peering_project" {
   environment                 = "development"
 
   # Metadata
-  project_prefix    = "sample-peering"
+  project_suffix    = "sample-peering"
   application_name  = "bu1-sample-peering"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

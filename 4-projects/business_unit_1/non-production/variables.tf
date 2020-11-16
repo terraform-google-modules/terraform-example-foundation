@@ -92,3 +92,14 @@ variable "budget_amount" {
   type        = number
   default     = 1000
 }
+
+variable "project_suffix" {
+  description = "The name of the GCP project. Max 16 characters with 3 character business unit code."
+  type        = string
+}
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}

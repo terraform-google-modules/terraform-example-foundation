@@ -27,7 +27,7 @@ module "floating_project" {
   budget_amount               = var.budget_amount
 
   # Metadata
-  project_prefix    = "sample-floating"
+  project_suffix    = "sample-floating"
   application_name  = "bu1-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

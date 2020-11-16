@@ -28,7 +28,7 @@ module "base_shared_vpc_project" {
   budget_amount               = var.budget_amount
 
   # Metadata
-  project_prefix    = "sample-base"
+  project_suffix    = "sample-base"
   application_name  = "bu1-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

@@ -41,7 +41,7 @@ locals {
 }
 
 resource "google_folder" "bootstrap" {
-  display_name = "fldr-bootstrap"
+  display_name = "${var.folder_prefix}-bootstrap"
   parent       = local.parent
 }
 

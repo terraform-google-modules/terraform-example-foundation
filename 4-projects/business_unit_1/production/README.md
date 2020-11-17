@@ -10,6 +10,7 @@
 | budget\_amount | The amount to use as the budget | `number` | `1000` | no |
 | env\_code | A short form of the environment field | `string` | `"p"` | no |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
+| folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |

@@ -46,3 +46,9 @@ variable "project_prefix" {
   default     = "prj"
 }
 
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
+}
+

@@ -54,3 +54,8 @@ variable "prod_restricted_service_perimeter_name" {
   description = "production access context manager service perimeter name"
   type        = string
 }
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+}

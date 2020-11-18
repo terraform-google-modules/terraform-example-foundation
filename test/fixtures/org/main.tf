@@ -35,5 +35,5 @@ module "test" {
   log_export_storage_force_destroy            = true
   enable_shielded_vm_policy                   = true
   enable_os_login_policy                      = true
-  project_prefix                              = "tst"
+  project_prefix                              = var.project_prefix
 }

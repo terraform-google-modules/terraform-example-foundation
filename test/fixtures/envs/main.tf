@@ -21,7 +21,7 @@ module "development" {
   monitoring_workspace_users = var.group_email
   parent_folder              = var.parent_folder
   terraform_service_account  = var.terraform_sa_email
-  project_prefix             = "tst"
+  project_prefix             = var.project_prefix
 }
 
 module "non-production" {
@@ -31,7 +31,7 @@ module "non-production" {
   monitoring_workspace_users = var.group_email
   parent_folder              = var.parent_folder
   terraform_service_account  = var.terraform_sa_email
-  project_prefix             = "tst"
+  project_prefix             = var.project_prefix
 }
 
 module "production" {
@@ -41,5 +41,5 @@ module "production" {
   monitoring_workspace_users = var.group_email
   parent_folder              = var.parent_folder
   terraform_service_account  = var.terraform_sa_email
-  project_prefix             = "tst"
+  project_prefix             = var.project_prefix
 }

@@ -22,5 +22,5 @@ module "bootstrap" {
   group_billing_admins = var.group_email
   billing_account      = var.billing_account
   org_project_creators = var.org_project_creators
-  project_prefix       = "tst"
+  project_prefix       = var.project_prefix
 }

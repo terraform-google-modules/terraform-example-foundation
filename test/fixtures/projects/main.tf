@@ -22,7 +22,7 @@ module "projects_bu1_dev" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.dev_restricted_service_perimeter_name
-  project_prefix                   = "tst"
+  project_prefix                   = var.project_prefix
 }
 
 module "projects_bu1_nonprod" {
@@ -33,7 +33,7 @@ module "projects_bu1_nonprod" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.nonprod_restricted_service_perimeter_name
-  project_prefix                   = "tst"
+  project_prefix                   = var.project_prefix
 }
 
 
@@ -45,7 +45,7 @@ module "projects_bu1_prod" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.prod_restricted_service_perimeter_name
-  project_prefix                   = "tst"
+  project_prefix                   = var.project_prefix
 }
 
 module "projects_bu2_dev" {
@@ -57,7 +57,7 @@ module "projects_bu2_dev" {
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.dev_restricted_service_perimeter_name
   peering_module_depends_on        = [module.projects_bu1_dev.peering_complete]
-  project_prefix                   = "tst"
+  project_prefix                   = var.project_prefix
 }
 
 module "projects_bu2_nonprod" {
@@ -69,7 +69,7 @@ module "projects_bu2_nonprod" {
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.nonprod_restricted_service_perimeter_name
   peering_module_depends_on        = [module.projects_bu1_nonprod.peering_complete]
-  project_prefix                   = "tst"
+  project_prefix                   = var.project_prefix
 }
 
 
@@ -82,5 +82,5 @@ module "projects_bu2_prod" {
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.prod_restricted_service_perimeter_name
   peering_module_depends_on        = [module.projects_bu1_prod.peering_complete]
-  project_prefix                   = "tst"
+  project_prefix                   = var.project_prefix
 }

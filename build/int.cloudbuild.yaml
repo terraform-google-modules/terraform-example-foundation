@@ -136,6 +136,7 @@ steps:
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do destroy org-default']
   env:
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
+  - 'TF_VAR_project_prefix=tst'
 - id: destroy-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do destroy bootstrap-default']

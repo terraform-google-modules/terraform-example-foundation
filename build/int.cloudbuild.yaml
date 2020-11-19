@@ -71,7 +71,6 @@ steps:
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create dns-hub-default']
   env:
   - 'TF_VAR_org_id=$_ORG_ID'
-  - 'TF_VAR_project_prefix=tst'
 - id: converge-dns-hub
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do converge dns-hub-default']

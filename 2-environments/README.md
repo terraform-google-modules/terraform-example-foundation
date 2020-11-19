@@ -9,10 +9,6 @@ The purpose of this step is to set up development, non-production and production
 1. Cloud Identity / G Suite group for monitoring admins.
 1. Membership in the monitoring admins group for user running terraform
 
-**Note:** when running terraform plans in this repository, you may receive error `Error: Error setting billing account "XXXXXX-XXXXXX-XXXXXX" for project "projects/some-project": googleapi: Error 400: Precondition check failed., failedPrecondition`.
-Most likely this is related to billing quota issue. To confirm this, try `gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX`.
-If output states `Cloud billing quota exceeded`, please request increase via [https://support.google.com/code/contact/billing_quota_increase](https://support.google.com/code/contact/billing_quota_increase).
-
 ## Usage
 
 ### Setup to run via Cloud Build

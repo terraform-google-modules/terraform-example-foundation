@@ -22,6 +22,9 @@ Further details of permissions required and resources created, can be found in t
         gcloud auth list # <- confirm that correct account has a star next to it
         ```
     - Re-run `terraform` after.
+- `Error: Error setting billing account "XXXXXX-XXXXXX-XXXXXX" for project "projects/some-project": googleapi: Error 400: Precondition check failed., failedPrecondition`. Most likely this is related to billing quota issue.
+    - To confirm this, try `gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX`.
+    - If output states `Cloud billing quota exceeded`, please request increase via [https://support.google.com/code/contact/billing_quota_increase](https://support.google.com/code/contact/billing_quota_increase).
 
 ## 0-bootstrap usage to deploy Jenkins
 

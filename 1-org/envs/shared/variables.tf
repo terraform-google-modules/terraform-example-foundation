@@ -49,12 +49,6 @@ variable "domains_to_allow" {
   type        = list(string)
 }
 
-variable "enable_shielded_vm_policy" {
-  description = "Enable Shielded VMs policy."
-  type        = bool
-  default     = false
-}
-
 variable "enable_os_login_policy" {
   description = "Enable OS Login policy."
   type        = bool

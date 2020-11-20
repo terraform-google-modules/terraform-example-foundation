@@ -26,6 +26,7 @@ module "base_shared_vpc_project" {
   alert_spent_percents        = var.alert_spent_percents
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
+  project_prefix              = var.project_prefix
 
   # Metadata
   project_suffix    = "sample-base"

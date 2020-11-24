@@ -41,7 +41,7 @@ locals {
 }
 
 resource "google_folder" "bootstrap" {
-  display_name = "fldr-bootstrap"
+  display_name = "${var.folder_prefix}-bootstrap"
   parent       = local.parent
 }
 
@@ -59,6 +59,7 @@ module "seed_bootstrap" {
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
   skip_gcloud_download           = var.skip_gcloud_download
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
+  project_prefix                 = var.project_prefix
 
   project_labels = {
     environment       = "bootstrap"
@@ -127,6 +128,7 @@ module "cloudbuild_bootstrap" {
   skip_gcloud_download      = var.skip_gcloud_download
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
+  project_prefix            = var.project_prefix
 
   activate_apis = [
     "serviceusage.googleapis.com",

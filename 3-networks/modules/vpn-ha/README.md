@@ -25,6 +25,7 @@ If you don't have Dedicated Interconnect you can use High Availability VPN to co
 | default\_region1 | Default region 1 for Cloud Routers | `string` | n/a | yes |
 | default\_region2 | Default region 2 for Cloud Routers | `string` | n/a | yes |
 | environment | Environment for the VPN configuration. Valid options are development, non-production, production | `string` | n/a | yes |
+| folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | on\_prem\_router\_ip\_address1 | On-Prem Router IP address | `string` | n/a | yes |
 | on\_prem\_router\_ip\_address2 | On-Prem Router IP address | `string` | n/a | yes |
 | org\_id | Organization ID | `string` | n/a | yes |

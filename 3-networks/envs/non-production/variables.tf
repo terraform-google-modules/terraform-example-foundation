@@ -115,3 +115,9 @@ variable "parent_folder" {
   type        = string
   default     = ""
 }
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
+}

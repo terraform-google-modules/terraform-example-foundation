@@ -25,7 +25,7 @@ module "env_secrets" {
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "depriviledge"
-  name                        = "prj-${var.environment_code}-secrets"
+  name                        = "${var.project_prefix}-${var.environment_code}-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id

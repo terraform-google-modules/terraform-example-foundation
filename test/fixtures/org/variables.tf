@@ -37,3 +37,8 @@ variable "terraform_sa_email" {
 variable "domain_to_allow" {
   description = "The test domain_to_allow allow users from in IAM."
 }
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+}

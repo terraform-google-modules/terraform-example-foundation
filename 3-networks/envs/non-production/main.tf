@@ -24,7 +24,7 @@ locals {
 }
 
 data "google_active_folder" "env" {
-  display_name = "fldr-${local.env}"
+  display_name = "${var.folder_prefix}-${local.env}"
   parent       = local.parent_id
 }
 
@@ -72,6 +72,7 @@ module "restricted_shared_vpc" {
   nat_bgp_asn                      = var.nat_bgp_asn
   nat_num_addresses_region1        = var.nat_num_addresses_region1
   nat_num_addresses_region2        = var.nat_num_addresses_region2
+  folder_prefix                    = var.folder_prefix
 
   subnets = [
     {
@@ -130,6 +131,7 @@ module "base_shared_vpc" {
   nat_num_addresses_region1     = var.nat_num_addresses_region1
   nat_num_addresses_region2     = var.nat_num_addresses_region2
   nat_num_addresses             = var.nat_num_addresses
+  folder_prefix                 = var.folder_prefix
 
   subnets = [
     {

@@ -16,7 +16,8 @@
 | impersonate\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | primary\_contact | The primary email contact for the project | `string` | n/a | yes |
-| project\_prefix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
+| project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
+| project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
 | secondary\_contact | The secondary email contact for the project | `string` | `""` | no |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | `bool` | `true` | no |
 | vpc\_service\_control\_attach\_enabled | Whether the project will be attached to a VPC Service Control Perimeter | `bool` | `false` | no |

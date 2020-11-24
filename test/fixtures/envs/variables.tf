@@ -33,3 +33,8 @@ variable "group_email" {
 variable "terraform_sa_email" {
   description = "The SA that will be used for creating projects."
 }
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+}

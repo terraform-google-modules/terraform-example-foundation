@@ -25,9 +25,10 @@ module "floating_project" {
   alert_spent_percents        = var.alert_spent_percents
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
+  project_prefix              = var.project_prefix
 
   # Metadata
-  project_prefix    = "sample-floating"
+  project_suffix    = "sample-floating"
   application_name  = "bu2-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

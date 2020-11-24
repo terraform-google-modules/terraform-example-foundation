@@ -23,8 +23,8 @@ module "org_audit_logs" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "deprivilege"
-  name                        = "prj-c-logging"
+  default_service_account     = "depriviledge"
+  name                        = "${var.project_prefix}-c-logging"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -50,8 +50,8 @@ module "org_billing_logs" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "deprivilege"
-  name                        = "prj-c-billing-logs"
+  default_service_account     = "depriviledge"
+  name                        = "${var.project_prefix}-c-billing-logs"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -81,8 +81,8 @@ module "org_secrets" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "deprivilege"
-  name                        = "prj-c-secrets"
+  default_service_account     = "depriviledge"
+  name                        = "${var.project_prefix}-c-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -112,8 +112,8 @@ module "interconnect" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "deprivilege"
-  name                        = "prj-c-interconnect"
+  default_service_account     = "depriviledge"
+  name                        = "${var.project_prefix}-c-interconnect"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -143,8 +143,8 @@ module "scc_notifications" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "deprivilege"
-  name                        = "prj-c-scc"
+  default_service_account     = "depriviledge"
+  name                        = "${var.project_prefix}-c-scc"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
@@ -174,8 +174,8 @@ module "dns_hub" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "deprivilege"
-  name                        = "prj-c-dns-hub"
+  default_service_account     = "depriviledge"
+  name                        = "${var.project_prefix}-c-dns-hub"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id

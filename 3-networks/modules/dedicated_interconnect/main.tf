@@ -24,7 +24,7 @@ locals {
 }
 
 data "google_active_folder" "common" {
-  display_name = "fldr-common"
+  display_name = "${var.folder_prefix}-common"
   parent       = local.parent_id
 }
 

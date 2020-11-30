@@ -153,13 +153,7 @@ module "cloudbuild_bootstrap" {
     env_code          = "b"
   }
 
-  cloud_source_repos = [
-    "gcp-bootstrap",
-    "gcp-org",
-    "gcp-environments",
-    "gcp-networks",
-    "gcp-projects"
-  ]
+  cloud_source_repos = var.cloud_source_repos
 
   terraform_apply_branches = [
     "development",

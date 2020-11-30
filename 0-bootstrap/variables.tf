@@ -63,6 +63,11 @@ variable "skip_gcloud_download" {
   type        = bool
   default     = true
 }
+variable "cloud_source_repos" {
+  description = "List of Cloud reposiories created during bootrstap project build stage"
+  type        = list(string)
+  default     = ["gcp-bootstrap","gcp-org","gcp-environments","gcp-networks","gcp-projects"]
+}
 
 /* ----------------------------------------
     Specific to jenkins_bootstrap module

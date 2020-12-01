@@ -15,7 +15,6 @@ The purpose of this step is to set up development, non-production and production
 1. Clone repo `gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID`
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/2-environments/ .` (modify accordingly based on your current directory)
-1. Copy contents of policy-library to new repo `cp -RT ../terraform-example-foundation/policy-library/ ./policy-library` (modify accordingly based on your current directory).
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
@@ -34,7 +33,6 @@ The purpose of this step is to set up development, non-production and production
 1. Clone the repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-2-environments>`
 1. Navigate into the repo `cd YOUR_NEW_REPO_CLONE-2-environments` and change to a non production branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/2-environments/ .` (modify accordingly based on your current directory).
-1. Copy contents of policy-library to new repo `cp -RT ../terraform-example-foundation/policy-library/ ./policy-library` (modify accordingly based on your current directory).
 1. Copy the Jenkinsfile script `cp ../terraform-example-foundation/build/Jenkinsfile .` to the root of your new repository (modify accordingly based on your current directory).
 1. Update the variables located in the `environment {}` section of the `Jenkinsfile` with values from your environment:
     ```

@@ -1,6 +1,6 @@
 # 1-org
 
-The purpose of this step is to set up top level shared folders, monitoring & networking projects, org level logging and set baseline security settings through organizational policy.
+The purpose of this step is to set up top level shared folders, monitoring & networking projects, org level logging and set baseline security settings through organizational policy. This step also creates the shared repository that host the terraform validator policies.
 
 ## Prerequisites
 
@@ -26,10 +26,15 @@ OS Login has some [limitations](https://cloud.google.com/compute/docs/instances/
 If those limitations do not apply to your workload/environment you can choose to enable the OS Login policy by setting variable `enable_os_login_policy` to `true`.
 
 ### Setup to run via Cloud Build
+
+1. Clone repo `gcloud source repos clone gcp-policies --project=YOUR_CLOUD_BUILD_PROJECT_ID`.
+1. Navigate into the repo `cd gcp-org`.
+1. Copy contents of policy-library to new repo `cp -RT ../terraform-example-foundation/policy-library/ .` (modify accordingly based on your current directory).
+1. Commit changes with `git add .` and `git commit -m 'Your message'`
+1. Push your master branch to the new repo `git push --set-upstream origin master`.
 1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID` (this is from terraform output from the previous section, 0-bootstrap).
 1. Navigate into the repo `cd gcp-org` and change to a non production branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/1-org/ .` (modify accordingly based on your current directory).
-1. Copy contents of policy-library to new repo `cp -RT ../terraform-example-foundation/policy-library/ ./policy-library` (modify accordingly based on your current directory).
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
@@ -42,6 +47,12 @@ If those limitations do not apply to your workload/environment you can choose to
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 ### Setup to run via Jenkins
+
+1. Clone the policies repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-policies>`
+1. Navigate into the repo `cd <YOUR_NEW_REPO-policies>`.
+1. Copy contents of policy-library to new repo `cp -RT ../terraform-example-foundation/policy-library/ .` (modify accordingly based on your current directory).
+1. Commit changes with `git add .` and `git commit -m 'Your message'`
+1. Push your master branch to the new repo `git push --set-upstream origin master`.
 1. Clone the repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-1-org>`
 1. Navigate into the repo `cd YOUR_NEW_REPO_CLONE-1-org` and change to a non production branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/1-org/ .` (modify accordingly based on your current directory).

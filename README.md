@@ -251,6 +251,8 @@ The [Scorecard bundle](https://github.com/forseti-security/policy-library/blob/m
 
 See the [policy-library documentation](https://github.com/forseti-security/policy-library/blob/master/docs/index.md) if you need to add more constraints from the [samples folder](https://github.com/forseti-security/policy-library/tree/master/samples) in your configuration based in your type of workload.
 
+Step 1-org has instructions on the creation of the shared repository to host these policies.
+
 ### Optional Variables
 
 Some variables used to deploy the steps have default values, check those **before deployment** to ensure they match your requirements. For more information, there are tables of inputs and outputs for the Terraform modules, each with a detailed description of their variables. Look for variables marked as **not required** in the section **Inputs** of these READMEs:

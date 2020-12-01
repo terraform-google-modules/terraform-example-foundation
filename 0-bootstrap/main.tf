@@ -159,7 +159,8 @@ module "cloudbuild_bootstrap" {
     "gcp-org",
     "gcp-environments",
     "gcp-networks",
-    "gcp-projects"
+    "gcp-projects",
+    "gcp-policies"
   ]
 
   terraform_apply_branches = [

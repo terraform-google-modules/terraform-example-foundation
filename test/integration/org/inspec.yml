@@ -33,6 +33,11 @@ attributes:
     type: string
   - name: dns_hub_project_id
     required: true
+  - name: base_net_hub_project_id
+    required: true
+    type: string
+  - name: restricted_net_hub_project_id
+    required: true
     type: string
   - name: parent_resource_id
     required: true

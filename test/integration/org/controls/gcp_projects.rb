@@ -19,6 +19,8 @@ org_secrets_project_id = attribute('org_secrets_project_id')
 interconnect_project_id = attribute('interconnect_project_id')
 scc_notifications_project_id = attribute('scc_notifications_project_id')
 dns_hub_project_id = attribute('dns_hub_project_id')
+base_net_hub_project_id = attribute('base_net_hub_project_id')
+restricted_net_hub_project_id = attribute('restricted_net_hub_project_id')
 
 dns_hub_apis = [
   'compute.googleapis.com',
@@ -79,6 +81,18 @@ control 'gcp_projects' do
   describe google_project(project: dns_hub_project_id) do
     it { should exist }
     its('project_id') { should cmp dns_hub_project_id }
+    its('lifecycle_state') { should cmp 'ACTIVE' }
+  end
+
+  describe google_project(project: base_net_hub_project_id) do
+    it { should exist }
+    its('project_id') { should cmp base_net_hub_project_id }
+    its('lifecycle_state') { should cmp 'ACTIVE' }
+  end
+
+  describe google_project(project: restricted_net_hub_project_id) do
+    it { should exist }
+    its('project_id') { should cmp restricted_net_hub_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 

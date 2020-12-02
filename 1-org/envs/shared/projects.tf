@@ -203,3 +203,81 @@ module "dns_hub" {
   budget_alert_spent_percents = var.dns_hub_project_alert_spent_percents
   budget_amount               = var.dns_hub_project_budget_amount
 }
+
+/******************************************
+  Project for Base Network Hub
+*****************************************/
+
+module "base_network_hub" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 9.2"
+  for_each                    = var.hub_and_spoke ? toset(["yes"]) : toset([])
+  random_project_id           = "true"
+  impersonate_service_account = var.terraform_service_account
+  default_service_account     = "depriviledge"
+  name                        = "${var.project_prefix}-c-base-net-hub"
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = google_folder.common.id
+  skip_gcloud_download        = var.skip_gcloud_download
+
+  activate_apis = [
+    "compute.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "logging.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "billingbudgets.googleapis.com"
+  ]
+
+  labels = {
+    environment       = "production"
+    application_name  = "org-base-net-hub"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+  budget_alert_pubsub_topic   = var.base_net_hub_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.base_net_hub_project_alert_spent_percents
+  budget_amount               = var.base_net_hub_project_budget_amount
+}
+
+/******************************************
+  Project for Restricted Network Hub
+*****************************************/
+
+module "restricted_network_hub" {
+  source                      = "terraform-google-modules/project-factory/google"
+  version                     = "~> 9.2"
+  for_each                    = var.hub_and_spoke ? toset(["yes"]) : toset([])
+  random_project_id           = "true"
+  impersonate_service_account = var.terraform_service_account
+  default_service_account     = "depriviledge"
+  name                        = "${var.project_prefix}-c-restricted-net-hub"
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = google_folder.common.id
+  skip_gcloud_download        = var.skip_gcloud_download
+
+  activate_apis = [
+    "compute.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "logging.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "billingbudgets.googleapis.com"
+  ]
+
+  labels = {
+    environment       = "production"
+    application_name  = "org-restricted-net-hub"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+  budget_alert_pubsub_topic   = var.restricted_net_hub_project_alert_pubsub_topic
+  budget_alert_spent_percents = var.restricted_net_hub_project_alert_spent_percents
+  budget_amount               = var.restricted_net_hub_project_budget_amount
+}

@@ -52,6 +52,7 @@ steps:
   env:
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
   - 'TF_VAR_project_prefix=tst'
+  - 'TF_VAR_hub_and_spoke=true'
 - id: verify-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify org-default']
@@ -136,6 +137,7 @@ steps:
   env:
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
   - 'TF_VAR_project_prefix=tst'
+  - 'TF_VAR_hub_and_spoke=true'
 - id: destroy-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do destroy bootstrap-default']

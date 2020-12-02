@@ -231,3 +231,15 @@ variable "scc_notifications_project_budget_amount" {
   type        = number
   default     = 1000
 }
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
+}

@@ -39,3 +39,15 @@ variable "monitoring_workspace_users" {
   description = "Gsuite or Cloud Identity group that have access to Monitoring Workspaces."
   type        = string
 }
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
+}

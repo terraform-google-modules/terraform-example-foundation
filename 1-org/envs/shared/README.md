@@ -16,6 +16,7 @@
 | dns\_hub\_project\_budget\_amount | The amount to use as the budget for the DNS hub project. | `number` | `1000` | no |
 | domains\_to\_allow | The list of domains to allow users from in IAM. | `list(string)` | n/a | yes |
 | enable\_os\_login\_policy | Enable OS Login policy. | `bool` | `false` | no |
+| folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | interconnect\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the interconnect project. | `string` | `null` | no |
 | interconnect\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the interconnect project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | interconnect\_project\_budget\_amount | The amount to use as the budget for the interconnect project. | `number` | `1000` | no |
@@ -33,6 +34,7 @@
 | org\_secrets\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the org secrets project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | org\_secrets\_project\_budget\_amount | The amount to use as the budget for the org secrets project. | `number` | `1000` | no |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
+| project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | scc\_notification\_filter | Filter used to SCC Notification, you can see more details how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter | `string` | `"state=\\\"ACTIVE\\\""` | no |
 | scc\_notification\_name | Name of SCC Notification | `string` | n/a | yes |
 | scc\_notifications\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the SCC notifications project. | `string` | `null` | no |

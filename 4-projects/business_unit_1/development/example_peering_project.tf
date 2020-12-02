@@ -43,9 +43,10 @@ module "peering_project" {
   folder_id                   = data.google_active_folder.env.name
   skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "development"
+  project_prefix              = var.project_prefix
 
   # Metadata
-  project_prefix    = "sample-peering"
+  project_suffix    = "sample-peering"
   application_name  = "bu1-sample-peering"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

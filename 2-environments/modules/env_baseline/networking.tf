@@ -23,7 +23,7 @@ module "base_shared_vpc_host_project" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "prj-${var.environment_code}-shared-base"
+  name                        = "${var.project_prefix}-${var.environment_code}-shared-base"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
@@ -57,7 +57,7 @@ module "restricted_shared_vpc_host_project" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "prj-${var.environment_code}-shared-restricted"
+  name                        = "${var.project_prefix}-${var.environment_code}-shared-restricted"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id

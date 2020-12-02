@@ -93,3 +93,8 @@ output "logs_export_storage_bucket_name" {
   value       = module.test.logs_export_storage_bucket_name
   description = "The storage bucket for destination of log exports"
 }
+
+output "hub_and_spoke" {
+  value       = var.hub_and_spoke
+  description = "Hub-and-Spoke architecture enabled"
+}

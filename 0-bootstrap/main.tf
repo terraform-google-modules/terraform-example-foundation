@@ -123,11 +123,13 @@ module "cloudbuild_bootstrap" {
   terraform_sa_email          = module.seed_bootstrap.terraform_sa_email
   terraform_sa_name           = module.seed_bootstrap.terraform_sa_name
   terraform_state_bucket      = module.seed_bootstrap.gcs_bucket_tfstate
-  terraform_validator_release = "2020-09-24"
   sa_enable_impersonation     = true
   skip_gcloud_download        = var.skip_gcloud_download
   cloudbuild_plan_filename    = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename   = "cloudbuild-tf-apply.yaml"
+  terraform_validator_release = "2020-09-24"
+  terraform_version           = "0.13.5"
+  terraform_version_sha256sum = "f7b7a7b1bfbf5d78151cfe3d1d463140b5fd6a354e71a7de2b5644e652ca5147"
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -168,6 +170,14 @@ module "cloudbuild_bootstrap" {
     "non\\-production", //non-production needs a \ to ensure regex matches correct branches.
     "production"
   ]
+}
+
+resource "google_project_iam_member" "project_source_reader" {
+  project = module.cloudbuild_bootstrap.cloudbuild_project_id
+  role    = "roles/source.reader"
+  member  = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
+
+  depends_on = [module.cloudbuild_bootstrap.csr_repos]
 }
 
 data "google_project" "cloudbuild" {

@@ -28,10 +28,11 @@ If those limitations do not apply to your workload/environment you can choose to
 ### Setup to run via Cloud Build
 
 1. Clone repo `gcloud source repos clone gcp-policies --project=YOUR_CLOUD_BUILD_PROJECT_ID`.
-1. Navigate into the repo `cd gcp-org`.
+1. Navigate into the repo `cd gcp-policies`.
 1. Copy contents of policy-library to new repo `cp -RT ../terraform-example-foundation/policy-library/ .` (modify accordingly based on your current directory).
 1. Commit changes with `git add .` and `git commit -m 'Your message'`
 1. Push your master branch to the new repo `git push --set-upstream origin master`.
+1. Navigate out of the repo `cd ..`.
 1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID` (this is from terraform output from the previous section, 0-bootstrap).
 1. Navigate into the repo `cd gcp-org` and change to a non production branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/1-org/ .` (modify accordingly based on your current directory).

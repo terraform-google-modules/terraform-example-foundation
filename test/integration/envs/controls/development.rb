@@ -18,6 +18,7 @@ dev_base_shared_vpc_project_id = attribute('dev_base_shared_vpc_project_id')
 dev_restricted_shared_vpc_project_id = attribute('dev_restricted_shared_vpc_project_id')
 dev_env_secrets_project_id = attribute('dev_env_secrets_project_id')
 monitoring_group = attribute('monitoring_group')
+hub_and_spoke = attribute('hub_and_spoke')
 
 monitoring_project_apis = ['logging.googleapis.com', 'monitoring.googleapis.com']
 networking_project_apis = ['compute.googleapis.com',
@@ -57,6 +58,24 @@ control 'development' do
     it { should exist }
     its('project_id') { should cmp dev_env_secrets_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
+  end
+
+  if hub_and_spoke
+    describe dev_base_shared_vpc_project_id do
+      it { should include "spoke" }
+    end
+
+    describe dev_restricted_shared_vpc_project_id do
+      it { should include "spoke" }
+    end
+  else
+    describe dev_base_shared_vpc_project_id do
+      it { should_not include "spoke" }
+    end
+
+    describe dev_restricted_shared_vpc_project_id do
+      it { should_not include "spoke" }
+    end
   end
 
   monitoring_project_apis.each do |api|

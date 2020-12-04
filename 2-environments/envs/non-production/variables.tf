@@ -51,3 +51,9 @@ variable "folder_prefix" {
   type        = string
   default     = "fldr"
 }
+
+variable "hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
+}

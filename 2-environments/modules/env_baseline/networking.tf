@@ -17,13 +17,16 @@
 /******************************************
   Projects for Shared VPCs
 *****************************************/
+locals {
+  is_spoke = var.hub_and_spoke ? "-spoke" : ""
+}
 
 module "base_shared_vpc_host_project" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "${var.project_prefix}-${var.environment_code}-shared-base"
+  name                        = format("%s-%s-shared-base%s", var.project_prefix, var.environment_code, local.is_spoke)
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
@@ -40,7 +43,7 @@ module "base_shared_vpc_host_project" {
 
   labels = {
     environment       = var.env
-    application_name  = "base-shared-vpc-host"
+    application_name  = format("base-shared-vpc%s-host", local.is_spoke)
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
@@ -57,7 +60,7 @@ module "restricted_shared_vpc_host_project" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "${var.project_prefix}-${var.environment_code}-shared-restricted"
+  name                        = format("%s-%s-shared-restr%s", var.project_prefix, var.environment_code, local.is_spoke)
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
@@ -76,7 +79,7 @@ module "restricted_shared_vpc_host_project" {
 
   labels = {
     environment       = var.env
-    application_name  = "restricted-shared-vpc-host"
+    application_name  = format("restricted-shared-vpc%s-host", local.is_spoke)
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"

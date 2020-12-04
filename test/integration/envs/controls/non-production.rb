@@ -18,6 +18,7 @@ nonprod_base_shared_vpc_project_id = attribute('nonprod_base_shared_vpc_project_
 nonprod_restricted_shared_vpc_project_id = attribute('nonprod_restricted_shared_vpc_project_id')
 nonprod_env_secrets_project_id = attribute('nonprod_env_secrets_project_id')
 monitoring_group = attribute('monitoring_group')
+hub_and_spoke = attribute('hub_and_spoke')
 
 monitoring_project_apis = ['logging.googleapis.com', 'monitoring.googleapis.com']
 networking_project_apis = ['compute.googleapis.com',
@@ -56,6 +57,24 @@ control 'non-production' do
     it { should exist }
     its('project_id') { should cmp nonprod_env_secrets_project_id }
     its('lifecycle_state') { should cmp 'ACTIVE' }
+  end
+
+  if hub_and_spoke
+    describe nonprod_base_shared_vpc_project_id do
+      it { should include "spoke" }
+    end
+
+    describe nonprod_restricted_shared_vpc_project_id do
+      it { should include "spoke" }
+    end
+  else
+    describe nonprod_base_shared_vpc_project_id do
+      it { should_not include "spoke" }
+    end
+
+    describe nonprod_restricted_shared_vpc_project_id do
+      it { should_not include "spoke" }
+    end
   end
 
   monitoring_project_apis.each do |api|

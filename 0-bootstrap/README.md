@@ -43,7 +43,7 @@ Currently, the bucket information is replaced in the state backends as a part of
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
-| cloud\_source\_repos | List of Cloud reposiories created during bootrstap project build stage | `list(string)` | `[  "gcp-bootstrap",  "gcp-org",  "gcp-environments",  "gcp-networks",  "gcp-projects"  ]` | no |
+| cloud\_source\_repos | List of Cloud reposiories created during bootrstap project build stage | `list(string)` | [  "gcp-bootstrap",  "gcp-org",  "gcp-environments",  "gcp-networks",  "gcp-projects"  ] | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |

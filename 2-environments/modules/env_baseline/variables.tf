@@ -45,7 +45,7 @@ variable "terraform_service_account" {
 }
 
 variable "monitoring_workspace_users" {
-  description = "Gsuite or Cloud Identity group that have access to Monitoring Workspaces."
+  description = "Google Workspace or Cloud Identity group that have access to Monitoring Workspaces."
   type        = string
 }
 

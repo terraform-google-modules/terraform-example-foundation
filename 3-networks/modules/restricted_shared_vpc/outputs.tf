@@ -50,31 +50,36 @@ output "subnets_secondary_ranges" {
 }
 
 output "region1_router1" {
-  value       = module.region1_router1
+  value       = try(module.region1_router1["yes"], null)
   description = "Router 1 for Region 1"
 }
 
 output "region1_router2" {
-  value       = module.region1_router2
+  value       = try(module.region1_router2["yes"], null)
   description = "Router 2 for Region 1"
 }
 
 output "region2_router1" {
-  value       = module.region2_router1
+  value       = try(module.region2_router1["yes"], null)
   description = "Router 1 for Region 2"
 }
 
 output "region2_router2" {
-  value       = module.region2_router2
+  value       = try(module.region2_router2["yes"], null)
   description = "Router 2 for Region 2"
 }
 
 output "access_level_name" {
-  value       = local.access_level_name
+  value       = try(local.access_level_name["yes"], null)
   description = "Access context manager access level name "
 }
 
 output "service_perimeter_name" {
   value       = local.perimeter_name
   description = "Access context manager service perimeter name "
+}
+
+output "peering_complete" {
+  value       = try(module.peering["yes"].complete)
+  description = "Used for peering dependency, output returned when peering connection is complete."
 }

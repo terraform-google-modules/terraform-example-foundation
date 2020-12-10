@@ -43,3 +43,5 @@ attributes:
   - name: prod_base_host_project_id
     required: true
     type: string
+  - name: hub_and_spoke
+    required: true

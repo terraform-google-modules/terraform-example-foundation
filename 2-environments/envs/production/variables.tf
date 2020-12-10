@@ -57,4 +57,3 @@ variable "hub_and_spoke" {
   type        = bool
   default     = false
 }
-

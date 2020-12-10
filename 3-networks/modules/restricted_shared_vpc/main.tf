@@ -14,15 +14,31 @@
  * limitations under the License.
  */
 
-/******************************************
-  Shared VPC configuration
- *****************************************/
-
 locals {
-  vpc_name                   = "${var.environment_code}-shared-restricted"
+  mode                       = var.mode == null ? "" : var.mode == "hub" ? "-hub" : "-spoke"
+  vpc_name                   = "${var.environment_code}-shared-restricted${local.mode}"
   network_name               = "vpc-${local.vpc_name}"
   restricted_googleapis_cidr = "199.36.153.4/30"
 }
+
+/******************************************
+  Restricted Network Hub
+*****************************************/
+
+data "google_projects" "restricted_net_hub" {
+  for_each = var.mode == "spoke" ? toset(["yes"]) : toset([])
+  filter   = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-restricted-net-hub lifecycleState=ACTIVE"
+}
+
+data "google_compute_network" "vpc_restricted_net_hub" {
+  for_each = var.mode == "spoke" ? toset(["yes"]) : toset([])
+  name     = "vpc-c-shared-restricted-hub"
+  project  = data.google_projects.restricted_net_hub["yes"].projects[0].project_id
+}
+
+/******************************************
+  Shared VPC configuration
+ *****************************************/
 
 module "main" {
   source                                 = "terraform-google-modules/network/google"
@@ -70,11 +86,26 @@ module "main" {
 }
 
 /***************************************************************
+  VPC Peering Configuration
+ **************************************************************/
+
+module "peering" {
+  source                    = "terraform-google-modules/network/google//modules/network-peering"
+  version                   = "~> 2.0"
+  for_each                  = var.mode == "spoke" ? toset(["yes"]) : toset([])
+  prefix                    = "np"
+  local_network             = module.main.network_self_link
+  peer_network              = data.google_compute_network.vpc_restricted_net_hub["yes"].self_link
+  module_depends_on         = var.depends_on_peerings
+  export_peer_custom_routes = true
+}
+
+/***************************************************************
   Configure Service Networking for Cloud SQL & future services.
  **************************************************************/
 
 resource "google_compute_global_address" "private_service_access_address" {
-
+  for_each      = var.private_service_cidr != null ? toset(["yes"]) : toset([])
   name          = "ga-${local.vpc_name}-vpc-peering-internal"
   project       = var.project_id
   purpose       = "VPC_PEERING"
@@ -82,12 +113,17 @@ resource "google_compute_global_address" "private_service_access_address" {
   address       = element(split("/", var.private_service_cidr), 0)
   prefix_length = element(split("/", var.private_service_cidr), 1)
   network       = module.main.network_self_link
+
+  depends_on = [module.peering]
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
+  for_each                = var.private_service_cidr != null ? toset(["yes"]) : toset([])
   network                 = module.main.network_self_link
   service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.private_service_access_address.name]
+  reserved_peering_ranges = [google_compute_global_address.private_service_access_address["yes"].name]
+
+  depends_on = [module.peering]
 }
 
 /************************************
@@ -96,12 +132,13 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 ************************************/
 
 module "region1_router1" {
-  source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 0.3.0"
-  name    = "cr-${local.vpc_name}-${var.default_region1}-cr5"
-  project = var.project_id
-  network = module.main.network_name
-  region  = var.default_region1
+  source   = "terraform-google-modules/cloud-router/google"
+  version  = "~> 0.3.0"
+  for_each = var.mode == null || var.mode == "hub" ? toset(["yes"]) : toset([])
+  name     = "cr-${local.vpc_name}-${var.default_region1}-cr5"
+  project  = var.project_id
+  network  = module.main.network_name
+  region   = var.default_region1
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
@@ -110,12 +147,13 @@ module "region1_router1" {
 }
 
 module "region1_router2" {
-  source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 0.3.0"
-  name    = "cr-${local.vpc_name}-${var.default_region1}-cr6"
-  project = var.project_id
-  network = module.main.network_name
-  region  = var.default_region1
+  source   = "terraform-google-modules/cloud-router/google"
+  version  = "~> 0.3.0"
+  for_each = var.mode == null || var.mode == "hub" ? toset(["yes"]) : toset([])
+  name     = "cr-${local.vpc_name}-${var.default_region1}-cr6"
+  project  = var.project_id
+  network  = module.main.network_name
+  region   = var.default_region1
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
@@ -124,12 +162,13 @@ module "region1_router2" {
 }
 
 module "region2_router1" {
-  source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 0.3.0"
-  name    = "cr-${local.vpc_name}-${var.default_region2}-cr7"
-  project = var.project_id
-  network = module.main.network_name
-  region  = var.default_region2
+  source   = "terraform-google-modules/cloud-router/google"
+  version  = "~> 0.3.0"
+  for_each = var.mode == null || var.mode == "hub" ? toset(["yes"]) : toset([])
+  name     = "cr-${local.vpc_name}-${var.default_region2}-cr7"
+  project  = var.project_id
+  network  = module.main.network_name
+  region   = var.default_region2
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
@@ -138,12 +177,13 @@ module "region2_router1" {
 }
 
 module "region2_router2" {
-  source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 0.3.0"
-  name    = "cr-${local.vpc_name}-${var.default_region2}-cr8"
-  project = var.project_id
-  network = module.main.network_name
-  region  = var.default_region2
+  source   = "terraform-google-modules/cloud-router/google"
+  version  = "~> 0.3.0"
+  for_each = var.mode == null || var.mode == "hub" ? toset(["yes"]) : toset([])
+  name     = "cr-${local.vpc_name}-${var.default_region2}-cr8"
+  project  = var.project_id
+  network  = module.main.network_name
+  region   = var.default_region2
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]

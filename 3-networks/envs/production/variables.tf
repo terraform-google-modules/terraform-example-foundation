@@ -58,9 +58,10 @@ variable "subnetworks_enable_logging" {
 
 variable "firewall_enable_logging" {
   type        = bool
-  description = "Toggle firewall logginglogging for VPC Firewalls."
+  description = "Toggle firewall logging for VPC Firewalls."
   default     = true
 }
+
 variable "dns_enable_inbound_forwarding" {
   type        = bool
   description = "Toggle inbound query forwarding for VPC DNS."
@@ -119,4 +120,16 @@ variable "folder_prefix" {
   description = "Name prefix to use for folders created."
   type        = string
   default     = "fldr"
+}
+
+variable "hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
+}
+
+variable "depends_on_peerings" {
+  description = "Dependency on other VPC Peerings established to hub network. Multiple VPC Peerings cannot be created simultaneously."
+  type        = list
+  default     = []
 }

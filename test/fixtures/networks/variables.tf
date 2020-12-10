@@ -37,3 +37,9 @@ variable "parent_folder" {
   type        = string
   default     = ""
 }
+
+variable "hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
+}

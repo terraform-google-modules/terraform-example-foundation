@@ -223,6 +223,7 @@ module "base_network_hub" {
 
   activate_apis = [
     "compute.googleapis.com",
+    "dns.googleapis.com",
     "servicenetworking.googleapis.com",
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
@@ -262,6 +263,7 @@ module "restricted_network_hub" {
 
   activate_apis = [
     "compute.googleapis.com",
+    "dns.googleapis.com",
     "servicenetworking.googleapis.com",
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",

@@ -23,6 +23,7 @@ module "development" {
   domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
   parent_folder                    = var.parent_folder
+  hub_and_spoke                    = var.hub_and_spoke
 }
 
 module "non-production" {
@@ -34,6 +35,8 @@ module "non-production" {
   domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
   parent_folder                    = var.parent_folder
+  hub_and_spoke                    = var.hub_and_spoke
+  depends_on_peerings              = module.development.peerings_complete
 }
 
 module "production" {
@@ -45,4 +48,6 @@ module "production" {
   domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
   parent_folder                    = var.parent_folder
+  hub_and_spoke                    = var.hub_and_spoke
+  depends_on_peerings              = module.non-production.peerings_complete
 }

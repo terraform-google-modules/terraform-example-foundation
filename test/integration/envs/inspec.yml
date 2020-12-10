@@ -53,4 +53,3 @@ attributes:
     type: string
   - name: hub_and_spoke
     required: true
-

@@ -101,3 +101,8 @@ output "base_subnets_secondary_ranges" {
   value       = module.base_shared_vpc.subnets_secondary_ranges
   description = "The secondary ranges associated with these subnets"
 }
+
+output "peerings_complete" {
+  value       = [module.restricted_shared_vpc.peering_complete, module.base_shared_vpc.peering_complete]
+  description = "Used for peering dependency, output returned when peering connection is complete."
+}

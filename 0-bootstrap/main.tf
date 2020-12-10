@@ -129,6 +129,7 @@ module "cloudbuild_bootstrap" {
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
   project_prefix            = var.project_prefix
+  cloud_source_repos        = var.cloud_source_repos
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -154,13 +155,6 @@ module "cloudbuild_bootstrap" {
     business_code     = "abcd"
     env_code          = "b"
   }
-
-  cloud_source_repos = [
-    "gcp-org",
-    "gcp-environments",
-    "gcp-networks",
-    "gcp-projects"
-  ]
 
   terraform_apply_branches = [
     "development",

@@ -12,7 +12,7 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 
 Further details of permissions required and resources created, can be found in the bootstrap module [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
-**Note:** when running the examples in this repository, you may receive an error like `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.` when applying terraform. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_sa_email` created in `0-bootstrap` should also be listed in "Email addresses that will be used to create projects" in that support form. If you face others quota errors, check the [Quota documentation](https://cloud.google.com/docs/quota) for guidence.
+**Note:** when running the examples in this repository, you may receive an error like `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.` when applying terraform. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_sa_email` created in `0-bootstrap` should also be listed in "Email addresses that will be used to create projects" in that support form. If you face others quota errors, check the [Quota documentation](https://cloud.google.com/docs/quota) for guidance.
 
 ## 0-bootstrap usage to deploy Jenkins
 
@@ -43,6 +43,7 @@ Currently, the bucket information is replaced in the state backends as a part of
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| cloud\_source\_repos | List of the Cloud Repositories to be created | `list(string)` | <pre>[<br>  "gcp-bootstrap",<br>  "gcp-org",<br>  "gcp-environments",<br>  "gcp-networks",<br>  "gcp-projects"<br>]</pre> | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
@@ -51,6 +52,7 @@ Currently, the bucket information is replaced in the state backends as a part of
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | `bool` | `true` | no |
+| terraform\_apply\_branches | List of the environment branch names | `list(string)` | <pre>[<br>  "development",<br>  "non\\-production",<br>  "production"<br>]</pre> | no |
 
 ## Outputs
 

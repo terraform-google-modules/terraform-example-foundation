@@ -153,19 +153,9 @@ module "cloudbuild_bootstrap" {
     env_code          = "b"
   }
 
-  cloud_source_repos = [
-    "gcp-bootstrap",
-    "gcp-org",
-    "gcp-environments",
-    "gcp-networks",
-    "gcp-projects"
-  ]
+  cloud_source_repos = var.cloud_source_repos
 
-  terraform_apply_branches = [
-    "development",
-    "non\\-production", //non-production needs a \ to ensure regex matches correct branches.
-    "production"
-  ]
+  terraform_apply_branches = var.terraform_apply_branches
 }
 
 ## Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build

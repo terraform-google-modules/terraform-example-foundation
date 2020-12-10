@@ -24,6 +24,18 @@ variable "billing_account" {
   type        = string
 }
 
+variable "cloud_source_repos" {
+  description = "List of the Cloud Repositories to be created"
+  type        = list(string)
+  default = [
+    "gcp-bootstrap",
+    "gcp-org",
+    "gcp-environments",
+    "gcp-networks",
+    "gcp-projects"
+  ]
+}
+
 variable "group_org_admins" {
   description = "Google Group for GCP Organization Administrators"
   type        = string
@@ -62,6 +74,16 @@ variable "skip_gcloud_download" {
   description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
   type        = bool
   default     = true
+}
+
+variable "terraform_apply_branches" {
+  description = "List of the environment branch names"
+  type        = list(string)
+  default = [
+    "development",
+    "non\\-production", //non-production needs a \ to ensure regex matches correct branches.
+    "production"
+  ]
 }
 
 /* ----------------------------------------

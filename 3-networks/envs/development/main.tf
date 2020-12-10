@@ -19,7 +19,7 @@ locals {
   env                       = "development"
   restricted_project_id     = data.google_projects.restricted_host_project.projects[0].project_id
   restricted_project_number = data.google_project.restricted_host_project.number
-  base_project_id           = data.google_projects.base_project.projects[0].project_id
+  base_project_id           = data.google_projects.base_host_project.projects[0].project_id
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
 }
 
@@ -40,7 +40,7 @@ data "google_project" "restricted_host_project" {
   project_id = data.google_projects.restricted_host_project.projects[0].project_id
 }
 
-data "google_projects" "base_project" {
+data "google_projects" "base_host_project" {
   filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=base-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
 }
 
@@ -105,7 +105,7 @@ module "restricted_shared_vpc" {
 }
 
 /******************************************
- Base shared VPC
+ Private shared VPC
 *****************************************/
 
 module "base_shared_vpc" {
@@ -149,9 +149,10 @@ module "base_shared_vpc" {
     }
   ]
   secondary_ranges = {
-    "sb-${local.environment_code}-shared-base-${var.default_region1}" = [{
-      range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
-      ip_cidr_range = "192.168.96.0/19"
+    "sb-${local.environment_code}-shared-base-${var.default_region1}" = [
+      {
+        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
+        ip_cidr_range = "192.168.96.0/19"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-svc"

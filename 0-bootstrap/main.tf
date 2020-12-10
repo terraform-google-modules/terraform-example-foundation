@@ -154,7 +154,6 @@ module "cloudbuild_bootstrap" {
   }
 
   cloud_source_repos = [
-    "gcp-bootstrap",
     "gcp-org",
     "gcp-environments",
     "gcp-networks",

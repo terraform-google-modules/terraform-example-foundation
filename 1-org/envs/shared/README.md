@@ -3,14 +3,14 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| audit\_data\_users | G Suite or Cloud Identity group that have access to audit logs. | `string` | n/a | yes |
+| audit\_data\_users | Google Workspace or Cloud Identity group that have access to audit logs. | `string` | n/a | yes |
 | audit\_logs\_table\_delete\_contents\_on\_destroy | (Optional) If set to true, delete all the tables in the dataset when destroying the resource; otherwise, destroying the resource will fail if tables are present. | `bool` | `false` | no |
 | audit\_logs\_table\_expiration\_days | Period before tables expire for all audit logs in milliseconds. Default is 30 days. | `number` | `30` | no |
 | base\_net\_hub\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the base net hub project. | `string` | `null` | no |
 | base\_net\_hub\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the base net hub project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | base\_net\_hub\_project\_budget\_amount | The amount to use as the budget for the base net hub project. | `number` | `1000` | no |
 | billing\_account | The ID of the billing account to associate this project with | `string` | n/a | yes |
-| billing\_data\_users | G Suite or Cloud Identity group that have access to billing data set. | `string` | n/a | yes |
+| billing\_data\_users | Google Workspace or Cloud Identity group that have access to billing data set. | `string` | n/a | yes |
 | create\_access\_context\_manager\_access\_policy | Whether to create access context manager access policy | `bool` | `true` | no |
 | data\_access\_logs\_enabled | Enable Data Access logs of types DATA\_READ, DATA\_WRITE and ADMIN\_READ for all GCP services. Enabling Data Access logs might result in your organization being charged for the additional logs usage. See https://cloud.google.com/logging/docs/audit#data-access | `bool` | `true` | no |
 | default\_region | Default region for BigQuery resources. | `string` | n/a | yes |

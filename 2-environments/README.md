@@ -6,7 +6,7 @@ The purpose of this step is to set up development, non-production and production
 
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
-1. Cloud Identity / G Suite group for monitoring admins.
+1. Cloud Identity / Google Workspace group for monitoring admins.
 1. Membership in the monitoring admins group for user running terraform
 
 ## Usage

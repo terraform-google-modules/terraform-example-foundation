@@ -106,7 +106,7 @@ module "restricted_shared_vpc" {
 }
 
 /******************************************
- Private shared VPC
+ Base shared VPC
 *****************************************/
 
 module "base_shared_vpc" {

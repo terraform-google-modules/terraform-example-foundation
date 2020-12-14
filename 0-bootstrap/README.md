@@ -7,7 +7,8 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 1. A GCP [Organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization)
 1. A GCP [Billing Account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
 1. Cloud Identity / Google Workspace groups for organization and billing admins
-1. Membership in the `group_org_admins` group for user running terraform
+1. User account should be used for running this step, service accounts are not supported.
+1. Membership in the `group_org_admins` group for user running terraform.
 1. Grant the roles mentioned in bootstrap [README.md](https://github.com/terraform-google-modules/terraform-google-bootstrap#permissions), as well as `roles/resourcemanager.folderCreator` for the user running the step.
 
 Further details of permissions required and resources created, can be found in the bootstrap module [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)

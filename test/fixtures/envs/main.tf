@@ -22,7 +22,6 @@ module "development" {
   parent_folder              = var.parent_folder
   terraform_service_account  = var.terraform_sa_email
   project_prefix             = var.project_prefix
-  hub_and_spoke              = var.hub_and_spoke
 }
 
 module "non-production" {
@@ -33,7 +32,6 @@ module "non-production" {
   parent_folder              = var.parent_folder
   terraform_service_account  = var.terraform_sa_email
   project_prefix             = var.project_prefix
-  hub_and_spoke              = var.hub_and_spoke
 }
 
 module "production" {
@@ -44,5 +42,4 @@ module "production" {
   parent_folder              = var.parent_folder
   terraform_service_account  = var.terraform_sa_email
   project_prefix             = var.project_prefix
-  hub_and_spoke              = var.hub_and_spoke
 }

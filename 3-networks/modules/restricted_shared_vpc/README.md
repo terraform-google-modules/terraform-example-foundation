@@ -7,7 +7,6 @@
 | bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | `number` | n/a | yes |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | `string` | n/a | yes |
 | default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | `string` | n/a | yes |
-| depends\_on\_peerings | Dependency on other VPC Peerings established to hub network. Multiple VPC Peerings cannot be created simultaneously. | `list` | `[]` | no |
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | `bool` | `true` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | `string` | n/a | yes |
@@ -38,7 +37,6 @@
 | access\_level\_name | Access context manager access level name |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
-| peering\_complete | Used for peering dependency, output returned when peering connection is complete. |
 | region1\_router1 | Router 1 for Region 1 |
 | region1\_router2 | Router 2 for Region 1 |
 | region2\_router1 | Router 1 for Region 2 |

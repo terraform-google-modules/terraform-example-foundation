@@ -96,7 +96,6 @@ module "peering" {
   prefix                    = "np"
   local_network             = module.main.network_self_link
   peer_network              = data.google_compute_network.vpc_restricted_net_hub["yes"].self_link
-  module_depends_on         = var.depends_on_peerings
   export_peer_custom_routes = true
 }
 

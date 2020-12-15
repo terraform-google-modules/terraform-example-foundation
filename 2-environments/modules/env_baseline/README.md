@@ -10,7 +10,6 @@
 | env | The environment to prepare (ex. development) | `string` | n/a | yes |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization (ex. d). | `string` | n/a | yes |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
-| hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | n/a | yes |
 | monitoring\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the monitoring project. | `string` | `null` | no |
 | monitoring\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the monitoring project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | monitoring\_project\_budget\_amount | The amount to use as the budget for the monitoring project. | `number` | `1000` | no |

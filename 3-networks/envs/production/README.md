@@ -18,7 +18,6 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`. | `number` | n/a | yes |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | `string` | n/a | yes |
 | default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | `string` | n/a | yes |
-| depends\_on\_peerings | Dependency on other VPC Peerings established to hub network. Multiple VPC Peerings cannot be created simultaneously. | `list` | `[]` | no |
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | `bool` | `true` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | `string` | n/a | yes |
@@ -48,7 +47,6 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | base\_subnets\_names | The names of the subnets being created |
 | base\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | base\_subnets\_self\_links | The self-links of subnets being created |
-| peerings\_complete | Used for peering dependency, output returned when peering connection is complete. |
 | restricted\_access\_level\_name | Access context manager access level name |
 | restricted\_host\_project\_id | The restricted host project ID |
 | restricted\_network\_name | The name of the VPC being created |

@@ -21,7 +21,6 @@ locals {
   restricted_project_number = data.google_project.restricted_host_project.number
   base_project_id           = data.google_projects.base_project.projects[0].project_id
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  is_spoke                  = var.hub_and_spoke ? "-spoke" : ""
   mode                      = var.hub_and_spoke ? "spoke" : null
 }
 
@@ -35,7 +34,7 @@ data "google_active_folder" "env" {
 *****************************************/
 
 data "google_projects" "restricted_host_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc${local.is_spoke}-host labels.environment=${local.env} lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
 }
 
 data "google_project" "restricted_host_project" {
@@ -43,7 +42,7 @@ data "google_project" "restricted_host_project" {
 }
 
 data "google_projects" "base_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=base-shared-vpc${local.is_spoke}-host labels.environment=${local.env} lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=base-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
 }
 
 /******************************************
@@ -75,7 +74,6 @@ module "restricted_shared_vpc" {
   nat_num_addresses_region2        = var.nat_num_addresses_region2
   folder_prefix                    = var.folder_prefix
   mode                             = local.mode
-  depends_on_peerings              = var.depends_on_peerings
 
   subnets = [
     {
@@ -136,7 +134,6 @@ module "base_shared_vpc" {
   nat_num_addresses             = var.nat_num_addresses
   folder_prefix                 = var.folder_prefix
   mode                          = local.mode
-  depends_on_peerings           = var.depends_on_peerings
 
   subnets = [
     {

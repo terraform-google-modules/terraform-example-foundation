@@ -44,11 +44,6 @@ variable "terraform_service_account" {
   type        = string
 }
 
-variable "hub_and_spoke" {
-  description = "Enable Hub-and-Spoke architecture."
-  type        = bool
-}
-
 variable "monitoring_workspace_users" {
   description = "Gsuite or Cloud Identity group that have access to Monitoring Workspaces."
   type        = string

@@ -78,8 +78,3 @@ output "service_perimeter_name" {
   value       = local.perimeter_name
   description = "Access context manager service perimeter name "
 }
-
-output "peering_complete" {
-  value       = try(module.peering["yes"].complete)
-  description = "Used for peering dependency, output returned when peering connection is complete."
-}

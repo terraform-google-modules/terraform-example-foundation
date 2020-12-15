@@ -27,5 +27,4 @@ module "env" {
   monitoring_workspace_users = var.monitoring_workspace_users
   project_prefix             = var.project_prefix
   folder_prefix              = var.folder_prefix
-  hub_and_spoke              = var.hub_and_spoke
 }

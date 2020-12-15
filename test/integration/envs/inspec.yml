@@ -51,5 +51,3 @@ attributes:
   - name: prod_env_secrets_project_id
     required: true
     type: string
-  - name: hub_and_spoke
-    required: true

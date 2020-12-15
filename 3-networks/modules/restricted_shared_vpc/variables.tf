@@ -158,9 +158,3 @@ variable "folder_prefix" {
   type        = string
   default     = "fldr"
 }
-
-variable "depends_on_peerings" {
-  description = "Dependency on other VPC Peerings established to hub network. Multiple VPC Peerings cannot be created simultaneously."
-  type        = list
-  default     = []
-}

@@ -93,8 +93,3 @@ output "prod_env_secrets_project_id" {
   description = "Production project for environment secrets."
   value       = module.production.env_secrets_project_id
 }
-
-output "hub_and_spoke" {
-  description = "Hub and Spoke enabled."
-  value       = var.hub_and_spoke
-}

@@ -78,8 +78,3 @@ output "region2_router2" {
   value       = module.region2_router2
   description = "Router 2 for Region 2"
 }
-
-output "peering_complete" {
-  value       = try(module.peering["yes"].complete)
-  description = "Used for peering dependency, output returned when peering connection is complete."
-}

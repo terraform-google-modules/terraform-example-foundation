@@ -22,6 +22,7 @@ steps:
   - 'TF_VAR_folder_id=$_FOLDER_ID'
   - 'TF_VAR_billing_account=$_BILLING_ACCOUNT'
   - 'TF_VAR_group_email=test-gcp-org-admins@test.infra.cft.tips'
+  - 'TF_VAR_project_prefix=tst'
 # - id: clean
 #   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
 #   args: ['/bin/bash', '-c', './test/clean_org.sh']
@@ -30,12 +31,15 @@ steps:
 #   - 'TF_VAR_folder_id=$_FOLDER_ID'
 #   - 'TF_VAR_billing_account=$_BILLING_ACCOUNT'
 #   - 'TF_VAR_group_email=test-gcp-org-admins@test.infra.cft.tips'
+#   - 'TF_VAR_project_prefix=tst'
 - id: create
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create']
 - id: converge-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do converge bootstrap-default']
+  env:
+  - 'TF_VAR_project_prefix=tst'
 - id: verify-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify bootstrap-default']
@@ -47,6 +51,8 @@ steps:
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do converge org-default']
   env:
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
+  - 'TF_VAR_project_prefix=tst'
+  - 'TF_VAR_hub_and_spoke=true'
 - id: verify-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify org-default']
@@ -56,6 +62,8 @@ steps:
 - id: converge-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do converge envs-default']
+  env:
+  - 'TF_VAR_project_prefix=tst'
 - id: verify-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify envs-default']
@@ -94,6 +102,7 @@ steps:
   env:
   - 'TF_VAR_org_id=$_ORG_ID'
   - 'TF_VAR_domain=test.infra.cft.tips.'
+  - 'TF_VAR_project_prefix=tst'
 - id: verify-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify projects-default']
@@ -103,6 +112,7 @@ steps:
   env:
   - 'TF_VAR_org_id=$_ORG_ID'
   - 'TF_VAR_domain=test.infra.cft.tips.'
+  - 'TF_VAR_project_prefix=tst'
 - id: destroy-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && export TF_VAR_policy_id=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)") && kitchen_do destroy networks-default']
@@ -120,19 +130,23 @@ steps:
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do destroy envs-default']
   env:
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
+  - 'TF_VAR_project_prefix=tst'
 - id: destroy-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do destroy org-default']
   env:
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
+  - 'TF_VAR_project_prefix=tst'
+  - 'TF_VAR_hub_and_spoke=true'
 - id: destroy-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do destroy bootstrap-default']
   env:
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
+  - 'TF_VAR_project_prefix=tst'
 tags:
 - 'ci'
 - 'integration'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '0.12.0'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '0.13'

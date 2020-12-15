@@ -41,13 +41,13 @@ locals {
 }
 
 resource "google_folder" "bootstrap" {
-  display_name = "fldr-bootstrap"
+  display_name = "${var.folder_prefix}-bootstrap"
   parent       = local.parent
 }
 
 module "seed_bootstrap" {
   source                         = "terraform-google-modules/bootstrap/google"
-  version                        = "~> 1.3"
+  version                        = "~> 1.5"
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
   billing_account                = var.billing_account
@@ -59,6 +59,7 @@ module "seed_bootstrap" {
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
   skip_gcloud_download           = var.skip_gcloud_download
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
+  project_prefix                 = var.project_prefix
 
   project_labels = {
     environment       = "bootstrap"
@@ -127,6 +128,8 @@ module "cloudbuild_bootstrap" {
   skip_gcloud_download      = var.skip_gcloud_download
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
+  project_prefix            = var.project_prefix
+  cloud_source_repos        = var.cloud_source_repos
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -152,13 +155,6 @@ module "cloudbuild_bootstrap" {
     business_code     = "abcd"
     env_code          = "b"
   }
-
-  cloud_source_repos = [
-    "gcp-org",
-    "gcp-environments",
-    "gcp-networks",
-    "gcp-projects"
-  ]
 
   terraform_apply_branches = [
     "development",

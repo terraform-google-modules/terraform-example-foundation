@@ -91,6 +91,18 @@ module "org_shared_vpc_lien_removal" {
   constraint      = "constraints/compute.restrictXpnProjectLienRemoval"
 }
 
+module "org_shared_require_os_login" {
+  source          = "terraform-google-modules/org-policy/google"
+  count           = var.enable_os_login_policy ? 1 : 0
+  version         = "~> 3.0"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "boolean"
+  enforce         = "true"
+  constraint      = "constraints/compute.requireOsLogin"
+}
+
 /******************************************
   Cloud SQL
 *******************************************/

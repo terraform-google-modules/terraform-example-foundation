@@ -20,10 +20,10 @@
 
 module "monitoring_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.0"
+  version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "prj-${var.environment_code}-monitoring"
+  name                        = "${var.project_prefix}-${var.environment_code}-monitoring"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id

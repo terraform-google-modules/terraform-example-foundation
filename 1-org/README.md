@@ -5,7 +5,7 @@ The purpose of this step is to set up top level shared folders, monitoring & net
 ## Prerequisites
 
 1. 0-bootstrap executed successfully.
-2. Cloud Identity / G Suite group for security admins
+2. Cloud Identity / Google Workspace group for security admins
 3. Membership in the security admins group for user running terraform
 
 ## Usage
@@ -20,6 +20,10 @@ to Bigquery and Pub/Sub. This will result in additional charges for those copies
 You can change the filters & sinks by modifying the configuration in `envs/shared/log_sinks.tf`.
 
 **Note:** Currently, this module does not enable bucket policy retention for organization logs, please, enable it if needed.
+
+**Note:** It is possible to enable an organization policy for [OS Login](https://cloud.google.com/compute/docs/oslogin/manage-oslogin-in-an-org) with this module.
+OS Login has some [limitations](https://cloud.google.com/compute/docs/instances/managing-instance-access#limitations).
+If those limitations do not apply to your workload/environment you can choose to enable the OS Login policy by setting variable `enable_os_login_policy` to `true`.
 
 ### Setup to run via Cloud Build
 1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID` (this is from terraform output from the previous section, 0-bootstrap).

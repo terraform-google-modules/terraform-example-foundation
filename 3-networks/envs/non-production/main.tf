@@ -93,13 +93,13 @@ module "restricted_shared_vpc" {
     }
   ]
   secondary_ranges = {
-    "sb-${local.environment_code}-shared-restricted-${var.default_region2}" = [
+    "sb-${local.environment_code}-shared-restricted-${var.default_region1}" = [
       {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region2}-gke-pod"
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-pod"
         ip_cidr_range = "192.168.0.0/19"
       },
       {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region2}-gke-svc"
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-svc"
         ip_cidr_range = "192.168.32.0/23"
       }
     ]
@@ -107,7 +107,7 @@ module "restricted_shared_vpc" {
 }
 
 /******************************************
- Private shared VPC
+ Base shared VPC
 *****************************************/
 
 module "base_shared_vpc" {

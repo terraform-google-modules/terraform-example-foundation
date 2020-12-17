@@ -52,13 +52,13 @@ variable "dns_enable_logging" {
 
 variable "subnetworks_enable_logging" {
   type        = bool
-  description = "Toggle subnetworks flow logging for VPC Subnetwoks."
+  description = "Toggle subnetworks flow logging for VPC Subnetworks."
   default     = true
 }
 
 variable "firewall_enable_logging" {
   type        = bool
-  description = "Toggle firewall logginglogging for VPC Firewalls."
+  description = "Toggle firewall logging for VPC Firewalls."
   default     = true
 }
 variable "dns_enable_inbound_forwarding" {

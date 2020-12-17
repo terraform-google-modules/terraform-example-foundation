@@ -29,3 +29,7 @@ variable "billing_account" {
 variable "group_email" {
   description = "The group that will be assigned permissions for testing."
 }
+
+variable "example_foundations_mode" {
+  description = "The example foundations mode used for testing."
+}

@@ -18,22 +18,29 @@ locals {
   organization_id = var.parent_folder != "" ? null : var.org_id
   folder_id       = var.parent_folder != "" ? var.parent_folder : null
   policy_for      = var.parent_folder != "" ? "folder" : "organization"
-  policies        = ["constraints/compute.disableNestedVirtualization", "constraints/compute.disableSerialPortAccess", "constraints/compute.disableGuestAttributesAccess", "constraints/compute.vmExternalIpAccess", "constraints/compute.skipDefaultNetworkCreation", "constraints/compute.restrictXpnProjectLienRemoval", "constraints/compute.requireOsLogin"]
+  policies = {
+    "constraints/compute.disableNestedVirtualization"   = "boolean",
+    "constraints/compute.disableSerialPortAccess"       = "boolean",
+    "constraints/compute.disableGuestAttributesAccess"  = "boolean",
+    "constraints/compute.vmExternalIpAccess"            = "list",
+    "constraints/compute.skipDefaultNetworkCreation"    = "boolean",
+    "constraints/compute.restrictXpnProjectLienRemoval" = "boolean",
+    "constraints/compute.requireOsLogin"                = "boolean",
+  }
 }
-
 
 /******************************************
   Compute org policies
 *******************************************/
 
 module "org_compute_policies" {
-  for_each        = toset(local.policies)
+  for_each        = local.policies
   source          = "terraform-google-modules/org-policy/google"
   version         = "~> 3.0"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
-  policy_type     = "boolean"
+  policy_type     = each.value
   enforce         = "true"
   constraint      = each.key
 }

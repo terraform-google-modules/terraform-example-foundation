@@ -18,6 +18,7 @@ locals {
   organization_id = var.parent_folder != "" ? null : var.org_id
   folder_id       = var.parent_folder != "" ? var.parent_folder : null
   policy_for      = var.parent_folder != "" ? "folder" : "organization"
+  policies        = ["constraints/compute.disableNestedVirtualization", "constraints/compute.disableSerialPortAccess", "constraints/compute.disableGuestAttributesAccess", "constraints/compute.vmExternalIpAccess", "constraints/compute.skipDefaultNetworkCreation", "constraints/compute.restrictXpnProjectLienRemoval", "constraints/compute.requireOsLogin"]
 }
 
 
@@ -25,7 +26,8 @@ locals {
   Compute org policies
 *******************************************/
 
-module "org_disable_nested_virtualization" {
+module "org_compute_policies" {
+  for_each        = toset(local.policies)
   source          = "terraform-google-modules/org-policy/google"
   version         = "~> 3.0"
   organization_id = local.organization_id
@@ -33,74 +35,7 @@ module "org_disable_nested_virtualization" {
   policy_for      = local.policy_for
   policy_type     = "boolean"
   enforce         = "true"
-  constraint      = "constraints/compute.disableNestedVirtualization"
-}
-
-module "org_disable_serial_port_access" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/compute.disableSerialPortAccess"
-}
-
-module "org_compute_disable_guest_attributes_access" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/compute.disableGuestAttributesAccess"
-}
-
-module "org_vm_external_ip_access" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "list"
-  enforce         = "true"
-  constraint      = "constraints/compute.vmExternalIpAccess"
-}
-
-module "org_skip_default_network" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/compute.skipDefaultNetworkCreation"
-}
-
-module "org_shared_vpc_lien_removal" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/compute.restrictXpnProjectLienRemoval"
-}
-
-module "org_shared_require_os_login" {
-  source          = "terraform-google-modules/org-policy/google"
-  count           = var.enable_os_login_policy ? 1 : 0
-  version         = "~> 3.0"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/compute.requireOsLogin"
+  constraint      = each.key
 }
 
 /******************************************

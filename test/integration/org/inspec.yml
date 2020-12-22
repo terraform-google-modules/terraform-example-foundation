@@ -38,7 +38,7 @@ attributes:
     type: string
   - name: restricted_net_hub_project_id
     required: true
-  - name: hub_and_spoke
+  - name: enable_hub_and_spoke
     required: true
     type: boolean
   - name: parent_resource_id

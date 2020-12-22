@@ -211,7 +211,7 @@ module "dns_hub" {
 module "base_network_hub" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 9.2"
-  for_each                    = var.hub_and_spoke ? toset(["yes"]) : toset([])
+  for_each                    = var.enable_hub_and_spoke ? toset(["yes"]) : toset([])
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "deprivilege"
@@ -251,7 +251,7 @@ module "base_network_hub" {
 module "restricted_network_hub" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 9.2"
-  for_each                    = var.hub_and_spoke ? toset(["yes"]) : toset([])
+  for_each                    = var.enable_hub_and_spoke ? toset(["yes"]) : toset([])
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "deprivilege"

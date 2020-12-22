@@ -19,9 +19,9 @@ output "access_context_manager_policy_id" {
   value       = var.policy_id
 }
 
-output "hub_and_spoke" {
+output "enable_hub_and_spoke" {
   description = "Hub and Spoke enabled."
-  value       = var.hub_and_spoke
+  value       = var.enable_hub_and_spoke
 }
 
 /******************************************

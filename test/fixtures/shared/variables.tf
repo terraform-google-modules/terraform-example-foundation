@@ -39,7 +39,7 @@ variable "policy_id" {
   description = "The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format=\"value(name)\"`."
 }
 
-variable "hub_and_spoke" {
+variable "enable_hub_and_spoke" {
   description = "Enable Hub-and-Spoke architecture."
   type        = bool
   default     = false

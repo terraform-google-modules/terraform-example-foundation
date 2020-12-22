@@ -22,7 +22,7 @@ terraform_service_account = "org-terraform@example-project-2334.iam.gserviceacco
 
 monitoring_workspace_users = "gcp-monitoring-admins@example.com"
 
-hub_and_spoke = true
+enable_hub_and_spoke = true
 
 //Optional - for development.  Will place all resources under a specific folder instead of org root
 //parent_folder = "01234567890"

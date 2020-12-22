@@ -49,6 +49,6 @@ output "group_email" {
   value = var.group_email
 }
 
-output "hub_and_spoke" {
+output "enable_hub_and_spoke" {
   value = var.example_foundations_mode == "HubAndSpoke" ? "true" : "false"
 }

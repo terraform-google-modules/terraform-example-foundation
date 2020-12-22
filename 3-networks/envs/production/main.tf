@@ -21,7 +21,7 @@ locals {
   restricted_project_number = data.google_project.restricted_host_project.number
   base_project_id           = data.google_projects.base_host_project.projects[0].project_id
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  mode                      = var.hub_and_spoke ? "spoke" : null
+  mode                      = var.enable_hub_and_spoke ? "spoke" : null
 }
 
 data "google_active_folder" "env" {

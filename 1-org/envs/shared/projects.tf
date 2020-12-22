@@ -23,7 +23,7 @@ module "org_audit_logs" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "${var.project_prefix}-c-logging"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -50,7 +50,7 @@ module "org_billing_logs" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "${var.project_prefix}-c-billing-logs"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -81,7 +81,7 @@ module "org_secrets" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "${var.project_prefix}-c-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -112,7 +112,7 @@ module "interconnect" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "${var.project_prefix}-c-interconnect"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -143,7 +143,7 @@ module "scc_notifications" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "${var.project_prefix}-c-scc"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -174,7 +174,7 @@ module "dns_hub" {
   version                     = "~> 9.2"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "${var.project_prefix}-c-dns-hub"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -214,7 +214,7 @@ module "base_network_hub" {
   for_each                    = var.hub_and_spoke ? toset(["yes"]) : toset([])
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "${var.project_prefix}-c-base-net-hub"
   org_id                      = var.org_id
   billing_account             = var.billing_account
@@ -254,7 +254,7 @@ module "restricted_network_hub" {
   for_each                    = var.hub_and_spoke ? toset(["yes"]) : toset([])
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  default_service_account     = "depriviledge"
+  default_service_account     = "deprivilege"
   name                        = "${var.project_prefix}-c-restricted-net-hub"
   org_id                      = var.org_id
   billing_account             = var.billing_account

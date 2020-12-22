@@ -75,6 +75,11 @@ variable "folder_prefix" {
   type        = string
   default     = "fldr"
 }
+variable "cloud_source_repos" {
+  description = "List of Cloud Source Reposiories created during bootrstap project build stage"
+  type        = list(string)
+  default     = ["gcp-org", "gcp-environments", "gcp-networks", "gcp-projects"]
+}
 
 /* ----------------------------------------
     Specific to jenkins_bootstrap module

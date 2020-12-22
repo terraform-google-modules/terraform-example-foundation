@@ -6,13 +6,26 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 
 1. A GCP [Organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization)
 1. A GCP [Billing Account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
-1. Cloud Identity / G Suite groups for organization and billing admins
-1. Membership in the `group_org_admins` group for user running terraform
+1. Cloud Identity / Google Workspace (former G Suite) groups for organization and billing admins
+1. User account should be used for running this step, service accounts are not supported.
+1. Membership in the `group_org_admins` group for user running terraform.
 1. Grant the roles mentioned in bootstrap [README.md](https://github.com/terraform-google-modules/terraform-google-bootstrap#permissions), as well as `roles/resourcemanager.folderCreator` for the user running the step.
 
 Further details of permissions required and resources created, can be found in the bootstrap module [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
-**Note:** when running the examples in this repository, you may receive an error like `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.` when applying terraform. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_sa_email` created in `0-bootstrap` should also be listed in "Email addresses that will be used to create projects" in that support form. If you face others quota errors, check the [Quota documentation](https://cloud.google.com/docs/quota) for guidence.
+**Note:** when running the examples in this repository, you may receive various errors when applying terraform:
+- `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.`. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_sa_email` created in `0-bootstrap` should also be listed in "Email addresses that will be used to create projects" in that support form. If you face others quota errors, check the [Quota documentation](https://cloud.google.com/docs/quota) for guidence.
+- `Error: Error when reading or editing Organization Not Found : <organization-id>: googleapi: Error 403: The caller does not have permission, forbidden`.
+    - Check that your user have [Organization Admin](https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles) predefined role at the Organization level.
+    -  If this is the case, try the following:
+        ```
+        gcloud auth application-default login
+        gcloud auth list # <- confirm that correct account has a star next to it
+        ```
+    - Re-run `terraform` after.
+- `Error: Error setting billing account "XXXXXX-XXXXXX-XXXXXX" for project "projects/some-project": googleapi: Error 400: Precondition check failed., failedPrecondition`. Most likely this is related to billing quota issue.
+    - To confirm this, try `gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX`.
+    - If output states `Cloud billing quota exceeded`, please request increase via [https://support.google.com/code/contact/billing_quota_increase](https://support.google.com/code/contact/billing_quota_increase).
 
 ## 0-bootstrap usage to deploy Jenkins
 
@@ -43,6 +56,7 @@ Currently, the bucket information is replaced in the state backends as a part of
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| cloud\_source\_repos | List of Cloud Source Reposiories created during bootrstap project build stage | `list(string)` | <pre>[<br>  "gcp-org",<br>  "gcp-environments",<br>  "gcp-networks",<br>  "gcp-projects"<br>]</pre> | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |

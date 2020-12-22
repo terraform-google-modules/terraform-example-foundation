@@ -15,7 +15,6 @@
 cloudbuild_project_id = attribute('cloudbuild_project_id')
 branches_regex = '^(development|non\\-production|production)$'
 cloud_source_repos = [
-  'gcp-bootstrap',
   'gcp-org',
   'gcp-environments',
   'gcp-networks',

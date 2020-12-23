@@ -22,8 +22,8 @@ locals {
 }
 
 data "google_project" "restricted_net_hub" {
-  for_each   = var.mode == "spoke" ? toset(["yes"]) : toset([])
-  project_id = data.google_projects.restricted_net_hub["yes"].projects[0].project_id
+  count      = var.mode == "spoke" ? 1 : 0
+  project_id = data.google_projects.restricted_net_hub[0].projects[0].project_id
 }
 
 resource "random_id" "random_access_level_suffix" {
@@ -62,14 +62,14 @@ resource "google_access_context_manager_service_perimeter" "regular_service_peri
 }
 
 resource "google_access_context_manager_service_perimeter" "bridge_to_network_hub_perimeter" {
-  for_each       = var.mode == "spoke" ? toset(["yes"]) : toset([])
+  count          = var.mode == "spoke" ? 1 : 0
   perimeter_type = "PERIMETER_TYPE_BRIDGE"
   parent         = "accessPolicies/${var.access_context_manager_policy_id}"
   name           = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${local.bridge_name}"
   title          = local.bridge_name
 
   status {
-    resources = formatlist("projects/%s", [var.project_number, data.google_project.restricted_net_hub["yes"].number])
+    resources = formatlist("projects/%s", [var.project_number, data.google_project.restricted_net_hub[0].number])
   }
 
   depends_on = [google_access_context_manager_service_perimeter.regular_service_perimeter]

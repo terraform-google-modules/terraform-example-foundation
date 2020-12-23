@@ -23,6 +23,6 @@ module "shared" {
   target_name_server_addresses     = ["192.168.0.1", "192.168.0.2"]
   terraform_service_account        = var.terraform_sa_email
   parent_folder                    = var.parent_folder
-  enable_hub_and_spoke                    = var.enable_hub_and_spoke
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
   org_id                           = var.org_id
 }

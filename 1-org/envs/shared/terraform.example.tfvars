@@ -30,8 +30,6 @@ default_region = "us-central1"
 
 scc_notification_name = "scc-notify"
 
-enable_hub_and_spoke = true
-
 //Optional - for development.  Will place all resources under a specific folder instead of org root
 //parent_folder = "01234567890"
 //scc_notification_filter = "state=\\\"ACTIVE\\\""

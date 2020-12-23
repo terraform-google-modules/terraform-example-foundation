@@ -15,9 +15,9 @@
  */
 
 locals {
-  base_net_hub_project_id           = try(data.google_projects.base_net_hub["yes"].projects[0].project_id, null)
-  restricted_net_hub_project_id     = try(data.google_projects.restricted_net_hub["yes"].projects[0].project_id, null)
-  restricted_net_hub_project_number = try(data.google_projects.restricted_net_hub["yes"].projects[0].number, null)
+  base_net_hub_project_id           = try(data.google_projects.base_net_hub[0].projects[0].project_id, null)
+  restricted_net_hub_project_id     = try(data.google_projects.restricted_net_hub[0].projects[0].project_id, null)
+  restricted_net_hub_project_number = try(data.google_projects.restricted_net_hub[0].projects[0].number, null)
 }
 
 /******************************************
@@ -25,8 +25,8 @@ locals {
 *****************************************/
 
 data "google_projects" "base_net_hub" {
-  for_each = var.enable_hub_and_spoke ? toset(["yes"]) : toset([])
-  filter   = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-base-net-hub lifecycleState=ACTIVE"
+  count  = var.enable_hub_and_spoke ? 1 : 0
+  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-base-net-hub lifecycleState=ACTIVE"
 }
 
 /******************************************
@@ -34,8 +34,8 @@ data "google_projects" "base_net_hub" {
 *****************************************/
 
 data "google_projects" "restricted_net_hub" {
-  for_each = var.enable_hub_and_spoke ? toset(["yes"]) : toset([])
-  filter   = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-restricted-net-hub lifecycleState=ACTIVE"
+  count  = var.enable_hub_and_spoke ? 1 : 0
+  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-restricted-net-hub lifecycleState=ACTIVE"
 }
 
 /******************************************
@@ -44,7 +44,7 @@ data "google_projects" "restricted_net_hub" {
 
 module "base_shared_vpc" {
   source                        = "../../modules/base_shared_vpc"
-  for_each                      = var.enable_hub_and_spoke ? toset(["yes"]) : toset([])
+  count                         = var.enable_hub_and_spoke ? 1 : 0
   project_id                    = local.base_net_hub_project_id
   environment_code              = "c"
   org_id                        = var.org_id
@@ -94,7 +94,7 @@ module "base_shared_vpc" {
 
 module "restricted_shared_vpc" {
   source                           = "../../modules/restricted_shared_vpc"
-  for_each                         = var.enable_hub_and_spoke ? toset(["yes"]) : toset([])
+  count                            = var.enable_hub_and_spoke ? 1 : 0
   project_id                       = local.restricted_net_hub_project_id
   project_number                   = local.restricted_net_hub_project_number
   environment_code                 = "c"

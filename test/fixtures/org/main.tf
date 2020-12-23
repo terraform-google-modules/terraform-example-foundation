@@ -33,7 +33,6 @@ module "test" {
   create_access_context_manager_access_policy = false
   audit_logs_table_delete_contents_on_destroy = true
   log_export_storage_force_destroy            = true
-  enable_os_login_policy                      = true
   project_prefix                              = var.project_prefix
   hub_and_spoke                               = var.hub_and_spoke
 }

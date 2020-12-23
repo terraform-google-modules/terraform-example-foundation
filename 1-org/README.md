@@ -23,7 +23,7 @@ You can change the filters & sinks by modifying the configuration in `envs/share
 
 **Note:** It is possible to enable an organization policy for [OS Login](https://cloud.google.com/compute/docs/oslogin/manage-oslogin-in-an-org) with this module.
 OS Login has some [limitations](https://cloud.google.com/compute/docs/instances/managing-instance-access#limitations).
-If those limitations do not apply to your workload/environment you can choose to enable the OS Login policy by setting variable `enable_os_login_policy` to `true`.
+If those limitations do not apply to your workload/environment you can choose to enable the OS Login policy by uncommenting the "constraints/compute.requireOsLogin" policy constraint in `envs/shared/org_policy.tf` line 28.
 
 ### Setup to run via Cloud Build
 1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID` (this is from terraform output from the previous section, 0-bootstrap).

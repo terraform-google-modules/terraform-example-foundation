@@ -25,7 +25,11 @@ locals {
     "constraints/compute.vmExternalIpAccess"            = "list",
     "constraints/compute.skipDefaultNetworkCreation"    = "boolean",
     "constraints/compute.restrictXpnProjectLienRemoval" = "boolean",
-    "constraints/compute.requireOsLogin"                = "boolean",
+    # "constraints/compute.requireOsLogin"                = "boolean",
+    # OS Login is disabled due to https://cloud.google.com/compute/docs/instances/managing-instance-access#limitations
+    "constraints/sql.restrictPublicIp"                 = "boolean",
+    "constraints/iam.disableServiceAccountKeyCreation" = "boolean",
+    "constraints/storage.uniformBucketLevelAccess"     = "boolean",
   }
 }
 
@@ -46,21 +50,6 @@ module "org_compute_policies" {
 }
 
 /******************************************
-  Cloud SQL
-*******************************************/
-
-module "org_cloudsql_external_ip_access" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/sql.restrictPublicIp"
-}
-
-/******************************************
   IAM
 *******************************************/
 
@@ -71,32 +60,6 @@ module "org_domain_restricted_sharing" {
   folder_id        = local.folder_id
   policy_for       = local.policy_for
   domains_to_allow = var.domains_to_allow
-}
-
-module "org_disable_sa_key_creation" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/iam.disableServiceAccountKeyCreation"
-}
-
-/******************************************
-  Storage
-*******************************************/
-
-module "org_enforce_bucket_level_access" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/storage.uniformBucketLevelAccess"
 }
 
 /******************************************

@@ -21,7 +21,6 @@ boolean_policy_constraints = [
   'constraints/compute.disableGuestAttributesAccess',
   'constraints/compute.vmExternalIpAccess',
   'constraints/compute.skipDefaultNetworkCreation',
-  'constraints/compute.requireOsLogin',
   'constraints/compute.restrictXpnProjectLienRemoval',
   'constraints/sql.restrictPublicIp',
   'constraints/iam.disableServiceAccountKeyCreation',

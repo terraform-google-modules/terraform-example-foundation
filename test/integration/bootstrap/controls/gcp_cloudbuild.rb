@@ -15,7 +15,6 @@
 cloudbuild_project_id = attribute('cloudbuild_project_id')
 gcs_bucket_cloudbuild_artifacts = attribute('gcs_bucket_cloudbuild_artifacts')
 cloud_source_repos = [
-  'gcp-bootstrap',
   'gcp-org',
   'gcp-environments',
   'gcp-networks',

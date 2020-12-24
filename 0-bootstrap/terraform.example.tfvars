@@ -24,7 +24,8 @@ group_billing_admins = "gcp-billing-admins@example.com"
 
 default_region = "australia-southeast1"
 
-//Optional - for development.  Will place all resources under a specific folder instead of org root
+//Optional - for development or for the organisation with existing projects.
+//Will place all resources under a specific folder instead of org root
 //parent_folder = "01234567890"
 
 /* ----------------------------------------

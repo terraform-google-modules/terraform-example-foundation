@@ -1,6 +1,6 @@
 # 3-networks
 
-The purpose of this step is to :
+The purpose of this step is to:
 
 - Setup the global [DNS Hub](https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones).
 - Setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect and baseline firewall rules for each environment.
@@ -35,7 +35,7 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
 ### Setup to run via Cloud Build
 
 1. Clone repo `gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID`
-1. Change freshly cloned repo and change to non master branch `git checkout -b plan`
+1. Change to the freshly cloned repo and change to non-master branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/3-networks/ .` (modify accordingly based on your current directory).
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory)
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
@@ -55,7 +55,7 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to production with `git checkout -b production` and `git push origin production`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. After production has been applied apply development and non-production
+1. After production has been applied, apply development and non-production
 1. Merge changes to development with `git checkout -b development` and `git push origin development`
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to non-production with `git checkout -b non-production` and `git push origin non-production`
@@ -90,7 +90,7 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
     1. Review the plan output in your Master's web UI.
 1. Merge changes to production branch with `git checkout -b production` and `git push origin production`
     1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-1. After production has been applied apply development and non-production
+1. After production has been applied, apply development and non-production
 1. Merge changes to development with `git checkout -b development` and `git push origin development`
     1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 1. Merge changes to non-production with `git checkout -b non-production` and `git push origin non-production`
@@ -108,7 +108,7 @@ If you are not able to use dedicated interconnect, you can also use an HA VPN to
 1. Rename access_context.auto.example.tfvars to access_context.auto.tfvars and update the file with the access_context_manager_policy_id.
 1. Update backend.tf with your bucket from bootstrap. You can run
 ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
-You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
+You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
 
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks step

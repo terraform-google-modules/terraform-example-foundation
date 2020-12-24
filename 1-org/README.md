@@ -5,7 +5,7 @@ The purpose of this step is to set up top level shared folders, monitoring & net
 ## Prerequisites
 
 1. 0-bootstrap executed successfully.
-2. Cloud Identity / G Suite group for security admins
+2. Cloud Identity / Google Workspace group for security admins
 3. Membership in the security admins group for user running terraform
 
 ## Usage

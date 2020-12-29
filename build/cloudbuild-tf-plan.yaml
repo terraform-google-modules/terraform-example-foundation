@@ -34,7 +34,7 @@ steps:
   args:
   - -c
   - |
-      ./tf-wrapper.sh plan_validate_all ${BRANCH_NAME} ${_POLICY_REPO} ${PROJECT_ID}
+      ./tf-wrapper.sh plan_validate_all ${BRANCH_NAME} ${_POLICY_REPO} ${PROJECT_ID} CLOUDSOURCE
 
 artifacts:
   objects:

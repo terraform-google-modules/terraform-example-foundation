@@ -79,6 +79,7 @@ If those limitations do not apply to your workload/environment you can choose to
 1. You can now move to the instructions in the step [2-environments](../2-environments/README.md).
 
 ### Run terraform locally
+
 1. Change into 1-org folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`
@@ -91,8 +92,11 @@ You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to ob
 We will now deploy our environment (production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 1-org step and only the corresponding environment is applied.
 
+To use the `validate` option of the `tf-wrapper.sh` script `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system.
+
 1. Run `./tf-wrapper.sh init production`
 1. Run `./tf-wrapper.sh plan production` and review output.
+1. Run `./tf-wrapper.sh validate production ../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply production`
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan production` before run `./tf-wrapper.sh apply production`

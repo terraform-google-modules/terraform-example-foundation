@@ -18,8 +18,9 @@ set -e
 
 action=$1
 branch=$2
-policyrepo=$3
+policysource=$3
 project_id=$4
+policy_type=$5 # FILESYSTEM or CLOUDSOURCE 
 base_dir=$(pwd)
 tmp_plan="${base_dir}/tmp_plan" #if you change this, update build triggers
 environments_regex="^(development|non-production|production|shared)$"
@@ -91,7 +92,7 @@ tf_plan_validate_all() {
       if [[ "$env" =~ $environments_regex ]] ; then
         tf_init "$env_path" "$env" "$component"
         tf_plan "$env_path" "$env" "$component"
-        tf_validate "$env_path" "$env" "$policyrepo" "$component"
+        tf_validate "$env_path" "$env" "$policysource" "$component"
       else
         echo "$component/$env doesn't match $environments_regex; skipping"
       fi
@@ -130,13 +131,15 @@ tf_validate() {
     echo "terraform-validator not found!  Check path or visit"
     echo "https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator"
   elif [ -z "$policy_file_path" ]; then
-    echo "no policy repo found! Check the argument provided for policyrepo to this script."
+    echo "no policy repo found! Check the argument provided for policysource to this script."
     echo "https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator"
   else
     if [ -d "$path" ]; then
       cd "$path" || exit
       terraform show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
-      gcloud source repos clone gcp-policies '/workspace/policy-library' --project="${project_id}" || exit 34
+      if [["$policy_type" == "CLOUDSOURCE"]]; then
+        gcloud source repos clone gcp-policies "${policy_file_path}" --project="${project_id}" || exit 34
+      fi
       terraform-validator validate "${tf_env}.json" --policy-path="${policy_file_path}" --project="${project_id}" || exit 33
       cd "$base_dir" || exit
     else
@@ -176,7 +179,7 @@ single_action_runner() {
             ;;
 
           validate )
-            tf_validate "$env_path" "$env" "$policyrepo" "$component"
+            tf_validate "$env_path" "$env" "$policysource" "$component"
             ;;
           * )
             echo "unknown option: ${action}"

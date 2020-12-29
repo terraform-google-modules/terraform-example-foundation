@@ -52,7 +52,7 @@ steps:
   args:
   - -c
   - |
-      ./tf-wrapper.sh validate ${BRANCH_NAME} ${_POLICY_REPO} ${PROJECT_ID}
+      ./tf-wrapper.sh validate ${BRANCH_NAME} ${_POLICY_REPO} ${PROJECT_ID} CLOUDSOURCE
 
 # [START tf-apply]
 - id: 'tf apply'

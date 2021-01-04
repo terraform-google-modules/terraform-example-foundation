@@ -43,7 +43,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
      - Access to the Jenkins Master Web UI
      - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent) installed in your Jenkins Master
      - Private IP address for the Jenkins Agent: usually assigned by your network administrator. You will use this IP for the GCE instance that will be created in the `prj-cicd` GCP Project in step [II. Create the SEED and CICD projects using Terraform](#II-Create-the-SEED-and-CICD-projects-using-Terraform).
-     - Access to create six Git repositories, one for each directory in this [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation) (`0-bootstrap, 1-org, 2-environments, 3-networks, 4-projects`) and one for the terraform validator policies. These are usually private repositories that might be on-prem.
+     - Access to create five Git repositories, one for each directory in this [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation) (`0-bootstrap, 1-org, 2-environments, 3-networks, 4-projects`). These are usually private repositories that might be on-prem.
 
 1. Generate a SSH key pair. In the Jenkins Master host, use the `ssh-keygen` command to generate a SSH key pair.
    - You will need this key pair to enable authentication between the Master and Agent. Although the key pair can be generated in any linux machine, it is recommended not to copy the secret private key from one host to another, so you probably want to do this in the Jenkins Master host command line.
@@ -76,8 +76,8 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
     - Passphrase that protects the private key (the one you used in the `-N` option)
     - Jenkins Agent’s private IP address (usually assigned by your Network Administrator. In the provided examples this IP is "172.16.1.6"). This private IP will be reachable through the VPN connection that you will create later.
 
-1. Create six individual Git repositories in your Git server (This might be a task delegated to your infrastructure team)
-    - Note that although this infrastructure code is distributed to you as a [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation), you will store the code in five different repositories, one for each directory (and an additional one for the terraform validator policies):
+1. Create five individual Git repositories in your Git server (This might be a task delegated to your infrastructure team)
+    - Note that although this infrastructure code is distributed to you as a [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation), you will store the code in five different repositories, one for each directory:
         ```
         ./0-bootstrap
         ./1-org
@@ -85,14 +85,13 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
         ./3-networks
         ./4-projects
        ```
-    - For simplicity, let's name your six repositories as follows:
+    - For simplicity, let's name your five repositories as follows:
         ```
         YOUR_NEW_REPO-0-bootstrap
         YOUR_NEW_REPO-1-org
         YOUR_NEW_REPO-2-environments
         YOUR_NEW_REPO-3-networks
         YOUR_NEW_REPO-4-projects
-        YOUR_NEW_REPO-policies
         ```
     - **Note:** Towards the end of these instructions, you will configure your Jenkins Master with **new automatic pipelines only for the following repositories:**
          ```

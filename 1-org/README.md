@@ -49,11 +49,6 @@ If those limitations do not apply to your workload/environment you can choose to
 
 ### Setup to run via Jenkins
 
-1. Clone the policies repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-policies>`
-1. Navigate into the repo `cd <YOUR_NEW_REPO-policies>`.
-1. Copy contents of policy-library to new repo `cp -RT ../terraform-example-foundation/policy-library/ .` (modify accordingly based on your current directory).
-1. Commit changes with `git add .` and `git commit -m 'Your message'`
-1. Push your master branch to the new repo `git push --set-upstream origin master`.
 1. Clone the repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-1-org>`
 1. Navigate into the repo `cd YOUR_NEW_REPO_CLONE-1-org` and change to a non production branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/1-org/ .` (modify accordingly based on your current directory).

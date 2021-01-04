@@ -114,17 +114,23 @@ We will now deploy each of our environments(development/production/non-productio
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks step
 and only the corresponding environment is applied.
 
+To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in you `PATH`.
+
 1. Run `./tf-wrapper.sh init shared`
 1. Run `./tf-wrapper.sh plan shared` and review output.
+1. Run `./tf-wrapper.sh validate shared $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply shared`
 1. Run `./tf-wrapper.sh init production`
 1. Run `./tf-wrapper.sh plan production` and review output.
+1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply production`
 1. Run `./tf-wrapper.sh init non-production`
 1. Run `./tf-wrapper.sh plan non-production` and review output.
+1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply non-production`
 1. Run `./tf-wrapper.sh init development`
 1. Run `./tf-wrapper.sh plan development` and review output.
+1. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply development`
 
 If you received any errors or made any changes to the Terraform config or any `.tfvars`you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`

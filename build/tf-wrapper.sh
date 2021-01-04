@@ -137,7 +137,7 @@ tf_validate() {
     if [ -d "$path" ]; then
       cd "$path" || exit
       terraform show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
-      if [["$policy_type" == "CLOUDSOURCE"]]; then
+      if [[ "$policy_type" == "CLOUDSOURCE" ]]; then
         gcloud source repos clone gcp-policies "${policy_file_path}" --project="${project_id}" || exit 34
       fi
       terraform-validator validate "${tf_env}.json" --policy-path="${policy_file_path}" --project="${project_id}" || exit 33

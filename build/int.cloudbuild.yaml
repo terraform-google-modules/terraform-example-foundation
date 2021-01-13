@@ -23,7 +23,7 @@ steps:
   - 'TF_VAR_group_email=test-gcp-org-admins@test.infra.cft.tips'
 - id: prepare-network-hub-and-spoke-config
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && if [ "$TF_VAR_enable_hub_and_spoke" = true ] ; then ./test/network_test_prepare.sh -p; fi']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && if [ "$TF_VAR_example_foundations_mode" = "HubAndSpoke" ] ; then ./test/network_test_prepare.sh -p; fi']
 - id: create
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create']

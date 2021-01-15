@@ -29,12 +29,6 @@ variable "billing_account" {
   type        = string
 }
 
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = true
-}
-
 variable "env_code" {
   description = "A short form of the environment field"
   type        = string

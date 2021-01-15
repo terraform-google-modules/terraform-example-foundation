@@ -31,7 +31,6 @@ module "env_secrets" {
   folder_id                   = google_folder.env.id
   disable_services_on_destroy = false
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
-  skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
     environment       = var.env

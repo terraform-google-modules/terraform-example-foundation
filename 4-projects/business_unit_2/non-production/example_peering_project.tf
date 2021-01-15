@@ -41,7 +41,6 @@ module "peering_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = data.google_active_folder.env.name
-  skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "non-production"
   project_prefix              = var.project_prefix
 

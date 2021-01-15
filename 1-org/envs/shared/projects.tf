@@ -28,7 +28,6 @@ module "org_audit_logs" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
-  skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
@@ -55,7 +54,6 @@ module "org_billing_logs" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
-  skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
@@ -86,7 +84,6 @@ module "org_secrets" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
-  skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
@@ -117,7 +114,6 @@ module "interconnect" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
-  skip_gcloud_download        = var.skip_gcloud_download
   activate_apis               = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
 
   labels = {
@@ -149,7 +145,6 @@ module "scc_notifications" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com"]
-  skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
     environment       = "production"
@@ -179,7 +174,6 @@ module "dns_hub" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
-  skip_gcloud_download        = var.skip_gcloud_download
 
   activate_apis = [
     "compute.googleapis.com",
@@ -219,7 +213,6 @@ module "base_network_hub" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
-  skip_gcloud_download        = var.skip_gcloud_download
 
   activate_apis = [
     "compute.googleapis.com",
@@ -259,7 +252,6 @@ module "restricted_network_hub" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
-  skip_gcloud_download        = var.skip_gcloud_download
 
   activate_apis = [
     "compute.googleapis.com",

@@ -83,12 +83,6 @@ variable "vpc_type" {
   default     = ""
 }
 
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = true
-}
-
 variable "vpc_service_control_attach_enabled" {
   description = "Whether the project will be attached to a VPC Service Control Perimeter"
   type        = bool

@@ -20,7 +20,6 @@ module "restricted_shared_vpc_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = data.google_active_folder.env.name
-  skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "development"
   vpc_type                    = "restricted"
   alert_spent_percents        = var.alert_spent_percents

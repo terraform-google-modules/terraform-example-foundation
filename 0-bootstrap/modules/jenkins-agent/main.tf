@@ -39,7 +39,6 @@ module "cicd_project" {
   billing_account             = var.billing_account
   activate_apis               = local.activate_apis
   labels                      = var.project_labels
-  skip_gcloud_download        = var.skip_gcloud_download
 }
 
 /******************************************

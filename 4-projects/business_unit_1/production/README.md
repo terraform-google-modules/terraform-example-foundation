@@ -17,7 +17,6 @@
 | peering\_module\_depends\_on | List of modules or resources peering module depends on. | `list` | `[]` | no |
 | perimeter\_name | Access context manager service perimeter name to attach the restricted svpc project. | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
-| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | `bool` | `true` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | `bool` | `false` | no |
 

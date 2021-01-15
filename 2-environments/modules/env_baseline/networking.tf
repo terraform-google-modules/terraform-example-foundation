@@ -27,7 +27,6 @@ module "base_shared_vpc_host_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
-  skip_gcloud_download        = var.skip_gcloud_download
   disable_services_on_destroy = false
   activate_apis = [
     "compute.googleapis.com",
@@ -61,7 +60,6 @@ module "restricted_shared_vpc_host_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
-  skip_gcloud_download        = var.skip_gcloud_download
   disable_services_on_destroy = false
   activate_apis = [
     "compute.googleapis.com",

@@ -68,9 +68,12 @@ example-organization
 Among the six projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
 The first one for organization wide audit logs and the latter for billing logs.
 In both cases the logs are collected into BigQuery datasets which can then be used general querying, dashboarding & reporting. Logs are also exported to Pub/Sub and GCS bucket.
-_The various audit log types being captured in BigQuery are retained for 30 days._
 
-For billing data, a BigQuery dataset is created with permissions attached, however you will need to configure a billing export [manually](https://cloud.google.com/billing/docs/how-to/export-data-bigquery), as there is no easy way to automate this at the moment.
+**Notes**:
+
+- Log export GCS bucket has optional object versioning support.
+- The various audit log types being captured in BigQuery are retained for 30 days.
+- For billing data, a BigQuery dataset is created with permissions attached, however you will need to configure a billing export [manually](https://cloud.google.com/billing/docs/how-to/export-data-bigquery), as there is no easy way to automate this at the moment.
 
 #### DNS Hub
 

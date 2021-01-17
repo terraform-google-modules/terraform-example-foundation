@@ -8,6 +8,7 @@
 | alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | billing\_account | The ID of the billing account to associated this project with | `string` | n/a | yes |
 | budget\_amount | The amount to use as the budget | `number` | `1000` | no |
+| enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |

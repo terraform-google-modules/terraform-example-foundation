@@ -23,6 +23,7 @@ module "projects_bu1_dev" {
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.dev_restricted_service_perimeter_name
   project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 module "projects_bu1_nonprod" {
@@ -34,6 +35,7 @@ module "projects_bu1_nonprod" {
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.nonprod_restricted_service_perimeter_name
   project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 
@@ -46,6 +48,7 @@ module "projects_bu1_prod" {
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.prod_restricted_service_perimeter_name
   project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 module "projects_bu2_dev" {
@@ -58,6 +61,7 @@ module "projects_bu2_dev" {
   perimeter_name                   = var.dev_restricted_service_perimeter_name
   peering_module_depends_on        = [module.projects_bu1_dev.peering_complete]
   project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 module "projects_bu2_nonprod" {
@@ -70,6 +74,7 @@ module "projects_bu2_nonprod" {
   perimeter_name                   = var.nonprod_restricted_service_perimeter_name
   peering_module_depends_on        = [module.projects_bu1_nonprod.peering_complete]
   project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 
@@ -83,4 +88,5 @@ module "projects_bu2_prod" {
   perimeter_name                   = var.prod_restricted_service_perimeter_name
   peering_module_depends_on        = [module.projects_bu1_prod.peering_complete]
   project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }

@@ -118,3 +118,9 @@ variable "project_prefix" {
   type        = string
   default     = "prj"
 }
+
+variable "enable_hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
+}

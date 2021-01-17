@@ -15,7 +15,8 @@
  */
 
 locals {
-  env_code = element(split("", var.environment), 0)
+  env_code        = element(split("", var.environment), 0)
+  shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
 }
 
 module "project" {

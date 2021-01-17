@@ -45,3 +45,4 @@ attributes:
     type: string
   - name: enable_hub_and_spoke
     required: true
+    type: boolean

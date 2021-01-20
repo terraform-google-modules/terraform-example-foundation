@@ -25,14 +25,13 @@ resource "google_folder" "test_folder" {
 
 module "project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 9.2"
+  version = "~> 10.0"
 
-  name                 = "ci-foundation"
-  random_project_id    = true
-  org_id               = var.org_id
-  folder_id            = var.folder_id
-  billing_account      = var.billing_account
-  skip_gcloud_download = true
+  name              = "ci-foundation"
+  random_project_id = true
+  org_id            = var.org_id
+  folder_id         = var.folder_id
+  billing_account   = var.billing_account
 
   activate_apis = [
     "cloudresourcemanager.googleapis.com",

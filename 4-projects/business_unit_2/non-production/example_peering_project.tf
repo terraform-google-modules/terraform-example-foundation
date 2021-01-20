@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+locals {
+  shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
+}
+
 data "google_projects" "projects" {
   filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=base-shared-vpc-host labels.environment=non-production lifecycleState=ACTIVE"
 }
 
 data "google_compute_network" "shared_vpc" {
-  name    = "vpc-n-shared-base"
+  name    = "vpc-n-shared-base${local.shared_vpc_mode}"
   project = data.google_projects.projects.projects[0].project_id
 }
 
@@ -41,7 +45,6 @@ module "peering_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = data.google_active_folder.env.name
-  skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "non-production"
   project_prefix              = var.project_prefix
 

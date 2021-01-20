@@ -21,7 +21,7 @@ scc_notifications_project_id = attribute('scc_notifications_project_id')
 dns_hub_project_id = attribute('dns_hub_project_id')
 base_net_hub_project_id = attribute('base_net_hub_project_id')
 restricted_net_hub_project_id = attribute('restricted_net_hub_project_id')
-hub_and_spoke = attribute('hub_and_spoke')
+enable_hub_and_spoke = attribute('enable_hub_and_spoke')
 
 
 dns_hub_apis = [
@@ -92,7 +92,7 @@ control 'gcp_projects' do
     its('lifecycle_state') { should cmp 'ACTIVE' }
   end
 
-  if hub_and_spoke
+  if enable_hub_and_spoke
     describe google_project(project: base_net_hub_project_id) do
       it { should exist }
       its('project_id') { should cmp base_net_hub_project_id }

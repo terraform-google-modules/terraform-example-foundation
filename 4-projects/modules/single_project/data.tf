@@ -21,6 +21,6 @@ data "google_projects" "projects" {
 
 data "google_compute_network" "shared_vpc" {
   count   = var.vpc_type == "" ? 0 : 1
-  name    = "vpc-${local.env_code}-shared-${var.vpc_type}"
+  name    = "vpc-${local.env_code}-shared-${var.vpc_type}${local.shared_vpc_mode}"
   project = data.google_projects.projects[0].projects[0].project_id
 }

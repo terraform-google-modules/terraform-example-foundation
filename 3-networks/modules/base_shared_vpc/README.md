@@ -12,6 +12,7 @@
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization. | `string` | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
+| mode | Network deployment mode, should be set to `hub` or `spoke` when `enable_hub_and_spoke` architecture choosen, keep as `null` otherwise. | `string` | `null` | no |
 | nat\_bgp\_asn | BGP ASN for first NAT cloud routes. | `number` | `0` | no |
 | nat\_enabled | Toggle creation of NAT cloud router. | `bool` | `false` | no |
 | nat\_num\_addresses | Number of external IPs to reserve for Cloud NAT. | `number` | `2` | no |
@@ -20,7 +21,7 @@
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | org\_id | Organization ID | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
-| private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | `string` | n/a | yes |
+| private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | `string` | `null` | no |
 | project\_id | Project ID for Private Shared VPC. | `string` | n/a | yes |
 | secondary\_ranges | Secondary ranges that will be used in some of the subnets | `map(list(object({ range_name = string, ip_cidr_range = string })))` | `{}` | no |
 | subnets | The list of subnets being created | `list(map(string))` | `[]` | no |

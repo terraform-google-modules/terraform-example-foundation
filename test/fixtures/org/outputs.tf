@@ -94,7 +94,7 @@ output "logs_export_storage_bucket_name" {
   description = "The storage bucket for destination of log exports"
 }
 
-output "hub_and_spoke" {
-  value       = var.hub_and_spoke
+output "enable_hub_and_spoke" {
+  value       = var.enable_hub_and_spoke
   description = "Hub-and-Spoke architecture enabled"
 }

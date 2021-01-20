@@ -58,12 +58,6 @@ variable "org_policy_admin_role" {
   default     = false
 }
 
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = true
-}
-
 variable "project_prefix" {
   description = "Name prefix to use for projects created."
   type        = string

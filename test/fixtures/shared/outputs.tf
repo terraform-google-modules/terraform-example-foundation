@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-module "dns_hub" {
-  source                       = "../../../3-networks/envs/shared"
-  default_region1              = "us-central1"
-  default_region2              = "us-west1"
-  domain                       = var.domain
-  target_name_server_addresses = ["192.168.0.1", "192.168.0.2"]
-  terraform_service_account    = var.terraform_sa_email
-  parent_folder                = var.parent_folder
-  org_id                       = var.org_id
+output "dns_hub_project_id" {
+  value       = module.shared.dns_hub_project_id
+  description = "The DNS hub project ID"
 }

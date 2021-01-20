@@ -20,13 +20,13 @@ module "base_shared_vpc_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = data.google_active_folder.env.name
-  skip_gcloud_download        = var.skip_gcloud_download
   environment                 = "non-production"
   vpc_type                    = "base"
   alert_spent_percents        = var.alert_spent_percents
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
   project_prefix              = var.project_prefix
+  enable_hub_and_spoke        = var.enable_hub_and_spoke
 
   # Metadata
   project_suffix    = "sample-base"

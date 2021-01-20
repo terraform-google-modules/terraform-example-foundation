@@ -156,3 +156,6 @@ attributes:
   - name: prod_bu2_restricted_enabled_apis
     type: array
     required: true
+  - name: enable_hub_and_spoke
+    required: true
+    type: boolean

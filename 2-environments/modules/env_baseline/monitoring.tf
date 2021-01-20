@@ -20,14 +20,13 @@
 
 module "monitoring_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 9.2"
+  version                     = "~> 10.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   name                        = "${var.project_prefix}-${var.environment_code}-monitoring"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
-  skip_gcloud_download        = var.skip_gcloud_download
   disable_services_on_destroy = false
   activate_apis = [
     "logging.googleapis.com",

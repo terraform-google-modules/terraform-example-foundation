@@ -29,12 +29,6 @@ variable "billing_account" {
   type        = string
 }
 
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = true
-}
-
 variable "access_context_manager_policy_id" {
   type        = string
   description = "The ID of the access context manager policy the perimeter lies in. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format=\"value(name)\"`."
@@ -103,4 +97,10 @@ variable "folder_prefix" {
   description = "Name prefix to use for folders created."
   type        = string
   default     = "fldr"
+}
+
+variable "enable_hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
 }

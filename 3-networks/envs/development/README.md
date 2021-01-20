@@ -21,6 +21,7 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | `bool` | `true` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | `string` | n/a | yes |
+| enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | nat\_bgp\_asn | BGP ASN for first NAT cloud routes. | `number` | `64514` | no |

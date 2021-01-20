@@ -71,9 +71,9 @@ suites:
             - development
             - non-production
             - production
-  - name: dns_hub
+  - name: shared
     driver:
-      root_module_directory: test/fixtures/dns_hub/
+      root_module_directory: test/fixtures/shared/
     verifier:
       color: false
       systems:

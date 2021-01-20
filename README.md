@@ -71,7 +71,7 @@ In both cases the logs are collected into BigQuery datasets which can then be us
 
 **Notes**:
 
-- Log export GCS bucket has optional object versioning support.
+- Log export to GCS bucket has optional object versioning support via `log_export_storage_versioning`.
 - The various audit log types being captured in BigQuery are retained for 30 days.
 - For billing data, a BigQuery dataset is created with permissions attached, however you will need to configure a billing export [manually](https://cloud.google.com/billing/docs/how-to/export-data-bigquery), as there is no easy way to automate this at the moment.
 

@@ -43,7 +43,7 @@ variable "project_prefix" {
   type        = string
 }
 
-variable "hub_and_spoke" {
+variable "enable_hub_and_spoke" {
   description = "Enable Hub-and-Spoke architecture."
   type        = bool
 }

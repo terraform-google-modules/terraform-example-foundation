@@ -59,3 +59,9 @@ variable "project_prefix" {
   description = "Name prefix to use for projects created."
   type        = string
 }
+
+variable "enable_hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
+}

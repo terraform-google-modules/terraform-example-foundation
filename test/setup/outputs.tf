@@ -33,6 +33,10 @@ output "terraform_sa_email" {
   value = google_service_account.int_test.email
 }
 
+output "terraform_service_account" {
+  value = google_service_account.int_test.email
+}
+
 output "org_project_creators" {
   value = ["serviceAccount:${google_service_account.int_test.email}"]
 }
@@ -49,6 +53,6 @@ output "group_email" {
   value = var.group_email
 }
 
-output "hub_and_spoke" {
+output "enable_hub_and_spoke" {
   value = var.example_foundations_mode == "HubAndSpoke" ? "true" : "false"
 }

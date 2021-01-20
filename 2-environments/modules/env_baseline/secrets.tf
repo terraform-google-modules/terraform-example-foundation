@@ -21,7 +21,7 @@
 
 module "env_secrets" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 9.2"
+  version                     = "~> 10.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "deprivilege"
@@ -31,7 +31,6 @@ module "env_secrets" {
   folder_id                   = google_folder.env.id
   disable_services_on_destroy = false
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
-  skip_gcloud_download        = var.skip_gcloud_download
 
   labels = {
     environment       = var.env

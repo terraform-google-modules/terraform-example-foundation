@@ -49,12 +49,6 @@ variable "monitoring_workspace_users" {
   type        = string
 }
 
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = true
-}
-
 variable "base_network_project_alert_spent_percents" {
   description = "A list of percentages of the budget to alert on when threshold is exceeded for the base networks project"
   type        = list(number)

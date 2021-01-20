@@ -74,7 +74,6 @@ module "jenkins_bootstrap" {
 | router\_asn | BGP ASN for cloud routes. | `number` | `"64515"` | no |
 | sa\_enable\_impersonation | Allow org\_admins group to impersonate service account & enable APIs required. | `bool` | `false` | no |
 | service\_account\_prefix | Name prefix to use for service accounts. | `string` | `"sa"` | no |
-| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | `bool` | `true` | no |
 | storage\_bucket\_labels | Labels to apply to the storage bucket. | `map(string)` | `{}` | no |
 | storage\_bucket\_prefix | Name prefix to use for storage buckets. | `string` | `"bkt"` | no |
 | terraform\_sa\_email | Email for terraform service account. It must be supplied by the seed project | `string` | n/a | yes |

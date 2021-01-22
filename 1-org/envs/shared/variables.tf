@@ -114,6 +114,12 @@ variable "log_export_storage_force_destroy" {
   default     = false
 }
 
+variable "log_export_storage_versioning" {
+  description = "(Optional) Toggles bucket versioning, ability to retain a non-current object version when the live object version gets replaced or deleted."
+  type        = bool
+  default     = false
+}
+
 variable "audit_logs_table_delete_contents_on_destroy" {
   description = "(Optional) If set to true, delete all the tables in the dataset when destroying the resource; otherwise, destroying the resource will fail if tables are present."
   type        = bool

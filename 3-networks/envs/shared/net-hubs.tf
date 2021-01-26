@@ -67,20 +67,20 @@ module "base_shared_vpc" {
 
   subnets = [
     {
-      subnet_name           = "sb-c-shared-restricted-hub-${var.default_region1}"
+      subnet_name           = "sb-c-shared-base-hub-${var.default_region1}"
       subnet_ip             = "172.16.1.0/24"
       subnet_region         = var.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Restricted network hub subnet for region 1."
+      description           = "Base network hub subnet for ${var.default_region1}"
     },
     {
-      subnet_name           = "sb-c-shared-restricted-hub-${var.default_region2}"
+      subnet_name           = "sb-c-shared-base-hub-${var.default_region2}"
       subnet_ip             = "172.16.2.0/24"
       subnet_region         = var.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Restricted network hub subnet for region 2."
+      description           = "Base network hub subnet for ${var.default_region2}"
     }
   ]
   secondary_ranges = {}
@@ -126,7 +126,7 @@ module "restricted_shared_vpc" {
       subnet_region         = var.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Restricted network hub subnet for region 1."
+      description           = "Restricted network hub subnet for ${var.default_region1}"
     },
     {
       subnet_name           = "sb-c-shared-restricted-hub-${var.default_region2}"
@@ -134,7 +134,7 @@ module "restricted_shared_vpc" {
       subnet_region         = var.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Restricted network hub subnet for region 2."
+      description           = "Restricted network hub subnet for ${var.default_region2}"
     }
   ]
   secondary_ranges = {}

@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+enable_hub_and_spoke = attribute('enable_hub_and_spoke')
+
 restricted_dev_project_id = attribute('dev_restricted_host_project_id')
 restricted_nonprod_project_id = attribute('nonprod_restricted_host_project_id')
 restricted_prod_project_id = attribute('prod_restricted_host_project_id')
@@ -48,7 +50,7 @@ control 'gcp_networks' do
 
   environment_codes.each do |environment_code|
     types.each do |type|
-      vpc_name = "#{environment_code}-shared-#{type}"
+      vpc_name = enable_hub_and_spoke ? "#{environment_code}-shared-#{type}-spoke" : "#{environment_code}-shared-#{type}"
       network_name = "vpc-#{vpc_name}"
 
       global_address = "ga-#{vpc_name}-vpc-peering-internal"
@@ -133,54 +135,6 @@ control 'gcp_networks' do
         its('ip_cidr_range') { should eq cidr_ranges[environment_code][type][1] }
       end
 
-      describe google_compute_router(
-        project: projects_id[environment_code][type],
-        region: default_region1,
-        name: region1_router1
-      ) do
-        it { should exist }
-        its('bgp.asn') { should eq bgp_asn_subnet }
-        its('bgp.advertised_ip_ranges.first.range') { should eq googleapis_cidr[type] }
-        its('bgp.advertised_ip_ranges.last.range') { should eq googleapis_cidr[type] }
-        its('network') { should match(%r{/#{network_name}$}) }
-      end
-
-      describe google_compute_router(
-        project: projects_id[environment_code][type],
-        region: default_region1,
-        name: region1_router2
-      ) do
-        it { should exist }
-        its('bgp.asn') { should eq bgp_asn_subnet }
-        its('bgp.advertised_ip_ranges.first.range') { should eq googleapis_cidr[type] }
-        its('bgp.advertised_ip_ranges.last.range') { should eq googleapis_cidr[type] }
-        its('network') { should match(%r{/#{network_name}$}) }
-      end
-
-      describe google_compute_router(
-        project: projects_id[environment_code][type],
-        region: default_region2,
-        name: region2_router1
-      ) do
-        it { should exist }
-        its('bgp.asn') { should eq bgp_asn_subnet }
-        its('bgp.advertised_ip_ranges.first.range') { should eq googleapis_cidr[type] }
-        its('bgp.advertised_ip_ranges.last.range') { should eq googleapis_cidr[type] }
-        its('network') { should match(%r{/#{network_name}$}) }
-      end
-
-      describe google_compute_router(
-        project: projects_id[environment_code][type],
-        region: default_region2,
-        name: region2_router2
-      ) do
-        it { should exist }
-        its('bgp.asn') { should eq bgp_asn_subnet }
-        its('bgp.advertised_ip_ranges.first.range') { should eq googleapis_cidr[type] }
-        its('bgp.advertised_ip_ranges.last.range') { should eq googleapis_cidr[type] }
-        its('network') { should match(%r{/#{network_name}$}) }
-      end
-
       describe google_compute_firewall(
         project: projects_id[environment_code][type],
         name: fw_deny_all_egress
@@ -207,6 +161,56 @@ control 'gcp_networks' do
           expect(subject.allowed).to contain_exactly(
             an_object_having_attributes(ip_protocol: 'tcp', ports: ['443'])
           )
+        end
+      end
+
+      unless enable_hub_and_spoke
+        describe google_compute_router(
+          project: projects_id[environment_code][type],
+          region: default_region1,
+          name: region1_router1
+        ) do
+          it { should exist }
+          its('bgp.asn') { should eq bgp_asn_subnet }
+          its('bgp.advertised_ip_ranges.first.range') { should eq googleapis_cidr[type] }
+          its('bgp.advertised_ip_ranges.last.range') { should eq googleapis_cidr[type] }
+          its('network') { should match(%r{/#{network_name}$}) }
+        end
+
+        describe google_compute_router(
+          project: projects_id[environment_code][type],
+          region: default_region1,
+          name: region1_router2
+        ) do
+          it { should exist }
+          its('bgp.asn') { should eq bgp_asn_subnet }
+          its('bgp.advertised_ip_ranges.first.range') { should eq googleapis_cidr[type] }
+          its('bgp.advertised_ip_ranges.last.range') { should eq googleapis_cidr[type] }
+          its('network') { should match(%r{/#{network_name}$}) }
+        end
+
+        describe google_compute_router(
+          project: projects_id[environment_code][type],
+          region: default_region2,
+          name: region2_router1
+        ) do
+          it { should exist }
+          its('bgp.asn') { should eq bgp_asn_subnet }
+          its('bgp.advertised_ip_ranges.first.range') { should eq googleapis_cidr[type] }
+          its('bgp.advertised_ip_ranges.last.range') { should eq googleapis_cidr[type] }
+          its('network') { should match(%r{/#{network_name}$}) }
+        end
+
+        describe google_compute_router(
+          project: projects_id[environment_code][type],
+          region: default_region2,
+          name: region2_router2
+        ) do
+          it { should exist }
+          its('bgp.asn') { should eq bgp_asn_subnet }
+          its('bgp.advertised_ip_ranges.first.range') { should eq googleapis_cidr[type] }
+          its('bgp.advertised_ip_ranges.last.range') { should eq googleapis_cidr[type] }
+          its('network') { should match(%r{/#{network_name}$}) }
         end
       end
     end

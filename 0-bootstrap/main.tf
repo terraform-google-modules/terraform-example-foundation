@@ -57,7 +57,6 @@ module "seed_bootstrap" {
   org_project_creators           = var.org_project_creators
   sa_enable_impersonation        = true
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
-  skip_gcloud_download           = var.skip_gcloud_download
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
   project_prefix                 = var.project_prefix
 

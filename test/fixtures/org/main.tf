@@ -35,5 +35,5 @@ module "test" {
   log_export_storage_force_destroy            = true
   enable_os_login_policy                      = true
   project_prefix                              = var.project_prefix
-  hub_and_spoke                               = var.hub_and_spoke
+  enable_hub_and_spoke                        = var.enable_hub_and_spoke
 }

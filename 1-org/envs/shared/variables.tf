@@ -34,7 +34,7 @@ variable "default_region" {
   type        = string
 }
 
-variable "hub_and_spoke" {
+variable "enable_hub_and_spoke" {
   description = "Enable Hub-and-Spoke architecture."
   type        = bool
   default     = false
@@ -110,6 +110,12 @@ variable "log_export_storage_location" {
 
 variable "log_export_storage_force_destroy" {
   description = "(Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present."
+  type        = bool
+  default     = false
+}
+
+variable "log_export_storage_versioning" {
+  description = "(Optional) Toggles bucket versioning, ability to retain a non-current object version when the live object version gets replaced or deleted."
   type        = bool
   default     = false
 }

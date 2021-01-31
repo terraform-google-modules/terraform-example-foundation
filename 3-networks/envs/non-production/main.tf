@@ -24,39 +24,39 @@ locals {
   mode                      = var.enable_hub_and_spoke ? "spoke" : null
   bgp_asn_number            = var.enable_partner_interconnect ? "16550" : "64514"
   base_subnet_primary_ranges = {
-    (var.default_region1) = "10.0.64.0/21"
-    (var.default_region2) = "10.0.72.0/21"
+    (var.default_region1) = "10.0.128.0/21"
+    (var.default_region2) = "10.1.128.0/21"
   }
   base_subnet_secondary_ranges = {
     (var.default_region1) = [
       {
         range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
-        ip_cidr_range = "192.168.48.0/21"
+        ip_cidr_range = "100.64.128.0/21"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-svc"
-        ip_cidr_range = "192.168.56.0/21"
+        ip_cidr_range = "100.64.136.0/21"
       }
     ]
   }
-  base_private_service_cidr = "10.0.80.0/20"
+  base_private_service_cidr = "10.16.128.0/21"
   restricted_subnet_primary_ranges = {
-    (var.default_region1) = "10.0.96.0/21"
-    (var.default_region2) = "10.0.104.0/21"
+    (var.default_region1) = "10.8.128.0/21"
+    (var.default_region2) = "10.9.128.0/21"
   }
   restricted_subnet_secondary_ranges = {
     (var.default_region1) = [
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-pod"
-        ip_cidr_range = "192.168.32.0/21"
+        ip_cidr_range = "100.72.128.0/21"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-svc"
-        ip_cidr_range = "192.168.40.0/21"
+        ip_cidr_range = "100.72.136.0/21"
       }
     ]
   }
-  restricted_private_service_cidr = "10.0.112.0/20"
+  restricted_private_service_cidr = "10.24.128.0/21"
 }
 
 data "google_active_folder" "env" {

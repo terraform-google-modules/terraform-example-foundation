@@ -19,12 +19,12 @@ locals {
   restricted_net_hub_project_id     = try(data.google_projects.restricted_net_hub[0].projects[0].project_id, null)
   restricted_net_hub_project_number = try(data.google_projects.restricted_net_hub[0].projects[0].number, null)
   base_subnet_primary_ranges = {
-    (var.default_region1) = "172.16.1.0/24"
-    (var.default_region2) = "172.16.2.0/24"
+    (var.default_region1) = "10.0.0.0/24"
+    (var.default_region2) = "10.1.0.0/24"
   }
   restricted_subnet_primary_ranges = {
-    (var.default_region1) = "172.16.3.0/24"
-    (var.default_region2) = "172.16.4.0/24"
+    (var.default_region1) = "10.8.0.0/24"
+    (var.default_region2) = "10.9.0.0/24"
   }
 }
 

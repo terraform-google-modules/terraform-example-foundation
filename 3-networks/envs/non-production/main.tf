@@ -23,6 +23,40 @@ locals {
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
   mode                      = var.enable_hub_and_spoke ? "spoke" : null
   bgp_asn_number            = var.enable_partner_interconnect ? "16550" : "64514"
+  base_subnet_primary_ranges = {
+    (var.default_region1) = "10.0.64.0/21"
+    (var.default_region2) = "10.0.72.0/21"
+  }
+  base_subnet_secondary_ranges = {
+    (var.default_region1) = [
+      {
+        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
+        ip_cidr_range = "192.168.48.0/21"
+      },
+      {
+        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-svc"
+        ip_cidr_range = "192.168.56.0/21"
+      }
+    ]
+  }
+  base_private_service_cidr = "10.0.80.0/20"
+  restricted_subnet_primary_ranges = {
+    (var.default_region1) = "10.0.96.0/21"
+    (var.default_region2) = "10.0.104.0/21"
+  }
+  restricted_subnet_secondary_ranges = {
+    (var.default_region1) = [
+      {
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-pod"
+        ip_cidr_range = "192.168.32.0/21"
+      },
+      {
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-svc"
+        ip_cidr_range = "192.168.40.0/21"
+      }
+    ]
+  }
+  restricted_private_service_cidr = "10.0.112.0/20"
 }
 
 data "google_active_folder" "env" {
@@ -57,7 +91,7 @@ module "restricted_shared_vpc" {
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = ["bigquery.googleapis.com", "storage.googleapis.com"]
   members                          = ["serviceAccount:${var.terraform_service_account}"]
-  private_service_cidr             = "10.0.112.0/20"
+  private_service_cidr             = local.restricted_private_service_cidr
   org_id                           = var.org_id
   parent_folder                    = var.parent_folder
   bgp_asn_subnet                   = local.bgp_asn_number
@@ -79,7 +113,7 @@ module "restricted_shared_vpc" {
   subnets = [
     {
       subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.default_region1}"
-      subnet_ip             = "10.0.96.0/21"
+      subnet_ip             = local.restricted_subnet_primary_ranges[var.default_region1]
       subnet_region         = var.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
@@ -87,7 +121,7 @@ module "restricted_shared_vpc" {
     },
     {
       subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.default_region2}"
-      subnet_ip             = "10.0.104.0/21"
+      subnet_ip             = local.restricted_subnet_primary_ranges[var.default_region2]
       subnet_region         = var.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
@@ -95,16 +129,7 @@ module "restricted_shared_vpc" {
     }
   ]
   secondary_ranges = {
-    "sb-${local.environment_code}-shared-restricted-${var.default_region1}" = [
-      {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-pod"
-        ip_cidr_range = "192.168.32.0/21"
-      },
-      {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-svc"
-        ip_cidr_range = "192.168.40.0/21"
-      }
-    ]
+    "sb-${local.environment_code}-shared-restricted-${var.default_region1}" = local.restricted_subnet_secondary_ranges[var.default_region1]
   }
 }
 
@@ -116,7 +141,7 @@ module "base_shared_vpc" {
   source                        = "../../modules/base_shared_vpc"
   project_id                    = local.base_project_id
   environment_code              = local.environment_code
-  private_service_cidr          = "10.0.80.0/20"
+  private_service_cidr          = local.base_private_service_cidr
   org_id                        = var.org_id
   parent_folder                 = var.parent_folder
   default_region1               = var.default_region1
@@ -139,7 +164,7 @@ module "base_shared_vpc" {
   subnets = [
     {
       subnet_name           = "sb-${local.environment_code}-shared-base-${var.default_region1}"
-      subnet_ip             = "10.0.64.0/21"
+      subnet_ip             = local.base_subnet_primary_ranges[var.default_region1]
       subnet_region         = var.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
@@ -147,7 +172,7 @@ module "base_shared_vpc" {
     },
     {
       subnet_name           = "sb-${local.environment_code}-shared-base-${var.default_region2}"
-      subnet_ip             = "10.0.72.0/21"
+      subnet_ip             = local.base_subnet_primary_ranges[var.default_region2]
       subnet_region         = var.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
@@ -155,15 +180,6 @@ module "base_shared_vpc" {
     }
   ]
   secondary_ranges = {
-    "sb-${local.environment_code}-shared-base-${var.default_region1}" = [
-      {
-        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
-        ip_cidr_range = "192.168.48.0/21"
-      },
-      {
-        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-svc"
-        ip_cidr_range = "192.168.56.0/21"
-      }
-    ]
+    "sb-${local.environment_code}-shared-base-${var.default_region1}" = local.base_subnet_secondary_ranges[var.default_region1]
   }
 }

@@ -1,6 +1,6 @@
 # 1-org
 
-The purpose of this step is to set up top level shared folders, monitoring & networking projects, org level logging and set baseline security settings through organizational policy.
+The purpose of this step is to set up top level shared folders, monitoring & networking projects, org level logging and set baseline security settings through organizational policy. This step also creates the shared repository that host the terraform validator policies.
 
 ## Prerequisites
 
@@ -26,6 +26,13 @@ OS Login has some [limitations](https://cloud.google.com/compute/docs/instances/
 If those limitations do not apply to your workload/environment you can choose to enable the OS Login policy by setting variable `enable_os_login_policy` to `true`.
 
 ### Setup to run via Cloud Build
+
+1. Clone repo `gcloud source repos clone gcp-policies --project=YOUR_CLOUD_BUILD_PROJECT_ID`.
+1. Navigate into the repo `cd gcp-policies`.
+1. Copy contents of policy-library to new repo `cp -RT ../terraform-example-foundation/policy-library/ .` (modify accordingly based on your current directory).
+1. Commit changes with `git add .` and `git commit -m 'Your message'`
+1. Push your master branch to the new repo `git push --set-upstream origin master`.
+1. Navigate out of the repo `cd ..`.
 1. Clone repo `gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID` (this is from terraform output from the previous section, 0-bootstrap).
 1. Navigate into the repo `cd gcp-org` and change to a non production branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/1-org/ .` (modify accordingly based on your current directory).
@@ -41,15 +48,17 @@ If those limitations do not apply to your workload/environment you can choose to
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 ### Setup to run via Jenkins
+
 1. Clone the repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-1-org>`
 1. Navigate into the repo `cd YOUR_NEW_REPO_CLONE-1-org` and change to a non production branch `git checkout -b plan`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/1-org/ .` (modify accordingly based on your current directory).
+1. Copy contents of policy-library to new repo `cp -RT ../terraform-example-foundation/policy-library/ ./policy-library` (modify accordingly based on your current directory).
 1. Copy the Jenkinsfile script `cp ../terraform-example-foundation/build/Jenkinsfile .` to the root of your new repository (modify accordingly based on your current directory).
 1. Update the variables located in the `environment {}` section of the `Jenkinsfile` with values from your environment:
     ```
-    _POLICY_REPO (optional)
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
+    _PROJECT_ID (the cicd project id)
     ```
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
@@ -65,6 +74,7 @@ If those limitations do not apply to your workload/environment you can choose to
 1. You can now move to the instructions in the step [2-environments](../2-environments/README.md).
 
 ### Run terraform locally
+
 1. Change into 1-org folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`
@@ -77,8 +87,11 @@ You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to ob
 We will now deploy our environment (production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 1-org step and only the corresponding environment is applied.
 
+To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in you `PATH`.
+
 1. Run `./tf-wrapper.sh init production`
 1. Run `./tf-wrapper.sh plan production` and review output.
+1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply production`
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan production` before run `./tf-wrapper.sh apply production`

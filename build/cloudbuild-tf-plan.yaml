@@ -14,7 +14,7 @@
 
 timeout: 1200s
 substitutions:
-  _POLICY_REPO: '' # add path to policies here https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator
+  _POLICY_REPO: '/workspace/policy-library' # add path to policies here https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator
 steps:
 - id: 'setup'
   name: gcr.io/$PROJECT_ID/terraform
@@ -34,7 +34,7 @@ steps:
   args:
   - -c
   - |
-      ./tf-wrapper.sh plan_validate_all ${BRANCH_NAME} ${_POLICY_REPO}
+      ./tf-wrapper.sh plan_validate_all ${BRANCH_NAME} ${_POLICY_REPO} ${PROJECT_ID} CLOUDSOURCE
 
 artifacts:
   objects:

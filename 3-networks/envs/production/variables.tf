@@ -139,3 +139,9 @@ variable "preactivate_partner_interconnect" {
   type        = bool
   default     = false
 }
+
+variable "enable_hub_and_spoke_transitivity" {
+  description = "Enable transitivity via gateway VMs on Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
+}

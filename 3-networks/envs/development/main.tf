@@ -23,6 +23,13 @@ locals {
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
   mode                      = var.enable_hub_and_spoke ? "spoke" : null
   bgp_asn_number            = var.enable_partner_interconnect ? "16550" : "64514"
+  enable_transitivity       = var.enable_hub_and_spoke && var.enable_hub_and_spoke_transitivity
+  /*
+   * Base network ranges
+   */
+  base_subnet_aggregates    = ["10.0.0.0/16", "10.1.0.0/16", "100.64.0.0/16", "100.65.0.0/16"]
+  base_hub_subnet_ranges    = ["10.0.0.0/24", "10.1.0.0/24"]
+  base_private_service_cidr = "10.16.64.0/21"
   base_subnet_primary_ranges = {
     (var.default_region1) = "10.0.64.0/21"
     (var.default_region2) = "10.1.64.0/21"
@@ -39,7 +46,12 @@ locals {
       }
     ]
   }
-  base_private_service_cidr = "10.16.64.0/21"
+  /*
+   * Restricted network ranges
+   */
+  restricted_subnet_aggregates    = ["10.8.0.0/16", "10.9.0.0/16", "100.72.0.0/16", "100.73.0.0/16"]
+  restricted_hub_subnet_ranges    = ["10.8.0.0/24", "10.9.0.0/24"]
+  restricted_private_service_cidr = "10.24.64.0/21"
   restricted_subnet_primary_ranges = {
     (var.default_region1) = "10.8.64.0/21"
     (var.default_region2) = "10.9.64.0/21"
@@ -56,7 +68,6 @@ locals {
       }
     ]
   }
-  restricted_private_service_cidr = "10.24.64.0/21"
 }
 
 data "google_active_folder" "env" {
@@ -131,6 +142,8 @@ module "restricted_shared_vpc" {
   secondary_ranges = {
     "sb-${local.environment_code}-shared-restricted-${var.default_region1}" = local.restricted_subnet_secondary_ranges[var.default_region1]
   }
+  allow_all_ingress_ranges = local.enable_transitivity ? local.restricted_hub_subnet_ranges : null
+  allow_all_egress_ranges  = local.enable_transitivity ? local.restricted_subnet_aggregates : null
 }
 
 /******************************************
@@ -182,4 +195,6 @@ module "base_shared_vpc" {
   secondary_ranges = {
     "sb-${local.environment_code}-shared-base-${var.default_region1}" = local.base_subnet_secondary_ranges[var.default_region1]
   }
+  allow_all_ingress_ranges = local.enable_transitivity ? local.base_hub_subnet_ranges : null
+  allow_all_egress_ranges  = local.enable_transitivity ? local.base_subnet_aggregates : null
 }

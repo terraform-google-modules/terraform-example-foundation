@@ -37,6 +37,10 @@ If you are using the `jenkins_bootstrap` sub-module, please see [README-Jenkins]
 1. Copy tfvars by running `cp terraform.example.tfvars terraform.tfvars` and update `terraform.tfvars` with values from your environment.
 1. Run `terraform init`
 1. Run `terraform plan` and review output
+1. To run terraform-validator steps please follow these [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) and install the latest version.
+    1. Run `terraform plan -input=false -out bootstrap.tfplan`
+    1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
+    1. Run `terraform-validator validate bootstrap.json --policy-path="../policy-library" --project <A-VALID-PROJECT>` and check for violations.
 1. Run `terraform apply`
 1. Run `terraform output gcs_bucket_tfstate` to get your GCS bucket from the apply step
 1. Copy the backend by running `cp backend.tf.example backend.tf` and update `backend.tf` with your GCS bucket.
@@ -56,7 +60,7 @@ Currently, the bucket information is replaced in the state backends as a part of
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
-| cloud\_source\_repos | List of Cloud Source Reposiories created during bootrstap project build stage | `list(string)` | <pre>[<br>  "gcp-org",<br>  "gcp-environments",<br>  "gcp-networks",<br>  "gcp-projects"<br>]</pre> | no |
+| cloud\_source\_repos | List of Cloud Source Reposiories created during bootrstap project build stage | `list(string)` | <pre>[<br>  "gcp-org",<br>  "gcp-environments",<br>  "gcp-networks",<br>  "gcp-projects",<br>  "gcp-policies"<br>]</pre> | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |

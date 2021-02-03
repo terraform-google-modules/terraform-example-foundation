@@ -246,6 +246,16 @@ Development happens on feature/bugfix branches (which can be named `feature/new-
 
 Once validated in `development`, changes can be promoted to `non-production` by opening a PR/MR targeting the `non-production` branch and merging them.  Similarly changes can be promoted from `non-production` to `production`.
 
+### Terraform-validator
+
+This repo uses [terraform-validator](https://github.com/GoogleCloudPlatform/terraform-validator) to validate the terraform plans against Forseti Security Config Validator [Policy Library](https://github.com/forseti-security/policy-library).
+
+The [Scorecard bundle](https://github.com/forseti-security/policy-library/blob/master/docs/bundles/scorecard-v1.md) was used to create the [policy-library folder](./policy-library) with [one extra constraint](https://github.com/forseti-security/policy-library/blob/master/samples/serviceusage_allow_basic_apis.yaml) added.
+
+See the [policy-library documentation](https://github.com/forseti-security/policy-library/blob/master/docs/index.md) if you need to add more constraints from the [samples folder](https://github.com/forseti-security/policy-library/tree/master/samples) in your configuration based in your type of workload.
+
+Step 1-org has instructions on the creation of the shared repository to host these policies.
+
 ### Optional Variables
 
 Some variables used to deploy the steps have default values, check those **before deployment** to ensure they match your requirements. For more information, there are tables of inputs and outputs for the Terraform modules, each with a detailed description of their variables. Look for variables marked as **not required** in the section **Inputs** of these READMEs:

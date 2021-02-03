@@ -39,3 +39,9 @@ variable "regional_aggregates" {
   description = "Aggregate ranges for each region in {REGION => [AGGREGATE_CIDR,] } format."
   type        = map(list(string))
 }
+
+variable "commands" {
+  description = "Commands for the transitivity gateway to run on every boot."
+  type        = list(string)
+  default     = []
+}

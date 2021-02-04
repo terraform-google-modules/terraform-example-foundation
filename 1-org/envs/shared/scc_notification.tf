@@ -29,7 +29,7 @@ resource "google_pubsub_subscription" "scc_notification_subscription" {
   project = module.scc_notifications.project_id
 }
 
-module "scc_notification" {
+module "scc_notifications" {
   source  = "terraform-google-modules/gcloud/google"
   version = "~> 1.1.0"
 

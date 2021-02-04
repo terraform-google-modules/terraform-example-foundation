@@ -28,4 +28,4 @@ substitutions:
 options:
   machineType: 'N1_HIGHCPU_8'
   env:
-  - ENABLE_PARALLEL=1
+  - ENABLE_PARALLEL=0

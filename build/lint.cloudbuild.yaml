@@ -13,6 +13,9 @@
 # limitations under the License.
 
 steps:
+- id: prepare-network-hub-and-spoke-config
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh &&  ./test/network_test_prepare.sh -p']
 - name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   id: 'lint'
   args: ['/usr/local/bin/test_lint.sh']
@@ -25,4 +28,4 @@ substitutions:
 options:
   machineType: 'N1_HIGHCPU_8'
   env:
-  - ENABLE_PARALLEL=1
+  - ENABLE_PARALLEL=0

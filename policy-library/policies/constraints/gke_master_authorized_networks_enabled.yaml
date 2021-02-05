@@ -1,4 +1,4 @@
-# Copyright 2020 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ metadata:
       Engine Clusters"
     # This constraint has not been validated by the formal CIS certification process.
     bundles.validator.forsetisecurity.org/cis-v1.1: 7.04
-    bundles.validator.forsetisecurity.org/gke-hardening-v2019.11.11: ENABLED_MASTER_AUTHORIZED_NETWORK
+    bundles.validator.forsetisecurity.org/gke-hardening-v2021.11.11: ENABLED_MASTER_AUTHORIZED_NETWORK
     bundles.validator.forsetisecurity.org/scorecard-v1: security
 spec:
   severity: high

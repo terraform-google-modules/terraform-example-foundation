@@ -142,7 +142,7 @@ This step focuses on creating a Shared VPC per environment (`development`, `non-
 
 - Optional - Example subnets for `development`, `non-production` & `production` inclusive of secondary ranges for those that want to use GKE.
 - Optional - Default firewall rules created to allow remote access to VMs through IAP, without needing public IPs.
-    - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively
+    - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively.
 - Optional - Default firewall rule created to allow for load balancing using `allow-lb` tag.
 - [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workload dependant resources like Cloud SQL.
 - Base Shared VPC with [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for base access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
@@ -272,5 +272,4 @@ Refer to the [Errata Summary](./ERRATA.md) for an overview of the delta between 
 
 ## Contributing
 
-Refer to the [contribution guidelines](./CONTRIBUTING.md) for
-information on contributing to this module.
+Refer to the [contribution guidelines](./CONTRIBUTING.md) for information on contributing to this module.

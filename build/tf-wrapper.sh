@@ -139,7 +139,7 @@ tf_validate() {
       terraform show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
       if [[ "$policy_type" == "CLOUDSOURCE" ]]; then
         # Check if $policy_file_path is empty so we clone the policies repo only once
-        if [ -z "$(ls -A ${policy_file_path} 2> /dev/null)" ]; then
+        if [ -z "$(ls -A "${policy_file_path}" 2> /dev/null)" ]; then
           gcloud source repos clone gcp-policies "${policy_file_path}" --project="${project_id}" || exit 34
         fi
       fi

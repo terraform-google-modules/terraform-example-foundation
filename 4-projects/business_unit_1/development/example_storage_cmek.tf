@@ -24,3 +24,41 @@ module "env_secrets" {
   budget_alert_spent_percents = var.secret_project_alert_spent_percents
   budget_amount               = var.secret_project_budget_amount
 }
+
+resource "google_kms_key_ring" "keyring" {
+  name     = "keyring-example"
+  location = "global"
+  project = "<PROJECT>"
+}
+resource "google_kms_crypto_key" "key" {
+  name            = "crypto-key-example"
+  key_ring        = google_kms_key_ring.keyring.id
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+data "google_iam_policy" "admin" {
+  binding {
+    role = "roles/cloudkms.cryptoKeyEncrypter"
+
+    members = [
+      "user:jane@example.com",
+    ]
+  }
+}
+
+resource "google_kms_crypto_key_iam_policy" "crypto_key" {
+  crypto_key_id = google_kms_crypto_key.key.id
+  policy_data = data.google_iam_policy.admin.policy_data
+}
+
+
+resource "google_storage_bucket" "bucket" {
+  name                        = var.bucket_name
+  project                     = var.base_shared_vpc_project
+  encryption {
+    default_kms_key_name = google_kms_crypto_key.key.id
+    }
+  }
+}

@@ -60,5 +60,4 @@ resource "google_storage_bucket" "bucket" {
   encryption {
     default_kms_key_name = google_kms_crypto_key.key.id
     }
-  }
 }

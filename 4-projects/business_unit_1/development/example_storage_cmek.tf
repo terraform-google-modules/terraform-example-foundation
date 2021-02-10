@@ -22,7 +22,7 @@ module "env_secrets" {
   }
   budget_alert_pubsub_topic   = var.secret_project_alert_pubsub_topic
   budget_alert_spent_percents = var.secret_project_alert_spent_percents
-  budget_amount               = var.secret_project_budget_amount
+  budget_amount = var.secret_project_budget_amount
 }
 
 resource "google_kms_key_ring" "keyring" {
@@ -61,3 +61,8 @@ resource "google_storage_bucket" "bucket" {
     default_kms_key_name = google_kms_crypto_key.key.id
     }
 }
+
+
+
+
+

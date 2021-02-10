@@ -22,6 +22,7 @@ locals {
   base_project_id           = data.google_projects.base_host_project.projects[0].project_id
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
   mode                      = var.enable_hub_and_spoke ? "spoke" : null
+  bgp_asn_number            = var.enable_partner_interconnect ? "16550" : "64514"
 }
 
 data "google_active_folder" "env" {
@@ -59,7 +60,7 @@ module "restricted_shared_vpc" {
   private_service_cidr             = "10.0.176.0/20"
   org_id                           = var.org_id
   parent_folder                    = var.parent_folder
-  bgp_asn_subnet                   = "64514"
+  bgp_asn_subnet                   = local.bgp_asn_number
   default_region1                  = var.default_region1
   default_region2                  = var.default_region2
   domain                           = var.domain
@@ -121,7 +122,7 @@ module "base_shared_vpc" {
   default_region1               = var.default_region1
   default_region2               = var.default_region2
   domain                        = var.domain
-  bgp_asn_subnet                = "64514"
+  bgp_asn_subnet                = local.bgp_asn_number
   windows_activation_enabled    = var.windows_activation_enabled
   dns_enable_inbound_forwarding = var.dns_enable_inbound_forwarding
   dns_enable_logging            = var.dns_enable_logging

@@ -81,7 +81,7 @@ Under the common folder, one project is created. This project will host the DNS 
 
 #### Interconnect
 
-Under the common folder, one project is created. This project will host the Interconnect infrastructure for the organization.
+Under the common folder, one project is created. This project will host the Dedicated Interconnect [Interconnect connection](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#elements) for the organization. In case of the Partner Interconnect this project is unused and the [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#for-partner-interconnect) will be placed directly into the corresponding Hub projcts.
 
 #### SCC Notification
 

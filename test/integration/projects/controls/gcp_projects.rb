@@ -99,7 +99,6 @@ control 'gcp-projects' do
         it { should exist }
         its('lifecycle_state') { should cmp 'ACTIVE' }
       end
-      
 
       restricted_enabled_apis.each do |api|
         describe google_project_service(

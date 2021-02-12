@@ -219,5 +219,3 @@ attributes:
   - name: prod_bu2_project_base_sa
     required: true
     type: string
-  
-    

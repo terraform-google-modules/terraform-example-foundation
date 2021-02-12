@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+module "bu1_dev_shared" {
+  source                    = "../../../4-projects/business_unit_1/shared"
+  terraform_service_account = var.terraform_sa_email
+  org_id                    = var.org_id
+  billing_account           = var.billing_account
+  parent_folder             = var.parent_folder
+  project_prefix            = var.project_prefix
+}
+
 module "projects_bu1_dev" {
   source                           = "../../../4-projects/business_unit_1/development"
   terraform_service_account        = var.terraform_sa_email
@@ -24,6 +33,7 @@ module "projects_bu1_dev" {
   perimeter_name                   = var.dev_restricted_service_perimeter_name
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
+  app_infra_pipeline_cloudbuild_sa = module.bu1_dev_shared.cloudbuild_sa
 }
 
 module "projects_bu1_nonprod" {

@@ -159,3 +159,65 @@ attributes:
   - name: enable_hub_and_spoke
     required: true
     type: boolean
+  - name: shared_bu1_build_project
+    required: true
+    type: string
+  - name: shared_bu1_cb_sa
+    required: true
+    type: string
+  - name: shared_bu1_repos
+    required: true
+    type: array
+  - name: shared_bu1_artifact_buckets
+    required: true
+    type: array
+  - name: shared_bu1_state_buckets
+    required: true
+    type: array
+  - name: shared_bu1_plan_triggers
+    required: true
+    type: array
+  - name: shared_bu1_apply_triggers
+    required: true
+    type: array
+  - name: shared_bu2_build_project
+    required: true
+    type: string
+  - name: shared_bu2_cb_sa
+    required: true
+    type: string
+  - name: shared_bu2_repos
+    required: true
+    type: array
+  - name: shared_bu2_artifact_buckets
+    required: true
+    type: array
+  - name: shared_bu2_state_buckets
+    required: true
+    type: array
+  - name: shared_bu2_plan_triggers
+    required: true
+    type: array
+  - name: shared_bu2_apply_triggers
+    required: true
+    type: array
+  - name: dev_bu1_project_base_sa
+    required: true
+    type: string
+  - name: nonprod_bu1_project_base_sa
+    required: true
+    type: string
+  - name: prod_bu1_project_base_sa
+    required: true
+    type: string
+  - name: dev_bu2_project_base_sa
+    required: true
+    type: string
+  - name: nonprod_bu2_project_base_sa
+    required: true
+    type: string
+  - name: prod_bu2_project_base_sa
+    required: true
+    type: string
+  
+    

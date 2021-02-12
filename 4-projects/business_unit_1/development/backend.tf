@@ -16,7 +16,7 @@
 
 terraform {
   backend "gcs" {
-    bucket = "UPDATE_ME"
+    bucket = "test-bucket-rupin"
     prefix = "terraform/projects/business_unit_1/development"
   }
 }

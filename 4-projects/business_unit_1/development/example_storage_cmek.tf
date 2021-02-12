@@ -55,14 +55,11 @@ resource "google_kms_crypto_key_iam_policy" "crypto_key" {
 
 
 resource "google_storage_bucket" "bucket" {
-  name                        = var.bucket_name
+  name                        = "cmek-encrypted-bucket"
   project                     = var.base_shared_vpc_project
   encryption {
     default_kms_key_name = google_kms_crypto_key.key.id
     }
 }
-
-
-
 
 

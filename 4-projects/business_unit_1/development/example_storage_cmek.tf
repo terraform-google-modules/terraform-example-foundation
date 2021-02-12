@@ -28,7 +28,7 @@ module "env_secrets" {
 resource "google_kms_key_ring" "keyring" {
   name     = "keyring-example"
   location = "global"
-  project = "<PROJECT>"
+  project = module.env_secrets.project_id
 }
 resource "google_kms_crypto_key" "key" {
   name            = "crypto-key-example"

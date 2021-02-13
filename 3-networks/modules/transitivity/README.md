@@ -12,6 +12,13 @@ For example usage, please check the the [net-hubs-transitivity.tf](../../envs/sh
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| commands | Commands for the transitivity gateway to run on every boot. | `list(string)` | `[]` | no |
+| firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
+| gw\_subnets | Subnets in {REGION => SUBNET} format. | `map(string)` | n/a | yes |
+| project\_id | VPC Project ID | `string` | n/a | yes |
+| regional\_aggregates | Aggregate ranges for each region in {REGION => [AGGREGATE\_CIDR,] } format. | `map(list(string))` | n/a | yes |
+| regions | Regions to deploy the transitivity appliances | `set(string)` | `null` | no |
+| vpc\_name | Label to identify the VPC associated with shared VPC that will use the Interconnect. | `string` | n/a | yes |
 
 ## Outputs
 

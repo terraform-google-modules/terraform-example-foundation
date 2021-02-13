@@ -45,3 +45,9 @@ variable "commands" {
   type        = list(string)
   default     = []
 }
+
+variable "firewall_enable_logging" {
+  type        = bool
+  description = "Toggle firewall logging for VPC Firewalls."
+  default     = true
+}

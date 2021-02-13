@@ -29,7 +29,7 @@ module "service_account" {
   ]
 }
 
-module "instance_templates" {
+module "templates" {
   source         = "terraform-google-modules/vm/google//modules/instance_template"
   version        = "6.0.0"
   for_each       = toset(var.regions)
@@ -58,8 +58,8 @@ module "migs" {
   project_id        = var.project_id
   region            = each.key
   target_size       = 3
-  hostname          = "transitivity-gw-${each.key}"
-  instance_template = module.instance_templates[each.key].self_link
+  hostname          = "transitivity-gw"
+  instance_template = module.templates[each.key].self_link
   update_policy = [
     {
       max_surge_fixed              = 3
@@ -74,108 +74,105 @@ module "migs" {
   ]
 }
 
-module "firewall" {
-  source     = "github.com/terraform-google-modules/cloud-foundation-fabric//modules/net-vpc-firewall?ref=v4.3.0"
-  project_id = var.project_id
-  network    = var.vpc_name
-  # we do not use tag based firewall rules
-  ssh_source_ranges   = []
-  http_source_ranges  = []
-  https_source_ranges = []
-  # we use custom rules instead
-  custom_rules = {
-    allow-ssh-hcs = {
-      description = "Allow SSH to transitivity gateways"
-      direction   = "INGRESS"
-      action      = "allow"
-      sources     = []
-      ranges = [
-        # Health checkers ranges
-        "35.191.0.0/16", "130.211.0.0/22", "209.85.152.0/22", "209.85.204.0/22"
-      ]
-      targets              = [module.service_account.emails["transitivity-gw"]]
-      use_service_accounts = true
-      rules                = [{ protocol = "tcp", ports = [22] }]
-      extra_attributes     = {}
-    },
-    # Note: Actual allowed traffic is controlled via iptables within the guest environment.
-    allow-all-internal-ingress = {
-      description          = "Allow all private traffic to transitivity gateways"
-      direction            = "INGRESS"
-      action               = "allow"
-      sources              = []
-      ranges               = flatten(values(var.regional_aggregates))
-      targets              = [module.service_account.emails["transitivity-gw"]]
-      use_service_accounts = true
-      rules                = [{ protocol = "all", ports = null }]
-      extra_attributes     = {}
-    }
-    allow-all-internal-egress = {
-      description          = "Allow all private traffic to transitivity gateways"
-      direction            = "EGRESS"
-      action               = "allow"
-      sources              = []
-      ranges               = flatten(values(var.regional_aggregates))
-      targets              = [module.service_account.emails["transitivity-gw"]]
-      use_service_accounts = true
-      rules                = [{ protocol = "all", ports = null }]
-      extra_attributes     = {}
-    }
-  }
-}
-
-module "ilb_addresses" {
-  source     = "github.com/terraform-google-modules/cloud-foundation-fabric//modules/net-address?ref=v4.3.0"
-  project_id = var.project_id
-  for_each   = toset(var.regions)
-  internal_addresses = {
-    "transitivity-gw" = {
-      region     = each.key,
-      subnetwork = var.gw_subnets[each.key]
-    }
-  }
-}
-
 module "ilbs" {
-  source        = "github.com/terraform-google-modules/cloud-foundation-fabric//modules//net-ilb?ref=v4.3.0"
-  for_each      = toset(var.regions)
-  project_id    = var.project_id
-  region        = each.key
-  name          = "ilb-${each.key}"
-  network       = var.vpc_name
-  subnetwork    = var.gw_subnets[each.key]
-  address       = module.ilb_addresses[each.key].internal_addresses["transitivity-gw"].address
-  ports         = null
-  global_access = true
-  backend_config = {
-    session_affinity                = "CLIENT_IP"
-    timeout_sec                     = null
-    connection_draining_timeout_sec = null
-  }
-  backends = [{
-    failover       = false
-    group          = module.migs[each.key].instance_group
-    balancing_mode = "CONNECTION"
-    }
+  source = "github.com/terraform-google-modules/terraform-google-lb-internal"
+  #version          = "~> 2.2"
+  for_each                = toset(var.regions)
+  region                  = each.key
+  name                    = each.key
+  ports                   = null
+  all_ports               = true
+  global_access           = true
+  network                 = var.vpc_name
+  subnetwork              = var.gw_subnets[each.key]
+  source_ip_ranges        = flatten(values(var.regional_aggregates))
+  target_service_accounts = [module.service_account.emails["transitivity-gw"]]
+  source_tags             = null
+  target_tags             = null
+  create_backend_firewall = false
+  backends = [
+    { group = module.migs[each.key].instance_group, description = "" },
   ]
-  health_check_config = {
-    type = "tcp", check = { port = 22 }, config = {}, logging = true
+
+  health_check = {
+    type                = "tcp"
+    check_interval_sec  = 5
+    healthy_threshold   = 4
+    timeout_sec         = 1
+    unhealthy_threshold = 5
+    response            = null
+    proxy_header        = "NONE"
+    port                = 22
+    port_name           = null
+    request             = null
+    request_path        = null
+    host                = null
   }
+  project = var.project_id
 }
 
-module "vpc_routes" {
-  source     = "github.com/terraform-google-modules/cloud-foundation-fabric//modules///net-vpc?ref=v4.3.0"
-  for_each   = toset(var.regions)
-  project_id = var.project_id
-  vpc_create = false
-  name       = var.vpc_name
-  routes = { for range in var.regional_aggregates[each.key] :
-    replace("ilb-${each.key}-${range}", "/[./]/", "-") => {
-      dest_range    = range
-      priority      = null
-      tags          = null
-      next_hop_type = "ilb"
-      next_hop      = module.ilbs[each.key].forwarding_rule_self_link
+locals {
+  routes = flatten([for region, ranges in var.regional_aggregates : [for range in ranges : { region = region, range = range }]])
+}
+
+resource "google_compute_route" "routes" {
+  for_each = {
+    for route in local.routes : replace("ilb-${route.region}-${route.range}", "/[./]/", "-") => route
+  }
+  project      = var.project_id
+  network      = var.vpc_name
+  name         = each.key
+  description  = "Transitivity route for ${each.value.range} in ${each.value.region}"
+  dest_range   = each.value.range
+  next_hop_ilb = module.ilbs[each.value.region].forwarding_rule
+}
+
+resource "google_compute_firewall" "allow_transtivity_ingress" {
+  name      = "fw-allow-transitivity-ingress"
+  network   = var.vpc_name
+  project   = var.project_id
+  direction = "INGRESS"
+  priority  = 1000
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
     }
   }
+
+  allow {
+    protocol = "all"
+  }
+
+  source_ranges           = flatten(values(var.regional_aggregates))
+  target_service_accounts = [module.service_account.emails["transitivity-gw"]]
+}
+
+resource "google_compute_firewall" "allow_transitivity_egress" {
+  name      = "fw-allow-transitivity-egress"
+  network   = var.vpc_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 1000
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
+
+  allow {
+    protocol = "all"
+  }
+
+  destination_ranges      = flatten(values(var.regional_aggregates))
+  target_service_accounts = [module.service_account.emails["transitivity-gw"]]
 }

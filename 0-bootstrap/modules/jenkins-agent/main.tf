@@ -109,7 +109,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 
 resource "google_compute_firewall" "fw_allow_ssh_into_jenkins_agent" {
   project       = module.cicd_project.project_id
-  name          = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
+  name          = "fw-vpc-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
   description   = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
   network       = google_compute_network.jenkins_agents.name
   source_ranges = var.jenkins_master_subnetwork_cidr_range

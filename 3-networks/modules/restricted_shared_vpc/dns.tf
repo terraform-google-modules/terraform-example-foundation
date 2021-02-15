@@ -32,7 +32,7 @@ data "google_projects" "dns_hub" {
 }
 
 data "google_compute_network" "vpc_dns_hub" {
-  name    = "vpc-c-dns-hub"
+  name    = "vpc-c-shared-dns-hub"
   project = data.google_projects.dns_hub.projects[0].project_id
 }
 

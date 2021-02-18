@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-provider "google" {
-  version = "~> 3.38"
-}
-
-provider "google-beta" {
-  version = "~> 3.30"
-}
-
-provider "null" {
-  version = "~> 2.1"
-}
-
-provider "random" {
-  version = "~> 2.2"
-}
-
 /*************************************************
   Bootstrap GCP Organization.
 *************************************************/
@@ -47,7 +31,7 @@ resource "google_folder" "bootstrap" {
 
 module "seed_bootstrap" {
   source                         = "terraform-google-modules/bootstrap/google"
-  version                        = "~> 1.5"
+  version                        = "~> 2.1"
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
   billing_account                = var.billing_account

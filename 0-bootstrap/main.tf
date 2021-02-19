@@ -47,7 +47,7 @@ resource "google_folder" "bootstrap" {
 
 module "seed_bootstrap" {
   source                         = "terraform-google-modules/bootstrap/google"
-  version                        = "~> 1.5"
+  version                        = "~> 2.1"
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
   billing_account                = var.billing_account
@@ -114,7 +114,7 @@ resource "google_billing_account_iam_member" "tf_billing_admin" {
 // Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 module "cloudbuild_bootstrap" {
   source                      = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
-  version                     = "~> 1.3"
+  version                     = "~> 2.1"
   org_id                      = var.org_id
   folder_id                   = google_folder.bootstrap.id
   billing_account             = var.billing_account

@@ -192,3 +192,9 @@ variable "restricted_hub_nat_num_addresses_region2" {
   description = "Number of external IPs to reserve for second Cloud NAT in Restricted Hub."
   default     = 2
 }
+
+variable "firewall_policies_enable_logging" {
+  type        = bool
+  description = "Toggle hierarchical firewall logging."
+  default     = true
+}

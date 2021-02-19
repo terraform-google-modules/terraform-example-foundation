@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ variable "scc_notification_filter" {
 variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string
-  default     = ""
+  default     = "895060319969"
 }
 
 variable "create_access_context_manager_access_policy" {
@@ -87,7 +87,7 @@ variable "create_access_context_manager_access_policy" {
 variable "data_access_logs_enabled" {
   description = "Enable Data Access logs of types DATA_READ, DATA_WRITE and ADMIN_READ for all GCP services. Enabling Data Access logs might result in your organization being charged for the additional logs usage. See https://cloud.google.com/logging/docs/audit#data-access"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "log_export_storage_location" {

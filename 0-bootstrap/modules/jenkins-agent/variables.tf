@@ -218,7 +218,7 @@ variable "storage_bucket_labels" {
 variable "folder_id" {
   description = "The ID of a folder to host this project"
   type        = string
-  default     = ""
+  default     = "895060319969"
 }
 
 variable "terraform_version" {

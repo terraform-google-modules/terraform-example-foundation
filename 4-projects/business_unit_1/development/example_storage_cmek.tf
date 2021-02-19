@@ -37,13 +37,15 @@ resource "google_kms_crypto_key" "key" {
     prevent_destroy = true
   }
 }
+data "google_storage_project_service_account" "gcs_account" {
+}
 
 data "google_iam_policy" "admin" {
   binding {
     role = "roles/cloudkms.cryptoKeyEncrypter"
 
     members = [
-      "user:jane@example.com",  #defualt storage service account
+      "serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"
     ]
   }
 }
@@ -60,7 +62,8 @@ resource "google_storage_bucket" "bucket" {
   encryption {
     default_kms_key_name = google_kms_crypto_key.key.id
     }
-}  #output default storage service account
+  depends_on = [google_kms_crypto_key_iam_policy.crypto_key]
+}
 
 
 

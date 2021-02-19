@@ -7,7 +7,7 @@ module "env_secrets" {
   name                        = "${var.project_prefix}-${var.environment_code}-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = var.parent_folder
+  folder_id                   = data.google_active_folder.env.name
   disable_services_on_destroy = false
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 
@@ -37,6 +37,7 @@ resource "google_kms_crypto_key" "key" {
     prevent_destroy = true
   }
 }
+
 data "google_storage_project_service_account" "gcs_account" {
 }
 

@@ -7,13 +7,13 @@ module "env_secrets" {
   name                        = "${var.project_prefix}-${var.environment_code}-secrets"
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = google_folder.env.id
+  folder_id                   = var.parent_folder
   disable_services_on_destroy = false
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 
   labels = {
     environment       = var.env
-    application_name  = "env-secrets"
+    application_name  = "env-secrets-new"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
@@ -28,7 +28,7 @@ module "env_secrets" {
 resource "google_kms_key_ring" "keyring" {
   name     = "keyring-example"
   location = "global"
-  project = module.env_secrets.project_id
+  project = module.env_secrets.project_id  # lives in new project completely
 }
 resource "google_kms_crypto_key" "key" {
   name            = "crypto-key-example"
@@ -43,7 +43,7 @@ data "google_iam_policy" "admin" {
     role = "roles/cloudkms.cryptoKeyEncrypter"
 
     members = [
-      "user:jane@example.com",
+      "user:jane@example.com",  #defualt storage service account
     ]
   }
 }
@@ -60,6 +60,7 @@ resource "google_storage_bucket" "bucket" {
   encryption {
     default_kms_key_name = google_kms_crypto_key.key.id
     }
-}
+}  #output default storage service account
+
 
 

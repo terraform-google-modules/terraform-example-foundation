@@ -40,7 +40,7 @@ variable "terraform_apply_branches" {
   type        = list(string)
 
   default = ["development",
-    "non\\-production", //non-production needs a \ to ensure regex matches correct branches.
+    "non-production",
   "production"]
 }
 
@@ -59,7 +59,7 @@ variable "cloudbuild_apply_filename" {
 variable "terraform_version" {
   description = "Default terraform version."
   type        = string
-  default     = "0.12.29"
+  default     = "0.13.6"
 }
 
 variable "terraform_version_sha256sum" {

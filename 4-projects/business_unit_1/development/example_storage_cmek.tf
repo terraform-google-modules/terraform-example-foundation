@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- module "env_secrets_project" {
+
+module "env_secrets_project" {
   source                      = "../../modules/single_project"
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
@@ -26,7 +26,7 @@
   budget_amount               = var.budget_amount
   project_prefix              = var.project_prefix
 
-  activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
+  activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 
   # Metadata
   project_suffix    = "sample-env-secrets"
@@ -41,10 +41,10 @@ module "kms" {
   source  = "terraform-google-modules/kms/google"
   version = "~> 0.1"
 
-  project_id         = module.env_secrets_project.project_id
-  location           = "global"
-  name               = "sample-keyring"
-  keys               = ["crypto-key-example"]
+  project_id = module.env_secrets_project.project_id
+  location   = "global"
+  name       = "sample-keyring"
+  keys       = ["crypto-key-example"]
 }
 
 data "google_storage_project_service_account" "gcs_account" {
@@ -62,15 +62,15 @@ data "google_iam_policy" "admin" {
 
 resource "google_kms_crypto_key_iam_policy" "crypto_key" {
   crypto_key_id = module.kms.keys
-  policy_data = data.google_iam_policy.admin.policy_data
+  policy_data   = data.google_iam_policy.admin.policy_data
 }
 
 
 resource "google_storage_bucket" "bucket" {
-  name                        = "cmek-encrypted-bucket"
-  project                     = module.base_shared_vpc_project.project_id
+  name    = "cmek-encrypted-bucket"
+  project = module.base_shared_vpc_project.project_id
   encryption {
     default_kms_key_name = module.kms.keys
-    }
+  }
   depends_on = [google_kms_crypto_key_iam_policy.crypto_key]
 }

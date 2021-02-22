@@ -32,5 +32,9 @@
 | restricted\_shared\_vpc\_project | Project sample restricted project id. |
 | restricted\_shared\_vpc\_project\_number | Project sample restricted project. |
 | vpc\_service\_control\_perimeter\_name | VPC Service Control name. |
+| env\_secrets\_project | Project Env Secrets Project Id. |
+| keyring | Name of Keyring Created |
+| keys | List of Created Key Names |
+| bucket | Storage Bucket Created with CMEK Attached |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

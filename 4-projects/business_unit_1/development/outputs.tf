@@ -75,7 +75,7 @@ output "keyring" {
 }
 
 output "keys" {
-  description = "List of created kkey names."
+  description = "List of created key names."
   value       = keys(module.kms.keys)
 }
 

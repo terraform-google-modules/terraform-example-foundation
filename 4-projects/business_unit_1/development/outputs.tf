@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,11 @@ output "floating_project" {
 output "peering_project" {
   description = "Project sample peering project id."
   value       = module.peering_project.project_id
+}
+
+output "env_secrets_project" {
+  description = "Project sample peering project id."
+  value       = module.env_secrets_project.project_id
 }
 
 output "peering_network" {
@@ -62,4 +67,24 @@ output "access_context_manager_policy_id" {
 output "peering_complete" {
   description = "Output to be used as a module dependency."
   value       = module.peering.complete
+}
+
+output "keyring" {
+  description = "The name of the keyring."
+  value       = module.kms.keyring_resource.name
+}
+
+output "location" {
+  description = "The location of the keyring."
+  value       = module.kms.keyring_resource.location
+}
+
+output "keys" {
+  description = "List of created kkey names."
+  value       = keys(module.kms.keys)
+}
+
+output "bucket" {
+  description = "The created storage bucket"
+  value       = google_storage_bucket.bucket
 }

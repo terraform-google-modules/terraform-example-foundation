@@ -37,19 +37,6 @@
   business_code     = "bu1"
 }
 
-resource "google_kms_key_ring" "keyring" {
-  name     = "keyring-example"
-  location = "global"
-  project = module.env_secrets_project.project_id  # lives in new project completely
-}
-resource "google_kms_crypto_key" "key" {
-  name            = "crypto-key-example"
-  key_ring        = google_kms_key_ring.keyring.id
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 module "kms" {
   source  = "terraform-google-modules/kms/google"
   version = "~> 0.1"

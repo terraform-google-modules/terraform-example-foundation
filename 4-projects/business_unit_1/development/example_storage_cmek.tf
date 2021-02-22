@@ -38,7 +38,7 @@ module "env_secrets_project" {
 
 module "kms" {
   source  = "terraform-google-modules/kms/google"
-  version = "~> 0.1"
+  version = "~> 1.2"
 
   project_id = module.env_secrets_project.project_id
   keyring    = "sample-keyring"

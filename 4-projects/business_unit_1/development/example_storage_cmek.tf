@@ -24,12 +24,11 @@ module "env_secrets_project" {
   alert_spent_percents        = var.alert_spent_percents
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
-  project_prefix              = var.project_prefix
+  project_prefix              = "sample-env-secrets"
 
   activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 
   # Metadata
-  project_suffix    = "sample-env-secrets"
   application_name  = "bu1-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
@@ -42,8 +41,8 @@ module "kms" {
   version = "~> 0.1"
 
   project_id = module.env_secrets_project.project_id
+  keyring    = "sample-keyring"
   location   = "global"
-  name       = "sample-keyring"
   keys       = ["crypto-key-example"]
 }
 

@@ -71,12 +71,7 @@ output "peering_complete" {
 
 output "keyring" {
   description = "The name of the keyring."
-  value       = module.kms.keyring_resource.name
-}
-
-output "location" {
-  description = "The location of the keyring."
-  value       = module.kms.keyring_resource.location
+  value       = module.kms.keyring
 }
 
 output "keys" {

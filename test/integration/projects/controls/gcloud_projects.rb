@@ -1,4 +1,4 @@
-# Copyright 2020 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+enable_hub_and_spoke = attribute('enable_hub_and_spoke')
 
 dev_bu1_project_base = attribute('dev_bu1_project_base')
 dev_bu1_project_floating = attribute('dev_bu1_project_floating')
@@ -58,6 +60,8 @@ prod_bu2_project_restricted_number = attribute('prod_bu2_project_restricted_numb
 prod_bu2_restricted_vpc_service_control_perimeter_name = attribute('prod_bu2_restricted_vpc_service_control_perimeter_name')
 
 access_context_manager_policy_id = attribute('access_context_manager_policy_id')
+
+shared_vpc_mode = enable_hub_and_spoke ? "-spoke" : ""
 
 environment_codes = %w[d n p]
 
@@ -165,8 +169,8 @@ control 'gcloud-projects' do
             expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['environment'].should eq environment_name[environment_code]
           end
 
-          it "is attached to the VPC with name equals to vpc-#{environment_code}-shared-restricted" do
-            expect JSON.parse(command("gcloud compute networks list --project #{data['name']} --format=json").stdout)[0]['name'].should eq "vpc-#{environment_code}-shared-restricted"
+          it "is attached to the VPC with name equals to vpc-#{environment_code}-shared-restricted#{shared_vpc_mode}" do
+            expect JSON.parse(command("gcloud compute networks list --project #{data['name']} --format=json").stdout)[0]['name'].should eq "vpc-#{environment_code}-shared-restricted#{shared_vpc_mode}"
           end
         end
       end
@@ -196,8 +200,8 @@ control 'gcloud-projects' do
             expect JSON.parse(command("gcloud projects describe #{data['name']} --format=json").stdout)['labels']['environment'].should eq environment_name[environment_code]
           end
 
-          it "is attached to the VPC with name equals to vpc-#{environment_code}-shared-base" do
-            expect JSON.parse(command("gcloud compute networks list --project #{data['name']} --format=json").stdout)[0]['name'].should eq "vpc-#{environment_code}-shared-base"
+          it "is attached to the VPC with name equals to vpc-#{environment_code}-shared-base#{shared_vpc_mode}" do
+            expect JSON.parse(command("gcloud compute networks list --project #{data['name']} --format=json").stdout)[0]['name'].should eq "vpc-#{environment_code}-shared-base#{shared_vpc_mode}"
           end
         end
       end
@@ -238,7 +242,7 @@ control 'gcloud-projects' do
           end
 
           it "has a peering with #{peering_networks[environment_code][business_unit]['network']}" do
-            expect(data[0]['peerings'][0]['network'].should eq peering_networks[environment_code][business_unit]['network'])
+            expect(data[0]['peerings'][0]['network'].should eq peering_networks[environment_code][business_unit][:network])
           end
         end
       end

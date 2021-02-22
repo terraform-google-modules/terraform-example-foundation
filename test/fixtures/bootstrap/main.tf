@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,4 +22,5 @@ module "bootstrap" {
   group_billing_admins = var.group_email
   billing_account      = var.billing_account
   org_project_creators = var.org_project_creators
+  project_prefix       = var.project_prefix
 }

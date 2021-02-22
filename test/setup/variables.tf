@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,4 +28,8 @@ variable "billing_account" {
 
 variable "group_email" {
   description = "The group that will be assigned permissions for testing."
+}
+
+variable "example_foundations_mode" {
+  description = "The example foundations mode used for testing."
 }

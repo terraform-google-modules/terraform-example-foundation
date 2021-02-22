@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,14 +45,8 @@ variable "terraform_service_account" {
 }
 
 variable "monitoring_workspace_users" {
-  description = "Gsuite or Cloud Identity group that have access to Monitoring Workspaces."
+  description = "Google Workspace or Cloud Identity group that have access to Monitoring Workspaces."
   type        = string
-}
-
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = true
 }
 
 variable "base_network_project_alert_spent_percents" {
@@ -125,4 +119,16 @@ variable "secret_project_budget_amount" {
   description = "The amount to use as the budget for the secrets project."
   type        = number
   default     = 1000
+}
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
 }

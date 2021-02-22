@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ locals {
 }
 
 data "google_active_folder" "common" {
-  display_name = "fldr-common"
+  display_name = "${var.folder_prefix}-common"
   parent       = local.parent_id
 }
 
@@ -34,7 +34,7 @@ data "google_projects" "interconnect_project" {
 
 module "interconnect_attachment1_region1" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 0.2.0"
+  version = "~> 0.3.0"
 
   name    = "vl-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-${local.suffix1}"
   project = local.interconnect_project_id
@@ -57,7 +57,7 @@ module "interconnect_attachment1_region1" {
 
 module "interconnect_attachment2_region1" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 0.2.0"
+  version = "~> 0.3.0"
 
   name    = "vl-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-${local.suffix2}"
   project = local.interconnect_project_id
@@ -80,7 +80,7 @@ module "interconnect_attachment2_region1" {
 
 module "interconnect_attachment1_region2" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 0.2.0"
+  version = "~> 0.3.0"
 
   name    = "vl-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-${local.suffix3}"
   project = local.interconnect_project_id
@@ -103,7 +103,7 @@ module "interconnect_attachment1_region2" {
 
 module "interconnect_attachment2_region2" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 0.2.0"
+  version = "~> 0.3.0"
 
   name    = "vl-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-${local.suffix4}"
   project = local.interconnect_project_id

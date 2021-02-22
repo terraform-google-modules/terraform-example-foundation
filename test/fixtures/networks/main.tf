@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ module "development" {
   domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
   parent_folder                    = var.parent_folder
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 module "non-production" {
@@ -34,6 +35,8 @@ module "non-production" {
   domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
   parent_folder                    = var.parent_folder
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
+  depends_on                       = [module.development]
 }
 
 module "production" {
@@ -45,4 +48,6 @@ module "production" {
   domain                           = var.domain
   terraform_service_account        = var.terraform_sa_email
   parent_folder                    = var.parent_folder
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
+  depends_on                       = [module.non-production]
 }

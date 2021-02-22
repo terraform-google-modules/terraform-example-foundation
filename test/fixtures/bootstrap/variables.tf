@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,4 +34,9 @@ variable "org_project_creators" {
   description = "Additional list of members to have project creator role accross the organization. Prefix of group: user: or serviceAccount: is required."
   type        = list(string)
   default     = []
+}
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
 }

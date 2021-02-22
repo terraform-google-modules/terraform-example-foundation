@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 *****************************************/
 
 data "google_active_folder" "common" {
-  display_name = "fldr-common"
+  display_name = "${var.folder_prefix}-common"
   parent       = local.parent
 }
 
@@ -28,6 +28,6 @@ data "google_active_folder" "common" {
 *****************************************/
 
 resource "google_folder" "env" {
-  display_name = "fldr-${var.env}"
+  display_name = "${var.folder_prefix}-${var.env}"
   parent       = local.parent
 }

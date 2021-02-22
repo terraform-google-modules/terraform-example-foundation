@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ module "shared_restricted_interconnect" {
   region2_interconnect2_vlan_tag8021q     = "3924"
   region2_interconnect2                   = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-4"
   region2_interconnect2_location          = "lax-zone1-403"
+  folder_prefix                           = var.folder_prefix
 
   peer_asn  = "64515"
   peer_name = "interconnect-peer"
@@ -86,6 +87,7 @@ module "shared_base_interconnect" {
   region2_interconnect2_vlan_tag8021q     = "3928"
   region2_interconnect2                   = "https://www.googleapis.com/compute/v1/projects/example-interconnect-project/global/interconnects/example-interconnect-4"
   region2_interconnect2_location          = "lax-zone1-403"
+  folder_prefix                           = var.folder_prefix
 
   peer_asn  = "64515"
   peer_name = "interconnect-peer"

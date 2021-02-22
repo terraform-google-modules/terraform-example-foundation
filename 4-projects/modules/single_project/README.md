@@ -11,14 +11,15 @@
 | billing\_code | The code that's used to provide chargeback information | `string` | n/a | yes |
 | budget\_amount | The amount to use as the budget | `number` | `1000` | no |
 | business\_code | The code that describes which business unit owns the project | `string` | `"abcd"` | no |
+| enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | folder\_id | The folder id where project will be created | `string` | n/a | yes |
 | impersonate\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | primary\_contact | The primary email contact for the project | `string` | n/a | yes |
-| project\_prefix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
+| project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
+| project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
 | secondary\_contact | The secondary email contact for the project | `string` | `""` | no |
-| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | `bool` | `true` | no |
 | vpc\_service\_control\_attach\_enabled | Whether the project will be attached to a VPC Service Control Perimeter | `bool` | `false` | no |
 | vpc\_service\_control\_perimeter\_name | The name of a VPC Service Control Perimeter to add the created project to | `string` | `null` | no |
 | vpc\_type | The type of VPC to attach the project to. Possible options are base or restricted. | `string` | `""` | no |

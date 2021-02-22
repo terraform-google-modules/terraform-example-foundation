@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,27 @@
  */
 
 module "projects_bu1_dev" {
-  source                           = "../../../4-projects/business_unit_1//development"
+  source                           = "../../../4-projects/business_unit_1/development"
   terraform_service_account        = var.terraform_sa_email
   org_id                           = var.org_id
   billing_account                  = var.billing_account
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.dev_restricted_service_perimeter_name
+  project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 module "projects_bu1_nonprod" {
-  source                           = "../../../4-projects/business_unit_1//non-production"
+  source                           = "../../../4-projects/business_unit_1/non-production"
   terraform_service_account        = var.terraform_sa_email
   org_id                           = var.org_id
   billing_account                  = var.billing_account
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.nonprod_restricted_service_perimeter_name
+  project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 
@@ -43,6 +47,8 @@ module "projects_bu1_prod" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.prod_restricted_service_perimeter_name
+  project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 module "projects_bu2_dev" {
@@ -54,6 +60,8 @@ module "projects_bu2_dev" {
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.dev_restricted_service_perimeter_name
   peering_module_depends_on        = [module.projects_bu1_dev.peering_complete]
+  project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 module "projects_bu2_nonprod" {
@@ -65,6 +73,8 @@ module "projects_bu2_nonprod" {
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.nonprod_restricted_service_perimeter_name
   peering_module_depends_on        = [module.projects_bu1_nonprod.peering_complete]
+  project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
 
 
@@ -77,4 +87,6 @@ module "projects_bu2_prod" {
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.prod_restricted_service_perimeter_name
   peering_module_depends_on        = [module.projects_bu1_prod.peering_complete]
+  project_prefix                   = var.project_prefix
+  enable_hub_and_spoke             = var.enable_hub_and_spoke
 }

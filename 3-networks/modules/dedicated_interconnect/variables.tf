@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,4 +160,10 @@ variable "region2_interconnect2_vlan_tag8021q" {
   type        = string
   description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
   default     = null
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,18 @@ variable "parent_folder" {
 }
 
 variable "monitoring_workspace_users" {
-  description = "Gsuite or Cloud Identity group that have access to Monitoring Workspaces."
+  description = "Google Workspace or Cloud Identity group that have access to Monitoring Workspaces."
   type        = string
+}
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
 }

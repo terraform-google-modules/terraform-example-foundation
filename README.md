@@ -68,9 +68,12 @@ example-organization
 Among the six projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
 The first one for organization wide audit logs and the latter for billing logs.
 In both cases the logs are collected into BigQuery datasets which can then be used general querying, dashboarding & reporting. Logs are also exported to Pub/Sub and GCS bucket.
-_The various audit log types being captured in BigQuery are retained for 30 days._
 
-For billing data, a BigQuery dataset is created with permissions attached, however you will need to configure a billing export [manually](https://cloud.google.com/billing/docs/how-to/export-data-bigquery), as there is no easy way to automate this at the moment.
+**Notes**:
+
+- Log export to GCS bucket has optional object versioning support via `log_export_storage_versioning`.
+- The various audit log types being captured in BigQuery are retained for 30 days.
+- For billing data, a BigQuery dataset is created with permissions attached, however you will need to configure a billing export [manually](https://cloud.google.com/billing/docs/how-to/export-data-bigquery), as there is no easy way to automate this at the moment.
 
 #### DNS Hub
 
@@ -139,7 +142,7 @@ This step focuses on creating a Shared VPC per environment (`development`, `non-
 
 - Optional - Example subnets for `development`, `non-production` & `production` inclusive of secondary ranges for those that want to use GKE.
 - Optional - Default firewall rules created to allow remote access to VMs through IAP, without needing public IPs.
-    - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively
+    - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively.
 - Optional - Default firewall rule created to allow for load balancing using `allow-lb` tag.
 - [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workload dependant resources like Cloud SQL.
 - Base Shared VPC with [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for base access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
@@ -161,23 +164,29 @@ example-organization/
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
+    ├── prj-bu1-d-sample-peering
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
-    └── prj-bu2-d-sample-restrict
+    ├── prj-bu2-d-sample-restrict
+    └── prj-bu2-d-sample-peering
 └── fldr-non-production
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
+    ├── prj-bu1-n-sample-peering
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
-    └── prj-bu2-n-sample-restrict
+    ├── prj-bu2-n-sample-restrict
+    └── prj-bu2-n-sample-peering
 └── fldr-production
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
+    ├── prj-bu1-p-sample-peering
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
-    └── prj-bu2-p-sample-restrict
+    ├── prj-bu2-p-sample-restrict
+    └── prj-bu2-p-sample-peering
 ```
 The code in this step includes two options for creating projects.
 The first is the standard projects module which creates a project per environment and the second creates a standalone project for one environment.
@@ -202,9 +211,11 @@ example-organization
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
+    ├── prj-bu1-d-sample-peering
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
     ├── prj-bu2-d-sample-restrict
+    ├── prj-bu2-d-sample-peering
     ├── prj-d-monitoring
     ├── prj-d-secrets
     ├── prj-d-shared-base
@@ -213,9 +224,11 @@ example-organization
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
+    ├── prj-bu1-n-sample-peering
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
     ├── prj-bu2-n-sample-restrict
+    ├── prj-bu2-n-sample-peering
     ├── prj-n-monitoring
     ├── prj-n-secrets
     ├── prj-n-shared-base
@@ -224,9 +237,11 @@ example-organization
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
+    ├── prj-bu1-p-sample-peering
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
     ├── prj-bu2-p-sample-restrict
+    ├── prj-bu2-p-sample-peering
     ├── prj-p-monitoring
     ├── prj-p-secrets
     ├── prj-p-shared-base
@@ -242,6 +257,16 @@ There are three main named branches - `development`, `non-production` and `produ
 Development happens on feature/bugfix branches (which can be named `feature/new-foo`, `bugfix/fix-bar`, etc.) and when complete, a [pull request (PR)](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) or [merge request (MR)](https://docs.gitlab.com/ee/user/project/merge_requests/) can be opened targeting the `development` branch. This will trigger the CI pipeline to perform a plan and validate against all environments (`development`, `non-production`, `shared` and `production`). Once code review is complete and changes are validated, this branch can be merged into `development`. This will trigger a CI pipeline that applies the latest changes in the `development` branch on the `development` environment.
 
 Once validated in `development`, changes can be promoted to `non-production` by opening a PR/MR targeting the `non-production` branch and merging them.  Similarly changes can be promoted from `non-production` to `production`.
+
+### Terraform-validator
+
+This repo uses [terraform-validator](https://github.com/GoogleCloudPlatform/terraform-validator) to validate the terraform plans against Forseti Security Config Validator [Policy Library](https://github.com/forseti-security/policy-library).
+
+The [Scorecard bundle](https://github.com/forseti-security/policy-library/blob/master/docs/bundles/scorecard-v1.md) was used to create the [policy-library folder](./policy-library) with [one extra constraint](https://github.com/forseti-security/policy-library/blob/master/samples/serviceusage_allow_basic_apis.yaml) added.
+
+See the [policy-library documentation](https://github.com/forseti-security/policy-library/blob/master/docs/index.md) if you need to add more constraints from the [samples folder](https://github.com/forseti-security/policy-library/tree/master/samples) in your configuration based in your type of workload.
+
+Step 1-org has instructions on the creation of the shared repository to host these policies.
 
 ### Optional Variables
 
@@ -259,5 +284,4 @@ Refer to the [Errata Summary](./ERRATA.md) for an overview of the delta between 
 
 ## Contributing
 
-Refer to the [contribution guidelines](./CONTRIBUTING.md) for
-information on contributing to this module.
+Refer to the [contribution guidelines](./CONTRIBUTING.md) for information on contributing to this module.

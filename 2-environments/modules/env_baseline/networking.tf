@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,13 @@
 
 module "base_shared_vpc_host_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.0"
+  version                     = "~> 10.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "prj-${var.environment_code}-shared-base"
+  name                        = format("%s-%s-shared-base", var.project_prefix, var.environment_code)
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
-  skip_gcloud_download        = var.skip_gcloud_download
   disable_services_on_destroy = false
   activate_apis = [
     "compute.googleapis.com",
@@ -54,14 +53,13 @@ module "base_shared_vpc_host_project" {
 
 module "restricted_shared_vpc_host_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.0"
+  version                     = "~> 10.0"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
-  name                        = "prj-${var.environment_code}-shared-restricted"
+  name                        = format("%s-%s-shared-restricted", var.project_prefix, var.environment_code)
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
-  skip_gcloud_download        = var.skip_gcloud_download
   disable_services_on_destroy = false
   activate_apis = [
     "compute.googleapis.com",

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,4 +53,15 @@ variable "nonprod_restricted_service_perimeter_name" {
 variable "prod_restricted_service_perimeter_name" {
   description = "production access context manager service perimeter name"
   type        = string
+}
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+}
+
+variable "enable_hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
 }

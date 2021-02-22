@@ -36,7 +36,7 @@ Six test-kitchen instances are defined and should be executed in serial order:
 - `bootstrap`
 - `org`
 - `envs`
-- `dns-hub`
+- `shared`
 - `networks`
 - `projects`
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,7 @@ variable "firewall_enable_logging" {
   description = "Toggle firewall logging for VPC Firewalls."
   default     = true
 }
+
 variable "dns_enable_inbound_forwarding" {
   type        = bool
   description = "Toggle inbound query forwarding for VPC DNS."
@@ -113,4 +114,16 @@ variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string
   default     = ""
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
+}
+
+variable "enable_hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,4 +25,6 @@ module "env" {
   billing_account            = var.billing_account
   terraform_service_account  = var.terraform_service_account
   monitoring_workspace_users = var.monitoring_workspace_users
+  project_prefix             = var.project_prefix
+  folder_prefix              = var.folder_prefix
 }

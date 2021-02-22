@@ -1,4 +1,4 @@
-# Copyright 2020 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ boolean_policy_constraints = [
   'constraints/compute.disableGuestAttributesAccess',
   'constraints/compute.vmExternalIpAccess',
   'constraints/compute.skipDefaultNetworkCreation',
+  'constraints/compute.requireOsLogin',
   'constraints/compute.restrictXpnProjectLienRemoval',
   'constraints/sql.restrictPublicIp',
   'constraints/iam.disableServiceAccountKeyCreation',

@@ -1,0 +1,67 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Ensure Private Google Access is enabled
+# https://cloud.google.com/vpc/docs/configure-private-google-access
+
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-network-enable-private-google-access-v1
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPNetworkEnablePrivateGoogleAccessConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties: {}
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: |
+        #
+        # Copyright 2021 Google LLC
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #     https://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+        #
+
+        package templates.gcp.GCPNetworkEnablePrivateGoogleAccessConstraintV1
+
+        import data.validator.gcp.lib as lib
+
+        deny[{
+        	"msg": message,
+        	"details": metadata,
+        }] {
+        	constraint := input.constraint
+        	asset := input.asset
+        	asset.asset_type == "compute.googleapis.com/Subnetwork"
+
+        	network := asset.resource.data
+        	network.privateIpGoogleAccess == false
+
+        	message := sprintf("Private Google access is disabled in subnetwork %v.", [asset.name])
+        	metadata := {"resource": asset.name}
+        }
+        #ENDINLINE

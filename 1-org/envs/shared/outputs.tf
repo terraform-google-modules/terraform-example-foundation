@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,16 @@ output "scc_notifications_project_id" {
 output "dns_hub_project_id" {
   value       = module.dns_hub.project_id
   description = "The DNS hub project ID"
+}
+
+output "base_net_hub_project_id" {
+  value       = try(module.base_network_hub[0].project_id, null)
+  description = "The Base Network hub project ID"
+}
+
+output "restricted_net_hub_project_id" {
+  value       = try(module.restricted_network_hub[0].project_id, null)
+  description = "The Restricted Network hub project ID"
 }
 
 output "domains_to_allow" {

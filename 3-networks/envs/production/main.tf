@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,11 @@ locals {
   restricted_project_number = data.google_project.restricted_host_project.number
   base_project_id           = data.google_projects.base_host_project.projects[0].project_id
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+  mode                      = var.enable_hub_and_spoke ? "spoke" : null
 }
 
 data "google_active_folder" "env" {
-  display_name = "fldr-${local.env}"
+  display_name = "${var.folder_prefix}-${local.env}"
   parent       = local.parent_id
 }
 
@@ -71,6 +72,8 @@ module "restricted_shared_vpc" {
   nat_bgp_asn                      = var.nat_bgp_asn
   nat_num_addresses_region1        = var.nat_num_addresses_region1
   nat_num_addresses_region2        = var.nat_num_addresses_region2
+  folder_prefix                    = var.folder_prefix
+  mode                             = local.mode
 
   subnets = [
     {
@@ -94,11 +97,11 @@ module "restricted_shared_vpc" {
     "sb-${local.environment_code}-shared-restricted-${var.default_region1}" = [
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-pod"
-        ip_cidr_range = "192.168.0.0/19"
+        ip_cidr_range = "192.168.64.0/21"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-svc"
-        ip_cidr_range = "192.168.32.0/23"
+        ip_cidr_range = "192.168.72.0/21"
       }
     ]
   }
@@ -129,6 +132,8 @@ module "base_shared_vpc" {
   nat_num_addresses_region1     = var.nat_num_addresses_region1
   nat_num_addresses_region2     = var.nat_num_addresses_region2
   nat_num_addresses             = var.nat_num_addresses
+  folder_prefix                 = var.folder_prefix
+  mode                          = local.mode
 
   subnets = [
     {
@@ -152,11 +157,11 @@ module "base_shared_vpc" {
     "sb-${local.environment_code}-shared-base-${var.default_region1}" = [
       {
         range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
-        ip_cidr_range = "192.168.96.0/19"
+        ip_cidr_range = "192.168.80.0/21"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-svc"
-        ip_cidr_range = "192.168.128.0/23"
+        ip_cidr_range = "192.168.88.0/21"
       }
     ]
   }

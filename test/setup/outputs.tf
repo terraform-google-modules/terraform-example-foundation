@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,10 @@ output "terraform_sa_email" {
   value = google_service_account.int_test.email
 }
 
+output "terraform_service_account" {
+  value = google_service_account.int_test.email
+}
+
 output "org_project_creators" {
   value = ["serviceAccount:${google_service_account.int_test.email}"]
 }
@@ -47,4 +51,8 @@ output "billing_account" {
 
 output "group_email" {
   value = var.group_email
+}
+
+output "enable_hub_and_spoke" {
+  value = var.example_foundations_mode == "HubAndSpoke" ? "true" : "false"
 }

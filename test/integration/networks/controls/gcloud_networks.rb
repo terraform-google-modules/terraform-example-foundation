@@ -1,4 +1,4 @@
-# Copyright 2020 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
 # limitations under the License.
 
 acm_policy_name = attribute('access_context_manager_policy_id')
+
+enable_hub_and_spoke = attribute('enable_hub_and_spoke')
 
 dev_restricted_access_level_name = attribute('dev_restricted_access_level_name')
 nonprod_restricted_access_level_name = attribute('nonprod_restricted_access_level_name')
@@ -62,7 +64,7 @@ control 'gcloud_networks' do
     access_levels = ["accessPolicies/#{acm_policy_name}/accessLevels/#{access_level_names[environment_code]}"]
 
     types.each do |type|
-      vpc_name = "#{environment_code}-shared-#{type}"
+      vpc_name = enable_hub_and_spoke ? "#{environment_code}-shared-#{type}-spoke" : "#{environment_code}-shared-#{type}"
       network_name = "vpc-#{vpc_name}"
 
       dns_hub_network_url = "https://www.googleapis.com/compute/v1/projects/#{projects_id[environment_code][type]}/global/networks/#{network_name}"

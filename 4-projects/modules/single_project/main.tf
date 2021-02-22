@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,23 @@
  */
 
 locals {
-  env_code = element(split("", var.environment), 0)
+  env_code        = element(split("", var.environment), 0)
+  shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
 }
 
 module "project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.1"
+  version                     = "~> 10.0"
   random_project_id           = "true"
   impersonate_service_account = var.impersonate_service_account
   activate_apis               = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
-  name                        = "prj-${var.business_code}-${local.env_code}-${var.project_prefix}"
+  name                        = "${var.project_prefix}-${var.business_code}-${local.env_code}-${var.project_suffix}"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
-  skip_gcloud_download        = var.skip_gcloud_download
 
-  shared_vpc         = var.vpc_type == "" ? "" : data.google_compute_network.shared_vpc[0].project
-  shared_vpc_subnets = var.vpc_type == "" ? [] : data.google_compute_network.shared_vpc[0].subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_project.subnetwork_self_link"
+  svpc_host_project_id = var.vpc_type == "" ? "" : data.google_compute_network.shared_vpc[0].project
+  shared_vpc_subnets   = var.vpc_type == "" ? [] : data.google_compute_network.shared_vpc[0].subnetworks_self_links # Optional: To enable subnetting, to replace to "module.networking_project.subnetwork_self_link"
 
   vpc_service_control_attach_enabled = var.vpc_service_control_attach_enabled
   vpc_service_control_perimeter_name = var.vpc_service_control_perimeter_name

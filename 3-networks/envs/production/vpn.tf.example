@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ module "shared_base_vpn" {
   parent_folder        = var.parent_folder
   org_id               = var.org_id
   vpn_psk_secret_name  = "<VPN_PRIVATE_PSK_SECRET_NAME>"
+  folder_prefix        = var.folder_prefix
 
   on_prem_router_ip_address1 = "<8.8.8.8>" # on-prem router ip address 1
   on_prem_router_ip_address2 = "<8.8.8.8>" # on-prem router ip address 2
@@ -74,6 +75,7 @@ module "shared_restricted_vpn" {
   parent_folder        = var.parent_folder
   org_id               = var.org_id
   vpn_psk_secret_name  = "<VPN_RESTRICTED_PSK_SECRET_NAME>"
+  folder_prefix        = var.folder_prefix
 
   on_prem_router_ip_address1 = "<8.8.8.8>" # on-prem router ip address 1
   on_prem_router_ip_address2 = "<8.8.8.8>" # on-prem router ip address 2

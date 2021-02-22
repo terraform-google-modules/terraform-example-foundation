@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,10 +58,21 @@ variable "org_policy_admin_role" {
   default     = false
 }
 
-variable "skip_gcloud_download" {
-  description = "Whether to skip downloading gcloud (assumes gcloud is already available outside the module)"
-  type        = bool
-  default     = true
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
+}
+variable "cloud_source_repos" {
+  description = "List of Cloud Source Repositories created during bootstrap project build stage"
+  type        = list(string)
+  default     = ["gcp-org", "gcp-environments", "gcp-networks", "gcp-projects", "gcp-policies"]
 }
 
 /* ----------------------------------------

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,19 +34,31 @@ variable "default_region" {
   type        = string
 }
 
+variable "enable_hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
+}
+
 variable "billing_data_users" {
-  description = "G Suite or Cloud Identity group that have access to billing data set."
+  description = "Google Workspace or Cloud Identity group that have access to billing data set."
   type        = string
 }
 
 variable "audit_data_users" {
-  description = "G Suite or Cloud Identity group that have access to audit logs."
+  description = "Google Workspace or Cloud Identity group that have access to audit logs."
   type        = string
 }
 
 variable "domains_to_allow" {
   description = "The list of domains to allow users from in IAM."
   type        = list(string)
+}
+
+variable "enable_os_login_policy" {
+  description = "Enable OS Login policy."
+  type        = bool
+  default     = false
 }
 
 variable "audit_logs_table_expiration_days" {
@@ -102,6 +114,12 @@ variable "log_export_storage_force_destroy" {
   default     = false
 }
 
+variable "log_export_storage_versioning" {
+  description = "(Optional) Toggles bucket versioning, ability to retain a non-current object version when the live object version gets replaced or deleted."
+  type        = bool
+  default     = false
+}
+
 variable "audit_logs_table_delete_contents_on_destroy" {
   description = "(Optional) If set to true, delete all the tables in the dataset when destroying the resource; otherwise, destroying the resource will fail if tables are present."
   type        = bool
@@ -131,6 +149,42 @@ variable "dns_hub_project_alert_pubsub_topic" {
 
 variable "dns_hub_project_budget_amount" {
   description = "The amount to use as the budget for the DNS hub project."
+  type        = number
+  default     = 1000
+}
+
+variable "base_net_hub_project_alert_spent_percents" {
+  description = "A list of percentages of the budget to alert on when threshold is exceeded for the base net hub project."
+  type        = list(number)
+  default     = [0.5, 0.75, 0.9, 0.95]
+}
+
+variable "base_net_hub_project_alert_pubsub_topic" {
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the base net hub project."
+  type        = string
+  default     = null
+}
+
+variable "base_net_hub_project_budget_amount" {
+  description = "The amount to use as the budget for the base net hub project."
+  type        = number
+  default     = 1000
+}
+
+variable "restricted_net_hub_project_alert_spent_percents" {
+  description = "A list of percentages of the budget to alert on when threshold is exceeded for the restricted net hub project."
+  type        = list(number)
+  default     = [0.5, 0.75, 0.9, 0.95]
+}
+
+variable "restricted_net_hub_project_alert_pubsub_topic" {
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the restricted net hub project."
+  type        = string
+  default     = null
+}
+
+variable "restricted_net_hub_project_budget_amount" {
+  description = "The amount to use as the budget for the restricted net hub project."
   type        = number
   default     = 1000
 }
@@ -224,4 +278,16 @@ variable "scc_notifications_project_budget_amount" {
   description = "The amount to use as the budget for the SCC notifications project."
   type        = number
   default     = 1000
+}
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
 }

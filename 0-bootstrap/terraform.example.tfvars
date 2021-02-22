@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ group_billing_admins = "gcp-billing-admins@example.com"
 
 default_region = "australia-southeast1"
 
-//Optional - for development.  Will place all resources under a specific folder instead of org root
+//Optional - for development or for the organisation with existing projects.
+//Will place all resources under a specific folder instead of org root
 //parent_folder = "01234567890"
 
 /* ----------------------------------------

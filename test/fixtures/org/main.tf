@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,4 +33,7 @@ module "test" {
   create_access_context_manager_access_policy = false
   audit_logs_table_delete_contents_on_destroy = true
   log_export_storage_force_destroy            = true
+  enable_os_login_policy                      = true
+  project_prefix                              = var.project_prefix
+  enable_hub_and_spoke                        = var.enable_hub_and_spoke
 }

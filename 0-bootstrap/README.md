@@ -6,8 +6,9 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 
 1. A GCP [Organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization)
 1. A GCP [Billing Account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
-1. Cloud Identity / G Suite groups for organization and billing admins
-1. Membership in the `group_org_admins` group for user running terraform
+1. Cloud Identity / Google Workspace (former G Suite) groups for organization and billing admins
+1. User account should be used for running this step, service accounts are not supported.
+1. Membership in the `group_org_admins` group for user running terraform.
 1. Grant the roles mentioned in bootstrap [README.md](https://github.com/terraform-google-modules/terraform-google-bootstrap#permissions), as well as `roles/resourcemanager.folderCreator` for the user running the step.
 
 Further details of permissions required and resources created, can be found in the bootstrap module [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
@@ -36,6 +37,10 @@ If you are using the `jenkins_bootstrap` sub-module, please see [README-Jenkins]
 1. Copy tfvars by running `cp terraform.example.tfvars terraform.tfvars` and update `terraform.tfvars` with values from your environment.
 1. Run `terraform init`
 1. Run `terraform plan` and review output
+1. To run terraform-validator steps please follow these [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) and install the latest version.
+    1. Run `terraform plan -input=false -out bootstrap.tfplan`
+    1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
+    1. Run `terraform-validator validate bootstrap.json --policy-path="../policy-library" --project <A-VALID-PROJECT>` and check for violations.
 1. Run `terraform apply`
 1. Run `terraform output gcs_bucket_tfstate` to get your GCS bucket from the apply step
 1. Copy the backend by running `cp backend.tf.example backend.tf` and update `backend.tf` with your GCS bucket.
@@ -55,14 +60,16 @@ Currently, the bucket information is replaced in the state backends as a part of
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| cloud\_source\_repos | List of Cloud Source Repositories created during bootstrap project build stage | `list(string)` | <pre>[<br>  "gcp-org",<br>  "gcp-environments",<br>  "gcp-networks",<br>  "gcp-projects",<br>  "gcp-policies"<br>]</pre> | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
+| folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
-| skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module) | `bool` | `true` | no |
+| project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 
 ## Outputs
 

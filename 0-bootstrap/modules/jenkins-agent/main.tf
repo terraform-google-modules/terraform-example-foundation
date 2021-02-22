@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ resource "random_id" "suffix" {
 *******************************************/
 module "cicd_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 8.0"
+  version                     = "~> 10.0"
   name                        = local.cicd_project_name
   random_project_id           = true
   disable_services_on_destroy = false
@@ -39,7 +39,6 @@ module "cicd_project" {
   billing_account             = var.billing_account
   activate_apis               = local.activate_apis
   labels                      = var.project_labels
-  skip_gcloud_download        = var.skip_gcloud_download
 }
 
 /******************************************

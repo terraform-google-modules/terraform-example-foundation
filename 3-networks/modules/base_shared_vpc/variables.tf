@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,12 @@ variable "org_id" {
 variable "project_id" {
   type        = string
   description = "Project ID for Private Shared VPC."
+}
+
+variable "mode" {
+  type        = string
+  description = "Network deployment mode, should be set to `hub` or `spoke` when `enable_hub_and_spoke` architecture choosen, keep as `null` otherwise."
+  default     = null
 }
 
 variable "environment_code" {
@@ -106,6 +112,7 @@ variable "domain" {
 variable "private_service_cidr" {
   type        = string
   description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
+  default     = null
 }
 
 variable "windows_activation_enabled" {
@@ -130,4 +137,10 @@ variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string
   default     = ""
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,21 +60,21 @@ output "subnets_secondary_ranges" {
 }
 
 output "region1_router1" {
-  value       = module.region1_router1
+  value       = try(module.region1_router1[0], null)
   description = "Router 1 for Region 1"
 }
 
 output "region1_router2" {
-  value       = module.region1_router2
+  value       = try(module.region1_router2[0], null)
   description = "Router 2 for Region 1"
 }
 
 output "region2_router1" {
-  value       = module.region2_router1
+  value       = try(module.region2_router1[0], null)
   description = "Router 1 for Region 2"
 }
 
 output "region2_router2" {
-  value       = module.region2_router2
+  value       = try(module.region2_router2[0], null)
   description = "Router 2 for Region 2"
 }

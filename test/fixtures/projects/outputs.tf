@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -257,4 +257,9 @@ output "prod_bu2_restricted_apis" {
 output "access_context_manager_policy_id" {
   description = "Access Context Manager Policy ID."
   value       = var.policy_id
+}
+
+output "enable_hub_and_spoke" {
+  description = "Hub and Spoke enabled."
+  value       = var.enable_hub_and_spoke
 }

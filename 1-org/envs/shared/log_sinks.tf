@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,12 +35,12 @@ resource "random_string" "suffix" {
 }
 
 /******************************************
-  Send logs to BigQury
+  Send logs to BigQuery
 *****************************************/
 
 module "log_export_to_biqquery" {
   source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 5.0"
+  version                = "~> 5.1.0"
   destination_uri        = module.bigquery_destination.destination_uri
   filter                 = local.main_logs_filter
   log_sink_name          = "sk-c-logging-bq"
@@ -48,11 +48,14 @@ module "log_export_to_biqquery" {
   parent_resource_type   = local.parent_resource_type
   include_children       = true
   unique_writer_identity = true
+  bigquery_options = {
+    use_partitioned_tables = true
+  }
 }
 
 module "bigquery_destination" {
   source                     = "terraform-google-modules/log-export/google//modules/bigquery"
-  version                    = "~> 5.0"
+  version                    = "~> 5.1.0"
   project_id                 = module.org_audit_logs.project_id
   dataset_name               = "audit_logs"
   log_sink_writer_identity   = module.log_export_to_biqquery.writer_identity
@@ -66,7 +69,7 @@ module "bigquery_destination" {
 
 module "log_export_to_storage" {
   source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 5.0"
+  version                = "~> 5.1.0"
   destination_uri        = module.storage_destination.destination_uri
   filter                 = local.all_logs_filter
   log_sink_name          = "sk-c-logging-bkt"
@@ -78,7 +81,7 @@ module "log_export_to_storage" {
 
 module "storage_destination" {
   source                      = "terraform-google-modules/log-export/google//modules/storage"
-  version                     = "~> 5.0"
+  version                     = "~> 5.1.0"
   project_id                  = module.org_audit_logs.project_id
   storage_bucket_name         = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
   log_sink_writer_identity    = module.log_export_to_storage.writer_identity
@@ -86,6 +89,7 @@ module "storage_destination" {
   location                    = var.log_export_storage_location
   retention_policy            = var.log_export_storage_retention_policy
   force_destroy               = var.log_export_storage_force_destroy
+  versioning                  = var.log_export_storage_versioning
 }
 
 /******************************************
@@ -94,7 +98,7 @@ module "storage_destination" {
 
 module "log_export_to_pubsub" {
   source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 5.0"
+  version                = "~> 5.1.0"
   destination_uri        = module.pubsub_destination.destination_uri
   filter                 = local.main_logs_filter
   log_sink_name          = "sk-c-logging-pub"
@@ -106,7 +110,7 @@ module "log_export_to_pubsub" {
 
 module "pubsub_destination" {
   source                   = "terraform-google-modules/log-export/google//modules/pubsub"
-  version                  = "~> 5.0"
+  version                  = "~> 5.1.0"
   project_id               = module.org_audit_logs.project_id
   topic_name               = "tp-org-logs-${random_string.suffix.result}"
   log_sink_writer_identity = module.log_export_to_pubsub.writer_identity

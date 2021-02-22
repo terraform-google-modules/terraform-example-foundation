@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,12 @@ locals {
   prefix            = "${var.environment_code}_shared_restricted"
   access_level_name = "alp_${local.prefix}_members_${random_id.random_access_level_suffix.hex}"
   perimeter_name    = "sp_${local.prefix}_default_perimeter_${random_id.random_access_level_suffix.hex}"
+  bridge_name       = "spb_c_to_${local.prefix}_bridge_${random_id.random_access_level_suffix.hex}"
+}
+
+data "google_project" "restricted_net_hub" {
+  count      = var.mode == "spoke" ? 1 : 0
+  project_id = data.google_projects.restricted_net_hub[0].projects[0].project_id
 }
 
 resource "random_id" "random_access_level_suffix" {
@@ -53,4 +59,18 @@ resource "google_access_context_manager_service_perimeter" "regular_service_peri
   lifecycle {
     ignore_changes = [status[0].resources]
   }
+}
+
+resource "google_access_context_manager_service_perimeter" "bridge_to_network_hub_perimeter" {
+  count          = var.mode == "spoke" ? 1 : 0
+  perimeter_type = "PERIMETER_TYPE_BRIDGE"
+  parent         = "accessPolicies/${var.access_context_manager_policy_id}"
+  name           = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${local.bridge_name}"
+  title          = local.bridge_name
+
+  status {
+    resources = formatlist("projects/%s", [var.project_number, data.google_project.restricted_net_hub[0].number])
+  }
+
+  depends_on = [google_access_context_manager_service_perimeter.regular_service_perimeter]
 }

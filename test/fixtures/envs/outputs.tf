@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,17 +30,17 @@ output "dev_monitoring_project_id" {
 }
 
 output "dev_base_shared_vpc_project_id" {
-  description = "Development project for monitoring infra."
+  description = "Development project for base shared VPC."
   value       = module.development.base_shared_vpc_project_id
 }
 
 output "dev_restricted_shared_vpc_project_id" {
-  description = "Development project for monitoring infra."
+  description = "Development project for restricted shared VPC."
   value       = module.development.restricted_shared_vpc_project_id
 }
 
 output "dev_env_secrets_project_id" {
-  description = "Development project for monitoring infra."
+  description = "Development project for environment secrets."
   value       = module.development.env_secrets_project_id
 }
 
@@ -55,17 +55,17 @@ output "nonprod_monitoring_project_id" {
 }
 
 output "nonprod_base_shared_vpc_project_id" {
-  description = "Non-production project for monitoring infra."
+  description = "Non-production project for base shared VPC."
   value       = module.non-production.base_shared_vpc_project_id
 }
 
 output "nonprod_restricted_shared_vpc_project_id" {
-  description = "Non-production project for monitoring infra."
+  description = "Non-production project for restricted shared VPC."
   value       = module.non-production.restricted_shared_vpc_project_id
 }
 
 output "nonprod_env_secrets_project_id" {
-  description = "Non-production project for monitoring infra."
+  description = "Non-production project for environment secrets."
   value       = module.non-production.env_secrets_project_id
 }
 
@@ -80,16 +80,16 @@ output "prod_monitoring_project_id" {
 }
 
 output "prod_base_shared_vpc_project_id" {
-  description = "Production project for monitoring infra."
+  description = "Production project for base shared VPC."
   value       = module.production.base_shared_vpc_project_id
 }
 
 output "prod_restricted_shared_vpc_project_id" {
-  description = "Production project for monitoring infra."
+  description = "Production project for restricted shared VPC."
   value       = module.production.restricted_shared_vpc_project_id
 }
 
 output "prod_env_secrets_project_id" {
-  description = "Production project for monitoring infra."
+  description = "Production project for environment secrets."
   value       = module.production.env_secrets_project_id
 }

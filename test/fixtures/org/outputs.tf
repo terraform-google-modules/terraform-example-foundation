@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,16 @@ output "dns_hub_project_id" {
   description = "The DNS hub project ID"
 }
 
+output "base_net_hub_project_id" {
+  value       = module.test.base_net_hub_project_id
+  description = "The Base net hub project ID"
+}
+
+output "restricted_net_hub_project_id" {
+  value       = module.test.restricted_net_hub_project_id
+  description = "The Restricted net hub project ID"
+}
+
 output "domains_to_allow" {
   value       = module.test.domains_to_allow
   description = "The list of domains to allow users from in IAM."
@@ -82,4 +92,9 @@ output "logs_export_pubsub_topic" {
 output "logs_export_storage_bucket_name" {
   value       = module.test.logs_export_storage_bucket_name
   description = "The storage bucket for destination of log exports"
+}
+
+output "enable_hub_and_spoke" {
+  value       = var.enable_hub_and_spoke
+  description = "Hub-and-Spoke architecture enabled"
 }

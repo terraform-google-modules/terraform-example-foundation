@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,4 +36,14 @@ variable "terraform_sa_email" {
 
 variable "domain_to_allow" {
   description = "The test domain_to_allow allow users from in IAM."
+}
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+}
+
+variable "enable_hub_and_spoke" {
+  description = "Enable Hub-and-Spoke architecture."
+  type        = bool
 }

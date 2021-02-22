@@ -1,0 +1,120 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-cmek-settings-v1
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPCMEKSettingsConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties: {}
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: | #INLINE("validator/cmek_settings.rego")
+           #
+           # Copyright 2021 Google LLC
+           #
+           # Licensed under the Apache License, Version 2.0 (the "License");
+           # you may not use this file except in compliance with the License.
+           # You may obtain a copy of the License at
+           #
+           #      http://www.apache.org/licenses/LICENSE-2.0
+           #
+           # Unless required by applicable law or agreed to in writing, software
+           # distributed under the License is distributed on an "AS IS" BASIS,
+           # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           # See the License for the specific language governing permissions and
+           # limitations under the License.
+           #
+           package templates.gcp.GCPCMEKSettingsConstraintV1
+
+           import data.validator.gcp.lib as lib
+
+           deny[{
+           	"msg": message,
+           	"details": metadata,
+           }] {
+           	constraint := input.constraint
+           	lib.get_constraint_params(constraint, params)
+           	asset := input.asset
+           	asset.asset_type == "cloudkms.googleapis.com/CryptoKey"
+
+           	invalid_key_settings(params, asset.resource.data)
+
+           	message := sprintf("%v: CMEK settings are invalid.", [asset.name])
+           	metadata := {"resource": asset.name}
+           }
+
+           check_protection_level(params, key) = result {
+           	not params.protection_level
+           	result = true
+           }
+
+           check_protection_level(params, key) = result {
+           	result = params.protection_level == key.primary.protectionLevel
+           }
+
+           check_algorithm(params, key) = result {
+           	not params.algorithm
+           	result = true
+           }
+
+           check_algorithm(params, key) = result {
+           	result = params.algorithm == key.primary.algorithm
+           }
+
+           check_purpose(params, key) = result {
+           	not params.purpose
+           	result = true
+           }
+
+           check_purpose(params, key) = result {
+           	result = params.purpose == key.purpose
+           }
+
+           check_rotation_period(params, key) = result {
+           	# The rotation period for a key may be "never".  This results
+           	# in the rotationPeriod attribute to be omitted from response
+           	# from the CAI.  The default is 99999999s.  This is
+           	# sufficiently high enough to cause fail
+           	rotation_period_string := lib.get_default(key, "rotationPeriod", "99999999s")
+           	rotation_period := time.parse_duration_ns(rotation_period_string)
+
+           	period_string := lib.get_default(params, "rotation_period", "31536000s")
+           	period_to_test := time.parse_duration_ns(period_string)
+
+           	result = rotation_period <= period_to_test
+           }
+
+           invalid_key_settings(params, key) {
+           	check_protection_level(params, key) != true
+           }
+
+           invalid_key_settings(params, key) {
+           	check_rotation_period(params, key) != true
+           }
+
+           invalid_key_settings(params, key) {
+           	check_algorithm(params, key) != true
+           }
+
+           invalid_key_settings(params, key) {
+           	check_purpose(params, key) != true
+           }
+           #ENDINLINE

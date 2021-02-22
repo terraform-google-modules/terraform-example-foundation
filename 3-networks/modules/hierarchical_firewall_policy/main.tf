@@ -18,9 +18,15 @@ locals {
   policy_id = google_compute_organization_security_policy.policy.id
 }
 
+resource "random_string" "suffix" {
+  length  = 4
+  upper   = false
+  special = false
+}
+
 resource "google_compute_organization_security_policy" "policy" {
   provider     = google-beta
-  display_name = var.name
+  display_name = "${var.name}-${random_string.suffix.result}"
   parent       = var.parent
 }
 

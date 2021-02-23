@@ -29,11 +29,6 @@ output "peering_project" {
   value       = module.peering_project.project_id
 }
 
-output "env_secrets_project" {
-  description = "Project sample peering project id."
-  value       = module.env_secrets_project.project_id
-}
-
 output "peering_network" {
   description = "Peer network peering resource."
   value       = module.peering.peer_network_peering
@@ -69,6 +64,11 @@ output "peering_complete" {
   value       = module.peering.complete
 }
 
+output "env_secrets_project" {
+  description = "Project sample peering project id."
+  value       = module.env_secrets_project.project_id
+}
+
 output "keyring" {
   description = "The name of the keyring."
   value       = module.kms.keyring
@@ -81,5 +81,5 @@ output "keys" {
 
 output "bucket" {
   description = "The created storage bucket"
-  value       = google_storage_bucket.bucket
+  value       = module.gcs_buckets.bucket
 }

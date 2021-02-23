@@ -36,40 +36,35 @@ module "env_secrets_project" {
   business_code     = "bu1"
 }
 
+data "google_storage_project_service_account" "gcs_account" {
+}
+
 module "kms" {
   source  = "terraform-google-modules/kms/google"
   version = "~> 1.2"
 
-  project_id = module.env_secrets_project.project_id
-  keyring    = "sample-keyring"
-  location   = "global"
-  keys       = ["crypto-key-example"]
+  project_id          = module.env_secrets_project.project_id
+  keyring             = "sample-keyring"
+  location            = "global"
+  keys                = ["crypto-key-example"]
+  key_rotation_period = "7776000s" # 90 days
+  encrypters          = ["serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"]
+  set_encrypters_for  = ["crypto-key-example"]
 }
 
-data "google_storage_project_service_account" "gcs_account" {
+resource "random_string" "bucket_name" {
+  length  = 5
+  upper   = false
+  number  = true
+  lower   = true
+  special = false
 }
 
-data "google_iam_policy" "admin" {
-  binding {
-    role = "roles/cloudkms.cryptoKeyEncrypter"
-
-    members = [
-      "serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"
-    ]
-  }
-}
-
-resource "google_kms_crypto_key_iam_policy" "crypto_key" {
-  crypto_key_id = module.kms.keys
-  policy_data   = data.google_iam_policy.admin.policy_data
-}
-
-
-resource "google_storage_bucket" "bucket" {
-  name    = "cmek-encrypted-bucket"
-  project = module.base_shared_vpc_project.project_id
-  encryption {
-    default_kms_key_name = module.kms.keys
-  }
-  depends_on = [google_kms_crypto_key_iam_policy.crypto_key]
+module "gcs_buckets" {
+  source               = "terraform-google-modules/cloud-storage/google"
+  version              = "~> 1.7"
+  project_id           = module.base_shared_vpc_project.project_id
+  names                = [random_string.bucket_name]
+  prefix               = "cmek-encrypted-bucket"
+  encryption_key_names = module.kms.keys
 }

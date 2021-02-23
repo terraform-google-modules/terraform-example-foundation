@@ -110,3 +110,8 @@ variable "enable_hub_and_spoke" {
   type        = bool
   default     = false
 }
+
+variable "app_infra_pipeline_cloudbuild_sa" {
+  description = "Cloud Build SA used for deploying infrastructure"
+  type        = string
+}

@@ -164,23 +164,29 @@ example-organization/
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
+    ├── prj-bu1-d-sample-peering
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
-    └── prj-bu2-d-sample-restrict
+    ├── prj-bu2-d-sample-restrict
+    └── prj-bu2-d-sample-peering
 └── fldr-non-production
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
+    ├── prj-bu1-n-sample-peering
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
-    └── prj-bu2-n-sample-restrict
+    ├── prj-bu2-n-sample-restrict
+    └── prj-bu2-n-sample-peering
 └── fldr-production
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
+    ├── prj-bu1-p-sample-peering
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
-    └── prj-bu2-p-sample-restrict
+    ├── prj-bu2-p-sample-restrict
+    └── prj-bu2-p-sample-peering
 └── fldr-common
     ├── prj-bu1-s-sample-infra
     └── prj-bu2-s-sample-infra
@@ -210,9 +216,11 @@ example-organization
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
+    ├── prj-bu1-d-sample-peering
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
     ├── prj-bu2-d-sample-restrict
+    ├── prj-bu2-d-sample-peering
     ├── prj-d-monitoring
     ├── prj-d-secrets
     ├── prj-d-shared-base
@@ -221,9 +229,11 @@ example-organization
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
+    ├── prj-bu1-n-sample-peering
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
     ├── prj-bu2-n-sample-restrict
+    ├── prj-bu2-n-sample-peering
     ├── prj-n-monitoring
     ├── prj-n-secrets
     ├── prj-n-shared-base
@@ -232,9 +242,11 @@ example-organization
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
+    ├── prj-bu1-p-sample-peering
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
     ├── prj-bu2-p-sample-restrict
+    ├── prj-bu2-p-sample-peering
     ├── prj-p-monitoring
     ├── prj-p-secrets
     ├── prj-p-shared-base

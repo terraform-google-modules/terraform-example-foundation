@@ -40,6 +40,10 @@ prod_bu2_project_peering = attribute('prod_bu2_project_peering')
 prod_bu2_project_restricted_id = attribute('prod_bu2_project_restricted')
 restricted_enabled_apis = ['accesscontextmanager.googleapis.com', 'billingbudgets.googleapis.com']
 
+shared_bu1_build_project = attribute('shared_bu1_build_project')
+shared_bu2_build_project = attribute('shared_bu2_build_project')
+shared_apis_enabled = ['cloudbuild.googleapis.com','sourcerepo.googleapis.com','cloudkms.googleapis.com']
+
 environment_codes = %w[d n p]
 business_units = %w[bu1 bu2]
 
@@ -65,6 +69,10 @@ peering_projects_id = {
   'd' => { 'bu1' => dev_bu1_project_peering, 'bu2' => dev_bu2_project_peering },
   'n' => { 'bu1' => nonprod_bu1_project_peering, 'bu2' => nonprod_bu2_project_peering },
   'p' => { 'bu1' => prod_bu1_project_peering, 'bu2' => prod_bu2_project_peering }
+}
+
+shared_project_id = {
+  's' => { 'bu1' => shared_bu1_build_project, 'bu2' => shared_bu2_build_project }
 }
 
 control 'gcp-projects' do
@@ -100,6 +108,22 @@ control 'gcp-projects' do
           it { should exist }
           its('state') { should cmp 'ENABLED' }
         end
+      end
+    end
+  end
+
+  business_units.each do |business_unit|
+    describe google_project(project: shared_project_id['s'][business_unit]) do
+      it { should exist }
+      its('lifecycle_state') { should cmp 'ACTIVE' }
+    end
+    shared_apis_enabled.each do |api|
+      describe google_project_service(
+        project: shared_project_id['s'][business_unit],
+        name: api
+      ) do
+        it { should exist }
+        its('state') { should cmp 'ENABLED' }
       end
     end
   end

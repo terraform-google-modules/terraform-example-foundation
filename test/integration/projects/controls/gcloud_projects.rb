@@ -191,7 +191,7 @@ control 'gcloud-projects' do
             expect(data['bindings'][0]['members']).to include(
               "serviceAccount:#{cloudbuild_sa[business_unit]}"
             )
-            expect(data['bindings'][0]['role']).to eq "roles/iam.serviceAccountTokenCreator"
+            expect(data['bindings'][0]['role']).to eq "roles/iam.serviceAccountTokenCreator", "roles/editor"
           end
         end
       end

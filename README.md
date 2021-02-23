@@ -155,7 +155,7 @@ Usage instructions are available for the networks step in the [README](./3-netwo
 
 ### [4. projects](./4-projects/)
 
-This step, is focused on creating service projects with a standard configuration and that are attached to the Shared VPC created in the previous step.
+This step is focused on creating service projects with a standard configuration that are attached to the Shared VPC created in the previous step and application infrastructure pipelines.
 Running this code as-is should generate a structure as shown below:
 
 ```
@@ -181,6 +181,9 @@ example-organization/
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
     └── prj-bu2-p-sample-restrict
+└── fldr-common
+    ├── prj-bu1-s-sample-infra
+    └── prj-bu2-s-sample-infra
 ```
 The code in this step includes two options for creating projects.
 The first is the standard projects module which creates a project per environment and the second creates a standalone project for one environment.
@@ -200,7 +203,9 @@ example-organization
     ├── prj-c-dns-hub
     ├── prj-c-interconnect
     ├── prj-c-scc
-    └── prj-c-secrets
+    ├── prj-c-secrets
+    ├── prj-bu1-s-sample-infra
+    └── prj-bu2-s-sample-infra
 └── fldr-development
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base

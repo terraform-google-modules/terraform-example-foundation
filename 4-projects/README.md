@@ -1,6 +1,6 @@
 # 4-projects
 
-The purpose of this step is to set up folder structure and projects for applications, which are connected as service projects to the shared VPC created in the previous stage.
+The purpose of this step is to set up folder structure, projects and infrastructure pipelines for applications, which are connected as service projects to the shared VPC created in the previous stage. For each business unit, a shared `sample-infra` project is created along with Cloud Build triggers, CSRs for application infrastructure code, GCS buckets for state storage and follows the same [conventions](https://github.com/terraform-google-modules/terraform-example-foundation#branching-strategy) as the foundation pipeline deployed in [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md). The cloudbuild SA used by this pipeline can impersonate the project SA by enabling the `enable_cloudbuild_deploy` flag and necessary roles can be granted to this SA via `sa_roles` as show in this [example](business_unit_1/development/example_base_shared_vpc_project.tf). This pipeline can be utilized for deploying resources in projects across development/non-production/production with granular permissions.
 
 ## Prerequisites
 
@@ -29,11 +29,11 @@ If your user does not have access to run the commands above and you are in the o
 1. Commit changes with `git add .` and `git commit -m 'Your message'`.
 1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. Merge changes to production with `git checkout -b production` and `git push origin production`.
+    1. Review the apply output in your cloud build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to development with `git checkout -b development` and `git push origin development`.
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to non-production with `git checkout -b non-production` and `git push origin non-production`.
-    1. Review the apply output in your cloud build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to production with `git checkout -b production` and `git push origin production`.
     1. Review the apply output in your cloud build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 
@@ -58,12 +58,12 @@ If your user does not have access to run the commands above and you are in the o
 1. Push your plan branch `git push --set-upstream origin plan`. The branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan.
     - Assuming you configured an automatic trigger in your Jenkins Master (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
     1. Review the plan output in your Master's web UI.
+1. Merge changes to production branch with `git checkout -b production` and `git push origin production`.
+    1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 1. After production has been applied apply development and non-production.
 1. Merge changes to development branch with `git checkout -b development` and `git push origin development`.
     1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 1. Merge changes to non-production branch with `git checkout -b non-production` and `git push origin non-production`.
-    1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-1. Merge changes to production branch with `git checkout -b production` and `git push origin production`.
     1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 
 1. You can now move to the instructions in the step [4-projects](../4-projects/README.md).
@@ -85,6 +85,10 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 
 To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in you `PATH`.
 
+1. Run `./tf-wrapper.sh init shared`.
+1. Run `./tf-wrapper.sh plan shared` and review output.
+1. Run `./tf-wrapper.sh validate shared $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
+1. Run `./tf-wrapper.sh apply shared`.
 1. Run `./tf-wrapper.sh init production`.
 1. Run `./tf-wrapper.sh plan production` and review output.
 1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.

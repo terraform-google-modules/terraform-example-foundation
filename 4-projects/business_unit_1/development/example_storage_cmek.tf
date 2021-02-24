@@ -37,6 +37,7 @@ module "env_secrets_project" {
 }
 
 data "google_storage_project_service_account" "gcs_account" {
+  project = module.base_shared_vpc_project.project_id
 }
 
 module "kms" {

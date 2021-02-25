@@ -24,7 +24,7 @@ module "env_secrets_project" {
   alert_spent_percents        = var.alert_spent_percents
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
-  project_suffix              = "sample-env-secrets"
+  project_suffix              = "env-secrets"
 
   activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 
@@ -65,7 +65,7 @@ module "gcs_buckets" {
   source               = "terraform-google-modules/cloud-storage/google"
   version              = "~> 1.7"
   project_id           = module.base_shared_vpc_project.project_id
-  names                = [random_string.bucket_name]
+  names                = tolist(random_string.bucket_name.result)
   prefix               = "cmek-encrypted-bucket"
   encryption_key_names = module.kms.keys
 }

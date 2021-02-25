@@ -19,6 +19,11 @@ output "base_shared_vpc_project" {
   value       = module.base_shared_vpc_project.project_id
 }
 
+output "base_shared_vpc_project_sa" {
+  description = "Project sample base project SA."
+  value       = module.base_shared_vpc_project.sa
+}
+
 output "floating_project" {
   description = "Project sample floating project."
   value       = module.floating_project.project_id

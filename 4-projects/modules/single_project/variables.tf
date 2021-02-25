@@ -124,3 +124,21 @@ variable "enable_hub_and_spoke" {
   type        = bool
   default     = false
 }
+
+variable "sa_roles" {
+  description = "A list of roles to give the Service Account for the project (defaults to none)"
+  type        = list(string)
+  default     = []
+}
+
+variable "enable_cloudbuild_deploy" {
+  description = "Enable infra deployment using Cloud Build"
+  type        = bool
+  default     = false
+}
+
+variable "cloudbuild_sa" {
+  description = "The Cloud Build SA used for deploying infrastructure in this project. It will impersonate the new default SA created"
+  type        = string
+  default     = ""
+}

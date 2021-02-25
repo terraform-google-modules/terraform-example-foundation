@@ -51,6 +51,7 @@ module "kms" {
   key_rotation_period = "7776000s" # 90 days
   encrypters          = ["serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"]
   set_encrypters_for  = ["crypto-key-example"]
+  prevent_destroy     = "false"
 }
 
 resource "random_string" "bucket_name" {
@@ -65,7 +66,8 @@ module "gcs_buckets" {
   source               = "terraform-google-modules/cloud-storage/google"
   version              = "~> 1.7"
   project_id           = module.base_shared_vpc_project.project_id
-  names                = tolist(random_string.bucket_name.result)
+  names                = [random_string.bucket_name.result]
   prefix               = "cmek-encrypted-bucket"
   encryption_key_names = module.kms.keys
+  depends_on           = [random_string.bucket_name]
 }

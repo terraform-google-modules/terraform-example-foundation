@@ -208,7 +208,7 @@ control 'gcloud-projects' do
             expect(data['bindings'][0]['role']).to eq "roles/editor"
           end
         end
-      end
+      
     
       describe command("gcloud compute shared-vpc get-host-project #{restricted_projects_id[environment_code][business_unit]} --format=json") do
         its(:exit_status) { should eq 0 }

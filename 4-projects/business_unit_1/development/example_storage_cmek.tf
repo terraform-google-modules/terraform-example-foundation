@@ -68,6 +68,5 @@ module "gcs_buckets" {
   project_id           = module.base_shared_vpc_project.project_id
   names                = [random_string.bucket_name.result]
   prefix               = "cmek-encrypted-bucket"
-  encryption_key_names = module.kms.keys
-  depends_on           = [random_string.bucket_name]
+  encryption_key_names = zipmap([random_string.bucket_name.result], values(module.kms.keys))
 }

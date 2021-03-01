@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cloudbuild_project_id = attribute('cloudbuild_project_id')
+cloudbuild_project_id = attribute('project_id')
 branches_regex = '^(development|non\\-production|production)$'
 cloud_source_repos = [
-  'app_infra_repo'
+  'repos'
 ]
 
 control 'gcloud_cloudbuild' do
@@ -26,7 +26,7 @@ control 'gcloud_cloudbuild' do
       "gcloud beta builds triggers list \
       --project #{cloudbuild_project_id} \
       --filter \"trigger_template.branch_name='#{branches_regex}' AND \
-      trigger_template.repo_name='#{repo}' AND \
+      trigger_template.repo_name='#{cloud_source_repos}' AND \
       substitutions._TF_ACTION='apply'\" --format=json"
     ) do
       its(:exit_status) { should eq 0 }
@@ -66,7 +66,7 @@ control 'gcloud_cloudbuild' do
         end
       end
 
-      describe "trigger for repo #{repo} and branch name #{branches_regex}" do
+      describe "trigger for repo #{cloud_source_repos} and branch name #{branches_regex}" do
         it 'should exist' do
           expect(data).to_not be_empty
         end

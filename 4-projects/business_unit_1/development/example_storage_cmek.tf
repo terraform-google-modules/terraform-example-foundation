@@ -24,7 +24,7 @@ module "env_secrets_project" {
   alert_spent_percents        = var.alert_spent_percents
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
-  project_suffix              = "env-secrets"
+  project_suffix              = var.secrets_prj_suffix
 
   activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 
@@ -45,12 +45,14 @@ module "kms" {
   version = "~> 1.2"
 
   project_id          = module.env_secrets_project.project_id
-  keyring             = "sample-keyring"
-  location            = "global"
-  keys                = ["crypto-key-example"]
-  key_rotation_period = "7776000s" # 90 days
+  keyring             = var.keyring_name
+  location            = lower(var.location)
+  keys                = [var.key_name]
+  key_rotation_period = var.key_rotation_period
   encrypters          = ["serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"]
-  set_encrypters_for  = ["crypto-key-example"]
+  set_encrypters_for  = [var.key_name]
+  decrypters          = ["serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"]
+  set_decrypters_for  = [var.key_name]
   prevent_destroy     = "false"
 }
 
@@ -66,7 +68,8 @@ module "gcs_buckets" {
   source               = "terraform-google-modules/cloud-storage/google"
   version              = "~> 1.7"
   project_id           = module.base_shared_vpc_project.project_id
+  location             = var.location
   names                = [random_string.bucket_name.result]
-  prefix               = "cmek-encrypted-bucket"
+  prefix               = var.gcs_bucket_prefix
   encryption_key_names = zipmap([random_string.bucket_name.result], values(module.kms.keys))
 }

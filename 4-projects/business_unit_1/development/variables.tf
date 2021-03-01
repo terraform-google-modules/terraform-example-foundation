@@ -109,3 +109,39 @@ variable "app_infra_pipeline_cloudbuild_sa" {
   description = "Cloud Build SA used for deploying infrastructure"
   type        = string
 }
+
+variable "secrets_prj_suffix" {
+  description = "Name suffix to use for secrets project created."
+  type        = string
+  default     = "env-secrets"
+}
+
+variable "location" {
+  description = "Location for KMS Keyring, and GCS Bucket"
+  type        = string
+  default     = "US"
+}
+
+variable "keyring_name" {
+  description = "Name to be used for KMS Keyring"
+  type        = string
+  default     = "sample-keyring"
+}
+
+variable "key_name" {
+  description = "Name to be used for KMS Key"
+  type        = string
+  default     = "crypto-key-example"
+}
+
+variable "key_rotation_period" {
+  description = "Rotation period in seconds to be used for KMS Key"
+  type        = string
+  default     = "7776000s"
+}
+
+variable "gcs_bucket_prefix" {
+  description = "Name prefix to be used for GCS Bucket"
+  type        = string
+  default     = "cmek-encrypted-bucket"
+}

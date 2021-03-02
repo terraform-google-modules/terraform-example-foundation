@@ -46,7 +46,7 @@ module "kms" {
 
   project_id          = module.env_secrets_project.project_id
   keyring             = var.keyring_name
-  location            = lower(var.location)
+  location            = var.location_kms
   keys                = [var.key_name]
   key_rotation_period = var.key_rotation_period
   encrypters          = ["serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"]
@@ -68,7 +68,7 @@ module "gcs_buckets" {
   source               = "terraform-google-modules/cloud-storage/google"
   version              = "~> 1.7"
   project_id           = module.base_shared_vpc_project.project_id
-  location             = var.location
+  location             = var.location_gcs
   names                = [random_string.bucket_name.result]
   prefix               = var.gcs_bucket_prefix
   encryption_key_names = zipmap([random_string.bucket_name.result], values(module.kms.keys))

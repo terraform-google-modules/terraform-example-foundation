@@ -16,7 +16,8 @@
 | key\_name | Name to be used for KMS Key | `string` | `"crypto-key-example"` | no |
 | key\_rotation\_period | Rotation period in seconds to be used for KMS Key | `string` | `"7776000s"` | no |
 | keyring\_name | Name to be used for KMS Keyring | `string` | `"sample-keyring"` | no |
-| location | Location for KMS Keyring, and GCS Bucket | `string` | `"US"` | no |
+| location\_gcs | Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring) | `string` | `"US"` | no |
+| location\_kms | Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket) | `string` | `"us"` | no |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |

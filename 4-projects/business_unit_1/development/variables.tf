@@ -116,8 +116,14 @@ variable "secrets_prj_suffix" {
   default     = "env-secrets"
 }
 
-variable "location" {
-  description = "Location for KMS Keyring, and GCS Bucket"
+variable "location_kms" {
+  description = "Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket)"
+  type        = string
+  default     = "us"
+}
+
+variable "location_gcs" {
+  description = "Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring)"
   type        = string
   default     = "US"
 }

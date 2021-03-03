@@ -28,8 +28,8 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
 | domain | The DNS name of forwarding managed zone, for instance 'example.com' | `string` | n/a | yes |
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
-| enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | enable\_hub\_and\_spoke\_transitivity | Enable transitivity via gateway VMs on Hub-and-Spoke architecture. | `bool` | `false` | no |
+| enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | org\_id | Organization ID | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |

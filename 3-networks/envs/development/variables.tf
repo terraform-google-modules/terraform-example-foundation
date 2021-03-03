@@ -127,3 +127,15 @@ variable "enable_hub_and_spoke" {
   type        = bool
   default     = false
 }
+
+variable "enable_partner_interconnect" {
+  description = "Enable Partner Interconnect in the environment."
+  type        = bool
+  default     = false
+}
+
+variable "preactivate_partner_interconnect" {
+  description = "Preactivate Partner Interconnect VLAN attachment in the environment."
+  type        = bool
+  default     = false
+}

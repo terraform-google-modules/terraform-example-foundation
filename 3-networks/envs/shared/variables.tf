@@ -192,3 +192,15 @@ variable "restricted_hub_nat_num_addresses_region2" {
   description = "Number of external IPs to reserve for second Cloud NAT in Restricted Hub."
   default     = 2
 }
+
+variable "enable_partner_interconnect" {
+  description = "Enable Partner Interconnect in the environment."
+  type        = bool
+  default     = false
+}
+
+variable "preactivate_partner_interconnect" {
+  description = "Preactivate Partner Interconnect VLAN attachment in the environment."
+  type        = bool
+  default     = false
+}

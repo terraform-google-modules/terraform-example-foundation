@@ -1,6 +1,6 @@
 # 3-networks/development
 
-The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect, onprem VPN and baseline firewall rules for environment development.
+The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated Interconnect, onprem VPN and baseline firewall rules for environment development.
 
 ## Prerequisites
 
@@ -22,6 +22,7 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | `string` | n/a | yes |
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
+| enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | nat\_bgp\_asn | BGP ASN for first NAT cloud routes. | `number` | `64514` | no |
@@ -32,6 +33,7 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | org\_id | Organization ID | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
+| preactivate\_partner\_interconnect | Preactivate Partner Interconnect VLAN attachment in the environment. | `bool` | `false` | no |
 | subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetworks. | `bool` | `true` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | `bool` | `false` | no |

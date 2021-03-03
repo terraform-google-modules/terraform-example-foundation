@@ -56,7 +56,7 @@ output "org_secrets_project_id" {
 
 output "interconnect_project_id" {
   value       = module.interconnect.project_id
-  description = "The interconnect project ID"
+  description = "The Dedicated Interconnect project ID"
 }
 
 output "scc_notifications_project_id" {

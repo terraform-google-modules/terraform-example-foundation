@@ -21,9 +21,9 @@
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | enable\_os\_login\_policy | Enable OS Login policy. | `bool` | `false` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
-| interconnect\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the interconnect project. | `string` | `null` | no |
-| interconnect\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the interconnect project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
-| interconnect\_project\_budget\_amount | The amount to use as the budget for the interconnect project. | `number` | `1000` | no |
+| interconnect\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the Dedicated Interconnect project. | `string` | `null` | no |
+| interconnect\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the Dedicated Interconnect project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
+| interconnect\_project\_budget\_amount | The amount to use as the budget for the Dedicated Interconnect project. | `number` | `1000` | no |
 | log\_export\_storage\_force\_destroy | (Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present. | `bool` | `false` | no |
 | log\_export\_storage\_location | The location of the storage bucket used to export logs. | `string` | `"US"` | no |
 | log\_export\_storage\_retention\_policy | Configuration of the bucket's data retention policy for how long objects in the bucket should be retained. | <pre>object({<br>    is_locked             = bool<br>    retention_period_days = number<br>  })</pre> | `null` | no |
@@ -59,7 +59,7 @@
 | common\_folder\_name | The common folder name |
 | dns\_hub\_project\_id | The DNS hub project ID |
 | domains\_to\_allow | The list of domains to allow users from in IAM. |
-| interconnect\_project\_id | The interconnect project ID |
+| interconnect\_project\_id | The Dedicated Interconnect project ID |
 | logs\_export\_pubsub\_topic | The Pub/Sub topic for destination of log exports |
 | logs\_export\_storage\_bucket\_name | The storage bucket for destination of log exports |
 | org\_audit\_logs\_project\_id | The org audit logs project ID |

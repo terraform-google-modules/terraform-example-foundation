@@ -144,3 +144,13 @@ variable "folder_prefix" {
   type        = string
   default     = "fldr"
 }
+
+variable "allow_all_egress_ranges" {
+  description = "List of network ranges to which all egress traffic will be allowed"
+  default     = null
+}
+
+variable "allow_all_ingress_ranges" {
+  description = "List of network ranges from which all ingress traffic will be allowed"
+  default     = null
+}

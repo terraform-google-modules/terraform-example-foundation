@@ -138,4 +138,10 @@ variable "preactivate_partner_interconnect" {
   description = "Preactivate Partner Interconnect VLAN attachment in the environment."
   type        = bool
   default     = false
+
+}
+variable "enable_hub_and_spoke_transitivity" {
+  description = "Enable transitivity via gateway VMs on Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
 }

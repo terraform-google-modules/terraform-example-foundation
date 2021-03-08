@@ -20,7 +20,7 @@
 
 module "base_shared_vpc_host_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.0"
+  version                     = "~> 10.1"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   name                        = format("%s-%s-shared-base", var.project_prefix, var.environment_code)
@@ -53,7 +53,7 @@ module "base_shared_vpc_host_project" {
 
 module "restricted_shared_vpc_host_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.0"
+  version                     = "~> 10.1"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   name                        = format("%s-%s-shared-restricted", var.project_prefix, var.environment_code)

@@ -19,6 +19,8 @@ steps:
 - name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   id: 'lint'
   args: ['/usr/local/bin/test_lint.sh']
+  env:
+  - "EXCLUDE_LINT_DIRS=\\./3-networks/modules/transitivity/assets"
 tags:
 - 'ci'
 - 'lint'

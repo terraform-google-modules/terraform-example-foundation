@@ -3,7 +3,7 @@
 The purpose of this step is to:
 
 - Setup the global [DNS Hub](https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones).
-- Setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem dedicated interconnect and baseline firewall rules for each environment.
+- Setup base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated or Partner Interconnect and baseline firewall rules for each environment.
 
 ## Prerequisites
 
@@ -22,9 +22,17 @@ If you have the prerequisites listed in the [Dedicated Interconnect README](./mo
 1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
 1. The candidate subnetworks and vlan_tag8021q variables can be set to `null` to allow the interconnect module to auto generate these values.
 
+### Using Partner Interconnect
+
+If you have the prerequisites listed in the [Partner Interconnect README](./modules/partner_interconnect/README.md) follow this steps to enable Partner Interconnect to access onprem.
+
+1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` and `interconnect.auto.tfvars.example` to `interconnect.auto.tfvars` in the environment folder in `3-networks/envs/<environment>` .
+1. Update the file `partner_interconnect.tf` with values that are valid for your environment for the VLAN attachments, locations, candidate subnetworks.
+1. The candidate subnetworks variable can be set to `null` to allow the interconnect module to auto generate this value.
+
 ### OPTIONAL - Using High Availability VPN
 
-If you are not able to use dedicated interconnect, you can also use an HA VPN to access onprem.
+If you are not able to use Dedicated or Partner Interconnect, you can also use an HA Cloud VPN to access onprem.
 
 1. Rename `vpn.tf.example` to `vpn.tf` in each environment folder in `3-networks/envs/<ENV>`.
 1. Create secret for VPN private preshared key `echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_PRIVATE_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-`.

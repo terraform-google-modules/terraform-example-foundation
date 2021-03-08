@@ -32,12 +32,12 @@ variable "vpc_name" {
 
 variable "region1" {
   type        = string
-  description = "First subnet region. The dedicated Interconnect module only configures two regions."
+  description = "First subnet region. The Dedicated Interconnect module only configures two regions."
 }
 
 variable "region2" {
   type        = string
-  description = "Second subnet region. The dedicated Interconnect module only configures two regions."
+  description = "Second subnet region. The Dedicated Interconnect module only configures two regions."
 }
 
 variable "peer_name" {

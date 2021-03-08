@@ -13,12 +13,19 @@
 | env\_code | A short form of the environment field | `string` | `"p"` | no |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
+| gcs\_bucket\_prefix | Name prefix to be used for GCS Bucket | `string` | `"cmek-encrypted-bucket"` | no |
+| key\_name | Name to be used for KMS Key | `string` | `"crypto-key-example"` | no |
+| key\_rotation\_period | Rotation period in seconds to be used for KMS Key | `string` | `"7776000s"` | no |
+| keyring\_name | Name to be used for KMS Keyring | `string` | `"sample-keyring"` | no |
+| location\_gcs | Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring) | `string` | `"US"` | no |
+| location\_kms | Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket) | `string` | `"us"` | no |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
 | peering\_module\_depends\_on | List of modules or resources peering module depends on. | `list` | `[]` | no |
 | perimeter\_name | Access context manager service perimeter name to attach the restricted svpc project. | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
+| secrets\_prj\_suffix | Name suffix to use for secrets project created. | `string` | `"env-secrets"` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | `bool` | `false` | no |
 
@@ -29,7 +36,11 @@
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | base\_shared\_vpc\_project | Project sample base project. |
 | base\_shared\_vpc\_project\_sa | Project sample base project SA. |
+| bucket | The created storage bucket |
+| env\_secrets\_project | Project sample peering project id. |
 | floating\_project | Project sample floating project. |
+| keyring | The name of the keyring. |
+| keys | List of created key names. |
 | peering\_complete | Output to be used as a module dependency. |
 | peering\_network | Peer network peering resource. |
 | peering\_project | Project sample peering project id. |

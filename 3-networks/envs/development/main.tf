@@ -198,7 +198,7 @@ module "base_shared_vpc" {
   allow_all_ingress_ranges = local.enable_transitivity ? local.base_hub_subnet_ranges : null
   allow_all_egress_ranges  = local.enable_transitivity ? local.base_subnet_aggregates : null
 }
-  
+
 /******************************************
  External IP Address
 *****************************************/

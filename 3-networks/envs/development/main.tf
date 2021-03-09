@@ -167,6 +167,9 @@ module "base_shared_vpc" {
   }
 }
 
+/******************************************
+ External IP Address
+*****************************************/
 resource "google_compute_address" "external_ip_for_http_load_balancing" {
   name         = var.address_name
   project      = local.base_project_id

@@ -127,3 +127,24 @@ variable "enable_hub_and_spoke" {
   type        = bool
   default     = false
 }
+
+variable "address_name" {
+  description = "Name of the external IP address."
+  type        = string
+}
+
+variable "address_type" {
+  description = "Determines if the IP address will be internal or external."
+  type        = string
+  default     = "EXTERNAL"
+}
+   
+variable "description" {
+  description = "Describes what the external IP address will be used for."
+  type        = string
+}
+   
+variable "region" {
+  description = "The region that the external IP will be created in."
+  type        = string
+}

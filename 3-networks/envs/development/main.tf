@@ -198,3 +198,15 @@ module "base_shared_vpc" {
   allow_all_ingress_ranges = local.enable_transitivity ? local.base_hub_subnet_ranges : null
   allow_all_egress_ranges  = local.enable_transitivity ? local.base_subnet_aggregates : null
 }
+  
+/******************************************
+ External IP Address
+*****************************************/
+
+resource "google_compute_address" "external_ip_for_http_load_balancing" {
+  name         = var.address_name
+  project      = local.base_project_id
+  address_type = var.address_type
+  description  = var.description
+  region       = var.region
+}

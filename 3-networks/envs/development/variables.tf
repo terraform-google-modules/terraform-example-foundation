@@ -149,10 +149,11 @@ variable "enable_hub_and_spoke_transitivity" {
 variable "address_name" {
   description = "Name of the external IP address."
   type        = string
+  default     = "asm-static-ip"
 }
 
 variable "address_type" {
-  description = "Creates an external IP address that is required for HTTP load balancing."
+  description = "Creates an external IP address for HTTP load balancing."
   type        = string
   default     = "EXTERNAL"
 }
@@ -160,9 +161,11 @@ variable "address_type" {
 variable "description" {
   description = "Describes what the external IP address will be used for."
   type        = string
+  default     = "External IP address for HTTP load balancing.
 }
 
 variable "region" {
-  description = "The region that the external IP address will be created in."
+  description = "The region of the external IP address."
   type        = string
+  default     = "us-central1"
 }

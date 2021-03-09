@@ -68,3 +68,23 @@ output "peering_complete" {
   description = "Output to be used as a module dependency."
   value       = module.peering.complete
 }
+
+output "env_secrets_project" {
+  description = "Project sample peering project id."
+  value       = module.env_secrets_project.project_id
+}
+
+output "keyring" {
+  description = "The name of the keyring."
+  value       = module.kms.keyring
+}
+
+output "keys" {
+  description = "List of created key names."
+  value       = keys(module.kms.keys)
+}
+
+output "bucket" {
+  description = "The created storage bucket"
+  value       = module.gcs_buckets.bucket
+}

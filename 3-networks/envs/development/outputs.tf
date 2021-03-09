@@ -102,7 +102,7 @@ output "base_subnets_secondary_ranges" {
   description = "The secondary ranges associated with these subnets"
 }
 
-output "base_subnets_secondary_ranges" {
+output "external_ip" {
   value       = google_compute_address.external_ip_for_http_load_balancing
   description = "The external IP address that was created"
 }

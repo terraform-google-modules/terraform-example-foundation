@@ -149,7 +149,7 @@ variable "enable_hub_and_spoke_transitivity" {
 variable "address_name" {
   description = "Name of the external IP address."
   type        = string
-  default     = "asm-static-ip"
+  default     = "static-ip"
 }
 
 variable "address_type" {
@@ -161,7 +161,7 @@ variable "address_type" {
 variable "description" {
   description = "Describes what the external IP address will be used for."
   type        = string
-  default     = "External IP address for HTTP load balancing."
+  default     = "External IP for HTTP load balancing."
 }
 
 variable "region" {

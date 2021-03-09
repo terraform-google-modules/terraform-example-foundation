@@ -156,12 +156,12 @@ variable "address_type" {
   type        = string
   default     = "EXTERNAL"
 }
-   
+
 variable "description" {
   description = "Describes what the external IP address will be used for."
   type        = string
 }
-   
+
 variable "region" {
   description = "The region that the external IP address will be created in."
   type        = string

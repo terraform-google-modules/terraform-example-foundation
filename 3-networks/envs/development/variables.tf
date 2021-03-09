@@ -145,3 +145,24 @@ variable "enable_hub_and_spoke_transitivity" {
   type        = bool
   default     = false
 }
+
+variable "address_name" {
+  description = "Name of the external IP address."
+  type        = string
+}
+
+variable "address_type" {
+  description = "Creates an external IP address that is required for HTTP load balancing."
+  type        = string
+  default     = "EXTERNAL"
+}
+   
+variable "description" {
+  description = "Describes what the external IP address will be used for."
+  type        = string
+}
+   
+variable "region" {
+  description = "The region that the external IP address will be created in."
+  type        = string
+}

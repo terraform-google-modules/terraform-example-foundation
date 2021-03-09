@@ -65,6 +65,7 @@ resource "random_string" "bucket_name" {
 }
 
 module "gcs_buckets" {
+  depends_on           = [module.kms]
   source               = "terraform-google-modules/cloud-storage/google"
   version              = "~> 1.7"
   project_id           = module.base_shared_vpc_project.project_id

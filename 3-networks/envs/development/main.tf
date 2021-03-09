@@ -166,3 +166,11 @@ module "base_shared_vpc" {
     ]
   }
 }
+
+resource "google_compute_address" "external_ip_for_http_load_balancing" {
+  name         = var.name
+  project      = local.base_project_id
+  address_type = var.address_type
+  description  = var.description
+  region       = var.region
+}

@@ -64,8 +64,8 @@ module "peering_network" {
 }
 
 module "peering" {
-  source = "terraform-google-modules/network/google//modules/network-peering"
-
+  source        = "terraform-google-modules/network/google//modules/network-peering"
+  version       = "~> 2.0"
   prefix        = "bu2-d"
   local_network = module.peering_network.network_self_link
   peer_network  = data.google_compute_network.shared_vpc.self_link

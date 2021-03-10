@@ -62,6 +62,7 @@ module "seed_bootstrap" {
     "bigquery.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "cloudbilling.googleapis.com",
+    "cloudbuild.googleapis.com",
     "iam.googleapis.com",
     "admin.googleapis.com",
     "appengine.googleapis.com",

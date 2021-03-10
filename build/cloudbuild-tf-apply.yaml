@@ -21,7 +21,7 @@ steps:
   entrypoint: /bin/bash
   args:
   - -c
-  - |''
+  - |
    tf_sa_email=${_TF_SA_EMAIL}
     if [[ -n ${tf_sa_email} ]]; then
       echo "Setting up gcloud for impersonation"

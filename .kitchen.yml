@@ -113,3 +113,4 @@ suites:
           backend: local
           controls:
             - gcloud-projects
+            - gcloud_cloudbuild

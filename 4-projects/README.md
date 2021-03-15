@@ -26,7 +26,16 @@ If your user does not have access to run the commands above and you are in the o
 1. Rename `development.auto.example.tfvars` to `development.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_d_shared_restricted`.
 1. Rename `non-production.auto.example.tfvars` to `non-production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_n_shared_restricted`.
 1. Rename `production.auto.example.tfvars` to `production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_p_shared_restricted`.
+1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`.
+1. You will need only once to manually plan + apply the `shared` environment since `development`, `non-production` and `production` depend on it.
+    1. Run `cd ./business_unit_1/shared/`.
+    1. Update `backend.tf` with your bucket name from the bootstrap step.
+    1. Run `terraform init`.
+    1. Run `terraform plan` and review output.
+    1. Run `terraform apply`.
+    1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME`
+1. Once you have done the instructions from the previous step, you need to repeat same steps on business_unit_2 folder.
 1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to production with `git checkout -b production` and `git push origin production`.

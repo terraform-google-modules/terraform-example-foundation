@@ -14,11 +14,4 @@
  * limitations under the License.
  */
 
-billing_account = "000000-000000-000000"
-
-org_id = "000000000000"
-
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
-
-//Optional - for development.  Will place all resources under a specific folder instead of org root
-//parent_folder = "01234567890"
+access_context_manager_policy_id = 000000000000

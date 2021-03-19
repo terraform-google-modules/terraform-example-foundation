@@ -31,7 +31,7 @@ data "google_service_account_access_token" "default" {
   provider               = google.impersonate
   target_service_account = local.tf_sa
   scopes                 = ["userinfo-email", "cloud-platform"]
-  lifetime               = "900s"
+  lifetime               = "1200s"
 }
 
 /******************************************

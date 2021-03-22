@@ -16,12 +16,6 @@
 
 locals {
   dns_hub_project_id = data.google_projects.dns_hub.projects[0].project_id
-  parent_id          = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-}
-
-data "google_active_folder" "common" {
-  display_name = "${var.folder_prefix}-common"
-  parent       = local.parent_id
 }
 
 data "google_active_folder" "bootstrap" {

@@ -27,6 +27,9 @@ module "base_shared_vpc_project" {
   budget_amount               = var.budget_amount
   project_prefix              = var.project_prefix
   enable_hub_and_spoke        = var.enable_hub_and_spoke
+  sa_roles                    = ["roles/editor"]
+  enable_cloudbuild_deploy    = true
+  cloudbuild_sa               = var.app_infra_pipeline_cloudbuild_sa
 
   # Metadata
   project_suffix    = "sample-base"

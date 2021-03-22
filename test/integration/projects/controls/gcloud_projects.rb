@@ -63,6 +63,24 @@ access_context_manager_policy_id = attribute('access_context_manager_policy_id')
 
 shared_vpc_mode = enable_hub_and_spoke ? "-spoke" : ""
 
+dev_bu1_project_base_sa = attribute('dev_bu1_project_base_sa')
+dev_bu2_project_base_sa = attribute('dev_bu2_project_base_sa')
+nonprod_bu1_project_base_sa = attribute('nonprod_bu1_project_base_sa')
+nonprod_bu2_project_base_sa = attribute('nonprod_bu2_project_base_sa')
+prod_bu1_project_base_sa = attribute('prod_bu1_project_base_sa')
+prod_bu2_project_base_sa = attribute('prod_bu2_project_base_sa')
+
+shared_bu1_cb_sa = attribute('shared_bu1_cb_sa')
+shared_bu1_artifact_buckets = attribute('shared_bu1_artifact_buckets')
+shared_bu1_state_buckets = attribute('shared_bu1_state_buckets')
+shared_bu1_plan_triggers = attribute('shared_bu1_plan_triggers')
+shared_bu1_apply_triggers = attribute('shared_bu1_apply_triggers')
+shared_bu2_cb_sa = attribute('shared_bu2_cb_sa')
+shared_bu2_artifact_buckets = attribute('shared_bu2_artifact_buckets')
+shared_bu2_state_buckets = attribute('shared_bu2_state_buckets')
+shared_bu2_plan_triggers = attribute('shared_bu2_plan_triggers')
+shared_bu2_apply_triggers = attribute('shared_bu2_apply_triggers')
+
 environment_codes = %w[d n p]
 
 environment_name = {
@@ -82,6 +100,16 @@ base_projects_id = {
   'd' => { 'bu1' => dev_bu1_project_base, 'bu2' => dev_bu2_project_base },
   'n' => { 'bu1' => nonprod_bu1_project_base, 'bu2' => nonprod_bu2_project_base },
   'p' => { 'bu1' => prod_bu1_project_base, 'bu2' => prod_bu2_project_base }
+}
+
+base_project_sa = {
+  'd' => { 'bu1' => dev_bu1_project_base_sa, 'bu2' => dev_bu2_project_base_sa },
+  'n' => { 'bu1' => nonprod_bu1_project_base_sa, 'bu2' => nonprod_bu2_project_base_sa },
+  'p' => { 'bu1' => prod_bu1_project_base_sa, 'bu2' => prod_bu2_project_base_sa }
+}
+
+cloudbuild_sa = {
+  'bu1' => shared_bu1_cb_sa, 'bu2' => shared_bu2_cb_sa
 }
 
 restricted_projects_id = {
@@ -140,6 +168,30 @@ control 'gcloud-projects' do
             expect(data['status']['resources']).to include(
               "projects/#{restricted_projects_number[environment_code][business_unit]}"
             )
+          end
+        end
+      end
+      describe command("gcloud iam service-accounts get-iam-policy #{base_project_sa[environment_code][business_unit]} --format=json") do
+        its(:exit_status) { should eq 0 }
+        its(:stderr) { should eq '' }
+
+        let(:data) do
+          if subject.exit_status.zero?
+            JSON.parse(subject.stdout)
+          else
+            {}
+          end
+        end
+
+        describe "#{base_project_sa[environment_code][business_unit]} IAM Policy" do
+          it 'should exist' do
+            expect(data).to_not be_empty
+          end
+          it "#{cloudbuild_sa[business_unit]} Cloud Build SA should have the right role for impersonation on #{base_project_sa[environment_code][business_unit]} SA" do
+            expect(data['bindings'][0]['members']).to include(
+              "serviceAccount:#{cloudbuild_sa[business_unit]}"
+            )
+            expect(data['bindings'][0]['role']).to eq "roles/iam.serviceAccountTokenCreator"
           end
         end
       end

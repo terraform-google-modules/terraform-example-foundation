@@ -142,6 +142,17 @@ module "org_disable_sa_key_creation" {
   constraint      = "constraints/iam.disableServiceAccountKeyCreation"
 }
 
+module "org_disable_automatic_iam_grants_on_default_service_accounts" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 3.0"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "boolean"
+  enforce         = "true"
+  constraint      = "constraints/iam.automaticIamGrantsForDefaultServiceAccounts"
+}
+
 /******************************************
   Storage
 *******************************************/

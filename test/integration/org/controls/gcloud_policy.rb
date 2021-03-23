@@ -25,7 +25,8 @@ boolean_policy_constraints = [
   'constraints/compute.restrictXpnProjectLienRemoval',
   'constraints/sql.restrictPublicIp',
   'constraints/iam.disableServiceAccountKeyCreation',
-  'constraints/storage.uniformBucketLevelAccess'
+  'constraints/storage.uniformBucketLevelAccess',
+  'constraints/iam.automaticIamGrantsForDefaultServiceAccounts'
 ]
 
 control 'gcloud_policy' do

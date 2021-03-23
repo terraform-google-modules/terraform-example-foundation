@@ -70,7 +70,6 @@ resource "google_compute_firewall" "allow_private_api_egress" {
   target_tags = ["allow-google-apis"]
 }
 
-
 /******************************************
   Optional firewall rules
  *****************************************/

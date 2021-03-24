@@ -25,7 +25,7 @@ module "app_infra_cloudbuild_project" {
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
   project_prefix              = var.project_prefix
-  activate_apis               = ["cloudbuild.googleapis.com", "sourcerepo.googleapis.com", "cloudkms.googleapis.com"]
+  activate_apis               = ["cloudbuild.googleapis.com", "sourcerepo.googleapis.com", "cloudkms.googleapis.com", "artifactregistry.googleapis.com"]
 
   # Metadata
   project_suffix    = "infra-pipeline"
@@ -37,9 +37,13 @@ module "app_infra_cloudbuild_project" {
 }
 
 module "infra_pipelines" {
-  source                = "../../modules/infra_pipelines"
-  cloudbuild_project_id = module.app_infra_cloudbuild_project.project_id
-  billing_account       = var.billing_account
-  app_infra_repos       = ["bu1-example-app"]
+  source                    = "../../modules/infra_pipelines"
+  cloudbuild_project_id     = module.app_infra_cloudbuild_project.project_id
+  org_id                    = var.org_id
+  terraform_state_bucket    = var.terraform_state_bucket
+  terraform_service_account = var.terraform_service_account
+  billing_account           = var.billing_account
+  default_region            = var.default_region
+  app_infra_repos           = ["bu1-example-app"]
 }
 

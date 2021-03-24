@@ -14,6 +14,56 @@
  * limitations under the License.
  */
 
+variable "terraform_service_account" {
+  description = "Email for terraform service account."
+  type        = string
+}
+
+variable "terraform_state_bucket" {
+  description = "Default state bucket, used in Cloud Build substitutions."
+  type        = string
+}
+
+variable "project_id" {
+  description = "Custom project ID to use for project created."
+  default     = ""
+  type        = string
+}
+
+variable "org_id" {
+  description = "GCP Organization ID"
+  type        = string
+}
+
+variable "folder_id" {
+  description = "The ID of a folder to host this project"
+  type        = string
+  default     = ""
+}
+
+variable "project_labels" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {}
+}
+
+variable "default_region" {
+  description = "Default region to create resources where applicable."
+  type        = string
+}
+
+variable "gar_repo_name" {
+  description = "Custom name to use for GAR repo."
+  default     = ""
+  type        = string
+}
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "cft"
+}
+
 variable "cloudbuild_project_id" {
   description = "The project id where the pipelines and repos should be created"
   type        = string

@@ -17,6 +17,8 @@
 module "bu1_shared" {
   source                    = "../../../4-projects/business_unit_1/shared"
   terraform_service_account = var.terraform_service_account
+  terraform_state_bucket    = var.terraform_state_bucket
+  default_region            = var.default_region
   org_id                    = var.org_id
   billing_account           = var.billing_account
   parent_folder             = var.parent_folder
@@ -66,6 +68,8 @@ module "projects_bu1_prod" {
 module "bu2_shared" {
   source                    = "../../../4-projects/business_unit_2/shared"
   terraform_service_account = var.terraform_service_account
+  terraform_state_bucket    = var.terraform_state_bucket
+  default_region            = var.default_region
   org_id                    = var.org_id
   billing_account           = var.billing_account
   parent_folder             = var.parent_folder

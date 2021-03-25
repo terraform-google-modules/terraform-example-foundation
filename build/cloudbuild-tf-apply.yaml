@@ -17,19 +17,22 @@ substitutions:
   _POLICY_REPO: '/workspace/policy-library' # add path to policies here https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator
 steps:
 - id: 'setup'
-  name: gcr.io/$PROJECT_ID/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
   entrypoint: /bin/bash
   args:
   - -c
   - |
-    echo "Setting up gcloud for impersonation"
-    gcloud config set auth/impersonate_service_account ${_TF_SA_EMAIL}
+   tf_sa_email=${_TF_SA_EMAIL}
+    if [[ -n ${tf_sa_email} ]]; then
+      echo "Setting up gcloud for impersonation"
+      gcloud config set auth/impersonate_service_account $tf_sa_email
+    fi
     echo "Adding bucket information to backends"
     for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/${_STATE_BUCKET_NAME}/' $i; done
 
 # [START tf-init]
 - id: 'tf init'
-  name: gcr.io/${PROJECT_ID}/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
   entrypoint: /bin/bash
   args:
   - -c
@@ -38,7 +41,7 @@ steps:
 
 # [START tf-plan]
 - id: 'tf plan'
-  name: gcr.io/${PROJECT_ID}/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
   entrypoint: /bin/bash
   args:
   - -c
@@ -47,7 +50,7 @@ steps:
 
 # [START tf-validate]
 - id: 'tf validate'
-  name: gcr.io/${PROJECT_ID}/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
   entrypoint: /bin/bash
   args:
   - -c
@@ -56,7 +59,7 @@ steps:
 
 # [START tf-apply]
 - id: 'tf apply'
-  name: gcr.io/${PROJECT_ID}/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
   entrypoint: /bin/bash
   args:
   - -c

@@ -3,7 +3,7 @@
 This module implementes the recomendation proposed in
 [High Availability VPN](https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies#overview).
 
-If you are not able to use dedicated interconnect you can also use an HA VPN to access onprem.
+If you are not able to use Dedicated Interconnect or Partner Interconnect you can also use an High Availability Cloud VPN to connect the On-Prem to your Google Organization.
 
 ## Usage
 
@@ -14,7 +14,6 @@ If you are not able to use dedicated interconnect you can also use an HA VPN to 
 
 **This module only works with two regions.**
 
-If you don't have Dedicated Interconnect you can use High Availability VPN to connect the On-Prem to your Google Organization.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

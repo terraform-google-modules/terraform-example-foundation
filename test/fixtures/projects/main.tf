@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+module "bu1_shared" {
+  source                    = "../../../4-projects/business_unit_1/shared"
+  terraform_service_account = var.terraform_sa_email
+  org_id                    = var.org_id
+  billing_account           = var.billing_account
+  parent_folder             = var.parent_folder
+  project_prefix            = var.project_prefix
+}
+
 module "projects_bu1_dev" {
   source                           = "../../../4-projects/business_unit_1/development"
   terraform_service_account        = var.terraform_sa_email
@@ -24,6 +33,7 @@ module "projects_bu1_dev" {
   perimeter_name                   = var.dev_restricted_service_perimeter_name
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
+  app_infra_pipeline_cloudbuild_sa = module.bu1_shared.cloudbuild_sa
 }
 
 module "projects_bu1_nonprod" {
@@ -36,6 +46,7 @@ module "projects_bu1_nonprod" {
   perimeter_name                   = var.nonprod_restricted_service_perimeter_name
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
+  app_infra_pipeline_cloudbuild_sa = module.bu1_shared.cloudbuild_sa
 }
 
 
@@ -49,6 +60,16 @@ module "projects_bu1_prod" {
   perimeter_name                   = var.prod_restricted_service_perimeter_name
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
+  app_infra_pipeline_cloudbuild_sa = module.bu1_shared.cloudbuild_sa
+}
+
+module "bu2_shared" {
+  source                    = "../../../4-projects/business_unit_2/shared"
+  terraform_service_account = var.terraform_sa_email
+  org_id                    = var.org_id
+  billing_account           = var.billing_account
+  parent_folder             = var.parent_folder
+  project_prefix            = var.project_prefix
 }
 
 module "projects_bu2_dev" {
@@ -62,6 +83,7 @@ module "projects_bu2_dev" {
   peering_module_depends_on        = [module.projects_bu1_dev.peering_complete]
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
+  app_infra_pipeline_cloudbuild_sa = module.bu2_shared.cloudbuild_sa
 }
 
 module "projects_bu2_nonprod" {
@@ -75,6 +97,7 @@ module "projects_bu2_nonprod" {
   peering_module_depends_on        = [module.projects_bu1_nonprod.peering_complete]
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
+  app_infra_pipeline_cloudbuild_sa = module.bu2_shared.cloudbuild_sa
 }
 
 
@@ -89,4 +112,5 @@ module "projects_bu2_prod" {
   peering_module_depends_on        = [module.projects_bu1_prod.peering_complete]
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
+  app_infra_pipeline_cloudbuild_sa = module.bu2_shared.cloudbuild_sa
 }

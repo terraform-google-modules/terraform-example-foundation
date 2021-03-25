@@ -39,11 +39,9 @@ data "google_service_account_access_token" "default" {
  *****************************************/
 provider "google" {
   access_token = data.google_service_account_access_token.default.access_token
-  version      = "~> 3.30"
 }
 
 provider "google-beta" {
   access_token = data.google_service_account_access_token.default.access_token
-  version      = "~> 3.30"
 }
 

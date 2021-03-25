@@ -57,11 +57,11 @@ module "hierarchical_firewall_policy" {
       logging                 = false
     }
     allow-iap-ssh-rdp = {
-      description             = "Always allow SSH and RDP from IAP"
-      direction               = "INGRESS"
-      action                  = "allow"
-      priority                = 5000
-      ranges                  = ["35.235.240.0/20"]
+      description = "Always allow SSH and RDP from IAP"
+      direction   = "INGRESS"
+      action      = "allow"
+      priority    = 5000
+      ranges      = ["35.235.240.0/20"]
       ports = {
         tcp = ["22", "3389"]
       }

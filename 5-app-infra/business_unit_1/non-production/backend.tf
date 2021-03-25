@@ -14,23 +14,9 @@
  * limitations under the License.
  */
 
-output "instances_self_links" {
-  description = "List of self-links for compute instances"
-  value       = module.base_shared_gce_instance.instances_self_links
+terraform {
+  backend "gcs" {
+    bucket = "UPDATE_ME"
+    prefix = "terraform/app-infra/business_unit_1/non-production"
+  }
 }
-
-output "available_zones" {
-  description = "List of available zones in region"
-  value       = module.base_shared_gce_instance.available_zones
-}
-
-output "project_id" {
-  description = "Project where compute instance was created"
-  value       = module.base_shared_gce_instance.project_id
-}
-
-output "region" {
-  description = "Region where compute instance was created"
-  value       = module.base_shared_gce_instance.region
-}
-

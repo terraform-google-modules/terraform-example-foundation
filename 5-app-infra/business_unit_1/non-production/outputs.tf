@@ -23,3 +23,13 @@ output "available_zones" {
   description = "List of available zones in region"
   value       = module.base_shared_gce_instance.available_zones
 }
+
+output "project_id" {
+  description = "Project where compute instance was created"
+  value       = module.base_shared_gce_instance.project_id
+}
+
+output "region" {
+  description = "Region where compute instance was created"
+  value       = module.base_shared_gce_instance.region
+}

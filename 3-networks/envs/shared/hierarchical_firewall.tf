@@ -62,7 +62,9 @@ module "hierarchical_firewall_policy" {
       action                  = "allow"
       priority                = 5000
       ranges                  = ["35.235.240.0/20"]
-      ports                   = { "all" = [] }
+      ports = {
+        tcp = ["22", "3389"]
+      }
       target_service_accounts = null
       target_resources        = null
       logging                 = var.firewall_policies_enable_logging

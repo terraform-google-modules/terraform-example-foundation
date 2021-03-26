@@ -35,6 +35,11 @@ variable "num_instances" {
   type        = number
 }
 
+variable "hostname" {
+  description = "Hostname of instances"
+  default     = ""
+}
+
 variable "service_account" {
   default = null
   type = object({

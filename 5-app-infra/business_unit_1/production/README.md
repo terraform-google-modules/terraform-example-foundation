@@ -4,6 +4,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
+| num\_instances | Optional - quantity of compute instances to be created. | `number` | `1` | no |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
 | static\_ips | List of static IPs for VM instances | `list(string)` | `[]` | no |

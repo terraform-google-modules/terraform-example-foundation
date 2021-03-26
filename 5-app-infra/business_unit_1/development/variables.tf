@@ -19,6 +19,11 @@ variable "terraform_service_account" {
   type        = string
 }
 
+variable "org_id" {
+  description = "The organization id for the associated services"
+  type        = string
+}
+
 variable "folder_prefix" {
   description = "Name prefix to use for folders created."
   type        = string
@@ -31,9 +36,10 @@ variable "parent_folder" {
   default     = ""
 }
 
-variable "org_id" {
-  description = "The organization id for the associated services"
-  type        = string
+variable "num_instances" {
+  description = "Optional - quantity of compute instances to be created."
+  type        = number
+  default     = 1
 }
 
 variable "static_ips" {

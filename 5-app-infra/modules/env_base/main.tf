@@ -40,6 +40,6 @@ module "compute_instance" {
   region            = var.region
   subnetwork        = data.google_compute_subnetwork.subnetwork.self_link
   num_instances     = var.num_instances
-  hostname          = "instance-simple"
+  hostname          = var.hostname
   instance_template = module.instance_template.self_link
 }

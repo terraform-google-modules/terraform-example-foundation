@@ -25,7 +25,7 @@ module "base_shared_gce_instance" {
   source         = "../../modules/env_base"
   environment    = "production"
   vpc_type       = "base"
-  num_instances  = 1
+  num_instances  = var.num_instances
   folder_id      = data.google_active_folder.env.name
   business_code  = "bu1"
   project_suffix = "sample-base"

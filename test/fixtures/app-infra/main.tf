@@ -19,6 +19,7 @@ module "app_infra_bu1_development" {
   parent_folder             = var.parent_folder
   org_id                    = var.org_id
   terraform_service_account = var.terraform_sa_email
+  folder_prefix             = var.folder_prefix
 }
 
 module "app_infra_bu1_nonproduction" {
@@ -26,6 +27,7 @@ module "app_infra_bu1_nonproduction" {
   parent_folder             = var.parent_folder
   org_id                    = var.org_id
   terraform_service_account = var.terraform_sa_email
+  folder_prefix             = var.folder_prefix
 }
 
 module "app_infra_bu1_production" {
@@ -33,4 +35,5 @@ module "app_infra_bu1_production" {
   parent_folder             = var.parent_folder
   org_id                    = var.org_id
   terraform_service_account = var.terraform_sa_email
+  folder_prefix             = var.folder_prefix
 }

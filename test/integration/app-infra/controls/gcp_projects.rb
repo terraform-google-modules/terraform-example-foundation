@@ -14,49 +14,36 @@
 
 dev_bu1_project_base = attribute('dev_bu1_project_base')
 dev_bu1_instance_zone = attribute('dev_bu1_instance_zone')
-dev_bu1_instance_name = attribute('dev_bu1_instance_name')
+dev_bu1_instance_names = attribute('dev_bu1_instance_names')
 
 nonprod_bu1_project_base = attribute('nonprod_bu1_project_base')
 nonprod_bu1_instance_zone = attribute('nonprod_bu1_instance_zone')
-nonprod_bu1_instance_name = attribute('nonprod_bu1_instance_name')
+nonprod_bu1_instance_names = attribute('nonprod_bu1_instance_names')
 
 prod_bu1_project_base = attribute('prod_bu1_project_base')
 prod_bu1_instance_zone = attribute('prod_bu1_instance_zone')
-prod_bu1_instance_name = attribute('prod_bu1_instance_name')
+prod_bu1_instance_names = attribute('prod_bu1_instances_names')
 
 control 'gcp-app-infra' do
   title 'gcp step 5-app-infra tests'
-
-  describe google_compute_instance(project: dev_bu1_project_base, zone: dev_bu1_instance_zone, name: dev_bu1_instance_name) do
-    it { should exist }
-    its('machine_type') { should match 'n1-standard-1' }
-    its('tags.items') { should include 'foo' }
-    its('tags.items') { should include 'bar' }
-    its('tag_count') { should cmp 2 }
-    its('service_account_scopes') { should include 'https://www.googleapis.com/auth/compute.readonly' }
-    its('metadata_keys') { should include '123' }
-    its('metadata_values') { should include 'asdf' }
+  dev_bu1_instance_names.each do |dev_bu1_instance_name|
+    describe google_compute_instance(project: dev_bu1_project_base, zone: dev_bu1_instance_zone, name: dev_bu1_instance_name) do
+      it { should exist }
+      its('machine_type') { should match 'n1-standard-1' }
+    end
   end
 
-  describe google_compute_instance(project: nonprod_bu1_project_base, zone: nonprod_bu1_instance_zone, name: nonprod_bu1_instance_name) do
-    it { should exist }
-    its('machine_type') { should match 'n1-standard-1' }
-    its('tags.items') { should include 'foo' }
-    its('tags.items') { should include 'bar' }
-    its('tag_count') { should cmp 2 }
-    its('service_account_scopes') { should include 'https://www.googleapis.com/auth/compute.readonly' }
-    its('metadata_keys') { should include '123' }
-    its('metadata_values') { should include 'asdf' }
+  nonprod_bu1_instance_names.each do |nonprod_bu1_instance_name|
+    describe google_compute_instance(project: nonprod_bu1_project_base, zone: nonprod_bu1_instance_zone, name: nonprod_bu1_instance_name) do
+      it { should exist }
+      its('machine_type') { should match 'n1-standard-1' }
+    end
   end
 
-  describe google_compute_instance(project: prod_bu1_project_base, zone: prod_bu1_instance_zone, name: prod_bu1_instance_name) do
-    it { should exist }
-    its('machine_type') { should match 'n1-standard-1' }
-    its('tags.items') { should include 'foo' }
-    its('tags.items') { should include 'bar' }
-    its('tag_count') { should cmp 2 }
-    its('service_account_scopes') { should include 'https://www.googleapis.com/auth/compute.readonly' }
-    its('metadata_keys') { should include '123' }
-    its('metadata_values') { should include 'asdf' }
+  prod_bu1_instance_names.each do |prod_bu1_instance_name|
+    describe google_compute_instance(project: prod_bu1_project_base, zone: prod_bu1_instance_zone, name: prod_bu1_instance_name) do
+      it { should exist }
+      its('machine_type') { should match 'n1-standard-1' }
+    end
   end
 end

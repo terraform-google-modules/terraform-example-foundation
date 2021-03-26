@@ -19,6 +19,7 @@
 | Name | Description |
 |------|-------------|
 | available\_zones | List of available zones in region |
+| instances\_details | List of details for compute instances |
 | instances\_self\_links | List of self-links for compute instances |
 | project\_id | Project where compute instance was created |
 | region | Region where compute instance was created |

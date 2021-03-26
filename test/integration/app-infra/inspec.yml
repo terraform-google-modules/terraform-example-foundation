@@ -6,6 +6,9 @@ attributes:
   - name: dev_bu1_instances_self_links
     required: true
     type: array
+  - name: dev_bu1_instances_names
+    required: true
+    type: array
   - name: dev_bu1_available_zones
     required: true
     type: array
@@ -18,6 +21,9 @@ attributes:
   - name: nonprod_bu1_instances_self_links
     required: true
     type: array
+  - name: nonprod_bu1_instances_names
+    required: true
+    type: array
   - name: nonprod_bu1_available_zones
     required: true
     type: array
@@ -28,6 +34,9 @@ attributes:
     required: true
     type: array
   - name: prod_bu1_instances_self_links
+    required: true
+    type: array
+  - name: prod_bu1_instances_names
     required: true
     type: array
   - name: prod_bu1_available_zones

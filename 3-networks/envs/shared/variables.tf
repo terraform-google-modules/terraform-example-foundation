@@ -199,6 +199,12 @@ variable "restricted_hub_nat_num_addresses_region2" {
   default     = 2
 }
 
+variable "firewall_policies_enable_logging" {
+  type        = bool
+  description = "Toggle hierarchical firewall logging."
+  default     = true
+}
+
 variable "enable_partner_interconnect" {
   description = "Enable Partner Interconnect in the environment."
   type        = bool

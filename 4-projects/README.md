@@ -26,6 +26,18 @@ If your user does not have access to run the commands above and you are in the o
 1. Rename `development.auto.example.tfvars` to `development.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_d_shared_restricted`.
 1. Rename `non-production.auto.example.tfvars` to `non-production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_n_shared_restricted`.
 1. Rename `production.auto.example.tfvars` to `production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_p_shared_restricted`.
+1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
+1. You will need only once to manually plan + apply the `business_unit_1/shared` environment since `development`, `non-production` and `production` depend on it.
+    1. Run `cd ./business_unit_1/shared/`.
+    1. Update `backend.tf` with your bucket name from the bootstrap step.
+    1. Run `terraform init`.
+    1. Run `terraform plan` and review output.
+    1. Run `terraform apply`.
+    1. Run `terraform output cloudbuild_sa` to get the cloudbuild service account from the apply step.
+    1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME`
+1. Once you have done the instructions for the `business_unit_1`, you need to repeat same steps for `business_unit_2` folder.
+1. Rename `business_unit_1.auto.example.tfvars` to `business_unit_1.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` wich is the output of `cloudbuild_sa` from `business_unit_1` shared steps.
+1. Rename `business_unit_2.auto.example.tfvars` to `business_unit_2.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` wich is the output of `cloudbuild_sa` from `business_unit_2` shared steps.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`.
 1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID

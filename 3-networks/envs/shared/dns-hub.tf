@@ -18,6 +18,26 @@ locals {
   dns_hub_project_id = data.google_projects.dns_hub.projects[0].project_id
 }
 
+data "google_active_folder" "bootstrap" {
+  display_name = "${var.folder_prefix}-bootstrap"
+  parent       = local.parent_id
+}
+
+data "google_active_folder" "development" {
+  display_name = "${var.folder_prefix}-development"
+  parent       = local.parent_id
+}
+
+data "google_active_folder" "production" {
+  display_name = "${var.folder_prefix}-production"
+  parent       = local.parent_id
+}
+
+data "google_active_folder" "non-production" {
+  display_name = "${var.folder_prefix}-non-production"
+  parent       = local.parent_id
+}
+
 /******************************************
   DNS Hub Project
 *****************************************/

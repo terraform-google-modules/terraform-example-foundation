@@ -57,6 +57,7 @@ module "seed_bootstrap" {
   activate_apis = [
     "serviceusage.googleapis.com",
     "servicenetworking.googleapis.com",
+    "cloudkms.googleapis.com",
     "compute.googleapis.com",
     "logging.googleapis.com",
     "bigquery.googleapis.com",
@@ -175,6 +176,34 @@ resource "google_folder_iam_member" "folder_cb_sa_browser" {
   folder = var.parent_folder
   role   = "roles/browser"
   member = "serviceAccount:${data.google_project.cloudbuild.number}@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_organization_iam_member" "org_tf_compute_security_policy_admin" {
+  count  = var.parent_folder == "" ? 1 : 0
+  org_id = var.org_id
+  role   = "roles/compute.orgSecurityPolicyAdmin"
+  member = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
+}
+
+resource "google_folder_iam_member" "folder_tf_compute_security_policy_admin" {
+  count  = var.parent_folder != "" ? 1 : 0
+  folder = var.parent_folder
+  role   = "roles/compute.orgSecurityPolicyAdmin"
+  member = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
+}
+
+resource "google_organization_iam_member" "org_tf_compute_security_resource_admin" {
+  count  = var.parent_folder == "" ? 1 : 0
+  org_id = var.org_id
+  role   = "roles/compute.orgSecurityResourceAdmin"
+  member = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
+}
+
+resource "google_folder_iam_member" "folder_tf_compute_security_resource_admin" {
+  count  = var.parent_folder != "" ? 1 : 0
+  folder = var.parent_folder
+  role   = "roles/compute.orgSecurityResourceAdmin"
+  member = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
 }
 
 ## Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build

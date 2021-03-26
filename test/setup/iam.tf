@@ -29,6 +29,8 @@ locals {
     "roles/accesscontextmanager.policyAdmin",
     "roles/securitycenter.admin",
     "roles/compute.xpnAdmin",
+    "roles/compute.orgSecurityPolicyAdmin",
+    "roles/compute.orgSecurityResourceAdmin",
   ]
 }
 

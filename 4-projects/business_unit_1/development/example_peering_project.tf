@@ -59,7 +59,7 @@ module "peering_project" {
 
 module "peering_network" {
   source                                 = "terraform-google-modules/network/google"
-  version                                = "~> 2.0"
+  version                                = "~> 3.0"
   project_id                             = module.peering_project.project_id
   network_name                           = "vpc-d-peering-base"
   shared_vpc_host                        = "false"
@@ -68,12 +68,11 @@ module "peering_network" {
 }
 
 module "peering" {
-  source = "terraform-google-modules/network/google//modules/network-peering"
-
-  prefix        = "bu1-d"
-  local_network = module.peering_network.network_self_link
-  peer_network  = data.google_compute_network.shared_vpc.self_link
-
+  source            = "terraform-google-modules/network/google//modules/network-peering"
+  version           = "~> 3.0"
+  prefix            = "bu1-d"
+  local_network     = module.peering_network.network_self_link
+  peer_network      = data.google_compute_network.shared_vpc.self_link
   module_depends_on = var.peering_module_depends_on
 }
 

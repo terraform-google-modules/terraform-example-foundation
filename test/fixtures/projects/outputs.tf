@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
+output "shared_bu1_default_region" {
+  description = "Default region to create resources where applicable."
+  value       = module.bu1_shared.default_region
+}
+
+output "shared_bu1_tf_runner_artifact_repo" {
+  description = "GAR Repo created to store runner images"
+  value       = module.bu1_shared.tf_runner_artifact_repo
+}
+
+output "shared_bu1_gar_name" {
+  description = "GAR Repo name created to store runner images"
+  value       = module.bu1_shared.gar_name
+}
+
 output "dev_bu1_project_base" {
   description = "Project sample base project."
   value       = module.projects_bu1_dev.base_shared_vpc_project
@@ -42,6 +57,21 @@ output "dev_bu1_project_restricted" {
 output "dev_bu1_project_restricted_number" {
   description = "Project sample restricted project."
   value       = module.projects_bu1_dev.restricted_shared_vpc_project_number
+}
+
+output "shared_bu2_default_region" {
+  description = "Default region to create resources where applicable."
+  value       = module.bu2_shared.default_region
+}
+
+output "shared_bu2_tf_runner_artifact_repo" {
+  description = "GAR Repo created to store runner images"
+  value       = module.bu2_shared.tf_runner_artifact_repo
+}
+
+output "shared_bu2_gar_name" {
+  description = "GAR Repo name created to store runner images"
+  value       = module.bu2_shared.gar_name
 }
 
 output "dev_bu2_project_base" {

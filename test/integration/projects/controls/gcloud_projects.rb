@@ -81,6 +81,15 @@ shared_bu2_state_buckets = attribute('shared_bu2_state_buckets')
 shared_bu2_plan_triggers = attribute('shared_bu2_plan_triggers')
 shared_bu2_apply_triggers = attribute('shared_bu2_apply_triggers')
 
+shared_bu1_default_region = attribute('shared_bu1_default_region')
+shared_bu1_tf_runner_artifact_repo = attribute('shared_bu1_tf_runner_artifact_repo')
+shared_bu1_gar_name = attribute('shared_bu1_gar_name')
+shared_bu1_build_project = attribute('shared_bu1_build_project')
+shared_bu2_default_region = attribute('shared_bu2_default_region')
+shared_bu2_tf_runner_artifact_repo = attribute('shared_bu2_tf_runner_artifact_repo')
+shared_bu2_gar_name = attribute('shared_bu2_gar_name')
+shared_bu2_build_project = attribute('shared_bu2_build_project')
+
 environment_codes = %w[d n p]
 
 environment_name = {
@@ -140,6 +149,21 @@ peering_networks = {
   'd' => { 'bu1' => dev_bu1_network_peering, 'bu2' => dev_bu2_network_peering },
   'n' => { 'bu1' => nonprod_bu1_network_peering, 'bu2' => nonprod_bu2_network_peering },
   'p' => { 'bu1' => prod_bu1_network_peering, 'bu2' => prod_bu2_network_peering }
+}
+
+artifact_register = {
+  'bu1' => {
+    'default_region' => shared_bu1_default_region,
+    'tf_runner_artifact_repo' => shared_bu1_tf_runner_artifact_repo,
+    'project_id' => shared_bu1_build_project,
+    'gar_name' => shared_bu1_gar_name
+  },
+  'bu2' => {
+    'default_region' => shared_bu2_default_region,
+    'tf_runner_artifact_repo' => shared_bu2_tf_runner_artifact_repo,
+    'project_id' => shared_bu2_build_project,
+    'gar_name' => shared_bu2_gar_name
+  },
 }
 
 control 'gcloud-projects' do
@@ -300,4 +324,27 @@ control 'gcloud-projects' do
       end
     end
   end
+  business_units.each do |business_unit|
+    describe command("gcloud artifacts repositories describe #{artifact_register[business_unit]['gar_name']} --project=#{artifact_register[business_unit]['project_id']} --location=#{artifact_register[business_unit]['defaut_region']} --format=json") do
+      its(:exit_status) { should eq 0 }
+      its(:stderr) { should eq '' }
+
+      let(:data) do
+        if subject.exit_status.zero?
+          JSON.parse(subject.stdout)
+        else
+          {}
+        end
+      end
+
+      describe "Artifacts Repositories #{artifact_register[business_unit]['gar_name']}" do
+        it 'should exist' do
+          expect(data).to_not be_empty
+        end
+
+        it "Artifact repo name should be #{artifact_register[business_unit]['tf_runner_artifact_repo']}" do
+          expect(data['name']).to eq "#{artifact_register[business_unit]['tf_runner_artifact_repo']}"
+        end
+      end
+    end
 end

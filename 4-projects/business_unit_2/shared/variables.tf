@@ -19,11 +19,6 @@ variable "default_region" {
   type        = string
 }
 
-variable "terraform_state_bucket" {
-  description = "Default state bucket, used in Cloud Build substitutions."
-  type        = string
-}
-
 variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform"
   type        = string

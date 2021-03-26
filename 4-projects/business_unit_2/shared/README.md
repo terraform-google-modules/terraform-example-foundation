@@ -12,9 +12,7 @@
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
-| terraform\_sa\_email | Email for terraform service account. | `string` | n/a | yes |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
-| terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. | `string` | n/a | yes |
 
 ## Outputs
 
@@ -24,8 +22,11 @@
 | artifact\_buckets | GCS Buckets to store Cloud Build Artifacts |
 | cloudbuild\_project\_id | n/a |
 | cloudbuild\_sa | Cloud Build service account |
+| default\_region | Default region to create resources where applicable. |
+| gar\_name | GAR Repo name created to store runner images |
 | plan\_triggers | CB plan triggers |
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |
+| tf\_runner\_artifact\_repo | GAR Repo created to store runner images |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

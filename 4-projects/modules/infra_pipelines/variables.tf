@@ -14,24 +14,9 @@
  * limitations under the License.
  */
 
-variable "terraform_service_account" {
-  description = "Email for terraform service account."
-  type        = string
-}
-
-variable "terraform_state_bucket" {
-  description = "Default state bucket, used in Cloud Build substitutions."
-  type        = string
-}
-
 variable "project_id" {
   description = "Custom project ID to use for project created."
   default     = ""
-  type        = string
-}
-
-variable "org_id" {
-  description = "GCP Organization ID"
   type        = string
 }
 
@@ -61,7 +46,7 @@ variable "gar_repo_name" {
 variable "project_prefix" {
   description = "Name prefix to use for projects created."
   type        = string
-  default     = "cft"
+  default     = "prj"
 }
 
 variable "cloudbuild_project_id" {

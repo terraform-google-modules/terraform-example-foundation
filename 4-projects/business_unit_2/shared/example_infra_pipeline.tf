@@ -37,13 +37,11 @@ module "app_infra_cloudbuild_project" {
 }
 
 module "infra_pipelines" {
-  source                    = "../../modules/infra_pipelines"
-  cloudbuild_project_id     = module.app_infra_cloudbuild_project.project_id
-  org_id                    = var.org_id
-  terraform_state_bucket    = var.terraform_state_bucket
-  terraform_service_account = var.terraform_service_account
-  billing_account           = var.billing_account
-  default_region            = var.default_region
-  app_infra_repos           = ["bu2-example-app"]
+  source                = "../../modules/infra_pipelines"
+  cloudbuild_project_id = module.app_infra_cloudbuild_project.project_id
+  project_prefix        = var.project_prefix
+  billing_account       = var.billing_account
+  default_region        = var.default_region
+  app_infra_repos       = ["bu2-example-app"]
 }
 

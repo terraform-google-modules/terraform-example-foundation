@@ -58,12 +58,6 @@ variable "org_policy_admin_role" {
   default     = false
 }
 
-variable "project_prefix" {
-  description = "Name prefix to use for projects created."
-  type        = string
-  default     = "prj"
-}
-
 variable "folder_prefix" {
   description = "Name prefix to use for folders created."
   type        = string

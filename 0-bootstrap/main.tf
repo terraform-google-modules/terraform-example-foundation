@@ -48,7 +48,6 @@ module "seed_bootstrap" {
   sa_enable_impersonation        = true
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
-  project_prefix                 = var.project_prefix
 
   project_labels = {
     environment       = "bootstrap"
@@ -119,7 +118,6 @@ module "cloudbuild_bootstrap" {
   sa_enable_impersonation     = true
   cloudbuild_plan_filename    = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename   = "cloudbuild-tf-apply.yaml"
-  project_prefix              = var.project_prefix
   cloud_source_repos          = var.cloud_source_repos
   terraform_validator_release = "2021-01-21"
   terraform_version           = "0.13.5"

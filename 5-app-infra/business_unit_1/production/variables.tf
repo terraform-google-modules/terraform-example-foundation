@@ -30,6 +30,11 @@ variable "folder_prefix" {
   default     = "fldr"
 }
 
+variable "instance_region" {
+  description = "The region where compute instance will be created. A subnetwork must exists in the instance region."
+  type        = string
+}
+
 variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string

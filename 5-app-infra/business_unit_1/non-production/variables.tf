@@ -24,6 +24,11 @@ variable "org_id" {
   type        = string
 }
 
+variable "instance_region" {
+  description = "The region where compute instance will be created. A subnetwork must exists in the instance region."
+  type        = string
+}
+
 variable "folder_prefix" {
   description = "Name prefix to use for folders created."
   type        = string

@@ -17,7 +17,7 @@ attributes:
     type: string
   - name: dev_bu1_region
     required: true
-    type: hash
+    type: string
   - name: nonprod_bu1_instances_self_links
     required: true
     type: array
@@ -32,7 +32,7 @@ attributes:
     type: string
   - name: nonprod_bu1_region
     required: true
-    type: array
+    type: string
   - name: prod_bu1_instances_self_links
     required: true
     type: array
@@ -47,4 +47,4 @@ attributes:
     type: string
   - name: prod_bu1_region
     required: true
-    type: string
+    type: region

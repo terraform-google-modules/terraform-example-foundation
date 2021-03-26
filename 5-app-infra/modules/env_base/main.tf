@@ -20,12 +20,13 @@ locals {
 
 resource "google_service_account" "compute_engine_service_account" {
   project      = data.google_project.env_project.project_id
-  account_id   = "sa-compute-engine"
-  display_name = "Compute Engine service Account"
+  account_id   = "sa-example-app"
+  display_name = "Example app service Account"
 }
 
 module "instance_template" {
-  source     = "github.com/terraform-google-modules/terraform-google-vm/modules/instance_template"
+  source     = "terraform-google-modules/vm/google//modules/instance_template"
+  version    = "6.2.0"
   region     = var.region
   project_id = data.google_project.env_project.project_id
   subnetwork = data.google_compute_subnetwork.subnetwork.self_link
@@ -36,7 +37,8 @@ module "instance_template" {
 }
 
 module "compute_instance" {
-  source            = "github.com/terraform-google-modules/terraform-google-vm/modules/compute_instance"
+  source            = "terraform-google-modules/vm/google//modules/compute_instance"
+  version           = "6.2.0"
   region            = var.region
   subnetwork        = data.google_compute_subnetwork.subnetwork.self_link
   num_instances     = var.num_instances

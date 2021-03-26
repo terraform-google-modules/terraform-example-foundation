@@ -37,7 +37,7 @@ variable "num_instances" {
 
 variable "hostname" {
   description = "Hostname of instances"
-  default     = ""
+  default     = "example-app"
 }
 
 variable "service_account" {

@@ -38,7 +38,7 @@ module "seed_bootstrap" {
   version                        = "~> 2.1"
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
-  project_id                     = "prj-example"
+  project_id                     = "prj-c-seed"
   state_bucket_name              = "bkt-b-tfstate-${random_id.suffix.hex}"
   billing_account                = var.billing_account
   group_org_admins               = var.group_org_admins
@@ -109,7 +109,7 @@ module "cloudbuild_bootstrap" {
   version                     = "~> 2.1"
   org_id                      = var.org_id
   folder_id                   = google_folder.bootstrap.id
-  project_id                  = "prj-cicd"
+  project_id                  = "prj-c-cicd"
   billing_account             = var.billing_account
   group_org_admins            = var.group_org_admins
   default_region              = var.default_region

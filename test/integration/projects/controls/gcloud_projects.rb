@@ -196,7 +196,7 @@ control 'gcloud-projects' do
           end
         end
       end
-      
+
       describe command("gcloud projects get-iam-policy #{base_projects_id[environment_code][business_unit]} --format=json") do
         its(:exit_status) { should eq 0 }
         its(:stderr) { should eq '' }

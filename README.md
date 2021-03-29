@@ -134,7 +134,7 @@ This stage only creates the projects and enables the correct APIs, the following
 
 #### Secrets
 
-Under the environment folder, one project is created. This is allocated for [GCP Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the environment.
+Under the environment folder, a project is created per environment (`development`, `non-production` & `production`), which is intended to be used by [GCP Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the environment.
 
 Usage instructions are available for the environments step in the [README](./2-environments/README.md).
 

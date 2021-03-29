@@ -27,7 +27,7 @@ steps:
 - name: 'gcr.io/${PROJECT_ID}/terraform'
   args: ['version']
 substitutions:
-  _TERRAFORM_VERSION: '0.12.29' # default value
-  _TERRAFORM_VERSION_SHA256SUM: '872245d9c6302b24dc0d98a1e010aef1e4ef60865a2d1f60102c8ad03e9d5a1d' # default value
+  _TERRAFORM_VERSION: '0.13.6' # default value
+  _TERRAFORM_VERSION_SHA256SUM: '55f2db00b05675026be9c898bdd3e8230ff0c5c78dd12d743ca38032092abfc9' # default value
   _TERRAFORM_VALIDATOR_RELEASE: '2020-09-24'
 images: ['gcr.io/${PROJECT_ID}/terraform']

@@ -125,7 +125,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 ### II. Create the SEED and CICD projects using Terraform
 
 - Required information:
-  - Terraform version 0.12.24 - See [Requirements](#requirements) section for more details.
+  - Terraform version 0.13.6 - See [Requirements](#requirements) section for more details.
   - The `terraform.tfvars` file with all the necessary values.
 
 1. Get the appropriate credentials: run the following command with an account that has the [necessary permissions](./modules/jenkins-agent/README.md#Permissions).
@@ -137,7 +137,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 1. Run terraform commands.
     - After the credentials are configured, we will create the `cft-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
     - **WARNING: Make sure you have commented-out the `cloudbuild_bootstrap` module and enabled the `jenkins_bootstrap` module in the `./main.tf` file**
-    - **Use Terraform 0.12.24** to run the terraform script with the commands below
+    - **Use Terraform 0.13.6** to run the terraform script with the commands below
     ```
     terraform init
     terraform plan

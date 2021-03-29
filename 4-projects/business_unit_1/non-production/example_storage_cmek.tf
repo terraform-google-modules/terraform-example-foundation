@@ -72,7 +72,7 @@ module "gcs_buckets" {
   location           = var.location_gcs
   name               = "${var.gcs_bucket_prefix}-${lower(var.location_gcs)}-${random_string.bucket_name.result}"
   bucket_policy_only = true
-  encryption         = {
+  encryption = {
     default_kms_key_name = module.kms.keys[var.key_name]
   }
 }

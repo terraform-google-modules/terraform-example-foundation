@@ -347,4 +347,5 @@ control 'gcloud-projects' do
         end
       end
     end
+  end
 end

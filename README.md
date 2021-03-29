@@ -79,21 +79,21 @@ In both cases the logs are collected into BigQuery datasets which can then be us
 
 #### DNS Hub
 
-Under the common folder, one project is created. This project will host the DNS Hub for the organization.
+Another project created under the common folder. This project will host the DNS Hub for the organization.
 
 #### Interconnect
 
-Under the common folder, one project is created. This project will host the Dedicated Interconnect [Interconnect connection](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#elements) for the organization. In case of the Partner Interconnect this project is unused and the [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#for-partner-interconnect) will be placed directly into the corresponding Hub projcts.
+Another project created under the common folder. This project will host the Dedicated Interconnect [Interconnect connection](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#elements) for the organization. In case of the Partner Interconnect this project is unused and the [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#for-partner-interconnect) will be placed directly into the corresponding Hub projcts.
 
 #### SCC Notification
 
-Under the common folder, one project is created. This project will host the SCC Notification resources at the organization level.
+Another project created under the common folder. This project will host the SCC Notification resources at the organization level.
 This project will contain a Pub/Sub topic and subscription, a [SCC Notification](https://cloud.google.com/security-command-center/docs/how-to-notifications) configured to send all new Findings to the topic created.
 You can adjust the filter when deploying this step.
 
 #### Secrets
 
-Under the common folder, one project is created. This project is allocated for [GCP Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the organization.
+Another project created under the common folder. This project is allocated for [GCP Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the organization.
 
 Usage instructions are available for the org step in the [README](./1-org/README.md).
 

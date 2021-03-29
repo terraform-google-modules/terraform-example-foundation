@@ -47,4 +47,4 @@ attributes:
     type: string
   - name: prod_bu1_region
     required: true
-    type: region
+    type: string

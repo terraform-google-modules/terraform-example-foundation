@@ -49,23 +49,25 @@ Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/READM
 
 ### [1. org](./1-org/)
 
-The purpose of this stage is to set up the common folder used to house projects which contain shared resources such as DNS Hub, Interconnect, SCC Notification, org level secrets and org level logging.
+The purpose of this stage is to set up the common folder used to house projects which contain shared resources such as DNS Hub, Interconnect, SCC Notification, org level secrets, Network Hub and org level logging.
 This will create the following folder & project structure:
 
 ```
 example-organization
 └── fldr-common
     ├── prj-c-logging
+    ├── prj-c-base-net-hub
     ├── prj-c-billing-logs
     ├── prj-c-dns-hub
     ├── prj-c-interconnect
+    ├── prj-c-restricted-net-hub
     ├── prj-c-scc
     └── prj-c-secrets
 ```
 
 #### Logs
 
-Among the six projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
+Among the eight projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
 The first one for organization wide audit logs and the latter for billing logs.
 In both cases the logs are collected into BigQuery datasets which can then be used general querying, dashboarding & reporting. Logs are also exported to Pub/Sub and GCS bucket.
 
@@ -205,9 +207,11 @@ Once all steps above have been executed your GCP organization should represent t
 example-organization
 └── fldr-common
     ├── prj-c-logging
+    ├── prj-c-base-net-hub
     ├── prj-c-billing-logs
     ├── prj-c-dns-hub
     ├── prj-c-interconnect
+    ├── prj-c-restricted-net-hub
     ├── prj-c-scc
     ├── prj-c-secrets
     ├── prj-bu1-s-sample-infra

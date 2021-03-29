@@ -24,11 +24,6 @@ output "tf_runner_artifact_repo" {
   value       = module.infra_pipelines.tf_runner_artifact_repo
 }
 
-output "gar_name" {
-  description = "GAR Repo name created to store runner images"
-  value       = module.infra_pipelines.gar_name
-}
-
 output "cloudbuild_project_id" {
   value = module.app_infra_cloudbuild_project.project_id
 }

@@ -10,7 +10,7 @@
 | cloudbuild\_plan\_filename | Path and name of Cloud Build YAML definition used for terraform plan. | `string` | `"cloudbuild-tf-plan.yaml"` | no |
 | cloudbuild\_project\_id | The project id where the pipelines and repos should be created | `string` | n/a | yes |
 | terraform\_apply\_branches | List of git branches configured to run terraform apply Cloud Build trigger. All other branches will run plan by default. | `list(string)` | <pre>[<br>  "development",<br>  "non-production",<br>  "production"<br>]</pre> | no |
-| terraform\_validator\_release | Default terraform-validator release. | `string` | `"2021-01-21"` | no |
+| terraform\_validator\_release | Default terraform-validator release. | `string` | `"2021-03-22"` | no |
 | terraform\_version | Default terraform version. | `string` | `"0.13.6"` | no |
 | terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"55f2db00b05675026be9c898bdd3e8230ff0c5c78dd12d743ca38032092abfc9"` | no |
 

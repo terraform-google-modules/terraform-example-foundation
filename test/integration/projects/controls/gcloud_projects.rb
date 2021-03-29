@@ -325,7 +325,7 @@ control 'gcloud-projects' do
     end
   end
   business_units.each do |business_unit|
-    describe command("gcloud artifacts repositories describe #{artifact_register[business_unit]['gar_name']} --project=#{artifact_register[business_unit]['project_id']} --location=#{artifact_register[business_unit]['defaut_region']} --format=json") do
+    describe command("gcloud artifacts repositories describe #{artifact_register[business_unit]['gar_name']} --project=#{artifact_register[business_unit]['project_id']} --location=#{artifact_register[business_unit]['default_region']} --format=json") do
       its(:exit_status) { should eq 0 }
       its(:stderr) { should eq '' }
 

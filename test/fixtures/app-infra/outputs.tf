@@ -29,6 +29,11 @@ output "dev_bu1_instances_names" {
   value       = module.app_infra_bu1_development.instances_names
 }
 
+output "dev_bu1_instances_zones" {
+  description = "List of zones for compute instances"
+  value       = module.app_infra_bu1_development.instances_zones
+}
+
 output "dev_bu1_available_zones" {
   description = "List of available zones in region"
   value       = module.app_infra_bu1_development.available_zones
@@ -59,6 +64,11 @@ output "nonprod_bu1_instances_names" {
   value       = module.app_infra_bu1_nonproduction.instances_names
 }
 
+output "nonprod_bu1_instances_zones" {
+  description = "List of zones for compute instances"
+  value       = module.app_infra_bu1_nonproduction.instances_zones
+}
+
 output "nonprod_bu1_available_zones" {
   description = "List of available zones in region"
   value       = module.app_infra_bu1_nonproduction.available_zones
@@ -87,6 +97,11 @@ output "prod_bu1_instances_details" {
 output "prod_bu1_instances_names" {
   description = "List of names for compute instances"
   value       = module.app_infra_bu1_production.instances_names
+}
+
+output "prod_bu1_instances_zones" {
+  description = "List of zones for compute instances"
+  value       = module.app_infra_bu1_production.instances_zones
 }
 
 output "prod_bu1_available_zones" {

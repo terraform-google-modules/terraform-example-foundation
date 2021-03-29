@@ -3,48 +3,30 @@ depends:
     git: https://github.com/inspec/inspec-gcp.git
     tag: v1.7.0
 attributes:
-  - name: dev_bu1_instances_self_links
-    required: true
-    type: array
-  - name: dev_bu1_instances_names
-    required: true
-    type: array
-  - name: dev_bu1_available_zones
-    required: true
-    type: array
   - name: dev_bu1_project_id
     required: true
     type: string
-  - name: dev_bu1_region
-    required: true
-    type: string
-  - name: nonprod_bu1_instances_self_links
+  - name: dev_bu1_instances_names
     required: true
     type: array
-  - name: nonprod_bu1_instances_names
-    required: true
-    type: array
-  - name: nonprod_bu1_available_zones
+  - name: dev_bu1_instances_zones
     required: true
     type: array
   - name: nonprod_bu1_project_id
     required: true
     type: string
-  - name: nonprod_bu1_region
-    required: true
-    type: string
-  - name: prod_bu1_instances_self_links
+  - name: nonprod_bu1_instances_names
     required: true
     type: array
-  - name: prod_bu1_instances_names
-    required: true
-    type: array
-  - name: prod_bu1_available_zones
+  - name: nonprod_bu1_instances_zones
     required: true
     type: array
   - name: prod_bu1_project_id
     required: true
     type: string
-  - name: prod_bu1_region
+  - name: prod_bu1_instances_names
     required: true
-    type: string
+    type: array
+  - name: prod_bu1_instances_zones
+    required: true
+    type: array

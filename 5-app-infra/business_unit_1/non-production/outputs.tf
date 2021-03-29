@@ -24,6 +24,11 @@ output "instances_names" {
   value       = [for u in module.base_shared_gce_instance.instances_details : u.name]
 }
 
+output "instances_zones" {
+  description = "List of zone for compute instances"
+  value       = [for u in module.base_shared_gce_instance.instances_details : u.zone]
+}
+
 output "instances_details" {
   description = "List of details for compute instances"
   value       = module.base_shared_gce_instance.instances_details

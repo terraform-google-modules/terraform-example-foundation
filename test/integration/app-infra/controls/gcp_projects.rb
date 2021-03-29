@@ -12,38 +12,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-dev_bu1_project_base = attribute('dev_bu1_project_base')
-dev_bu1_instance_zone = attribute('dev_bu1_instance_zone')
-dev_bu1_instance_names = attribute('dev_bu1_instance_names')
+dev_bu1_project_id = attribute('dev_bu1_project_id')
+dev_bu1_instances_zones = attribute('dev_bu1_instances_zones')
+dev_bu1_instances_names = attribute('dev_bu1_instances_names')
 
-nonprod_bu1_project_base = attribute('nonprod_bu1_project_base')
-nonprod_bu1_instance_zone = attribute('nonprod_bu1_instance_zone')
-nonprod_bu1_instance_names = attribute('nonprod_bu1_instance_names')
+nonprod_bu1_project_id = attribute('nonprod_bu1_project_id')
+nonprod_bu1_instances_zones = attribute('nonprod_bu1_instances_zones')
+nonprod_bu1_instances_names = attribute('nonprod_bu1_instances_names')
 
-prod_bu1_project_base = attribute('prod_bu1_project_base')
-prod_bu1_instance_zone = attribute('prod_bu1_instance_zone')
-prod_bu1_instance_names = attribute('prod_bu1_instances_names')
+prod_bu1_project_id = attribute('prod_bu1_project_id')
+prod_bu1_instances_names = attribute('prod_bu1_instances_names')
+prod_bu1_instances_zones = attribute('prod_bu1_instances_zones')
+index = 0
 
 control 'gcp-app-infra' do
   title 'gcp step 5-app-infra tests'
-  dev_bu1_instance_names.each do |dev_bu1_instance_name|
-    describe google_compute_instance(project: dev_bu1_project_base, zone: dev_bu1_instance_zone, name: dev_bu1_instance_name) do
+  dev_bu1_instances_names.each do |dev_bu1_instance_name|
+    describe google_compute_instance(project: dev_bu1_project_id, zone: dev_bu1_instances_zones[index], name: dev_bu1_instance_name) do
       it { should exist }
       its('machine_type') { should match 'n1-standard-1' }
     end
+    index += 1
   end
 
-  nonprod_bu1_instance_names.each do |nonprod_bu1_instance_name|
-    describe google_compute_instance(project: nonprod_bu1_project_base, zone: nonprod_bu1_instance_zone, name: nonprod_bu1_instance_name) do
+  index = 0
+  nonprod_bu1_instances_names.each do |nonprod_bu1_instance_name|
+    describe google_compute_instance(project: nonprod_bu1_project_id, zone: nonprod_bu1_instances_zones[index], name: nonprod_bu1_instance_name) do
       it { should exist }
       its('machine_type') { should match 'n1-standard-1' }
     end
+    index += 1
   end
 
-  prod_bu1_instance_names.each do |prod_bu1_instance_name|
-    describe google_compute_instance(project: prod_bu1_project_base, zone: prod_bu1_instance_zone, name: prod_bu1_instance_name) do
+  index = 0
+  prod_bu1_instances_names.each do |prod_bu1_instance_name|
+    describe google_compute_instance(project: prod_bu1_project_id, zone: prod_bu1_instances_zones[index], name: prod_bu1_instance_name) do
       it { should exist }
       its('machine_type') { should match 'n1-standard-1' }
     end
+    index += 1
   end
 end

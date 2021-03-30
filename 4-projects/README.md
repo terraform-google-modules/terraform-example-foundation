@@ -8,7 +8,7 @@ The purpose of this step is to set up folder structure, projects and infrastruct
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
 1. 3-networks executed successfully.
-1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
+1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`.
 1. Obtain the values for the `perimeter_name` for each environment variable by running `gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"`.
 
 **Troubleshooting:**

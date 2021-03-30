@@ -92,5 +92,5 @@ Currently, the bucket information is replaced in the state backends as a part of
 ### Software
 
 - [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
-- [Terraform](https://www.terraform.io/downloads.html) >= 0.12.6
+- [Terraform](https://www.terraform.io/downloads.html) >= 0.13.6
     - You should use the same version in the manual steps during 0-bootstrap to avoid possible  [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions. This can usually be resolved with a version upgrade.

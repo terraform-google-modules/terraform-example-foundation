@@ -8,10 +8,10 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 1. A GCP [Billing Account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
 1. Cloud Identity / Google Workspace (former G Suite) groups for organization and billing admins
 1. User account should be used for running this step, service accounts are not supported.
-1. Membership in the `group_org_admins` group for user running terraform.
-1. Grant the roles mentioned in bootstrap [README.md](https://github.com/terraform-google-modules/terraform-google-bootstrap#permissions), as well as `roles/resourcemanager.folderCreator` for the user running the step.
+1. Membership in the `group_org_admins` group for the user running terraform.
+1. Grant the roles mentioned in bootstrap module [README.md](https://github.com/terraform-google-modules/terraform-google-bootstrap#permissions), as well as `roles/resourcemanager.folderCreator` for the user running the step.
 
-Further details of permissions required and resources created, can be found in the bootstrap module [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
+Further details of groups, permissions required and resources created, can be found in the bootstrap module [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
 **Note:** when running the examples in this repository, you may receive various errors when applying terraform:
 - `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.`. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_sa_email` created in `0-bootstrap` should also be listed in "Email addresses that will be used to create projects" in that support form. If you face others quota errors, check the [Quota documentation](https://cloud.google.com/docs/quota) for guidence.

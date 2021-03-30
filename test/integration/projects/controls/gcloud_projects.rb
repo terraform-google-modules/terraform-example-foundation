@@ -323,7 +323,6 @@ control 'gcloud-projects' do
   business_units.each do |business_unit|
     describe command("gcloud artifacts repositories describe #{artifact_register[business_unit]['tf_runner_artifact_repo']} --project=#{artifact_register[business_unit]['project_id']} --location=#{artifact_register[business_unit]['default_region']} --format=json") do
       its(:exit_status) { should eq 0 }
-      its(:stderr) { should eq '' }
 
       let(:data) do
         if subject.exit_status.zero?

@@ -72,7 +72,7 @@ variable "folder_prefix" {
 variable "cloud_source_repos" {
   description = "List of Cloud Source Repositories created during bootstrap project build stage"
   type        = list(string)
-  default     = ["gcp-org", "gcp-environments", "gcp-networks", "gcp-projects", "gcp-policies", "gcp-app-infra"]
+  default     = ["gcp-org", "gcp-environments", "gcp-networks", "gcp-projects", "gcp-policies"]
 }
 
 /* ----------------------------------------

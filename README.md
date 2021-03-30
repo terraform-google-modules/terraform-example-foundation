@@ -143,9 +143,10 @@ Usage instructions are available for the environments step in the [README](./2-e
 This step focuses on creating a Shared VPC per environment (`development`, `non-production` & `production`) in a standard configuration with a reasonable security baseline. Currently this includes:
 
 - Optional - Example subnets for `development`, `non-production` & `production` inclusive of secondary ranges for those that want to use GKE.
-- Optional - Default firewall rules created to allow remote access to VMs through IAP, without needing public IPs.
-    - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively.
-- Optional - Default firewall rule created to allow for load balancing using `allow-lb` tag.
+- Optional - Default firewall rules created to allow remote access to [VMs through IAP](https://cloud.google.com/iap/docs/using-tcp-forwarding), without needing public IPs.
+  - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively.
+- Optional - Default firewall rule created to allow for [load balancing health checks](https://cloud.google.com/load-balancing/docs/health-checks#firewall_rules) using `allow-lb` tag.
+- Optional - Default firewall rule created to allow [Windows KMS activation](https://cloud.google.com/compute/docs/instances/windows/creating-managing-windows-instances#kms-server) using `allow-win-activation` tag.
 - [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workload dependant resources like Cloud SQL.
 - Base Shared VPC with [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for base access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
 - Restricted Shared VPC with [restricted.googleapis.com](https://cloud.google.com/vpc-service-controls/docs/supported-products) configured for restricted access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.

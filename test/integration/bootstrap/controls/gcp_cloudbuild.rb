@@ -18,7 +18,8 @@ cloud_source_repos = [
   'gcp-org',
   'gcp-environments',
   'gcp-networks',
-  'gcp-projects'
+  'gcp-projects',
+  'gcp-app-infra'
 ]
 
 control 'gcp_cloudbuild' do

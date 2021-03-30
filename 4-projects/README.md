@@ -14,8 +14,33 @@ The purpose of this step is to set up folder structure, projects and infrastruct
 **Troubleshooting:**
 If your user does not have access to run the commands above and you are in the organization admins group, you can append `--impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com` to run the command as the terraform service account.
 
+**Note:** If you have more then one service perimeter for each environment you can also get the values from the `restricted_service_perimeter_name` output from each of the`3-networks` environments.
+
+If you are using Cloud Build you can also search for the values in the outputs in the build logs:
+
+```console
+gcloud builds list \
+ --project=YOUR_CLOUD_BUILD_PROJECT_ID \
+ --filter="status=SUCCESS \
+ AND source.repoSource.repoName=gcp-networks \
+ AND substitutions.BRANCH_NAME=development" \
+ --format="value(id)"
+```
+
+Use the result of this command as the `BUILD_ID` value in the next command:
+
+```console
+gcloud builds log BUILD_ID \
+ --project=YOUR_CLOUD_BUILD_PROJECT_ID | \
+ grep "restricted_service_perimeter_name = "
+```
+
+Change the `BRANCH_NAME` from `development` to `non-production` or `production` for the other two service perimeters.
+
 ## Usage
+
 ### Setup to run via Cloud Build
+
 1. Clone repo `gcloud source repos clone gcp-projects --project=YOUR_CLOUD_BUILD_PROJECT_ID`.
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/4-projects/ .` (modify accordingly based on your current directory).
@@ -48,8 +73,8 @@ If your user does not have access to run the commands above and you are in the o
 1. Merge changes to non-production with `git checkout -b non-production` and `git push origin non-production`.
     1. Review the apply output in your cloud build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
-
 ### Setup to run via Jenkins
+
 1. Clone the repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-4-projects>`.
 1. Navigate into the repo `cd YOUR_NEW_REPO_CLONE-4-projects` and change to a non production branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/4-projects/ .` (modify accordingly based on your current directory).
@@ -81,6 +106,7 @@ If your user does not have access to run the commands above and you are in the o
 1. You can now move to the instructions in the step [4-projects](../4-projects/README.md).
 
 ### Run terraform locally
+
 1. Change into 4-projects folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`.

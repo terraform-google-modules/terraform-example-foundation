@@ -1,7 +1,7 @@
 # 5-app-infra
 
-The purpose of this step is to set up an example app, deploying a Compute Engine instance in one of the business unit created on step 4-projects.
-This Compute Engine instance will be created using the base network created during step 3-networks to acess private services.
+The purpose of this step is to deploy an example Compute Engine instance in one of the business unit projects using the infra pipeline setup in 4-projects.
+This Compute Engine instance will be created using the base network created during step 3-networks to access private services.
 
 ## Prerequisites
 

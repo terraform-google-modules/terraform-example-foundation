@@ -10,7 +10,7 @@ The purpose of this step is to:
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
-1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
+1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`.
 
 ## Usage
 
@@ -48,7 +48,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap.
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
 1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with the target_name_server_addresses (the list of target name servers for the DNS forwarding zone in the DNS Hub).
 1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`.
@@ -82,7 +82,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
     ```
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap.
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
 1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with the `target_name_server_addresses`.
 1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`.
@@ -111,10 +111,10 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 1. Change into 3-networks folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`.
-1. Rename common.auto.example.tfvars to common.auto.tfvars and update the file with values from your environment and bootstrap.
-1. Rename shared.auto.example.tfvars to shared.auto.tfvars and update the file with the target_name_server_addresses.
-1. Rename access_context.auto.example.tfvars to access_context.auto.tfvars and update the file with the access_context_manager_policy_id.
-1. Update backend.tf with your bucket from bootstrap. You can run
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
+1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with the `target_name_server_addresses`.
+1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
+1. Update `backend.tf` with your bucket from bootstrap. You can run
 ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
 You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
 

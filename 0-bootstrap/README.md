@@ -16,16 +16,16 @@ Further details of groups, permissions required and resources created, can be fo
 **Note:** when running the examples in this repository, you may receive various errors when applying terraform:
 - `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.`. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_sa_email` created in `0-bootstrap` should also be listed in "Email addresses that will be used to create projects" in that support form. If you face others quota errors, check the [Quota documentation](https://cloud.google.com/docs/quota) for guidence.
 - `Error: Error when reading or editing Organization Not Found : <organization-id>: googleapi: Error 403: The caller does not have permission, forbidden`.
-    - Check that your user have [Organization Admin](https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles) predefined role at the Organization level.
-    -  If this is the case, try the following:
-        ```
-        gcloud auth application-default login
-        gcloud auth list # <- confirm that correct account has a star next to it
-        ```
-    - Re-run `terraform` after.
+  - Check that your user have [Organization Admin](https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles) predefined role at the Organization level.
+  -  If this is the case, try the following:
+      ```
+      gcloud auth application-default login
+      gcloud auth list # <- confirm that correct account has a star next to it
+      ```
+  - Re-run `terraform` after.
 - `Error: Error setting billing account "XXXXXX-XXXXXX-XXXXXX" for project "projects/some-project": googleapi: Error 400: Precondition check failed., failedPrecondition`. Most likely this is related to billing quota issue.
-    - To confirm this, try `gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX`.
-    - If output states `Cloud billing quota exceeded`, please request increase via [https://support.google.com/code/contact/billing_quota_increase](https://support.google.com/code/contact/billing_quota_increase).
+  - To confirm this, try `gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX`.
+  - If output states `Cloud billing quota exceeded`, please request increase via [https://support.google.com/code/contact/billing_quota_increase](https://support.google.com/code/contact/billing_quota_increase).
 
 ## 0-bootstrap usage to deploy Jenkins
 
@@ -93,4 +93,4 @@ Currently, the bucket information is replaced in the state backends as a part of
 
 - [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
 - [Terraform](https://www.terraform.io/downloads.html) >= 0.13.6
-    - You should use the same version in the manual steps during 0-bootstrap to avoid possible  [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions. This can usually be resolved with a version upgrade.
+  - You should use the same version in the manual steps during 0-bootstrap to avoid possible [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions. This can usually be resolved with a version upgrade.

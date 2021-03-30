@@ -70,6 +70,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 ### Setup to run via Jenkins
+
 1. Clone the repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-3-networks>`.
 1. Navigate into the repo `cd YOUR_NEW_REPO_CLONE-3-networks` and change to a non production branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/3-networks/ .` (modify accordingly based on your current directory).

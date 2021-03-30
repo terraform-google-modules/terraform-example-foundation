@@ -12,6 +12,7 @@ The purpose of this step is to set up development, non-production and production
 ## Usage
 
 ### Setup to run via Cloud Build
+
 1. Clone repo `gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID`.
 1. Navigate into the repo `cd gcp-environments` and change to non master branch `git checkout -b plan`.
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/2-environments/ .` (modify accordingly based on your current directory).
@@ -30,6 +31,7 @@ The purpose of this step is to set up development, non-production and production
     1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 ### Setup to run via Jenkins
+
 1. Clone the repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-2-environments>`.
 1. Navigate into the repo `cd YOUR_NEW_REPO_CLONE-2-environments` and change to a non production branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/2-environments/ .` (modify accordingly based on your current directory).
@@ -57,6 +59,7 @@ The purpose of this step is to set up development, non-production and production
 1. You can now move to the instructions in the step [3-networks](../3-networks/README.md).
 
 ### Run terraform locally
+
 1. Change into 2-environments folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`.

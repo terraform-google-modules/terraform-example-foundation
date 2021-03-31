@@ -14,7 +14,8 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 Further details of groups, permissions required and resources created, can be found in the bootstrap module [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
 **Note:** when running the examples in this repository, you may receive various errors when applying terraform:
-- `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.`. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_sa_email` created in `0-bootstrap` should also be listed in "Email addresses that will be used to create projects" in that support form. If you face others quota errors, check the [Quota documentation](https://cloud.google.com/docs/quota) for guidence.
+
+- `Error code 8, message: The project cannot be created because you have exceeded your allotted project quota.`. That means you have reached your [Project creation quota](https://support.google.com/cloud/answer/6330231). In this case you can use this [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase) form to request a quota increase. The `terraform_service_account` created in `0-bootstrap` should also be listed in "Email addresses that will be used to create projects" in that support form. If you face others quota errors, check the [Quota documentation](https://cloud.google.com/docs/quota) for guidance.
 - `Error: Error when reading or editing Organization Not Found : <organization-id>: googleapi: Error 403: The caller does not have permission, forbidden`.
   - Check that your user have [Organization Admin](https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles) predefined role at the Organization level.
   -  If this is the case, try the following:
@@ -82,8 +83,8 @@ Currently, the bucket information is replaced in the state backends as a part of
 | kms\_crypto\_key | KMS key created by the module. |
 | kms\_keyring | KMS Keyring created by the module. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
-| terraform\_sa\_email | Email for privileged service account for Terraform. |
 | terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
+| terraform\_service\_account | Email for privileged service account for Terraform. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

@@ -20,7 +20,7 @@ module "development" {
   billing_account            = var.billing_account
   monitoring_workspace_users = var.group_email
   parent_folder              = var.parent_folder
-  terraform_service_account  = var.terraform_sa_email
+  terraform_service_account  = var.terraform_service_account
   project_prefix             = var.project_prefix
 }
 
@@ -30,7 +30,7 @@ module "non-production" {
   billing_account            = var.billing_account
   monitoring_workspace_users = var.group_email
   parent_folder              = var.parent_folder
-  terraform_service_account  = var.terraform_sa_email
+  terraform_service_account  = var.terraform_service_account
   project_prefix             = var.project_prefix
 }
 
@@ -40,6 +40,6 @@ module "production" {
   billing_account            = var.billing_account
   monitoring_workspace_users = var.group_email
   parent_folder              = var.parent_folder
-  terraform_service_account  = var.terraform_sa_email
+  terraform_service_account  = var.terraform_service_account
   project_prefix             = var.project_prefix
 }

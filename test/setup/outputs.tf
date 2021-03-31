@@ -29,10 +29,6 @@ output "sa_key" {
   sensitive = true
 }
 
-output "terraform_sa_email" {
-  value = google_service_account.int_test.email
-}
-
 output "terraform_service_account" {
   value = google_service_account.int_test.email
 }

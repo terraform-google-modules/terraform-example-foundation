@@ -18,11 +18,6 @@ variable "org_id" {
   description = "The numeric organization id"
 }
 
-variable "terraform_sa_email" {
-  description = "The SA that will be used for creating projects."
-}
-
-# used by provider configs copied by /test/network_test_prepare.sh
 variable "terraform_service_account" {
   description = "The SA that will be used for creating projects."
 }

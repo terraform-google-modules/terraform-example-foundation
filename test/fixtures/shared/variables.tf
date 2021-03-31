@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-variable "terraform_sa_email" {
+variable "terraform_service_account" {
   description = "The SA that will be used for creating projects."
 }
 

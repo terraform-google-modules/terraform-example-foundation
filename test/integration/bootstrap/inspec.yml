@@ -10,7 +10,7 @@ attributes:
   - name: seed_project_id
     required: true
     type: string
-  - name: terraform_sa_email
+  - name: terraform_service_account
     required: true
     type: string
   - name: gcs_bucket_tfstate

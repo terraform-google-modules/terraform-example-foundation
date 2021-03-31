@@ -141,7 +141,7 @@ variable "tunnel1_bgp_session_range" {
 /* ----------------------------------------
     Specific to Seed Project
    ---------------------------------------- */
-variable "terraform_sa_email" {
+variable "terraform_service_account" {
   description = "Email for terraform service account. It must be supplied by the seed project"
   type        = string
 }

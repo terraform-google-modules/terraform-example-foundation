@@ -153,8 +153,8 @@ module "cloudbuild_bootstrap" {
 // Standalone repo for Terraform-validator policies.
 // This repo does not need to trigger builds in Cloud Build.
 resource "google_sourcerepo_repository" "gcp_policies" {
-  project  = module.cloudbuild_bootstrap.cloudbuild_project_id
-  name     = "gcp-policies"
+  project = module.cloudbuild_bootstrap.cloudbuild_project_id
+  name    = "gcp-policies"
 
   depends_on = [module.cloudbuild_bootstrap.csr_repos]
 }

@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-app_infra_pipeline_cloudbuild_sa = "project-service-account@prj-bu1-s-sample-infra-<random>.iam.gserviceaccount.com"
+app_infra_pipeline_cloudbuild_sa = "<bu1_infra_pipeline_project_number>@cloudbuild.gserviceaccount.com"

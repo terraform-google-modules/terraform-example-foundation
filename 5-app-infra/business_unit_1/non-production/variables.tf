@@ -40,15 +40,3 @@ variable "parent_folder" {
   type        = string
   default     = ""
 }
-
-variable "num_instances" {
-  description = "Optional - quantity of compute instances to be created."
-  type        = number
-  default     = 1
-}
-
-variable "static_ips" {
-  type        = list(string)
-  description = "List of static IPs for VM instances"
-  default     = []
-}

@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-
-
 org_id = "000000000000"
 
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
-
-instance_region = "us-central1-a"
+instance_region = "us-east1" // should be one of the regions used to create network on step 3-networks
 
 //Optional - for development.  Will place all resources under a specific folder instead of org root
 //parent_folder = "01234567890"

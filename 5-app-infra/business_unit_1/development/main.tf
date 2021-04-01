@@ -25,10 +25,9 @@ module "base_shared_gce_instance" {
   source         = "../../modules/env_base"
   environment    = "development"
   vpc_type       = "base"
-  num_instances  = var.num_instances
+  num_instances  = 1
   folder_id      = data.google_active_folder.env.name
   business_code  = "bu1"
   project_suffix = "sample-base"
   region         = var.instance_region
-  static_ips     = var.static_ips
 }

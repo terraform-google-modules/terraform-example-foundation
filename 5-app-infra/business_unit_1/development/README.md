@@ -5,10 +5,8 @@
 |------|-------------|------|---------|:--------:|
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | n/a | yes |
-| num\_instances | Optional - quantity of compute instances to be created. | `number` | `1` | no |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
-| static\_ips | List of static IPs for VM instances | `list(string)` | `[]` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 
 ## Outputs

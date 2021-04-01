@@ -11,7 +11,6 @@
 | project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
 | region | The GCP region to create and test resources in | `string` | `"us-central1"` | no |
 | service\_account | Service account to attach to the instance. See https://www.terraform.io/docs/providers/google/r/compute_instance_template.html#service_account. | <pre>object({<br>    email  = string,<br>    scopes = set(string)<br>  })</pre> | `null` | no |
-| static\_ips | List of static IPs for VM instances | `list(string)` | `[]` | no |
 | vpc\_type | The type of VPC to attach the project to. Possible options are base or restricted. | `string` | n/a | yes |
 
 ## Outputs

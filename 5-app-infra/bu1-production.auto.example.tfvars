@@ -14,20 +14,4 @@
  * limitations under the License.
  */
 
-
-
-data "google_active_folder" "env" {
-  display_name = "${var.folder_prefix}-production"
-  parent       = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-}
-
-module "base_shared_gce_instance" {
-  source         = "../../modules/env_base"
-  environment    = "production"
-  vpc_type       = "base"
-  num_instances  = 1
-  folder_id      = data.google_active_folder.env.name
-  business_code  = "bu1"
-  project_suffix = "sample-base"
-  region         = var.instance_region
-}
+terraform_service_account = "project-service-account@prj-bu1-p-sample-base-<random>.iam.gserviceaccount.com"

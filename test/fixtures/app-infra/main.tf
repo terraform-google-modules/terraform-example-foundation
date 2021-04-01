@@ -15,28 +15,28 @@
  */
 
 module "app_infra_bu1_development" {
-  source                    = "../../../5-app-infra/business_unit_1/development"
-  parent_folder             = var.parent_folder
-  org_id                    = var.org_id
-  terraform_service_account = var.terraform_service_account
-  folder_prefix             = var.folder_prefix
-  instance_region           = "us-west1"
+  source                  = "../../../5-app-infra/business_unit_1/development"
+  parent_folder           = var.parent_folder
+  org_id                  = var.org_id
+  project_service_account = var.terraform_service_account
+  folder_prefix           = var.folder_prefix
+  instance_region         = "us-west1"
 }
 
 module "app_infra_bu1_nonproduction" {
-  source                    = "../../../5-app-infra/business_unit_1/non-production"
-  parent_folder             = var.parent_folder
-  org_id                    = var.org_id
-  terraform_service_account = var.terraform_service_account
-  folder_prefix             = var.folder_prefix
-  instance_region           = "us-west1"
+  source                  = "../../../5-app-infra/business_unit_1/non-production"
+  parent_folder           = var.parent_folder
+  org_id                  = var.org_id
+  project_service_account = var.terraform_service_account
+  folder_prefix           = var.folder_prefix
+  instance_region         = "us-west1"
 }
 
 module "app_infra_bu1_production" {
-  source                    = "../../../5-app-infra/business_unit_1/production"
-  parent_folder             = var.parent_folder
-  org_id                    = var.org_id
-  terraform_service_account = var.terraform_service_account
-  folder_prefix             = var.folder_prefix
-  instance_region           = "us-west1"
+  source                  = "../../../5-app-infra/business_unit_1/production"
+  parent_folder           = var.parent_folder
+  org_id                  = var.org_id
+  project_service_account = var.terraform_service_account
+  folder_prefix           = var.folder_prefix
+  instance_region         = "us-west1"
 }

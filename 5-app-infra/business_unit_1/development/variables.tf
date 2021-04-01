@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform"
+variable "project_service_account" {
+  description = "Service account email of the account created on step 4-project for the project where the GCE will be created"
   type        = string
 }
 

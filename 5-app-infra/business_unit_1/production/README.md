@@ -7,7 +7,7 @@
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | n/a | yes |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
+| project\_service\_account | Service account email of the account created on step 4-project for the project where the GCE will be created | `string` | n/a | yes |
 
 ## Outputs
 

@@ -15,7 +15,7 @@
  */
 
 locals {
-  tf_sa = var.terraform_service_account
+  tf_sa = var.project_service_account
 }
 
 /******************************************

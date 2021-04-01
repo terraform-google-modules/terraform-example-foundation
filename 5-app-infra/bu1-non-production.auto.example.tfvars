@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-terraform_service_account = "project-service-account@prj-bu1-n-sample-base-<random>.iam.gserviceaccount.com"
+project_service_account = "project-service-account@prj-bu1-n-sample-base-<random>.iam.gserviceaccount.com"

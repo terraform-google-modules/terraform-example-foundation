@@ -14,11 +14,11 @@
 
 cloudbuild_project_id = attribute('cloudbuild_project_id')
 branches_regex = '^(development|non\\-production|production)$'
-cloud_source_repos = %w[
-  gcp-org
-  gcp-environments
-  gcp-networks
-  gcp-projects
+cloud_source_repos = [
+  'gcp-org',
+  'gcp-environments',
+  'gcp-networks',
+  'gcp-projects'
 ]
 
 control 'gcloud_cloudbuild' do

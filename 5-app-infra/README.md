@@ -1,6 +1,8 @@
 # 5-app-infra
 
-The purpose of this step is to deploy an example Compute Engine instance in one of the business unit projects using the infra pipeline setup in 4-projects.
+The purpose of this step is to deploy an example of usage, a simple [Compute Engine](https://cloud.google.com/compute/) instance will be created in one of the business unit projects using the infra pipeline setup in 4-projects.
+The infra pipeline created on step 4-projects, have a project with a [Cloudbuild](https://cloud.google.com/build/docs) pipeline configured to plan and deploy
+a terraform code. There is also a [Source Repository](https://cloud.google.com/source-repositories) to push the code to be deployed.
 This Compute Engine instance will be created using the base network created during step 3-networks to access private services.
 
 ## Prerequisites
@@ -13,14 +15,17 @@ This Compute Engine instance will be created using the base network created duri
 ## Usage
 
 ### Setup to run via Cloud Build
-1. Clone repo `gcloud source repos clone bu1-example-app --project=YOUR_INFRA_PIPELINE_PROJECT`.
+1. Clone repo `gcloud source repos clone bu1-example-app --project=prj-bu1-s-sample-infra-<random>`.
 1. Navigate into the repo `cd bu1-example-app`.
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan`.
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/5-app-infra/ .` (modify accordingly based on your current directory).
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
 1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values).
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment.
+1. Rename `bu1-development.auto.example.tfvars` to `bu1-development.auto.tfvars` and update the file with values from your environment.
+1. Rename `bu1-non-production.auto.example.tfvars` to `bu1-non-production.auto.tfvars` and update the file with values from your environment.
+1. Rename `bu1-production.auto.example.tfvars` to `bu1-production.auto.tfvars` and update the file with values from your environment.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`.
 1. Push your plan branch to trigger a plan for all environments `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID

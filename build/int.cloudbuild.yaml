@@ -102,7 +102,7 @@ tags:
 options:
   env:
   - 'TF_VAR_example_foundations_mode=$_EXAMPLE_FOUNDATIONS_TEST_MODE'
-  - 'TF_VAR_project_prefix=tst'
+  - 'TF_VAR_project_prefix=t01'
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
   - 'TF_VAR_domain=test.infra.cft.tips.'
   - 'TF_VAR_org_id=$_ORG_ID'

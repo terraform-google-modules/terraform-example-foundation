@@ -191,8 +191,8 @@ example-organization/
     ├── prj-bu2-p-sample-restrict
     └── prj-bu2-p-sample-peering
 └── fldr-common
-    ├── prj-bu1-s-sample-infra
-    └── prj-bu2-s-sample-infra
+    ├── prj-bu1-c-infra-pipeline
+    └── prj-bu2-c-infra-pipeline
 ```
 The code in this step includes two options for creating projects.
 The first is the standard projects module which creates a project per environment and the second creates a standalone project for one environment.
@@ -215,8 +215,8 @@ example-organization
     ├── prj-c-restricted-net-hub
     ├── prj-c-scc
     ├── prj-c-secrets
-    ├── prj-bu1-s-sample-infra
-    └── prj-bu2-s-sample-infra
+    ├── prj-bu1-c-infra-pipeline
+    └── prj-bu2-c-infra-pipeline
 └── fldr-development
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base

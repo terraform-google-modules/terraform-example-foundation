@@ -20,7 +20,7 @@ module "app_infra_cloudbuild_project" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = data.google_active_folder.common.name
-  environment                 = "shared"
+  environment                 = "common"
   alert_spent_percents        = var.alert_spent_percents
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
@@ -28,7 +28,7 @@ module "app_infra_cloudbuild_project" {
   activate_apis               = ["cloudbuild.googleapis.com", "sourcerepo.googleapis.com", "cloudkms.googleapis.com"]
 
   # Metadata
-  project_suffix    = "sample-infra"
+  project_suffix    = "infra-pipeline"
   application_name  = "app-infra-pipelines"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

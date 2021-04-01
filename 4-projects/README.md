@@ -8,14 +8,39 @@ The purpose of this step is to set up folder structure, projects and infrastruct
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
 1. 3-networks executed successfully.
-1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR-ORGANIZATION_ID --format="value(name)"`.
+1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`.
 1. Obtain the values for the `perimeter_name` for each environment variable by running `gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"`.
 
 **Troubleshooting:**
 If your user does not have access to run the commands above and you are in the organization admins group, you can append `--impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com` to run the command as the terraform service account.
 
+**Note:** If you have more then one service perimeter for each environment you can also get the values from the `restricted_service_perimeter_name` output from each of the`3-networks` environments.
+
+If you are using Cloud Build you can also search for the values in the outputs in the build logs:
+
+```console
+gcloud builds list \
+ --project=YOUR_CLOUD_BUILD_PROJECT_ID \
+ --filter="status=SUCCESS \
+ AND source.repoSource.repoName=gcp-networks \
+ AND substitutions.BRANCH_NAME=development" \
+ --format="value(id)"
+```
+
+Use the result of this command as the `BUILD_ID` value in the next command:
+
+```console
+gcloud builds log BUILD_ID \
+ --project=YOUR_CLOUD_BUILD_PROJECT_ID | \
+ grep "restricted_service_perimeter_name = "
+```
+
+Change the `BRANCH_NAME` from `development` to `non-production` or `production` for the other two service perimeters.
+
 ## Usage
+
 ### Setup to run via Cloud Build
+
 1. Clone repo `gcloud source repos clone gcp-projects --project=YOUR_CLOUD_BUILD_PROJECT_ID`.
 1. Change freshly cloned repo and change to non master branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/4-projects/ .` (modify accordingly based on your current directory).
@@ -36,8 +61,8 @@ If your user does not have access to run the commands above and you are in the o
     1. Run `terraform output cloudbuild_sa` to get the cloudbuild service account from the apply step.
     1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME`
 1. Once you have done the instructions for the `business_unit_1`, you need to repeat same steps for `business_unit_2` folder.
-1. Rename `business_unit_1.auto.example.tfvars` to `business_unit_1.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` wich is the output of `cloudbuild_sa` from `business_unit_1` shared steps.
-1. Rename `business_unit_2.auto.example.tfvars` to `business_unit_2.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` wich is the output of `cloudbuild_sa` from `business_unit_2` shared steps.
+1. Rename `business_unit_1.auto.example.tfvars` to `business_unit_1.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` which is the output of `cloudbuild_sa` from `business_unit_1` shared steps.
+1. Rename `business_unit_2.auto.example.tfvars` to `business_unit_2.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` which is the output of `cloudbuild_sa` from `business_unit_2` shared steps.
 1. Commit changes with `git add .` and `git commit -m 'Your message'`.
 1. Push your plan branch to trigger a plan `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
     1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
@@ -48,8 +73,8 @@ If your user does not have access to run the commands above and you are in the o
 1. Merge changes to non-production with `git checkout -b non-production` and `git push origin non-production`.
     1. Review the apply output in your cloud build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
-
 ### Setup to run via Jenkins
+
 1. Clone the repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-4-projects>`.
 1. Navigate into the repo `cd YOUR_NEW_REPO_CLONE-4-projects` and change to a non production branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/4-projects/ .` (modify accordingly based on your current directory).
@@ -81,6 +106,7 @@ If your user does not have access to run the commands above and you are in the o
 1. You can now move to the instructions in the step [4-projects](../4-projects/README.md).
 
 ### Run terraform locally
+
 1. Change into 4-projects folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`.
@@ -90,7 +116,7 @@ If your user does not have access to run the commands above and you are in the o
 1. Rename `production.auto.example.tfvars` to `production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_p_shared_restricted`.
 1. Update backend.tf with your bucket from bootstrap. You can run
 ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
-You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
+You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
 
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied.

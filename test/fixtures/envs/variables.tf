@@ -30,7 +30,7 @@ variable "group_email" {
   description = "The group that will be assigned permissions for testing."
 }
 
-variable "terraform_sa_email" {
+variable "terraform_service_account" {
   description = "The SA that will be used for creating projects."
 }
 

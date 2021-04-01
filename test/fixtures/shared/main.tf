@@ -21,7 +21,7 @@ module "shared" {
   domain                           = var.domain
   access_context_manager_policy_id = var.policy_id
   target_name_server_addresses     = ["192.168.0.1", "192.168.0.2"]
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   parent_folder                    = var.parent_folder
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   org_id                           = var.org_id

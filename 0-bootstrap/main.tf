@@ -214,7 +214,7 @@ resource "google_folder_iam_member" "folder_tf_compute_security_resource_admin" 
 #  billing_account                         = var.billing_account
 #  group_org_admins                        = var.group_org_admins
 #  default_region                          = var.default_region
-#  terraform_sa_email                      = module.seed_bootstrap.terraform_sa_email
+#  terraform_service_account               = module.seed_bootstrap.terraform_sa_email
 #  terraform_sa_name                       = module.seed_bootstrap.terraform_sa_name
 #  terraform_state_bucket                  = module.seed_bootstrap.gcs_bucket_tfstate
 #  sa_enable_impersonation                 = true

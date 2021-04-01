@@ -51,12 +51,12 @@ variable "audit_data_users" {
 }
 
 variable "domains_to_allow" {
-  description = "The list of domains to allow users from in IAM."
+  description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy."
   type        = list(string)
 }
 
 variable "enable_os_login_policy" {
-  description = "Enable OS Login policy."
+  description = "Enable OS Login Organization Policy."
   type        = bool
   default     = false
 }
@@ -68,7 +68,7 @@ variable "audit_logs_table_expiration_days" {
 }
 
 variable "scc_notification_name" {
-  description = "Name of SCC Notification"
+  description = "Name of the Security Command Center Notification. It must be unique in the organization. Run `gcloud scc notifications describe <scc_notification_name> --organization=org_id` to check if it already exists."
   type        = string
 }
 
@@ -79,7 +79,7 @@ variable "skip_gcloud_download" {
 }
 
 variable "scc_notification_filter" {
-  description = "Filter used to SCC Notification, you can see more details how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter"
+  description = "Filter used to create the Security Command Center Notification, you can see more details on how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter"
   type        = string
   default     = "state=\\\"ACTIVE\\\""
 }

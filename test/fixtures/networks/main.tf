@@ -21,7 +21,7 @@ module "development" {
   default_region2                  = "us-central1"
   default_region1                  = "us-west1"
   domain                           = var.domain
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   parent_folder                    = var.parent_folder
   enable_hub_and_spoke             = var.enable_hub_and_spoke
 }
@@ -33,7 +33,7 @@ module "non-production" {
   default_region2                  = "us-central1"
   default_region1                  = "us-west1"
   domain                           = var.domain
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   parent_folder                    = var.parent_folder
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   depends_on                       = [module.development]
@@ -46,7 +46,7 @@ module "production" {
   default_region2                  = "us-central1"
   default_region1                  = "us-west1"
   domain                           = var.domain
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   parent_folder                    = var.parent_folder
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   depends_on                       = [module.non-production]

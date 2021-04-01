@@ -40,10 +40,6 @@ function prepare(){
     mv 3-networks/envs/non-production/providers.tf  3-networks/envs/non-production/providers.tf.disabled
     mv 3-networks/envs/production/providers.tf  3-networks/envs/production/providers.tf.disabled
 
-    # email fix, we need to add `terraform_service_account` as a var within test/fixtures/networks/variables.tf as network provider.tf uses this.
-    # Using the same value exported by setup
-    # shellcheck disable=SC2154
-    export TF_VAR_terraform_service_account=$TF_VAR_terraform_sa_email
 }
 
 function restore(){

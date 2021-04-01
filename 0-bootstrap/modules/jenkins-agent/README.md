@@ -23,7 +23,7 @@ module "jenkins_bootstrap" {
   billing_account                         = "<BILLING_ACCOUNT_ID>"
   group_org_admins                        = "gcp-organization-admins@example.com"
   default_region                          = "us-central1"
-  terraform_sa_email                      = "<SERVICE_ACCOUNT_EMAIL>" # normally module.seed_bootstrap.terraform_sa_email
+  terraform_service_account               = "<SERVICE_ACCOUNT_EMAIL>" # normally module.seed_bootstrap.terraform_sa_email
   terraform_sa_name                       = "<SERVICE_ACCOUNT_NAME>" # normally module.seed_bootstrap.terraform_sa_name
   terraform_state_bucket                  = "<GCS_STATE_BUCKET_NAME>" # normally module.seed_bootstrap.gcs_bucket_tfstate
   sa_enable_impersonation                 = true
@@ -76,8 +76,8 @@ module "jenkins_bootstrap" {
 | service\_account\_prefix | Name prefix to use for service accounts. | `string` | `"sa"` | no |
 | storage\_bucket\_labels | Labels to apply to the storage bucket. | `map(string)` | `{}` | no |
 | storage\_bucket\_prefix | Name prefix to use for storage buckets. | `string` | `"bkt"` | no |
-| terraform\_sa\_email | Email for terraform service account. It must be supplied by the seed project | `string` | n/a | yes |
 | terraform\_sa\_name | Fully-qualified name of the terraform service account. It must be supplied by the seed project | `string` | n/a | yes |
+| terraform\_service\_account | Email for terraform service account. It must be supplied by the seed project | `string` | n/a | yes |
 | terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the seed project | `string` | n/a | yes |
 | terraform\_version | Default terraform version. | `string` | `"0.13.6"` | no |
 | terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"55f2db00b05675026be9c898bdd3e8230ff0c5c78dd12d743ca38032092abfc9"` | no |
@@ -135,7 +135,7 @@ Error: google: could not find default credentials. See https://developers.google
 ```
 
 ```
-Error: Error setting billing account "aaaaaa-bbbbbb-cccccc" for project "projects/cft-jenkins-dc3a": googleapi: Error 400: Precondition check failed., failedPrecondition
+Error: Error setting billing account "aaaaaa-bbbbbb-cccccc" for project "projects/prj-jenkins-dc3a": googleapi: Error 400: Precondition check failed., failedPrecondition
       on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
       96: resource "google_project" "main" {
 ```

@@ -16,7 +16,7 @@
 
 module "bu1_shared" {
   source                    = "../../../4-projects/business_unit_1/shared"
-  terraform_service_account = var.terraform_sa_email
+  terraform_service_account = var.terraform_service_account
   org_id                    = var.org_id
   billing_account           = var.billing_account
   parent_folder             = var.parent_folder
@@ -25,7 +25,7 @@ module "bu1_shared" {
 
 module "projects_bu1_dev" {
   source                           = "../../../4-projects/business_unit_1/development"
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   org_id                           = var.org_id
   billing_account                  = var.billing_account
   access_context_manager_policy_id = var.policy_id
@@ -38,7 +38,7 @@ module "projects_bu1_dev" {
 
 module "projects_bu1_nonprod" {
   source                           = "../../../4-projects/business_unit_1/non-production"
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   org_id                           = var.org_id
   billing_account                  = var.billing_account
   access_context_manager_policy_id = var.policy_id
@@ -52,7 +52,7 @@ module "projects_bu1_nonprod" {
 
 module "projects_bu1_prod" {
   source                           = "../../../4-projects/business_unit_1/production"
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   org_id                           = var.org_id
   billing_account                  = var.billing_account
   access_context_manager_policy_id = var.policy_id
@@ -65,7 +65,7 @@ module "projects_bu1_prod" {
 
 module "bu2_shared" {
   source                    = "../../../4-projects/business_unit_2/shared"
-  terraform_service_account = var.terraform_sa_email
+  terraform_service_account = var.terraform_service_account
   org_id                    = var.org_id
   billing_account           = var.billing_account
   parent_folder             = var.parent_folder
@@ -74,7 +74,7 @@ module "bu2_shared" {
 
 module "projects_bu2_dev" {
   source                           = "../../../4-projects/business_unit_2/development"
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   org_id                           = var.org_id
   billing_account                  = var.billing_account
   access_context_manager_policy_id = var.policy_id
@@ -88,7 +88,7 @@ module "projects_bu2_dev" {
 
 module "projects_bu2_nonprod" {
   source                           = "../../../4-projects/business_unit_2/non-production"
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   org_id                           = var.org_id
   billing_account                  = var.billing_account
   access_context_manager_policy_id = var.policy_id
@@ -103,7 +103,7 @@ module "projects_bu2_nonprod" {
 
 module "projects_bu2_prod" {
   source                           = "../../../4-projects/business_unit_2/production"
-  terraform_service_account        = var.terraform_sa_email
+  terraform_service_account        = var.terraform_service_account
   org_id                           = var.org_id
   billing_account                  = var.billing_account
   access_context_manager_policy_id = var.policy_id

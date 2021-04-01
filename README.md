@@ -14,10 +14,10 @@ This stage executes the [CFT Bootstrap module](https://github.com/terraform-goog
 For CI/CD pipelines, you can use either Cloud Build (by default) or Jenkins. If you want to use Jenkins instead of Cloud Build, please see [README-Jenkins](./0-bootstrap/README-Jenkins.md) on how to use the included Jenkins sub-module.
 
 The bootstrap step includes:
-- The `cft-seed` project, which contains:
+- The `prj-seed` project, which contains:
   - Terraform state bucket
   - Custom Service Account used by Terraform to create new resources in GCP
-- The `cft-cloudbuild` project (`prj-cicd` if using Jenkins), which contains:
+- The `prj-cloudbuild` project (`prj-cicd` if using Jenkins), which contains:
   - A CI/CD pipeline implemented with either Cloud Build or Jenkins
   - If using Cloud Build:
     - Cloud Source Repository
@@ -27,8 +27,8 @@ The bootstrap step includes:
     - VPN connection with on-prem (or where ever your Jenkins Master is located)
 
 It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CI/CD tool.
-The `cft-seed` project stores Terraform state and has the Service Account able to create / modify infrastructure.
-On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project (named `cft-cloudbuild` project if using Google Cloud Build and `prj-cicd` project if using Jenkins).
+The `prj-seed` project stores Terraform state and has the Service Account able to create / modify infrastructure.
+On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project (named `prj-cloudbuild` project if using Google Cloud Build and `prj-cicd` project if using Jenkins).
 
 To further separate the concerns at the IAM level as well, the service account of the CI/CD tool is given different permissions than the Terraform account.
 The CI/CD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account.
@@ -39,8 +39,8 @@ After executing this step, you will have the following structure:
 ```
 example-organization/
 └── fldr-bootstrap
-    ├── cft-cloudbuild (prj-cicd if using Jenkins)
-    └── cft-seed
+    ├── prj-cloudbuild (prj-cicd if using Jenkins)
+    └── prj-seed
 ```
 
 When this step uses the Cloud Build submodule, it sets up Cloud Build and Cloud Source Repositories for each of the stages below.
@@ -49,23 +49,25 @@ Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/READM
 
 ### [1. org](./1-org/)
 
-The purpose of this stage is to set up the common folder used to house projects which contain shared resources such as DNS Hub, Interconnect, SCC Notification, org level secrets and org level logging.
+The purpose of this stage is to set up the common folder used to house projects which contain shared resources such as DNS Hub, Interconnect, SCC Notification, org level secrets, Network Hub and org level logging.
 This will create the following folder & project structure:
 
 ```
 example-organization
 └── fldr-common
     ├── prj-c-logging
+    ├── prj-c-base-net-hub
     ├── prj-c-billing-logs
     ├── prj-c-dns-hub
     ├── prj-c-interconnect
+    ├── prj-c-restricted-net-hub
     ├── prj-c-scc
     └── prj-c-secrets
 ```
 
 #### Logs
 
-Among the six projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
+Among the eight projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
 The first one for organization wide audit logs and the latter for billing logs.
 In both cases the logs are collected into BigQuery datasets which can then be used general querying, dashboarding & reporting. Logs are also exported to Pub/Sub and GCS bucket.
 
@@ -77,21 +79,21 @@ In both cases the logs are collected into BigQuery datasets which can then be us
 
 #### DNS Hub
 
-Under the common folder, one project is created. This project will host the DNS Hub for the organization.
+Another project created under the common folder. This project will host the DNS Hub for the organization.
 
 #### Interconnect
 
-Under the common folder, one project is created. This project will host the Dedicated Interconnect [Interconnect connection](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#elements) for the organization. In case of the Partner Interconnect this project is unused and the [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#for-partner-interconnect) will be placed directly into the corresponding Hub projcts.
+Another project created under the common folder. This project will host the Dedicated Interconnect [Interconnect connection](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#elements) for the organization. In case of the Partner Interconnect this project is unused and the [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#for-partner-interconnect) will be placed directly into the corresponding Hub projcts.
 
 #### SCC Notification
 
-Under the common folder, one project is created. This project will host the SCC Notification resources at the organization level.
+Another project created under the common folder. This project will host the SCC Notification resources at the organization level.
 This project will contain a Pub/Sub topic and subscription, a [SCC Notification](https://cloud.google.com/security-command-center/docs/how-to-notifications) configured to send all new Findings to the topic created.
 You can adjust the filter when deploying this step.
 
 #### Secrets
 
-Under the common folder, one project is created. This project is allocated for [GCP Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the organization.
+Another project created under the common folder. This project is allocated for [GCP Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the organization.
 
 Usage instructions are available for the org step in the [README](./1-org/README.md).
 
@@ -132,7 +134,7 @@ This stage only creates the projects and enables the correct APIs, the following
 
 #### Secrets
 
-Under the environment folder, one project is created. This is allocated for [GCP Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the environment.
+Under the environment folder, a project is created per environment (`development`, `non-production` & `production`), which is intended to be used by [GCP Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the environment.
 
 Usage instructions are available for the environments step in the [README](./2-environments/README.md).
 
@@ -141,9 +143,10 @@ Usage instructions are available for the environments step in the [README](./2-e
 This step focuses on creating a Shared VPC per environment (`development`, `non-production` & `production`) in a standard configuration with a reasonable security baseline. Currently this includes:
 
 - Optional - Example subnets for `development`, `non-production` & `production` inclusive of secondary ranges for those that want to use GKE.
-- Optional - Default firewall rules created to allow remote access to VMs through IAP, without needing public IPs.
-    - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively.
-- Optional - Default firewall rule created to allow for load balancing using `allow-lb` tag.
+- Optional - Default firewall rules created to allow remote access to [VMs through IAP](https://cloud.google.com/iap/docs/using-tcp-forwarding), without needing public IPs.
+  - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively.
+- Optional - Default firewall rule created to allow for [load balancing health checks](https://cloud.google.com/load-balancing/docs/health-checks#firewall_rules) using `allow-lb` tag.
+- Optional - Default firewall rule created to allow [Windows KMS activation](https://cloud.google.com/compute/docs/instances/windows/creating-managing-windows-instances#kms-server) using `allow-win-activation` tag.
 - [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workload dependant resources like Cloud SQL.
 - Base Shared VPC with [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for base access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
 - Restricted Shared VPC with [restricted.googleapis.com](https://cloud.google.com/vpc-service-controls/docs/supported-products) configured for restricted access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
@@ -205,9 +208,11 @@ Once all steps above have been executed your GCP organization should represent t
 example-organization
 └── fldr-common
     ├── prj-c-logging
+    ├── prj-c-base-net-hub
     ├── prj-c-billing-logs
     ├── prj-c-dns-hub
     ├── prj-c-interconnect
+    ├── prj-c-restricted-net-hub
     ├── prj-c-scc
     ├── prj-c-secrets
     ├── prj-bu1-s-sample-infra
@@ -252,8 +257,8 @@ example-organization
     ├── prj-p-shared-base
     └── prj-p-shared-restricted
 └── fldr-bootstrap
-    ├── cft-cloudbuild (prj-cicd if using Jenkins)
-    └── cft-seed
+    ├── prj-cloudbuild (prj-cicd if using Jenkins)
+    └── prj-seed
 ```
 ### Branching strategy
 

@@ -15,7 +15,7 @@
 org_id = attribute('org_id')
 seed_project_id = attribute('seed_project_id')
 gcs_bucket_tfstate = attribute('gcs_bucket_tfstate')
-terraform_sa_email = attribute('terraform_sa_email')
+terraform_service_account = attribute('terraform_service_account')
 
 activate_apis = [
   'serviceusage.googleapis.com',
@@ -62,14 +62,14 @@ control 'gcp_bootstrap' do
     it { should exist }
   end
 
-  describe google_service_account(project: seed_project_id, name: terraform_sa_email) do
+  describe google_service_account(project: seed_project_id, name: terraform_service_account) do
     it { should exist }
   end
 
   sa_org_iam_permissions.each do |role|
     describe google_organization_iam_binding(name: org_name, role: role) do
       it { should exist }
-      its('members') { should include "serviceAccount:#{terraform_sa_email}" }
+      its('members') { should include "serviceAccount:#{terraform_service_account}" }
     end
   end
 

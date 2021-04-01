@@ -24,9 +24,9 @@ output "seed_project_id" {
   value       = module.bootstrap.seed_project_id
 }
 
-output "terraform_sa_email" {
+output "terraform_service_account" {
   description = "Email for privileged service account for Terraform."
-  value       = module.bootstrap.terraform_sa_email
+  value       = module.bootstrap.terraform_service_account
 }
 
 output "gcs_bucket_tfstate" {

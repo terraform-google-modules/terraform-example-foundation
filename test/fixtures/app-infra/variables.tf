@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-variable "terraform_sa_email" {
-  description = "Service account email of the account to impersonate to run Terraform"
-  type        = string
+variable "terraform_service_account" {
+  description = "The SA that will be used for creating projects."
 }
 
 variable "folder_prefix" {
@@ -34,10 +33,4 @@ variable "parent_folder" {
 variable "org_id" {
   description = "The organization id for the associated services"
   type        = string
-}
-
-variable "static_ips" {
-  type        = list(string)
-  description = "List of static IPs for VM instances"
-  default     = []
 }

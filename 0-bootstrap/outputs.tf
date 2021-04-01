@@ -44,7 +44,7 @@ output "cloudbuild_project_id" {
 }
 
 output "gcs_bucket_cloudbuild_artifacts" {
-  description = "Bucket used to store Cloud/Build artefacts in CloudBuild project."
+  description = "Bucket used to store Cloud/Build artifacts in CloudBuild project."
   value       = module.cloudbuild_bootstrap.gcs_bucket_cloudbuild_artifacts
 }
 

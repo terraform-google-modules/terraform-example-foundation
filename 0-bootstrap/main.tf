@@ -114,7 +114,7 @@ module "cloudbuild_bootstrap" {
   cloudbuild_apply_filename   = "cloudbuild-tf-apply.yaml"
   project_prefix              = var.project_prefix
   cloud_source_repos          = var.cloud_source_repos
-  terraform_validator_release = "2021-01-21"
+  terraform_validator_release = "2021-03-22"
   terraform_version           = "0.13.6"
   terraform_version_sha256sum = "55f2db00b05675026be9c898bdd3e8230ff0c5c78dd12d743ca38032092abfc9"
 

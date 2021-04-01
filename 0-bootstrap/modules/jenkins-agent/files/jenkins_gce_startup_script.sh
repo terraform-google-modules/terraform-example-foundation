@@ -42,7 +42,7 @@ wget "https://releases.hashicorp.com/terraform/${tpl_TERRAFORM_VERSION}/terrafor
     rm -rf /var/lib/apt/lists/*
 
 echo "**** Startup Step 6/9: Download and install the Terraform validator ****"
-gsutil cp gs://terraform-validator/releases/2021-01-21/terraform-validator-linux-amd64 .
+gsutil cp gs://terraform-validator/releases/2021-03-22/terraform-validator-linux-amd64 .
 chmod 755 "${tpl_TERRAFORM_DIR}terraform-validator-linux-amd64"
 mv "${tpl_TERRAFORM_DIR}terraform-validator-linux-amd64" "${tpl_TERRAFORM_DIR}terraform-validator"
 

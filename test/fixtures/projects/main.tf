@@ -84,6 +84,11 @@ module "projects_bu2_dev" {
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   app_infra_pipeline_cloudbuild_sa = module.bu2_shared.cloudbuild_sa
   depends_on                       = [module.projects_bu1_dev]
+
+  providers = {
+    google      = google
+    google-beta = google-beta
+  }
 }
 
 module "projects_bu2_nonprod" {
@@ -98,6 +103,11 @@ module "projects_bu2_nonprod" {
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   app_infra_pipeline_cloudbuild_sa = module.bu2_shared.cloudbuild_sa
   depends_on                       = [module.projects_bu1_nonprod]
+
+  providers = {
+    google      = google
+    google-beta = google-beta
+  }
 }
 
 
@@ -113,4 +123,9 @@ module "projects_bu2_prod" {
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   app_infra_pipeline_cloudbuild_sa = module.bu2_shared.cloudbuild_sa
   depends_on                       = [module.projects_bu1_prod]
+
+  providers = {
+    google      = google
+    google-beta = google-beta
+  }
 }

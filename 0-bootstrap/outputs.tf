@@ -53,6 +53,11 @@ output "csr_repos" {
   value       = module.cloudbuild_bootstrap.csr_repos
 }
 
+output "terraform_validator_policies_repo" {
+  description = "Cloud Source Repository created for terraform-validator policies."
+  value       = google_sourcerepo_repository.gcp_policies
+}
+
 output "kms_keyring" {
   description = "KMS Keyring created by the module."
   value       = module.cloudbuild_bootstrap.kms_keyring

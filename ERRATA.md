@@ -6,7 +6,7 @@ This is an overview of the delta between the example foundation repository and t
 
 #### Labeling
 - The guide defines vpc-type for shared, service, float, nic, and peer projects. It does not define a vpc-type for Jenkins agents (vpc-b-jenkinsagents), the DNS Hub (vpc-dns-hub) and projects created in 4-projects.
-This will be addressed in the next version of the whitepaper.
+This will be addressed in the next version of the blueprint guide.
 
 #### Naming
 - The Service Account & Storage bucket naming are not aligned to the blueprint guide. Naming will be modified accordingly in a future release.
@@ -26,7 +26,7 @@ This will be addressed in the next version of the whitepaper.
 
 #### Labeling
 - The guide defines vpc-type for shared, service, float, nic, and peer projects. It does not define a vpc-type for Jenkins agents (vpc-b-jenkinsagents), the DNS Hub (vpc-dns-hub) and projects created in 4-projects.
-This will be addressed in the next version of the whitepaper.
+This will be addressed in the next version of the blueprint guide.
 
 #### Naming
 - The Service Account & Storage bucket naming are not aligned to the blueprint guide. Naming will be modified accordingly in a future release.

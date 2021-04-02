@@ -80,10 +80,10 @@ module "projects_bu2_dev" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.dev_restricted_service_perimeter_name
-  peering_module_depends_on        = [module.projects_bu1_dev.peering_complete]
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   app_infra_pipeline_cloudbuild_sa = module.bu2_shared.cloudbuild_sa
+  depends_on                       = [module.projects_bu1_dev]
 }
 
 module "projects_bu2_nonprod" {
@@ -94,10 +94,10 @@ module "projects_bu2_nonprod" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.nonprod_restricted_service_perimeter_name
-  peering_module_depends_on        = [module.projects_bu1_nonprod.peering_complete]
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   app_infra_pipeline_cloudbuild_sa = module.bu2_shared.cloudbuild_sa
+  depends_on                       = [module.projects_bu1_nonprod]
 }
 
 
@@ -109,8 +109,8 @@ module "projects_bu2_prod" {
   access_context_manager_policy_id = var.policy_id
   parent_folder                    = var.parent_folder
   perimeter_name                   = var.prod_restricted_service_perimeter_name
-  peering_module_depends_on        = [module.projects_bu1_prod.peering_complete]
   project_prefix                   = var.project_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   app_infra_pipeline_cloudbuild_sa = module.bu2_shared.cloudbuild_sa
+  depends_on                       = [module.projects_bu1_prod]
 }

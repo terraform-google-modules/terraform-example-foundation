@@ -30,6 +30,11 @@ resource "google_sourcerepo_repository" "app_infra_repo" {
   name     = each.value
 }
 
+resource "google_sourcerepo_repository" "gcp_policies" {
+  project = var.cloudbuild_project_id
+  name    = "gcp-policies"
+}
+
 data "google_project" "cloudbuild_project" {
   project_id = var.cloudbuild_project_id
 }

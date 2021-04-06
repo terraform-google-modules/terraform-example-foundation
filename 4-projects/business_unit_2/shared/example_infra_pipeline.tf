@@ -30,6 +30,7 @@ module "app_infra_cloudbuild_project" {
     "sourcerepo.googleapis.com",
     "cloudkms.googleapis.com",
     "iam.googleapis.com",
+    "artifactregistry.googleapis.com",
     "cloudresourcemanager.googleapis.com"
   ]
   # Metadata

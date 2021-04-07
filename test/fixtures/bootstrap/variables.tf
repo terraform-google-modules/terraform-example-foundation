@@ -39,4 +39,13 @@ variable "org_project_creators" {
 variable "project_prefix" {
   description = "Name prefix to use for projects created."
   type        = string
+  default     = "tst"
 }
+
+variable "bucket_prefix" {
+  description = "Name prefix to use for state bucket created."
+  type        = string
+  default     = "tst"
+}
+
+

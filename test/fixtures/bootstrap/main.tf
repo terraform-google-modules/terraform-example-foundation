@@ -23,4 +23,5 @@ module "bootstrap" {
   billing_account      = var.billing_account
   org_project_creators = var.org_project_creators
   project_prefix       = var.project_prefix
+  bucket_prefix        = var.bucket_prefix
 }

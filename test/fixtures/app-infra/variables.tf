@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-module "bootstrap" {
-  source               = "../../../0-bootstrap"
-  parent_folder        = var.parent_folder
-  org_id               = var.org_id
-  group_org_admins     = var.group_email
-  group_billing_admins = var.group_email
-  billing_account      = var.billing_account
-  org_project_creators = var.org_project_creators
-  project_prefix       = var.project_prefix
-  bucket_prefix        = var.bucket_prefix
+variable "terraform_service_account" {
+  description = "The SA that will be used for creating projects."
+}
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created."
+  type        = string
+  default     = "fldr"
+}
+
+variable "parent_folder" {
+  description = "Optional - if using a folder for testing."
+  type        = string
+  default     = ""
+}
+
+variable "org_id" {
+  description = "The organization id for the associated services"
+  type        = string
 }

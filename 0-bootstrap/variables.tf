@@ -69,6 +69,13 @@ variable "folder_prefix" {
   type        = string
   default     = "fldr"
 }
+
+variable "bucket_prefix" {
+  description = "Name prefix to use for state bucket created."
+  type        = string
+  default     = "bkt"
+}
+
 variable "cloud_source_repos" {
   description = "List of Cloud Source Repositories created during bootstrap project build stage for use with Cloud Build."
   type        = list(string)

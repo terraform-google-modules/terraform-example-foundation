@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-module "bootstrap" {
-  source               = "../../../0-bootstrap"
-  parent_folder        = var.parent_folder
-  org_id               = var.org_id
-  group_org_admins     = var.group_email
-  group_billing_admins = var.group_email
-  billing_account      = var.billing_account
-  org_project_creators = var.org_project_creators
-  project_prefix       = var.project_prefix
-  bucket_prefix        = var.bucket_prefix
-}
+org_id = "000000000000"
+
+instance_region = "us-east1" // should be one of the regions used to create network on step 3-networks
+
+//Optional - for development.  Will place all resources under a specific folder instead of org root
+//parent_folder = "01234567890"

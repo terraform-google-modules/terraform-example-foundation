@@ -14,14 +14,4 @@
  * limitations under the License.
  */
 
-module "bootstrap" {
-  source               = "../../../0-bootstrap"
-  parent_folder        = var.parent_folder
-  org_id               = var.org_id
-  group_org_admins     = var.group_email
-  group_billing_admins = var.group_email
-  billing_account      = var.billing_account
-  org_project_creators = var.org_project_creators
-  project_prefix       = var.project_prefix
-  bucket_prefix        = var.bucket_prefix
-}
+project_service_account = "project-service-account@prj-bu1-p-sample-base-<random>.iam.gserviceaccount.com"

@@ -57,6 +57,8 @@ override.tf.json
 **/.kitchen
 **/.kitchen.local.yml
 **/Gemfile.lock
+# Plan files
+**/tmp_plan
 
 test/fixtures/shared/terraform.tfvars
 

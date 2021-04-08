@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-module "bootstrap" {
-  source               = "../../../0-bootstrap"
-  parent_folder        = var.parent_folder
-  org_id               = var.org_id
-  group_org_admins     = var.group_email
-  group_billing_admins = var.group_email
-  billing_account      = var.billing_account
-  org_project_creators = var.org_project_creators
-  project_prefix       = var.project_prefix
-  bucket_prefix        = var.bucket_prefix
+
+
+data "google_active_folder" "env" {
+  display_name = "${var.folder_prefix}-production"
+  parent       = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+}
+
+module "base_shared_gce_instance" {
+  source         = "../../modules/env_base"
+  environment    = "production"
+  vpc_type       = "base"
+  num_instances  = 1
+  folder_id      = data.google_active_folder.env.name
+  business_code  = "bu1"
+  project_suffix = "sample-base"
+  region         = var.instance_region
 }

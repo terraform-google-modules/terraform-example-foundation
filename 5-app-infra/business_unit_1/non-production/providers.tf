@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-module "bootstrap" {
-  source               = "../../../0-bootstrap"
-  parent_folder        = var.parent_folder
-  org_id               = var.org_id
-  group_org_admins     = var.group_email
-  group_billing_admins = var.group_email
-  billing_account      = var.billing_account
-  org_project_creators = var.org_project_creators
-  project_prefix       = var.project_prefix
-  bucket_prefix        = var.bucket_prefix
+locals {
+  tf_sa = var.project_service_account
+}
+
+/******************************************
+  Provider credential configuration
+ *****************************************/
+provider "google" {
+  impersonate_service_account = local.tf_sa
+}
+
+provider "google-beta" {
+  impersonate_service_account = local.tf_sa
 }

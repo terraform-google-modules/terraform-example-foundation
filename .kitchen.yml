@@ -113,3 +113,13 @@ suites:
           backend: local
           controls:
             - gcloud-projects
+  - name: app-infra
+    driver:
+      root_module_directory: test/fixtures/app-infra/
+    verifier:
+      color: false
+      systems:
+        - name: app-infra
+          backend: gcp
+          controls:
+            - gcp-app-infra

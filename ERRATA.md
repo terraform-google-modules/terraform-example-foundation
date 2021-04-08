@@ -9,7 +9,7 @@ This is an overview of the delta between the example foundation repository and t
 This will be addressed in the next version of the blueprint guide.
 
 #### Naming
-- The Service Account & Storage bucket naming are not aligned to the blueprint guide. Naming will be modified accordingly in a future release.
+- The Service Account naming is not aligned to the blueprint guide. Naming will be modified accordingly in a future release.
 - The infrastructure pipeline project naming (`prj-buN-c-infra-pipeline`) is not aligned to the blueprint guide(`prj-buN-c-sample-infra-pipeline`). Naming will be modified accordingly in a future release.
 
 #### Networking

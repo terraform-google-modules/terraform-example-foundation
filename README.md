@@ -164,28 +164,34 @@ Running this code as-is should generate a structure as shown below:
 ```
 example-organization/
 └── fldr-development
+    ├── prj-bu1-d-env-secrets
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
     ├── prj-bu1-d-sample-peering
+    ├── prj-bu2-d-env-secrets
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
     ├── prj-bu2-d-sample-restrict
     └── prj-bu2-d-sample-peering
 └── fldr-non-production
+    ├── prj-bu1-n-env-secrets
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
     ├── prj-bu1-n-sample-peering
+    ├── prj-bu2-n-env-secrets
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
     ├── prj-bu2-n-sample-restrict
     └── prj-bu2-n-sample-peering
 └── fldr-production
+    ├── prj-bu1-p-env-secrets
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
     ├── prj-bu1-p-sample-peering
+    ├── prj-bu2-p-env-secrets
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
     ├── prj-bu2-p-sample-restrict
@@ -194,6 +200,7 @@ example-organization/
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
 ```
+
 The code in this step includes two options for creating projects.
 The first is the standard projects module which creates a project per environment and the second creates a standalone project for one environment.
 If relevant for your use case, there are also two optional submodules which can be used to create a subnet per project and a dedicated private DNS zone per project.
@@ -218,10 +225,12 @@ example-organization
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
 └── fldr-development
+    ├── prj-bu1-d-env-secrets
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
     ├── prj-bu1-d-sample-peering
+    ├── prj-bu2-d-env-secrets
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
     ├── prj-bu2-d-sample-restrict
@@ -231,10 +240,12 @@ example-organization
     ├── prj-d-shared-base
     └── prj-d-shared-restricted
 └── fldr-non-production
+    ├── prj-bu1-n-env-secrets
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
     ├── prj-bu1-n-sample-peering
+    ├── prj-bu2-n-env-secrets
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
     ├── prj-bu2-n-sample-restrict
@@ -244,10 +255,12 @@ example-organization
     ├── prj-n-shared-base
     └── prj-n-shared-restricted
 └── fldr-production
+    ├── prj-bu1-p-env-secrets
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
     ├── prj-bu1-p-sample-peering
+    ├── prj-bu2-p-env-secrets
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
     ├── prj-bu2-p-sample-restrict
@@ -260,6 +273,7 @@ example-organization
     ├── prj-cloudbuild (prj-cicd if using Jenkins)
     └── prj-seed
 ```
+
 ### Branching strategy
 
 There are three main named branches - `development`, `non-production` and `production` that reflect the corresponding environments. These branches should be [protected](https://docs.github.com/en/github/administering-a-repository/about-protected-branches). When the CI/CD pipeline (Jenkins/CloudBuild) runs on a particular named branch (say for instance `development`), only the corresponding environment (`development`) is applied. An exception is the `shared` environment which is only applied when triggered on the `production` branch. This is because any changes in the `shared` environment may affect resources in other environments and can have adverse effects if not validated correctly.

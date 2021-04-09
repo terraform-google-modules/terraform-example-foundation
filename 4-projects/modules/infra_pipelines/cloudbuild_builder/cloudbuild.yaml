@@ -18,16 +18,16 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
-    '--tag=gcr.io/${PROJECT_ID}/terraform',
+    '--tag=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform',
     '--build-arg=TERRAFORM_VERSION=${_TERRAFORM_VERSION}',
     '--build-arg=TERRAFORM_VERSION_SHA256SUM=${_TERRAFORM_VERSION_SHA256SUM}',
     '--build-arg=TERRAFORM_VALIDATOR_RELEASE=${_TERRAFORM_VALIDATOR_RELEASE}',
     '.'
     ]
-- name: 'gcr.io/${PROJECT_ID}/terraform'
+- name: '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform'
   args: ['version']
 substitutions:
   _TERRAFORM_VERSION: '0.13.6' # default value
   _TERRAFORM_VERSION_SHA256SUM: '55f2db00b05675026be9c898bdd3e8230ff0c5c78dd12d743ca38032092abfc9' # default value
   _TERRAFORM_VALIDATOR_RELEASE: '2021-03-22'
-images: ['gcr.io/${PROJECT_ID}/terraform']
+images: ['${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform']

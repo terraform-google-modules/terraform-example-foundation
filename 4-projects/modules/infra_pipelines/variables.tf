@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
+variable "default_region" {
+  description = "Default region to create resources where applicable."
+  type        = string
+}
+
+variable "gar_repo_name" {
+  description = "Custom name to use for GAR repo."
+  default     = ""
+  type        = string
+}
+
+variable "project_prefix" {
+  description = "Name prefix to use for projects created."
+  type        = string
+  default     = "prj"
+}
+
 variable "cloudbuild_project_id" {
   description = "The project id where the pipelines and repos should be created"
   type        = string

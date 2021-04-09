@@ -30,6 +30,10 @@ module "base_shared_vpc_project" {
   sa_roles                    = ["roles/editor"]
   enable_cloudbuild_deploy    = true
   cloudbuild_sa               = var.app_infra_pipeline_cloudbuild_sa
+  activate_apis = [
+    "iam.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
+  ]
 
   # Metadata
   project_suffix    = "sample-base"

@@ -3,6 +3,18 @@ depends:
     git: https://github.com/inspec/inspec-gcp.git
     tag: v1.7.0
 attributes:
+  - name: shared_bu1_default_region
+    required: true
+    type: string
+  - name: shared_bu1_tf_runner_artifact_repo
+    required: true
+    type: string
+  - name: shared_bu2_default_region
+    required: true
+    type: string
+  - name: shared_bu2_tf_runner_artifact_repo
+    required: true
+    type: string
   - name: dev_bu1_project_base
     required: true
     type: string

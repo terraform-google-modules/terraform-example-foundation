@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
+output "tf_runner_artifact_repo" {
+  description = "GAR Repo created to store runner images"
+  value       = google_artifact_registry_repository.tf-image-repo.name
+}
+
+output "default_region" {
+  description = "Default region to create resources where applicable."
+  value       = var.default_region
+}
+
+output "gar_name" {
+  description = "GAR Repo name created to store runner images"
+  value       = local.gar_name
+}
+
 output "cloudbuild_sa" {
   description = "Cloud Build service account"
   value       = "${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"

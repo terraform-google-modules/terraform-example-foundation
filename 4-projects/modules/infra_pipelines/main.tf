@@ -15,6 +15,8 @@
  */
 
 locals {
+  gar_repo_name        = var.gar_repo_name != "" ? var.gar_repo_name : format("%s-%s", var.project_prefix, "tf-runners")
+  gar_name             = split("/", google_artifact_registry_repository.tf-image-repo.name)[length(split("/", google_artifact_registry_repository.tf-image-repo.name)) - 1]
   created_csrs         = toset([for repo in google_sourcerepo_repository.app_infra_repo : repo.name])
   artifact_buckets     = { for created_csr in local.created_csrs : "${created_csr}-ab" => format("%s-%s-%s", created_csr, "cloudbuild-artifacts", random_id.suffix.hex) }
   state_buckets        = { for created_csr in local.created_csrs : "${created_csr}-tfstate" => format("%s-%s-%s", created_csr, "tfstate", random_id.suffix.hex) }
@@ -28,6 +30,10 @@ resource "google_sourcerepo_repository" "app_infra_repo" {
   name     = each.value
 }
 
+resource "google_sourcerepo_repository" "gcp_policies" {
+  project = var.cloudbuild_project_id
+  name    = "gcp-policies"
+}
 
 data "google_project" "cloudbuild_project" {
   project_id = var.cloudbuild_project_id
@@ -69,24 +75,6 @@ resource "google_storage_bucket_iam_member" "cloudbuild_artifacts_iam" {
   depends_on = [google_storage_bucket.cloudbuild_artifacts, google_storage_bucket.tfstate]
 }
 
-# Create TF runner image
-resource "null_resource" "cloudbuild_terraform_builder" {
-  triggers = {
-    project_id_cloudbuild_project = var.cloudbuild_project_id
-    terraform_version_sha256sum   = var.terraform_version_sha256sum
-    terraform_version             = var.terraform_version
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-      gcloud builds submit ${path.module}/cloudbuild_builder/ \
-      --project ${var.cloudbuild_project_id} \
-      --config=${path.module}/cloudbuild_builder/cloudbuild.yaml \
-      --substitutions=_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_TERRAFORM_VALIDATOR_RELEASE=${var.terraform_validator_release}
-  EOT
-  }
-}
-
 # Cloud Build plan/apply triggers
 resource "google_cloudbuild_trigger" "main_trigger" {
   for_each    = local.created_csrs
@@ -100,12 +88,17 @@ resource "google_cloudbuild_trigger" "main_trigger" {
 
   substitutions = {
     _BILLING_ID           = var.billing_account
+    _DEFAULT_REGION       = var.default_region
+    _GAR_REPOSITORY       = local.gar_name
     _STATE_BUCKET_NAME    = google_storage_bucket.tfstate["${each.value}-tfstate"].name
     _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts["${each.value}-ab"].name
     _TF_ACTION            = "apply"
   }
 
   filename = var.cloudbuild_apply_filename
+  depends_on = [
+    google_sourcerepo_repository.app_infra_repo,
+  ]
 }
 
 resource "google_cloudbuild_trigger" "non_main_trigger" {
@@ -121,10 +114,68 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
 
   substitutions = {
     _BILLING_ID           = var.billing_account
+    _DEFAULT_REGION       = var.default_region
+    _GAR_REPOSITORY       = local.gar_name
     _STATE_BUCKET_NAME    = google_storage_bucket.tfstate["${each.value}-tfstate"].name
     _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts["${each.value}-ab"].name
     _TF_ACTION            = "plan"
   }
 
   filename = var.cloudbuild_plan_filename
+  depends_on = [
+    google_sourcerepo_repository.app_infra_repo,
+  ]
+}
+
+/***********************************************
+ Cloud Build - Terraform Image Repo
+ ***********************************************/
+resource "google_artifact_registry_repository" "tf-image-repo" {
+  provider = google-beta
+  project  = var.cloudbuild_project_id
+
+  location      = var.default_region
+  repository_id = local.gar_repo_name
+  description   = "Docker repository for Terraform runner images used by Cloud Build"
+  format        = "DOCKER"
+}
+
+/***********************************************
+ Cloud Build - Terraform builder
+ ***********************************************/
+
+resource "null_resource" "cloudbuild_terraform_builder" {
+  triggers = {
+    project_id_cloudbuild_project = var.cloudbuild_project_id
+    terraform_version_sha256sum   = var.terraform_version_sha256sum
+    terraform_version             = var.terraform_version
+    gar_name                      = local.gar_name
+    gar_location                  = google_artifact_registry_repository.tf-image-repo.location
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      gcloud builds submit ${path.module}/cloudbuild_builder/ \
+      --project ${var.cloudbuild_project_id} \
+      --config=${path.module}/cloudbuild_builder/cloudbuild.yaml \
+      --substitutions=_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_TERRAFORM_VALIDATOR_RELEASE=${var.terraform_validator_release},_REGION=${google_artifact_registry_repository.tf-image-repo.location},_REPOSITORY=${local.gar_name}
+  EOT
+  }
+  depends_on = [
+    google_artifact_registry_repository_iam_member.terraform-image-iam
+  ]
+}
+
+/***********************************************
+  Cloud Build - IAM
+ ***********************************************/
+
+resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" {
+  provider = google-beta
+  project  = var.cloudbuild_project_id
+
+  location   = google_artifact_registry_repository.tf-image-repo.location
+  repository = google_artifact_registry_repository.tf-image-repo.name
+  role       = "roles/artifactregistry.writer"
+  member     = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 }

@@ -6,12 +6,12 @@ Another CICD option is to use Cloud Build & Cloud Source Repos. If you don't hav
 
 ## Overview
 
-The objective of the instructions below is to configure the infrastructure that allows you to run CICD deployments for the next stages (`1-org, 2-environments, 3-networks, 4-projects`) using Jenkins. The infrastructure consists in two Google Cloud Platform projects (`prj-seed` and `prj-cicd`) and VPN configuration to connect to your on-prem environment.
+The objective of the instructions below is to configure the infrastructure that allows you to run CICD deployments for the next stages (`1-org, 2-environments, 3-networks, 4-projects`) using Jenkins. The infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-cicd`) and VPN configuration to connect to your on-prem environment.
 
-It is a best practice to have two separate projects here (`prj-seed` and `prj-cicd`) for separation of concerns. On one hand, `prj-seed` stores terraform state and has the Service Account able to create / modify infrastructure. On the other hand, the deployment of that infrastructure is coordinated by Jenkins, which is implemented in `prj-cicd` and connected to your Master on-prem.
+It is a best practice to have two separate projects here (`prj-b-seed` and `prj-cicd`) for separation of concerns. On one hand, `prj-b-seed` stores terraform state and has the Service Account able to create / modify infrastructure. On the other hand, the deployment of that infrastructure is coordinated by Jenkins, which is implemented in `prj-cicd` and connected to your Master on-prem.
 
 **After following the instructions below, you will have:**
-- The `prj-seed` project, which contains:
+- The `prj-b-seed` project, which contains:
   - Terraform state bucket
   - Custom Service Account used by Terraform to create new resources in GCP
 - The `prj-cicd` project, which contains:
@@ -20,7 +20,7 @@ It is a best practice to have two separate projects here (`prj-seed` and `prj-ci
   - FW rules to allow communication over port 22
   - VPN connection with on-prem (or where ever your Jenkins Master is located)
   - Custom service account `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance.
-      - This service account is granted the access to generate tokens on the Terraform custom service account in the `prj-seed` project
+      - This service account is granted the access to generate tokens on the Terraform custom service account in the `prj-b-seed` project
 
 - **Note: these instructions do not indicate how to create a Jenkins Master.** To deploy a Jenkins Master, you should follow [Jenkins Architecture](https://www.jenkins.io/doc/book/architecting-for-scale/) recommendations.
 
@@ -135,7 +135,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
     1. Open the link in your browser and accept.
 
 1. Run terraform commands.
-    - After the credentials are configured, we will create the `prj-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
+    - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
     - **WARNING: Make sure you have commented-out the `cloudbuild_bootstrap` module and enabled the `jenkins_bootstrap` module in the `./main.tf` file**
     - **Use Terraform 0.13.6** to run the terraform script with the commands below
     ```

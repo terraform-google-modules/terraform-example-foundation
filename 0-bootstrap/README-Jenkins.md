@@ -6,20 +6,20 @@ Another CICD option is to use Cloud Build & Cloud Source Repos. If you don't hav
 
 ## Overview
 
-The objective of the instructions below is to configure the infrastructure that allows you to run CICD deployments for the next stages (`1-org, 2-environments, 3-networks, 4-projects`) using Jenkins. The infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-cicd`) and VPN configuration to connect to your on-prem environment.
+The objective of the instructions below is to configure the infrastructure that allows you to run CICD deployments for the next stages (`1-org, 2-environments, 3-networks, 4-projects`) using Jenkins. The infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-b-cicd`) and VPN configuration to connect to your on-prem environment.
 
-It is a best practice to have two separate projects here (`prj-b-seed` and `prj-cicd`) for separation of concerns. On one hand, `prj-b-seed` stores terraform state and has the Service Account able to create / modify infrastructure. On the other hand, the deployment of that infrastructure is coordinated by Jenkins, which is implemented in `prj-cicd` and connected to your Master on-prem.
+It is a best practice to have two separate projects here (`prj-b-seed` and `prj-b-cicd`) for separation of concerns. On one hand, `prj-b-seed` stores terraform state and has the Service Account able to create / modify infrastructure. On the other hand, the deployment of that infrastructure is coordinated by Jenkins, which is implemented in `prj-b-cicd` and connected to your Master on-prem.
 
 **After following the instructions below, you will have:**
 - The `prj-b-seed` project, which contains:
   - Terraform state bucket
   - Custom Service Account used by Terraform to create new resources in GCP
-- The `prj-cicd` project, which contains:
+- The `prj-b-cicd` project, which contains:
   - GCE Instance for the Jenkins Agent, connected to your current Jenkins Master using SSH.
   - VPC to connect the Jenkins GCE Instance to
   - FW rules to allow communication over port 22
   - VPN connection with on-prem (or where ever your Jenkins Master is located)
-  - Custom service account `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance.
+  - Custom service account `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance.
       - This service account is granted the access to generate tokens on the Terraform custom service account in the `prj-b-seed` project
 
 - **Note: these instructions do not indicate how to create a Jenkins Master.** To deploy a Jenkins Master, you should follow [Jenkins Architecture](https://www.jenkins.io/doc/book/architecting-for-scale/) recommendations.
@@ -42,7 +42,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
      - Access to the Jenkins Master host to run `ssh-keygen` command
      - Access to the Jenkins Master Web UI
      - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent) installed in your Jenkins Master
-     - Private IP address for the Jenkins Agent: usually assigned by your network administrator. You will use this IP for the GCE instance that will be created in the `prj-cicd` GCP Project in step [II. Create the SEED and CICD projects using Terraform](#II-Create-the-SEED-and-CICD-projects-using-Terraform).
+     - Private IP address for the Jenkins Agent: usually assigned by your network administrator. You will use this IP for the GCE instance that will be created in the `prj-b-cicd` GCP Project in step [II. Create the SEED and CICD projects using Terraform](#II-Create-the-SEED-and-CICD-projects-using-Terraform).
      - Access to create five Git repositories, one for each directory in this [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation) (`0-bootstrap, 1-org, 2-environments, 3-networks, 4-projects`). These are usually private repositories that might be on-prem.
 
 1. Generate a SSH key pair. In the Jenkins Master host, use the `ssh-keygen` command to generate a SSH key pair.
@@ -135,7 +135,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
     1. Open the link in your browser and accept.
 
 1. Run terraform commands.
-    - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
+    - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-b-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
     - **WARNING: Make sure you have commented-out the `cloudbuild_bootstrap` module and enabled the `jenkins_bootstrap` module in the `./main.tf` file**
     - **Use Terraform 0.13.6** to run the terraform script with the commands below
     ```
@@ -143,7 +143,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
     terraform plan
     terraform apply
     ```
-    - The Terraform script will take about 10 to 15 minutes. Once it finishes, note that communication between on-prem and the `prj-cicd` project won’t happen yet - you will configure the VPN network connectivity in step [III. Create VPN connection](#III-Create-VPN-connection).
+    - The Terraform script will take about 10 to 15 minutes. Once it finishes, note that communication between on-prem and the `prj-b-cicd` project won’t happen yet - you will configure the VPN network connectivity in step [III. Create VPN connection](#III-Create-VPN-connection).
 
 1. Move Terraform State to the GCS bucket created in the seed project
    1. Run `terraform output gcs_bucket_tfstate` to get the tfstate bucket name
@@ -158,21 +158,21 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
 ### III. Configure VPN connection
 
-Here you will configure a VPN Network tunnel to enable connectivity between the `prj-cicd` project and your on-prem environment. Learn more about [a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to).
+Here you will configure a VPN Network tunnel to enable connectivity between the `prj-b-cicd` project and your on-prem environment. Learn more about [a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to).
 - Required information:
     - On-prem VPN public IP Address
     - Jenkins Master’s network CIDR (the example code uses "10.1.0.0/24")
     - Jenkins Agent network CIDR (the example code uses "172.16.1.0/24")
     - VPN PSK (pre-shared secret key)
 
-1. Check in the `prj-cicd` project for the VPN gateway static IP addresses which have been reserved. These addresses are required by the Network Administrator for the configuration of the on-prem side of the VPN tunnels to GCP.
+1. Check in the `prj-b-cicd` project for the VPN gateway static IP addresses which have been reserved. These addresses are required by the Network Administrator for the configuration of the on-prem side of the VPN tunnels to GCP.
 
   - Assuming your network administrator already configured the on-prem end of the VPN, the CICD end of the VPN might show the message `First Handshake` for around 5 minutes.
-  - When the VPN is ready, the status will show `Tunnel is up and running`. At this point, your Jenkins Master (on-prem) and Jenkins Agent (in `prj-cicd` project) must have network connectivity through the VPN.
+  - When the VPN is ready, the status will show `Tunnel is up and running`. At this point, your Jenkins Master (on-prem) and Jenkins Agent (in `prj-b-cicd` project) must have network connectivity through the VPN.
 
 1. Test a pipeline using the Jenkins Master Web UI:
     1. Make sure your [SSH Agent](https://plugins.jenkins.io/ssh-agent) is online and troubleshoot network connectivity if needed.
-    1. Test that your Jenkins Master can deploy a [pipeline](https://www.jenkins.io/doc/book/pipeline/getting-started/) to the Jenkins Agent located in the `prj-cicd` project (you can test this by running with a simple `echo "Hello World"` pipeline build).
+    1. Test that your Jenkins Master can deploy a [pipeline](https://www.jenkins.io/doc/book/pipeline/getting-started/) to the Jenkins Agent located in the `prj-b-cicd` project (you can test this by running with a simple `echo "Hello World"` pipeline build).
 
 ### IV. Configure the Git repositories and Multibranch Pipelines in your Jenkins Master
 

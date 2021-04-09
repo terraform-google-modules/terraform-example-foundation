@@ -17,7 +17,7 @@ The bootstrap step includes:
 - The `prj-b-seed` project, which contains:
   - Terraform state bucket
   - Custom Service Account used by Terraform to create new resources in GCP
-- The `prj-b-cicd` project (`prj-cicd` if using Jenkins), which contains:
+- The `prj-b-cicd` project, which contains:
   - A CI/CD pipeline implemented with either Cloud Build or Jenkins
   - If using Cloud Build:
     - Cloud Source Repository
@@ -28,10 +28,10 @@ The bootstrap step includes:
 
 It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CI/CD tool.
 The `prj-b-seed` project stores Terraform state and has the Service Account able to create / modify infrastructure.
-On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project (named `prj-b-cicd` project if using Google Cloud Build and `prj-cicd` project if using Jenkins).
+On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project named `prj-b-cicd`.
 
 To further separate the concerns at the IAM level as well, the service account of the CI/CD tool is given different permissions than the Terraform account.
-The CI/CD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account.
+The CI/CD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account.
 In this configuration, the baseline permissions of the CI/CD tool are limited and the Terraform custom Service Account is granted the IAM permissions required to build the foundation.
 
 After executing this step, you will have the following structure:
@@ -39,7 +39,7 @@ After executing this step, you will have the following structure:
 ```
 example-organization/
 └── fldr-bootstrap
-    ├── prj-b-cicd (prj-cicd if using Jenkins)
+    ├── prj-b-cicd
     └── prj-b-seed
 ```
 
@@ -270,7 +270,7 @@ example-organization
     ├── prj-p-shared-base
     └── prj-p-shared-restricted
 └── fldr-bootstrap
-    ├── prj-b-cicd (prj-cicd if using Jenkins)
+    ├── prj-b-cicd
     └── prj-b-seed
 ```
 

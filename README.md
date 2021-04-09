@@ -14,10 +14,10 @@ This stage executes the [CFT Bootstrap module](https://github.com/terraform-goog
 For CI/CD pipelines, you can use either Cloud Build (by default) or Jenkins. If you want to use Jenkins instead of Cloud Build, please see [README-Jenkins](./0-bootstrap/README-Jenkins.md) on how to use the included Jenkins sub-module.
 
 The bootstrap step includes:
-- The `prj-seed` project, which contains:
+- The `prj-b-seed` project, which contains:
   - Terraform state bucket
   - Custom Service Account used by Terraform to create new resources in GCP
-- The `prj-cloudbuild` project (`prj-cicd` if using Jenkins), which contains:
+- The `prj-b-cicd` project, which contains:
   - A CI/CD pipeline implemented with either Cloud Build or Jenkins
   - If using Cloud Build:
     - Cloud Source Repository
@@ -27,11 +27,11 @@ The bootstrap step includes:
     - VPN connection with on-prem (or where ever your Jenkins Master is located)
 
 It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CI/CD tool.
-The `prj-seed` project stores Terraform state and has the Service Account able to create / modify infrastructure.
-On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project (named `prj-cloudbuild` project if using Google Cloud Build and `prj-cicd` project if using Jenkins).
+The `prj-b-seed` project stores Terraform state and has the Service Account able to create / modify infrastructure.
+On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project named `prj-b-cicd`.
 
 To further separate the concerns at the IAM level as well, the service account of the CI/CD tool is given different permissions than the Terraform account.
-The CI/CD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account.
+The CI/CD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account.
 In this configuration, the baseline permissions of the CI/CD tool are limited and the Terraform custom Service Account is granted the IAM permissions required to build the foundation.
 
 After executing this step, you will have the following structure:
@@ -39,8 +39,8 @@ After executing this step, you will have the following structure:
 ```
 example-organization/
 └── fldr-bootstrap
-    ├── prj-cloudbuild (prj-cicd if using Jenkins)
-    └── prj-seed
+    ├── prj-b-cicd
+    └── prj-b-seed
 ```
 
 When this step uses the Cloud Build submodule, it sets up Cloud Build and Cloud Source Repositories for each of the stages below.
@@ -164,28 +164,34 @@ Running this code as-is should generate a structure as shown below:
 ```
 example-organization/
 └── fldr-development
+    ├── prj-bu1-d-env-secrets
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
     ├── prj-bu1-d-sample-peering
+    ├── prj-bu2-d-env-secrets
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
     ├── prj-bu2-d-sample-restrict
     └── prj-bu2-d-sample-peering
 └── fldr-non-production
+    ├── prj-bu1-n-env-secrets
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
     ├── prj-bu1-n-sample-peering
+    ├── prj-bu2-n-env-secrets
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
     ├── prj-bu2-n-sample-restrict
     └── prj-bu2-n-sample-peering
 └── fldr-production
+    ├── prj-bu1-p-env-secrets
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
     ├── prj-bu1-p-sample-peering
+    ├── prj-bu2-p-env-secrets
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
     ├── prj-bu2-p-sample-restrict
@@ -194,6 +200,7 @@ example-organization/
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
 ```
+
 The code in this step includes two options for creating projects.
 The first is the standard projects module which creates a project per environment and the second creates a standalone project for one environment.
 If relevant for your use case, there are also two optional submodules which can be used to create a subnet per project and a dedicated private DNS zone per project.
@@ -218,10 +225,12 @@ example-organization
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
 └── fldr-development
+    ├── prj-bu1-d-env-secrets
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
     ├── prj-bu1-d-sample-peering
+    ├── prj-bu2-d-env-secrets
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
     ├── prj-bu2-d-sample-restrict
@@ -231,10 +240,12 @@ example-organization
     ├── prj-d-shared-base
     └── prj-d-shared-restricted
 └── fldr-non-production
+    ├── prj-bu1-n-env-secrets
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
     ├── prj-bu1-n-sample-peering
+    ├── prj-bu2-n-env-secrets
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
     ├── prj-bu2-n-sample-restrict
@@ -244,10 +255,12 @@ example-organization
     ├── prj-n-shared-base
     └── prj-n-shared-restricted
 └── fldr-production
+    ├── prj-bu1-p-env-secrets
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
     ├── prj-bu1-p-sample-peering
+    ├── prj-bu2-p-env-secrets
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
     ├── prj-bu2-p-sample-restrict
@@ -257,9 +270,10 @@ example-organization
     ├── prj-p-shared-base
     └── prj-p-shared-restricted
 └── fldr-bootstrap
-    ├── prj-cloudbuild (prj-cicd if using Jenkins)
-    └── prj-seed
+    ├── prj-b-cicd
+    └── prj-b-seed
 ```
+
 ### Branching strategy
 
 There are three main named branches - `development`, `non-production` and `production` that reflect the corresponding environments. These branches should be [protected](https://docs.github.com/en/github/administering-a-repository/about-protected-branches). When the CI/CD pipeline (Jenkins/CloudBuild) runs on a particular named branch (say for instance `development`), only the corresponding environment (`development`) is applied. An exception is the `shared` environment which is only applied when triggered on the `production` branch. This is because any changes in the `shared` environment may affect resources in other environments and can have adverse effects if not validated correctly.

@@ -25,6 +25,7 @@ module "env_secrets_project" {
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
   project_suffix              = var.secrets_prj_suffix
+  project_prefix              = var.project_prefix
 
   activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 

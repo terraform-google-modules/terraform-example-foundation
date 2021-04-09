@@ -1,12 +1,12 @@
 ## Overview
 
-The objective of this module is to deploy a Google Cloud Platform project `prj-cicd` to host a Jenkins Agent that can connect with your current Jenkins Master on-prem. This module is a replica of the [cloudbuild module](https://github.com/terraform-google-modules/terraform-google-bootstrap/tree/master/modules/cloudbuild), but re-purposed to use Jenkins instead. This module creates:
-- The `prj-cicd` project, which includes:
+The objective of this module is to deploy a Google Cloud Platform project `prj-b-cicd` to host a Jenkins Agent that can connect with your current Jenkins Master on-prem. This module is a replica of the [cloudbuild module](https://github.com/terraform-google-modules/terraform-google-bootstrap/tree/master/modules/cloudbuild), but re-purposed to use Jenkins instead. This module creates:
+- The `prj-b-cicd` project, which includes:
     - GCE Instance for the Jenkins Agent, which you will configure to connect to your current Jenkins Master using SSH.
     - VPC to connect the Jenkins GCE Instance to
     - FW rules to allow communication over port 22
     - VPN connection with on-prem (or where ever your Jenkins Master is located)
-    - Custom service account `sa-jenkins-agent-gce@prj-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance. This service account is granted the access to generate tokens on the provided Terraform custom service account
+    - Custom service account `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance. This service account is granted the access to generate tokens on the provided Terraform custom service account
 Please note this module does not include an option to create a Jenkins Master. To deploy a Jenkins Master, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins).
 
 **If you don't have a Jenkins implementation and don't want one**, then we recommend you to [use the Cloud Build module](../../README.md) instead.

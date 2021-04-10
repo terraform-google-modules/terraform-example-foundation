@@ -30,7 +30,7 @@ control 'gcp-app-infra' do
   dev_bu1_instances_names.each do |dev_bu1_instance_name|
     describe google_compute_instance(project: dev_bu1_project_id, zone: dev_bu1_instances_zones[index], name: dev_bu1_instance_name) do
       it { should exist }
-      its('machine_type') { should match 'n1-standard-1' }
+      its('machine_type') { should match 'f1-micro' }
     end
     index += 1
   end
@@ -39,7 +39,7 @@ control 'gcp-app-infra' do
   nonprod_bu1_instances_names.each do |nonprod_bu1_instance_name|
     describe google_compute_instance(project: nonprod_bu1_project_id, zone: nonprod_bu1_instances_zones[index], name: nonprod_bu1_instance_name) do
       it { should exist }
-      its('machine_type') { should match 'n1-standard-1' }
+      its('machine_type') { should match 'f1-micro' }
     end
     index += 1
   end
@@ -48,7 +48,7 @@ control 'gcp-app-infra' do
   prod_bu1_instances_names.each do |prod_bu1_instance_name|
     describe google_compute_instance(project: prod_bu1_project_id, zone: prod_bu1_instances_zones[index], name: prod_bu1_instance_name) do
       it { should exist }
-      its('machine_type') { should match 'n1-standard-1' }
+      its('machine_type') { should match 'f1-micro' }
     end
     index += 1
   end

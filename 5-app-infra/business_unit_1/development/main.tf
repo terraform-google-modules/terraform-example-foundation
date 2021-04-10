@@ -26,6 +26,7 @@ module "base_shared_gce_instance" {
   environment    = "development"
   vpc_type       = "base"
   num_instances  = 1
+  machine_type   = "f1-micro"
   folder_id      = data.google_active_folder.env.name
   business_code  = "bu1"
   project_suffix = "sample-base"

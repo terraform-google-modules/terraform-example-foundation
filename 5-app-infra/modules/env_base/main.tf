@@ -25,11 +25,12 @@ resource "google_service_account" "compute_engine_service_account" {
 }
 
 module "instance_template" {
-  source     = "terraform-google-modules/vm/google//modules/instance_template"
-  version    = "6.2.0"
-  region     = var.region
-  project_id = data.google_project.env_project.project_id
-  subnetwork = data.google_compute_subnetwork.subnetwork.self_link
+  source       = "terraform-google-modules/vm/google//modules/instance_template"
+  version      = "6.2.0"
+  machine_type = var.machine_type
+  region       = var.region
+  project_id   = data.google_project.env_project.project_id
+  subnetwork   = data.google_compute_subnetwork.subnetwork.self_link
   service_account = {
     email  = google_service_account.compute_engine_service_account.email
     scopes = ["compute-rw"]

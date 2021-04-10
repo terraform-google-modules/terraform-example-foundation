@@ -7,6 +7,7 @@
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | folder\_id | The folder id where project will be created | `string` | n/a | yes |
 | hostname | Hostname of instances | `string` | `"example-app"` | no |
+| machine\_type | Machine type to create, e.g. n1-standard-1 | `string` | `"f1-micro"` | no |
 | num\_instances | Number of instances to create | `number` | n/a | yes |
 | project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
 | region | The GCP region to create and test resources in | `string` | `"us-central1"` | no |

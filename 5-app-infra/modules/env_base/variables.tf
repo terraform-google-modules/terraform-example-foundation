@@ -35,6 +35,11 @@ variable "num_instances" {
   type        = number
 }
 
+variable "machine_type" {
+  description = "Machine type to create, e.g. n1-standard-1"
+  default     = "f1-micro"
+}
+
 variable "hostname" {
   description = "Hostname of instances"
   default     = "example-app"

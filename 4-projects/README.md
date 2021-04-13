@@ -12,9 +12,9 @@ The purpose of this step is to set up folder structure, projects and infrastruct
 1. Obtain the values for the `perimeter_name` for each environment variable by running `gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"`.
 
 **Troubleshooting:**
-If your user does not have access to run the commands above and you are in the organization admins group, you can append `--impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com` to run the command as the terraform service account.
+If your user does not have access to run the commands above, and you are in the organization admins group, you can append `--impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com` to run the command as the terraform service account.
 
-**Note:** If you have more then one service perimeter for each environment you can also get the values from the `restricted_service_perimeter_name` output from each of the`3-networks` environments.
+**Note:** If you have more than one service perimeter for each environment you can also get the values from the `restricted_service_perimeter_name` output from each of the`3-networks` environments.
 
 If you are using Cloud Build you can also search for the values in the outputs in the build logs:
 
@@ -42,7 +42,7 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
 ### Setup to run via Cloud Build
 
 1. Clone repo `gcloud source repos clone gcp-projects --project=YOUR_CLOUD_BUILD_PROJECT_ID`.
-1. Change freshly cloned repo and change to non master branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
+1. Change freshly cloned repo and change to non-master branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/4-projects/ .` (modify accordingly based on your current directory).
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
@@ -99,7 +99,7 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
     1. Review the plan output in your Master's web UI.
 1. Merge changes to production branch with `git checkout -b production` and `git push origin production`.
     1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-1. After production has been applied apply development and non-production.
+1. After production has been applied, apply development and non-production.
 1. Merge changes to development branch with `git checkout -b development` and `git push origin development`.
     1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 1. Merge changes to non-production branch with `git checkout -b non-production` and `git push origin non-production`.
@@ -124,7 +124,7 @@ You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to o
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in you `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in your `PATH`.
 
 1. Run `./tf-wrapper.sh init shared`.
 1. Run `./tf-wrapper.sh plan shared` and review output.

@@ -20,7 +20,7 @@ variable "name" {
 }
 
 variable "parent" {
-  description = "Where the firwall policy will be created (can be organizations/{organization_id} or folders/{folder_id})"
+  description = "Where the firewall policy will be created (can be organizations/{organization_id} or folders/{folder_id})"
   type        = string
 }
 

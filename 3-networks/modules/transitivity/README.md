@@ -1,6 +1,6 @@
 # Hub & Spoke Transitivity module
 
-This module implementes transitivity for hub & spoke VPC architectures using appliance VMs behind an
+This module implements transitivity for hub & spoke VPC architectures using appliance VMs behind an
 Internal Load Balancer used as next-hop for routes.
 
 ## Usage

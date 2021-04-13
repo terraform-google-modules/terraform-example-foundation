@@ -1,6 +1,6 @@
 # High Availability VPN module
 
-This module implementes the recomendation proposed in
+This module implements the recommendation proposed in
 [High Availability VPN](https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies#overview).
 
 If you are not able to use Dedicated Interconnect or Partner Interconnect you can also use an High Availability Cloud VPN to connect the On-Prem to your Google Organization.

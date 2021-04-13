@@ -75,7 +75,7 @@ module "migs" {
 }
 
 module "ilbs" {
-  source                  = "github.com/terraform-google-modules/terraform-google-lb-internal"
+  source                  = "GoogleCloudPlatform/lb-internal/google"
   version                 = "~> 2.4.0"
   for_each                = toset(var.regions)
   region                  = each.key

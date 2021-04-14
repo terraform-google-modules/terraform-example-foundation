@@ -61,7 +61,7 @@ installed:
 
 -  The [Google Cloud SDK](https://cloud.google.com/sdk/install) version
    206.0.0 or later
--  [Terraform](https://www.terraform.io/downloads.html) version 0.12.6 or later.
+-  [Terraform](https://www.terraform.io/downloads.html) version 0.13.6 or later.
 
 Note: Make sure that you use the same version of Terraform throughout this
 series. Otherwise, you might experience Terraform state snapshot lock errors.

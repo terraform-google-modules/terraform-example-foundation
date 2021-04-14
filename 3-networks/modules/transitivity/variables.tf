@@ -51,3 +51,9 @@ variable "firewall_enable_logging" {
   description = "Toggle firewall logging for VPC Firewalls."
   default     = true
 }
+
+variable "health_check_enable_log" {
+  type        = bool
+  description = "Toggle logging for health checks."
+  default     = false
+}

@@ -11,7 +11,7 @@ the example.com reference architecture described in
 <th>0-bootstrap (this file)</th>
 <th>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
-step also configures a CI/CD pipeline for foundations code in subsequent
+step also configures a CI/CD pipeline for deploying foundations code in subsequent
 stages.</th>
 </tr>
 </thead>

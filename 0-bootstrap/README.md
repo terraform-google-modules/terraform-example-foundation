@@ -6,7 +6,7 @@ the example.com reference architecture described in
 (PDF). The following table lists the parts of the guide.
 
 <table>
-<thead>
+<tbody>
 <tr>
 <td>0-bootstrap (this file)</td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
@@ -14,8 +14,6 @@ and permissions to start using the Cloud Foundation Toolkit (CFT). This
 step also configures a CI/CD pipeline for foundations code in subsequent
 stages.</td>
 </tr>
-</thead>
-<tbody>
 <tr>
 <td><a
 href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/1-org">1-org</a></td>

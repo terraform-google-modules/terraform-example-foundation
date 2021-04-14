@@ -64,7 +64,7 @@ installed:
 -  [Terraform](https://www.terraform.io/downloads.html) version 0.13.6 or later.
 
 Note: Make sure that you use the same version of Terraform throughout this
-series. Otherwise, you might experience Terraform state snapshot lock errors. 
+series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 Also make sure that you've done the following:
 

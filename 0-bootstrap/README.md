@@ -101,9 +101,9 @@ your current Jenkins manager (master) environment.
 1. Go to the `0-bootstrap` folder.
 1. Copy the `tfvars` file:
 
-```
-cp terraform.example.tfvars terraform.tfvars
-```
+   ```
+   cp terraform.example.tfvars terraform.tfvars
+   ```
 
 1. Update the `terraform.tfvars` file with values from your environment.
 1. Run `terraform init`.
@@ -113,9 +113,9 @@ cp terraform.example.tfvars terraform.tfvars
    from the previous step.
 1. Copy the backend:
 
-```
-cp backend.tf.example backend.tf
-```
+   ```
+   cp backend.tf.example backend.tf
+   ```
 
 1. Update `backend.tf` with the name of your Cloud Storage bucket.
 1. Run `terraform output terraform_sa_email` to get the email address of the
@@ -136,13 +136,13 @@ the following steps:
 1. Go to the `terraform-example-foundation` directory.
 1. Run the following command:
 
-```
-for i in `find -name 'backend.tf'`; do sed -i 
-'s/UPDATE_ME/GCS_BUCKET_NAME/' $i; done
-```
+   ```
+   for i in `find -name 'backend.tf'`; do sed -i 
+   's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done
+   ```
 
-where `GCS_BUCKET_NAME` is the name of your bucket from the steps you ran
-earlier.
+   where `GCS_BUCKET_NAME` is the name of your bucket from the steps you ran
+   earlier.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

@@ -222,9 +222,14 @@ If those limitations do not apply to your workload/environment you can choose to
 1. Run `chmod 755 ./tf-wrapper.sh`
 1. Change into 1-org/envs/shared/ folder.
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap.
-1. Update backend.tf with your bucket from bootstrap. You can run
-```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
-You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
+1. Obtain your bucket name by running the following command in the 0-bootstap folder.
+   ```
+   terraform output gcs_bucket_tfstate
+   ```
+1. Update backend.tf with your bucket from bootstrap.
+   ```
+   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
+   ```
 
 We will now deploy our environment (production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 1-org step and only the corresponding environment is applied.

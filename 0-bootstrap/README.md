@@ -8,11 +8,11 @@ the example.com reference architecture described in
 <table>
 <thead>
 <tr>
-<th>0-bootstrap (this file)</th>
-<th>Bootstraps a Google Cloud organization, creating all the required resources
+<td>0-bootstrap (this file)</td>
+<td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
 step also configures a CI/CD pipeline for foundations code in subsequent
-stages.</th>
+stages.</td>
 </tr>
 </thead>
 <tbody>
@@ -48,7 +48,7 @@ stage.</td>
 </table>
 
 For an overview of the architecture and the parts, see the
-`[terraform-example-foundation` README file](https://github.com/terraform-google-modules/terraform-example-foundation).
+[terraform-example-foundation README file](https://github.com/terraform-google-modules/terraform-example-foundation).
 
 ## Purpose
 
@@ -64,7 +64,7 @@ installed:
 -  [Terraform](https://www.terraform.io/downloads.html) version 0.12.6 or later.
 
 Note: Make sure that you use the same version of Terraform throughout this
-series. Otherwise, you might experience Terraform state snapshot lock errors. 
+series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 Also make sure that you've done the following:
 
@@ -82,10 +82,10 @@ Also make sure that you've done the following:
    -  The `roles/resourcemanager.organizationAdmin` role on the Google
       Cloud organization.
    -  The `roles/billing.admin` role on the billing account.
-   -  The `roles/resourcemanager.folderCreator` role.  
+   -  The `roles/resourcemanager.folderCreator` role.
 
 If other users need to be able to run these procedures, add them to the group
-represented by the `org_project_creators` variable.  
+represented by the `org_project_creators` variable.
 For more information about the permissions that are required and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
@@ -115,7 +115,9 @@ cp terraform.example.tfvars terraform.tfvars
    from the previous step.
 1. Copy the backend:
 
-   `cp backend.tf.example backend.tf` 
+```
+cp backend.tf.example backend.tf
+```
 
 1. Update `backend.tf` with the name of your Cloud Storage bucket.
 1. Run `terraform output terraform_sa_email` to get the email address of the
@@ -136,8 +138,10 @@ the following steps:
 1. Go to the `terraform-example-foundation` directory.
 1. Run the following command:
 
-   `for i in `find -name 'backend.tf'`; do sed -i
-'s/UPDATE_ME/GCS_BUCKET_NAME/' $i; done` 
+```
+for i in `find -name 'backend.tf'`; do sed -i 
+'s/UPDATE_ME/GCS_BUCKET_NAME/' $i; done
+```
 
 where `GCS_BUCKET_NAME` is the name of your bucket from the steps you ran
 earlier.
@@ -179,15 +183,30 @@ earlier.
 
 ## Troubleshooting
 
-When you run the examples in this repository, you might see the following error
-during a Terraform `apply` command:  
-`Error code 8, message: The project cannot be created because you have exceeded
-your allotted project quota`.   
-This message means you have reached your [project creation
-quota](https://support.google.com/cloud/answer/6330231). In this case, you can
-use the
-[Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase)
-form to request a quota increase. In the support form, for **Email addresses
-that will be used to create projects**, use the `terraform_sa_email` address
-that's created in the organization bootstrap module. If you see other quota
-errors, see the [Quota documentation](https://cloud.google.com/docs/quota).
+When you run the examples in this repository, you might see the following errors
+during a Terraform `apply` command:
+
+- `Error code 8, message: The project cannot be created because you have exceeded
+   your allotted project quota`.
+
+  - This message means you have reached your [project creation
+     quota](https://support.google.com/cloud/answer/6330231). In this case, you can
+    use the
+    [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase)
+    form to request a quota increase. In the support form, for **Email addresses
+    that will be used to create projects**, use the `terraform_sa_email` address
+    that's created in the organization bootstrap module. If you see other quota
+    errors, see the [Quota documentation](https://cloud.google.com/docs/quota).
+
+- `Error: Error when reading or editing Organization Not Found : <organization-id>: googleapi: Error 403: The caller does not have permission, forbidden`.
+  - Check that your user have [Organization Admin](https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles) predefined role at the Organization level.
+  -  If this is the case, try the following:
+      ```
+      gcloud auth application-default login
+      gcloud auth list # <- confirm that correct account has a star next to it
+      ```
+  - Re-run `terraform` after.
+
+- `Error: Error setting billing account "XXXXXX-XXXXXX-XXXXXX" for project "projects/some-project": googleapi: Error 400: Precondition check failed., failedPrecondition`. Most likely this is related to billing quota issue.
+  - To confirm this, try `gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX`.
+  - If output states `Cloud billing quota exceeded`, please request increase via [https://support.google.com/code/contact/billing_quota_increase](https://support.google.com/code/contact/billing_quota_increase).

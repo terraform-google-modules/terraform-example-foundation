@@ -56,11 +56,11 @@ The purpose of this step is to [...].
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. Cloud Identity / Google Workspace group for monitoring admins.
-1. Membership in the monitoring admins group for user running terraform.
+1. Membership in the monitoring admins group for user running Terraform.
 
 ## Usage
 
-### Setup to run via Jenkins
+### Deploying with Jenkins
 
 1. Clone the repo you created manually in 0-bootstrap.
    ```
@@ -85,7 +85,7 @@ The purpose of this step is to [...].
     _STATE_BUCKET_NAME
     _PROJECT_ID (the cicd project id)
     ```
-1. Copy terraform wrapper script to the root of your new repository.
+1. Copy Terraform wrapper script to the root of your new repository.
    ```
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    ```
@@ -126,7 +126,7 @@ The purpose of this step is to [...].
 
 1. You can now move to the instructions in the step [3-networks](../3-networks/README.md).
 
-### Setup to run via Cloud Build
+### Deploying with Cloud Build
 
 1. Clone repo.
    ```
@@ -141,11 +141,11 @@ The purpose of this step is to [...].
    ```
    cp -RT ../terraform-example-foundation/2-environments/ .
    ```
-1. Copy cloud build configuration files for terraform.
+1. Copy cloud build configuration files for Terraform.
    ```
    cp ../terraform-example-foundation/build/cloudbuild-tf-* .
    ```
-1. Copy terraform wrapper script to the root of your new repository.
+1. Copy Terraform wrapper script to the root of your new repository.
    ```
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    ```
@@ -183,7 +183,7 @@ The purpose of this step is to [...].
    ```
 1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
-### Run terraform locally
+### Run Terraform locally
 
 1. Change into 2-environments folder.
 1. Run `cp ../build/tf-wrapper.sh .`

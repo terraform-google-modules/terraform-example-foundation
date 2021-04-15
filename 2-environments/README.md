@@ -1,6 +1,55 @@
 # 2-environments
 
-The purpose of this step is to set up development, non-production and production environments within the GCP organization.
+This repo is part of a multi-part guide that shows how to configure and deploy
+the example.com reference architecture described in
+[Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf)
+(PDF). The following table lists the parts of the guide.
+
+<table>
+<tbody>
+<tr>
+<td><a
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/0-bootstrap">0-bootstrap</a></td>
+<td>Bootstraps a Google Cloud organization, creating all the required resources
+and permissions to start using the Cloud Foundation Toolkit (CFT). This
+step also configures a CI/CD pipeline for foundations code in subsequent
+stages.</td>
+</tr>
+<tr>
+<td><a
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/1-org">1-org</a></td>
+<td>Sets up top level shared folders, monitoring and networking projects, and
+organization-level logging, and sets baseline security settings through
+organizational policy.</td>
+</tr>
+<tr>
+<td>2-environments (this file)</td>
+<td>Sets up development, non-production, and production environments within the
+Google Cloud organization that you've created.</td>
+</tr>
+<tr>
+<td><a
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/3-networks">3-networks</a></td>
+<td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
+Private Service networking, VPC service controls, on-premises Dedicated
+Interconnect, and baseline firewall rules for each environment. Also sets
+up the global DNS hub.</td>
+</tr>
+<tr>
+<td><a
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/4-projects">4-projects</a></td>
+<td>Set up a folder structure, projects, and application infrastructure pipeline for applications,
+ which are connected as service projects to the shared VPC created in the previous stage.</td>
+</tr>
+</tbody>
+</table>
+
+For an overview of the architecture and the parts, see the
+[terraform-example-foundation README](https://github.com/terraform-google-modules/terraform-example-foundation).
+
+## Purpose
+
+The purpose of this step is to [...].
 
 ## Prerequisites
 
@@ -11,52 +60,128 @@ The purpose of this step is to set up development, non-production and production
 
 ## Usage
 
-### Setup to run via Cloud Build
-
-1. Clone repo `gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID`.
-1. Navigate into the repo `cd gcp-environments` and change to non master branch `git checkout -b plan`.
-1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/2-environments/ .` (modify accordingly based on your current directory).
-1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
-1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
-1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
-1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
-1. Commit changes with `git add .` and `git commit -m 'Your message'`.
-1. Push your plan branch to trigger a plan for all environments `git push --set-upstream origin plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
-    1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to development with `git checkout -b development` and `git push origin development`.
-    1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to non-production with `git checkout -b non-production` and `git push origin non-production`.
-    1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to production branch with `git checkout -b production` and `git push origin production`.
-    1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-
 ### Setup to run via Jenkins
 
-1. Clone the repo you created manually in bootstrap: `git clone <YOUR_NEW_REPO-2-environments>`.
-1. Navigate into the repo `cd YOUR_NEW_REPO_CLONE-2-environments` and change to a non production branch `git checkout -b plan` (the branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan).
-1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/2-environments/ .` (modify accordingly based on your current directory).
-1. Copy the Jenkinsfile script `cp ../terraform-example-foundation/build/Jenkinsfile .` to the root of your new repository (modify accordingly based on your current directory).
+1. Clone the repo you created manually in 0-bootstrap.
+   ```
+   git clone <YOUR_NEW_REPO-2-environments>
+   ```
+1. Navigate into the repo and change to a non-production branch.
+   ```
+   cd YOUR_NEW_REPO_CLONE-2-environments
+   git checkout -b plan
+   ```
+1. Copy contents of foundation to new repo.
+   ```
+   cp -RT ../terraform-example-foundation/2-environments/ .
+   ```
+1. Copy the Jenkinsfile script to the root of your new repository.
+   ```
+   cp ../terraform-example-foundation/build/Jenkinsfile .
+   ```
 1. Update the variables located in the `environment {}` section of the `Jenkinsfile` with values from your environment:
     ```
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
     _PROJECT_ID (the cicd project id)
     ```
-1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
-1. Ensure wrapper script can be executed `chmod 755 ./tf-wrapper.sh`.
+1. Copy terraform wrapper script to the root of your new repository.
+   ```
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   ```
+1. Ensure wrapper script can be executed.
+   ```
+   chmod 755 ./tf-wrapper.sh
+   ```
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
-1. Commit changes with `git add .` and `git commit -m 'Your message'`.
-1. Push your plan branch `git push --set-upstream origin plan`. The branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a terraform plan.
+1. Commit changes.
+   ```
+   git add .
+   git commit -m 'Your message'
+   ```
+1. Push your plan branch.
+   ```
+   git push --set-upstream origin plan
+   ```
     - Assuming you configured an automatic trigger in your Jenkins Master (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
-    1. Review the plan output in your Master's web UI.
-1. Merge changes to development with `git checkout -b development` and `git push origin development`.
-    1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-1. Merge changes to non-production with `git checkout -b non-production` and `git push origin non-production`.
-    1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-1. Merge changes to production branch with `git checkout -b production` and `git push origin production`.
-    1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+1. Review the plan output in your Master's web UI.
+1. Merge changes to development.
+   ```
+   git checkout -b development
+   git push origin development
+   ```
+1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+1. Merge changes to non-production with.
+   ```
+   git checkout -b non-production
+   git push origin non-production
+   ```
+1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+1. Merge changes to production branch.
+   ```
+   git checkout -b production
+   git push origin production
+   ```
+1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 
 1. You can now move to the instructions in the step [3-networks](../3-networks/README.md).
+
+### Setup to run via Cloud Build
+
+1. Clone repo.
+   ```
+   gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID
+   ```
+1. Navigate into the repo and change to the non-master branch.
+   ```
+   cd gcp-environments
+   git checkout -b plan
+   ```
+1. Copy contents of foundation to new repo.
+   ```
+   cp -RT ../terraform-example-foundation/2-environments/ .
+   ```
+1. Copy cloud build configuration files for terraform.
+   ```
+   cp ../terraform-example-foundation/build/cloudbuild-tf-* .
+   ```
+1. Copy terraform wrapper script to the root of your new repository.
+   ```
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   ```
+1. Ensure wrapper script can be executed.
+   ```
+   chmod 755 ./tf-wrapper.sh
+   ```
+1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
+1. Commit changes.
+   ```
+   git add .
+   git commit -m 'Your message'
+   ```
+1. Push your plan branch to trigger a plan for all environments.
+   ```
+   git push --set-upstream origin plan
+   ```
+1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. Merge changes to development.
+   ```
+   git checkout -b development
+   git push origin development
+   ```
+1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. Merge changes to non-production.
+   ```
+   git checkout -b non-production
+   git push origin non-production
+   ```
+1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. Merge changes to production branch.
+   ```
+   git checkout -b production
+   git push origin production
+   ```
+1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 ### Run terraform locally
 
@@ -64,8 +189,10 @@ The purpose of this step is to set up development, non-production and production
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`.
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
-1. Update backend.tf with your bucket from bootstrap. You can run
-```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
+1. Update backend.tf with your bucket from bootstrap.
+   ```
+   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
+   ```
 You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
 
 We will now deploy each of our environments(development/production/non-production) using this script.

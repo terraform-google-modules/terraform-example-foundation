@@ -52,3 +52,7 @@ output "group_email" {
 output "enable_hub_and_spoke" {
   value = var.example_foundations_mode == "HubAndSpoke" ? "true" : "false"
 }
+
+output "enable_hub_and_spoke_transitivity" {
+  value = var.example_foundations_mode == "HubAndSpoke" ? "true" : "false"
+}

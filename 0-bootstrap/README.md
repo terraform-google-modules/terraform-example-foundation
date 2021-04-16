@@ -141,7 +141,7 @@ the following steps:
 1. Run the following command:
 
    ```
-   for i in `find -name 'backend.tf'`; do sed -i 's/GCS_BUCKET_NAME/UPDATE_ME/' $i; done
+   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done
    ```
 
    where `GCS_BUCKET_NAME` is the name of your bucket from the steps you ran

@@ -182,7 +182,6 @@ the following steps:
 When you run the examples in this repository, you might see the following errors
 during a Terraform `apply` command:
 
-### Software
 
 - `Error code 8, message: The project cannot be created because you have exceeded
    your allotted project quota`.

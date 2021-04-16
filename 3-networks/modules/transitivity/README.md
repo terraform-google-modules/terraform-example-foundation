@@ -1,6 +1,6 @@
 # Hub & Spoke Transitivity module
 
-This module implementes transitivity for hub & spoke VPC architectures using appliance VMs behind an
+This module implements transitivity for hub & spoke VPC architectures using appliance VMs behind an
 Internal Load Balancer used as next-hop for routes.
 
 ## Usage
@@ -15,6 +15,7 @@ For example usage, please check the the [net-hubs-transitivity.tf](../../envs/sh
 | commands | Commands for the transitivity gateway to run on every boot. | `list(string)` | `[]` | no |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | gw\_subnets | Subnets in {REGION => SUBNET} format. | `map(string)` | n/a | yes |
+| health\_check\_enable\_log | Toggle logging for health checks. | `bool` | `false` | no |
 | project\_id | VPC Project ID | `string` | n/a | yes |
 | regional\_aggregates | Aggregate ranges for each region in {REGION => [AGGREGATE\_CIDR,] } format. | `map(list(string))` | n/a | yes |
 | regions | Regions to deploy the transitivity appliances | `set(string)` | `null` | no |

@@ -32,7 +32,7 @@ On the other hand, the deployment of that infrastructure is coordinated by a CI/
 
 To further separate the concerns at the IAM level as well, the service account of the CI/CD tool is given different permissions than the Terraform account.
 The CI/CD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account.
-In this configuration, the baseline permissions of the CI/CD tool are limited and the Terraform custom Service Account is granted the IAM permissions required to build the foundation.
+In this configuration, the baseline permissions of the CI/CD tool are limited, and the Terraform custom Service Account is granted the IAM permissions required to build the foundation.
 
 After executing this step, you will have the following structure:
 
@@ -68,7 +68,7 @@ example-organization
 #### Logs
 
 Among the eight projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
-The first one for organization wide audit logs and the latter for billing logs.
+The first one for organization wide audit logs, and the latter for billing logs.
 In both cases the logs are collected into BigQuery datasets which can then be used general querying, dashboarding & reporting. Logs are also exported to Pub/Sub and GCS bucket.
 
 **Notes**:
@@ -83,7 +83,7 @@ Another project created under the common folder. This project will host the DNS 
 
 #### Interconnect
 
-Another project created under the common folder. This project will host the Dedicated Interconnect [Interconnect connection](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#elements) for the organization. In case of the Partner Interconnect this project is unused and the [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#for-partner-interconnect) will be placed directly into the corresponding Hub projcts.
+Another project created under the common folder. This project will host the Dedicated Interconnect [Interconnect connection](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#elements) for the organization. In case of the Partner Interconnect this project is unused and the [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#for-partner-interconnect) will be placed directly into the corresponding Hub projects.
 
 #### SCC Notification
 
@@ -140,7 +140,7 @@ Usage instructions are available for the environments step in the [README](./2-e
 
 ### [3. networks](./3-networks/)
 
-This step focuses on creating a Shared VPC per environment (`development`, `non-production` & `production`) in a standard configuration with a reasonable security baseline. Currently this includes:
+This step focuses on creating a Shared VPC per environment (`development`, `non-production` & `production`) in a standard configuration with a reasonable security baseline. Currently, this includes:
 
 - Optional - Example subnets for `development`, `non-production` & `production` inclusive of secondary ranges for those that want to use GKE.
 - Optional - Default firewall rules created to allow remote access to [VMs through IAP](https://cloud.google.com/iap/docs/using-tcp-forwarding), without needing public IPs.
@@ -202,8 +202,8 @@ example-organization/
 ```
 
 The code in this step includes two options for creating projects.
-The first is the standard projects module which creates a project per environment and the second creates a standalone project for one environment.
-If relevant for your use case, there are also two optional submodules which can be used to create a subnet per project and a dedicated private DNS zone per project.
+The first is the standard projects module which creates a project per environment, and the second creates a standalone project for one environment.
+If relevant for your use case, there are also two optional submodules which can be used to create a subnet per project, and a dedicated private DNS zone per project.
 
 Usage instructions are available for the projects step in the [README](./4-projects/README.md).
 
@@ -280,7 +280,7 @@ There are three main named branches - `development`, `non-production` and `produ
 
 Development happens on feature/bugfix branches (which can be named `feature/new-foo`, `bugfix/fix-bar`, etc.) and when complete, a [pull request (PR)](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) or [merge request (MR)](https://docs.gitlab.com/ee/user/project/merge_requests/) can be opened targeting the `development` branch. This will trigger the CI pipeline to perform a plan and validate against all environments (`development`, `non-production`, `shared` and `production`). Once code review is complete and changes are validated, this branch can be merged into `development`. This will trigger a CI pipeline that applies the latest changes in the `development` branch on the `development` environment.
 
-Once validated in `development`, changes can be promoted to `non-production` by opening a PR/MR targeting the `non-production` branch and merging them.  Similarly changes can be promoted from `non-production` to `production`.
+Once validated in `development`, changes can be promoted to `non-production` by opening a PR/MR targeting the `non-production` branch and merging them. Similarly, changes can be promoted from `non-production` to `production`.
 
 ### Terraform-validator
 

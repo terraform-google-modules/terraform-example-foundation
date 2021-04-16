@@ -59,7 +59,7 @@ variable "dns_enable_logging" {
 
 variable "subnetworks_enable_logging" {
   type        = bool
-  description = "Toggle subnetworks flow logging for VPC Subnetwoks."
+  description = "Toggle subnetworks flow logging for VPC Subnetworks."
   default     = true
 }
 

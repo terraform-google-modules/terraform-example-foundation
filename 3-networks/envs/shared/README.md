@@ -44,7 +44,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | restricted\_hub\_nat\_num\_addresses\_region2 | Number of external IPs to reserve for second Cloud NAT in Restricted Hub. | `number` | `2` | no |
 | restricted\_hub\_optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges in Restricted Hub VPC. | `bool` | `false` | no |
 | restricted\_hub\_windows\_activation\_enabled | Enable Windows license activation for Windows workloads in Restricted Hub. | `bool` | `false` | no |
-| subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetwoks. | `bool` | `true` | no |
+| subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetworks. | `bool` | `true` | no |
 | target\_name\_server\_addresses | List of target name servers for forwarding zone. | `list(string)` | n/a | yes |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
 

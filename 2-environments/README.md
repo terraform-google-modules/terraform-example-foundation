@@ -14,7 +14,7 @@ The purpose of this step is to set up development, non-production and production
 ### Setup to run via Cloud Build
 
 1. Clone repo `gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID`.
-1. Navigate into the repo `cd gcp-environments` and change to non master branch `git checkout -b plan`.
+1. Navigate into the repo `cd gcp-environments` and change to non-master branch `git checkout -b plan`.
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/2-environments/ .` (modify accordingly based on your current directory).
 1. Copy cloud build configuration files for terraform `cp ../terraform-example-foundation/build/cloudbuild-tf-* . ` (modify accordingly based on your current directory).
 1. Copy terraform wrapper script `cp ../terraform-example-foundation/build/tf-wrapper.sh . ` to the root of your new repository (modify accordingly based on your current directory).
@@ -66,12 +66,12 @@ The purpose of this step is to set up development, non-production and production
 1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
 1. Update backend.tf with your bucket from bootstrap. You can run
 ```for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done```.
-You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
+You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
 
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 2-environments step and only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in you `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in your `PATH`.
 
 1. Run `./tf-wrapper.sh init development`.
 1. Run `./tf-wrapper.sh plan development` and review output.

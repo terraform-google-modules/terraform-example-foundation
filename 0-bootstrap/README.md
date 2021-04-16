@@ -1,5 +1,6 @@
 # 0-bootstrap
 
+
 This repo is part of a multi-part guide that shows how to configure and deploy
 the example.com reference architecture described in
 [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf)
@@ -50,7 +51,7 @@ file.
 
 ## Purpose
 
-The purpose of this step is to [...].
+The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a CI/CD pipeline for foundations code in subsequent stages. The CI/CD pipeline can use either Cloud Build andCloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
 
 ## Prerequisites
 
@@ -100,11 +101,9 @@ your current Jenkins manager (master) environment.
 
 1. Go to the `0-bootstrap` folder.
 1. Copy the `tfvars` file:
-
    ```
    cp terraform.example.tfvars terraform.tfvars
    ```
-
 1. Update the `terraform.tfvars` file with values from your environment.
 1. Run `terraform init`.
 1. Run `terraform plan` and review the output.
@@ -116,11 +115,9 @@ your current Jenkins manager (master) environment.
 1. Run `terraform output gcs_bucket_tfstate` to get your Google Cloud bucket
    from the previous step.
 1. Copy the backend:
-
    ```
    cp backend.tf.example backend.tf
    ```
-
 1. Update `backend.tf` with the name of your Cloud Storage bucket.
 1. Run `terraform output terraform_sa_email` to get the email address of the
    admin. You need this address in a later procedure.
@@ -139,11 +136,9 @@ the following steps:
 
 1. Go to the `terraform-example-foundation` directory.
 1. Run the following command:
-
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done
    ```
-
    where `GCS_BUCKET_NAME` is the name of your bucket from the steps you ran
    earlier.
 
@@ -186,6 +181,8 @@ the following steps:
 
 When you run the examples in this repository, you might see the following errors
 during a Terraform `apply` command:
+
+### Software
 
 - `Error code 8, message: The project cannot be created because you have exceeded
    your allotted project quota`.

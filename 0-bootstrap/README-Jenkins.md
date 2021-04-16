@@ -105,7 +105,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
 1. Clone this mono-repository with `git clone https://github.com/terraform-google-modules/terraform-example-foundation`
 1. Clone the repository you created to host the `0-bootstrap` directory with `git clone <YOUR_NEW_REPO-0-bootstrap>`
-1. Navigate into the freshly cloned repo `cd <YOUR_NEW_REPO-0-bootstrap>` and change to a non master branch `git checkout -b my-0-bootstrap`
+1. Navigate into the freshly cloned repo `cd <YOUR_NEW_REPO-0-bootstrap>` and change to a non-master branch `git checkout -b my-0-bootstrap`
 1. Copy contents of foundation to new repo `cp -RT ../terraform-example-foundation/0-bootstrap/ .` (modify accordingly based on your current directory).
 1. Activate the Jenkins module and disable the Cloud Build module. This implies manually editing the following files:
     1. Comment-out the `cloudbuild_bootstrap` module in `./main.tf`

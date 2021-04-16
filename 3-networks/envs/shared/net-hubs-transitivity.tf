@@ -67,6 +67,8 @@ module "base_transitivity" {
     # SNAT traffic not to the local eth0 interface
     "iptables -t nat -A POSTROUTING ! -d $(curl -H \"Metadata-Flavor: Google\" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip) -j MASQUERADE",
   ]
+
+  depends_on = [module.base_shared_vpc]
 }
 
 /*
@@ -98,4 +100,6 @@ module "restricted_transitivity" {
     # SNAT traffic not to the local eth0 interface
     "iptables -t nat -A POSTROUTING ! -d $(curl -H \"Metadata-Flavor: Google\" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip) -j MASQUERADE",
   ]
+
+  depends_on = [module.restricted_shared_vpc]
 }

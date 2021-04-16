@@ -50,7 +50,7 @@ file.
 
 ## Purpose
 
-The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a CICD pipeline for foundations code in subsequent stages. The CICD pipeline can use either Cloud Build & Cloud Source Repos or Jenkins & your own Git repos (which might live on-prem).
+The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a CI/CD pipeline for foundations code in subsequent stages. The CI/CD pipeline can use either Cloud Build & Cloud Source Repos or Jenkins & your own Git repos (which might live on-prem).
 
 ## Prerequisites
 
@@ -141,8 +141,7 @@ the following steps:
 1. Run the following command:
 
    ```
-   for i in `find -name 'backend.tf'`; do sed -i
-   's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done
+   for i in `find -name 'backend.tf'`; do sed -i 's/GCS_BUCKET_NAME/UPDATE_ME/' $i; done
    ```
 
    where `GCS_BUCKET_NAME` is the name of your bucket from the steps you ran

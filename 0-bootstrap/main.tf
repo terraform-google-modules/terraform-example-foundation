@@ -49,16 +49,7 @@ module "seed_bootstrap" {
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
   project_prefix                 = var.project_prefix
-
-  project_labels = {
-    environment       = "bootstrap"
-    application_name  = "seed-bootstrap"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "b"
-  }
+  project_labels                 = var.project_labels_seed
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -124,6 +115,8 @@ module "cloudbuild_bootstrap" {
   terraform_validator_release = "2021-03-22"
   terraform_version           = "0.13.6"
   terraform_version_sha256sum = "55f2db00b05675026be9c898bdd3e8230ff0c5c78dd12d743ca38032092abfc9"
+  project_labels              = var.project_labels_cloudbuild
+  terraform_apply_branches    = var.terraform_apply_branches
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -140,21 +133,6 @@ module "cloudbuild_bootstrap" {
     "billingbudgets.googleapis.com"
   ]
 
-  project_labels = {
-    environment       = "bootstrap"
-    application_name  = "cloudbuild-bootstrap"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "b"
-  }
-
-  terraform_apply_branches = [
-    "development",
-    "non\\-production", //non-production needs a \ to ensure regex matches correct branches.
-    "production"
-  ]
 }
 
 // Standalone repo for Terraform-validator policies.

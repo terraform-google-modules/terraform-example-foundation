@@ -82,6 +82,40 @@ variable "cloud_source_repos" {
   default     = ["gcp-org", "gcp-environments", "gcp-networks", "gcp-projects"]
 }
 
+variable "project_labels_seed" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "bootstrap"
+    application_name  = "seed-bootstrap"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "b"
+  }
+}
+
+variable "project_labels_cloudbuild" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "bootstrap"
+    application_name  = "cloudbuild-bootstrap"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "b"
+  }
+}
+
+variable "terraform_apply_branches" {
+  description = "List of Cloud Source Repositories branches used during deployment. non-production needs a \ to ensure regex matches correct branches."
+  type        = list(string)
+  default     = ["development", "non\\-production", "production"]
+}
+
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */

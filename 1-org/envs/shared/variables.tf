@@ -291,3 +291,115 @@ variable "folder_prefix" {
   type        = string
   default     = "fldr"
 }
+
+variable "project_labels_logging" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "production"
+    application_name  = "org-logging"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+}
+
+variable "project_labels_billing_logs" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "production"
+    application_name  = "org-billing-logs"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+}
+
+variable "project_labels_secrets" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "production"
+    application_name  = "org-secrets"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+}
+
+variable "project_labels_interconnect" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "production"
+    application_name  = "org-interconnect"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+}
+
+variable "project_labels_scc" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "production"
+    application_name  = "org-scc"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+}
+
+variable "project_labels_dns_hub" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "production"
+    application_name  = "org-dns-hub"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+}
+
+variable "project_labels_base_net_hub" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "production"
+    application_name  = "org-base-net-hub"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+}
+
+variable "project_labels_restricted_net_hub" {
+  description = "Labels to apply to the project."
+  type        = map(string)
+  default     = {
+    environment       = "production"
+    application_name  = "org-restricted-net-hub"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+}

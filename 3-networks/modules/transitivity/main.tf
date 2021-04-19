@@ -62,10 +62,10 @@ module "migs" {
   instance_template = module.templates[each.key].self_link
   update_policy = [
     {
-      max_surge_fixed              = 3
+      max_surge_fixed              = 4
       max_surge_percent            = null
       instance_redistribution_type = "NONE"
-      max_unavailable_fixed        = 3
+      max_unavailable_fixed        = 4
       max_unavailable_percent      = null
       min_ready_sec                = 180
       minimal_action               = "RESTART"

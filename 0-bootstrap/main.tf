@@ -29,17 +29,13 @@ resource "google_folder" "bootstrap" {
   parent       = local.parent
 }
 
-resource "random_id" "suffix" {
-  byte_length = 2
-}
-
 module "seed_bootstrap" {
   source                         = "terraform-google-modules/bootstrap/google"
   version                        = "~> 2.1"
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
   project_id                     = "${var.project_prefix}-b-seed"
-  state_bucket_name              = "${var.bucket_prefix}-b-tfstate-${random_id.suffix.hex}"
+  state_bucket_name              = "${var.bucket_prefix}-b-tfstate"
   billing_account                = var.billing_account
   group_org_admins               = var.group_org_admins
   group_billing_admins           = var.group_billing_admins

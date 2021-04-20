@@ -111,7 +111,7 @@ variable "project_labels_cloudbuild" {
 }
 
 variable "terraform_apply_branches" {
-  description = "List of Cloud Source Repositories branches used during deployment. non-production needs a \ to ensure regex matches correct branches."
+  description = "List of Cloud Source Repositories branches used during deployment. non-production needs a double backslash to ensure regex matches correct branches."
   type        = list(string)
   default     = ["development", "non\\-production", "production"]
 }

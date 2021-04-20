@@ -85,7 +85,7 @@ variable "cloud_source_repos" {
 variable "project_labels_seed" {
   description = "Labels to apply to the project."
   type        = map(string)
-  default     = {
+  default = {
     environment       = "bootstrap"
     application_name  = "seed-bootstrap"
     billing_code      = "1234"
@@ -99,7 +99,7 @@ variable "project_labels_seed" {
 variable "project_labels_cloudbuild" {
   description = "Labels to apply to the project."
   type        = map(string)
-  default     = {
+  default = {
     environment       = "bootstrap"
     application_name  = "cloudbuild-bootstrap"
     billing_code      = "1234"

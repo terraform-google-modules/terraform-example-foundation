@@ -158,7 +158,10 @@ the following steps:
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
+| project\_labels\_cloudbuild | Labels to apply to the project. | `map(string)` | <pre>{<br>  "application_name": "cloudbuild-bootstrap",<br>  "billing_code": "1234",<br>  "business_code": "abcd",<br>  "env_code": "b",<br>  "environment": "bootstrap",<br>  "primary_contact": "example1",<br>  "secondary_contact": "example2"<br>}</pre> | no |
+| project\_labels\_seed | Labels to apply to the project. | `map(string)` | <pre>{<br>  "application_name": "seed-bootstrap",<br>  "billing_code": "1234",<br>  "business_code": "abcd",<br>  "env_code": "b",<br>  "environment": "bootstrap",<br>  "primary_contact": "example1",<br>  "secondary_contact": "example2"<br>}</pre> | no |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
+| terraform\_apply\_branches | List of Cloud Source Repositories branches used during deployment. non-production needs a double backslash to ensure regex matches correct branches. | `list(string)` | <pre>[<br>  "development",<br>  "non\\-production",<br>  "production"<br>]</pre> | no |
 
 ## Outputs
 

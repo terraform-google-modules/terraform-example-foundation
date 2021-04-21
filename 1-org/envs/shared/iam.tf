@@ -194,16 +194,9 @@ resource "google_organization_iam_member" "billing_creator_user" {
   member = "user:${var.gcp_billing_creator_user}"
 }
 
-resource "google_organization_iam_member" "billing_admin_user" {
-  count  = var.gcp_billing_admin_user != null && var.parent_folder == "" ? 1 : 0
-  org_id = var.org_id
-  role   = "roles/billing.admin"
-  member = "user:${var.gcp_billing_admin_user}"
-}
-
-resource "google_folder_iam_member" "billing_admin_user" {
-  count  = var.gcp_billing_admin_user != null && var.parent_folder != "" ? 1 : 0
-  folder = "folders/${var.parent_folder}"
-  role   = "roles/billing.admin"
-  member = "user:${var.gcp_billing_admin_user}"
+resource "google_billing_account_iam_member" "editor" {
+  count              = var.gcp_billing_admin_user != null ? 1 : 0
+  billing_account_id = var.billing_account
+  role               = "roles/billing.admin"
+  member             = "user:${var.gcp_billing_admin_user}"
 }

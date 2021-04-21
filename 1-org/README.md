@@ -49,7 +49,7 @@ For an overview of the architecture and the parts, see the
 
 ## Purpose
 
-The purpose of this step is to [...].
+The purpose of this step is to up top level shared folders, monitoring and networking projects, and organization-level logging, and sets baseline security settings through organizational policy.
 
 ## Prerequisites
 

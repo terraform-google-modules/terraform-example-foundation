@@ -181,7 +181,7 @@ If those limitations do not apply to your workload/environment, you can choose t
    ```
    cp -RT ../terraform-example-foundation/1-org/ .
    ```
-1. Copy cloud build configuration files for Terraform. You may need to modify the command to reflect
+1. Copy Cloud Build configuration files for Terraform. You may need to modify the command to reflect
    your current directory.
    ```
    cp ../terraform-example-foundation/build/cloudbuild-tf-* .

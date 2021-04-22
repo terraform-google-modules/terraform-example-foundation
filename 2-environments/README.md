@@ -32,13 +32,13 @@ Google Cloud organization that you've created.</td>
 href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/3-networks">3-networks</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
-Interconnect, and baseline firewall rules for each environment. Also sets
+Interconnect, and baseline firewall rules for each environment. It also sets
 up the global DNS hub.</td>
 </tr>
 <tr>
 <td><a
 href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/4-projects">4-projects</a></td>
-<td>Set up a folder structure, projects, and application infrastructure pipeline for applications,
+<td>Sets up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
 </tbody>
@@ -110,19 +110,19 @@ The purpose of this step is to setup development, non-production, and production
    git checkout -b development
    git push origin development
    ```
-1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+1. Review the apply output in your Master's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 1. Merge changes to non-production with.
    ```
    git checkout -b non-production
    git push origin non-production
    ```
-1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+1. Review the apply output in your Master's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 1. Merge changes to production branch.
    ```
    git checkout -b production
    git push origin production
    ```
-1. Review the apply output in your Master's web UI (You might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+1. Review the apply output in your Master's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 
 1. You can now move to the instructions in the step [3-networks](../3-networks/README.md).
 
@@ -188,7 +188,7 @@ The purpose of this step is to setup development, non-production, and production
 1. Change into 2-environments folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`.
-1. Rename terraform.example.tfvars to terraform.tfvars and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
+1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
 1. Update backend.tf with your bucket from bootstrap.
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
@@ -198,7 +198,7 @@ You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to ob
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 2-environments step and only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in you `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in your `PATH`.
 
 1. Run `./tf-wrapper.sh init development`.
 1. Run `./tf-wrapper.sh plan development` and review output.

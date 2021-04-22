@@ -49,7 +49,7 @@ For an overview of the architecture and the parts, see the
 
 ## Purpose
 
-The purpose of this step is to [...].
+The purpose of this step is to setup development, non-production, and production environments within the Google Cloud organization that you've created.
 
 ## Prerequisites
 

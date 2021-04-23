@@ -234,7 +234,7 @@ control 'gcloud-projects' do
             expect(data).to_not be_empty
           end
           it "#{base_project_sa[environment_code][business_unit]} Base project SA should have the Editor role on #{base_projects_id[environment_code][business_unit]}" do
-            expect(data['bindings'][1]['members']).to include(
+            expect(data['bindings']['members']).to include(
               "serviceAccount:#{base_project_sa[environment_code][business_unit]}"
             )
             expect(data['bindings']['role']).to eq "roles/editor"

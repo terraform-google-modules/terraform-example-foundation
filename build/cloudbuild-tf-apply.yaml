@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-timeout: 1200s
+timeout: 3600s
 substitutions:
   _POLICY_REPO: '/workspace/policy-library' # add path to policies here https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator
 steps:

@@ -18,7 +18,7 @@ stages.</td>
 <tr>
 <td><a
 href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/1-org">1-org</a></td>
-<td>Sets up top-level shared folders, monitoring and networking projects, 
+<td>Sets up top-level shared folders, monitoring and networking projects,
 organization-level logging, and baseline security settings through
 organizational policies.</td>
 </tr>

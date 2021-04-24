@@ -29,16 +29,7 @@ module "org_audit_logs" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
-
-  labels = {
-    environment       = "production"
-    application_name  = "org-logging"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
-  }
+  labels                      = var.project_labels_logging
   budget_alert_pubsub_topic   = var.org_audit_logs_project_alert_pubsub_topic
   budget_alert_spent_percents = var.org_audit_logs_project_alert_spent_percents
   budget_amount               = var.org_audit_logs_project_budget_amount
@@ -55,16 +46,7 @@ module "org_billing_logs" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   activate_apis               = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
-
-  labels = {
-    environment       = "production"
-    application_name  = "org-billing-logs"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
-  }
+  labels                      = var.project_labels_billing_logs
   budget_alert_pubsub_topic   = var.org_billing_logs_project_alert_pubsub_topic
   budget_alert_spent_percents = var.org_billing_logs_project_alert_spent_percents
   budget_amount               = var.org_billing_logs_project_budget_amount
@@ -85,16 +67,7 @@ module "org_secrets" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
-
-  labels = {
-    environment       = "production"
-    application_name  = "org-secrets"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
-  }
+  labels                      = var.project_labels_secrets
   budget_alert_pubsub_topic   = var.org_secrets_project_alert_pubsub_topic
   budget_alert_spent_percents = var.org_secrets_project_alert_spent_percents
   budget_amount               = var.org_secrets_project_budget_amount
@@ -115,16 +88,7 @@ module "interconnect" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   activate_apis               = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
-
-  labels = {
-    environment       = "production"
-    application_name  = "org-interconnect"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
-  }
+  labels                      = var.project_labels_interconnect
   budget_alert_pubsub_topic   = var.interconnect_project_alert_pubsub_topic
   budget_alert_spent_percents = var.interconnect_project_alert_spent_percents
   budget_amount               = var.interconnect_project_budget_amount
@@ -145,16 +109,7 @@ module "scc_notifications" {
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
   activate_apis               = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com"]
-
-  labels = {
-    environment       = "production"
-    application_name  = "org-scc"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
-  }
+  labels                      = var.project_labels_scc
   budget_alert_pubsub_topic   = var.scc_notifications_project_alert_pubsub_topic
   budget_alert_spent_percents = var.scc_notifications_project_alert_spent_percents
   budget_amount               = var.scc_notifications_project_budget_amount
@@ -174,6 +129,7 @@ module "dns_hub" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
+  labels                      = var.project_labels_dns_hub
 
   activate_apis = [
     "compute.googleapis.com",
@@ -184,15 +140,6 @@ module "dns_hub" {
     "billingbudgets.googleapis.com"
   ]
 
-  labels = {
-    environment       = "production"
-    application_name  = "org-dns-hub"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
-  }
   budget_alert_pubsub_topic   = var.dns_hub_project_alert_pubsub_topic
   budget_alert_spent_percents = var.dns_hub_project_alert_spent_percents
   budget_amount               = var.dns_hub_project_budget_amount
@@ -213,6 +160,7 @@ module "base_network_hub" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
+  labels                      = var.project_labels_base_net_hub
 
   activate_apis = [
     "compute.googleapis.com",
@@ -223,15 +171,6 @@ module "base_network_hub" {
     "billingbudgets.googleapis.com"
   ]
 
-  labels = {
-    environment       = "production"
-    application_name  = "org-base-net-hub"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
-  }
   budget_alert_pubsub_topic   = var.base_net_hub_project_alert_pubsub_topic
   budget_alert_spent_percents = var.base_net_hub_project_alert_spent_percents
   budget_amount               = var.base_net_hub_project_budget_amount
@@ -252,6 +191,7 @@ module "restricted_network_hub" {
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.common.id
+  labels                      = var.project_labels_restricted_net_hub
 
   activate_apis = [
     "compute.googleapis.com",
@@ -262,15 +202,6 @@ module "restricted_network_hub" {
     "billingbudgets.googleapis.com"
   ]
 
-  labels = {
-    environment       = "production"
-    application_name  = "org-restricted-net-hub"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
-  }
   budget_alert_pubsub_topic   = var.restricted_net_hub_project_alert_pubsub_topic
   budget_alert_spent_percents = var.restricted_net_hub_project_alert_spent_percents
   budget_amount               = var.restricted_net_hub_project_budget_amount

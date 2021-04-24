@@ -191,6 +191,7 @@ control 'gcloud-projects' do
           end
         end
       end
+
       describe command("gcloud iam service-accounts get-iam-policy #{base_project_sa[environment_code][business_unit]} --format=json") do
         its(:exit_status) { should eq 0 }
         its(:stderr) { should eq '' }
@@ -212,6 +213,31 @@ control 'gcloud-projects' do
               "serviceAccount:#{cloudbuild_sa[business_unit]}"
             )
             expect(data['bindings'][0]['role']).to eq "roles/iam.serviceAccountTokenCreator"
+          end
+        end
+      end
+
+      describe command("gcloud projects get-iam-policy #{base_projects_id[environment_code][business_unit]} --format=json") do
+        its(:exit_status) { should eq 0 }
+        its(:stderr) { should eq '' }
+
+        let(:data) do
+          if subject.exit_status.zero?
+            JSON.parse(subject.stdout)
+          else
+            {}
+          end
+        end
+
+        describe "#{base_projects_id[environment_code][business_unit]} IAM Policy" do
+          it 'should exist' do
+            expect(data).to_not be_empty
+          end
+          it "#{base_project_sa[environment_code][business_unit]} Base project SA should have the Editor role on #{base_projects_id[environment_code][business_unit]}" do
+            expect(data['bindings'][1]['members']).to include(
+              "serviceAccount:#{base_project_sa[environment_code][business_unit]}"
+            )
+            expect(data['bindings'][1]['role']).to eq "roles/editor"
           end
         end
       end

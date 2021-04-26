@@ -23,7 +23,7 @@ organizational policy.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments">2-environments</a></td>
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
@@ -40,6 +40,11 @@ up the global DNS hub.</td>
 href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/4-projects">4-projects</a></td>
 <td>Sets up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
+</tr>
+<tr>
+<td><a
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/5-app-infra">5-app-infra</a></td>
+<td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
 </tr>
 </tbody>
 </table>
@@ -76,6 +81,17 @@ You can change the filters & sinks by modifying the configuration in `envs/share
 **Note:** It is possible to enable an organization policy for [OS Login](https://cloud.google.com/compute/docs/oslogin/manage-oslogin-in-an-org) with this module.
 OS Login has some [limitations](https://cloud.google.com/compute/docs/instances/managing-instance-access#limitations).
 If those limitations do not apply to your workload/environment, you can choose to enable the OS Login policy by setting variable `enable_os_login_policy` to `true`.
+
+**Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to used the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
+
+**Note:** This module creates a Security Command Center Notification.
+The notification name must be unique in the organization.
+The suggested name in the `terraform.tfvars` file is **scc-notify**.
+To check if it already exists run:
+
+```
+gcloud scc notifications describe <scc_notification_name> --organization=<org_id>
+````
 
 ### Deploying with Jenkins
 
@@ -142,7 +158,9 @@ If those limitations do not apply to your workload/environment, you can choose t
 
 ### Deploying with Cloud Build
 
-1. Clone the policy repo based on the Terraform output from the previous section. Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see the project again.
+1. Clone the policy repo based on the Terraform output from the previous section.
+Clone the repo at the same level of the `terraform-example-foundation` folder, the next instructions assume that layout.
+Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see the project again.
    ```
    gcloud source repos clone gcp-policies --project=YOUR_CLOUD_BUILD_PROJECT_ID
    ```
@@ -177,7 +195,7 @@ If those limitations do not apply to your workload/environment, you can choose t
    cd gcp-org
    git checkout -b plan
    ```
-1. Copy contents of foundation to new repo.
+1. Copy contents of foundation to new repo (terraform variables will updated in a future step).
    ```
    cp -RT ../terraform-example-foundation/1-org/ .
    ```
@@ -215,6 +233,13 @@ If those limitations do not apply to your workload/environment, you can choose t
    git push origin production
    ```
 1. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+
+**Troubleshooting:**
+If you received a `PERMISSION_DENIED` error running the `gcloud access-context-manager` or the `gcloud scc notifications` commands you can append
+```
+--impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com
+```
+to run the command as the Terraform service account.
 
 ### Running Terraform locally
 

@@ -24,7 +24,7 @@ organizational policy.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments">2-environments</a></td>
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
@@ -41,6 +41,11 @@ up the global DNS hub.</td>
 <td>Sets up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
+<tr>
+<td><a
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/5-app-infra">5-app-infra</a></td>
+<td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
+</tr>
 </tbody>
 </table>
 
@@ -49,7 +54,11 @@ For an overview of the architecture and the parts, see the
 
 ## Purpose
 
-The purpose of this step is to set up the folder structure, projects, and infrastructure pipelines for applications that are connected as service projects to the shared VPC created in the previous stage. For each business unit, a shared `infra-pipeline` project is created along with Cloud Build triggers, CSRs for application infrastructure code and Google Cloud Storage buckets for state storage. This step follows the same [conventions](https://github.com/terraform-google-modules/terraform-example-foundation#branching-strategy) as the foundation pipeline deployed in [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md). The Cloud Build SA used by this pipeline can impersonate the project SA by enabling the `enable_cloudbuild_deploy` flag and necessary roles can be granted to this SA via `sa_roles` as shown in this [example](business_unit_1/development/example_base_shared_vpc_project.tf). This pipeline can be utilized for deploying resources in projects across development/non-production/production with granular permissions.
+The purpose of this step is to set up the folder structure, projects, and infrastructure pipelines for applications that are connected as service projects to the shared VPC created in the previous stage.
+For each business unit, a shared `infra-pipeline` project is created along with Cloud Build triggers, CSRs for application infrastructure code and Google Cloud Storage buckets for state storage.
+This step follows the same [conventions](https://github.com/terraform-google-modules/terraform-example-foundation#branching-strategy) as the foundation pipeline deployed in [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md).
+The Cloud Build SA used by this pipeline can impersonate the project SA by enabling the `enable_cloudbuild_deploy` flag and necessary roles can be granted to this SA via `sa_roles` as shown in this [example](business_unit_1/development/example_base_shared_vpc_project.tf).
+This pipeline can be utilized for deploying resources in projects across development/non-production/production with granular permissions.
 
 ## Prerequisites
 
@@ -93,6 +102,8 @@ gcloud builds log BUILD_ID \
 Change the `BRANCH_NAME` from `development` to `non-production` or `production` for the other two service perimeters.
 
 ## Usage
+
+**Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to used the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 
 ### Deploying with Jenkins
 
@@ -162,7 +173,6 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
    git push origin non-production
    ```
 1. Review the apply output in your Master's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-1. You can now move to the instructions in the step [5-app-infra](../5-app-infra/README.md).
 
 ### Deploying with Cloud Build
 
@@ -190,8 +200,8 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
    ```
    chmod 755 ./tf-wrapper.sh
    ```
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap.
-1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with values from your environment and bootstrap.
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the business unit envs folders [README.md](./business_unit_1/development/README.md) files for additional information on the values in the `common.auto.tfvars file`.
+1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the business unit shared envs folders [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.example.tfvars`.
 1. Rename `development.auto.example.tfvars` to `development.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_d_shared_restricted`.
 1. Rename `non-production.auto.example.tfvars` to `non-production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_n_shared_restricted`.
 1. Rename `production.auto.example.tfvars` to `production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_p_shared_restricted`.
@@ -202,7 +212,7 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
     1. Run `terraform init`.
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.
-    1. Run `terraform output cloudbuild_sa` to get the cloudbuild service account from the apply step.
+    1. Run `terraform output cloudbuild_sa` to get the cloud build service account from the apply step.
     1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME`
 1. Once you have done the instructions for the `business_unit_1`, you need to repeat same steps for `business_unit_2` folder.
 1. Rename `business_unit_1.auto.example.tfvars` to `business_unit_1.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` which is the output of `cloudbuild_sa` from `business_unit_1/shared` steps.
@@ -223,18 +233,21 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
    git push origin production
    ```
 1. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. After production has been applied, apply development.
 1. Merge changes to development.
    ```
    git checkout -b development
    git push origin development
    ```
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. After development has been applied, apply non-production.
 1. Merge changes to non-production.
    ```
    git checkout -b non-production
    git push origin non-production
    ```
 1. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. You can now move to the instructions in the step [5-app-infra](../5-app-infra/README.md).
 
 ### Run Terraform locally
 
@@ -275,4 +288,4 @@ To use the `validate` option of the `tf-wrapper.sh` script, the latest version o
 1. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply development`.
 
-If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.
+If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.

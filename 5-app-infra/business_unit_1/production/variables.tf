@@ -15,7 +15,7 @@
  */
 
 variable "project_service_account" {
-  description = "Service account email of the account created on step 4-project for the project where the GCE will be created"
+  description = "Email of the service account created on step 4-projects for the business unit 1 sample base project where the GCE instance will be created"
   type        = string
 }
 
@@ -25,7 +25,7 @@ variable "org_id" {
 }
 
 variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
+  description = "Name prefix to use for folders created. Should be the same in all steps."
   type        = string
   default     = "fldr"
 }
@@ -36,7 +36,7 @@ variable "instance_region" {
 }
 
 variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
+  description = "Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step."
   type        = string
   default     = ""
 }

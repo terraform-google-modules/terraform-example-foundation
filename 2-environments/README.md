@@ -23,7 +23,7 @@ organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
 <tr>
-<td>2-environments (this file)</td>
+<td><span style="white-space: nowrap;">2-environments</span> (this file)</td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
@@ -40,6 +40,11 @@ up the global DNS hub.</td>
 href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/4-projects">4-projects</a></td>
 <td>Sets up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
+</tr>
+<tr>
+<td><a
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/5-app-infra">5-app-infra</a></td>
+<td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
 </tr>
 </tbody>
 </table>
@@ -83,7 +88,7 @@ The purpose of this step is to setup development, non-production, and production
     ```
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
-    _PROJECT_ID (the cicd project id)
+    _PROJECT_ID (the CI/CD project id)
     ```
 1. Copy Terraform wrapper script to the root of your new repository.
    ```
@@ -213,4 +218,4 @@ To use the `validate` option of the `tf-wrapper.sh` script, the latest version o
 1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply production`.
 
-If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.
+If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.

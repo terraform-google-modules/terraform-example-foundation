@@ -1,6 +1,5 @@
 # 0-bootstrap
 
-
 This repo is part of a multi-part guide that shows how to configure and deploy
 the example.com reference architecture described in
 [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf)
@@ -24,7 +23,7 @@ organizational policy.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments">2-environments</a></td>
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
@@ -42,6 +41,11 @@ href="https://github.com/terraform-google-modules/terraform-example-foundation/t
 <td>Set up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
+<tr>
+<td><a
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/5-app-infra">5-app-infra</a></td>
+<td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
+</tr>
 </tbody>
 </table>
 
@@ -58,9 +62,10 @@ The purpose of this step is to bootstrap a Google Cloud organization, creating a
 To run the commands described in this document, you need to have the following
 installed:
 
--  The [Google Cloud SDK](https://cloud.google.com/sdk/install) version
+- The [Google Cloud SDK](https://cloud.google.com/sdk/install) version
    206.0.0 or later
--  [Terraform](https://www.terraform.io/downloads.html) version 0.13.6 or later.
+- [Terraform](https://www.terraform.io/downloads.html) version 0.13.6.
+- An existing project which the user has access to be used by terraform-validator.
 
 Note: Make sure that you use the same version of Terraform throughout this
 series. Otherwise, you might experience Terraform state snapshot lock errors.
@@ -119,12 +124,28 @@ your current Jenkins manager (master) environment.
    cp backend.tf.example backend.tf
    ```
 1. Update `backend.tf` with the name of your Cloud Storage bucket.
-1. Run `terraform output terraform_sa_email` to get the email address of the
+1. Run `terraform output terraform_service_account` to get the email address of the
    admin. You need this address in a later procedure.
 1. Re-run `terraform init`. When you're prompted, agree to copy state to
    Cloud Storage.
 1. (Optional) Run `terraform apply` to verify that state is configured
    correctly. You should see no changes from the previous state.
+
+**Note 1:** The output of terraform-validator will contain lines like
+
+```
+ERROR: logging before flag.Parse: I0413 13:49:49.852283 6380 convert.go:189] unsupported resource: google_billing_account_iam_member
+```
+
+or
+
+```
+ERROR: logging before flag.Parse: I0413 13:49:49.852290 6380 convert.go:183] unknown resource: random_id
+```
+
+These are warnings for resources that are not yet supported or not known by terraform-validator, these are not actual errors.
+
+**Note 2:** After the deploy, even if you did not receive the project quota error described in the first item of the [Troubleshooting](https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/0-bootstrap#troubleshooting) section, we recommend that your request 50 additional projects for the service account, `terraform_service_account`, created in this step.
 
 ## Running Terraform locally
 
@@ -151,14 +172,14 @@ the following steps:
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | cloud\_source\_repos | List of Cloud Source Repositories created during bootstrap project build stage for use with Cloud Build. | `list(string)` | <pre>[<br>  "gcp-org",<br>  "gcp-environments",<br>  "gcp-networks",<br>  "gcp-projects"<br>]</pre> | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
-| folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
+| folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
-| parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
-| project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
+| parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. | `string` | `""` | no |
+| project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
 
 ## Outputs
 

@@ -317,7 +317,7 @@ variable "gcp_scc_admin" {
 }
 
 variable "gcp_audit_viewer" {
-  description = "G Suite or Cloud Identity group that can administer Security Command Center."
+  description = "Members are part of an audit team and view audit logs in the logging project."
   type        = string
   default     = null
 }

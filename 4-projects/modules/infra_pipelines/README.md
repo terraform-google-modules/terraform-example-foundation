@@ -11,6 +11,7 @@
 | cloudbuild\_project\_id | The project id where the pipelines and repos should be created | `string` | n/a | yes |
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
 | gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
+| impersonate\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | terraform\_apply\_branches | List of git branches configured to run terraform apply Cloud Build trigger. All other branches will run plan by default. | `list(string)` | <pre>[<br>  "development",<br>  "non-production",<br>  "production"<br>]</pre> | no |
 | terraform\_validator\_release | Default terraform-validator release. | `string` | `"2021-03-22"` | no |

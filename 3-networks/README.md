@@ -24,7 +24,7 @@ organizational policy.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments">2-environments</a></td>
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
@@ -40,6 +40,11 @@ up the global DNS hub.</td>
 href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/4-projects">4-projects</a></td>
 <td>Sets up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
+</tr>
+<tr>
+<td><a
+href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/5-app-infra">5-app-infra</a></td>
+<td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
 </tr>
 </tbody>
 </table>
@@ -62,6 +67,10 @@ The purpose of this step is to:
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`.
 
 ## Usage
+
+### Networking Architecture
+
+You need to set variables `enable_hub_and_spoke` and `enable_hub_and_spoke_transitivity` to `true` to be able to use the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 
 ### Using Dedicated Interconnect
 
@@ -223,13 +232,14 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    git push origin production
    ```
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. After production has been applied, apply development and non-production.
+1. After production has been applied, apply development.
 1. Merge changes to development.
    ```
    git checkout -b development
    git push origin development
    ```
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. After development has been applied, apply non-production.
 1. Merge changes to non-production.
    ```
    git checkout -b non-production

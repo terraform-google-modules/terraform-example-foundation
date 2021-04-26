@@ -26,14 +26,14 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | default\_region1 | First subnet region for DNS Hub network. | `string` | n/a | yes |
 | default\_region2 | Second subnet region for DNS Hub network. | `string` | n/a | yes |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
-| domain | The DNS name of forwarding managed zone, for instance 'example.com' | `string` | n/a | yes |
+| domain | The DNS name of forwarding managed zone, for instance 'example.com'. Must end with a period. | `string` | n/a | yes |
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | enable\_hub\_and\_spoke\_transitivity | Enable transitivity via gateway VMs on Hub-and-Spoke architecture. | `bool` | `false` | no |
 | enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | firewall\_policies\_enable\_logging | Toggle hierarchical firewall logging. | `bool` | `true` | no |
-| folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
+| folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | org\_id | Organization ID | `string` | n/a | yes |
-| parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
+| parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step. | `string` | `""` | no |
 | preactivate\_partner\_interconnect | Preactivate Partner Interconnect VLAN attachment in the environment. | `bool` | `false` | no |
 | restricted\_hub\_dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for Restricted Hub VPC DNS. | `bool` | `true` | no |
 | restricted\_hub\_dns\_enable\_logging | Toggle DNS logging for Restricted Hub VPC DNS. | `bool` | `true` | no |
@@ -45,7 +45,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | restricted\_hub\_optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges in Restricted Hub VPC. | `bool` | `false` | no |
 | restricted\_hub\_windows\_activation\_enabled | Enable Windows license activation for Windows workloads in Restricted Hub. | `bool` | `false` | no |
 | subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetworks. | `bool` | `true` | no |
-| target\_name\_server\_addresses | List of target name servers for forwarding zone. | `list(string)` | n/a | yes |
+| target\_name\_server\_addresses | List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones. | `list(string)` | n/a | yes |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
 
 ## Outputs

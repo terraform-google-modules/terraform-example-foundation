@@ -65,7 +65,7 @@ variable "subnetworks_enable_logging" {
 
 variable "domain" {
   type        = string
-  description = "The DNS name of forwarding managed zone, for instance 'example.com'"
+  description = "The DNS name of forwarding managed zone, for instance 'example.com'. Must end with a period."
 }
 
 variable "bgp_asn_dns" {
@@ -75,18 +75,18 @@ variable "bgp_asn_dns" {
 }
 
 variable "target_name_server_addresses" {
-  description = "List of target name servers for forwarding zone."
+  description = "List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones."
   type        = list(string)
 }
 
 variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
+  description = "Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step."
   type        = string
   default     = ""
 }
 
 variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
+  description = "Name prefix to use for folders created. Should be the same in all steps."
   type        = string
   default     = "fldr"
 }

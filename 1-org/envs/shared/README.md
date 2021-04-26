@@ -21,7 +21,7 @@
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | enable\_os\_login\_policy | Enable OS Login Organization Policy. | `bool` | `false` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
-| gcp\_audit\_viewer | G Suite or Cloud Identity group that can administer Security Command Center. | `string` | `null` | no |
+| gcp\_audit\_viewer | Members are part of an audit team and view audit logs in the logging project. | `string` | `null` | no |
 | gcp\_billing\_admin\_user | Identity that has billing administrator permissions | `string` | `null` | no |
 | gcp\_billing\_creator\_user | Identity that can create billing accounts. | `string` | `null` | no |
 | gcp\_global\_secrets\_admin | G Suite or Cloud Identity group that members are responsible for putting secrets into Secrets Manager. | `string` | `null` | no |

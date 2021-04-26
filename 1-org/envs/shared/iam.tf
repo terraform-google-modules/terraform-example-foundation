@@ -89,7 +89,7 @@ resource "google_organization_iam_member" "billing_viewer" {
 }
 
 /******************************************
- Groups permissions according to SFB - IAM
+ Groups permissions according to SFB (Section 6.2 - Users and groups) - IAM
 *****************************************/
 
 resource "google_organization_iam_member" "organization_viewer" {
@@ -170,7 +170,7 @@ resource "google_project_iam_member" "global_secrets_admin" {
 }
 
 /******************************************
- Firecall accounts permissions
+ Privileged accounts permissions according to SFB (Section 6.3 - Privileged identities)
 *****************************************/
 
 resource "google_organization_iam_member" "org_admin_user" {

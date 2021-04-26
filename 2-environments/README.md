@@ -65,6 +65,64 @@ The purpose of this step is to setup development, non-production, and production
 
 ## Usage
 
+### Deploying with Cloud Build
+
+1. Clone repo.
+   ```
+   gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID
+   ```
+1. Navigate into the repo and change to the non-master branch.
+   ```
+   cd gcp-environments
+   git checkout -b plan
+   ```
+1. Copy contents of foundation to new repo.
+   ```
+   cp -RT ../terraform-example-foundation/2-environments/ .
+   ```
+1. Copy cloud build configuration files for Terraform.
+   ```
+   cp ../terraform-example-foundation/build/cloudbuild-tf-* .
+   ```
+1. Copy Terraform wrapper script to the root of your new repository.
+   ```
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   ```
+1. Ensure wrapper script can be executed.
+   ```
+   chmod 755 ./tf-wrapper.sh
+   ```
+1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
+1. Commit changes.
+   ```
+   git add .
+   git commit -m 'Your message'
+   ```
+1. Push your plan branch to trigger a plan for all environments.
+   ```
+   git push --set-upstream origin plan
+   ```
+1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. Merge changes to development.
+   ```
+   git checkout -b development
+   git push origin development
+   ```
+1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. Merge changes to non-production.
+   ```
+   git checkout -b non-production
+   git push origin non-production
+   ```
+1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. Merge changes to production branch.
+   ```
+   git checkout -b production
+   git push origin production
+   ```
+1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. You can now move to the instructions in the step [3-networks](../3-networks/README.md).
+
 ### Deploying with Jenkins
 
 1. Clone the repo you created manually in 0-bootstrap.
@@ -128,65 +186,6 @@ The purpose of this step is to setup development, non-production, and production
    git push origin production
    ```
 1. Review the apply output in your Master's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-
-1. You can now move to the instructions in the step [3-networks](../3-networks/README.md).
-
-### Deploying with Cloud Build
-
-1. Clone repo.
-   ```
-   gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID
-   ```
-1. Navigate into the repo and change to the non-master branch.
-   ```
-   cd gcp-environments
-   git checkout -b plan
-   ```
-1. Copy contents of foundation to new repo.
-   ```
-   cp -RT ../terraform-example-foundation/2-environments/ .
-   ```
-1. Copy cloud build configuration files for Terraform.
-   ```
-   cp ../terraform-example-foundation/build/cloudbuild-tf-* .
-   ```
-1. Copy Terraform wrapper script to the root of your new repository.
-   ```
-   cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   ```
-1. Ensure wrapper script can be executed.
-   ```
-   chmod 755 ./tf-wrapper.sh
-   ```
-1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
-1. Commit changes.
-   ```
-   git add .
-   git commit -m 'Your message'
-   ```
-1. Push your plan branch to trigger a plan for all environments.
-   ```
-   git push --set-upstream origin plan
-   ```
-1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to development.
-   ```
-   git checkout -b development
-   git push origin development
-   ```
-1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to non-production.
-   ```
-   git checkout -b non-production
-   git push origin non-production
-   ```
-1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to production branch.
-   ```
-   git checkout -b production
-   git push origin production
-   ```
-1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 ### Run Terraform locally
 

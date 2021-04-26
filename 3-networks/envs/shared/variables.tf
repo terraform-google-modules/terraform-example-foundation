@@ -75,7 +75,7 @@ variable "bgp_asn_dns" {
 }
 
 variable "target_name_server_addresses" {
-  description = "List of IPv4 address of target name servers for the forwarding zone configuration. Cloud DNS will select the best available name server if more than one target is given."
+  description = "List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones."
   type        = list(string)
 }
 

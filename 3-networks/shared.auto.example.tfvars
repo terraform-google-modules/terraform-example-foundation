@@ -15,5 +15,5 @@
  */
 
 // List of IPv4 address of target name servers for the forwarding zone configuration.
-// Cloud DNS will select the best available name server.
+// See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones
 target_name_server_addresses = ["192.168.0.1", "192.168.0.2"]

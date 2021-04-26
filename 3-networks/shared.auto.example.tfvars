@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
+// List of IPv4 address of target name servers for the forwarding zone configuration.
+// Cloud DNS will select the best available name server.
 target_name_server_addresses = ["192.168.0.1", "192.168.0.2"]

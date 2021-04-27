@@ -93,5 +93,5 @@ variable "terraform_version_sha256sum" {
 variable "terraform_validator_release" {
   description = "Default terraform-validator release."
   type        = string
-  default     = "2021-03-22"
+  default     = "2021-04-15"
 }

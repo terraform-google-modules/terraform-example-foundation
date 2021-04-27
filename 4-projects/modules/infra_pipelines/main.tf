@@ -21,6 +21,9 @@ locals {
   artifact_buckets     = { for created_csr in local.created_csrs : "${created_csr}-ab" => format("%s-%s-%s", created_csr, "cloudbuild-artifacts", random_id.suffix.hex) }
   state_buckets        = { for created_csr in local.created_csrs : "${created_csr}-tfstate" => format("%s-%s-%s", created_csr, "tfstate", random_id.suffix.hex) }
   apply_branches_regex = "^(${join("|", var.terraform_apply_branches)})$"
+  image_project_id     = var.custom_image_project_id != "" ? var.custom_image_project_id : var.cloudbuild_project_id
+  image_default_region = var.custom_image_default_region != "" ? var.custom_image_default_region : var.default_region
+  image_gar_repo_name  = var.custom_image_gar_repo_name != "" ? var.custom_image_gar_repo_name : "prj-tf-runners"
 }
 
 # Create CSRs
@@ -165,6 +168,17 @@ resource "null_resource" "cloudbuild_terraform_builder" {
   depends_on = [
     google_artifact_registry_repository_iam_member.terraform-image-iam
   ]
+}
+
+/***********************************************
+ Cloud Build - Terraform Custom Image
+ ***********************************************/
+
+resource "google_project_iam_member" "app_infra_pipeline_sa_roles" {
+  count                     = var.custom_image_project_id != "" ? 1 : 0
+  project                   = var.custom_image_project_id
+  role                      = "roles/artifactregistry.reader"
+  member                    = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 }
 
 /***********************************************

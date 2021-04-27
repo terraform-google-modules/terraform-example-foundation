@@ -16,20 +16,20 @@ stages.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/1-org">1-org</a></td>
+href="../1-org">1-org</a></td>
 <td>Sets up top level shared folders, monitoring and networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
+href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/3-networks">3-networks</a></td>
+href="../3-networks">3-networks</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
 Interconnect, and baseline firewall rules for each environment. Also sets
@@ -37,13 +37,13 @@ up the global DNS hub.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/4-projects">4-projects</a></td>
+href="../4-projects">4-projects</a></td>
 <td>Set up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/5-app-infra">5-app-infra</a></td>
+href="../5-app-infra">5-app-infra</a></td>
 <td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
 </tr>
 </tbody>
@@ -145,7 +145,7 @@ ERROR: logging before flag.Parse: I0413 13:49:49.852290 6380 convert.go:183] unk
 
 These are warnings for resources that are not yet supported or not known by terraform-validator, these are not actual errors.
 
-**Note 2:** After the deploy, even if you did not receive the project quota error described in the first item of the [Troubleshooting](https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/0-bootstrap#troubleshooting) section, we recommend that your request 50 additional projects for the service account, `terraform_service_account`, created in this step.
+**Note 2:** After the deploy, even if you did not receive the project quota error described in the first item of the [Troubleshooting](#troubleshooting) section, we recommend that your request 50 additional projects for the service account, `terraform_service_account`, created in this step.
 
 ## Running Terraform locally
 

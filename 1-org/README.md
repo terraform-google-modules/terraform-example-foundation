@@ -9,7 +9,7 @@ the example.com reference architecture described in
 <tbody>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/0-bootstrap">0-bootstrap</a></td>
+href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
 step also configures a CI/CD pipeline for foundations code in subsequent
@@ -23,13 +23,13 @@ organizational policy.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
+href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/3-networks">3-networks</a></td>
+href="../3-networks">3-networks</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
 Interconnect, and baseline firewall rules for each environment. It also sets
@@ -37,13 +37,13 @@ up the global DNS hub.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/4-projects">4-projects</a></td>
+href="../4-projects">4-projects</a></td>
 <td>Sets up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/5-app-infra">5-app-infra</a></td>
+href="../5-app-infra">5-app-infra</a></td>
 <td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
 </tr>
 </tbody>
@@ -91,70 +91,7 @@ To check if it already exists run:
 
 ```
 gcloud scc notifications describe <scc_notification_name> --organization=<org_id>
-````
-
-### Deploying with Jenkins
-
-1. Clone the repo you created manually in 0-bootstrap.
-   ```
-   git clone <YOUR_NEW_REPO-1-org>
-   ```
-1. Navigate into the repo and change to a non-production branch.
-   ```
-   cd YOUR_NEW_REPO_CLONE-1-org
-   git checkout -b plan
-   ```
-1. Copy contents of foundation to new repo.
-   ```
-   cp -RT ../terraform-example-foundation/1-org/ .
-   ```
-1. Copy contents of policy-library to new repo.
-   ```
-   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   ```
-1. Copy the Jenkinsfile script to the root of your new repository.\
-
-   ```
-   cp ../terraform-example-foundation/build/Jenkinsfile .
-   ```
-1. Update the variables located in the `environment {}` section of the `Jenkinsfile` with values from your environment:
-    ```
-    _TF_SA_EMAIL
-    _STATE_BUCKET_NAME
-    _PROJECT_ID (the cicd project id)
-    ```
-1. Copy Terraform wrapper script to the root of your new repository.
-   ```
-   cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   ```
-1. Ensure wrapper script can be executed.
-   ```
-   chmod 755 ./tf-wrapper.sh
-   ```
-1. Check if your organization already has an Access Context Manager Policy.
-   ```
-   gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
-   ```
-1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars` and update the file with values from your environment and bootstrap. You can re-run `terraform output` in the 0-bootstrap directory to find these values. Make sure that `default_region` is set to a valid [BigQuery dataset region](https://cloud.google.com/bigquery/docs/locations). Also, if the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
-1. Commit changes.
-   ```
-   git add .
-   git commit -m 'Your message'
-   ```
-1. Push your plan branch. The branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a Terraform plan.
-    - Assuming you configured an automatic trigger in your Jenkins Master (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
-   ```
-   git push --set-upstream origin plan
-   ```
-1. Review the plan output in your Master's web UI.
-1. Merge changes to production branch.
-   ```
-   git checkout -b production
-   git push origin production
-   ```
-1. Review the apply output in your Master's web UI. (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-
-1. You can now move to the instructions in the [2-environments](../2-environments/README.md) step.
+```
 
 ### Deploying with Cloud Build
 
@@ -233,6 +170,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    git push origin production
    ```
 1. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. You can now move to the instructions in the [2-environments](../2-environments/README.md) step.
 
 **Troubleshooting:**
 If you received a `PERMISSION_DENIED` error running the `gcloud access-context-manager` or the `gcloud scc notifications` commands you can append
@@ -240,6 +178,67 @@ If you received a `PERMISSION_DENIED` error running the `gcloud access-context-m
 --impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com
 ```
 to run the command as the Terraform service account.
+
+### Deploying with Jenkins
+
+1. Clone the repo you created manually in 0-bootstrap.
+   ```
+   git clone <YOUR_NEW_REPO-1-org>
+   ```
+1. Navigate into the repo and change to a non-production branch.
+   ```
+   cd YOUR_NEW_REPO_CLONE-1-org
+   git checkout -b plan
+   ```
+1. Copy contents of foundation to new repo.
+   ```
+   cp -RT ../terraform-example-foundation/1-org/ .
+   ```
+1. Copy contents of policy-library to new repo.
+   ```
+   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+   ```
+1. Copy the Jenkinsfile script to the root of your new repository.\
+
+   ```
+   cp ../terraform-example-foundation/build/Jenkinsfile .
+   ```
+1. Update the variables located in the `environment {}` section of the `Jenkinsfile` with values from your environment:
+    ```
+    _TF_SA_EMAIL
+    _STATE_BUCKET_NAME
+    _PROJECT_ID (the cicd project id)
+    ```
+1. Copy Terraform wrapper script to the root of your new repository.
+   ```
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   ```
+1. Ensure wrapper script can be executed.
+   ```
+   chmod 755 ./tf-wrapper.sh
+   ```
+1. Check if your organization already has an Access Context Manager Policy.
+   ```
+   gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
+   ```
+1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars` and update the file with values from your environment and bootstrap. You can re-run `terraform output` in the 0-bootstrap directory to find these values. Make sure that `default_region` is set to a valid [BigQuery dataset region](https://cloud.google.com/bigquery/docs/locations). Also, if the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
+1. Commit changes.
+   ```
+   git add .
+   git commit -m 'Your message'
+   ```
+1. Push your plan branch. The branch `plan` is not a special one. Any branch which name is different from `development`, `non-production` or `production` will trigger a Terraform plan.
+    - Assuming you configured an automatic trigger in your Jenkins Master (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
+   ```
+   git push --set-upstream origin plan
+   ```
+1. Review the plan output in your Master's web UI.
+1. Merge changes to production branch.
+   ```
+   git checkout -b production
+   git push origin production
+   ```
+1. Review the apply output in your Master's web UI. (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
 
 ### Running Terraform locally
 

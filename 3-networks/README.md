@@ -9,7 +9,7 @@ the example.com reference architecture described in
 <tbody>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/0-bootstrap">0-bootstrap</a></td>
+href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
 step also configures a CI/CD pipeline for foundations code in subsequent
@@ -17,14 +17,14 @@ stages.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/1-org">1-org</a></td>
+href="../1-org">1-org</a></td>
 <td>Sets up top level shared folders, monitoring and networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
+href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
@@ -37,13 +37,13 @@ up the global DNS hub.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/4-projects">4-projects</a></td>
+href="../4-projects">4-projects</a></td>
 <td>Sets up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
 <tr>
 <td><a
-href="https://github.com/terraform-google-modules/terraform-example-foundation/tree/master/5-app-infra">5-app-infra</a></td>
+href="../5-app-infra">5-app-infra</a></td>
 <td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
 </tr>
 </tbody>
@@ -70,7 +70,7 @@ The purpose of this step is to:
 
 ### Networking Architecture
 
-You need to set variables `enable_hub_and_spoke` and `enable_hub_and_spoke_transitivity` to `true` to be able to use the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
+You need to set variables `enable_hub_and_spoke` and `enable_hub_and_spoke_transitivity` to `true` to be able to use the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [Google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 
 ### Using Dedicated Interconnect
 
@@ -103,6 +103,74 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    ```
 1. In the file `vpn.tf`, update the values for `environment`, `vpn_psk_secret_name`, `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
 1. Verify other default values are valid for your environment.
+
+### Deploying with Cloud Build
+
+1. Clone repo.
+   ```
+   gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID
+   ```
+1. Change to the freshly cloned repo and change to non-master branch.
+   ```
+   git checkout -b plan
+   ```
+1. Copy contents of foundation to new repo.
+   ```
+   cp -RT ../terraform-example-foundation/3-networks/ .
+   ```
+1. Copy Cloud Build configuration files for Terraform.
+   ```
+   cp ../terraform-example-foundation/build/cloudbuild-tf-* .
+   ```
+1. Copy Terraform wrapper script to the root of your new repository.
+   ```
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   ```
+1. Ensure wrapper script can be executed.
+   ```
+   chmod 755 ./tf-wrapper.sh
+   ```
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
+1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with the `target_name_server_addresses` (the list of target name servers for the DNS forwarding zone in the DNS Hub).
+1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
+1. Commit changes
+   ```
+   git add .
+   git commit -m 'Your message'
+   ```
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
+    1. Run `cd ./envs/shared/`.
+    1. Update `backend.tf` with your bucket name from the bootstrap step.
+    1. Run `terraform init`.
+    1. Run `terraform plan` and review output.
+    1. Run `terraform apply`.
+    1. If you would like the bucket to be replaced by Cloud Build at run time, change the bucket name back to `UPDATE_ME`.
+1. Push your plan branch to trigger a plan.
+   ```
+   git push --set-upstream origin plan
+   ```
+1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. Merge changes to production.
+   ```
+   git checkout -b production
+   git push origin production
+   ```
+1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. After production has been applied, apply development.
+1. Merge changes to development.
+   ```
+   git checkout -b development
+   git push origin development
+   ```
+1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. After development has been applied, apply non-production.
+1. Merge changes to non-production.
+   ```
+   git checkout -b non-production
+   git push origin non-production
+   ```
+1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
+1. You can now move to the instructions in the step [4-projects](../4-projects/README.md).
 
 ### Deploying with Jenkins
 
@@ -177,75 +245,6 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    git push origin non-production
    ```
 1. Review the apply output in your Master's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-
-1. You can now move to the instructions in the step [4-projects](../4-projects/README.md).
-
-### Deploying with Cloud Build
-
-1. Clone repo.
-   ```
-   gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID
-   ```
-1. Change to the freshly cloned repo and change to non-master branch.
-   ```
-   git checkout -b plan
-   ```
-1. Copy contents of foundation to new repo.
-   ```
-   cp -RT ../terraform-example-foundation/3-networks/ .
-   ```
-1. Copy Cloud Build configuration files for Terraform.
-   ```
-   cp ../terraform-example-foundation/build/cloudbuild-tf-* .
-   ```
-1. Copy Terraform wrapper script to the root of your new repository.
-   ```
-   cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   ```
-1. Ensure wrapper script can be executed.
-   ```
-   chmod 755 ./tf-wrapper.sh
-   ```
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
-1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with the `target_name_server_addresses` (the list of target name servers for the DNS forwarding zone in the DNS Hub).
-1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
-1. Commit changes
-   ```
-   git add .
-   git commit -m 'Your message'
-   ```
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
-    1. Run `cd ./envs/shared/`.
-    1. Update `backend.tf` with your bucket name from the bootstrap step.
-    1. Run `terraform init`.
-    1. Run `terraform plan` and review output.
-    1. Run `terraform apply`.
-    1. If you would like the bucket to be replaced by Cloud Build at run time, change the bucket name back to `UPDATE_ME`.
-1. Push your plan branch to trigger a plan.
-   ```
-   git push --set-upstream origin plan
-   ```
-1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to production.
-   ```
-   git checkout -b production
-   git push origin production
-   ```
-1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. After production has been applied, apply development.
-1. Merge changes to development.
-   ```
-   git checkout -b development
-   git push origin development
-   ```
-1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. After development has been applied, apply non-production.
-1. Merge changes to non-production.
-   ```
-   git checkout -b non-production
-   git push origin non-production
-   ```
-1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 ### Run Terraform locally
 

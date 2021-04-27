@@ -91,7 +91,7 @@ To check if it already exists run:
 
 ```
 gcloud scc notifications describe <scc_notification_name> --organization=<org_id>
-````
+```
 
 ### Deploying with Cloud Build
 

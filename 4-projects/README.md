@@ -139,7 +139,7 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
 1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
 1. You need to manually plan and apply only once the `business_unit_1/shared` environment since `development`, `non-production`, and `production` depend on it.
     1. Run `cd ./business_unit_1/shared/`.
-    1. Update `backend.tf` with your bucket name from the bootstrap step.
+    1. Update `backend.tf` with your bucket name from the 0-bootstrap step.
     1. Run `terraform init`.
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.
@@ -218,6 +218,18 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
 1. Rename `development.auto.example.tfvars` to `development.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_d_shared_restricted`.
 1. Rename `non-production.auto.example.tfvars` to `non-production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_n_shared_restricted`.
 1. Rename `production.auto.example.tfvars` to `production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_p_shared_restricted`.
+1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
+1. You need to manually plan and apply only once the `business_unit_1/shared` environment since `development`, `non-production`, and `production` depend on it.
+    1. Run `cd ./business_unit_1/shared/`.
+    1. Update `backend.tf` with your bucket name from the 0-bootstrap step.
+    1. Run `terraform init`.
+    1. Run `terraform plan` and review output.
+    1. Run `terraform apply`.
+    1. Run `terraform output cloudbuild_sa` to get the cloud build service account from the apply step.
+    1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME`
+1. Once you have done the instructions for the `business_unit_1`, you need to repeat same steps for `business_unit_2` folder.
+1. Rename `business_unit_1.auto.example.tfvars` to `business_unit_1.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` which is the output of `cloudbuild_sa` from `business_unit_1/shared` steps.
+1. Rename `business_unit_2.auto.example.tfvars` to `business_unit_2.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` which is the output of `cloudbuild_sa` from `business_unit_2/shared` steps.
 1. Commit changes.
    ```
    git add .
@@ -235,13 +247,14 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
    git push origin production
    ```
 1. Review the apply output in your Master's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
-1. After production has been applied, apply development and non-production.
+1. After production has been applied, apply development.
 1. Merge changes to development branch.
    ```
    git checkout -b development
    git push origin development
    ```
 1. Review the apply output in your Master's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+1. After development has been applied, apply non-production.
 1. Merge changes to non-production branch.
    ```
    git checkout -b non-production
@@ -259,6 +272,7 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
 1. Rename `development.auto.example.tfvars` to `development.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_d_shared_restricted`.
 1. Rename `non-production.auto.example.tfvars` to `non-production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_n_shared_restricted`.
 1. Rename `production.auto.example.tfvars` to `production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_p_shared_restricted`.
+1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
 1. Update `backend.tf` with your bucket from the bootstrap step.
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
@@ -266,7 +280,7 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
    You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
 
 We will now deploy each of our environments(development/production/non-production) using this script.
-When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied.
+When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied. Environment shared must be applied first because development, non-production, and production depend on it.
 
 To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in your `PATH`.
 
@@ -274,6 +288,8 @@ To use the `validate` option of the `tf-wrapper.sh` script, the latest version o
 1. Run `./tf-wrapper.sh plan shared` and review output.
 1. Run `./tf-wrapper.sh validate shared $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply shared`.
+1. Rename `business_unit_1.auto.example.tfvars` to `business_unit_1.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` which is the output of `cloudbuild_sa` from `business_unit_1/shared` steps.
+1. Rename `business_unit_2.auto.example.tfvars` to `business_unit_2.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` which is the output of `cloudbuild_sa` from `business_unit_2/shared` steps.
 1. Run `./tf-wrapper.sh init production`.
 1. Run `./tf-wrapper.sh plan production` and review output.
 1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.

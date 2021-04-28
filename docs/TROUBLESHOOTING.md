@@ -2,7 +2,7 @@
 
 ## Terminology
 
-See [GLOSSARY.md][glossary].
+See [GLOSSARY.md](./GLOSSARY.md).
 
 - - -
 

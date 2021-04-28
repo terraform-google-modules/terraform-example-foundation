@@ -62,8 +62,7 @@ The purpose of this step is to bootstrap a Google Cloud organization, creating a
 To run the commands described in this document, you need to have the following
 installed:
 
-- The [Google Cloud SDK](https://cloud.google.com/sdk/install) version
-   206.0.0 or later
+- The [Google Cloud SDK](https://cloud.google.com/sdk/install) version 319.0.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 0.13.6.
 - An existing project which the user has access to be used by terraform-validator.
 

@@ -55,7 +55,7 @@ file.
 
 ## Purpose
 
-The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a CI/CD pipeline for foundations code in subsequent stages. The CI/CD pipeline can use either Cloud Build andCloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
+The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a CI/CD pipeline for foundations code in subsequent stages. The CI/CD pipeline can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
 
 ## Prerequisites
 
@@ -212,7 +212,7 @@ during a Terraform `apply` command:
     use the
     [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase)
     form to request a quota increase. In the support form, for **Email addresses
-    that will be used to create projects**, use the `terraform_sa_email` address
+    that will be used to create projects**, use the `terraform_service_account` address
     that's created in the organization bootstrap module. If you see other quota
     errors, see the [Quota documentation](https://cloud.google.com/docs/quota).
 

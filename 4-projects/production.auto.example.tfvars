@@ -15,3 +15,5 @@
  */
 
 perimeter_name = "sp_p_shared_restricted_default_perimeter_????"
+
+//enable_hub_and_spoke = true

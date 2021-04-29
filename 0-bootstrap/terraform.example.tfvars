@@ -22,10 +22,13 @@ group_org_admins = "gcp-organization-admins@example.com"
 
 group_billing_admins = "gcp-billing-admins@example.com"
 
-default_region = "australia-southeast1"
+default_region = "us-central1"
 
-//Optional - for development or for the organisation with existing projects.
-//Will place all resources under a specific folder instead of org root
+// Optional - for an organization with existing projects or for development/validation.
+// Uncomment this variable to place all the example foundation resources under
+// the provided folder instead of the root organization.
+// The variable value is the numeric folder ID
+// The folder must already exist.
 //parent_folder = "01234567890"
 
 /* ----------------------------------------

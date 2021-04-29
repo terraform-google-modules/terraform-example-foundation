@@ -19,7 +19,7 @@ org_id = attribute('org_id')
 control 'gcloud_scc' do
   title 'step 1-org scc notifications tests'
 
-  describe command("gcloud alpha scc notifications describe #{scc_notification_name} --organization=#{org_id} --format=json") do
+  describe command("gcloud scc notifications describe #{scc_notification_name} --organization=#{org_id} --format=json") do
     its(:exit_status) { should eq 0 }
     its(:stderr) { should eq '' }
 

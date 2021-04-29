@@ -207,6 +207,12 @@ If relevant for your use case, there are also two optional submodules which can 
 
 Usage instructions are available for the projects step in the [README](./4-projects/README.md).
 
+### [5. app-infra](./5-app-infra/)
+
+The purpose of this step is to deploy a simple [Compute Engine](https://cloud.google.com/compute/) instance in one of the business unit projects using the infra pipeline set up in 4-projects.
+
+Usage instructions are available for the app-infra step in the [README](./5-app-infra/README.md).
+
 ### Final View
 
 Once all steps above have been executed your GCP organization should represent the structure shown below, with projects being the lowest nodes in the tree.

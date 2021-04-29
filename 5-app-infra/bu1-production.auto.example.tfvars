@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
+// Email of the service account created on step 4-projects for the sample base project in the production environment
+// of the business unit 1 where the GCE instance will be created
 project_service_account = "project-service-account@prj-bu1-p-sample-base-<random>.iam.gserviceaccount.com"

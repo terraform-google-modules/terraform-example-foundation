@@ -79,6 +79,8 @@ Steps:
 
 #### Upgrade your 0-bootstrap runner image Terraform version
 
+The current version of the foundation does not work with terraform version `0.15.x`,upgrade option is only valid to upgrade to version `0.14.x`.
+
 Replace `0.x.x` with the actual version of your local Terraform version in the following instructions:
 
 - Go to the [Terraform release](https://releases.hashicorp.com/terraform/) page.
@@ -97,7 +99,7 @@ Replace `0.x.x` with the actual version of your local Terraform version in the f
 
 **Error message:**
 
-When running gcloud commands in Cloud Shell like
+When running `gcloud` commands in Cloud Shell like
 
 ```
 gcloud scc notifications describe <scc_notification_name> --organization YOUR_ORGANIZATION_ID

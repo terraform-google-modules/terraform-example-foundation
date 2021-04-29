@@ -14,14 +14,14 @@ See [GLOSSARY.md](./GLOSSARY.md).
 
 - - -
 
-### Common issues
+## Common issues
 
 - [Project quota exceeded](#project-quota-exceeded)
 - [Terraform State Snapshot lock](#terraform-state-snapshot-lock)
 - [Application authenticated using end user credentials](#application-authenticated-using-end-user-credentials)
 - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
 
-#### Project quota exceeded
+### Project quota exceeded
 
 **Error message:**
 
@@ -46,7 +46,7 @@ use the email address of `terraform_service_account` that is created by the Terr
 
 - If you see other quota errors, see the [Quota documentation](https://cloud.google.com/docs/quota).
 
-#### Terraform State Snapshot lock
+### Terraform State Snapshot lock
 
 **Error message:**
 
@@ -72,8 +72,7 @@ Steps:
 - Delete the Terraform state file in `gs://YOUR-TF-STATE-BUCKET/terraform/networks/envs/shared/default.tfstate`. This bucket is in your **Seed Project**.
 - Re-run the manual deploy of 3-networks shared environment using Terraform v0.13.6
 
-
-#### Application authenticated using end user credentials
+### Application authenticated using end user credentials
 
 **Error message:**
 
@@ -119,7 +118,7 @@ you can re-run the command using impersonation or providing a billing project:
 
 If you provide a billing project, you must have the `serviceusage.services.use` permission on the billing_project.
 
-#### Cannot assign requested address error in Cloud Shell
+### Cannot assign requested address error in Cloud Shell
 
 **Error message:**
 

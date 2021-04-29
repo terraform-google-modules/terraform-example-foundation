@@ -146,7 +146,7 @@ ERROR: logging before flag.Parse: I0413 13:49:49.852290 6380 convert.go:183] unk
 
 These are warnings for resources that are not yet supported or not known by terraform-validator, these are not actual errors.
 
-**Note 2:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the service account, `terraform_service_account`, created in this step.
+**Note 2:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the service account, `terraform_service_account`, created in this step.
 
 ## Running Terraform locally
 

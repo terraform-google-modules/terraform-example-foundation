@@ -55,7 +55,7 @@ file.
 
 ## Purpose
 
-The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a CI/CD pipeline for foundations code in subsequent stages. The CI/CD pipeline can use either Cloud Build andCloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
+The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a CI/CD pipeline for foundations code in subsequent stages. The CI/CD pipeline can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
 
 ## Prerequisites
 
@@ -66,7 +66,7 @@ installed:
 - [Terraform](https://www.terraform.io/downloads.html) version 0.13.6.
 - An existing project which the user has access to be used by terraform-validator.
 
-Note: Make sure that you use the same version of Terraform throughout this
+**Note:** Make sure that you use the same version of Terraform throughout this
 series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 Also make sure that you've done the following:
@@ -92,6 +92,10 @@ represented by the `org_project_creators` variable.
 For more information about the permissions that are required and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
+
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Deploying with Jenkins
 
@@ -144,7 +148,7 @@ ERROR: logging before flag.Parse: I0413 13:49:49.852290 6380 convert.go:183] unk
 
 These are warnings for resources that are not yet supported or not known by terraform-validator, these are not actual errors.
 
-**Note 2:** After the deploy, even if you did not receive the project quota error described in the first item of the [Troubleshooting](#troubleshooting) section, we recommend that your request 50 additional projects for the service account, `terraform_service_account`, created in this step.
+**Note 2:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the service account, `terraform_service_account`, created in this step.
 
 ## Running Terraform locally
 
@@ -196,34 +200,3 @@ the following steps:
 | terraform\_validator\_policies\_repo | Cloud Source Repository created for terraform-validator policies. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
-## Troubleshooting
-
-When you run the examples in this repository, you might see the following errors
-during a Terraform `apply` command:
-
-
-- `Error code 8, message: The project cannot be created because you have exceeded
-   your allotted project quota`.
-
-  - This message means you have reached your [project creation
-     quota](https://support.google.com/cloud/answer/6330231). In this case, you can
-    use the
-    [Request Project Quota Increase](https://support.google.com/code/contact/project_quota_increase)
-    form to request a quota increase. In the support form, for **Email addresses
-    that will be used to create projects**, use the `terraform_sa_email` address
-    that's created in the organization bootstrap module. If you see other quota
-    errors, see the [Quota documentation](https://cloud.google.com/docs/quota).
-
-- `Error: Error when reading or editing Organization Not Found : <organization-id>: googleapi: Error 403: The caller does not have permission, forbidden`.
-  - Check that your user have [Organization Admin](https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles) predefined role at the Organization level.
-  -  If this is the case, try the following:
-      ```
-      gcloud auth application-default login
-      gcloud auth list # <- confirm that correct account has a star next to it
-      ```
-  - Re-run `terraform` after.
-
-- `Error: Error setting billing account "XXXXXX-XXXXXX-XXXXXX" for project "projects/some-project": googleapi: Error 400: Precondition check failed., failedPrecondition`. Most likely this is related to billing quota issue.
-  - To confirm this, try `gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX`.
-  - If output states `Cloud billing quota exceeded`, please request increase via [https://support.google.com/code/contact/billing_quota_increase](https://support.google.com/code/contact/billing_quota_increase).

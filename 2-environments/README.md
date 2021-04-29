@@ -63,6 +63,10 @@ The purpose of this step is to setup development, non-production, and production
 1. Cloud Identity / Google Workspace group for monitoring admins.
 1. Membership in the monitoring admins group for user running Terraform.
 
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
+
 ## Usage
 
 ### Deploying with Cloud Build

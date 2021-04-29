@@ -72,6 +72,10 @@ This Compute Engine instance is created using the base network from step `3-netw
 1. 3-networks executed successfully.
 1. 4-projects executed successfully.
 
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
+
 ## Usage
 
 ### Deploying with Cloud Build

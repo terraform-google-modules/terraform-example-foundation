@@ -75,9 +75,6 @@ This pipeline can be utilized for deploying resources in projects across develop
    gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"
    ```
 
-**Troubleshooting:**
-If you do not have access to run the commands above and you are in the organization admins group, you can append `--impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com` to run the command as the Terraform service account.
-
 **Note:** If you have more than one service perimeter for each environment, you can also get the values from the `restricted_service_perimeter_name` output from each of the`3-networks` environments.
 
 If you are using Cloud Build you can also search for the values in the outputs from the build logs:
@@ -100,6 +97,10 @@ gcloud builds log BUILD_ID \
 ```
 
 Change the `BRANCH_NAME` from `development` to `non-production` or `production` for the other two service perimeters.
+
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Usage
 

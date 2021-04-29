@@ -64,7 +64,15 @@ The purpose of this step is to:
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
-1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`.
+1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running
+
+```
+gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
+```
+
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Usage
 

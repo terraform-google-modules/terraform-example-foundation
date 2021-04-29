@@ -116,6 +116,7 @@ your current Jenkins manager (master) environment.
     1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
     1. Run `terraform-validator validate bootstrap.json --policy-path="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).
 1. Run `terraform apply`.
+1. Run `terraform output terraform_service_account` to get the email address of the admin. You need this address in a later procedure.
 1. Run `terraform output gcs_bucket_tfstate` to get your Google Cloud bucket
    from the previous step.
 1. Copy the backend:
@@ -123,8 +124,6 @@ your current Jenkins manager (master) environment.
    cp backend.tf.example backend.tf
    ```
 1. Update `backend.tf` with the name of your Cloud Storage bucket.
-1. Run `terraform output terraform_service_account` to get the email address of the
-   admin. You need this address in a later procedure.
 1. Re-run `terraform init`. When you're prompted, agree to copy state to
    Cloud Storage.
 1. (Optional) Run `terraform apply` to verify that state is configured

@@ -19,6 +19,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Project quota exceeded](#project-quota-exceeded)
 - [Terraform State Snapshot lock](#terraform-state-snapshot-lock)
 - [Application authenticated using end user credentials](#application-authenticated-using-end-user-credentials)
+- [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
 
 #### Project quota exceeded
 
@@ -28,7 +29,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 Error code 8, message: The project cannot be created because you have exceeded your allotted project quota
 ```
 
-**Cause**:
+**Cause:**
 
 This message means you have reached your [project creation quota](https://support.google.com/cloud/answer/6330231).
 
@@ -55,7 +56,7 @@ When running the build for the branch `production` in step 3-networks in your **
 state snapshot was created by Terraform v0.x.x, which is newer than current v0.13.6; upgrade to Terraform v0.x.x or greater to work with this state
 ```
 
-**Cause**:
+**Cause:**
 
 The manual deploy step for the shared environment in [3-networks](../3-networks#deploying-with-cloud-build) was execute with a Terraform version newer than version v0.13.6 used in the **Foundation Pipeline**.
 
@@ -96,9 +97,9 @@ We recommend configuring the billing/quota_project setting in gcloud or using a 
 For more information about service accounts and how to use them in your application, see https://cloud.google.com/docs/authentication/.
 ```
 
-**Cause**:
+**Cause:**
 
-When using application default credential in Cloud Shell a billing project is not available for APIs like `securitycenter.googleapis.com` or `accesscontextmanager.googleapis.com`.
+When using application default credentials in Cloud Shell a billing project is not available for APIs like `securitycenter.googleapis.com` or `accesscontextmanager.googleapis.com`.
 
 **Solution:**
 
@@ -118,6 +119,31 @@ you can re-run the command using impersonation or providing a billing project:
 
 If you provide a billing project, you must have the `serviceusage.services.use` permission on the billing_project.
 
+#### Cannot assign requested address error in Cloud Shell
+
+**Error message:**
+
+When using [Google Cloud Shell](https://cloud.google.com/shell/docs) to deploy the code in ths repository, you may face an error like
+
+```
+dial tcp [2607:f8b0:400c:c15::5f]:443: connect: cannot assign requested address
+```
+
+when Terraform calls the Google APIs.
+
+**Cause:**
+
+This is a [known terraform issue](https://github.com/hashicorp/terraform-provider-google/issues/6782) regrading IPv6.
+
+**Solution:**
+
+At this time the alternatives are:
+
+1. To use a [workaround](https://stackoverflow.com/a/62827358) to force Google API calls in Cloud Shell to use an IP from the `private.googleapis.com` range (199.36.153.8/30 ) or
+1. To deploy the foundation code from a local machine that supports IPv6.
+
+If you use the workaround, the API list should include the ones that are [allowed](../policy-library/policies/constraints/serviceusage_allow_basic_apis.yaml) in the terraform-example-foundation policy library.
+
 - - -
 
 ### Caller does not have permission in the Organization
@@ -128,7 +154,7 @@ If you provide a billing project, you must have the `serviceusage.services.use` 
 Error: Error when reading or editing Organization Not Found : <organization-id>: googleapi: Error 403: The caller does not have permission, forbidden
 ```
 
-**Cause**:
+**Cause:**
 
 User running Terraform is missing [Organization Administrator](https://cloud.google.com/iam/docs/understanding-roles#resource-manager-roles) predefined role at the Organization level.
 
@@ -155,7 +181,7 @@ Re-run `terraform` after.
 Error: Error setting billing account "XXXXXX-XXXXXX-XXXXXX" for project "projects/some-project": googleapi: Error 400: Precondition check failed., failedPrecondition
 ```
 
-**Cause**:
+**Cause:**
 
 Most likely this is related to a billing quota issue.
 

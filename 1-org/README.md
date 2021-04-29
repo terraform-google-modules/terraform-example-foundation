@@ -63,10 +63,12 @@ The purpose of this step is to set up top-level shared folders, monitoring and n
 3. Membership in the security admins group for the user running Terraform.
 4. Security Command Center notifications require that you choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as outlined in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center)
 
-**Note:** Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
-
 **Note:** Make sure that you use the same version of Terraform throughout this
 series, otherwise you might experience Terraform state snapshot lock errors.
+
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Usage
 

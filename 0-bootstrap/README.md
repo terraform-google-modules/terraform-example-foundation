@@ -66,8 +66,6 @@ installed:
 - [Terraform](https://www.terraform.io/downloads.html) version 0.13.6.
 - An existing project which the user has access to be used by terraform-validator.
 
-**Note:** Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
-
 **Note:** Make sure that you use the same version of Terraform throughout this
 series. Otherwise, you might experience Terraform state snapshot lock errors.
 
@@ -94,6 +92,10 @@ represented by the `org_project_creators` variable.
 For more information about the permissions that are required and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
+
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Deploying with Jenkins
 

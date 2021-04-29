@@ -70,7 +70,9 @@ The purpose of this step is to:
 gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
 ```
 
-**Note:** Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Usage
 

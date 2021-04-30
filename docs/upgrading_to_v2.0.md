@@ -16,7 +16,6 @@ breaking changes below. You can find a list of all changes in the
 [Google Container Registry](https://cloud.google.com/container-registry/docs) (GCR) to using [Google Artifact Registry](https://cloud.google.com/artifact-registry/docs). Artifact
    Registry extends the capabilities of GCR as outlined
    [here](https://cloud.google.com/artifact-registry/docs/transition/transition-from-gcr#compare).
-   The Terraform can be found in 4-projects, within the infra_pipeline module.
 -  Some [VPC firewall rules](https://cloud.google.com/vpc/docs/firewalls) have been replaced with [Hierarchical firewall policy rules](https://cloud.google.com/vpc/docs/firewall-policies), which provides the same functionality of allowing or denying connections to or from your virtual machine instances but allowing enforcement of consistent firewall policies across your organization.
 
 ## Steps to upgrade codebase

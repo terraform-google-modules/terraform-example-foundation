@@ -11,8 +11,7 @@ breaking changes below. You can find a list of all changes in the
 -  The repo now requires Terraform version 0.13 (minimum). For v1 the minimum version was
    0.12.x.
 -  V2 introduces a new alternative hub-and-spoke network architecture,
-   described in Section 7.2 of the [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf). The Terraform to build the
-   hub-and-spoke network are located in 1-org and 3-networks.
+   described in Section 7.2 of the [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf). 
 -  In V2, the infrastructure pipeline has transitioned from using 
 [Google Container Registry](https://cloud.google.com/container-registry/docs) (GCR) to using [Google Artifact Registry](https://cloud.google.com/artifact-registry/docs). Artifact
    Registry extends the capabilities of GCR as outlined

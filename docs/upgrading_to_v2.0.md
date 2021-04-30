@@ -18,8 +18,7 @@ Note: There is no in-place upgrade path from v1 to v2.
    Registry extends the capabilities of GCR as outlined
    [here](https://cloud.google.com/artifact-registry/docs/transition/transition-from-gcr#compare).
    The Terraform can be found in 4-projects, within the infra_pipeline module.
--  Normal FW rules > Hierarchical FW rules (functionality is the same,
-   construct is different)
+-  [Some Regular Firewall rules](https://cloud.google.com/vpc/docs/firewalls) have been replaced with [Hierarchical FW rules](https://cloud.google.com/vpc/docs/firewall-policies), which provides the same functionality of allowing or denying connections to or from your virtual machine instances but allowing enforcement of consistent firewall policies across your organization.
 
 ## Steps to upgrade codebase
 

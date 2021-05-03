@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.1](https://www.github.com/terraform-google-modules/terraform-example-foundation/compare/v2.0.0...v2.0.1) (2021-05-03)
+
+
+### Bug Fixes
+
+* Update bootstrap README.md steps & terraform.example.tfvars ([#470](https://www.github.com/terraform-google-modules/terraform-example-foundation/issues/470)) ([86c2547](https://www.github.com/terraform-google-modules/terraform-example-foundation/commit/86c254705664f295432915f91b38f9bde9fa2dd0))
+
 ## [2.0.0](https://www.github.com/terraform-google-modules/terraform-example-foundation/compare/v1.1.0...v2.0.0) (2021-05-01)
 
 

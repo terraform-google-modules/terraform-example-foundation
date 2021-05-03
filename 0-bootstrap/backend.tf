@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-# We suggest you to use the same region from the 0-bootstrap step
-default_region = "us-central1"
-custom_image_default_region = ""
-custom_image_project_id = ""
-custom_image_gar_repo_name = ""
+terraform {
+  backend "gcs" {
+    bucket = "UPDATE_ME"
+    prefix = "terraform/bootstrap/state"
+  }
+}

@@ -23,7 +23,7 @@ locals {
   apply_branches_regex = "^(${join("|", var.terraform_apply_branches)})$"
   image_project_id     = var.custom_image_project_id != "" ? var.custom_image_project_id : var.cloudbuild_project_id
   image_default_region = var.custom_image_default_region != "" ? var.custom_image_default_region : var.default_region
-  image_gar_repo_name  = var.custom_image_gar_repo_name != "" ? var.custom_image_gar_repo_name : "prj-tf-runners"
+  image_gar_repo_name  = var.custom_image_gar_repo_name != "" ? var.custom_image_gar_repo_name : local.gar_repo_name
 }
 
 # Create CSRs

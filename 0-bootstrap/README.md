@@ -109,6 +109,9 @@ your current Jenkins manager (master) environment.
 
 1. Go to the `0-bootstrap` folder.
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment.
+1.  ```
+   mv terraform.example.tfvars terraform.tfvars
+   ```
 1. Run `terraform init`.
 1. Run `terraform plan` and review the output.
 1. To run terraform-validator steps please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `2021-03-22`. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator`.

@@ -136,6 +136,8 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
 resource "google_artifact_registry_repository" "tf-image-repo" {
   provider = google-beta
   project  = var.cloudbuild_project_id
+  role     = "roles/artifactregistry.reader"
+  member   = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 
   location      = var.default_region
   repository_id = local.gar_repo_name

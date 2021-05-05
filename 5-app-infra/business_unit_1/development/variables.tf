@@ -14,6 +14,24 @@
  * limitations under the License.
  */
 
+ variable "custom_image_default_region" {
+  description = "Default region to create resources where applicable."
+  default     = ""
+  type        = string
+}
+
+variable "custom_image_project_id" {
+  description = "Custom project ID to use for project created."
+  default     = ""
+  type        = string
+}
+
+variable "custom_image_gar_repo_name" {
+  description = "Custom name to use for GAR repo."
+  default     = ""
+  type        = string
+}
+
 variable "project_service_account" {
   description = "Email of the service account created on step 4-projects for the business unit 1 sample base project where the GCE instance will be created"
   type        = string

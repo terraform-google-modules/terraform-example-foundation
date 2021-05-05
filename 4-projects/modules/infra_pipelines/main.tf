@@ -93,6 +93,7 @@ resource "google_cloudbuild_trigger" "main_trigger" {
     _BILLING_ID           = var.billing_account
     _DEFAULT_REGION       = var.default_region
     _GAR_REPOSITORY       = local.gar_name
+    _TERRAFORM_IMAGE      = "${local.image_default_region}-docker.pkg.dev/${local.image_project_id}/${local.image_gar_repo_name}/terraform"
     _STATE_BUCKET_NAME    = google_storage_bucket.tfstate["${each.value}-tfstate"].name
     _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts["${each.value}-ab"].name
     _TF_ACTION            = "apply"
@@ -119,6 +120,7 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
     _BILLING_ID           = var.billing_account
     _DEFAULT_REGION       = var.default_region
     _GAR_REPOSITORY       = local.gar_name
+    _TERRAFORM_IMAGE      = "${local.image_default_region}-docker.pkg.dev/${local.image_project_id}/${local.image_gar_repo_name}/terraform"
     _STATE_BUCKET_NAME    = google_storage_bucket.tfstate["${each.value}-tfstate"].name
     _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts["${each.value}-ab"].name
     _TF_ACTION            = "plan"

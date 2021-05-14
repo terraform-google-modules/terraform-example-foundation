@@ -14,9 +14,24 @@
  * limitations under the License.
  */
 
+output "image_default_region" {
+  description = "Used default region for image runner."
+  value       = local.image_default_region
+}
+
+output "image_project_id" {
+  description = "Used project ID for image runner."
+  value       = local.image_project_id
+}
+
+output "image_gar_repo_name" {
+  description = "Used name to use for GAR repo."
+  value       = local.image_gar_repo_name
+}
+
 output "tf_runner_artifact_repo" {
   description = "GAR Repo created to store runner images"
-  value       = google_artifact_registry_repository.tf-image-repo.name
+  value       = local.output_gar_repo_name
 }
 
 output "default_region" {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- variable "custom_image_default_region" {
+variable "custom_image_default_region" {
   description = "Default region to create resources where applicable."
   default     = ""
   type        = string

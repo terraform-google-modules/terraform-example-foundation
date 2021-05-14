@@ -75,9 +75,6 @@ This pipeline can be utilized for deploying resources in projects across develop
    gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"
    ```
 
-**Troubleshooting:**
-If you do not have access to run the commands above and you are in the organization admins group, you can append `--impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com` to run the command as the Terraform service account.
-
 **Note:** If you have more than one service perimeter for each environment, you can also get the values from the `restricted_service_perimeter_name` output from each of the`3-networks` environments.
 
 If you are using Cloud Build you can also search for the values in the outputs from the build logs:
@@ -101,9 +98,27 @@ gcloud builds log BUILD_ID \
 
 Change the `BRANCH_NAME` from `development` to `non-production` or `production` for the other two service perimeters.
 
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
+
 ## Usage
 
 **Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to used the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
+
+### Using a custom Terraform image in Cloud Build
+
+This step will create a Terraform image on Google Artifact Repo for the Cloud Build Pipeline that will be created in projects `prj-bu1-c-infra-pipeline` and `prj-bu2-c-infra-pipeline`.
+
+You can re-use the image created in step 0-bootstrap. For this, you need to fill the variables:
+- `custom_image_default_region`
+- `custom_image_project_id`
+- `custom_image_gar_repo_name`
+
+You can get these values from the terraform output in 0-bootstrap. The content of variables from 0-bootstrap related to the custom image are the following:
+- `custom_image_default_region` = `default_region`
+- `custom_image_project_id` = `cloudbuild_project_id`
+- `custom_image_gar_repo_name` = `tf_runner_artifact_repo`
 
 ### Deploying with Cloud Build
 
@@ -137,6 +152,8 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
 1. Rename `non-production.auto.example.tfvars` to `non-production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_n_shared_restricted`.
 1. Rename `production.auto.example.tfvars` to `production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_p_shared_restricted`.
 1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
+1. In case you want to deploy cloud build with your own custom image, you need to follow the instructions below, otherwise you can skip to the next step.
+    1. Update `shared.auto.tfvars` adding the values from your custom image on  `custom_image_default_region`, `custom_image_project_id` and `custom_image_gar_repo_name` variables.
 1. You need to manually plan and apply only once the `business_unit_1/shared` environment since `development`, `non-production`, and `production` depend on it.
     1. Run `cd ./business_unit_1/shared/`.
     1. Update `backend.tf` with your bucket name from the 0-bootstrap step.
@@ -282,7 +299,7 @@ Change the `BRANCH_NAME` from `development` to `non-production` or `production` 
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied. Environment shared must be applied first because development, non-production, and production depend on it.
 
-To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in your `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `2021-03-22` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
 
 1. Run `./tf-wrapper.sh init shared`.
 1. Run `./tf-wrapper.sh plan shared` and review output.

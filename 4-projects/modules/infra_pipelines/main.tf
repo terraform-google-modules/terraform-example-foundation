@@ -16,14 +16,16 @@
 
 locals {
   gar_repo_name        = var.gar_repo_name != "" ? var.gar_repo_name : format("%s-%s", var.project_prefix, "tf-runners")
-  gar_name             = split("/", google_artifact_registry_repository.tf-image-repo.name)[length(split("/", google_artifact_registry_repository.tf-image-repo.name)) - 1]
+  gar_name             = split("/", google_artifact_registry_repository.tf-image-repo[0].name)[length(split("/", google_artifact_registry_repository.tf-image-repo[0].name)) - 1]
   created_csrs         = toset([for repo in google_sourcerepo_repository.app_infra_repo : repo.name])
   artifact_buckets     = { for created_csr in local.created_csrs : "${created_csr}-ab" => format("%s-%s-%s", created_csr, "cloudbuild-artifacts", random_id.suffix.hex) }
   state_buckets        = { for created_csr in local.created_csrs : "${created_csr}-tfstate" => format("%s-%s-%s", created_csr, "tfstate", random_id.suffix.hex) }
   apply_branches_regex = "^(${join("|", var.terraform_apply_branches)})$"
-  image_project_id     = var.custom_image_project_id != "" ? var.custom_image_project_id : var.cloudbuild_project_id
-  image_default_region = var.custom_image_default_region != "" ? var.custom_image_default_region : var.default_region
-  image_gar_repo_name  = var.custom_image_gar_repo_name != "" ? var.custom_image_gar_repo_name : local.gar_repo_name
+  use_custom_image     = var.custom_image_project_id != "" && var.custom_image_default_region != "" && var.custom_image_gar_repo_name != "" ? true : false
+  image_project_id     = local.use_custom_image ? var.custom_image_project_id : var.cloudbuild_project_id
+  image_default_region = local.use_custom_image ? var.custom_image_default_region : var.default_region
+  image_gar_repo_name  = local.use_custom_image ? var.custom_image_gar_repo_name : local.gar_repo_name
+  output_gar_repo_name = local.use_custom_image ? local.image_gar_repo_name : google_artifact_registry_repository.tf-image-repo[0].name
 }
 
 # Create CSRs
@@ -137,6 +139,7 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
  ***********************************************/
 resource "google_artifact_registry_repository" "tf-image-repo" {
   provider = google-beta
+  count    = local.use_custom_image ? 0 : 1
   project  = var.cloudbuild_project_id
 
   location      = var.default_region
@@ -155,7 +158,7 @@ resource "null_resource" "cloudbuild_terraform_builder" {
     terraform_version_sha256sum   = var.terraform_version_sha256sum
     terraform_version             = var.terraform_version
     gar_name                      = local.gar_name
-    gar_location                  = google_artifact_registry_repository.tf-image-repo.location
+    gar_location                  = google_artifact_registry_repository.tf-image-repo[0].location
   }
 
   provisioner "local-exec" {
@@ -163,7 +166,7 @@ resource "null_resource" "cloudbuild_terraform_builder" {
       gcloud builds submit ${path.module}/cloudbuild_builder/ \
       --project ${var.cloudbuild_project_id} \
       --config=${path.module}/cloudbuild_builder/cloudbuild.yaml \
-      --substitutions=_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_TERRAFORM_VALIDATOR_RELEASE=${var.terraform_validator_release},_REGION=${google_artifact_registry_repository.tf-image-repo.location},_REPOSITORY=${local.gar_name} \
+      --substitutions=_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_TERRAFORM_VALIDATOR_RELEASE=${var.terraform_validator_release},_REGION=${google_artifact_registry_repository.tf-image-repo[0].location},_REPOSITORY=${local.gar_name} \
       --impersonate-service-account=${var.impersonate_service_account}
   EOT
   }
@@ -177,7 +180,7 @@ resource "null_resource" "cloudbuild_terraform_builder" {
  ***********************************************/
 
 resource "google_project_iam_member" "app_infra_pipeline_sa_roles" {
-  count                     = var.custom_image_project_id != "" ? 1 : 0
+  count                     = local.use_custom_image ? 1 : 0
   project                   = var.custom_image_project_id
   role                      = "roles/artifactregistry.reader"
   member                    = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
@@ -191,8 +194,8 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
   provider = google-beta
   project  = var.cloudbuild_project_id
 
-  location   = google_artifact_registry_repository.tf-image-repo.location
-  repository = google_artifact_registry_repository.tf-image-repo.name
+  location   = google_artifact_registry_repository.tf-image-repo[0].location
+  repository = google_artifact_registry_repository.tf-image-repo[0].name
   role       = "roles/artifactregistry.writer"
   member     = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 }

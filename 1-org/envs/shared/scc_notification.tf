@@ -37,7 +37,7 @@ module "scc_notification" {
 
   create_cmd_entrypoint = "gcloud"
   create_cmd_body       = <<-EOF
-    alpha scc notifications create ${var.scc_notification_name} --organization ${var.org_id} \
+    scc notifications create ${var.scc_notification_name} --organization ${var.org_id} \
     --description "SCC Notification for all active findings" \
     --pubsub-topic projects/${module.scc_notifications.project_id}/topics/${google_pubsub_topic.scc_notification_topic.name} \
     --filter "${var.scc_notification_filter}" \
@@ -47,7 +47,7 @@ EOF
 
   destroy_cmd_entrypoint = "gcloud"
   destroy_cmd_body       = <<-EOF
-  alpha scc notifications delete organizations/${var.org_id}/notificationConfigs/${var.scc_notification_name} \
+  scc notifications delete organizations/${var.org_id}/notificationConfigs/${var.scc_notification_name} \
   --impersonate-service-account ${var.terraform_service_account} \
   --project "${module.scc_notifications.project_id}" \
   --quiet

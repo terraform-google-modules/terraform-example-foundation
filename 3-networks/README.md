@@ -64,7 +64,15 @@ The purpose of this step is to:
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
-1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`.
+1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running
+
+```
+gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
+```
+
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Usage
 
@@ -264,7 +272,7 @@ We will now deploy each of our environments(development/production/non-productio
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks step
 and only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in your `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `2021-03-22` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
 
 1. Run `./tf-wrapper.sh init shared`.
 1. Run `./tf-wrapper.sh plan shared` and review output.

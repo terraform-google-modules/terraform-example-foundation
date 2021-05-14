@@ -61,9 +61,14 @@ The purpose of this step is to set up top-level shared folders, monitoring and n
 1. 0-bootstrap executed successfully.
 2. Cloud Identity / Google Workspace group for security admins.
 3. Membership in the security admins group for the user running Terraform.
+4. Security Command Center notifications require that you choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as outlined in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center)
 
-Note: Make sure that you use the same version of Terraform throughout this
+**Note:** Make sure that you use the same version of Terraform throughout this
 series, otherwise you might experience Terraform state snapshot lock errors.
+
+### Troubleshooting
+
+Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Usage
 
@@ -259,7 +264,7 @@ to run the command as the Terraform service account.
 We will now deploy our environment (production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 1-org step and only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, the latest version of `terraform-validator` must be [installed](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator) in your system and in your `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `2021-03-22` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
 
 1. Run `./tf-wrapper.sh init production`.
 1. Run `./tf-wrapper.sh plan production` and review output.

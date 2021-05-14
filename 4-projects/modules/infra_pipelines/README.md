@@ -9,6 +9,9 @@
 | cloudbuild\_apply\_filename | Path and name of Cloud Build YAML definition used for terraform apply. | `string` | `"cloudbuild-tf-apply.yaml"` | no |
 | cloudbuild\_plan\_filename | Path and name of Cloud Build YAML definition used for terraform plan. | `string` | `"cloudbuild-tf-plan.yaml"` | no |
 | cloudbuild\_project\_id | The project id where the pipelines and repos should be created | `string` | n/a | yes |
+| custom\_image\_default\_region | Default region to create resources where applicable. | `string` | `""` | no |
+| custom\_image\_gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
+| custom\_image\_project\_id | Custom project ID to use for project created. | `string` | `""` | no |
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
 | gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
 | impersonate\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
@@ -27,6 +30,9 @@
 | cloudbuild\_sa | Cloud Build service account |
 | default\_region | Default region to create resources where applicable. |
 | gar\_name | GAR Repo name created to store runner images |
+| image\_default\_region | Used default region for image runner. |
+| image\_gar\_repo\_name | Used name to use for GAR repo. |
+| image\_project\_id | Used project ID for image runner. |
 | plan\_triggers | CB plan triggers |
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |

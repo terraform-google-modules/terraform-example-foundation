@@ -187,6 +187,7 @@ the following steps:
 |------|-------------|
 | cloudbuild\_project\_id | Project where CloudBuild configuration and terraform container image will reside. |
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
+| default\_region | GAR Repo created to store runner images. |
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud/Build artifacts in CloudBuild project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for foundations pipelines in seed project. |
 | kms\_crypto\_key | KMS key created by the module. |
@@ -195,6 +196,7 @@ the following steps:
 | terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
 | terraform\_service\_account | Email for privileged service account for Terraform. |
 | terraform\_validator\_policies\_repo | Cloud Source Repository created for terraform-validator policies. |
+| tf\_runner\_artifact\_repo | GAR Repo created to store runner images. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

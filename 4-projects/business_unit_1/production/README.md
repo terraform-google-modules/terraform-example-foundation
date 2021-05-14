@@ -9,6 +9,10 @@
 | app\_infra\_pipeline\_cloudbuild\_sa | Cloud Build SA used for deploying infrastructure | `string` | n/a | yes |
 | billing\_account | The ID of the billing account to associated this project with | `string` | n/a | yes |
 | budget\_amount | The amount to use as the budget | `number` | `1000` | no |
+| custom\_image\_default\_region | Default region to create resources where applicable. | `string` | `""` | no |
+| custom\_image\_gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
+| custom\_image\_project\_id | Custom project ID to use for project created. | `string` | `""` | no |
+| default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | env\_code | A short form of the environment field | `string` | `"p"` | no |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |

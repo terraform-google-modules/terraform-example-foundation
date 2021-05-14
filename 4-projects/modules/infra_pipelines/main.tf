@@ -180,10 +180,10 @@ resource "null_resource" "cloudbuild_terraform_builder" {
  ***********************************************/
 
 resource "google_project_iam_member" "app_infra_pipeline_sa_roles" {
-  count                     = local.use_custom_image ? 1 : 0
-  project                   = var.custom_image_project_id
-  role                      = "roles/artifactregistry.reader"
-  member                    = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
+  count   = local.use_custom_image ? 1 : 0
+  project = var.custom_image_project_id
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 }
 
 /***********************************************

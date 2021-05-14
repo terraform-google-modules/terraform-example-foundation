@@ -38,30 +38,6 @@ variable "default_region" {
   default     = "us-central1"
 }
 
-variable "custom_image_default_region" {
-  description = "Default region to create resources where applicable."
-  default     = ""
-  type        = string
-}
-
-variable "custom_image_project_id" {
-  description = "Custom project ID to use for project created."
-  default     = ""
-  type        = string
-}
-
-variable "custom_image_gar_repo_name" {
-  description = "Custom name to use for GAR repo."
-  default     = ""
-  type        = string
-}
-
-variable "default_region" {
-  description = "Default region to create resources where applicable."
-  type        = string
-  default     = "us-central1"
-}
-
 variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform"
   type        = string

@@ -29,5 +29,6 @@
 | plan\_triggers | CB plan triggers |
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |
+| tf\_runner\_artifact\_repo | GAR Repo created to store runner images |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

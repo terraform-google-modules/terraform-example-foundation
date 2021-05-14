@@ -19,10 +19,10 @@ output "default_region" {
   value       = module.infra_pipelines.default_region
 }
 
-#output "tf_runner_artifact_repo" {
-#  description = "GAR Repo created to store runner images"
-#  value       = module.infra_pipelines.tf_runner_artifact_repo
-#}
+output "tf_runner_artifact_repo" {
+  description = "GAR Repo created to store runner images"
+  value       = module.infra_pipelines.tf_runner_artifact_repo
+}
 
 output "cloudbuild_project_id" {
   value = module.app_infra_cloudbuild_project.project_id

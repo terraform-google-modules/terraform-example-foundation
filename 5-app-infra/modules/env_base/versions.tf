@@ -35,4 +35,12 @@ terraform {
       version = "~> 2.3"
     }
   }
+
+  provider_meta "google" {
+    module_name = "blueprints/terraform/terraform-example-foundation:app_env_base/v1.0.0"
+  }
+
+  provider_meta "google-beta" {
+    module_name = "blueprints/terraform/terraform-example-foundation:app_env_base/v1.0.0"
+  }
 }

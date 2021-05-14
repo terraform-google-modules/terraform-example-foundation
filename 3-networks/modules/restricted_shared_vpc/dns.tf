@@ -117,6 +117,39 @@ module "restricted_gcr" {
   ]
 }
 
+/**************************************************
+  Restricted Artifact Registry DNS Zone & records.
+ **************************************************/
+
+module "restricted_pkg_dev" {
+  source      = "terraform-google-modules/cloud-dns/google"
+  version     = "~> 3.0"
+  project_id  = var.project_id
+  type        = "private"
+  name        = "dz-${var.environment_code}-shared-restricted-pkg-dev"
+  domain      = "pkg.dev."
+  description = "Private DNS zone to configure pkg.dev"
+
+  private_visibility_config_networks = [
+    module.main.network_self_link
+  ]
+
+  recordsets = [
+    {
+      name    = "*"
+      type    = "CNAME"
+      ttl     = 300
+      records = ["pkg.dev."]
+    },
+    {
+      name    = ""
+      type    = "A"
+      ttl     = 300
+      records = ["199.36.153.4", "199.36.153.5", "199.36.153.6", "199.36.153.7"]
+    },
+  ]
+}
+
 /******************************************
  Creates DNS Peering to DNS HUB
 *****************************************/

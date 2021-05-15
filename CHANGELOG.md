@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://www.github.com/terraform-google-modules/terraform-example-foundation/compare/v2.0.0...v2.1.0) (2021-05-15)
+
+
+### Features
+
+* add DNS zone for artifact registry ([#480](https://www.github.com/terraform-google-modules/terraform-example-foundation/issues/480)) ([7e9f496](https://www.github.com/terraform-google-modules/terraform-example-foundation/commit/7e9f496e49d7a725f338b9b514881d47f84a05dd))
+
+
+### Bug Fixes
+
+* Update bootstrap README.md steps & terraform.example.tfvars ([#470](https://www.github.com/terraform-google-modules/terraform-example-foundation/issues/470)) ([86c2547](https://www.github.com/terraform-google-modules/terraform-example-foundation/commit/86c254705664f295432915f91b38f9bde9fa2dd0))
+
 ## [2.0.0](https://www.github.com/terraform-google-modules/terraform-example-foundation/compare/v1.1.0...v2.0.0) (2021-05-01)
 
 

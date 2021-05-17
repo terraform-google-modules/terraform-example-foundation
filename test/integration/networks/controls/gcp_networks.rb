@@ -57,6 +57,7 @@ control 'gcp_networks' do
 
       dns_zone_googleapis = "dz-#{environment_code}-shared-#{type}-apis"
       dns_zone_gcr = "dz-#{environment_code}-shared-#{type}-gcr"
+      dns_zone_pkg_dev = "dz-#{environment_code}-shared-#{type}-pkg-dev"
       dns_zone_peering_zone = "dz-#{environment_code}-shared-#{type}-to-dns-hub"
 
       subnet_name1 = "sb-#{environment_code}-shared-#{type}-#{default_region1}"
@@ -92,6 +93,13 @@ control 'gcp_networks' do
       describe google_dns_managed_zone(
         project: projects_id[environment_code][type],
         zone: dns_zone_gcr
+      ) do
+        it { should exist }
+      end
+
+      describe google_dns_managed_zone(
+        project: projects_id[environment_code][type],
+        zone: dns_zone_pkg_dev
       ) do
         it { should exist }
       end

@@ -116,6 +116,39 @@ module "base_gcr" {
   ]
 }
 
+/***********************************************
+  Private Artifact Registry DNS Zone & records.
+ ***********************************************/
+
+module "base_pkg_dev" {
+  source      = "terraform-google-modules/cloud-dns/google"
+  version     = "~> 3.1"
+  project_id  = var.project_id
+  type        = "private"
+  name        = "dz-${var.environment_code}-shared-base-pkg-dev"
+  domain      = "pkg.dev."
+  description = "Private DNS zone to configure pkg.dev"
+
+  private_visibility_config_networks = [
+    module.main.network_self_link
+  ]
+
+  recordsets = [
+    {
+      name    = "*"
+      type    = "CNAME"
+      ttl     = 300
+      records = ["pkg.dev."]
+    },
+    {
+      name    = ""
+      type    = "A"
+      ttl     = 300
+      records = ["199.36.153.8", "199.36.153.9", "199.36.153.10", "199.36.153.11"]
+    },
+  ]
+}
+
 /******************************************
  Creates DNS Peering to DNS HUB
 *****************************************/

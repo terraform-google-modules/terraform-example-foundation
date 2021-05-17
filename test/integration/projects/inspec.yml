@@ -6,10 +6,16 @@ attributes:
   - name: shared_bu1_default_region
     required: true
     type: string
+  - name: shared_bu1_image_gar_default_region
+    required: true
+    type: string
   - name: shared_bu1_tf_runner_artifact_repo
     required: true
     type: string
   - name: shared_bu2_default_region
+    required: true
+    type: string
+  - name: shared_bu2_image_gar_default_region
     required: true
     type: string
   - name: shared_bu2_tf_runner_artifact_repo
@@ -174,6 +180,9 @@ attributes:
   - name: shared_bu1_build_project
     required: true
     type: string
+  - name: shared_bu1_image_gar_project_id
+    required: true
+    type: string
   - name: shared_bu1_cb_sa
     required: true
     type: string
@@ -193,6 +202,9 @@ attributes:
     required: true
     type: array
   - name: shared_bu2_build_project
+    required: true
+    type: string
+  - name: shared_bu2_image_gar_project_id
     required: true
     type: string
   - name: shared_bu2_cb_sa

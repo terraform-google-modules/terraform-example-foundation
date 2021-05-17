@@ -18,7 +18,7 @@ substitutions:
   _TERRAFORM_IMAGE: ${_DEFAULT_REGION}-docker.pkg.dev/${PROJECT_ID}/${_GAR_REPOSITORY}/terraform
 steps:
 - id: 'setup'
-  name: $_TERRAFORM_IMAGE 
+  name: $_TERRAFORM_IMAGE
   entrypoint: /bin/bash
   args:
   - -c

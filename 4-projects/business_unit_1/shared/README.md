@@ -26,6 +26,8 @@
 | cloudbuild\_project\_id | n/a |
 | cloudbuild\_sa | Cloud Build service account |
 | default\_region | Default region to create resources where applicable. |
+| image\_gar\_default\_region | Default region to create resources where applicable. |
+| image\_gar\_project\_id | n/a |
 | plan\_triggers | CB plan triggers |
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |

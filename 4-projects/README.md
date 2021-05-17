@@ -108,17 +108,17 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 ### Using a custom Terraform image in Cloud Build
 
-This step will create a Terraform image on Google Artifact Repo for the Cloud Build Pipeline that will be created in projects `prj-bu1-c-infra-pipeline` and `prj-bu2-c-infra-pipeline`.
+This step will create a Terraform image on Google Artifact Repo for the Cloud Build Pipeline steps. This Cloud Build Pipeline will be created in projects `prj-bu1-c-infra-pipeline` and `prj-bu2-c-infra-pipeline`.
 
-You can re-use the image created in step 0-bootstrap. For this, you need to fill the variables:
+You can also re-use the image created in step 0-bootstrap. For this, you need to fill the variables:
 - `custom_image_default_region`
 - `custom_image_project_id`
 - `custom_image_gar_repo_name`
 
-You can get these values from the terraform output in 0-bootstrap. The content of variables from 0-bootstrap related to the custom image are the following:
-- `custom_image_default_region` = `default_region`
-- `custom_image_project_id` = `cloudbuild_project_id`
-- `custom_image_gar_repo_name` = `tf_runner_artifact_repo`
+You can get these values from the terraform output in 0-bootstrap:
+- `default_region` for `custom_image_default_region`
+- `cloudbuild_project_id` for `custom_image_project_id`
+- `tf_runner_artifact_repo` for `custom_image_gar_repo_name`
 
 ### Deploying with Cloud Build
 

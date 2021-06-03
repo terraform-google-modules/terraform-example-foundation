@@ -10,6 +10,7 @@
 | cloudbuild\_plan\_filename | Path and name of Cloud Build YAML definition used for terraform plan. | `string` | `"cloudbuild-tf-plan.yaml"` | no |
 | cloudbuild\_project\_id | The project id where the pipelines and repos should be created | `string` | n/a | yes |
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
+| folders\_to\_grant\_browser\_role | List of folders to grant browser role to the cloud build service account. Used by terraform validator to able to load IAM policies. | `list(string)` | `[]` | no |
 | gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
 | impersonate\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |

@@ -95,3 +95,9 @@ variable "terraform_validator_release" {
   type        = string
   default     = "2021-03-22"
 }
+
+variable "folders_to_grant_browser_role" {
+  description = "List of folders to grant browser role to the cloud build service account. Used by terraform validator to able to load IAM policies."
+  type        = list(string)
+  default     = []
+}

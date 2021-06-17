@@ -24,8 +24,6 @@ It is a best practice to have two separate projects here (`prj-b-seed` and `prj-
 
 - **Note: these instructions do not indicate how to create a Jenkins Master.** To deploy a Jenkins Master, you should follow [Jenkins Architecture](https://www.jenkins.io/doc/book/architecting-for-scale/) recommendations.
 
-#### If you don't want to use Jenkins
-
 **If you don't have a Jenkins implementation and don't want one**, then we recommend you to [use the Cloud Build module](./README.md) instead.
 
 ## Requirements

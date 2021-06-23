@@ -28,10 +28,10 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:transitivity/v1.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:transitivity/v2.1.1"
   }
 
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:transitivity/v1.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:transitivity/v2.1.1"
   }
 }

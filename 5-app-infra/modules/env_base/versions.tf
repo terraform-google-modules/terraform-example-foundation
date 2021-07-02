@@ -37,10 +37,10 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:app_env_base/v1.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:app_env_base/v2.1.1"
   }
 
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:app_env_base/v1.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:app_env_base/v2.1.1"
   }
 }

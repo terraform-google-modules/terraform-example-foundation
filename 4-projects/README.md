@@ -67,36 +67,43 @@ This pipeline can be utilized for deploying resources in projects across develop
 1. 2-environments executed successfully.
 1. 3-networks executed successfully.
 1. Obtain the value for the `access_context_manager_policy_id` variable.
-   ```
+   
+   ```bash
    gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
    ```
+   
+1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 0.13.7 to be installed.
+
+   **Note:** Make sure that you use the same version of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+
 1. Obtain the values for the `perimeter_name` for each environment variable.
-   ```
+
+   ```bash
    gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"
    ```
 
-**Note:** If you have more than one service perimeter for each environment, you can also get the values from the `restricted_service_perimeter_name` output from each of the`3-networks` environments.
+   **Note:** If you have more than one service perimeter for each environment, you can also get the values from the `restricted_service_perimeter_name` output from each of the`3-networks` environments.
 
-If you are using Cloud Build you can also search for the values in the outputs from the build logs:
+   If you are using Cloud Build you can also search for the values in the outputs from the build logs:
 
-```console
-gcloud builds list \
- --project=YOUR_CLOUD_BUILD_PROJECT_ID \
- --filter="status=SUCCESS \
- AND source.repoSource.repoName=gcp-networks \
- AND substitutions.BRANCH_NAME=development" \
- --format="value(id)"
-```
+   ```console
+   gcloud builds list \
+     --project=YOUR_CLOUD_BUILD_PROJECT_ID \
+     --filter="status=SUCCESS \
+       AND source.repoSource.repoName=gcp-networks \
+       AND substitutions.BRANCH_NAME=development" \
+     --format="value(id)"
+   ```
 
-Use the result of this command as the `BUILD_ID` value in the next command:
+   Use the result of this command as the `BUILD_ID` value in the next command:
 
-```console
-gcloud builds log BUILD_ID \
- --project=YOUR_CLOUD_BUILD_PROJECT_ID | \
- grep "restricted_service_perimeter_name = "
-```
+   ```console
+   gcloud builds log BUILD_ID \
+     --project=YOUR_CLOUD_BUILD_PROJECT_ID | \
+     grep "restricted_service_perimeter_name = "
+   ```
 
-Change the `BRANCH_NAME` from `development` to `non-production` or `production` for the other two service perimeters.
+   Change the `BRANCH_NAME` from `development` to `non-production` or `production` for the other two service perimeters.
 
 ### Troubleshooting
 

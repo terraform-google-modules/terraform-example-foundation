@@ -66,9 +66,13 @@ The purpose of this step is to:
 1. 2-environments executed successfully.
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running
 
-```
-gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
-```
+   ```bash
+   gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
+   ```
+
+1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 0.13.7 to be installed.
+
+   **Note:** Make sure that you use the same version of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 ### Troubleshooting
 

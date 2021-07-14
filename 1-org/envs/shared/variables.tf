@@ -291,3 +291,57 @@ variable "folder_prefix" {
   type        = string
   default     = "fldr"
 }
+
+variable "gcp_platform_viewer" {
+  description = "G Suite or Cloud Identity group that have the ability to view resource information across the Google Cloud organization."
+  type        = string
+  default     = null
+}
+
+variable "gcp_security_reviewer" {
+  description = "G Suite or Cloud Identity group that members are part of the security team responsible for reviewing cloud security."
+  type        = string
+  default     = null
+}
+
+variable "gcp_network_viewer" {
+  description = "G Suite or Cloud Identity group that members are part of the networking team and review network configurations"
+  type        = string
+  default     = null
+}
+
+variable "gcp_scc_admin" {
+  description = "G Suite or Cloud Identity group that can administer Security Command Center."
+  type        = string
+  default     = null
+}
+
+variable "gcp_audit_viewer" {
+  description = "Members are part of an audit team and view audit logs in the logging project."
+  type        = string
+  default     = null
+}
+
+variable "gcp_global_secrets_admin" {
+  description = "G Suite or Cloud Identity group that members are responsible for putting secrets into Secrets Manager."
+  type        = string
+  default     = null
+}
+
+variable "gcp_org_admin_user" {
+  description = "Identity that has organization administrator permissions."
+  type        = string
+  default     = null
+}
+
+variable "gcp_billing_creator_user" {
+  description = "Identity that can create billing accounts."
+  type        = string
+  default     = null
+}
+
+variable "gcp_billing_admin_user" {
+  description = "Identity that has billing administrator permissions"
+  type        = string
+  default     = null
+}

@@ -21,6 +21,15 @@
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | enable\_os\_login\_policy | Enable OS Login Organization Policy. | `bool` | `false` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
+| gcp\_audit\_viewer | Members are part of an audit team and view audit logs in the logging project. | `string` | `null` | no |
+| gcp\_billing\_admin\_user | Identity that has billing administrator permissions | `string` | `null` | no |
+| gcp\_billing\_creator\_user | Identity that can create billing accounts. | `string` | `null` | no |
+| gcp\_global\_secrets\_admin | G Suite or Cloud Identity group that members are responsible for putting secrets into Secrets Manager. | `string` | `null` | no |
+| gcp\_network\_viewer | G Suite or Cloud Identity group that members are part of the networking team and review network configurations | `string` | `null` | no |
+| gcp\_org\_admin\_user | Identity that has organization administrator permissions. | `string` | `null` | no |
+| gcp\_platform\_viewer | G Suite or Cloud Identity group that have the ability to view resource information across the Google Cloud organization. | `string` | `null` | no |
+| gcp\_scc\_admin | G Suite or Cloud Identity group that can administer Security Command Center. | `string` | `null` | no |
+| gcp\_security\_reviewer | G Suite or Cloud Identity group that members are part of the security team responsible for reviewing cloud security. | `string` | `null` | no |
 | interconnect\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the Dedicated Interconnect project. | `string` | `null` | no |
 | interconnect\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the Dedicated Interconnect project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | interconnect\_project\_budget\_amount | The amount to use as the budget for the Dedicated Interconnect project. | `number` | `1000` | no |

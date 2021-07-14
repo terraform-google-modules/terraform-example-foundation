@@ -15,25 +15,25 @@
  */
 
 variable "custom_image_default_region" {
-  description = "Default region to create resources where applicable."
+  description = "Custom image region."
   default     = ""
   type        = string
 }
 
 variable "custom_image_project_id" {
-  description = "Custom project ID to use for project created."
+  description = "Custom image Project ID."
   default     = ""
   type        = string
 }
 
 variable "custom_image_gar_repo_name" {
-  description = "Custom name to use for GAR repo."
+  description = "Custom GAR repo name."
   default     = ""
   type        = string
 }
 
 variable "environment" {
-  description = "The environment the single project belongs to"
+  description = "The environment the single project belongs to."
   type        = string
 }
 
@@ -43,23 +43,23 @@ variable "vpc_type" {
 }
 
 variable "region" {
-  description = "The GCP region to create and test resources in"
+  description = "The GCP region to create and test resources in."
   type        = string
   default     = "us-central1"
 }
 
 variable "num_instances" {
-  description = "Number of instances to create"
+  description = "Number of instances to create."
   type        = number
 }
 
 variable "machine_type" {
-  description = "Machine type to create, e.g. n1-standard-1"
+  description = "Machine type to create, e.g. n1-standard-1."
   default     = "f1-micro"
 }
 
 variable "hostname" {
-  description = "Hostname of instances"
+  description = "Hostname of instances."
   default     = "example-app"
 }
 
@@ -73,12 +73,12 @@ variable "service_account" {
 }
 
 variable "folder_id" {
-  description = "The folder id where project will be created"
+  description = "The folder id where project will be created."
   type        = string
 }
 
 variable "business_code" {
-  description = "The code that describes which business unit owns the project"
+  description = "The code that describes which business unit owns the project."
   type        = string
   default     = "abcd"
 }

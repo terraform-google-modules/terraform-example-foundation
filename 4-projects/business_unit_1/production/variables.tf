@@ -15,19 +15,19 @@
  */
 
 variable "custom_image_default_region" {
-  description = "Default region to create resources where applicable."
+  description = "Custom image region."
   default     = ""
   type        = string
 }
 
 variable "custom_image_project_id" {
-  description = "Custom project ID to use for project created."
+  description = "Custom image Project ID."
   default     = ""
   type        = string
 }
 
 variable "custom_image_gar_repo_name" {
-  description = "Custom name to use for GAR repo."
+  description = "Custom GAR repo name."
   default     = ""
   type        = string
 }
@@ -39,22 +39,22 @@ variable "default_region" {
 }
 
 variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform"
+  description = "Service account email of the account to impersonate to run Terraform."
   type        = string
 }
 
 variable "org_id" {
-  description = "The organization id for the associated services"
+  description = "The organization id for the associated services."
   type        = string
 }
 
 variable "billing_account" {
-  description = "The ID of the billing account to associated this project with"
+  description = "The ID of the billing account to associated this project with."
   type        = string
 }
 
 variable "env_code" {
-  description = "A short form of the environment field"
+  description = "A short form of the environment field."
   type        = string
   default     = "p"
 }
@@ -100,19 +100,19 @@ variable "windows_activation_enabled" {
 }
 
 variable "alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded"
+  description = "A list of percentages of the budget to alert on when threshold is exceeded."
   type        = list(number)
   default     = [0.5, 0.75, 0.9, 0.95]
 }
 
 variable "alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`"
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`."
   type        = string
   default     = null
 }
 
 variable "budget_amount" {
-  description = "The amount to use as the budget"
+  description = "The amount to use as the budget."
   type        = number
   default     = 1000
 }
@@ -136,7 +136,7 @@ variable "enable_hub_and_spoke" {
 }
 
 variable "app_infra_pipeline_cloudbuild_sa" {
-  description = "Cloud Build SA used for deploying infrastructure"
+  description = "Cloud Build SA used for deploying infrastructure."
   type        = string
 }
 
@@ -147,37 +147,37 @@ variable "secrets_prj_suffix" {
 }
 
 variable "location_kms" {
-  description = "Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket)"
+  description = "Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket)."
   type        = string
   default     = "us"
 }
 
 variable "location_gcs" {
-  description = "Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring)"
+  description = "Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring)."
   type        = string
   default     = "US"
 }
 
 variable "keyring_name" {
-  description = "Name to be used for KMS Keyring"
+  description = "Name to be used for KMS Keyring."
   type        = string
   default     = "sample-keyring"
 }
 
 variable "key_name" {
-  description = "Name to be used for KMS Key"
+  description = "Name to be used for KMS Key."
   type        = string
   default     = "crypto-key-example"
 }
 
 variable "key_rotation_period" {
-  description = "Rotation period in seconds to be used for KMS Key"
+  description = "Rotation period in seconds to be used for KMS Key."
   type        = string
   default     = "7776000s"
 }
 
 variable "gcs_bucket_prefix" {
-  description = "Name prefix to be used for GCS Bucket"
+  description = "Name prefix to be used for GCS Bucket."
   type        = string
   default     = "cmek-encrypted-bucket"
 }

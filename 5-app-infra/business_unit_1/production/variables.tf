@@ -15,30 +15,30 @@
  */
 
 variable "custom_image_default_region" {
-  description = "Default region to create resources where applicable."
+  description = "Custom image region."
   default     = ""
   type        = string
 }
 
 variable "custom_image_project_id" {
-  description = "Custom project ID to use for project created."
+  description = "Custom image Project ID."
   default     = ""
   type        = string
 }
 
 variable "custom_image_gar_repo_name" {
-  description = "Custom name to use for GAR repo."
+  description = "Custom GAR repo name."
   default     = ""
   type        = string
 }
 
 variable "project_service_account" {
-  description = "Email of the service account created on step 4-projects for the business unit 1 sample base project where the GCE instance will be created"
+  description = "Email of the service account created on step 4-projects for the business unit 1 sample base project where the GCE instance will be created."
   type        = string
 }
 
 variable "org_id" {
-  description = "The organization id for the associated services"
+  description = "The organization id for the associated services."
   type        = string
 }
 

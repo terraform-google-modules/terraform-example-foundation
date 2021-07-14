@@ -15,19 +15,19 @@
  */
 
 variable "custom_image_default_region" {
-  description = "Default region to create resources where applicable."
+  description = "Custom image region."
   default     = ""
   type        = string
 }
 
 variable "custom_image_project_id" {
-  description = "Custom project ID to use for project created."
+  description = "Custom image Project ID."
   default     = ""
   type        = string
 }
 
 variable "custom_image_gar_repo_name" {
-  description = "Custom name to use for GAR repo."
+  description = "Custom GAR repo name."
   default     = ""
   type        = string
 }
@@ -39,17 +39,17 @@ variable "default_region" {
 }
 
 variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform"
+  description = "Service account email of the account to impersonate to run Terraform."
   type        = string
 }
 
 variable "org_id" {
-  description = "The organization id for the associated services"
+  description = "The organization id for the associated services."
   type        = string
 }
 
 variable "billing_account" {
-  description = "The ID of the billing account to associated this project with"
+  description = "The ID of the billing account to associated this project with."
   type        = string
 }
 
@@ -60,19 +60,19 @@ variable "parent_folder" {
 }
 
 variable "alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded"
+  description = "A list of percentages of the budget to alert on when threshold is exceeded."
   type        = list(number)
   default     = [0.5, 0.75, 0.9, 0.95]
 }
 
 variable "alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`"
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`."
   type        = string
   default     = null
 }
 
 variable "budget_amount" {
-  description = "The amount to use as the budget"
+  description = "The amount to use as the budget."
   type        = number
   default     = 1000
 }

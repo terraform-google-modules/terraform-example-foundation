@@ -15,25 +15,25 @@
  */
 
 variable "custom_image_default_region" {
-  description = "Default region to create resources where applicable."
+  description = "Custom image region."
   default     = ""
   type        = string
 }
 
 variable "custom_image_project_id" {
-  description = "Custom project ID to use for project created."
+  description = "Custom image Project ID."
   default     = ""
   type        = string
 }
 
 variable "custom_image_gar_repo_name" {
-  description = "Custom name to use for GAR repo."
+  description = "Custom GAR repo name."
   default     = ""
   type        = string
 }
 
 variable "impersonate_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform"
+  description = "Service account email of the account to impersonate to run Terraform."
   type        = string
 }
 
@@ -55,22 +55,22 @@ variable "project_prefix" {
 }
 
 variable "cloudbuild_project_id" {
-  description = "The project id where the pipelines and repos should be created"
+  description = "The project id where the pipelines and repos should be created."
   type        = string
 }
 
 variable "billing_account" {
-  description = "The ID of the billing account to associated this project with"
+  description = "The ID of the billing account to associated this project with."
   type        = string
 }
 
 variable "app_infra_repos" {
-  description = "A list of Cloud Source Repos to be created to hold app infra Terraform configs"
+  description = "A list of Cloud Source Repos to be created to hold app infra Terraform configs."
   type        = list(string)
 }
 
 variable "bucket_region" {
-  description = "Region to create GCS buckets for tfstate and Cloud Build artifacts"
+  description = "Region to create GCS buckets for tfstate and Cloud Build artifacts."
   type        = string
   default     = "us-central1"
 }

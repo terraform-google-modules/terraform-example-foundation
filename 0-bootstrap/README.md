@@ -63,7 +63,7 @@ To run the commands described in this document, you need to have the following
 installed:
 
 - The [Google Cloud SDK](https://cloud.google.com/sdk/install) version 319.0.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 0.13.6.
+- [Terraform](https://www.terraform.io/downloads.html) version 0.13.7.
 - An existing project which the user has access to be used by terraform-validator.
 
 **Note:** Make sure that you use the same version of Terraform throughout this
@@ -108,11 +108,10 @@ your current Jenkins manager (master) environment.
 ## Deploying with Cloud Build
 
 1. Go to the `0-bootstrap` folder.
-1. Copy the `tfvars` file:
-   ```
-   cp terraform.example.tfvars terraform.tfvars
-   ```
-1. Update the `terraform.tfvars` file with values from your environment.
+1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
+    ```
+    mv terraform.example.tfvars terraform.tfvars
+    ```
 1. Run `terraform init`.
 1. Run `terraform plan` and review the output.
 1. To run terraform-validator steps please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `2021-03-22`. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator`.
@@ -120,15 +119,13 @@ your current Jenkins manager (master) environment.
     1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
     1. Run `terraform-validator validate bootstrap.json --policy-path="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).
 1. Run `terraform apply`.
-1. Run `terraform output gcs_bucket_tfstate` to get your Google Cloud bucket
-   from the previous step.
+1. Run `terraform output terraform_service_account` to get the email address of the admin. You need this address in a later procedure.
+1. Run `terraform output gcs_bucket_tfstate` to get your Google Cloud bucket name from Terraform's state.
 1. Copy the backend:
    ```
    cp backend.tf.example backend.tf
    ```
 1. Update `backend.tf` with the name of your Cloud Storage bucket.
-1. Run `terraform output terraform_service_account` to get the email address of the
-   admin. You need this address in a later procedure.
 1. Re-run `terraform init`. When you're prompted, agree to copy state to
    Cloud Storage.
 1. (Optional) Run `terraform apply` to verify that state is configured

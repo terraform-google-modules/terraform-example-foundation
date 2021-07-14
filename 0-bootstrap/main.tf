@@ -118,8 +118,8 @@ module "cloudbuild_bootstrap" {
   project_prefix              = var.project_prefix
   cloud_source_repos          = var.cloud_source_repos
   terraform_validator_release = "2021-03-22"
-  terraform_version           = "0.13.6"
-  terraform_version_sha256sum = "55f2db00b05675026be9c898bdd3e8230ff0c5c78dd12d743ca38032092abfc9"
+  terraform_version           = "0.13.7"
+  terraform_version_sha256sum = "4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"
 
   activate_apis = [
     "serviceusage.googleapis.com",

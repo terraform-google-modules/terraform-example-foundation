@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+output "default_region" {
+  description = "GAR Repo created to store runner images."
+  value       = var.default_region
+}
+
 output "seed_project_id" {
   description = "Project where service accounts and core APIs will be enabled."
   value       = module.seed_bootstrap.seed_project_id
@@ -41,6 +46,11 @@ output "gcs_bucket_tfstate" {
 output "cloudbuild_project_id" {
   description = "Project where CloudBuild configuration and terraform container image will reside."
   value       = module.cloudbuild_bootstrap.cloudbuild_project_id
+}
+
+output "tf_runner_artifact_repo" {
+  description = "GAR Repo created to store runner images."
+  value       = module.cloudbuild_bootstrap.tf_runner_artifact_repo
 }
 
 output "gcs_bucket_cloudbuild_artifacts" {

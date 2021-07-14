@@ -21,6 +21,11 @@ locals {
   artifact_buckets     = { for created_csr in local.created_csrs : "${created_csr}-ab" => format("%s-%s-%s", created_csr, "cloudbuild-artifacts", random_id.suffix.hex) }
   state_buckets        = { for created_csr in local.created_csrs : "${created_csr}-tfstate" => format("%s-%s-%s", created_csr, "tfstate", random_id.suffix.hex) }
   apply_branches_regex = "^(${join("|", var.terraform_apply_branches)})$"
+  use_custom_image     = var.custom_image_project_id != "" && var.custom_image_default_region != "" && var.custom_image_gar_repo_name != "" ? true : false
+  image_project_id     = local.use_custom_image ? var.custom_image_project_id : var.cloudbuild_project_id
+  image_default_region = local.use_custom_image ? var.custom_image_default_region : var.default_region
+  image_gar_repo_name  = local.use_custom_image ? var.custom_image_gar_repo_name : local.gar_repo_name
+  output_gar_repo_name = local.use_custom_image ? local.image_gar_repo_name : google_artifact_registry_repository.tf-image-repo.name
 }
 
 # Create CSRs
@@ -90,6 +95,7 @@ resource "google_cloudbuild_trigger" "main_trigger" {
     _BILLING_ID           = var.billing_account
     _DEFAULT_REGION       = var.default_region
     _GAR_REPOSITORY       = local.gar_name
+    _TERRAFORM_IMAGE      = "${local.image_default_region}-docker.pkg.dev/${local.image_project_id}/${local.image_gar_repo_name}/terraform"
     _STATE_BUCKET_NAME    = google_storage_bucket.tfstate["${each.value}-tfstate"].name
     _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts["${each.value}-ab"].name
     _TF_ACTION            = "apply"
@@ -116,6 +122,7 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
     _BILLING_ID           = var.billing_account
     _DEFAULT_REGION       = var.default_region
     _GAR_REPOSITORY       = local.gar_name
+    _TERRAFORM_IMAGE      = "${local.image_default_region}-docker.pkg.dev/${local.image_project_id}/${local.image_gar_repo_name}/terraform"
     _STATE_BUCKET_NAME    = google_storage_bucket.tfstate["${each.value}-tfstate"].name
     _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts["${each.value}-ab"].name
     _TF_ACTION            = "plan"
@@ -165,6 +172,17 @@ resource "null_resource" "cloudbuild_terraform_builder" {
   depends_on = [
     google_artifact_registry_repository_iam_member.terraform-image-iam
   ]
+}
+
+/***********************************************
+ Cloud Build - Terraform Custom Image
+ ***********************************************/
+
+resource "google_project_iam_member" "app_infra_pipeline_sa_roles" {
+  count   = local.use_custom_image ? 1 : 0
+  project = var.custom_image_project_id
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 }
 
 /***********************************************

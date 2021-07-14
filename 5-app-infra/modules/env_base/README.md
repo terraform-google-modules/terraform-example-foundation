@@ -4,6 +4,9 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | business\_code | The code that describes which business unit owns the project | `string` | `"abcd"` | no |
+| custom\_image\_default\_region | Default region to create resources where applicable. | `string` | `""` | no |
+| custom\_image\_gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
+| custom\_image\_project\_id | Custom project ID to use for project created. | `string` | `""` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | folder\_id | The folder id where project will be created | `string` | n/a | yes |
 | hostname | Hostname of instances | `string` | `"example-app"` | no |

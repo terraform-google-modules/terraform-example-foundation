@@ -113,6 +113,20 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 **Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to used the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 
+### Using a custom Terraform image in Cloud Build
+
+This step will create a Terraform image on Google Artifact Repo for the Cloud Build Pipeline steps. This Cloud Build Pipeline will be created in projects `prj-bu1-c-infra-pipeline` and `prj-bu2-c-infra-pipeline`.
+
+You can also re-use the image created in step 0-bootstrap. For this, you need to fill the variables:
+- `custom_image_default_region`
+- `custom_image_project_id`
+- `custom_image_gar_repo_name`
+
+You can get these values from the terraform output in 0-bootstrap:
+- `default_region` for `custom_image_default_region`
+- `cloudbuild_project_id` for `custom_image_project_id`
+- `tf_runner_artifact_repo` for `custom_image_gar_repo_name`
+
 ### Deploying with Cloud Build
 
 1. Clone repo.
@@ -145,6 +159,8 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 1. Rename `non-production.auto.example.tfvars` to `non-production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_n_shared_restricted`.
 1. Rename `production.auto.example.tfvars` to `production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_p_shared_restricted`.
 1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
+1. In case you want to deploy cloud build with your own custom image, you need to follow the instructions below, otherwise you can skip to the next step.
+    1. Update `shared.auto.tfvars` adding the values from your custom image on  `custom_image_default_region`, `custom_image_project_id` and `custom_image_gar_repo_name` variables.
 1. You need to manually plan and apply only once the `business_unit_1/shared` environment since `development`, `non-production`, and `production` depend on it.
     1. Run `cd ./business_unit_1/shared/`.
     1. Update `backend.tf` with your bucket name from the 0-bootstrap step.

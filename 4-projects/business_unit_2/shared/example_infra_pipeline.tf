@@ -46,6 +46,9 @@ module "infra_pipelines" {
   source                      = "../../modules/infra_pipelines"
   impersonate_service_account = var.terraform_service_account
   cloudbuild_project_id       = module.app_infra_cloudbuild_project.project_id
+  custom_image_default_region = var.custom_image_default_region
+  custom_image_project_id     = var.custom_image_project_id
+  custom_image_gar_repo_name  = var.custom_image_gar_repo_name
   project_prefix              = var.project_prefix
   billing_account             = var.billing_account
   default_region              = var.default_region

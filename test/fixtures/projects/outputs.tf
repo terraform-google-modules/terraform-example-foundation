@@ -19,6 +19,11 @@ output "shared_bu1_default_region" {
   value       = module.bu1_shared.default_region
 }
 
+output "shared_bu1_image_gar_default_region" {
+  description = "Default region to create resources where applicable."
+  value       = module.bu1_shared.image_gar_default_region
+}
+
 output "shared_bu1_tf_runner_artifact_repo" {
   description = "GAR Repo created to store runner images"
   value       = module.bu1_shared.tf_runner_artifact_repo
@@ -57,6 +62,11 @@ output "dev_bu1_project_restricted_number" {
 output "shared_bu2_default_region" {
   description = "Default region to create resources where applicable."
   value       = module.bu2_shared.default_region
+}
+
+output "shared_bu2_image_gar_default_region" {
+  description = "Default region to create resources where applicable."
+  value       = module.bu2_shared.image_gar_default_region
 }
 
 output "shared_bu2_tf_runner_artifact_repo" {
@@ -289,6 +299,11 @@ output "shared_bu1_build_project" {
   value       = module.bu1_shared.cloudbuild_project_id
 }
 
+output "shared_bu1_image_gar_project_id" {
+  description = "Shared custom BU1 Cloud Build project"
+  value       = module.bu1_shared.image_gar_project_id
+}
+
 output "shared_bu1_cb_sa" {
   description = "Shared BU1 Cloud Build SA"
   value       = module.bu1_shared.cloudbuild_sa
@@ -322,6 +337,11 @@ output "shared_bu1_apply_triggers" {
 output "shared_bu2_build_project" {
   description = "Shared bu2 Cloud Build project"
   value       = module.bu2_shared.cloudbuild_project_id
+}
+
+output "shared_bu2_image_gar_project_id" {
+  description = "Shared custom bu2 Cloud Build project"
+  value       = module.bu2_shared.image_gar_project_id
 }
 
 output "shared_bu2_cb_sa" {

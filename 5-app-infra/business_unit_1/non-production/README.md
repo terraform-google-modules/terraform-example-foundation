@@ -3,6 +3,9 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| custom\_image\_default\_region | Default region to create resources where applicable. | `string` | `""` | no |
+| custom\_image\_gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
+| custom\_image\_project\_id | Custom project ID to use for project created. | `string` | `""` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | n/a | yes |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |

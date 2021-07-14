@@ -82,11 +82,14 @@ shared_bu2_plan_triggers = attribute('shared_bu2_plan_triggers')
 shared_bu2_apply_triggers = attribute('shared_bu2_apply_triggers')
 
 shared_bu1_default_region = attribute('shared_bu1_default_region')
+shared_bu1_image_gar_default_region = attribute('shared_bu1_image_gar_default_region')
 shared_bu1_tf_runner_artifact_repo = attribute('shared_bu1_tf_runner_artifact_repo')
 shared_bu1_build_project = attribute('shared_bu1_build_project')
-shared_bu2_default_region = attribute('shared_bu2_default_region')
+shared_bu1_image_gar_project_id = attribute('shared_bu1_image_gar_project_id')
+shared_bu2_image_gar_default_region = attribute('shared_bu2_image_gar_default_region')
 shared_bu2_tf_runner_artifact_repo = attribute('shared_bu2_tf_runner_artifact_repo')
 shared_bu2_build_project = attribute('shared_bu2_build_project')
+shared_bu2_image_gar_project_id = attribute('shared_bu2_image_gar_project_id')
 
 environment_codes = %w[d n p]
 
@@ -151,14 +154,14 @@ peering_networks = {
 
 artifact_register = {
   'bu1' => {
-    'default_region' => shared_bu1_default_region,
+    'image_gar_default_region' => shared_bu1_image_gar_default_region,
     'tf_runner_artifact_repo' => shared_bu1_tf_runner_artifact_repo,
-    'project_id' => shared_bu1_build_project
+    'image_gar_project_id' => shared_bu1_image_gar_project_id
   },
   'bu2' => {
-    'default_region' => shared_bu2_default_region,
+    'image_gar_default_region' => shared_bu2_image_gar_default_region,
     'tf_runner_artifact_repo' => shared_bu2_tf_runner_artifact_repo,
-    'project_id' => shared_bu2_build_project
+    'image_gar_project_id' => shared_bu2_image_gar_project_id
   },
 }
 
@@ -347,7 +350,7 @@ control 'gcloud-projects' do
     end
   end
   business_units.each do |business_unit|
-    describe command("gcloud artifacts repositories describe #{artifact_register[business_unit]['tf_runner_artifact_repo']} --project=#{artifact_register[business_unit]['project_id']} --location=#{artifact_register[business_unit]['default_region']} --format=json") do
+    describe command("gcloud artifacts repositories describe #{artifact_register[business_unit]['tf_runner_artifact_repo']} --project=#{artifact_register[business_unit]['image_gar_project_id']} --location=#{artifact_register[business_unit]['image_gar_default_region']} --format=json") do
       its(:exit_status) { should eq 0 }
 
       let(:data) do
@@ -358,13 +361,13 @@ control 'gcloud-projects' do
         end
       end
 
-      describe "Artifact Repository #{artifact_register[business_unit]['tf_runner_artifact_repo']} in #{artifact_register[business_unit]['project_id']}" do
+      describe "Artifact Repository #{artifact_register[business_unit]['tf_runner_artifact_repo']} in #{artifact_register[business_unit]['image_gar_project_id']}" do
         it 'should exist' do
           expect(data).to_not be_empty
         end
 
-        it "Artifact repo name should be projects/#{artifact_register[business_unit]['project_id']}/locations/#{artifact_register[business_unit]['default_region']}/repositories/#{artifact_register[business_unit]['tf_runner_artifact_repo']}" do
-          expect(data['name']).to eq "projects/#{artifact_register[business_unit]['project_id']}/locations/#{artifact_register[business_unit]['default_region']}/repositories/#{artifact_register[business_unit]['tf_runner_artifact_repo']}"
+        it "Artifact repo name should be projects/#{artifact_register[business_unit]['image_gar_project_id']}/locations/#{artifact_register[business_unit]['image_gar_default_region']}/repositories/#{artifact_register[business_unit]['tf_runner_artifact_repo']}" do
+          expect(data['name']).to eq "projects/#{artifact_register[business_unit]['image_gar_project_id']}/locations/#{artifact_register[business_unit]['image_gar_default_region']}/repositories/#{artifact_register[business_unit]['tf_runner_artifact_repo']}"
         end
       end
     end

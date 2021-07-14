@@ -15,9 +15,10 @@
 timeout: 1200s
 substitutions:
   _POLICY_REPO: '/workspace/policy-library' # add path to policies here https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator
+  _TERRAFORM_IMAGE: ${_DEFAULT_REGION}-docker.pkg.dev/${PROJECT_ID}/${_GAR_REPOSITORY}/terraform
 steps:
 - id: 'setup'
-  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
+  name: $_TERRAFORM_IMAGE
   entrypoint: /bin/bash
   args:
   - -c
@@ -32,7 +33,7 @@ steps:
 
 # [START tf-plan_validate_all]
 - id: 'tf plan validate all'
-  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
+  name: $_TERRAFORM_IMAGE
   entrypoint: /bin/bash
   args:
   - -c

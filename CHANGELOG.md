@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.1.2](https://www.github.com/terraform-google-modules/terraform-example-foundation/compare/v2.1.1...v2.1.2) (2021-07-14)
+
+
+### Bug Fixes
+
+* added link to FAQ in 1-org ([#497](https://www.github.com/terraform-google-modules/terraform-example-foundation/issues/497)) ([a266e02](https://www.github.com/terraform-google-modules/terraform-example-foundation/commit/a266e0275604ea4aff87a64c06ed100f070db520))
+* Update project-factory module to 10.1 ([#499](https://www.github.com/terraform-google-modules/terraform-example-foundation/issues/499)) ([f46e2e8](https://www.github.com/terraform-google-modules/terraform-example-foundation/commit/f46e2e86d18b847bd08497551b58da4794137e4f))
+
 ### [2.1.1](https://www.github.com/terraform-google-modules/terraform-example-foundation/compare/v2.1.0...v2.1.1) (2021-06-23)
 
 

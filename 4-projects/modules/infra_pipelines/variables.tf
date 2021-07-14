@@ -99,17 +99,23 @@ variable "cloudbuild_apply_filename" {
 variable "terraform_version" {
   description = "Default terraform version."
   type        = string
-  default     = "0.13.6"
+  default     = "0.13.7"
 }
 
 variable "terraform_version_sha256sum" {
   description = "sha256sum for default terraform version."
   type        = string
-  default     = "55f2db00b05675026be9c898bdd3e8230ff0c5c78dd12d743ca38032092abfc9"
+  default     = "4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"
 }
 
 variable "terraform_validator_release" {
   description = "Default terraform-validator release."
   type        = string
   default     = "2021-03-22"
+}
+
+variable "folders_to_grant_browser_role" {
+  description = "List of folders to grant browser role to the cloud build service account. Used by terraform validator to able to load IAM policies."
+  type        = list(string)
+  default     = []
 }

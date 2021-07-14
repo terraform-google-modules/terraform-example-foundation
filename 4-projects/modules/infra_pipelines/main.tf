@@ -198,3 +198,11 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
   role       = "roles/artifactregistry.writer"
   member     = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 }
+
+resource "google_folder_iam_member" "browser_cloud_build" {
+  for_each = toset(var.folders_to_grant_browser_role)
+
+  folder = each.value
+  role   = "roles/browser"
+  member = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
+}

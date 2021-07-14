@@ -63,11 +63,10 @@ To run the commands described in this document, you need to have the following
 installed:
 
 - The [Google Cloud SDK](https://cloud.google.com/sdk/install) version 319.0.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 0.13.6.
+- [Terraform](https://www.terraform.io/downloads.html) version 0.13.7.
 - An existing project which the user has access to be used by terraform-validator.
 
-**Note:** Make sure that you use the same version of Terraform throughout this
-series. Otherwise, you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use the same version of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 Also make sure that you've done the following:
 
@@ -78,7 +77,7 @@ Also make sure that you've done the following:
 1. Created Cloud Identity or Google Workspace (formerly G Suite) groups for
    organization and billing admins.
 1. Added the user who will use Terraform to the `group_org_admins` group.
-   They must be in this group or they won't have
+   They must be in this group, or they won't have
    `roles/resourcemanager.projectCreator` access.
 1. For the user who will run the procedures in this document, granted the
    following roles:
@@ -89,7 +88,7 @@ Also make sure that you've done the following:
 
 If other users need to be able to run these procedures, add them to the group
 represented by the `org_project_creators` variable.
-For more information about the permissions that are required and the resources
+For more information about the permissions that are required, and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 

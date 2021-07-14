@@ -31,4 +31,9 @@ terraform {
       version = "~> 2.3"
     }
   }
+
+  provider_meta "google" {
+    module_name = "blueprints/terraform/terraform-example-foundation:bootstrap/v2.1.1"
+  }
+
 }

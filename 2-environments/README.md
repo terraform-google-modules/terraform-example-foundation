@@ -75,7 +75,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
    ```
    gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID
    ```
-1. Navigate into the repo and change to the non-master branch.
+1. Navigate into the repo and change to the non-master branch. All subsequent
+   steps assume your are running them from the gcp-environments directory. If
+   you run them from another directory, adjust your copy paths accordingingly.
    ```
    cd gcp-environments
    git checkout -b plan
@@ -133,7 +135,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
    ```
    git clone <YOUR_NEW_REPO-2-environments>
    ```
-1. Navigate into the repo and change to a non-production branch.
+1. Navigate into the repo and change to a non-production branch. All subsequent 
+   steps assume your are running them from the gcp-environments directory. If 
+   you run them from another directory, adjust your copy paths accordingingly.
    ```
    cd YOUR_NEW_REPO_CLONE-2-environments
    git checkout -b plan

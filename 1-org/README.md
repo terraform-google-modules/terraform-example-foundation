@@ -64,8 +64,7 @@ The purpose of this step is to set up top-level shared folders, monitoring and n
 4. Security Command Center notifications require that you choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as outlined in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center)
 5. Ensure that you have requested for sufficient projects quota, as the Terraform scripts will create multiple projects from this point onwards. For more information, please [see the FAQ](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/FAQ.md).
 
-**Note:** Make sure that you use the same version of Terraform throughout this
-series, otherwise you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use the same version of Terraform throughout this series, otherwise you might experience Terraform state snapshot lock errors.
 
 ### Troubleshooting
 
@@ -253,7 +252,7 @@ to run the command as the Terraform service account.
 1. Run `chmod 755 ./tf-wrapper.sh`
 1. Change into 1-org/envs/shared/ folder.
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap.
-1. Obtain your bucket name by running the following command in the 0-bootstap folder.
+1. Obtain your bucket name by running the following command in the 0-bootstrap folder.
    ```
    terraform output gcs_bucket_tfstate
    ```

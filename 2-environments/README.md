@@ -205,7 +205,7 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
    ```
-You can run `terraform output gcs_bucket_tfstate` in the 0-bootstap folder to obtain the bucket name.
+You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
 
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 2-environments step and only the corresponding environment is applied.

@@ -31,7 +31,7 @@ variable "group_email" {
 }
 
 variable "org_project_creators" {
-  description = "Additional list of members to have project creator role accross the organization. Prefix of group: user: or serviceAccount: is required."
+  description = "Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required."
   type        = list(string)
   default     = []
 }

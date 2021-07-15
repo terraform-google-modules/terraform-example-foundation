@@ -87,3 +87,116 @@ resource "google_organization_iam_member" "billing_viewer" {
   role   = "roles/billing.viewer"
   member = "group:${var.billing_data_users}"
 }
+
+/******************************************
+ Groups permissions according to SFB (Section 6.2 - Users and groups) - IAM
+*****************************************/
+
+resource "google_organization_iam_member" "organization_viewer" {
+  count  = var.gcp_platform_viewer != null && var.parent_folder == "" ? 1 : 0
+  org_id = var.org_id
+  role   = "roles/viewer"
+  member = "group:${var.gcp_platform_viewer}"
+}
+
+resource "google_folder_iam_member" "organization_viewer" {
+  count  = var.gcp_platform_viewer != null && var.parent_folder != "" ? 1 : 0
+  folder = "folders/${var.parent_folder}"
+  role   = "roles/viewer"
+  member = "group:${var.gcp_platform_viewer}"
+}
+
+resource "google_organization_iam_member" "security_reviewer" {
+  count  = var.gcp_security_reviewer != null && var.parent_folder == "" ? 1 : 0
+  org_id = var.org_id
+  role   = "roles/iam.securityReviewer"
+  member = "group:${var.gcp_security_reviewer}"
+}
+
+resource "google_folder_iam_member" "security_reviewer" {
+  count  = var.gcp_security_reviewer != null && var.parent_folder != "" ? 1 : 0
+  folder = "folders/${var.parent_folder}"
+  role   = "roles/iam.securityReviewer"
+  member = "group:${var.gcp_security_reviewer}"
+}
+
+resource "google_organization_iam_member" "network_viewer" {
+  count  = var.gcp_network_viewer != null && var.parent_folder == "" ? 1 : 0
+  org_id = var.org_id
+  role   = "roles/compute.networkViewer"
+  member = "group:${var.gcp_network_viewer}"
+}
+
+resource "google_folder_iam_member" "network_viewer" {
+  count  = var.gcp_network_viewer != null && var.parent_folder != "" ? 1 : 0
+  folder = "folders/${var.parent_folder}"
+  role   = "roles/compute.networkViewer"
+  member = "group:${var.gcp_network_viewer}"
+}
+
+resource "google_project_iam_member" "audit_log_viewer" {
+  count   = var.gcp_audit_viewer != null ? 1 : 0
+  project = module.org_audit_logs.project_id
+  role    = "roles/logging.viewer"
+  member  = "group:${var.gcp_audit_viewer}"
+}
+
+resource "google_project_iam_member" "audit_private_logviewer" {
+  count   = var.gcp_audit_viewer != null ? 1 : 0
+  project = module.org_audit_logs.project_id
+  role    = "roles/logging.privateLogViewer"
+  member  = "group:${var.gcp_audit_viewer}"
+}
+
+resource "google_project_iam_member" "audit_bq_data_viewer" {
+  count   = var.gcp_audit_viewer != null ? 1 : 0
+  project = module.org_audit_logs.project_id
+  role    = "roles/bigquery.dataViewer"
+  member  = "group:${var.gcp_audit_viewer}"
+}
+
+resource "google_project_iam_member" "scc_admin" {
+  count   = var.gcp_scc_admin != null ? 1 : 0
+  project = module.scc_notifications.project_id
+  role    = "roles/securitycenter.adminEditor"
+  member  = "group:${var.gcp_scc_admin}"
+}
+
+resource "google_project_iam_member" "global_secrets_admin" {
+  count   = var.gcp_global_secrets_admin != null ? 1 : 0
+  project = module.org_secrets.project_id
+  role    = "roles/secretmanager.admin"
+  member  = "group:${var.gcp_global_secrets_admin}"
+}
+
+/******************************************
+ Privileged accounts permissions according to SFB (Section 6.3 - Privileged identities)
+*****************************************/
+
+resource "google_organization_iam_member" "org_admin_user" {
+  count  = var.gcp_org_admin_user != null && var.parent_folder == "" ? 1 : 0
+  org_id = var.org_id
+  role   = "roles/resourcemanager.organizationAdmin"
+  member = "user:${var.gcp_org_admin_user}"
+}
+
+resource "google_folder_iam_member" "org_admin_user" {
+  count  = var.gcp_org_admin_user != null && var.parent_folder != "" ? 1 : 0
+  folder = "folders/${var.parent_folder}"
+  role   = "roles/resourcemanager.folderAdmin"
+  member = "user:${var.gcp_org_admin_user}"
+}
+
+resource "google_organization_iam_member" "billing_creator_user" {
+  count  = var.gcp_billing_creator_user != null && var.parent_folder == "" ? 1 : 0
+  org_id = var.org_id
+  role   = "roles/billing.creator"
+  member = "user:${var.gcp_billing_creator_user}"
+}
+
+resource "google_billing_account_iam_member" "billing_admin_user" {
+  count              = var.gcp_billing_admin_user != null ? 1 : 0
+  billing_account_id = var.billing_account
+  role               = "roles/billing.admin"
+  member             = "user:${var.gcp_billing_admin_user}"
+}

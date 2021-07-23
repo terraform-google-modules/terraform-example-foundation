@@ -106,7 +106,9 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    ```
    gcloud source repos clone gcp-policies --project=YOUR_CLOUD_BUILD_PROJECT_ID
    ```
-1. Navigate into the repo.
+1. Navigate into the repo. All subsequent steps assume you are running them
+   from the gcp-environments directory. If you run them from another directory,
+   adjust your copy paths accordingly.
    ```
    cd gcp-policies
    ```
@@ -132,7 +134,9 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    ```
    gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID
    ```
-1. Navigate into the repo and change to a non-production branch.
+1. Navigate into the repo and change to a non-production branch. All subsequent
+   steps assume you are running them from the gcp-environments directory. If
+   you run them from another directory, adjust your copy paths accordingly.
    ```
    cd gcp-org
    git checkout -b plan
@@ -190,7 +194,9 @@ to run the command as the Terraform service account.
    ```
    git clone <YOUR_NEW_REPO-1-org>
    ```
-1. Navigate into the repo and change to a non-production branch.
+1. Navigate into the repo and change to a non-production branch. All subsequent
+   steps assume you are running them from the gcp-environments directory. If
+   you run them from another directory, adjust your copy paths accordingly.
    ```
    cd YOUR_NEW_REPO_CLONE-1-org
    git checkout -b plan

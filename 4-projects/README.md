@@ -194,7 +194,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
    ```
    git clone <YOUR_NEW_REPO-4-projects>
    ```
-1. Navigate into the repo and change to a non-production branch.
+1. Navigate into the repo and change to a non-production branch. All subsequent
+   steps assume you are running them from the gcp-environments directory. If
+   you run them from another directory, adjust your copy paths accordingly.
    ```
    cd YOUR_NEW_REPO_CLONE-4-projects
    git checkout -b plan

@@ -33,7 +33,7 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:bootstrap/v2.1.1"
+    module_name = "blueprints/terraform/terraform-example-foundation:bootstrap/v2.2.0"
   }
 
 }

@@ -28,10 +28,10 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:partner_interconnect/v2.1.1"
+    module_name = "blueprints/terraform/terraform-example-foundation:partner_interconnect/v2.2.0"
   }
 
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:partner_interconnect/v2.1.1"
+    module_name = "blueprints/terraform/terraform-example-foundation:partner_interconnect/v2.2.0"
   }
 }

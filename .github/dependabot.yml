@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "terraform"
-    directory: "/"
+    directory: "0-bootstrap"
     schedule:
       interval: "daily"
     commit-message:

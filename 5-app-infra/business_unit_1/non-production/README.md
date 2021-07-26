@@ -3,14 +3,14 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| custom\_image\_default\_region | Default region to create resources where applicable. | `string` | `""` | no |
-| custom\_image\_gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
-| custom\_image\_project\_id | Custom project ID to use for project created. | `string` | `""` | no |
+| custom\_image\_default\_region | Custom image region. | `string` | `""` | no |
+| custom\_image\_gar\_repo\_name | Custom GAR repo name. | `string` | `""` | no |
+| custom\_image\_project\_id | Custom image Project ID. | `string` | `""` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | n/a | yes |
-| org\_id | The organization id for the associated services | `string` | n/a | yes |
+| org\_id | The organization id for the associated services. | `string` | n/a | yes |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step. | `string` | `""` | no |
-| project\_service\_account | Email of the service account created on step 4-projects for the business unit 1 sample base project where the GCE instance will be created | `string` | n/a | yes |
+| project\_service\_account | Email of the service account created on step 4-projects for the business unit 1 sample base project where the GCE instance will be created. | `string` | n/a | yes |
 
 ## Outputs
 

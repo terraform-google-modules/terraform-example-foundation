@@ -15,35 +15,30 @@ step also configures a CI/CD pipeline for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
-<td><a
-href="../1-org">1-org</a></td>
+<td><a href="../1-org">1-org</a></td>
 <td>Sets up top level shared folders, monitoring and networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
 <tr>
-<td><a
-href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
+<td><a href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
-<td><a
-href="../3-networks">3-networks</a></td>
+<td><a href="../3-networks">3-networks</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
 Interconnect, and baseline firewall rules for each environment. Also sets
 up the global DNS hub.</td>
 </tr>
 <tr>
-<td><a
-href="../4-projects">4-projects</a></td>
+<td><a href="../4-projects">4-projects</a></td>
 <td>Set up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
 <tr>
-<td><a
-href="../5-app-infra">5-app-infra</a></td>
+<td><a href="../5-app-infra">5-app-infra</a></td>
 <td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
 </tr>
 </tbody>
@@ -113,7 +108,7 @@ your current Jenkins manager (master) environment.
     ```
 1. Run `terraform init`.
 1. Run `terraform plan` and review the output.
-1. To run terraform-validator steps please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `2021-03-22`. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator`and the terraform-validator binary must be in your PATH.
+1. To run terraform-validator steps please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `v0.4.0`. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the terraform-validator binary must be in your PATH.
     1. Run `terraform plan -input=false -out bootstrap.tfplan`
     1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
     1. Run `terraform-validator validate bootstrap.json --policy-path="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).

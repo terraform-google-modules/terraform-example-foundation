@@ -8,37 +8,32 @@ the example.com reference architecture described in
 <table>
 <tbody>
 <tr>
-<td><a
-href="../0-bootstrap">0-bootstrap</a></td>
+<td><a href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
 step also configures a CI/CD pipeline for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
-<td><a
-href="../1-org">1-org</a></td>
+<td><a href="../1-org">1-org</a></td>
 <td>Sets up top-level shared folders, monitoring and networking projects,
 organization-level logging, and baseline security settings through
 organizational policies.</td>
 </tr>
 <tr>
-<td><a
-href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
+<td><a href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
-<td><a
-href="../3-networks">3-networks</a></td>
+<td><a href="../3-networks">3-networks</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
 Interconnect, and baseline firewall rules for each environment. It also sets
 up the global DNS hub.</td>
 </tr>
 <tr>
-<td><a
-href="../4-projects">4-projects</a></td>
+<td><a href="../4-projects">4-projects</a></td>
 <td>Sets up a folder structure, projects, and an application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
@@ -85,7 +80,7 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
    ```
    terraform output cloudbuild_project_id
    ```
-1. Clone the policies repo. (This repo has the same name of the repo created in step 1-org but it is from a different project, you may need to rename the previous one to prevent a collision if you are cloning it in the same folder).
+1. Clone the policies repo. (This repo has the same name of the repo created in step 1-org, but it is from a different project, you may need to rename the previous one to prevent a collision if you are cloning it in the same folder).
    ```
    gcloud source repos clone gcp-policies --project=YOUR_INFRA_PIPELINE_PROJECT_ID
    ```
@@ -188,7 +183,7 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 We will now deploy each of our environments (development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool, each environment corresponds to a branch in the repository for the `5-app-infra` step. Only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `2021-03-22` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `v0.4.0` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
 
 1. Run `./tf-wrapper.sh init production`.
 1. Run `./tf-wrapper.sh plan production` and review output.

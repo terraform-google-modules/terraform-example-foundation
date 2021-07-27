@@ -107,7 +107,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    gcloud source repos clone gcp-policies --project=YOUR_CLOUD_BUILD_PROJECT_ID
    ```
 1. Navigate into the repo. All subsequent steps assume you are running them
-   from the gcp-environments directory. If you run them from another directory,
+   from the gcp-policies directory. If you run them from another directory,
    adjust your copy paths accordingly.
    ```
    cd gcp-policies

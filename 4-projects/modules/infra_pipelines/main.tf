@@ -153,6 +153,7 @@ resource "google_artifact_registry_repository" "tf-image-repo" {
 
 resource "null_resource" "cloudbuild_terraform_builder" {
   triggers = {
+    count   = local.use_custom_image ? 1 : 0
     project_id_cloudbuild_project = var.cloudbuild_project_id
     terraform_version_sha256sum   = var.terraform_version_sha256sum
     terraform_version             = var.terraform_version

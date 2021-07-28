@@ -108,7 +108,7 @@ your current Jenkins manager (master) environment.
     ```
 1. Run `terraform init`.
 1. Run `terraform plan` and review the output.
-1. To run terraform-validator steps please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `v0.4.0`. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the terraform-validator binary must be in your PATH.
+1. To run terraform-validator steps please follow the [instructions](https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/install.md) in the **Install Terraform Validator** section and install version `v0.4.0`. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the terraform-validator binary must be in your PATH.
     1. Run `terraform plan -input=false -out bootstrap.tfplan`
     1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
     1. Run `terraform-validator validate bootstrap.json --policy-path="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).

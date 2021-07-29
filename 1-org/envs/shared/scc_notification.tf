@@ -34,9 +34,9 @@ resource "google_scc_notification_config" "scc_notification_config" {
   config_id    = var.scc_notification_name
   organization = var.org_id
   description  = "SCC Notification for all active findings"
-  pubsub_topic =  google_pubsub_topic.scc_notification_topic.id
+  pubsub_topic = google_pubsub_topic.scc_notification_topic.id
 
   streaming_config {
-    filter = "category = \"OPEN_FIREWALL\" AND state = \"ACTIVE\""  #var.scc_notification_filter
+    filter = var.scc_notification_filter
   }
 }

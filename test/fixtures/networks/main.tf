@@ -36,7 +36,6 @@ module "non-production" {
   terraform_service_account        = var.terraform_service_account
   parent_folder                    = var.parent_folder
   enable_hub_and_spoke             = var.enable_hub_and_spoke
-  #depends_on                       = [module.development]
 }
 
 module "production" {
@@ -49,5 +48,4 @@ module "production" {
   terraform_service_account        = var.terraform_service_account
   parent_folder                    = var.parent_folder
   enable_hub_and_spoke             = var.enable_hub_and_spoke
-  #depends_on                       = [module.non-production]
 }

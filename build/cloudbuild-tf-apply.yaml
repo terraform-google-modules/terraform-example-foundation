@@ -14,7 +14,7 @@
 
 timeout: 3600s
 substitutions:
-  _POLICY_REPO: '/workspace/policy-library' # add path to policies here https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator
+  _POLICY_REPO: '/workspace/policy-library' # add path to policies as per https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/policy_library.md
 steps:
 - id: 'setup'
   name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform

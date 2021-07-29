@@ -129,10 +129,10 @@ tf_validate() {
   echo "*****************************************************"
   if ! command -v terraform-validator &> /dev/null; then
     echo "terraform-validator not found!  Check path or visit"
-    echo "https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator"
+    echo "https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/install.md"
   elif [ -z "$policy_file_path" ]; then
     echo "no policy repo found! Check the argument provided for policysource to this script."
-    echo "https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#how-to-use-terraform-validator"
+    echo "https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/policy_library.md"
   else
     if [ -d "$path" ]; then
       cd "$path" || exit

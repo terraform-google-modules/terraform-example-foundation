@@ -190,7 +190,9 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    ```
    git clone <YOUR_NEW_REPO-3-networks>
    ```
-1. Navigate into the repo and change to a non-production branch.
+1. Navigate into the repo and change to a non-production branch. All subsequent
+   steps assume you are running them from the gcp-environments directory. If
+   you run them from another directory, adjust your copy paths accordingly.
    ```
    cd YOUR_NEW_REPO_CLONE-3-networks
    git checkout -b plan

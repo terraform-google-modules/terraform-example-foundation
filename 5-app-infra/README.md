@@ -89,7 +89,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
    ```
    gcloud source repos clone gcp-policies --project=YOUR_INFRA_PIPELINE_PROJECT_ID
    ```
-1. Navigate into the repo.
+1. Navigate into the repo. All subsequent steps assume you are running them
+   from the gcp-environments directory. If you run them from another directory,
+   adjust your copy paths accordingly.
    ```
    cd gcp-policies
    ```
@@ -114,7 +116,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
    ```
    gcloud source repos clone bu1-example-app --project=YOUR_INFRA_PIPELINE_PROJECT_ID
    ```
-1. Navigate into the repo.
+1. Navigate into the repo. All subsequent steps assume you are running them
+   from the gcp-environments directory. If you run them from another directory,
+   adjust your copy paths accordingly.
    ```
    cd bu1-example-app
    ```

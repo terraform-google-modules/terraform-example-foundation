@@ -8,23 +8,20 @@ the example.com reference architecture described in
 <table>
 <tbody>
 <tr>
-<td><a
-href="../0-bootstrap">0-bootstrap</a></td>
+<td><a href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
 step also configures a CI/CD pipeline for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
-<td><a
-href="../1-org">1-org</a></td>
+<td><a href="../1-org">1-org</a></td>
 <td>Sets up top level shared folders, monitoring and networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
 <tr>
-<td><a
-href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
+<td><a href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
@@ -36,14 +33,12 @@ Interconnect, and baseline firewall rules for each environment. It also sets
 up the global DNS hub.</td>
 </tr>
 <tr>
-<td><a
-href="../4-projects">4-projects</a></td>
+<td><a href="../4-projects">4-projects</a></td>
 <td>Sets up a folder structure, projects, and application infrastructure pipeline for applications,
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
 <tr>
-<td><a
-href="../5-app-infra">5-app-infra</a></td>
+<td><a href="../5-app-infra">5-app-infra</a></td>
 <td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
 </tr>
 </tbody>
@@ -281,7 +276,7 @@ We will now deploy each of our environments(development/production/non-productio
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks step
 and only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `2021-03-22` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/install.md) in the **Install Terraform Validator** section and install version `v0.4.0` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
 
 1. Run `./tf-wrapper.sh init shared`.
 1. Run `./tf-wrapper.sh plan shared` and review output.

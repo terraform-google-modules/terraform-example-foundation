@@ -93,7 +93,7 @@ variable "terraform_version_sha256sum" {
 variable "terraform_validator_release" {
   description = "Default terraform-validator release."
   type        = string
-  default     = "2021-03-22"
+  default     = "v0.4.0"
 }
 
 variable "folders_to_grant_browser_role" {

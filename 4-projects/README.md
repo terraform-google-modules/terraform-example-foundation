@@ -8,29 +8,25 @@ the example.com reference architecture described in
 <table>
 <tbody>
 <tr>
-<td><a
-href="../0-bootstrap">0-bootstrap</a></td>
+<td><a href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
 step also configures a CI/CD pipeline for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
-<td><a
-href="../1-org">1-org</a></td>
+<td><a href="../1-org">1-org</a></td>
 <td>Sets up top level shared folders, monitoring and networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
 <tr>
-<td><a
-href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
+<td><a href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
 <td>Sets up development, non-production, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
-<td><a
-href="../3-networks">3-networks</a></td>
+<td><a href="../3-networks">3-networks</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
 Interconnect, and baseline firewall rules for each environment. It also sets
@@ -42,8 +38,7 @@ up the global DNS hub.</td>
  which are connected as service projects to the shared VPC created in the previous stage.</td>
 </tr>
 <tr>
-<td><a
-href="../5-app-infra">5-app-infra</a></td>
+<td><a href="../5-app-infra">5-app-infra</a></td>
 <td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
 </tr>
 </tbody>
@@ -111,7 +106,7 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 ## Usage
 
-**Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to used the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
+**Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to use the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 
 **Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
@@ -295,7 +290,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied. Environment shared must be applied first because development, non-production, and production depend on it.
 
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md#install-terraform-validator) in the **Install Terraform Validator** section and install version `2021-03-22` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/install.md) in the **Install Terraform Validator** section and install version `v0.4.0` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
 
 1. Run `./tf-wrapper.sh init shared`.
 1. Run `./tf-wrapper.sh plan shared` and review output.

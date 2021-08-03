@@ -1,0 +1,97 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "terraform"
+    directory: "0-bootstrap"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "0-bootstrap/modules/jenkins-agent"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "2-environments/modules/env_baseline"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "3-networks/modules/base_shared_vpc"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "3-networks/modules/dedicated_interconnect"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "3-networks/modules/restricted_shared_vpc"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "3-networks/modules/transitivity"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "3-networks/modules/vpn-ha"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "4-projects/modules/single_project"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "5-app-infra/modules/env_base"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"

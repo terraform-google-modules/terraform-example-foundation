@@ -76,7 +76,7 @@ module "migs" {
 
 module "ilbs" {
   source                  = "GoogleCloudPlatform/lb-internal/google"
-  version                 = "~> 2.4.0"
+  version                 = "~> 4.1.0"
   for_each                = toset(var.regions)
   region                  = each.key
   name                    = each.key

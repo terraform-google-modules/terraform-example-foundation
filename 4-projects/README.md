@@ -301,7 +301,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 1. Run `./tf-wrapper.sh apply production`.
 1. Run `./tf-wrapper.sh init non-production`.
 1. Run `./tf-wrapper.sh plan non-production` and review output.
-1. Run `./tf-wrapper.sh plan non-production` and review output.
 1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply non-production`.
 1. Run `./tf-wrapper.sh init development`.

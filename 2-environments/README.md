@@ -62,6 +62,16 @@ The purpose of this step is to setup development, non-production, and production
 
 Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
+### 💬 Projects quota
+
+If you do not have sufficient projects quota, we recommend that you deploy only the `development` environment. It is recommended to modify the following attributes in [`terraform.example.tfvars`](./terraform.example.tfvars):
+
+```
+enable_development = true
+enable_non_production = false
+enable_production = false
+```
+
 ## Usage
 
 ### Deploying with Cloud Build
@@ -110,6 +120,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
    git checkout -b development
    git push origin development
    ```
+
+Please continue only if you have enabled the `non-production` and `production` environments. Otherwise, you may stop here.
+
 1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to non-production.
    ```
@@ -179,6 +192,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
    git push origin development
    ```
 1. Review the apply output in your Master's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+
+Please continue only if you have enabled the `non-production` and `production` environments. Otherwise, you may stop here.
+
 1. Merge changes to non-production with.
    ```
    git checkout -b non-production
@@ -213,6 +229,9 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 1. Run `./tf-wrapper.sh plan development` and review output.
 1. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply development`.
+
+Please continue only if you have enabled the `non-production` and `production` environments. Otherwise, you may stop here.
+
 1. Run `./tf-wrapper.sh init non-production`.
 1. Run `./tf-wrapper.sh plan non-production` and review output.
 1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.

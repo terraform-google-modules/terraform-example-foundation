@@ -51,3 +51,19 @@ variable "folder_prefix" {
   type        = string
   default     = "fldr"
 }
+
+
+variable "enable_development" {
+  description = "To enable creation of the development environment."
+  type        = bool
+}
+
+variable "enable_non_production" {
+  description = "To enable creation of the non-production environment."
+  type        = bool
+}
+
+variable "enable_production" {
+  description = "To enable creation of the production environment."
+  type        = bool
+}

@@ -120,9 +120,9 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    git add .
    git commit -m 'Your message'
    ```
-1. Push your master branch to the new repo.
+1. Push your main branch to the new repo.
    ```
-   git push --set-upstream origin master
+   git push --set-upstream origin main
    ```
 1. Navigate out of the repo.
    ```
@@ -131,7 +131,10 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
 1. Clone the repo.
    ```
    gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID
+
    ```
+   The message `warning: You appear to have cloned an empty repository.` is
+   normal and can be ignored.
 1. Navigate into the repo and change to a non-production branch. All subsequent
    steps assume you are running them from the gcp-environments directory. If
    you run them from another directory, adjust your copy paths accordingly.

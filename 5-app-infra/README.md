@@ -120,7 +120,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
    cd bu1-example-app
    ```
-1. Change freshly cloned repo and change to non-master branch.
+1. Change freshly cloned repo and change to non-main branch.
    ```
    git checkout -b plan
    ```

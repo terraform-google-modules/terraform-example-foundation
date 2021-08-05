@@ -17,6 +17,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 ## Common issues
 
 - [Project quota exceeded](#project-quota-exceeded)
+- [Default branch setting](#default-branch-setting)
 - [Terraform State Snapshot lock](#terraform-state-snapshot-lock)
 - [Application authenticated using end user credentials](#application-authenticated-using-end-user-credentials)
 - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
@@ -45,6 +46,30 @@ use the email address of `terraform_service_account` that is created by the Terr
 **Notes:**
 
 - If you see other quota errors, see the [Quota documentation](https://cloud.google.com/docs/quota).
+
+### Default branch setting
+
+**Error message:**
+
+```
+error: src refspec master does not match any
+```
+**Cause:**
+
+This could be due to init.defaultBranch being set to something other than
+`main`.
+
+**Solution:**
+
+1. Determine your default branch:
+   ```
+   git config init.defaultBranch
+   ```
+   Outputs `main` if you are in the main branch. 
+1. If your default branch is not set to `main`, set it:
+   ```
+   git config --global init.defaultBranch main
+   ```
 
 ### Terraform State Snapshot lock
 

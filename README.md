@@ -1,8 +1,10 @@
-# terraform-example-foundation
+# terraform-example-foundation (SG-based FIs)
 This is an example repo showing how the CFT Terraform modules can be composed to build a secure GCP foundation, following the [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the step 0 is manually executed.
 From step 1 onwards, the Terraform code is deployed by leveraging either Google Cloud Build (by default) or Jenkins.
 Cloud Build has been chosen by default to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
+
+> 💬 In addition, this foundation is curated specifically for Singapore-based financial institutions (FIs) with MAS and ABS guidelines in mind. It is recommended to perform these steps along with the whitepaper and compliance mapping.
 
 ## Overview
 This repo contains several distinct Terraform projects each within their own directory that must be applied separately, but in sequence.
@@ -142,17 +144,17 @@ Usage instructions are available for the environments step in the [README](./2-e
 
 This step focuses on creating a Shared VPC per environment (`development`, `non-production` & `production`) in a standard configuration with a reasonable security baseline. Currently, this includes:
 
+- [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workload dependant resources like Cloud SQL.
+- Base Shared VPC with [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for base access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
+- Restricted Shared VPC with [restricted.googleapis.com](https://cloud.google.com/vpc-service-controls/docs/supported-products) configured for restricted access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
+- Default routes to internet removed, with tag based route `egress-internet` required on VMs in order to reach the internet.
+- Default Cloud DNS policy applied, with DNS logging and [inbound query forwarding](https://cloud.google.com/dns/docs/overview#dns-server-policy-in) turned on.
 - Optional - Example subnets for `development`, `non-production` & `production` inclusive of secondary ranges for those that want to use GKE.
 - Optional - Default firewall rules created to allow remote access to [VMs through IAP](https://cloud.google.com/iap/docs/using-tcp-forwarding), without needing public IPs.
   - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively.
 - Optional - Default firewall rule created to allow for [load balancing health checks](https://cloud.google.com/load-balancing/docs/health-checks#firewall_rules) using `allow-lb` tag.
 - Optional - Default firewall rule created to allow [Windows KMS activation](https://cloud.google.com/compute/docs/instances/windows/creating-managing-windows-instances#kms-server) using `allow-win-activation` tag.
-- [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workload dependant resources like Cloud SQL.
-- Base Shared VPC with [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for base access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
-- Restricted Shared VPC with [restricted.googleapis.com](https://cloud.google.com/vpc-service-controls/docs/supported-products) configured for restricted access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
-- Default routes to internet removed, with tag based route `egress-internet` required on VMs in order to reach the internet.
 - Optional - Cloud NAT configured for all subnets with logging and static outbound IPs.
-- Default Cloud DNS policy applied, with DNS logging and [inbound query forwarding](https://cloud.google.com/dns/docs/overview#dns-server-policy-in) turned on.
 
 Usage instructions are available for the networks step in the [README](./3-networks/README.md).
 

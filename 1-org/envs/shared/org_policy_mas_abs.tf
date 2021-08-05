@@ -18,3 +18,26 @@
   Additional policies for SG-based FIs
 *******************************************/
 
+// Example for MAS Cloud Advisory Control 21c
+module "confidential-computing" {
+  source          = "terraform-google-modules/org-policy/google"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "list"
+  enforce         = "true"
+  constraint      = "constraints/compute.restrictNonConfidentialComputing"
+}
+
+// Example for CIS Control 2.3, MAS TRM 12.2.2 and ABS/B/14/Standard/2
+module "storage-retention-policy" {
+  source            = "terraform-google-modules/org-policy/google"
+  organization_id   = local.organization_id
+  folder_id         = local.folder_id
+  policy_for        = local.policy_for
+  constraint        = "constraints/storage.retentionPolicySeconds"
+  policy_type       = "list"
+  allow             = ["3600", "2592000"] # e.g. 1h and 30d
+  allow_list_length = 2
+}
+

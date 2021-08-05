@@ -64,6 +64,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 ## Usage
 
+**Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
+commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
+
 ### Deploying with Cloud Build
 
 1. Clone repo.

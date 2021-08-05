@@ -84,6 +84,9 @@ If those limitations do not apply to your workload/environment, you can choose t
 
 **Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to used the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 
+**Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
+commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
+
 **Note:** This module creates a Security Command Center Notification.
 The notification name must be unique in the organization.
 The suggested name in the `terraform.tfvars` file is **scc-notify**.

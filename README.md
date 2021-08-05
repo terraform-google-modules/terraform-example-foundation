@@ -51,7 +51,10 @@ Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/READM
 
 ### [1. org](./1-org/)
 
-The purpose of this stage is to set up the common folder used to house projects which contain shared resources such as DNS Hub, Interconnect, SCC Notification, org level secrets, Network Hub and org level logging.
+The purpose of this stage is to set up the common folder used to house projects which contain shared resources such as 
+DNS Hub, Interconnect, SCC Notification, org level secrets, Network Hub and org level logging. Organization Policy service constraints are also enforced here in line with several CIS controls.
+
+
 This will create the following folder & project structure:
 
 ```

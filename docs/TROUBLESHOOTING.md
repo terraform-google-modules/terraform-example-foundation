@@ -65,7 +65,7 @@ This could be due to init.defaultBranch being set to something other than
    ```
    git config init.defaultBranch
    ```
-   Outputs `main` if you are in the main branch. 
+   Outputs `main` if you are in the main branch.
 1. If your default branch is not set to `main`, set it:
    ```
    git config --global init.defaultBranch main

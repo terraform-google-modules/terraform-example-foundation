@@ -29,7 +29,6 @@ resource "google_pubsub_subscription" "scc_notification_subscription" {
   project = module.scc_notifications.project_id
 }
 
-
 resource "google_scc_notification_config" "scc_notification_config" {
   config_id    = var.scc_notification_name
   organization = var.org_id

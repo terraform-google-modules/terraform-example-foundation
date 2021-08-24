@@ -42,7 +42,7 @@ data "google_compute_network" "vpc_restricted_net_hub" {
 
 module "main" {
   source                                 = "terraform-google-modules/network/google"
-  version                                = "~> 2.0"
+  version                                = "~> 3.4"
   project_id                             = var.project_id
   network_name                           = local.network_name
   shared_vpc_host                        = "true"

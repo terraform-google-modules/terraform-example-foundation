@@ -81,7 +81,7 @@ variable "skip_gcloud_download" {
 variable "scc_notification_filter" {
   description = "Filter used to create the Security Command Center Notification, you can see more details on how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter"
   type        = string
-  default     = "state=\\\"ACTIVE\\\""
+  default     = "state = \"ACTIVE\""
 }
 
 variable "parent_folder" {

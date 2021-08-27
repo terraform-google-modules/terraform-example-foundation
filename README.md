@@ -290,7 +290,7 @@ Once validated in `development`, changes can be promoted to `non-production` by 
 
 ### Terraform-validator
 
-This repo uses [terraform-validator](https://github.com/GoogleCloudPlatform/terraform-validator) to validate the terraform plans against a Constraint Framework [Policy Library](https://github.com/GoogleCloudPlatform/policy-library).
+This repo uses [terraform-validator](https://github.com/GoogleCloudPlatform/terraform-validator) to validate the terraform plans against a [library of GCP policies](https://github.com/GoogleCloudPlatform/policy-library).
 
 The [Scorecard bundle](https://github.com/GoogleCloudPlatform/policy-library/blob/master/docs/bundles/scorecard-v1.md) was used to create the [policy-library folder](./policy-library) with [one extra constraint](https://github.com/GoogleCloudPlatform/policy-library/blob/master/samples/serviceusage_allow_basic_apis.yaml) added.
 

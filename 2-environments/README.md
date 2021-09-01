@@ -103,12 +103,17 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    git add .
    git commit -m 'Your message'
    ```
-1. Push your plan branch to trigger a plan for all environments.
+1. Push your plan branch to trigger a plan for all environments. Because the
+   _plan_ branch is not a [named branch](./docs/FAQ.md), pushing your _plan_
+   branch triggers _terraform plan_ but not _terraform apply_.
    ```
    git push --set-upstream origin plan
    ```
 1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to development.
+1. Merge changes to development.  Because the
+   _development_ branch is a [named branch](./docs/FAQ.md), pushing your
+   _development_
+   branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b development
    git push origin development

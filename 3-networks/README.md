@@ -155,26 +155,31 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.
     1. If you would like the bucket to be replaced by Cloud Build at run time, change the bucket name back to `UPDATE_ME`.
-1. Push your plan branch to trigger a plan.
+1. Push your plan branch to trigger a plan for all environments. Because the
+   _plan_ branch is not a [named branch](./docs/FAQ.md), pushing your _plan_
+   branch triggers _terraform plan_ but not _terraform apply_.
    ```
    git push --set-upstream origin plan
    ```
 1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to production.
+1. Merge changes to production. Because this is a [named branch](./docs/FAQ.md#what-is-a-named-branch),
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b production
    git push origin production
    ```
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. After production has been applied, apply development.
-1. Merge changes to development.
+1. Merge changes to development. Because this is a [named branch](./docs/FAQ.md#what-is-a-named-branch),
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b development
    git push origin development
    ```
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. After development has been applied, apply non-production.
-1. Merge changes to non-production.
+1. Merge changes to non-production. Because this is a [named branch](./docs/FAQ.md#what-is-a-named-branch),
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b non-production
    git push origin non-production

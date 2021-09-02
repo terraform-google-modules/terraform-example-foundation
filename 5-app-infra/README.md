@@ -187,7 +187,8 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Rename `bu1-development.auto.example.tfvars` to `bu1-development.auto.tfvars` and update the file with values from your environment.
 1. Rename `bu1-non-production.auto.example.tfvars` to `bu1-non-production.auto.tfvars` and update the file with values from your environment.
 1. Rename `bu1-production.auto.example.tfvars` to `bu1-production.auto.tfvars` and update the file with values from your environment.
-1. Update `backend.tf` with your bucket from the infra pipeline example.
+1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 project service accounts
+3. Update `backend.tf` with your bucket from the infra pipeline example.
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
    ```
@@ -202,7 +203,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_INFRA_PIPELINE_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply production`.
 1. Run `./tf-wrapper.sh init non-production`.
-1. Run `./tf-wrapper.sh plan non-production` and review output.
 1. Run `./tf-wrapper.sh plan non-production` and review output.
 1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library <YOUR_INFRA_PIPELINE_PROJECT_ID>` and check for violations.
 1. Run `./tf-wrapper.sh apply non-production`.

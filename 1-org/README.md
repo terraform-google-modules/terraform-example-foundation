@@ -120,9 +120,9 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    git add .
    git commit -m 'Your message'
    ```
-1. Push your main branch to the new repo.
+1. Push your master branch to the new repo.
    ```
-   git push --set-upstream origin main
+   git push --set-upstream origin master
    ```
 1. Navigate out of the repo.
    ```

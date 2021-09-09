@@ -156,7 +156,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
     1. Run `terraform apply`.
     1. If you would like the bucket to be replaced by Cloud Build at run time, change the bucket name back to `UPDATE_ME`.
 1. Push your plan branch to trigger a plan for all environments. Because the
-   _plan_ branch is not a [named branch](./docs/FAQ.md), pushing your _plan_
+   _plan_ branch is not a [named environment branch](./docs/FAQ.md), pushing your _plan_
    branch triggers _terraform plan_ but not _terraform apply_.
    ```
    git push --set-upstream origin plan

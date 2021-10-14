@@ -73,7 +73,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
    gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID
    ```
-1. Navigate into the repo and change to the non-master branch. All subsequent
+1. Navigate into the repo and change to the non-main branch. All subsequent
    steps assume you are running them from the gcp-environments directory. If
    you run them from another directory, adjust your copy paths accordingly.
 

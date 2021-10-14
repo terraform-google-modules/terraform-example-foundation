@@ -183,6 +183,10 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Rename `bu1-non-production.auto.example.tfvars` to `bu1-non-production.auto.tfvars` and update the file with values from your environment.
 1. Rename `bu1-production.auto.example.tfvars` to `bu1-production.auto.tfvars` and update the file with values from your environment.
 1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 project service accounts
+1. Provide the user permissions to run the terraform locally with the `serviceAccountTokenCreator` permission.
+   ```
+   gcloud iam service-accounts add-iam-policy-binding $PROJECT_SERVICE_ACCOUNT --project $PROJECT --member="user:$(gcloud auth list --format="value(account)")" --role="roles/iam.serviceAccountTokenCreator"
+   ```
 3. Update `backend.tf` with your bucket from the infra pipeline example.
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done

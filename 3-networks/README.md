@@ -120,7 +120,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    ```
    gcloud source repos clone gcp-networks --project=YOUR_CLOUD_BUILD_PROJECT_ID
    ```
-1. Change to the freshly cloned repo and change to non-master branch.
+1. Change to the freshly cloned repo and change to non-main branch.
    ```
    git checkout -b plan
    ```

@@ -131,7 +131,10 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
 1. Clone the repo.
    ```
    gcloud source repos clone gcp-org --project=YOUR_CLOUD_BUILD_PROJECT_ID
+
    ```
+   The message `warning: You appear to have cloned an empty repository.` is
+   normal and can be ignored.
 1. Navigate into the repo and change to a non-production branch. All subsequent
    steps assume you are running them from the gcp-environments directory. If
    you run them from another directory, adjust your copy paths accordingly.

@@ -117,7 +117,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
    gcloud source repos clone gcp-projects --project=YOUR_CLOUD_BUILD_PROJECT_ID
    ```
-1. Change freshly cloned repo and change to non-master branch.
+1. Change freshly cloned repo and change to non-main branch.
    ```
    git checkout -b plan
    ```

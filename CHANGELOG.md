@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.3.1](https://www.github.com/terraform-google-modules/terraform-example-foundation/compare/v2.3.0...v2.3.1) (2021-10-15)
+
+
+### Bug Fixes
+
+* upgrade cloud router module version ([#559](https://www.github.com/terraform-google-modules/terraform-example-foundation/issues/559)) ([b67e62a](https://www.github.com/terraform-google-modules/terraform-example-foundation/commit/b67e62adf5e7431209a02dc4b70c3d793db5c6eb))
+
 ## [2.3.0](https://www.github.com/terraform-google-modules/terraform-example-foundation/compare/v2.2.0...v2.3.0) (2021-09-02)
 
 

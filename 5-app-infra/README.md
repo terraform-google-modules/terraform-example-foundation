@@ -149,24 +149,29 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    git add .
    git commit -m 'Your message'
    ```
-1. Push your plan branch to trigger a plan for all environments.
+1. Push your plan branch to trigger a plan for all environments. Because the
+   _plan_ branch is not a [named environment branch](./docs/FAQ.md), pushing your _plan_
+   branch triggers _terraform plan_ but not _terraform apply_.
    ```
    git push --set-upstream origin plan
    ```
  1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
-1. Merge changes to development.
+1. Merge changes to development. Because this is a [named environment branch](./docs/FAQ.md#what-is-a-named-branch),
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b development
    git push origin development
    ```
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
-1. Merge changes to non-production.
+1. Merge changes to non-production. Because this is a [named environment branch](./docs/FAQ.md#what-is-a-named-branch),
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b non-production
    git push origin non-production
    ```
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
-1. Merge changes to production branch
+1. Merge changes to production branch. Because this is a [named environment branch](./docs/FAQ.md#what-is-a-named-branch),
+      pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b production
    git push origin production
@@ -183,6 +188,10 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Rename `bu1-non-production.auto.example.tfvars` to `bu1-non-production.auto.tfvars` and update the file with values from your environment.
 1. Rename `bu1-production.auto.example.tfvars` to `bu1-production.auto.tfvars` and update the file with values from your environment.
 1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 project service accounts
+1. Provide the user permissions to run the terraform locally with the `serviceAccountTokenCreator` permission.
+   ```
+   gcloud iam service-accounts add-iam-policy-binding $PROJECT_SERVICE_ACCOUNT --project $PROJECT --member="user:$(gcloud auth list --format="value(account)")" --role="roles/iam.serviceAccountTokenCreator"
+   ```
 3. Update `backend.tf` with your bucket from the infra pipeline example.
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done

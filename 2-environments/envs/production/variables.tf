@@ -51,3 +51,18 @@ variable "folder_prefix" {
   type        = string
   default     = "fldr"
 }
+
+
+variable "assured_workload_configuration" {
+  description = "Assured Workload configuration. See https://cloud.google.com/assured-workloads ."
+  type = object({
+    enabled           = bool
+    location          = string
+    compliance_regime = string
+  })
+  default = {
+    enabled           = false
+    location          = "us-central1"
+    compliance_regime = "FEDRAMP_MODERATE"
+  }
+}

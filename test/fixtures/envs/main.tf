@@ -42,4 +42,10 @@ module "production" {
   parent_folder              = var.parent_folder
   terraform_service_account  = var.terraform_service_account
   project_prefix             = var.project_prefix
+
+  assured_workload_configuration = {
+    enabled           = true
+    location          = "us-central1"
+    compliance_regime = "FEDRAMP_MODERATE"
+  }
 }

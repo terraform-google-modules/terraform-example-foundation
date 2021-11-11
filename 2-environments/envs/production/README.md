@@ -3,6 +3,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| assured\_workload\_configuration | Assured Workload configuration. See https://cloud.google.com/assured-workloads . | <pre>object({<br>    enabled           = bool<br>    location          = string<br>    compliance_regime = string<br>  })</pre> | <pre>{<br>  "compliance_regime": "FEDRAMP_MODERATE",<br>  "enabled": false,<br>  "location": "us-central1"<br>}</pre> | no |
 | billing\_account | The ID of the billing account to associate this project with | `string` | n/a | yes |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | monitoring\_workspace\_users | Google Workspace or Cloud Identity group that have access to Monitoring Workspaces. | `string` | n/a | yes |

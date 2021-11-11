@@ -80,6 +80,7 @@ module "seed_bootstrap" {
 
   sa_org_iam_permissions = [
     "roles/accesscontextmanager.policyAdmin",
+    "roles/assuredworkloads.admin",
     "roles/billing.user",
     "roles/compute.networkAdmin",
     "roles/compute.xpnAdmin",

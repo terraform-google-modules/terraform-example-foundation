@@ -15,19 +15,28 @@
  */
 
 locals {
-  assured_workload_display_name = "${var.folder_prefix}-assured-workload"
-  enable_assured_workload       = var.assured_workload_configuration != null && var.assured_workload_configuration.enabled
+  assured_workloads_folder = "${var.folder_prefix}-assured-workloads"
+  enable_assured_workload  = lookup(var.assured_workload_configuration, "enabled", false)
+  assured_workload_project = "${var.project_prefix}-p-aw-regional"
 }
 
-resource "google_assured_workloads_workload" "production" {
-  provider = google-beta
+resource "google_folder" "assured_workloads" {
+  display_name = local.assured_workloads_folder
+  parent       = module.env.env_folder
+}
 
+resource "google_assured_workloads_workload" "workload" {
   count = local.enable_assured_workload ? 1 : 0
 
   billing_account              = "billingAccounts/${var.billing_account}"
   compliance_regime            = var.assured_workload_configuration.compliance_regime
-  display_name                 = local.assured_workload_display_name
+  display_name                 = "${var.folder_prefix}-workload"
   location                     = var.assured_workload_configuration.location
   organization                 = var.org_id
-  provisioned_resources_parent = module.env.env_folder
+  provisioned_resources_parent = google_folder.assured_workloads.name
+
+  resource_settings {
+    resource_id   = local.assured_workload_project
+    resource_type = "CONSUMER_PROJECT"
+  }
 }

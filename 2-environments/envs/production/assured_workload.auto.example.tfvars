@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-  assured_workload_configuration = {
-    enabled           = true
-    location          = "us-central1"
-    compliance_regime = "FEDRAMP_MODERATE"
-  }
+assured_workload_configuration = {
+  enabled           = true
+  location          = "us-central1"
+  compliance_regime = "FEDRAMP_MODERATE"
+}

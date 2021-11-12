@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
+locals {
+  assured_workload_display_name = "${var.folder_prefix}-assured-workload"
+  enable_assured_workload       = var.assured_workload_configuration != null && var.assured_workload_configuration.enabled
+}
+
 resource "google_assured_workloads_workload" "production" {
   provider = google-beta
 
-  count = var.assured_workload_configuration != null && var.assured_workload_configuration.enabled ? 1 : 0
+  count = local.enable_assured_workload ? 1 : 0
 
   billing_account              = "billingAccounts/${var.billing_account}"
   compliance_regime            = var.assured_workload_configuration.compliance_regime
-  display_name                 = "${var.folder_prefix}-assured-workload"
+  display_name                 = local.assured_workload_display_name
   location                     = var.assured_workload_configuration.location
   organization                 = var.org_id
   provisioned_resources_parent = module.env.env_folder

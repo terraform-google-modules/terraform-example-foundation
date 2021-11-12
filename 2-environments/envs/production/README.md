@@ -16,6 +16,7 @@
 
 | Name | Description |
 |------|-------------|
+| assured\_workload\_folder\_display\_name | Assured Workload folder display name. |
 | base\_shared\_vpc\_project\_id | Project for base shared VPC. |
 | env\_folder | Environment folder created under parent. |
 | env\_secrets\_project\_id | Project for environment related secrets. |

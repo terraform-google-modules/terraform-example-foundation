@@ -38,3 +38,8 @@ output "env_secrets_project_id" {
   description = "Project for environment related secrets."
   value       = module.env.env_secrets_project_id
 }
+
+output "assured_workload_folder_display_name" {
+  description = "Assured Workload folder display name."
+  value       = local.enable_assured_workload ? local.assured_workload_display_name : ""
+}

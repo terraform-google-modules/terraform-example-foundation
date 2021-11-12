@@ -46,5 +46,5 @@ output "assured_workload_parent_folder_id" {
 
 output "assured_workload_id" {
   description = "Assured Workload ID."
-  value       = local.enable_assured_workload ? google_assured_workloads_workload[0].workload.id : ""
+  value       = local.enable_assured_workload ? google_assured_workloads_workload.workload[0].id : ""
 }

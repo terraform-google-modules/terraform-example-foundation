@@ -67,7 +67,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 **Note 1:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
-**Note 2:** It is possible to create a folder for [Assured Workloads environments](https://cloud.google.com/assured-workloads/docs/create-folder) in the production environment. Follow the instructions for your build environment. If the folder is created, complete the Assured Workloads folder onboarding [form](https://cloud.google.com/assured-workloads/docs/create-folder#create_a_new_folder). The display name of the folder created is in the `assured_workload_folder_display_name` output of the production environment.
+**Note 2:** A folder for [Assured Workloads environments](https://cloud.google.com/assured-workloads/docs/create-folder) is created in the production environment. The ID of the folder created is in the `assured_workload_parent_folder_id` output of the production environment.
+To use Assured Workloads complete the Assured Workloads folder onboarding [form](https://cloud.google.com/assured-workloads/docs/create-folder#create_a_new_folder) and after receiving confirmation follow the instructions for your build environment to create a workload.
+**Assured Workload is a paid service.** see **Pricing** section in the [documentation](https://cloud.google.com/assured-workloads).
 
 ### Deploying with Cloud Build
 

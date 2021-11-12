@@ -17,7 +17,7 @@
 locals {
   assured_workloads_folder = "${var.folder_prefix}-assured-workloads"
   enable_assured_workload  = lookup(var.assured_workload_configuration, "enabled", false)
-  assured_workload_project = "${var.project_prefix}-p-aw-regional-${random_id.suffix.hex}"
+  assured_workload_project = "${var.project_prefix}-aw-p-regional-${random_id.suffix.hex}"
 }
 
 resource "random_id" "suffix" {
@@ -34,7 +34,7 @@ resource "google_assured_workloads_workload" "workload" {
 
   billing_account              = "billingAccounts/${var.billing_account}"
   compliance_regime            = var.assured_workload_configuration.compliance_regime
-  display_name                 = "${var.folder_prefix}-workload"
+  display_name                 = "regional assured workload"
   location                     = var.assured_workload_configuration.location
   organization                 = var.org_id
   provisioned_resources_parent = google_folder.assured_workloads.name

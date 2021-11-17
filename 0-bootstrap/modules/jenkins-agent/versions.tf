@@ -26,5 +26,11 @@ terraform {
       source  = "hashicorp/google-beta"
       version = ">= 3.50"
     }
+    random = {
+      source = "hashicorp/random"
+    }
+    template = {
+      source = "hashicorp/template"
+    }
   }
 }

@@ -131,7 +131,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
 module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 0.4.0"
+  version = "~> 1.3.0"
   count   = var.mode != "spoke" ? 1 : 0
   name    = "cr-${local.vpc_name}-${var.default_region1}-cr1"
   project = var.project_id

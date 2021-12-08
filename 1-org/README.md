@@ -112,7 +112,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    ```
 1. Copy contents of policy-library to new repo.
    ```
-   cp -RT ../terraform-example-foundation/policy-library/ .
+   cp -RT ../policy-library/ .
    ```
 
 1. Commit changes.

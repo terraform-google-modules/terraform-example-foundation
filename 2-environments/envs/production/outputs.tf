@@ -40,7 +40,7 @@ output "env_secrets_project_id" {
 }
 
 output "assured_workload_parent_folder_id" {
-  description = "Assured Workload parent folder ID."
+  description = "Assured Workload parent folder ID. This folder ID must be used in the [onboarding form](https://cloud.google.com/assured-workloads/docs/create-folder#create_a_new_folder)."
   value       = google_folder.assured_workloads.name
 }
 

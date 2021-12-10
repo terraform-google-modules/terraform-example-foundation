@@ -68,7 +68,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 **Note 2:** A folder for [Assured Workloads environments](https://cloud.google.com/assured-workloads/docs/create-folder) is created in the production environment. The ID of the folder created is in the `assured_workload_parent_folder_id` output of the production environment.
-To use Assured Workloads complete the Assured Workloads folder onboarding [form](https://cloud.google.com/assured-workloads/docs/create-folder#create_a_new_folder) and after receiving confirmation follow the instructions for your build environment to create a workload.
+If you will not use Assured Workloads, you can ignore this folder.
+To use Assured Workloads, complete the Assured Workloads folder onboarding [form](https://cloud.google.com/assured-workloads/docs/create-folder#create_a_new_folder) using the folder created
+and **after** receiving a confirmation email, follow the instructions for your build environment to create an assured workload project.
 **Assured Workload is a paid service.** see **Pricing** section in the [documentation](https://cloud.google.com/assured-workloads).
 
 ### Deploying with Cloud Build
@@ -102,7 +104,7 @@ To use Assured Workloads complete the Assured Workloads folder onboarding [form]
    chmod 755 ./tf-wrapper.sh
    ```
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `terraform.tfvars` file.
-1. To enable [Assured Workloads](https://cloud.google.com/assured-workloads) in the production folder, rename `./envs/production/assured_workload.auto.example.tfvars` to `./envs/production/assured_workload.auto.tfvars` and update the file with values from your environment. See the envs production folder [README.md](./envs/production/README.md) file for additional information on the values in the `terraform.tfvars` file.
+1. To enable [Assured Workloads](https://cloud.google.com/assured-workloads) in the production folder, rename `./envs/production/assured_workload.auto.example.tfvars` to `./envs/production/assured_workload.auto.tfvars` and update the file with values from your environment. See the envs production folder [README.md](./envs/production/README.md) file for additional information on the values in the `terraform.tfvars` file. **Only enable Assured Workloads if you have successfully completed** the [onboarding process](https://cloud.google.com/assured-workloads/docs/create-folder#create_a_new_folder) for the folder created in a previous execution of the foundation. **Assured Workload is a paid service.** see **Pricing** section in the [documentation](https://cloud.google.com/assured-workloads).
 1. Commit changes.
    ```
    git add .

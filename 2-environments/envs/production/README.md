@@ -17,7 +17,7 @@
 | Name | Description |
 |------|-------------|
 | assured\_workload\_id | Assured Workload ID. |
-| assured\_workload\_parent\_folder\_id | Assured Workload parent folder ID. |
+| assured\_workload\_parent\_folder\_id | Assured Workload parent folder ID. This folder ID must be used in the [onboarding form](https://cloud.google.com/assured-workloads/docs/create-folder#create_a_new_folder). |
 | base\_shared\_vpc\_project\_id | Project for base shared VPC. |
 | env\_folder | Environment folder created under parent. |
 | env\_secrets\_project\_id | Project for environment related secrets. |

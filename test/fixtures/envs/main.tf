@@ -44,7 +44,7 @@ module "production" {
   project_prefix             = var.project_prefix
 
   assured_workload_configuration = {
-    enabled           = true
+    enabled           = false
     location          = "us-central1"
     compliance_regime = "FEDRAMP_MODERATE"
   }

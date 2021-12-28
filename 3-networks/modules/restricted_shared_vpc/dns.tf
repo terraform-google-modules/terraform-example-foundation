@@ -57,7 +57,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "restricted_googleapis" {
   source      = "terraform-google-modules/cloud-dns/google"
-  version     = "~> 3.0"
+  version     = "~> 4.1"
   project_id  = var.project_id
   type        = "private"
   name        = "dz-${var.environment_code}-shared-restricted-apis"

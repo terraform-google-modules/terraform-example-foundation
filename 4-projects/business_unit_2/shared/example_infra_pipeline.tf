@@ -49,6 +49,7 @@ module "infra_pipelines" {
   project_prefix              = var.project_prefix
   billing_account             = var.billing_account
   default_region              = var.default_region
+  bucket_region               = var.location_gcs
   app_infra_repos             = ["bu2-example-app"]
 }
 

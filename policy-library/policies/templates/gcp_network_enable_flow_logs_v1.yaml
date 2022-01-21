@@ -60,8 +60,8 @@ spec:
 
         	network := asset.resource.data
         	log_config := lib.get_default(network, "logConfig", {})
-          enable_flow_logs := lib.get_default(log_config, "enable", false)
-          enable_flow_logs == false
+        	enable_flow_logs := lib.get_default(log_config, "enable", false)
+        	enable_flow_logs == false
 
         	message := sprintf("Flow logs are disabled in subnetwork %v.", [asset.name])
         	metadata := {"resource": asset.name}

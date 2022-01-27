@@ -17,7 +17,6 @@
 locals {
   assured_workloads_folder = "${var.folder_prefix}-assured-workloads"
   enable_assured_workload  = lookup(var.assured_workload_configuration, "enabled", false)
-  assured_workload_project = "${var.project_prefix}-aw-p-regional-${random_id.suffix.hex}"
 }
 
 resource "random_id" "suffix" {
@@ -40,7 +39,6 @@ resource "google_assured_workloads_workload" "workload" {
   provisioned_resources_parent = google_folder.assured_workloads.name
 
   resource_settings {
-    resource_id   = local.assured_workload_project
-    resource_type = "CONSUMER_PROJECT"
+    resource_type = "CONSUMER_FOLDER"
   }
 }

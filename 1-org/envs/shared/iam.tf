@@ -23,12 +23,19 @@ resource "google_organization_iam_audit_config" "org_config" {
   org_id  = var.org_id
   service = "allServices"
 
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-  audit_log_config {
-    log_type = "DATA_WRITE"
-  }
+  ###################################################################################################
+  ### Audit logs can generate costs, to know more about it,
+  ### check the official documentation: https://cloud.google.com/stackdriver/pricing#logging-costs
+  ### To know more about audit logs, you can find more infos
+  ### here https://cloud.google.com/logging/docs/audit/configure-data-access
+  ### To enable all audit logs, uncomment the code below.
+  ####################################################################################################
+  # audit_log_config {
+  #   log_type = "DATA_READ"
+  # }
+  # audit_log_config {
+  #   log_type = "DATA_WRITE"
+  # }
   audit_log_config {
     log_type = "ADMIN_READ"
   }
@@ -39,12 +46,19 @@ resource "google_folder_iam_audit_config" "folder_config" {
   folder  = "folders/${var.parent_folder}"
   service = "allServices"
 
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-  audit_log_config {
-    log_type = "DATA_WRITE"
-  }
+  ###################################################################################################
+  ### Audit logs can generate costs, to know more about it,
+  ### check the official documentation: https://cloud.google.com/stackdriver/pricing#logging-costs
+  ### To know more about audit logs, you can find more infos
+  ### here https://cloud.google.com/logging/docs/audit/configure-data-access
+  ### To enable all audit logs, uncomment the code below.
+  ####################################################################################################
+  # audit_log_config {
+  #   log_type = "DATA_READ"
+  # }
+  # audit_log_config {
+  #   log_type = "DATA_WRITE"
+  # }
   audit_log_config {
     log_type = "ADMIN_READ"
   }

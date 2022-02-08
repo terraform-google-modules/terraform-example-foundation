@@ -33,15 +33,13 @@ resource "google_organization_iam_audit_config" "org_config" {
   ### To know more about audit logs, you can find more infos
   ### here https://cloud.google.com/logging/docs/audit/configure-data-access
   ### To enable DATA_READ and DATA_WRITE audit logs, set `data_access_logs_enabled` to true
+  ### ADMIN_READ logs are enabled by default.
   ####################################################################################################
   dynamic "audit_log_config" {
-    for_each = local.enabling_data_logs
+    for_each = setunion(local.enabling_data_logs, ["ADMIN_READ"])
     content {
       log_type = each.value
     }
-  }
-  audit_log_config {
-    log_type = "ADMIN_READ"
   }
 }
 
@@ -56,15 +54,13 @@ resource "google_folder_iam_audit_config" "folder_config" {
   ### To know more about audit logs, you can find more infos
   ### here https://cloud.google.com/logging/docs/audit/configure-data-access
   ### To enable DATA_READ and DATA_WRITE audit logs, set `data_access_logs_enabled` to true
+  ### ADMIN_READ logs are enabled by default.
   ####################################################################################################
   dynamic "audit_log_config" {
-    for_each = local.enabling_data_logs
+    for_each = setunion(local.enabling_data_logs, ["ADMIN_READ"])
     content {
       log_type = each.value
     }
-  }
-  audit_log_config {
-    log_type = "ADMIN_READ"
   }
 }
 

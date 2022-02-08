@@ -18,8 +18,12 @@
   Audit Logs - IAM
 *****************************************/
 
+locals {
+  enabling_data_logs = var.data_access_logs_enabled ? ["DATA_WRITE", "DATA_READ"] : []
+}
+
 resource "google_organization_iam_audit_config" "org_config" {
-  count   = var.data_access_logs_enabled && var.parent_folder == "" ? 1 : 0
+  count   = var.parent_folder == "" ? 1 : 0
   org_id  = var.org_id
   service = "allServices"
 
@@ -28,21 +32,21 @@ resource "google_organization_iam_audit_config" "org_config" {
   ### check the official documentation: https://cloud.google.com/stackdriver/pricing#logging-costs
   ### To know more about audit logs, you can find more infos
   ### here https://cloud.google.com/logging/docs/audit/configure-data-access
-  ### To enable all audit logs, uncomment the code below.
+  ### To enable DATA_READ and DATA_WRITE audit logs, set `data_access_logs_enabled` to true
   ####################################################################################################
-  # audit_log_config {
-  #   log_type = "DATA_READ"
-  # }
-  # audit_log_config {
-  #   log_type = "DATA_WRITE"
-  # }
+  dynamic "audit_log_config" {
+    for_each = local.enabling_data_logs
+    content {
+      log_type = each.value
+    }
+  }
   audit_log_config {
     log_type = "ADMIN_READ"
   }
 }
 
 resource "google_folder_iam_audit_config" "folder_config" {
-  count   = var.data_access_logs_enabled && var.parent_folder != "" ? 1 : 0
+  count   = var.parent_folder != "" ? 1 : 0
   folder  = "folders/${var.parent_folder}"
   service = "allServices"
 
@@ -51,14 +55,14 @@ resource "google_folder_iam_audit_config" "folder_config" {
   ### check the official documentation: https://cloud.google.com/stackdriver/pricing#logging-costs
   ### To know more about audit logs, you can find more infos
   ### here https://cloud.google.com/logging/docs/audit/configure-data-access
-  ### To enable all audit logs, uncomment the code below.
+  ### To enable DATA_READ and DATA_WRITE audit logs, set `data_access_logs_enabled` to true
   ####################################################################################################
-  # audit_log_config {
-  #   log_type = "DATA_READ"
-  # }
-  # audit_log_config {
-  #   log_type = "DATA_WRITE"
-  # }
+  dynamic "audit_log_config" {
+    for_each = local.enabling_data_logs
+    content {
+      log_type = each.value
+    }
+  }
   audit_log_config {
     log_type = "ADMIN_READ"
   }

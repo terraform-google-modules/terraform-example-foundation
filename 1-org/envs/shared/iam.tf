@@ -38,7 +38,7 @@ resource "google_organization_iam_audit_config" "org_config" {
   dynamic "audit_log_config" {
     for_each = setunion(local.enabling_data_logs, ["ADMIN_READ"])
     content {
-      log_type = each.value
+      log_type = each.key
     }
   }
 }
@@ -59,7 +59,7 @@ resource "google_folder_iam_audit_config" "folder_config" {
   dynamic "audit_log_config" {
     for_each = setunion(local.enabling_data_logs, ["ADMIN_READ"])
     content {
-      log_type = each.value
+      log_type = each.key
     }
   }
 }

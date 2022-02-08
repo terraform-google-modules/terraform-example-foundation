@@ -99,7 +99,7 @@ variable "create_access_context_manager_access_policy" {
 variable "data_access_logs_enabled" {
   description = "Enable Data Access logs of types DATA_READ, DATA_WRITE for all GCP services. Enabling Data Access logs might result in your organization being charged for the additional logs usage. See https://cloud.google.com/logging/docs/audit#data-access The ADMIN_READ logs are enabled by default."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "log_export_storage_location" {

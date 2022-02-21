@@ -21,7 +21,7 @@
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step. | `string` | `""` | no |
-| peering\_module\_depends\_on | List of modules or resources peering module depends on. | `list` | `[]` | no |
+| peering\_module\_depends\_on | List of modules or resources peering module depends on. | `list(any)` | `[]` | no |
 | perimeter\_name | Access context manager service perimeter name to attach the restricted svpc project. | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
 | secrets\_prj\_suffix | Name suffix to use for secrets project created. | `string` | `"env-secrets"` | no |

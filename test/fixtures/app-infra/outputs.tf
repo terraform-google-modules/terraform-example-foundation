@@ -22,6 +22,7 @@ output "dev_bu1_instances_self_links" {
 output "dev_bu1_instances_details" {
   description = "List of details for compute instances"
   value       = module.app_infra_bu1_development.instances_details
+  sensitive   = true
 }
 
 output "dev_bu1_instances_names" {
@@ -57,6 +58,7 @@ output "nonprod_bu1_instances_self_links" {
 output "nonprod_bu1_instances_details" {
   description = "List of details for compute instances"
   value       = module.app_infra_bu1_nonproduction.instances_details
+  sensitive   = true
 }
 
 output "nonprod_bu1_instances_names" {
@@ -92,6 +94,7 @@ output "prod_bu1_instances_self_links" {
 output "prod_bu1_instances_details" {
   description = "List of details for compute instances"
   value       = module.app_infra_bu1_production.instances_details
+  sensitive   = true
 }
 
 output "prod_bu1_instances_names" {

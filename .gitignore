@@ -31,6 +31,9 @@ Session.vim
 # Local tfvars terraform.tfvars
 **/*.tfvars
 
+# tf lock file
+**/.terraform.lock.hcl
+
 # Crash log files
 crash.log
 

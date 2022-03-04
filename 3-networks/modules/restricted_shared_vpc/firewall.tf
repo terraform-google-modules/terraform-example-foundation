@@ -68,3 +68,53 @@ resource "google_compute_firewall" "allow_restricted_api_egress" {
 
   target_tags = ["allow-google-apis"]
 }
+
+resource "google_compute_firewall" "allow_all_egress" {
+  count     = var.allow_all_egress_ranges != null ? 1 : 0
+  name      = "fw-${var.environment_code}-shared-base-1000-e-a-all"
+  network   = module.main.network_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 1000
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
+
+  allow {
+    protocol = "all"
+  }
+
+  destination_ranges = var.allow_all_egress_ranges
+}
+
+resource "google_compute_firewall" "allow_all_ingress" {
+  count     = var.allow_all_ingress_ranges != null ? 1 : 0
+  name      = "fw-${var.environment_code}-shared-base-1000-i-a-all"
+  network   = module.main.network_name
+  project   = var.project_id
+  direction = "INGRESS"
+  priority  = 1000
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
+
+  allow {
+    protocol = "all"
+  }
+
+  source_ranges = var.allow_all_ingress_ranges
+}

@@ -139,18 +139,6 @@ variable "restricted_hub_firewall_enable_logging" {
   default     = true
 }
 
-variable "base_hub_optional_fw_rules_enabled" {
-  type        = bool
-  description = "Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges in Base Hub VPC."
-  default     = false
-}
-
-variable "restricted_hub_optional_fw_rules_enabled" {
-  type        = bool
-  description = "Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges in Restricted Hub VPC."
-  default     = false
-}
-
 variable "base_hub_nat_enabled" {
   type        = bool
   description = "Toggle creation of NAT cloud router in Base Hub."

@@ -109,11 +109,10 @@ module "restricted_shared_vpc" {
   default_region1                  = var.default_region1
   default_region2                  = var.default_region2
   domain                           = var.domain
-  windows_activation_enabled       = var.windows_activation_enabled
   dns_enable_inbound_forwarding    = var.dns_enable_inbound_forwarding
   dns_enable_logging               = var.dns_enable_logging
   firewall_enable_logging          = var.firewall_enable_logging
-  optional_fw_rules_enabled        = var.optional_fw_rules_enabled
+  windows_activation_enabled       = var.windows_activation_enabled
   nat_enabled                      = var.nat_enabled
   nat_bgp_asn                      = var.nat_bgp_asn
   nat_num_addresses_region1        = var.nat_num_addresses_region1
@@ -165,7 +164,6 @@ module "base_shared_vpc" {
   dns_enable_inbound_forwarding = var.dns_enable_inbound_forwarding
   dns_enable_logging            = var.dns_enable_logging
   firewall_enable_logging       = var.firewall_enable_logging
-  optional_fw_rules_enabled     = var.optional_fw_rules_enabled
   nat_enabled                   = var.nat_enabled
   nat_bgp_asn                   = var.nat_bgp_asn
   nat_num_addresses_region1     = var.nat_num_addresses_region1

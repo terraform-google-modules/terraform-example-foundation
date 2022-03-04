@@ -21,7 +21,6 @@
 | nat\_enabled | Toggle creation of NAT cloud router. | `bool` | `false` | no |
 | nat\_num\_addresses\_region1 | Number of external IPs to reserve for region 1 Cloud NAT. | `number` | `2` | no |
 | nat\_num\_addresses\_region2 | Number of external IPs to reserve for region 2 Cloud NAT. | `number` | `2` | no |
-| optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | org\_id | Organization ID | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | `string` | `null` | no |

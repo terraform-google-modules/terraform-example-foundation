@@ -86,7 +86,7 @@ module "ilbs" {
   network                 = var.vpc_name
   subnetwork              = var.gw_subnets[each.key]
   source_ip_ranges        = flatten(values(var.regional_aggregates))
-  target_service_accounts = [module.service_account.emails["transitivity-gw"]]
+  target_service_accounts = [module.service_account.email]
   source_tags             = null
   target_tags             = null
   create_backend_firewall = false
@@ -150,7 +150,7 @@ resource "google_compute_firewall" "allow_transtivity_ingress" {
   }
 
   source_ranges           = flatten(values(var.regional_aggregates))
-  target_service_accounts = [module.service_account.emails["transitivity-gw"]]
+  target_service_accounts = [module.service_account.email]
 }
 
 resource "google_compute_firewall" "allow_transitivity_egress" {
@@ -175,5 +175,5 @@ resource "google_compute_firewall" "allow_transitivity_egress" {
   }
 
   destination_ranges      = flatten(values(var.regional_aggregates))
-  target_service_accounts = [module.service_account.emails["transitivity-gw"]]
+  target_service_accounts = [module.service_account.email]
 }

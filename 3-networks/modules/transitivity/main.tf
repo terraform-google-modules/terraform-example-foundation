@@ -40,7 +40,7 @@ module "templates" {
   project_id     = var.project_id
   region         = each.key
   service_account = {
-    email  = module.service_account.emails["transitivity-gw"]
+    email  = module.service_account.email
     scopes = ["cloud-platform"]
   }
   metadata = {

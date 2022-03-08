@@ -46,7 +46,7 @@ module "templates" {
   metadata = {
     user-data = templatefile("${path.module}/assets/gw.yaml", { commands = var.commands })
   }
-  source_image       = "cos-stable-85-13310-1209-10"
+  # source_image       = "cos-stable-85-13310-1209-10"
   subnetwork         = var.gw_subnets[each.key]
   subnetwork_project = var.project_id
 }

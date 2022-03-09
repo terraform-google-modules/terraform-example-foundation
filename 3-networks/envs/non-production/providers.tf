@@ -31,4 +31,3 @@ provider "google-beta" {
   impersonate_service_account = local.tf_sa
   request_timeout             = "60s"
 }
-

@@ -28,4 +28,3 @@ provider "google" {
 provider "google-beta" {
   impersonate_service_account = local.tf_sa
 }
-

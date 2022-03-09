@@ -31,7 +31,7 @@ module "service_account" {
 
 module "templates" {
   source         = "terraform-google-modules/vm/google//modules/instance_template"
-  version        = "7.3.0"
+  version        = "7.6.0"
   for_each       = toset(var.regions)
   can_ip_forward = true
   disk_size_gb   = 10
@@ -46,10 +46,10 @@ module "templates" {
   metadata = {
     user-data = templatefile("${path.module}/assets/gw.yaml", { commands = var.commands })
   }
-  # source_image        = "cos-stable-93-16623-102-23"
-  source_image_family = "cos-stable"
-  subnetwork          = var.gw_subnets[each.key]
-  subnetwork_project  = var.project_id
+  source_image         = "cos-stable-93-16623-102-23"
+  source_image_project = "cos-cloud"
+  subnetwork           = var.gw_subnets[each.key]
+  subnetwork_project   = var.project_id
 }
 
 module "migs" {

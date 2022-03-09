@@ -67,15 +67,14 @@ module "base_shared_vpc" {
   default_region1               = var.default_region1
   default_region2               = var.default_region2
   domain                        = var.domain
-  windows_activation_enabled    = var.base_hub_windows_activation_enabled
   dns_enable_inbound_forwarding = var.base_hub_dns_enable_inbound_forwarding
   dns_enable_logging            = var.base_hub_dns_enable_logging
   firewall_enable_logging       = var.base_hub_firewall_enable_logging
-  optional_fw_rules_enabled     = var.base_hub_optional_fw_rules_enabled
   nat_enabled                   = var.base_hub_nat_enabled
   nat_bgp_asn                   = var.base_hub_nat_bgp_asn
   nat_num_addresses_region1     = var.base_hub_nat_num_addresses_region1
   nat_num_addresses_region2     = var.base_hub_nat_num_addresses_region2
+  windows_activation_enabled    = var.base_hub_windows_activation_enabled
   folder_prefix                 = var.folder_prefix
   mode                          = "hub"
 
@@ -121,16 +120,15 @@ module "restricted_shared_vpc" {
   default_region1                  = var.default_region1
   default_region2                  = var.default_region2
   domain                           = var.domain
-  windows_activation_enabled       = var.restricted_hub_windows_activation_enabled
   dns_enable_inbound_forwarding    = var.restricted_hub_dns_enable_inbound_forwarding
   dns_enable_logging               = var.restricted_hub_dns_enable_logging
   firewall_enable_logging          = var.restricted_hub_firewall_enable_logging
-  optional_fw_rules_enabled        = var.restricted_hub_optional_fw_rules_enabled
   nat_enabled                      = var.restricted_hub_nat_enabled
   nat_bgp_asn                      = var.restricted_hub_nat_bgp_asn
   nat_num_addresses_region1        = var.restricted_hub_nat_num_addresses_region1
   nat_num_addresses_region2        = var.restricted_hub_nat_num_addresses_region2
   folder_prefix                    = var.folder_prefix
+  windows_activation_enabled       = var.restricted_hub_windows_activation_enabled
   mode                             = "hub"
 
   subnets = [

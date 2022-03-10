@@ -41,4 +41,5 @@ RUN apt-get update && \
 
 ENV PATH=/builder/terraform/:$PATH
 COPY entrypoint.bash /builder/entrypoint.bash
+RUN chmod +x /builder/entrypoint.bash
 ENTRYPOINT ["/builder/entrypoint.bash"]

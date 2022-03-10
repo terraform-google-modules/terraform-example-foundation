@@ -127,12 +127,6 @@ variable "nat_num_addresses" {
   default     = 2
 }
 
-variable "optional_fw_rules_enabled" {
-  type        = bool
-  description = "Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges."
-  default     = false
-}
-
 variable "parent_folder" {
   description = "Optional - if using a folder for testing."
   type        = string

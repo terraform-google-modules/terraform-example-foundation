@@ -20,7 +20,7 @@
 
 module "service_account" {
   source     = "terraform-google-modules/service-accounts/google"
-  version    = "~> 4.0"
+  version    = "~> 4.1"
   project_id = var.project_id
   names      = ["transitivity-gw"]
   project_roles = [
@@ -31,7 +31,7 @@ module "service_account" {
 
 module "templates" {
   source         = "terraform-google-modules/vm/google//modules/instance_template"
-  version        = "7.3.0"
+  version        = "7.6.0"
   for_each       = toset(var.regions)
   can_ip_forward = true
   disk_size_gb   = 10
@@ -40,15 +40,16 @@ module "templates" {
   project_id     = var.project_id
   region         = each.key
   service_account = {
-    email  = module.service_account.emails["transitivity-gw"]
+    email  = module.service_account.email
     scopes = ["cloud-platform"]
   }
   metadata = {
     user-data = templatefile("${path.module}/assets/gw.yaml", { commands = var.commands })
   }
-  source_image       = "cos-stable-85-13310-1041-161"
-  subnetwork         = var.gw_subnets[each.key]
-  subnetwork_project = var.project_id
+  source_image         = "cos-stable-93-16623-102-23"
+  source_image_project = "cos-cloud"
+  subnetwork           = var.gw_subnets[each.key]
+  subnetwork_project   = var.project_id
 }
 
 module "migs" {
@@ -86,7 +87,7 @@ module "ilbs" {
   network                 = var.vpc_name
   subnetwork              = var.gw_subnets[each.key]
   source_ip_ranges        = flatten(values(var.regional_aggregates))
-  target_service_accounts = [module.service_account.emails["transitivity-gw"]]
+  target_service_accounts = [module.service_account.email]
   source_tags             = null
   target_tags             = null
   create_backend_firewall = false
@@ -150,7 +151,7 @@ resource "google_compute_firewall" "allow_transtivity_ingress" {
   }
 
   source_ranges           = flatten(values(var.regional_aggregates))
-  target_service_accounts = [module.service_account.emails["transitivity-gw"]]
+  target_service_accounts = [module.service_account.email]
 }
 
 resource "google_compute_firewall" "allow_transitivity_egress" {
@@ -175,5 +176,5 @@ resource "google_compute_firewall" "allow_transitivity_egress" {
   }
 
   destination_ranges      = flatten(values(var.regional_aggregates))
-  target_service_accounts = [module.service_account.emails["transitivity-gw"]]
+  target_service_accounts = [module.service_account.email]
 }

@@ -14,16 +14,69 @@
  * limitations under the License.
  */
 
-module "base_env" {
-  source                           = "../../modules/base_env"
+locals {
+  environment_code = "p"
+  env              = "production"
+  /*
+   * Base network ranges
+   */
+  base_private_service_cidr = "10.16.192.0/21"
+  base_subnet_primary_ranges = {
+    (var.default_region1) = "10.0.192.0/21"
+    (var.default_region2) = "10.1.192.0/21"
+  }
+  base_subnet_secondary_ranges = {
+    (var.default_region1) = [
+      {
+        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
+        ip_cidr_range = "100.64.192.0/21"
+      },
+      {
+        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-svc"
+        ip_cidr_range = "100.64.200.0/21"
+      }
+    ]
+  }
+  /*
+   * Restricted network ranges
+   */
+  restricted_private_service_cidr = "10.24.192.0/21"
+  restricted_subnet_primary_ranges = {
+    (var.default_region1) = "10.8.192.0/21"
+    (var.default_region2) = "10.9.192.0/21"
+  }
+  restricted_subnet_secondary_ranges = {
+    (var.default_region1) = [
+      {
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-pod"
+        ip_cidr_range = "100.72.192.0/21"
+      },
+      {
+        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-svc"
+        ip_cidr_range = "100.72.200.0/21"
+      }
+    ]
+  }
+}
 
-  environment_code                 = "p"
-  env                              = "production"
-  org_id                           = var.org_id
-  access_context_manager_policy_id = var.access_context_manager_policy_id
-  terraform_service_account        = var.terraform_service_account
-  default_region1                  = var.default_region1
-  default_region2                  = var.default_region2
-  domain                           = var.domain
-  parent_folder                    = var.parent_folder
+module "base_env" {
+  source = "../../modules/base_env"
+
+  environment_code                   = local.environment_code
+  env                                = local.env
+  org_id                             = var.org_id
+  access_context_manager_policy_id   = var.access_context_manager_policy_id
+  terraform_service_account          = var.terraform_service_account
+  default_region1                    = var.default_region1
+  default_region2                    = var.default_region2
+  domain                             = var.domain
+  parent_folder                      = var.parent_folder
+  enable_hub_and_spoke               = var.enable_hub_and_spoke
+  enable_hub_and_spoke_transitivity  = var.enable_hub_and_spoke_transitivity
+  base_private_service_cidr          = local.base_private_service_cidr
+  base_subnet_primary_ranges         = local.base_subnet_primary_ranges
+  base_subnet_secondary_ranges       = local.base_subnet_secondary_ranges
+  restricted_private_service_cidr    = local.restricted_private_service_cidr
+  restricted_subnet_primary_ranges   = local.restricted_subnet_primary_ranges
+  restricted_subnet_secondary_ranges = local.restricted_subnet_secondary_ranges
 }

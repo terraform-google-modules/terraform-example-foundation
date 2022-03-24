@@ -101,3 +101,39 @@ variable "enable_hub_and_spoke_transitivity" {
   type        = bool
   default     = false
 }
+
+variable "base_private_service_cidr" {
+  type        = string
+  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
+  default     = null
+}
+
+variable "base_subnet_primary_ranges" {
+  type        = map(string)
+  description = "---"
+  default     = null
+}
+
+variable "base_subnet_secondary_ranges" {
+  type        = map(list(map(string)))
+  description = "---"
+  default     = null
+}
+
+variable "restricted_private_service_cidr" {
+  type        = string
+  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
+  default     = null
+}
+
+variable "restricted_subnet_primary_ranges" {
+  type        = map(string)
+  description = "---"
+  default     = null
+}
+
+variable "restricted_subnet_secondary_ranges" {
+  type        = map(list(map(string)))
+  description = "---"
+  default     = null
+}

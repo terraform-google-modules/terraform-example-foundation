@@ -27,47 +27,13 @@ locals {
   /*
    * Base network ranges
    */
-  base_subnet_aggregates    = ["10.0.0.0/16", "10.1.0.0/16", "100.64.0.0/16", "100.65.0.0/16"]
-  base_hub_subnet_ranges    = ["10.0.0.0/24", "10.1.0.0/24"]
-  base_private_service_cidr = "10.16.64.0/21"
-  base_subnet_primary_ranges = {
-    (var.default_region1) = "10.0.64.0/21"
-    (var.default_region2) = "10.1.64.0/21"
-  }
-  base_subnet_secondary_ranges = {
-    (var.default_region1) = [
-      {
-        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
-        ip_cidr_range = "100.64.64.0/21"
-      },
-      {
-        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-svc"
-        ip_cidr_range = "100.64.72.0/21"
-      }
-    ]
-  }
+  base_subnet_aggregates = ["10.0.0.0/16", "10.1.0.0/16", "100.64.0.0/16", "100.65.0.0/16"]
+  base_hub_subnet_ranges = ["10.0.0.0/24", "10.1.0.0/24"]
   /*
    * Restricted network ranges
    */
-  restricted_subnet_aggregates    = ["10.8.0.0/16", "10.9.0.0/16", "100.72.0.0/16", "100.73.0.0/16"]
-  restricted_hub_subnet_ranges    = ["10.8.0.0/24", "10.9.0.0/24"]
-  restricted_private_service_cidr = "10.24.64.0/21"
-  restricted_subnet_primary_ranges = {
-    (var.default_region1) = "10.8.64.0/21"
-    (var.default_region2) = "10.9.64.0/21"
-  }
-  restricted_subnet_secondary_ranges = {
-    (var.default_region1) = [
-      {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-pod"
-        ip_cidr_range = "100.72.64.0/21"
-      },
-      {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-svc"
-        ip_cidr_range = "100.72.72.0/21"
-      }
-    ]
-  }
+  restricted_subnet_aggregates = ["10.8.0.0/16", "10.9.0.0/16", "100.72.0.0/16", "100.73.0.0/16"]
+  restricted_hub_subnet_ranges = ["10.8.0.0/24", "10.9.0.0/24"]
 }
 
 data "google_active_folder" "env" {
@@ -102,7 +68,7 @@ module "restricted_shared_vpc" {
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = ["bigquery.googleapis.com", "storage.googleapis.com"]
   members                          = ["serviceAccount:${var.terraform_service_account}"]
-  private_service_cidr             = local.restricted_private_service_cidr
+  private_service_cidr             = var.restricted_private_service_cidr
   org_id                           = var.org_id
   parent_folder                    = var.parent_folder
   bgp_asn_subnet                   = local.bgp_asn_number
@@ -114,7 +80,7 @@ module "restricted_shared_vpc" {
   subnets = [
     {
       subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.default_region1}"
-      subnet_ip             = local.restricted_subnet_primary_ranges[var.default_region1]
+      subnet_ip             = var.restricted_subnet_primary_ranges[var.default_region1]
       subnet_region         = var.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
@@ -122,7 +88,7 @@ module "restricted_shared_vpc" {
     },
     {
       subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.default_region2}"
-      subnet_ip             = local.restricted_subnet_primary_ranges[var.default_region2]
+      subnet_ip             = var.restricted_subnet_primary_ranges[var.default_region2]
       subnet_region         = var.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
@@ -130,7 +96,7 @@ module "restricted_shared_vpc" {
     }
   ]
   secondary_ranges = {
-    "sb-${local.environment_code}-shared-restricted-${var.default_region1}" = local.restricted_subnet_secondary_ranges[var.default_region1]
+    "sb-${local.environment_code}-shared-restricted-${var.default_region1}" = var.restricted_subnet_secondary_ranges[var.default_region1]
   }
   allow_all_ingress_ranges = local.enable_transitivity ? local.restricted_hub_subnet_ranges : null
   allow_all_egress_ranges  = local.enable_transitivity ? local.restricted_subnet_aggregates : null
@@ -141,23 +107,23 @@ module "restricted_shared_vpc" {
 *****************************************/
 
 module "base_shared_vpc" {
-  source                        = "../base_shared_vpc"
-  project_id                    = local.base_project_id
-  environment_code              = local.environment_code
-  private_service_cidr          = local.base_private_service_cidr
-  org_id                        = var.org_id
-  parent_folder                 = var.parent_folder
-  default_region1               = var.default_region1
-  default_region2               = var.default_region2
-  domain                        = var.domain
-  bgp_asn_subnet                = local.bgp_asn_number
-  nat_bgp_asn                   = var.nat_bgp_asn
-  mode                          = local.mode
+  source               = "../base_shared_vpc"
+  project_id           = local.base_project_id
+  environment_code     = local.environment_code
+  private_service_cidr = var.base_private_service_cidr
+  org_id               = var.org_id
+  parent_folder        = var.parent_folder
+  default_region1      = var.default_region1
+  default_region2      = var.default_region2
+  domain               = var.domain
+  bgp_asn_subnet       = local.bgp_asn_number
+  nat_bgp_asn          = var.nat_bgp_asn
+  mode                 = local.mode
 
   subnets = [
     {
       subnet_name           = "sb-${local.environment_code}-shared-base-${var.default_region1}"
-      subnet_ip             = local.base_subnet_primary_ranges[var.default_region1]
+      subnet_ip             = var.base_subnet_primary_ranges[var.default_region1]
       subnet_region         = var.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
@@ -165,7 +131,7 @@ module "base_shared_vpc" {
     },
     {
       subnet_name           = "sb-${local.environment_code}-shared-base-${var.default_region2}"
-      subnet_ip             = local.base_subnet_primary_ranges[var.default_region2]
+      subnet_ip             = var.base_subnet_primary_ranges[var.default_region2]
       subnet_region         = var.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
@@ -173,7 +139,7 @@ module "base_shared_vpc" {
     }
   ]
   secondary_ranges = {
-    "sb-${local.environment_code}-shared-base-${var.default_region1}" = local.base_subnet_secondary_ranges[var.default_region1]
+    "sb-${local.environment_code}-shared-base-${var.default_region1}" = var.base_subnet_secondary_ranges[var.default_region1]
   }
   allow_all_ingress_ranges = local.enable_transitivity ? local.base_hub_subnet_ranges : null
   allow_all_egress_ranges  = local.enable_transitivity ? local.base_subnet_aggregates : null

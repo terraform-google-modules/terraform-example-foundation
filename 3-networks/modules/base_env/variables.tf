@@ -104,36 +104,30 @@ variable "enable_hub_and_spoke_transitivity" {
 
 variable "base_private_service_cidr" {
   type        = string
-  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
-  default     = null
+  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services in the Base Shared Vpc."
 }
 
 variable "base_subnet_primary_ranges" {
   type        = map(string)
-  description = "---"
-  default     = null
+  description = "The base subnet primary IPTs ranges to the Base Shared Vpc."
 }
 
 variable "base_subnet_secondary_ranges" {
   type        = map(list(map(string)))
-  description = "---"
-  default     = null
+  description = "The base subnet secondary IPTs ranges to the Base Shared Vpc."
 }
 
 variable "restricted_private_service_cidr" {
   type        = string
-  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
-  default     = null
+  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services in the Restricted Shared Vpc."
 }
 
 variable "restricted_subnet_primary_ranges" {
   type        = map(string)
-  description = "---"
-  default     = null
+  description = "The base subnet primary IPTs ranges to the Restricted Shared Vpc."
 }
 
 variable "restricted_subnet_secondary_ranges" {
   type        = map(list(map(string)))
-  description = "---"
-  default     = null
+  description = "The base subnet secondary IPTs ranges to the Restricted Shared Vpc"
 }

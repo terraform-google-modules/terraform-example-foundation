@@ -1,24 +1,12 @@
-# 3-networks/development
-
-The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated Interconnect, onprem VPN and baseline firewall rules for environment development.
-
-## Prerequisites
-
-1. 0-bootstrap executed successfully.
-1. 1-org executed successfully.
-1. 2-environments/envs/development executed successfully.
-1. 3-networks/envs/shared executed successfully.
-1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`.
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`. | `number` | n/a | yes |
-| base\_private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | `string` | `null` | no |
-| base\_subnet\_primary\_ranges | --- | `map(string)` | `null` | no |
-| base\_subnet\_secondary\_ranges | --- | `map(list(map(string)))` | `null` | no |
+| base\_private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services in the Base Shared Vpc. | `string` | n/a | yes |
+| base\_subnet\_primary\_ranges | The base subnet primary IPTs ranges to the Base Shared Vpc. | `map(string)` | n/a | yes |
+| base\_subnet\_secondary\_ranges | The base subnet secondary IPTs ranges to the Base Shared Vpc. | `map(list(map(string)))` | n/a | yes |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | `string` | n/a | yes |
 | default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | `string` | n/a | yes |
 | domain | The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period. | `string` | n/a | yes |
@@ -32,9 +20,9 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | org\_id | Organization ID | `string` | n/a | yes |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step. | `string` | `""` | no |
 | preactivate\_partner\_interconnect | Preactivate Partner Interconnect VLAN attachment in the environment. | `bool` | `false` | no |
-| restricted\_private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | `string` | `null` | no |
-| restricted\_subnet\_primary\_ranges | --- | `map(string)` | `null` | no |
-| restricted\_subnet\_secondary\_ranges | --- | `map(list(map(string)))` | `null` | no |
+| restricted\_private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services in the Restricted Shared Vpc. | `string` | n/a | yes |
+| restricted\_subnet\_primary\_ranges | The base subnet primary IPTs ranges to the Restricted Shared Vpc. | `map(string)` | n/a | yes |
+| restricted\_subnet\_secondary\_ranges | The base subnet secondary IPTs ranges to the Restricted Shared Vpc | `map(list(map(string)))` | n/a | yes |
 | subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetworks. | `bool` | `true` | no |
 | terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
 

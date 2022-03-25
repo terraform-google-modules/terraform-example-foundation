@@ -23,7 +23,7 @@ module "shared_restricted_interconnect" {
   environment                    = local.env
   enable_hub_and_spoke           = var.enable_hub_and_spoke
   vpc_type                       = "restricted"
-  preactivate                    = var.preactivate_partner_interconnect
+  preactivate                    = true
 
   region1                        = var.default_region1
   region1_router1_name           = module.restricted_shared_vpc.region1_router1.router.name
@@ -54,7 +54,7 @@ module "shared_base_interconnect" {
   environment                    = local.env
   enable_hub_and_spoke           = var.enable_hub_and_spoke
   vpc_type                       = "base"
-  preactivate                    = var.preactivate_partner_interconnect
+  preactivate                    = true
 
   region1                        = var.default_region1
   region1_router1_name           = module.base_shared_vpc.region1_router1.router.name

@@ -54,18 +54,6 @@ variable "domain" {
   description = "The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period."
 }
 
-variable "subnetworks_enable_logging" {
-  type        = bool
-  description = "Toggle subnetworks flow logging for VPC Subnetworks."
-  default     = true
-}
-
-variable "nat_bgp_asn" {
-  type        = number
-  description = "BGP ASN for first NAT cloud routes."
-  default     = 64514
-}
-
 variable "parent_folder" {
   description = "Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step."
   type        = string

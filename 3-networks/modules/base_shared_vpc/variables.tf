@@ -54,7 +54,7 @@ variable "nat_enabled" {
 variable "nat_bgp_asn" {
   type        = number
   description = "BGP ASN for first NAT cloud routes."
-  default     = 0
+  default     = 64514
 }
 
 variable "nat_num_addresses_region1" {

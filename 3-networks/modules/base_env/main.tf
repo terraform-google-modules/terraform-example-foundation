@@ -83,7 +83,7 @@ module "restricted_shared_vpc" {
       subnet_ip             = var.restricted_subnet_primary_ranges[var.default_region1]
       subnet_region         = var.default_region1
       subnet_private_access = "true"
-      subnet_flow_logs      = var.subnetworks_enable_logging
+      subnet_flow_logs      = true
       description           = "First ${local.env} subnet example."
     },
     {
@@ -91,7 +91,7 @@ module "restricted_shared_vpc" {
       subnet_ip             = var.restricted_subnet_primary_ranges[var.default_region2]
       subnet_region         = var.default_region2
       subnet_private_access = "true"
-      subnet_flow_logs      = var.subnetworks_enable_logging
+      subnet_flow_logs      = true
       description           = "Second ${local.env} subnet example."
     }
   ]
@@ -117,7 +117,6 @@ module "base_shared_vpc" {
   default_region2      = var.default_region2
   domain               = var.domain
   bgp_asn_subnet       = local.bgp_asn_number
-  nat_bgp_asn          = var.nat_bgp_asn
   mode                 = local.mode
 
   subnets = [
@@ -126,7 +125,7 @@ module "base_shared_vpc" {
       subnet_ip             = var.base_subnet_primary_ranges[var.default_region1]
       subnet_region         = var.default_region1
       subnet_private_access = "true"
-      subnet_flow_logs      = var.subnetworks_enable_logging
+      subnet_flow_logs      = true
       description           = "First ${local.env} subnet example."
     },
     {
@@ -134,7 +133,7 @@ module "base_shared_vpc" {
       subnet_ip             = var.base_subnet_primary_ranges[var.default_region2]
       subnet_region         = var.default_region2
       subnet_private_access = "true"
-      subnet_flow_logs      = var.subnetworks_enable_logging
+      subnet_flow_logs      = true
       description           = "Second ${local.env} subnet example."
     }
   ]

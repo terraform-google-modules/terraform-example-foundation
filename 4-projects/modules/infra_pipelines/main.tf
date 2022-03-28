@@ -74,6 +74,7 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
   location = var.bucket_region
 
   uniform_bucket_level_access = true
+  force_destroy               = true
   versioning {
     enabled = true
   }

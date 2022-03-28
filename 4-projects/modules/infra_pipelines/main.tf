@@ -15,12 +15,14 @@
  */
 
 locals {
-  gar_repo_name        = var.gar_repo_name != "" ? var.gar_repo_name : format("%s-%s", var.project_prefix, "tf-runners")
-  gar_name             = split("/", google_artifact_registry_repository.tf-image-repo.name)[length(split("/", google_artifact_registry_repository.tf-image-repo.name)) - 1]
-  created_csrs         = toset([for repo in google_sourcerepo_repository.app_infra_repo : repo.name])
-  artifact_buckets     = { for created_csr in local.created_csrs : "${created_csr}-ab" => format("%s-%s-%s", created_csr, "cloudbuild-artifacts", random_id.suffix.hex) }
-  state_buckets        = { for created_csr in local.created_csrs : "${created_csr}-tfstate" => format("%s-%s-%s", created_csr, "tfstate", random_id.suffix.hex) }
-  apply_branches_regex = "^(${join("|", var.terraform_apply_branches)})$"
+  gar_repo_name          = var.gar_repo_name != "" ? var.gar_repo_name : format("%s-%s", var.project_prefix, "tf-runners")
+  gar_name               = split("/", google_artifact_registry_repository.tf-image-repo.name)[length(split("/", google_artifact_registry_repository.tf-image-repo.name)) - 1]
+  created_csrs           = toset([for repo in google_sourcerepo_repository.app_infra_repo : repo.name])
+  artifact_buckets       = { for created_csr in local.created_csrs : "${created_csr}-ab" => format("%s-%s-%s", created_csr, "cloudbuild-artifacts", random_id.suffix.hex) }
+  state_buckets          = { for created_csr in local.created_csrs : "${created_csr}-tfstate" => format("%s-%s-%s", created_csr, "tfstate", random_id.suffix.hex) }
+  apply_branches_regex   = "^(${join("|", var.terraform_apply_branches)})$"
+  cloudbuild_bucket_name = "${var.cloudbuild_project_id}_cloudbuild"
+  cloudbuild_bucket      = { "cloudbuild" = local.cloudbuild_bucket_name }
 }
 
 # Create CSRs
@@ -66,13 +68,29 @@ resource "google_storage_bucket" "cloudbuild_artifacts" {
   }
 }
 
+resource "google_storage_bucket" "cloudbuild_bucket" {
+  project  = var.cloudbuild_project_id
+  name     = local.cloudbuild_bucket_name
+  location = var.bucket_region
+
+  uniform_bucket_level_access = true
+  versioning {
+    enabled = true
+  }
+}
+
 # IAM for Cloud Build SA to access cloudbuild_artifacts and tfstate buckets
 resource "google_storage_bucket_iam_member" "cloudbuild_artifacts_iam" {
-  for_each   = merge(local.artifact_buckets, local.state_buckets)
-  bucket     = each.value
-  role       = "roles/storage.admin"
-  member     = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
-  depends_on = [google_storage_bucket.cloudbuild_artifacts, google_storage_bucket.tfstate]
+  for_each = merge(local.artifact_buckets, local.state_buckets, local.cloudbuild_bucket)
+  bucket   = each.value
+  role     = "roles/storage.admin"
+  member   = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
+
+  depends_on = [
+    google_storage_bucket.cloudbuild_artifacts,
+    google_storage_bucket.tfstate,
+    google_storage_bucket.cloudbuild_bucket
+  ]
 }
 
 # Cloud Build plan/apply triggers

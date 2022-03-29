@@ -46,29 +46,9 @@ resource "random_id" "suffix" {
   byte_length = 2
 }
 
-resource "google_storage_bucket" "tfstate" {
-  for_each                    = local.state_buckets
-  project                     = var.cloudbuild_project_id
-  name                        = each.value
-  location                    = var.bucket_region
-  uniform_bucket_level_access = true
-  versioning {
-    enabled = true
-  }
-}
+resource "google_storage_bucket" "pipeline_infra" {
+  for_each = merge(local.artifact_buckets, local.state_buckets, local.cloudbuild_bucket)
 
-resource "google_storage_bucket" "cloudbuild_artifacts" {
-  for_each                    = local.artifact_buckets
-  project                     = var.cloudbuild_project_id
-  name                        = each.value
-  location                    = var.bucket_region
-  uniform_bucket_level_access = true
-  versioning {
-    enabled = true
-  }
-}
-
-resource "google_storage_bucket" "cloudbuild_bucket" {
   project  = var.cloudbuild_project_id
   name     = local.cloudbuild_bucket_name
   location = var.bucket_region
@@ -88,9 +68,7 @@ resource "google_storage_bucket_iam_member" "cloudbuild_artifacts_iam" {
   member   = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 
   depends_on = [
-    google_storage_bucket.cloudbuild_artifacts,
-    google_storage_bucket.tfstate,
-    google_storage_bucket.cloudbuild_bucket
+    google_storage_bucket.pipeline_infra
   ]
 }
 
@@ -109,8 +87,8 @@ resource "google_cloudbuild_trigger" "main_trigger" {
     _BILLING_ID           = var.billing_account
     _DEFAULT_REGION       = var.default_region
     _GAR_REPOSITORY       = local.gar_name
-    _STATE_BUCKET_NAME    = google_storage_bucket.tfstate["${each.value}-tfstate"].name
-    _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts["${each.value}-ab"].name
+    _STATE_BUCKET_NAME    = google_storage_bucket.pipeline_infra["${each.value}-tfstate"].name
+    _ARTIFACT_BUCKET_NAME = google_storage_bucket.pipeline_infra["${each.value}-ab"].name
     _TF_ACTION            = "apply"
   }
 
@@ -135,8 +113,8 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
     _BILLING_ID           = var.billing_account
     _DEFAULT_REGION       = var.default_region
     _GAR_REPOSITORY       = local.gar_name
-    _STATE_BUCKET_NAME    = google_storage_bucket.tfstate["${each.value}-tfstate"].name
-    _ARTIFACT_BUCKET_NAME = google_storage_bucket.cloudbuild_artifacts["${each.value}-ab"].name
+    _STATE_BUCKET_NAME    = google_storage_bucket.pipeline_infra["${each.value}-tfstate"].name
+    _ARTIFACT_BUCKET_NAME = google_storage_bucket.pipeline_infra["${each.value}-ab"].name
     _TF_ACTION            = "plan"
   }
 

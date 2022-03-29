@@ -50,7 +50,7 @@ resource "google_storage_bucket" "pipeline_infra" {
   for_each = merge(local.artifact_buckets, local.state_buckets, local.cloudbuild_bucket)
 
   project  = var.cloudbuild_project_id
-  name     = local.cloudbuild_bucket_name
+  name     = each.value
   location = var.bucket_region
 
   uniform_bucket_level_access = true

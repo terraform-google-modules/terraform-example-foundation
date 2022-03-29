@@ -15,24 +15,25 @@
  */
 
 locals {
-  environment_code = "n"
-  env              = "non-production"
+  env             = "non-production"
+  default_region1 = "us-central1"
+  default_region2 = "us-west1"
   /*
    * Base network ranges
    */
   base_private_service_cidr = "10.16.128.0/21"
   base_subnet_primary_ranges = {
-    (var.default_region1) = "10.0.128.0/21"
-    (var.default_region2) = "10.1.128.0/21"
+    (local.default_region1) = "10.0.128.0/21"
+    (local.default_region2) = "10.1.128.0/21"
   }
   base_subnet_secondary_ranges = {
-    (var.default_region1) = [
+    (local.default_region1) = [
       {
-        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-pod"
+        range_name    = "rn-${local.environment_code}-shared-base-${local.default_region1}-gke-pod"
         ip_cidr_range = "100.64.128.0/21"
       },
       {
-        range_name    = "rn-${local.environment_code}-shared-base-${var.default_region1}-gke-svc"
+        range_name    = "rn-${local.environment_code}-shared-base-${local.default_region1}-gke-svc"
         ip_cidr_range = "100.64.136.0/21"
       }
     ]
@@ -42,17 +43,17 @@ locals {
    */
   restricted_private_service_cidr = "10.24.128.0/21"
   restricted_subnet_primary_ranges = {
-    (var.default_region1) = "10.8.128.0/21"
-    (var.default_region2) = "10.9.128.0/21"
+    (local.default_region1) = "10.8.128.0/21"
+    (local.default_region2) = "10.9.128.0/21"
   }
   restricted_subnet_secondary_ranges = {
-    (var.default_region1) = [
+    (local.default_region1) = [
       {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-pod"
+        range_name    = "rn-${local.environment_code}-shared-restricted-${local.default_region1}-gke-pod"
         ip_cidr_range = "100.72.128.0/21"
       },
       {
-        range_name    = "rn-${local.environment_code}-shared-restricted-${var.default_region1}-gke-svc"
+        range_name    = "rn-${local.environment_code}-shared-restricted-${local.default_region1}-gke-svc"
         ip_cidr_range = "100.72.136.0/21"
       }
     ]
@@ -62,13 +63,12 @@ locals {
 module "base_env" {
   source = "../../modules/base_env"
 
-  environment_code                   = local.environment_code
   env                                = local.env
   org_id                             = var.org_id
   access_context_manager_policy_id   = var.access_context_manager_policy_id
   terraform_service_account          = var.terraform_service_account
-  default_region1                    = var.default_region1
-  default_region2                    = var.default_region2
+  default_region1                    = local.default_region1
+  default_region2                    = local.default_region2
   domain                             = var.domain
   parent_folder                      = var.parent_folder
   enable_hub_and_spoke               = var.enable_hub_and_spoke

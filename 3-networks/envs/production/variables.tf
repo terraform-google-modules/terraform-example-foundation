@@ -29,16 +29,6 @@ variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform."
 }
 
-variable "default_region1" {
-  type        = string
-  description = "First subnet region. The shared vpc modules only configures two regions."
-}
-
-variable "default_region2" {
-  type        = string
-  description = "Second subnet region. The shared vpc modules only configures two regions."
-}
-
 variable "domain" {
   type        = string
   description = "The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period."

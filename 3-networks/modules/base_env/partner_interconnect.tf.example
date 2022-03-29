@@ -20,7 +20,7 @@ module "shared_restricted_interconnect" {
   org_id                         = var.org_id
   parent_folder                  = var.parent_folder
   vpc_name                       = "${local.environment_code}-shared-restricted"
-  environment                    = local.env
+  environment                    = var.env
   enable_hub_and_spoke           = var.enable_hub_and_spoke
   vpc_type                       = "restricted"
   preactivate                    = true
@@ -51,7 +51,7 @@ module "shared_base_interconnect" {
   org_id                         = var.org_id
   parent_folder                  = var.parent_folder
   vpc_name                       = "${local.environment_code}-shared-base"
-  environment                    = local.env
+  environment                    = var.env
   enable_hub_and_spoke           = var.enable_hub_and_spoke
   vpc_type                       = "base"
   preactivate                    = true

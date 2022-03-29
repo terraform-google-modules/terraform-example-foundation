@@ -15,8 +15,7 @@
  */
 
 locals {
-  environment_code          = var.environment_code
-  env                       = var.env
+  environment_code          = substr(var.env, 0, 1)
   restricted_project_id     = data.google_projects.restricted_host_project.projects[0].project_id
   restricted_project_number = data.google_project.restricted_host_project.number
   base_project_id           = data.google_projects.base_host_project.projects[0].project_id
@@ -37,7 +36,7 @@ locals {
 }
 
 data "google_active_folder" "env" {
-  display_name = "${var.folder_prefix}-${local.env}"
+  display_name = "${var.folder_prefix}-${var.env}"
   parent       = local.parent_id
 }
 
@@ -46,7 +45,7 @@ data "google_active_folder" "env" {
 *****************************************/
 
 data "google_projects" "restricted_host_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host labels.environment=${var.env} lifecycleState=ACTIVE"
 }
 
 data "google_project" "restricted_host_project" {
@@ -54,7 +53,7 @@ data "google_project" "restricted_host_project" {
 }
 
 data "google_projects" "base_host_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=base-shared-vpc-host labels.environment=${local.env} lifecycleState=ACTIVE"
+  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=base-shared-vpc-host labels.environment=${var.env} lifecycleState=ACTIVE"
 }
 
 /******************************************
@@ -84,7 +83,7 @@ module "restricted_shared_vpc" {
       subnet_region         = var.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = true
-      description           = "First ${local.env} subnet example."
+      description           = "First ${var.env} subnet example."
     },
     {
       subnet_name           = "sb-${local.environment_code}-shared-restricted-${var.default_region2}"
@@ -92,7 +91,7 @@ module "restricted_shared_vpc" {
       subnet_region         = var.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = true
-      description           = "Second ${local.env} subnet example."
+      description           = "Second ${var.env} subnet example."
     }
   ]
   secondary_ranges = {
@@ -126,7 +125,7 @@ module "base_shared_vpc" {
       subnet_region         = var.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = true
-      description           = "First ${local.env} subnet example."
+      description           = "First ${var.env} subnet example."
     },
     {
       subnet_name           = "sb-${local.environment_code}-shared-base-${var.default_region2}"
@@ -134,7 +133,7 @@ module "base_shared_vpc" {
       subnet_region         = var.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = true
-      description           = "Second ${local.env} subnet example."
+      description           = "Second ${var.env} subnet example."
     }
   ]
   secondary_ranges = {

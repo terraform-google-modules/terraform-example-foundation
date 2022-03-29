@@ -102,7 +102,7 @@ If you provisioned the prerequisites listed in the [Partner Interconnect README]
 
 If you are not able to use Dedicated or Partner Interconnect, you can also use an HA Cloud VPN to access on-premises resources.
 
-1. Rename `vpn.tf.example` to `vpn.tf` in each environment folder in `3-networks/modules/base_env`.
+1. Rename `vpn.tf.example` to `vpn.tf` in base-env folder in `3-networks/modules/base_env`.
 1. Create secret for VPN private preshared key.
    ```
    echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_PRIVATE_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-

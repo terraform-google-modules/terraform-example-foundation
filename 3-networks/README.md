@@ -86,7 +86,7 @@ You need to set variables `enable_hub_and_spoke` and `enable_hub_and_spoke_trans
 
 If you provisioned the prerequisites listed in the [Dedicated Interconnect README](./modules/dedicated_interconnect/README.md), follow these steps to enable Dedicated Interconnect to access on-premises resources.
 
-1. Rename `interconnect.tf.example` to `interconnect.tf` in each environment folder in `3-networks/modules/base_env`.
+1. Rename `interconnect.tf.example` to `interconnect.tf` in base_env folder in `3-networks/modules/base_env`.
 1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
 1. The candidate subnetworks and vlan_tag8021q variables can be set to `null` to allow the interconnect module to auto generate these values.
 

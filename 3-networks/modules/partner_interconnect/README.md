@@ -10,7 +10,8 @@ Without Hub and Spoke enabled VLAN attachments will be created in `prj-{p|n|d}-s
 
 ## Usage
 
-1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` and `interconnect.auto.tfvars.example` to `interconnect.auto.tfvars` in the environment folder in `3-networks/envs/<environment>` .
+1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` in the environment folder in `3-networks/modules/base_env` .
+1. Change the value of the local `bgp_asn_number` in the [`3-networks/modules/main.tf`](../base_env/main.tf) from 64514 to 16550.
 1. Update the file `partner_interconnect.tf` with values that are valid for your environment for the VLAN attachments, locations.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

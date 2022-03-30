@@ -15,9 +15,10 @@
  */
 
 locals {
-  env             = "development"
-  default_region1 = "us-central1"
-  default_region2 = "us-west1"
+  env              = "development"
+  environment_code = substr(local.env, 0, 1)
+  default_region1  = "us-central1"
+  default_region2  = "us-west1"
   /*
    * Base network ranges
    */
@@ -64,6 +65,7 @@ module "base_env" {
   source = "../../modules/base_env"
 
   env                                = local.env
+  environment_code                   = local.environment_code
   org_id                             = var.org_id
   access_context_manager_policy_id   = var.access_context_manager_policy_id
   terraform_service_account          = var.terraform_service_account

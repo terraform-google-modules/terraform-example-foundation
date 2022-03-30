@@ -20,7 +20,7 @@ module "shared_base_vpn" {
   project_id           = local.base_project_id
   default_region1      = var.default_region1
   default_region2      = var.default_region2
-  vpc_name             = "${local.environment_code}-shared-base"
+  vpc_name             = "${var.environment_code}-shared-base"
   region1_router1_name = module.base_shared_vpc.region1_router1.router.name
   region1_router2_name = module.base_shared_vpc.region1_router2.router.name
   region2_router1_name = module.base_shared_vpc.region2_router1.router.name
@@ -66,7 +66,7 @@ module "shared_restricted_vpn" {
   project_id           = local.restricted_project_id
   default_region1      = var.default_region1
   default_region2      = var.default_region2
-  vpc_name             = "${local.environment_code}-shared-restricted"
+  vpc_name             = "${var.environment_code}-shared-restricted"
   region1_router1_name = module.restricted_shared_vpc.region1_router1.router.name
   region1_router2_name = module.restricted_shared_vpc.region1_router2.router.name
   region2_router1_name = module.restricted_shared_vpc.region2_router1.router.name

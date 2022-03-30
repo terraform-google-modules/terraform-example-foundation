@@ -14,33 +14,23 @@
  * limitations under the License.
  */
 
-module "base_shared_vpc_project" {
-  source                      = "../../modules/single_project"
+module "floating_project" {
+  source                      = "../single_project"
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = data.google_active_folder.env.name
-  environment                 = "development"
-  vpc_type                    = "base"
+  environment                 = var.env
   alert_spent_percents        = var.alert_spent_percents
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
   project_prefix              = var.project_prefix
-  enable_hub_and_spoke        = var.enable_hub_and_spoke
-  sa_roles                    = ["roles/editor"]
-  enable_cloudbuild_deploy    = true
-  cloudbuild_sa               = var.app_infra_pipeline_cloudbuild_sa
-  activate_apis = [
-    "iam.googleapis.com",
-    "cloudresourcemanager.googleapis.com"
-  ]
 
   # Metadata
-  project_suffix    = "sample-base"
-  application_name  = "bu1-sample-application"
+  project_suffix    = "sample-floating"
+  application_name  = "${var.business_code}-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"
-  business_code     = "bu1"
+  business_code     = var.business_code
 }
-

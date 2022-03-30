@@ -14,6 +14,26 @@
  * limitations under the License.
  */
 
+variable "business_code" {
+  description = "The business code (ex. bu1)."
+  type        = string
+}
+
+variable "business_unit" {
+  description = "The business (ex. business_unit_1)."
+  type        = string
+}
+
+variable "env" {
+  description = "The environment to prepare (ex. development)."
+  type        = string
+}
+
+variable "env_code" {
+  description = "The environment code (ex. d)."
+  type        = string
+}
+
 variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform"
   type        = string
@@ -51,6 +71,42 @@ variable "peering_module_depends_on" {
   default     = []
 }
 
+variable "firewall_enable_logging" {
+  type        = bool
+  description = "Toggle firewall logging for VPC Firewalls."
+  default     = true
+}
+
+variable "optional_fw_rules_enabled" {
+  type        = bool
+  description = "Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges."
+  default     = false
+}
+
+variable "windows_activation_enabled" {
+  type        = bool
+  description = "Enable Windows license activation for Windows workloads."
+  default     = false
+}
+
+variable "alert_spent_percents" {
+  description = "A list of percentages of the budget to alert on when threshold is exceeded"
+  type        = list(number)
+  default     = [0.5, 0.75, 0.9, 0.95]
+}
+
+variable "alert_pubsub_topic" {
+  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`"
+  type        = string
+  default     = null
+}
+
+variable "budget_amount" {
+  description = "The amount to use as the budget"
+  type        = number
+  default     = 1000
+}
+
 variable "project_prefix" {
   description = "Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters."
   type        = string
@@ -74,6 +130,12 @@ variable "app_infra_pipeline_cloudbuild_sa" {
   type        = string
 }
 
+variable "secrets_prj_suffix" {
+  description = "Name suffix to use for secrets project created."
+  type        = string
+  default     = "env-secrets"
+}
+
 variable "location_kms" {
   description = "Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket)"
   type        = string
@@ -84,4 +146,28 @@ variable "location_gcs" {
   description = "Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring)"
   type        = string
   default     = "US"
+}
+
+variable "keyring_name" {
+  description = "Name to be used for KMS Keyring"
+  type        = string
+  default     = "sample-keyring"
+}
+
+variable "key_name" {
+  description = "Name to be used for KMS Key"
+  type        = string
+  default     = "crypto-key-example"
+}
+
+variable "key_rotation_period" {
+  description = "Rotation period in seconds to be used for KMS Key"
+  type        = string
+  default     = "7776000s"
+}
+
+variable "gcs_bucket_prefix" {
+  description = "Name prefix to be used for GCS Bucket"
+  type        = string
+  default     = "cmek-encrypted-bucket"
 }

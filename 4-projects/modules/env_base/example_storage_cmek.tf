@@ -15,12 +15,12 @@
  */
 
 module "env_secrets_project" {
-  source                      = "../../modules/single_project"
+  source                      = "../single_project"
   impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = data.google_active_folder.env.name
-  environment                 = "production"
+  environment                 = var.env
   alert_spent_percents        = var.alert_spent_percents
   alert_pubsub_topic          = var.alert_pubsub_topic
   budget_amount               = var.budget_amount
@@ -30,11 +30,11 @@ module "env_secrets_project" {
   activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 
   # Metadata
-  application_name  = "bu2-sample-application"
+  application_name  = "${var.business_code}-sample-application"
   billing_code      = "1234"
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"
-  business_code     = "bu2"
+  business_code     = var.business_code
 }
 
 data "google_storage_project_service_account" "gcs_account" {

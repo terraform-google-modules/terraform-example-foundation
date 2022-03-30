@@ -17,8 +17,8 @@
 locals {
   env              = "non-production"
   environment_code = substr(local.env, 0, 1)
-  default_region1  = "us-central1"
-  default_region2  = "us-west1"
+  default_region1  = "us-west1"
+  default_region2  = "us-central1"
   /*
    * Base network ranges
    */

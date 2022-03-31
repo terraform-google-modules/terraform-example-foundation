@@ -74,7 +74,7 @@ module "base_env" {
   domain                             = var.domain
   parent_folder                      = var.parent_folder
   enable_hub_and_spoke               = var.enable_hub_and_spoke
-  enable_partner_interconnect        = var.enable_partner_interconnect
+  enable_partner_interconnect        = false
   enable_hub_and_spoke_transitivity  = var.enable_hub_and_spoke_transitivity
   base_private_service_cidr          = local.base_private_service_cidr
   base_subnet_primary_ranges         = local.base_subnet_primary_ranges

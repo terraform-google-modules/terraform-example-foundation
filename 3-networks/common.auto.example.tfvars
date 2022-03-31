@@ -27,6 +27,4 @@ domain = "example.com."
 
 //enable_hub_and_spoke = true
 
-//enable_partner_interconnect = true
-
 //enable_hub_and_spoke_transitivity = true

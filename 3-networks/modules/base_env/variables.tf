@@ -72,6 +72,12 @@ variable "enable_hub_and_spoke" {
   default     = false
 }
 
+variable "enable_partner_interconnect" {
+  description = "Enable Partner Interconnect in the environment."
+  type        = bool
+  default     = false
+}
+
 variable "enable_hub_and_spoke_transitivity" {
   description = "Enable transitivity via gateway VMs on Hub-and-Spoke architecture."
   type        = bool

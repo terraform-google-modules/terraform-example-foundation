@@ -58,16 +58,6 @@ output "terraform_validator_policies_repo" {
   value       = google_sourcerepo_repository.gcp_policies
 }
 
-output "kms_keyring" {
-  description = "KMS Keyring created by the module."
-  value       = module.cloudbuild_bootstrap.kms_keyring
-}
-
-output "kms_crypto_key" {
-  description = "KMS key created by the module."
-  value       = module.cloudbuild_bootstrap.kms_crypto_key
-}
-
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */

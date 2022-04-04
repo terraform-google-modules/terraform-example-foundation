@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+variable "env" {
+  description = "The environment to prepare (ex. development)"
+  type        = string
+}
+
+variable "environment_code" {
+  type        = string
+  description = "A short form of the folder level resources (environment) within the Google Cloud organization (ex. d)."
+}
+
 variable "org_id" {
   type        = string
   description = "Organization ID"
@@ -27,6 +37,16 @@ variable "access_context_manager_policy_id" {
 variable "terraform_service_account" {
   type        = string
   description = "Service account email of the account to impersonate to run Terraform."
+}
+
+variable "default_region1" {
+  type        = string
+  description = "First subnet region. The shared vpc modules only configures two regions."
+}
+
+variable "default_region2" {
+  type        = string
+  description = "Second subnet region. The shared vpc modules only configures two regions."
 }
 
 variable "domain" {
@@ -52,8 +72,44 @@ variable "enable_hub_and_spoke" {
   default     = false
 }
 
+variable "enable_partner_interconnect" {
+  description = "Enable Partner Interconnect in the environment."
+  type        = bool
+  default     = false
+}
+
 variable "enable_hub_and_spoke_transitivity" {
   description = "Enable transitivity via gateway VMs on Hub-and-Spoke architecture."
   type        = bool
   default     = false
+}
+
+variable "base_private_service_cidr" {
+  type        = string
+  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services in the Base Shared Vpc."
+}
+
+variable "base_subnet_primary_ranges" {
+  type        = map(string)
+  description = "The base subnet primary IPTs ranges to the Base Shared Vpc."
+}
+
+variable "base_subnet_secondary_ranges" {
+  type        = map(list(map(string)))
+  description = "The base subnet secondary IPTs ranges to the Base Shared Vpc."
+}
+
+variable "restricted_private_service_cidr" {
+  type        = string
+  description = "CIDR range for private service networking. Used for Cloud SQL and other managed services in the Restricted Shared Vpc."
+}
+
+variable "restricted_subnet_primary_ranges" {
+  type        = map(string)
+  description = "The base subnet primary IPTs ranges to the Restricted Shared Vpc."
+}
+
+variable "restricted_subnet_secondary_ranges" {
+  type        = map(list(map(string)))
+  description = "The base subnet secondary IPTs ranges to the Restricted Shared Vpc"
 }

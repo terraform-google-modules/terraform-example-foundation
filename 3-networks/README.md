@@ -86,7 +86,7 @@ You need to set variables `enable_hub_and_spoke` and `enable_hub_and_spoke_trans
 
 If you provisioned the prerequisites listed in the [Dedicated Interconnect README](./modules/dedicated_interconnect/README.md), follow these steps to enable Dedicated Interconnect to access on-premises resources.
 
-1. Rename `interconnect.tf.example` to `interconnect.tf` in each environment folder in `3-networks/envs/<ENV>`.
+1. Rename `interconnect.tf.example` to `interconnect.tf` in base_env folder in `3-networks/modules/base_env`.
 1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
 1. The candidate subnetworks and vlan_tag8021q variables can be set to `null` to allow the interconnect module to auto generate these values.
 
@@ -94,7 +94,7 @@ If you provisioned the prerequisites listed in the [Dedicated Interconnect READM
 
 If you provisioned the prerequisites listed in the [Partner Interconnect README](./modules/partner_interconnect/README.md) follow this steps to enable Partner Interconnect to access on-premises resources.
 
-1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` and `interconnect.auto.tfvars.example` to `interconnect.auto.tfvars` in the environment folder in `3-networks/envs/<environment>` .
+1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` in the base-env folder in `3-networks/modules/base_env` .
 1. Update the file `partner_interconnect.tf` with values that are valid for your environment for the VLAN attachments, locations, and candidate subnetworks.
 1. The candidate subnetworks variable can be set to `null` to allow the interconnect module to auto generate this value.
 
@@ -102,7 +102,7 @@ If you provisioned the prerequisites listed in the [Partner Interconnect README]
 
 If you are not able to use Dedicated or Partner Interconnect, you can also use an HA Cloud VPN to access on-premises resources.
 
-1. Rename `vpn.tf.example` to `vpn.tf` in each environment folder in `3-networks/envs/<ENV>`.
+1. Rename `vpn.tf.example` to `vpn.tf` in base-env folder in `3-networks/modules/base_env`.
 1. Create secret for VPN private preshared key.
    ```
    echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_PRIVATE_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-

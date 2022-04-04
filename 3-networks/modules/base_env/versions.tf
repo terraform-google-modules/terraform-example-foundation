@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
-
-terraform_service_account = "org-terraform@prj-b-seed-2334.iam.gserviceaccount.com"
-
-// The DNS name of peering managed zone. Must end with a period.
-domain = "example.com."
-
-// Optional - for an organization with existing projects or for development/validation.
-// Must be the same value used in previous steps.
-//parent_folder = "000000000000"
-
-//enable_hub_and_spoke = true
-
-//enable_hub_and_spoke_transitivity = true
+terraform {
+  required_version = ">= 0.13"
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = ">= 3.50"
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = ">= 3.50"
+    }
+  }
+}

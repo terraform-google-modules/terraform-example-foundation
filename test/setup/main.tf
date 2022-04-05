@@ -27,7 +27,7 @@ module "project" {
   source  = "terraform-google-modules/project-factory/google"
   version = "~> 10.1"
 
-  name              = "ci-foundation"
+  name              = "ci-f-dsa"
   random_project_id = true
   org_id            = var.org_id
   folder_id         = var.folder_id

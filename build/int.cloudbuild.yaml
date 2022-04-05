@@ -41,6 +41,7 @@ steps:
 - id: verify-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=verify go test -v ./... -p 1 -timeout 0 -run ^TestBootstrap$']
+  env:
   - 'TF_VAR_group_org_admins=gcp-security-admins@clsecteam.com'
   - 'TF_VAR_group_billing_admins=gcp-security-admins@clsecteam.com'
   - 'TF_VAR_bucket_prefix=ds9'

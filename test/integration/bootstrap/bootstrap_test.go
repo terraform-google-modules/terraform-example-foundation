@@ -15,6 +15,7 @@
 package bootstrap
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
@@ -31,12 +32,12 @@ func TestBootstrap(t *testing.T) {
 		func(assert *assert.Assertions) {
 			bootstrap.DefaultVerify(assert)
 			projectID := bootstrap.GetStringOutput("cloudbuild_project_id")
-			bucketName = bootstrap.GetStringOutput("gcs_bucket_cloudbuild_artifacts")
+			bucketName := bootstrap.GetStringOutput("gcs_bucket_cloudbuild_artifacts")
 
 			gcloudArgs := gcloud.WithCommonArgs([]string{"--project", projectID, "--json"})
 			op := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", bucketName), gcloudArgs).Array()[0]
 
 			assert.Equal("STANDARD", op.Get("storageClass").String(), "bucket has STANDARD storageClass")
-	})
+		})
 	bootstrap.Test()
 }

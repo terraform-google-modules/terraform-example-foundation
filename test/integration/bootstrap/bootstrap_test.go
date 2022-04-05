@@ -37,7 +37,7 @@ func TestBootstrap(t *testing.T) {
 			gcloudArgs := gcloud.WithCommonArgs([]string{"--project", projectID, "--json"})
 			op := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", bucketName), gcloudArgs).Array()[0]
 
-			assert.Equal("STANDARD", op.Get("storageClass").String(), "bucket has STANDARD storageClass")
+			assert.Equal("STANDARD", op.Get("metadata.storageClass").String(), "bucket has STANDARD storageClass")
 		})
 	bootstrap.Test()
 }

@@ -22,6 +22,10 @@ steps:
   - 'TF_VAR_billing_account=$_BILLING_ACCOUNT'
   - 'TF_VAR_group_email=gcp-security-admins@clsecteam.com'
 
+- id: sleep
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', 'sleep 120']
+
 - id: create
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=init go test -v ./... -p 1 -timeout 0 -run ^TestBootstrap$']

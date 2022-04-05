@@ -49,6 +49,14 @@ output "group_email" {
   value = var.group_email
 }
 
+output "group_org_admins" {
+  value = var.group_email
+}
+
+output "group_billing_admins" {
+  value = var.group_email
+}
+
 output "enable_hub_and_spoke" {
   value = var.example_foundations_mode == "HubAndSpoke" ? "true" : "false"
 }

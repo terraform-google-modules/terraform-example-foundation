@@ -24,6 +24,14 @@ import (
 )
 
 func TestBootstrap(t *testing.T) {
+	// var cloud_source_repos = []string{
+	// 	"gcp-org",
+	// 	"gcp-environments",
+	// 	"gcp-networks",
+	// 	"gcp-projects",
+	// 	"gcp-policies",
+	// }
+
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
@@ -33,13 +41,15 @@ func TestBootstrap(t *testing.T) {
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 			//bootstrap.DefaultVerify(assert)
 
-			projectID := bootstrap.GetStringOutput("cloudbuild_project_id")
+			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
 			bucketName := bootstrap.GetStringOutput("gcs_bucket_cloudbuild_artifacts")
 
-			gcloudArgs := gcloud.WithCommonArgs([]string{"--project", projectID, "--json"})
-			op := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", bucketName), gcloudArgs).Array()[0]
+			op1 := gcloud.Run(t, fmt.Sprintf("projects describe %s", cbProjectID))
+			assert.True(op1.Exists(), "project %s does not exist", cbProjectID)
 
-			assert.Equal("STANDARD", op.Get("metadata.storageClass").String(), "bucket has STANDARD storageClass")
+			gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--json"})
+			op2 := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", bucketName), gcAlphaOpts).Array()[0]
+			assert.True(op2.Exists(), "bucket %s does not exist", bucketName)
 		})
 	bootstrap.Test()
 }

@@ -32,7 +32,7 @@ resource "random_id" "random_access_level_suffix" {
 
 module "access_level_members" {
   source      = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
-  version     = "~> 2.0.0"
+  version     = "~> 4.0.1"
   description = "${local.prefix} Access Level"
   policy      = var.access_context_manager_policy_id
   name        = local.access_level_name

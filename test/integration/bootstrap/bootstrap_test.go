@@ -30,7 +30,9 @@ func TestBootstrap(t *testing.T) {
 
 	bootstrap.DefineVerify(
 		func(assert *assert.Assertions) {
+			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 			//bootstrap.DefaultVerify(assert)
+
 			projectID := bootstrap.GetStringOutput("cloudbuild_project_id")
 			bucketName := bootstrap.GetStringOutput("gcs_bucket_cloudbuild_artifacts")
 

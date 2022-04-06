@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package bootstrap
+package org
 
 import (
 	"fmt"
@@ -25,39 +25,39 @@ import (
 
 func TestOrg(t *testing.T) {
 
-	bootstrap := tft.NewTFBlueprintTest(t,
+	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
 	)
 
-	bootstrap.DefineVerify(
+	org.DefineVerify(
 		func(assert *assert.Assertions) {
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
-			bootstrap.DefaultVerify(assert)
+			org.DefaultVerify(assert)
 
-			auditLogProjectID := bootstrap.GetStringOutput("org_audit_logs_project_id")
+			auditLogProjectID := org.GetStringOutput("org_audit_logs_project_id")
 			op1 := gcloud.Run(t, fmt.Sprintf("projects describe %s", auditLogProjectID))
 			assert.True(op1.Exists(), "project %s does not exist", auditLogProjectID)
 
-			billingLogsProjectID := bootstrap.GetStringOutput("org_billing_logs_project_id")
+			billingLogsProjectID := org.GetStringOutput("org_billing_logs_project_id")
 			op2 := gcloud.Run(t, fmt.Sprintf("projects describe %s", billingLogsProjectID))
 			assert.True(op2.Exists(), "project %s does not exist", billingLogsProjectID)
 
-			secretsProjectID := bootstrap.GetStringOutput("org_secrets_project_id")
+			secretsProjectID := org.GetStringOutput("org_secrets_project_id")
 			op3 := gcloud.Run(t, fmt.Sprintf("projects describe %s", secretsProjectID))
 			assert.True(op3.Exists(), "project %s does not exist", secretsProjectID)
 
-			interconnectProjectID := bootstrap.GetStringOutput("interconnect_project_id")
+			interconnectProjectID := org.GetStringOutput("interconnect_project_id")
 			op4 := gcloud.Run(t, fmt.Sprintf("projects describe %s", interconnectProjectID))
 			assert.True(op4.Exists(), "project %s does not exist", interconnectProjectID)
 
-			sccNotificationsProjectID := bootstrap.GetStringOutput("scc_notifications_project_id")
+			sccNotificationsProjectID := org.GetStringOutput("scc_notifications_project_id")
 			op5 := gcloud.Run(t, fmt.Sprintf("projects describe %s", sccNotificationsProjectID))
 			assert.True(op5.Exists(), "project %s does not exist", sccNotificationsProjectID)
 
-			dnsHubProjectID := bootstrap.GetStringOutput("dns_hub_project_id")
+			dnsHubProjectID := org.GetStringOutput("dns_hub_project_id")
 			op6 := gcloud.Run(t, fmt.Sprintf("projects describe %s", dnsHubProjectID))
 			assert.True(op6.Exists(), "project %s does not exist", dnsHubProjectID)
 
 		})
-	bootstrap.Test()
+	org.Test()
 }

@@ -65,6 +65,10 @@ output "billing_data_users" {
   value = var.group_email
 }
 
+output "domains_to_allow" {
+  value = [var.domain_to_allow]
+}
+
 output "scc_notification_name" {
   value = "test-scc-notif-${random_id.random_project_id_suffix.hex}"
 }

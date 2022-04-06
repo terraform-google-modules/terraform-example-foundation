@@ -24,26 +24,33 @@ import (
 func TestEnvs(t *testing.T) {
 
 	for _, tt := range []struct {
+		name  string
 		tfDir string
 	}{
 		{
-			tfDir: "../../../3-networks/envs/development",
+			name: "development",
+			tfDir: "../../../2-environments/envs/development",
 		},
 		{
-			tfDir: "../../../3-networks/envs/non-production",
+			name: "non-production",
+			tfDir: "../../../2-environments/envs/non-production",
 		},
 		{
-			tfDir: "../../../3-networks/envs/production",
+			name: "production",
+			tfDir: "../../../2-environments/envs/production",
 		},
-	} {
-		envs := tft.NewTFBlueprintTest(t,
-			tft.WithTFDir(tt.ftDir),
-		)
-		envs.DefineVerify(
-			func(assert *assert.Assertions) {
-				// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
-				envs.DefaultVerify(assert)
-			})
-		envs.Test()
+	}{
+		t.Run(tt.name, func(t *testing.T) {
+			envs := tft.NewTFBlueprintTest(t,
+				tft.WithTFDir(tt.tfDir),
+			)
+			envs.DefineVerify(
+				func(assert *assert.Assertions) {
+					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
+					envs.DefaultVerify(assert)
+				})
+			envs.Test()
+		})
+
 	}
 }

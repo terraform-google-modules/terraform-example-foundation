@@ -41,23 +41,23 @@ func TestOrg(t *testing.T) {
 
 			billingLogsProjectID  := bootstrap.GetStringOutput("org_billing_logs_project_id")
 			op2 := gcloud.Run(t, fmt.Sprintf("projects describe %s", billingLogsProjectID))
-			assert.True(op1.Exists(), "project %s does not exist", billingLogsProjectID)
+			assert.True(op2.Exists(), "project %s does not exist", billingLogsProjectID)
 
 			secretsProjectID  := bootstrap.GetStringOutput("org_secrets_project_id")
 			op3 := gcloud.Run(t, fmt.Sprintf("projects describe %s", secretsProjectID))
-			assert.True(op1.Exists(), "project %s does not exist", secretsProjectID)
+			assert.True(op3.Exists(), "project %s does not exist", secretsProjectID)
 
 			interconnectProjectID  := bootstrap.GetStringOutput("interconnect_project_id")
-			op14 := gcloud.Run(t, fmt.Sprintf("projects describe %s", interconnectProjectID))
-			assert.True(op1.Exists(), "project %s does not exist", interconnectProjectID)
+			op4 := gcloud.Run(t, fmt.Sprintf("projects describe %s", interconnectProjectID))
+			assert.True(op4.Exists(), "project %s does not exist", interconnectProjectID)
 
 			sccNotificationsProjectID  := bootstrap.GetStringOutput("scc_notifications_project_id")
 			op5 := gcloud.Run(t, fmt.Sprintf("projects describe %s", sccNotificationsProjectID))
-			assert.True(op1.Exists(), "project %s does not exist", sccNotificationsProjectID)
+			assert.True(op5.Exists(), "project %s does not exist", sccNotificationsProjectID)
 
 			dnsHubProjectID  := bootstrap.GetStringOutput("dns_hub_project_id")
 			op6 := gcloud.Run(t, fmt.Sprintf("projects describe %s", dnsHubProjectID))
-			assert.True(op1.Exists(), "project %s does not exist", dnsHubProjectID)
+			assert.True(op6.Exists(), "project %s does not exist", dnsHubProjectID)
 
 		})
 	bootstrap.Test()

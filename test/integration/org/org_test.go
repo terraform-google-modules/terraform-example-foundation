@@ -25,7 +25,6 @@ import (
 
 func TestOrg(t *testing.T) {
 
-
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
 	)
@@ -39,23 +38,23 @@ func TestOrg(t *testing.T) {
 			op1 := gcloud.Run(t, fmt.Sprintf("projects describe %s", auditLogProjectID))
 			assert.True(op1.Exists(), "project %s does not exist", auditLogProjectID)
 
-			billingLogsProjectID  := bootstrap.GetStringOutput("org_billing_logs_project_id")
+			billingLogsProjectID := bootstrap.GetStringOutput("org_billing_logs_project_id")
 			op2 := gcloud.Run(t, fmt.Sprintf("projects describe %s", billingLogsProjectID))
 			assert.True(op2.Exists(), "project %s does not exist", billingLogsProjectID)
 
-			secretsProjectID  := bootstrap.GetStringOutput("org_secrets_project_id")
+			secretsProjectID := bootstrap.GetStringOutput("org_secrets_project_id")
 			op3 := gcloud.Run(t, fmt.Sprintf("projects describe %s", secretsProjectID))
 			assert.True(op3.Exists(), "project %s does not exist", secretsProjectID)
 
-			interconnectProjectID  := bootstrap.GetStringOutput("interconnect_project_id")
+			interconnectProjectID := bootstrap.GetStringOutput("interconnect_project_id")
 			op4 := gcloud.Run(t, fmt.Sprintf("projects describe %s", interconnectProjectID))
 			assert.True(op4.Exists(), "project %s does not exist", interconnectProjectID)
 
-			sccNotificationsProjectID  := bootstrap.GetStringOutput("scc_notifications_project_id")
+			sccNotificationsProjectID := bootstrap.GetStringOutput("scc_notifications_project_id")
 			op5 := gcloud.Run(t, fmt.Sprintf("projects describe %s", sccNotificationsProjectID))
 			assert.True(op5.Exists(), "project %s does not exist", sccNotificationsProjectID)
 
-			dnsHubProjectID  := bootstrap.GetStringOutput("dns_hub_project_id")
+			dnsHubProjectID := bootstrap.GetStringOutput("dns_hub_project_id")
 			op6 := gcloud.Run(t, fmt.Sprintf("projects describe %s", dnsHubProjectID))
 			assert.True(op6.Exists(), "project %s does not exist", dnsHubProjectID)
 

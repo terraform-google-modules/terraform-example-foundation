@@ -21,14 +21,14 @@ function org(){
     mv 1-org/envs/shared/backend.tf 1-org/envs/shared/backend.tf.disabled
 }
 
-function environments(){
+function envs(){
     # disable backend configs in main module
     mv 2-environments/envs/development/backend.tf 2-environments/envs/development/backend.tf.disabled
     mv 2-environments/envs/non-production/backend.tf  2-environments/envs/non-production/backend.tf.disabled
     mv 2-environments/envs/production/backend.tf  2-environments/envs/production/backend.tf.disabled
 }
 
-function network(){
+function networks(){
     # disable backend configs in main module
     mv 3-networks/envs/development/backend.tf 3-networks/envs/development/backend.tf.disabled
     mv 3-networks/envs/non-production/backend.tf  3-networks/envs/non-production/backend.tf.disabled
@@ -60,16 +60,16 @@ function appinfra(){
 for arg in "$@"
 do
   case $arg in
-    -n|--network)
-      network
+    -n|--networks)
+      networks
       shift
       ;;
     -o|--org)
       org
       shift
       ;;
-    -e|--environments)
-      environments
+    -e|--envs)
+      envs
       shift
       ;;
     -a|--appinfra)

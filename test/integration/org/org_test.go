@@ -34,6 +34,31 @@ func TestOrg(t *testing.T) {
 		func(assert *assert.Assertions) {
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 			bootstrap.DefaultVerify(assert)
+
+			auditLogProjectID := bootstrap.GetStringOutput("org_audit_logs_project_id")
+			op1 := gcloud.Run(t, fmt.Sprintf("projects describe %s", auditLogProjectID))
+			assert.True(op1.Exists(), "project %s does not exist", auditLogProjectID)
+
+			billingLogsProjectID  := bootstrap.GetStringOutput("org_billing_logs_project_id")
+			op2 := gcloud.Run(t, fmt.Sprintf("projects describe %s", billingLogsProjectID))
+			assert.True(op1.Exists(), "project %s does not exist", billingLogsProjectID)
+
+			secretsProjectID  := bootstrap.GetStringOutput("org_secrets_project_id")
+			op3 := gcloud.Run(t, fmt.Sprintf("projects describe %s", secretsProjectID))
+			assert.True(op1.Exists(), "project %s does not exist", secretsProjectID)
+
+			interconnectProjectID  := bootstrap.GetStringOutput("interconnect_project_id")
+			op14 := gcloud.Run(t, fmt.Sprintf("projects describe %s", interconnectProjectID))
+			assert.True(op1.Exists(), "project %s does not exist", interconnectProjectID)
+
+			sccNotificationsProjectID  := bootstrap.GetStringOutput("scc_notifications_project_id")
+			op5 := gcloud.Run(t, fmt.Sprintf("projects describe %s", sccNotificationsProjectID))
+			assert.True(op1.Exists(), "project %s does not exist", sccNotificationsProjectID)
+
+			dnsHubProjectID  := bootstrap.GetStringOutput("dns_hub_project_id")
+			op6 := gcloud.Run(t, fmt.Sprintf("projects describe %s", dnsHubProjectID))
+			assert.True(op1.Exists(), "project %s does not exist", dnsHubProjectID)
+
 		})
 	bootstrap.Test()
 }

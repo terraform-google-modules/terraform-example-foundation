@@ -93,7 +93,7 @@ options:
   env:
   - 'TF_VAR_example_foundations_mode=default'
   - 'TF_VAR_project_prefix=ds9'
-  - 'TF_VAR_domains_to_allow=''[clsecteam.com]'''
+  - 'TF_VAR_domains_to_allow=''["clsecteam.com"]'''
   - 'TF_VAR_domain=clsecteam.com.'
   - 'TF_VAR_org_id=$_ORG_ID'
 substitutions:

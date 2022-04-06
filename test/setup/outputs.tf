@@ -18,7 +18,6 @@ output "project_id" {
   value = module.project.project_id
 }
 
-
 output "parent_folder" {
   description = "Parent folder id"
   value       = split("/", google_folder.test_folder.id)[1]
@@ -62,6 +61,10 @@ output "audit_data_users" {
 }
 
 output "billing_data_users" {
+  value = var.group_email
+}
+
+output "monitoring_workspace_users" {
   value = var.group_email
 }
 

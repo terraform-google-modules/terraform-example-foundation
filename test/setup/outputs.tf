@@ -57,6 +57,18 @@ output "group_billing_admins" {
   value = var.group_email
 }
 
+output "audit_data_users" {
+  value = var.group_email
+}
+
+output "billing_data_users" {
+  value = var.group_email
+}
+
+output "scc_notification_name" {
+  value = "test-scc-notif-${random_id.random_project_id_suffix.hex}"
+}
+
 output "enable_hub_and_spoke" {
   value = var.example_foundations_mode == "HubAndSpoke" ? "true" : "false"
 }

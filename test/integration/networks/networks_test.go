@@ -37,11 +37,11 @@ func TestNetworks(t *testing.T) {
 		},
 		{
 			name: "non-production",
-			tfDir: "../../../2-environments/envs/non-production",
+			tfDir: "../../../3-networks/envs/non-production",
 		},
 		{
 			name: "production",
-			tfDir: "../../../2-environments/envs/production",
+			tfDir: "../../../3-networks/envs/production",
 		},
 	}{
 		t.Run(tt.name, func(t *testing.T) {

@@ -72,6 +72,10 @@ output "domains_to_allow" {
   value = [var.domain_to_allow]
 }
 
+output "target_name_server_addresses" {
+  value = ["192.168.0.1", "192.168.0.2"]
+}
+
 output "scc_notification_name" {
   value = "test-scc-notif-${random_id.random_project_id_suffix.hex}"
 }

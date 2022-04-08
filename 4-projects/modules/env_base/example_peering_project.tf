@@ -16,7 +16,7 @@
 
 locals {
   shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
-  env_code        = substr(local.env, 0, 1)
+  env_code        = substr(var.env, 0, 1)
 }
 
 data "google_projects" "projects" {

@@ -16,7 +16,4 @@
 
 perimeter_name = "sp_n_shared_restricted_default_perimeter_????"
 
-location_kms = "us"
-location_gcs = "US"
-
 //enable_hub_and_spoke = true

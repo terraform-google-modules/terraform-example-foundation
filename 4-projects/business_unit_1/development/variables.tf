@@ -73,15 +73,3 @@ variable "app_infra_pipeline_cloudbuild_sa" {
   description = "Cloud Build SA used for deploying infrastructure"
   type        = string
 }
-
-variable "location_kms" {
-  description = "Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket)"
-  type        = string
-  default     = "us"
-}
-
-variable "location_gcs" {
-  description = "Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring)"
-  type        = string
-  default     = "US"
-}

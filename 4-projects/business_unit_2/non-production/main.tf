@@ -33,6 +33,4 @@ module "env" {
   folder_prefix                    = var.folder_prefix
   enable_hub_and_spoke             = var.enable_hub_and_spoke
   app_infra_pipeline_cloudbuild_sa = var.app_infra_pipeline_cloudbuild_sa
-  location_kms                     = var.location_kms
-  location_gcs                     = var.location_gcs
 }

@@ -16,37 +16,37 @@
 
 output "base_shared_vpc_project" {
   description = "Project sample base project."
-  value       = module.base_shared_vpc_project.project_id
+  value       = module.env.base_shared_vpc_project
 }
 
 output "base_shared_vpc_project_sa" {
   description = "Project sample base project SA."
-  value       = module.base_shared_vpc_project.sa
+  value       = module.env.base_shared_vpc_project_sa
 }
 
 output "floating_project" {
   description = "Project sample floating project."
-  value       = module.floating_project.project_id
+  value       = module.env.floating_project
 }
 
 output "peering_project" {
   description = "Project sample peering project id."
-  value       = module.peering_project.project_id
+  value       = module.env.peering_project
 }
 
 output "peering_network" {
   description = "Peer network peering resource."
-  value       = module.peering.peer_network_peering
+  value       = module.env.peering_network
 }
 
 output "restricted_shared_vpc_project" {
   description = "Project sample restricted project id."
-  value       = module.restricted_shared_vpc_project.project_id
+  value       = module.env.restricted_shared_vpc_project
 }
 
 output "restricted_shared_vpc_project_number" {
   description = "Project sample restricted project."
-  value       = module.restricted_shared_vpc_project.project_number
+  value       = module.env.restricted_shared_vpc_project_number
 }
 
 output "vpc_service_control_perimeter_name" {
@@ -56,7 +56,7 @@ output "vpc_service_control_perimeter_name" {
 
 output "restricted_enabled_apis" {
   description = "Activated APIs."
-  value       = module.restricted_shared_vpc_project.enabled_apis
+  value       = module.env.restricted_enabled_apis
 }
 
 output "access_context_manager_policy_id" {
@@ -66,25 +66,25 @@ output "access_context_manager_policy_id" {
 
 output "peering_complete" {
   description = "Output to be used as a module dependency."
-  value       = module.peering.complete
+  value       = module.env.peering_complete
 }
 
 output "env_secrets_project" {
   description = "Project sample peering project id."
-  value       = module.env_secrets_project.project_id
+  value       = module.env.env_secrets_project
 }
 
 output "keyring" {
   description = "The name of the keyring."
-  value       = module.kms.keyring
+  value       = module.env.keyring
 }
 
 output "keys" {
   description = "List of created key names."
-  value       = keys(module.kms.keys)
+  value       = module.env.keys
 }
 
 output "bucket" {
   description = "The created storage bucket"
-  value       = module.gcs_buckets.bucket
+  value       = module.env.bucket
 }

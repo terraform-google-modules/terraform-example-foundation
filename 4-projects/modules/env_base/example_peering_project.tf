@@ -16,6 +16,7 @@
 
 locals {
   shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
+   env_code       = substr(local.env, 0, 1)
 }
 
 data "google_projects" "projects" {
@@ -23,7 +24,7 @@ data "google_projects" "projects" {
 }
 
 data "google_compute_network" "shared_vpc" {
-  name    = "vpc-${var.env_code}-shared-base${local.shared_vpc_mode}"
+  name    = "vpc-${local.env_code}-shared-base${local.shared_vpc_mode}"
   project = data.google_projects.projects.projects[0].project_id
 }
 
@@ -61,7 +62,7 @@ module "peering_network" {
   source                                 = "terraform-google-modules/network/google"
   version                                = "~> 3.0"
   project_id                             = module.peering_project.project_id
-  network_name                           = "vpc-${var.env_code}-peering-base"
+  network_name                           = "vpc-${local.env_code}-peering-base"
   shared_vpc_host                        = "false"
   delete_default_internet_gateway_routes = "true"
   subnets                                = []
@@ -70,7 +71,7 @@ module "peering_network" {
 module "peering" {
   source            = "terraform-google-modules/network/google//modules/network-peering"
   version           = "~> 3.0"
-  prefix            = "${var.business_code}-${var.env_code}"
+  prefix            = "${var.business_code}-${local.env_code}"
   local_network     = module.peering_network.network_self_link
   peer_network      = data.google_compute_network.shared_vpc.self_link
   module_depends_on = var.peering_module_depends_on
@@ -81,7 +82,7 @@ module "peering" {
  *****************************************/
 
 resource "google_compute_firewall" "deny_all_egress" {
-  name      = "fw-${var.env_code}-peering-base-65535-e-d-all-all-tcp-udp"
+  name      = "fw-${local.env_code}-peering-base-65535-e-d-all-all-tcp-udp"
   network   = module.peering_network.network_name
   project   = module.peering_project.project_id
   direction = "EGRESS"
@@ -110,7 +111,7 @@ resource "google_compute_firewall" "deny_all_egress" {
 
 
 resource "google_compute_firewall" "allow_private_api_egress" {
-  name      = "fw-${var.env_code}-peering-base-65534-e-a-allow-google-apis-all-tcp-443"
+  name      = "fw-${local.env_code}-peering-base-65534-e-a-allow-google-apis-all-tcp-443"
   network   = module.peering_network.network_name
   project   = module.peering_project.project_id
   direction = "EGRESS"
@@ -144,7 +145,7 @@ resource "google_compute_firewall" "allow_private_api_egress" {
 // Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
 resource "google_compute_firewall" "allow_iap_ssh" {
   count   = var.optional_fw_rules_enabled ? 1 : 0
-  name    = "fw-${var.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
+  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
   network = module.peering_network.network_name
   project = module.peering_project.project_id
 
@@ -172,7 +173,7 @@ resource "google_compute_firewall" "allow_iap_ssh" {
 // Allow RDP via IAP when using the allow-iap-rdp tag for Windows workloads.
 resource "google_compute_firewall" "allow_iap_rdp" {
   count   = var.optional_fw_rules_enabled ? 1 : 0
-  name    = "fw-${var.env_code}-peering-base-1000-i-a-all-allow-iap-rdp-tcp-3389"
+  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-rdp-tcp-3389"
   network = module.peering_network.network_name
   project = module.peering_project.project_id
 
@@ -200,7 +201,7 @@ resource "google_compute_firewall" "allow_iap_rdp" {
 // Allow access to kms.windows.googlecloud.com for Windows license activation
 resource "google_compute_firewall" "allow_windows_activation" {
   count     = var.windows_activation_enabled ? 1 : 0
-  name      = "fw-${var.env_code}-peering-base-0-e-a-allow-win-activation-all-tcp-1688"
+  name      = "fw-${local.env_code}-peering-base-0-e-a-allow-win-activation-all-tcp-1688"
   network   = module.peering_network.network_name
   project   = module.peering_project.project_id
   direction = "EGRESS"
@@ -229,7 +230,7 @@ resource "google_compute_firewall" "allow_windows_activation" {
 // Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
 resource "google_compute_firewall" "allow_lb" {
   count   = var.optional_fw_rules_enabled ? 1 : 0
-  name    = "fw-${var.env_code}-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
+  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
   network = module.peering_network.network_name
   project = module.peering_project.project_id
 

@@ -13,7 +13,6 @@
 | business\_unit | The business (ex. business\_unit\_1). | `string` | n/a | yes |
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | env | The environment to prepare (ex. development). | `string` | n/a | yes |
-| env\_code | The environment code (ex. d). | `string` | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | gcs\_bucket\_prefix | Name prefix to be used for GCS Bucket | `string` | `"cmek-encrypted-bucket"` | no |

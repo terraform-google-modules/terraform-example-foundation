@@ -29,11 +29,6 @@ variable "env" {
   type        = string
 }
 
-variable "env_code" {
-  description = "The environment code (ex. d)."
-  type        = string
-}
-
 variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform"
   type        = string

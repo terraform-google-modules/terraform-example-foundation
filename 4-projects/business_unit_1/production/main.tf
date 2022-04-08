@@ -16,7 +16,7 @@
 
 
 module "env" {
-  source = "../../modules/env_base"
+  source = "../../modules/base_env"
 
   env                              = "production"
   business_code                    = "bu1"

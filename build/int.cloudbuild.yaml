@@ -77,7 +77,7 @@ steps:
 
 - id: create-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && ./test/disable_tf_files.sh --projects && cd test/integration && RUN_STAGE=init go test -v ./... -p 1 -timeout 0 -run ^TestProjects$']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && ./test/disable_tf_files.sh --projects && source ./test/export_vars.sh --projects && cd test/integration && RUN_STAGE=init go test -v ./... -p 1 -timeout 0 -run ^TestProjects$']
 
 - id: converge-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'

@@ -18,11 +18,12 @@ import (
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
 type SharedData struct {
-	string CloudbuildSA
+	CloudbuildSA string
 }
 
 func TestProjects(t *testing.T) {
@@ -41,20 +42,19 @@ func TestProjects(t *testing.T) {
 		tfDir string
 	}{
 		{
-			name: "bu1_shared",
+			name:  "bu1_shared",
 			tfDir: "../../../4-projects/business_unit_1/shared",
 		},
 		{
-			name: "bu2_shared",
+			name:  "bu2_shared",
 			tfDir: "../../../4-projects/business_unit_2/shared",
 		},
-
-	}{
+	} {
 		t.Run(tts.name, func(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tts.tfDir),
 			)
-            shared.DefineApply(
+			shared.DefineApply(
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					shared.DefaultApply(assert)
@@ -72,44 +72,52 @@ func TestProjects(t *testing.T) {
 	}
 
 	for _, tt := range []struct {
-		name  string
-		sharedData string
-		tfDir string
+		name            string
+		sharedData      string
+		perimeterEnvVar string
+		tfDir           string
 	}{
 		{
-			name: "bu1_development",
-			sharedData: "bu1_shared",
-			tfDir: "../../../4-projects/business_unit_1/development",
+			name:            "bu1_development",
+			sharedData:      "bu1_shared",
+			perimeterEnvVar: "TF_VAR_dev_restricted_service_perimeter_name",
+			tfDir:           "../../../4-projects/business_unit_1/development",
 		},
 		{
-			name: "bu1_non-production",
-			sharedData: "bu1_shared",
-			tfDir: "../../../4-projects/business_unit_1/non-production",
+			name:            "bu1_non-production",
+			sharedData:      "bu1_shared",
+			perimeterEnvVar: "TF_VAR_nonprod_restricted_service_perimeter_name",
+			tfDir:           "../../../4-projects/business_unit_1/non-production",
 		},
 		{
-			name: "bu1_production",
-			sharedData: "bu1_shared",
-			tfDir: "../../../4-projects/business_unit_1/production",
+			name:            "bu1_production",
+			sharedData:      "bu1_shared",
+			perimeterEnvVar: "TF_VAR_prod_restricted_service_perimeter_name",
+			tfDir:           "../../../4-projects/business_unit_1/production",
 		},
 		{
-			name: "bu2_development",
-			sharedData: "bu2_shared",
-			tfDir: "../../../4-projects/business_unit_2/development",
+			name:            "bu2_development",
+			sharedData:      "bu2_shared",
+			perimeterEnvVar: "TF_VAR_dev_restricted_service_perimeter_name",
+			tfDir:           "../../../4-projects/business_unit_2/development",
 		},
 		{
-			name: "bu2_non-production",
-			sharedData: "bu2_shared",
-			tfDir: "../../../4-projects/business_unit_2/non-production",
+			name:            "bu2_non-production",
+			sharedData:      "bu2_shared",
+			perimeterEnvVar: "TF_VAR_nonprod_restricted_service_perimeter_name",
+			tfDir:           "../../../4-projects/business_unit_2/non-production",
 		},
 		{
-			name: "bu2_production",
-			sharedData: "bu2_shared",
-			tfDir: "../../../4-projects/business_unit_2/production",
+			name:            "bu2_production",
+			sharedData:      "bu2_shared",
+			perimeterEnvVar: "TF_VAR_prod_restricted_service_perimeter_name",
+			tfDir:           "../../../4-projects/business_unit_2/production",
 		},
-	}{
+	} {
 		t.Run(tt.name, func(t *testing.T) {
-			vars := map[string]string{
+			vars := map[string]interface{}{
 				"app_infra_pipeline_cloudbuild_sa": sharedData[tt.sharedData].CloudbuildSA,
+				"perimeter_name":                   utils.ValFromEnv(t, tt.perimeterEnvVar),
 			}
 			projects := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),

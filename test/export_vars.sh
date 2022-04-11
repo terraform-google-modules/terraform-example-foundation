@@ -24,10 +24,12 @@ function export_access_context_manager_policy(){
 
 function org(){
     # TBD
+    echo "Not Implemented"
 }
 
 function envs(){
     # TBD
+    echo "Not Implemented"
 }
 
 function networks(){
@@ -67,6 +69,7 @@ function projects(){
 
 function appinfra(){
     # TBD
+    echo "Not Implemented"
 }
 
 

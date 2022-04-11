@@ -34,14 +34,10 @@ steps:
 - id: converge-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=apply go test -v ./... -p 1 -timeout 0 -run ^TestBootstrap$']
-  env:
-  - 'TF_VAR_bucket_prefix=ds9'
 
 - id: verify-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=verify go test -v ./... -p 1 -timeout 0 -run ^TestBootstrap$']
-  env:
-  - 'TF_VAR_bucket_prefix=ds9'
 
 - id: create-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
@@ -50,20 +46,10 @@ steps:
 - id: converge-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=apply go test -v ./... -p 1 -timeout 0 -run ^TestOrg$']
-  env:
-  - 'TF_VAR_default_region=us-east4'
-  - 'TF_VAR_create_access_context_manager_access_policy=false'
-  - 'TF_VAR_audit_logs_table_delete_contents_on_destroy=true'
-  - 'TF_VAR_log_export_storage_force_destroy=true'
 
 - id: verify-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=verify go test -v ./... -p 1 -timeout 0 -run ^TestOrg$']
-  env:
-  - 'TF_VAR_default_region=us-east4'
-  - 'TF_VAR_create_access_context_manager_access_policy=false'
-  - 'TF_VAR_audit_logs_table_delete_contents_on_destroy=true'
-  - 'TF_VAR_log_export_storage_force_destroy=true'
 
 - id: create-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
@@ -83,11 +69,11 @@ steps:
 
 - id: converge-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && export TF_VAR_access_context_manager_policy_id=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)") && cd test/integration && RUN_STAGE=apply go test -v ./... -p 1 -timeout 0 -run ^TestNetworks$']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && ./test/export_vars.sh --networks &&  cd test/integration && RUN_STAGE=apply go test -v ./... -p 1 -timeout 0 -run ^TestNetworks$']
 
 - id: verify-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && export TF_VAR_access_context_manager_policy_id=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)") && cd test/integration && RUN_STAGE=verify go test -v ./... -p 1 -timeout 0 -run ^TestNetworks$']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && ./test/export_vars.sh --networks &&  cd test/integration && RUN_STAGE=verify go test -v ./... -p 1 -timeout 0 -run ^TestNetworks$']
 
 - id: create-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
@@ -95,11 +81,11 @@ steps:
 
 - id: converge-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && init_credentials && export TF_VAR_access_context_manager_policy_id=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)") && cd test/integration && RUN_STAGE=apply go test -v ./... -p 1 -timeout 0 -run ^TestProjects$']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && init_credentials && ./test/export_vars.sh --projects &&  cd test/integration && RUN_STAGE=apply go test -v ./... -p 1 -timeout 0 -run ^TestProjects$']
 
 - id: verify-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && init_credentials && export TF_VAR_access_context_manager_policy_id=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)") && cd test/integration && RUN_STAGE=verify go test -v ./... -p 1 -timeout 0 -run ^TestProjects$']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && init_credentials && ./test/export_vars.sh --projects &&  cd test/integration && RUN_STAGE=verify go test -v ./... -p 1 -timeout 0 -run ^TestProjects$']
 
 - id: create-appinfra
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
@@ -119,11 +105,11 @@ steps:
 
 - id: destroy-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && init_credentials && export TF_VAR_access_context_manager_policy_id=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)") && cd test/integration && RUN_STAGE=teardown go test -v ./... -p 1 -timeout 0 -run ^TestProjects$']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && init_credentials && ./test/export_vars.sh --projects &&  cd test/integration && RUN_STAGE=teardown go test -v ./... -p 1 -timeout 0 -run ^TestProjects$']
 
 - id: destroy-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && export TF_VAR_access_context_manager_policy_id=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)") && cd test/integration && RUN_STAGE=teardown go test -v ./... -p 1 -timeout 0 -run ^TestNetworks$']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && ./test/export_vars.sh --networks &&  cd test/integration && RUN_STAGE=teardown go test -v ./... -p 1 -timeout 0 -run ^TestNetworks$']
 
 - id: destroy-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
@@ -132,17 +118,10 @@ steps:
 - id: destroy-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=teardown go test -v ./... -p 1 -timeout 0 -run ^TestOrg$']
-  env:
-  - 'TF_VAR_default_region=us-east4'
-  - 'TF_VAR_create_access_context_manager_access_policy=false'
-  - 'TF_VAR_audit_logs_table_delete_contents_on_destroy=true'
-  - 'TF_VAR_log_export_storage_force_destroy=true'
 
 - id: destroy-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=teardown go test -v ./... -p 1 -timeout 0 -run ^TestBootstrap$']
-  env:
-  - 'TF_VAR_bucket_prefix=ds9'
 
 tags:
 - 'ci'
@@ -150,13 +129,18 @@ tags:
 options:
   env:
   - 'TF_VAR_example_foundations_mode=default'
+  - 'TF_VAR_create_access_context_manager_access_policy=false'
+  - 'TF_VAR_audit_logs_table_delete_contents_on_destroy=true'
+  - 'TF_VAR_log_export_storage_force_destroy=true'
   - 'TF_VAR_project_prefix=ds9'
+  - 'TF_VAR_bucket_prefix=ds9'
   - 'TF_VAR_domain_to_allow=clsecteam.com'
   - 'TF_VAR_domain=clsecteam.com.'
   - 'TF_VAR_org_id=$_ORG_ID'
   - 'TF_VAR_default_region=us-east4'
   - 'TF_VAR_default_region1=us-east4'
   - 'TF_VAR_default_region2=us-central1'
+  - 'TF_VAR_instance_region=us-east4'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
   _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.4'

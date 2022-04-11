@@ -130,7 +130,7 @@ func TestProjects(t *testing.T) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					// projects.DefaultVerify(assert)
 
-					baseProjectID := org.GetStringOutput("base_shared_vpc_project")
+					baseProjectID := projects.GetStringOutput("base_shared_vpc_project")
 					op1 := gcloud.Run(t, fmt.Sprintf("projects describe %s", baseProjectID))
 					assert.True(op1.Exists(), "project %s should exist", baseProjectID)
 				})

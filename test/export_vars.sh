@@ -18,7 +18,8 @@ set -e
 
 function export_access_context_manager_policy(){
     # export Access Context Manager Policy ID
-    local policy_id=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)")
+    local policy_id
+    policy_id=$(gcloud access-context-manager policies list --organization="${TF_VAR_org_id:?}" --format="value(name)")
     export TF_VAR_access_context_manager_policy_id=$policy_id
 }
 
@@ -50,7 +51,9 @@ function projects(){
     pushd /workspace/3-networks/envs/development
     # shellcheck disable=SC1090
     source <(python /usr/local/bin/export_tf_outputs.py --path=/workspace/3-networks/envs/development)
-    local perimeter_name_d=$TF_VAR_restricted_service_perimeter_name
+    local perimeter_name_d
+    # shellcheck disable=SC2154
+    perimeter_name_d=$TF_VAR_restricted_service_perimeter_name
     export TF_VAR_dev_restricted_service_perimeter_name=$perimeter_name_d
     popd
 
@@ -58,7 +61,8 @@ function projects(){
     pushd /workspace/3-networks/envs/non-production
     # shellcheck disable=SC1090
     source <(python /usr/local/bin/export_tf_outputs.py --path=/workspace/3-networks/envs/non-production)
-    local perimeter_name_n=$TF_VAR_restricted_service_perimeter_name
+    local perimeter_name_n
+    perimeter_name_n=$TF_VAR_restricted_service_perimeter_name
     export TF_VAR_nonprod_restricted_service_perimeter_name=$perimeter_name_n
     popd
 
@@ -66,7 +70,8 @@ function projects(){
     pushd /workspace/3-networks/envs/production
     # shellcheck disable=SC1090
     source <(python /usr/local/bin/export_tf_outputs.py --path=/workspace/3-networks/envs/production)
-    local perimeter_name_p=$TF_VAR_restricted_service_perimeter_name
+    local perimeter_name_p
+    perimeter_name_p=$TF_VAR_restricted_service_perimeter_name
     export TF_VAR_prod_restricted_service_perimeter_name=$perimeter_name_p
     popd
 

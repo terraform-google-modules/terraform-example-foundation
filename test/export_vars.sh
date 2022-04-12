@@ -39,7 +39,7 @@ function networks(){
 
 function shared(){
     # export Access Context Manager Policy ID
-    echo "Not Implemented"
+    export_access_context_manager_policy
 }
 
 function projects(){

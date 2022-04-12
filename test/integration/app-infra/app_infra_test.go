@@ -18,10 +18,15 @@ import (
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAppInfra(t *testing.T) {
+
+	vars := map[string]interface{}{
+		"project_service_account": utils.ValFromEnv(t, "TF_VAR_terraform_service_account"),
+	}
 
 	for _, tt := range []struct {
 		name  string
@@ -43,6 +48,7 @@ func TestAppInfra(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			appInfra := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),
+				tft.WithVars(vars),
 			)
 			appInfra.DefineVerify(
 				func(assert *assert.Assertions) {

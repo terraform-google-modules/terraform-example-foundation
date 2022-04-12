@@ -63,6 +63,18 @@ steps:
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=verify go test -v ./... -p 1 -timeout 0 -run ^TestEnvs$']
 
+- id: create-shared
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && ./test/disable_tf_files.sh --shared && cd test/integration && RUN_STAGE=init go test -v ./... -p 1 -timeout 0 -run ^TestShared$']
+
+- id: converge-shared
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=apply go test -v ./... -p 1 -timeout 0 -run ^TestShared$']
+
+- id: verify-shared
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=verify go test -v ./... -p 1 -timeout 0 -run ^TestShared$']
+
 - id: create-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && ./test/disable_tf_files.sh --networks && cd test/integration && RUN_STAGE=init go test -v ./... -p 1 -timeout 0 -run ^TestNetworks$']
@@ -110,6 +122,10 @@ steps:
 - id: destroy-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && source ./test/export_vars.sh --networks &&  cd test/integration && RUN_STAGE=teardown go test -v ./... -p 1 -timeout 0 -run ^TestNetworks$']
+
+- id: destroy-shared
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cd test/integration && RUN_STAGE=teardown go test -v ./... -p 1 -timeout 0 -run ^TestShared$']
 
 - id: destroy-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'

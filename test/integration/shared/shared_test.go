@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package networks
+package shared
 
 import (
 	"testing"
@@ -21,36 +21,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNetworks(t *testing.T) {
+func TestShared(t *testing.T) {
 
-	for _, tt := range []struct {
-		name  string
-		tfDir string
-	}{
-		{
-			name: "development",
-			tfDir: "../../../3-networks/envs/development",
-		},
-		{
-			name: "non-production",
-			tfDir: "../../../3-networks/envs/non-production",
-		},
-		{
-			name: "production",
-			tfDir: "../../../3-networks/envs/production",
-		},
-	}{
-		t.Run(tt.name, func(t *testing.T) {
-			networks := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(tt.tfDir),
-			)
-			networks.DefineVerify(
-				func(assert *assert.Assertions) {
-					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
-					networks.DefaultVerify(assert)
-				})
-				networks.Test()
+	shared := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../3-networks/envs/shared"),
+	)
+	shared.DefineVerify(
+		func(assert *assert.Assertions) {
+			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
+			shared.DefaultVerify(assert)
 		})
-
-	}
+	shared.Test()
 }

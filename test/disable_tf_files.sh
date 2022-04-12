@@ -33,10 +33,8 @@ function networks(){
     mv 3-networks/envs/development/backend.tf 3-networks/envs/development/backend.tf.disabled
     mv 3-networks/envs/non-production/backend.tf  3-networks/envs/non-production/backend.tf.disabled
     mv 3-networks/envs/production/backend.tf  3-networks/envs/production/backend.tf.disabled
-    mv 3-networks/envs/shared/backend.tf  3-networks/envs/shared/backend.tf.disabled
 
     # disable access_context.auto.tfvars in main module
-    mv 3-networks/envs/shared/access_context.auto.tfvars 3-networks/envs/shared/access_context.auto.tfvars.disabled
     mv 3-networks/envs/development/access_context.auto.tfvars  3-networks/envs/development/access_context.auto.tfvars.disabled
     mv 3-networks/envs/non-production/access_context.auto.tfvars  3-networks/envs/non-production/access_context.auto.tfvars.disabled
     mv 3-networks/envs/production/access_context.auto.tfvars  3-networks/envs/production/access_context.auto.tfvars.disabled
@@ -45,6 +43,16 @@ function networks(){
     mv 3-networks/envs/development/common.auto.tfvars 3-networks/envs/development/common.auto.tfvars.disabled
     mv 3-networks/envs/non-production/common.auto.tfvars  3-networks/envs/non-production/common.auto.tfvars.disabled
     mv 3-networks/envs/production/common.auto.tfvars  3-networks/envs/production/common.auto.tfvars.disabled
+}
+
+function shared(){
+    # disable backend configs in main module
+    mv 3-networks/envs/shared/backend.tf  3-networks/envs/shared/backend.tf.disabled
+
+    # disable access_context.auto.tfvars in main module
+    mv 3-networks/envs/shared/access_context.auto.tfvars 3-networks/envs/shared/access_context.auto.tfvars.disabled
+
+    # disable common.auto.tfvars in main module
     mv 3-networks/envs/shared/common.auto.tfvars  3-networks/envs/shared/common.auto.tfvars.disabled
 
     # disable shared.auto.tfvars in main module
@@ -126,6 +134,10 @@ do
   case $arg in
     -n|--networks)
       networks
+      shift
+      ;;
+    -s|--shared)
+      shared
       shift
       ;;
     -o|--org)

@@ -37,6 +37,11 @@ function networks(){
     export_access_context_manager_policy
 }
 
+function shared(){
+    # export Access Context Manager Policy ID
+    echo "Not Implemented"
+}
+
 function projects(){
     # export Access Context Manager Policy ID
     export_access_context_manager_policy
@@ -79,6 +84,10 @@ do
   case $arg in
     -n|--networks)
       networks
+      shift
+      ;;
+    -s|--shared)
+      shared
       shift
       ;;
     -o|--org)

@@ -153,10 +153,10 @@ options:
   - 'TF_VAR_domain_to_allow=clsecteam.com'
   - 'TF_VAR_domain=clsecteam.com.'
   - 'TF_VAR_org_id=$_ORG_ID'
-  - 'TF_VAR_default_region=us-east4'
-  - 'TF_VAR_default_region1=us-east4'
+  - 'TF_VAR_default_region=us-west1'
+  - 'TF_VAR_default_region1=us-west1'
   - 'TF_VAR_default_region2=us-central1'
-  - 'TF_VAR_instance_region=us-east4'
+  - 'TF_VAR_instance_region=us-west1'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
   _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.4'

@@ -18,8 +18,6 @@ module "development" {
   source                           = "../../../3-networks/envs/development"
   org_id                           = var.org_id
   access_context_manager_policy_id = var.policy_id
-  default_region2                  = "us-central1"
-  default_region1                  = "us-west1"
   domain                           = var.domain
   terraform_service_account        = var.terraform_service_account
   parent_folder                    = var.parent_folder
@@ -30,8 +28,6 @@ module "non-production" {
   source                           = "../../../3-networks/envs/non-production"
   org_id                           = var.org_id
   access_context_manager_policy_id = var.policy_id
-  default_region2                  = "us-central1"
-  default_region1                  = "us-west1"
   domain                           = var.domain
   terraform_service_account        = var.terraform_service_account
   parent_folder                    = var.parent_folder
@@ -43,8 +39,6 @@ module "production" {
   source                           = "../../../3-networks/envs/production"
   org_id                           = var.org_id
   access_context_manager_policy_id = var.policy_id
-  default_region2                  = "us-central1"
-  default_region1                  = "us-west1"
   domain                           = var.domain
   terraform_service_account        = var.terraform_service_account
   parent_folder                    = var.parent_folder

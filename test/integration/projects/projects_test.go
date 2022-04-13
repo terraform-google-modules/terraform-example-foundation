@@ -20,7 +20,6 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
-	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -78,48 +77,61 @@ func TestProjects(t *testing.T) {
 		sharedData      string
 		perimeterEnvVar string
 		tfDir           string
+		networkTfDir    string
 	}{
 		{
 			name:            "bu1_development",
 			sharedData:      "bu1_shared",
 			perimeterEnvVar: "TF_VAR_dev_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_1/development",
+			networkTfDir:    "../../../3-networks/envs/development",
 		},
 		{
 			name:            "bu1_non-production",
 			sharedData:      "bu1_shared",
 			perimeterEnvVar: "TF_VAR_nonprod_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_1/non-production",
+			networkTfDir:    "../../../3-networks/envs/non-production",
 		},
 		{
 			name:            "bu1_production",
 			sharedData:      "bu1_shared",
 			perimeterEnvVar: "TF_VAR_prod_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_1/production",
+			networkTfDir:    "../../../3-networks/envs/production",
 		},
 		{
 			name:            "bu2_development",
 			sharedData:      "bu2_shared",
 			perimeterEnvVar: "TF_VAR_dev_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_2/development",
+			networkTfDir:    "../../../3-networks/envs/development",
 		},
 		{
 			name:            "bu2_non-production",
 			sharedData:      "bu2_shared",
 			perimeterEnvVar: "TF_VAR_nonprod_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_2/non-production",
+			networkTfDir:    "../../../3-networks/envs/non-production",
 		},
 		{
 			name:            "bu2_production",
 			sharedData:      "bu2_shared",
 			perimeterEnvVar: "TF_VAR_prod_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_2/production",
+			networkTfDir:    "../../../3-networks/envs/production",
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
+
+			networks := tft.NewTFBlueprintTest(t,
+				tft.WithTFDir(tt.networkTfDir),
+			)
+			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
+
 			vars := map[string]interface{}{
 				"app_infra_pipeline_cloudbuild_sa": sharedData[tt.sharedData].CloudbuildSA,
-				"perimeter_name":                   utils.ValFromEnv(t, tt.perimeterEnvVar),
+				"perimeter_name":                   perimeterName,
 			}
 			projects := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),

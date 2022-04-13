@@ -46,35 +46,6 @@ function shared(){
 function projects(){
     # export Access Context Manager Policy ID
     export_access_context_manager_policy
-
-    # development
-    pushd /workspace/3-networks/envs/development
-    # shellcheck disable=SC1090
-    source <(python /usr/local/bin/export_tf_outputs.py --path=/workspace/3-networks/envs/development)
-    local perimeter_name_d
-    # shellcheck disable=SC2154
-    perimeter_name_d=$TF_VAR_restricted_service_perimeter_name
-    export TF_VAR_dev_restricted_service_perimeter_name=$perimeter_name_d
-    popd
-
-    # non-production
-    pushd /workspace/3-networks/envs/non-production
-    # shellcheck disable=SC1090
-    source <(python /usr/local/bin/export_tf_outputs.py --path=/workspace/3-networks/envs/non-production)
-    local perimeter_name_n
-    perimeter_name_n=$TF_VAR_restricted_service_perimeter_name
-    export TF_VAR_nonprod_restricted_service_perimeter_name=$perimeter_name_n
-    popd
-
-    # production
-    pushd /workspace/3-networks/envs/production
-    # shellcheck disable=SC1090
-    source <(python /usr/local/bin/export_tf_outputs.py --path=/workspace/3-networks/envs/production)
-    local perimeter_name_p
-    perimeter_name_p=$TF_VAR_restricted_service_perimeter_name
-    export TF_VAR_prod_restricted_service_perimeter_name=$perimeter_name_p
-    popd
-
 }
 
 function appinfra(){

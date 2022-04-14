@@ -15,41 +15,59 @@
 package networks
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
+func getPolicyID(orgID string, t *testing.T) string {
+	gcOpts := gcloud.WithCommonArgs([]string{"--format", "value(name)"})
+	op := gcloud.Run(t, fmt.Sprintf("access-context-manager policies list --organization=%s ", orgID), gcOpts)
+	return op.String()
+}
+
 func TestNetworks(t *testing.T) {
+
+	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
+	policyID := getPolicyID(orgID, t)
 
 	for _, tt := range []struct {
 		name  string
 		tfDir string
 	}{
 		{
-			name: "development",
+			name:  "development",
 			tfDir: "../../../3-networks/envs/development",
 		},
 		{
-			name: "non-production",
+			name:  "non-production",
 			tfDir: "../../../3-networks/envs/non-production",
 		},
 		{
-			name: "production",
+			name:  "production",
 			tfDir: "../../../3-networks/envs/production",
 		},
-	}{
+	} {
 		t.Run(tt.name, func(t *testing.T) {
+
+			vars := map[string]interface{}{
+				"access_context_manager_policy_id": policyID,
+			}
+
 			networks := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),
+				tft.WithVars(vars),
 			)
 			networks.DefineVerify(
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					networks.DefaultVerify(assert)
 				})
-				networks.Test()
+			networks.Test()
 		})
 
 	}

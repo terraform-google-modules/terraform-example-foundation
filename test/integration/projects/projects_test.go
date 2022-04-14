@@ -20,6 +20,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +28,16 @@ type SharedData struct {
 	CloudbuildSA string
 }
 
+func getPolicyID(orgID string, t *testing.T) string {
+	gcOpts := gcloud.WithCommonArgs([]string{"--format", "value(name)"})
+	op := gcloud.Run(t, fmt.Sprintf("access-context-manager policies list --organization=%s ", orgID), gcOpts)
+	return op.String()
+}
+
 func TestProjects(t *testing.T) {
+
+	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
+	policyID := getPolicyID(orgID, t)
 
 	var sharedData = map[string]*SharedData{
 		"bu1_shared": {
@@ -52,8 +62,14 @@ func TestProjects(t *testing.T) {
 		},
 	} {
 		t.Run(tts.name, func(t *testing.T) {
+
+			vars := map[string]interface{}{
+				"access_context_manager_policy_id": policyID,
+			}
+
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tts.tfDir),
+				tft.WithVars(vars),
 			)
 			shared.DefineApply(
 				func(assert *assert.Assertions) {
@@ -132,6 +148,7 @@ func TestProjects(t *testing.T) {
 			vars := map[string]interface{}{
 				"app_infra_pipeline_cloudbuild_sa": sharedData[tt.sharedData].CloudbuildSA,
 				"perimeter_name":                   perimeterName,
+				"access_context_manager_policy_id": policyID,
 			}
 			projects := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),

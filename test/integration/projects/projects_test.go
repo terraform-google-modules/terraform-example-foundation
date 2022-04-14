@@ -63,14 +63,10 @@ func TestProjects(t *testing.T) {
 	} {
 		t.Run(tts.name, func(t *testing.T) {
 
-			vars := map[string]interface{}{
-				"access_context_manager_policy_id": policyID,
-			}
-
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tts.tfDir),
-				tft.WithVars(vars),
 			)
+
 			shared.DefineApply(
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
@@ -140,8 +136,12 @@ func TestProjects(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 
+			netVars := map[string]interface{}{
+				"access_context_manager_policy_id": policyID,
+			}
 			networks := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.networkTfDir),
+				tft.WithVars(netVars),
 			)
 			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
 

@@ -60,7 +60,7 @@ module "peering_project" {
 
 module "peering_network" {
   source                                 = "terraform-google-modules/network/google"
-  version                                = "~> 3.0"
+  version                                = "~> 5.0"
   project_id                             = module.peering_project.project_id
   network_name                           = "vpc-${local.env_code}-peering-base"
   shared_vpc_host                        = "false"
@@ -70,7 +70,7 @@ module "peering_network" {
 
 module "peering" {
   source            = "terraform-google-modules/network/google//modules/network-peering"
-  version           = "~> 3.0"
+  version           = "~> 5.0"
   prefix            = "${var.business_code}-${local.env_code}"
   local_network     = module.peering_network.network_self_link
   peer_network      = data.google_compute_network.shared_vpc.self_link

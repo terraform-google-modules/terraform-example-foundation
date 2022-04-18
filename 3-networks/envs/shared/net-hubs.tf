@@ -22,15 +22,15 @@ locals {
    * Base network ranges
    */
   base_subnet_primary_ranges = {
-    (var.default_region1) = "10.0.0.0/24"
-    (var.default_region2) = "10.1.0.0/24"
+    (local.default_region1) = "10.0.0.0/24"
+    (local.default_region2) = "10.1.0.0/24"
   }
   /*
    * Restricted network ranges
    */
   restricted_subnet_primary_ranges = {
-    (var.default_region1) = "10.8.0.0/24"
-    (var.default_region2) = "10.9.0.0/24"
+    (local.default_region1) = "10.8.0.0/24"
+    (local.default_region2) = "10.9.0.0/24"
   }
 }
 
@@ -64,8 +64,8 @@ module "base_shared_vpc" {
   org_id                        = var.org_id
   parent_folder                 = var.parent_folder
   bgp_asn_subnet                = local.bgp_asn_number
-  default_region1               = var.default_region1
-  default_region2               = var.default_region2
+  default_region1               = local.default_region1
+  default_region2               = local.default_region2
   domain                        = var.domain
   dns_enable_inbound_forwarding = var.base_hub_dns_enable_inbound_forwarding
   dns_enable_logging            = var.base_hub_dns_enable_logging
@@ -80,20 +80,20 @@ module "base_shared_vpc" {
 
   subnets = [
     {
-      subnet_name           = "sb-c-shared-base-hub-${var.default_region1}"
-      subnet_ip             = local.base_subnet_primary_ranges[var.default_region1]
-      subnet_region         = var.default_region1
+      subnet_name           = "sb-c-shared-base-hub-${local.default_region1}"
+      subnet_ip             = local.base_subnet_primary_ranges[local.default_region1]
+      subnet_region         = local.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Base network hub subnet for ${var.default_region1}"
+      description           = "Base network hub subnet for ${local.default_region1}"
     },
     {
-      subnet_name           = "sb-c-shared-base-hub-${var.default_region2}"
-      subnet_ip             = local.base_subnet_primary_ranges[var.default_region2]
-      subnet_region         = var.default_region2
+      subnet_name           = "sb-c-shared-base-hub-${local.default_region2}"
+      subnet_ip             = local.base_subnet_primary_ranges[local.default_region2]
+      subnet_region         = local.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Base network hub subnet for ${var.default_region2}"
+      description           = "Base network hub subnet for ${local.default_region2}"
     }
   ]
   secondary_ranges = {}
@@ -117,8 +117,8 @@ module "restricted_shared_vpc" {
   org_id                           = var.org_id
   parent_folder                    = var.parent_folder
   bgp_asn_subnet                   = local.bgp_asn_number
-  default_region1                  = var.default_region1
-  default_region2                  = var.default_region2
+  default_region1                  = local.default_region1
+  default_region2                  = local.default_region2
   domain                           = var.domain
   dns_enable_inbound_forwarding    = var.restricted_hub_dns_enable_inbound_forwarding
   dns_enable_logging               = var.restricted_hub_dns_enable_logging
@@ -133,20 +133,20 @@ module "restricted_shared_vpc" {
 
   subnets = [
     {
-      subnet_name           = "sb-c-shared-restricted-hub-${var.default_region1}"
-      subnet_ip             = local.restricted_subnet_primary_ranges[var.default_region1]
-      subnet_region         = var.default_region1
+      subnet_name           = "sb-c-shared-restricted-hub-${local.default_region1}"
+      subnet_ip             = local.restricted_subnet_primary_ranges[local.default_region1]
+      subnet_region         = local.default_region1
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Restricted network hub subnet for ${var.default_region1}"
+      description           = "Restricted network hub subnet for ${local.default_region1}"
     },
     {
-      subnet_name           = "sb-c-shared-restricted-hub-${var.default_region2}"
-      subnet_ip             = local.restricted_subnet_primary_ranges[var.default_region2]
-      subnet_region         = var.default_region2
+      subnet_name           = "sb-c-shared-restricted-hub-${local.default_region2}"
+      subnet_ip             = local.restricted_subnet_primary_ranges[local.default_region2]
+      subnet_region         = local.default_region2
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Restricted network hub subnet for ${var.default_region2}"
+      description           = "Restricted network hub subnet for ${local.default_region2}"
     }
   ]
   secondary_ranges = {}

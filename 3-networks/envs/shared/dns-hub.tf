@@ -60,16 +60,16 @@ module "dns_hub_vpc" {
   delete_default_internet_gateway_routes = "true"
 
   subnets = [{
-    subnet_name           = "sb-c-dns-hub-${var.default_region1}"
+    subnet_name           = "sb-c-dns-hub-${local.default_region1}"
     subnet_ip             = "172.16.0.0/25"
-    subnet_region         = var.default_region1
+    subnet_region         = local.default_region1
     subnet_private_access = "true"
     subnet_flow_logs      = var.subnetworks_enable_logging
     description           = "DNS hub subnet for region 1."
     }, {
-    subnet_name           = "sb-c-dns-hub-${var.default_region2}"
+    subnet_name           = "sb-c-dns-hub-${local.default_region2}"
     subnet_ip             = "172.16.0.128/25"
-    subnet_region         = var.default_region2
+    subnet_region         = local.default_region2
     subnet_private_access = "true"
     subnet_flow_logs      = var.subnetworks_enable_logging
     description           = "DNS hub subnet for region 2."
@@ -124,10 +124,10 @@ module "dns-forwarding-zone" {
 module "dns_hub_region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
-  name    = "cr-c-dns-hub-${var.default_region1}-cr1"
+  name    = "cr-c-dns-hub-${local.default_region1}-cr1"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
-  region  = var.default_region1
+  region  = local.default_region1
   bgp = {
     asn                  = var.bgp_asn_dns
     advertised_ip_ranges = [{ range = "35.199.192.0/19" }]
@@ -137,10 +137,10 @@ module "dns_hub_region1_router1" {
 module "dns_hub_region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
-  name    = "cr-c-dns-hub-${var.default_region1}-cr2"
+  name    = "cr-c-dns-hub-${local.default_region1}-cr2"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
-  region  = var.default_region1
+  region  = local.default_region1
   bgp = {
     asn                  = var.bgp_asn_dns
     advertised_ip_ranges = [{ range = "35.199.192.0/19" }]
@@ -150,10 +150,10 @@ module "dns_hub_region1_router2" {
 module "dns_hub_region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
-  name    = "cr-c-dns-hub-${var.default_region2}-cr3"
+  name    = "cr-c-dns-hub-${local.default_region2}-cr3"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
-  region  = var.default_region2
+  region  = local.default_region2
   bgp = {
     asn                  = var.bgp_asn_dns
     advertised_ip_ranges = [{ range = "35.199.192.0/19" }]
@@ -163,10 +163,10 @@ module "dns_hub_region2_router1" {
 module "dns_hub_region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
-  name    = "cr-c-dns-hub-${var.default_region2}-cr4"
+  name    = "cr-c-dns-hub-${local.default_region2}-cr4"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
-  region  = var.default_region2
+  region  = local.default_region2
   bgp = {
     asn                  = var.bgp_asn_dns
     advertised_ip_ranges = [{ range = "35.199.192.0/19" }]

@@ -144,7 +144,7 @@ tags:
 - 'integration'
 options:
   env:
-  - 'TF_VAR_example_foundations_mode=default'
+  - 'TF_VAR_example_foundations_mode=HubAndSpoke'
   - 'TF_VAR_create_access_context_manager_access_policy=false'
   - 'TF_VAR_audit_logs_table_delete_contents_on_destroy=true'
   - 'TF_VAR_log_export_storage_force_destroy=true'

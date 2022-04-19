@@ -26,7 +26,7 @@ resource "google_service_account" "compute_engine_service_account" {
 
 module "instance_template" {
   source       = "terraform-google-modules/vm/google//modules/instance_template"
-  version      = "7.3.0"
+  version      = "7.7.0"
   machine_type = var.machine_type
   region       = var.region
   project_id   = data.google_project.env_project.project_id

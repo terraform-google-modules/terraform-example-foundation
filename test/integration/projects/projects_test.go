@@ -69,14 +69,16 @@ func TestProjects(t *testing.T) {
 
 			shared.DefineApply(
 				func(assert *assert.Assertions) {
-					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
+					// perform default apply of the blueprint
 					shared.DefaultApply(assert)
+					// save the value of the "cloudbuild_sa" to be used in the envs tests
 					sharedData[tts.name].CloudbuildSA = shared.GetStringOutput("cloudbuild_sa")
 				})
 			shared.DefineVerify(
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					shared.DefaultVerify(assert)
+					// save the value of the "cloudbuild_sa" to be used in the envs tests
 					sharedData[tts.name].CloudbuildSA = shared.GetStringOutput("cloudbuild_sa")
 				})
 			shared.Test()
@@ -156,9 +158,6 @@ func TestProjects(t *testing.T) {
 			)
 			projects.DefineVerify(
 				func(assert *assert.Assertions) {
-					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
-					// projects.DefaultVerify(assert)
-
 					baseProjectID := projects.GetStringOutput("base_shared_vpc_project")
 					op1 := gcloud.Run(t, fmt.Sprintf("projects describe %s", baseProjectID))
 					assert.True(op1.Exists(), "project %s should exist", baseProjectID)

@@ -24,13 +24,6 @@ import (
 )
 
 func TestBootstrap(t *testing.T) {
-	// var cloud_source_repos = []string{
-	// 	"gcp-org",
-	// 	"gcp-environments",
-	// 	"gcp-networks",
-	// 	"gcp-projects",
-	// 	"gcp-policies",
-	// }
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
@@ -38,9 +31,6 @@ func TestBootstrap(t *testing.T) {
 
 	bootstrap.DefineVerify(
 		func(assert *assert.Assertions) {
-			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
-			//bootstrap.DefaultVerify(assert)
-
 			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
 			bucketName := bootstrap.GetStringOutput("gcs_bucket_cloudbuild_artifacts")
 

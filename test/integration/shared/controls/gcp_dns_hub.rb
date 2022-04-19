@@ -14,8 +14,8 @@
 
 dns_hub_project_id = attribute('dns_hub_project_id')
 
-dns_default_region1 = 'us-central1'
-dns_default_region2 = 'us-west1'
+dns_default_region1 = 'us-west1'
+dns_default_region2 = 'us-central1'
 
 network_name = 'vpc-c-dns-hub'
 dns_fw_zone_name = 'fz-dns-hub'

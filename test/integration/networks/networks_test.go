@@ -35,31 +35,19 @@ func TestNetworks(t *testing.T) {
 	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
 	policyID := getPolicyID(orgID, t)
 
-	for _, tt := range []struct {
-		name  string
-		tfDir string
-	}{
-		{
-			name:  "development",
-			tfDir: "../../../3-networks/envs/development",
-		},
-		{
-			name:  "non-production",
-			tfDir: "../../../3-networks/envs/non-production",
-		},
-		{
-			name:  "production",
-			tfDir: "../../../3-networks/envs/production",
-		},
+	for _, envName := range []string {
+		"development",
+		"non-production",
+		"production",
 	} {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(envName, func(t *testing.T) {
 
 			vars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
 			}
 
 			networks := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(tt.tfDir),
+				tft.WithTFDir(fmt.Sprintf("../../../3-networks/envs/%s", envName)),
 				tft.WithVars(vars),
 			)
 			networks.DefineVerify(

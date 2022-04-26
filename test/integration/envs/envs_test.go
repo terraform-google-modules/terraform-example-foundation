@@ -15,6 +15,7 @@
 package envs
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
@@ -23,26 +24,14 @@ import (
 
 func TestEnvs(t *testing.T) {
 
-	for _, tt := range []struct {
-		name  string
-		tfDir string
-	}{
-		{
-			name: "development",
-			tfDir: "../../../2-environments/envs/development",
-		},
-		{
-			name: "non-production",
-			tfDir: "../../../2-environments/envs/non-production",
-		},
-		{
-			name: "production",
-			tfDir: "../../../2-environments/envs/production",
-		},
-	}{
-		t.Run(tt.name, func(t *testing.T) {
+	for _, envName := range []string {
+		"development",
+		"non-production",
+		"production",
+	} {
+		t.Run(envName, func(t *testing.T) {
 			envs := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(tt.tfDir),
+				tft.WithTFDir(fmt.Sprintf("../../../2-environments/envs/%s", envName)),
 			)
 			envs.DefineVerify(
 				func(assert *assert.Assertions) {

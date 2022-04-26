@@ -15,6 +15,7 @@
 package appinfra
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
@@ -28,26 +29,14 @@ func TestAppInfra(t *testing.T) {
 		"project_service_account": utils.ValFromEnv(t, "TF_VAR_terraform_service_account"),
 	}
 
-	for _, tt := range []struct {
-		name  string
-		tfDir string
-	}{
-		{
-			name: "development",
-			tfDir: "../../../5-app-infra/business_unit_1/development",
-		},
-		{
-			name: "non-production",
-			tfDir: "../../../5-app-infra/business_unit_1/non-production",
-		},
-		{
-			name: "production",
-			tfDir: "../../../5-app-infra/business_unit_1/production",
-		},
-	}{
-		t.Run(tt.name, func(t *testing.T) {
+	for _, envName := range []string {
+		"development",
+		"non-production",
+		"production",
+	} {
+		t.Run(envName, func(t *testing.T) {
 			appInfra := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(tt.tfDir),
+				tft.WithTFDir(fmt.Sprintf("../../../5-app-infra/business_unit_1/%s", envName)),
 				tft.WithVars(vars),
 			)
 			appInfra.DefineVerify(

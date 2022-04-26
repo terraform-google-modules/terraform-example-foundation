@@ -24,7 +24,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func getPolicyID(orgID string, t *testing.T) string {
+func getPolicyID(t *testing.T, orgID string) string {
 	gcOpts := gcloud.WithCommonArgs([]string{"--format", "value(name)"})
 	op := gcloud.Run(t, fmt.Sprintf("access-context-manager policies list --organization=%s ", orgID), gcOpts)
 	return op.String()
@@ -33,7 +33,7 @@ func getPolicyID(orgID string, t *testing.T) string {
 func TestNetworks(t *testing.T) {
 
 	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
-	policyID := getPolicyID(orgID, t)
+	policyID := getPolicyID(t, orgID)
 
 	for _, envName := range []string {
 		"development",

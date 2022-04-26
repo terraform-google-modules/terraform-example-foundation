@@ -16,6 +16,7 @@ package projects
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
@@ -28,7 +29,7 @@ type SharedData struct {
 	CloudbuildSA string
 }
 
-func getPolicyID(orgID string, t *testing.T) string {
+func getPolicyID(t *testing.T, orgID string) string {
 	gcOpts := gcloud.WithCommonArgs([]string{"--format", "value(name)"})
 	op := gcloud.Run(t, fmt.Sprintf("access-context-manager policies list --organization=%s ", orgID), gcOpts)
 	return op.String()
@@ -37,15 +38,11 @@ func getPolicyID(orgID string, t *testing.T) string {
 func TestProjects(t *testing.T) {
 
 	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
-	policyID := getPolicyID(orgID, t)
+	policyID := getPolicyID(t, orgID)
 
-	var sharedData = map[string]*SharedData{
-		"bu1_shared": {
-			CloudbuildSA: "",
-		},
-		"bu2_shared": {
-			CloudbuildSA: "",
-		},
+	var sharedData = map[string]string {
+		"bu1": "",
+		"bu2": "",
 	}
 
 	for _, tts := range []struct {
@@ -53,11 +50,11 @@ func TestProjects(t *testing.T) {
 		tfDir string
 	}{
 		{
-			name:  "bu1_shared",
+			name:  "bu1",
 			tfDir: "../../../4-projects/business_unit_1/shared",
 		},
 		{
-			name:  "bu2_shared",
+			name:  "bu2",
 			tfDir: "../../../4-projects/business_unit_2/shared",
 		},
 	} {
@@ -72,14 +69,14 @@ func TestProjects(t *testing.T) {
 					// perform default apply of the blueprint
 					shared.DefaultApply(assert)
 					// save the value of the "cloudbuild_sa" to be used in the envs tests
-					sharedData[tts.name].CloudbuildSA = shared.GetStringOutput("cloudbuild_sa")
+					sharedData[tts.name] = shared.GetStringOutput("cloudbuild_sa")
 				})
 			shared.DefineVerify(
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					shared.DefaultVerify(assert)
 					// save the value of the "cloudbuild_sa" to be used in the envs tests
-					sharedData[tts.name].CloudbuildSA = shared.GetStringOutput("cloudbuild_sa")
+					sharedData[tts.name] = shared.GetStringOutput("cloudbuild_sa")
 				})
 			shared.Test()
 		})
@@ -88,67 +85,55 @@ func TestProjects(t *testing.T) {
 
 	for _, tt := range []struct {
 		name            string
-		sharedData      string
 		perimeterEnvVar string
 		tfDir           string
-		networkTfDir    string
 	}{
 		{
 			name:            "bu1_development",
-			sharedData:      "bu1_shared",
 			perimeterEnvVar: "TF_VAR_dev_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_1/development",
-			networkTfDir:    "../../../3-networks/envs/development",
 		},
 		{
 			name:            "bu1_non-production",
-			sharedData:      "bu1_shared",
 			perimeterEnvVar: "TF_VAR_nonprod_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_1/non-production",
-			networkTfDir:    "../../../3-networks/envs/non-production",
 		},
 		{
 			name:            "bu1_production",
-			sharedData:      "bu1_shared",
 			perimeterEnvVar: "TF_VAR_prod_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_1/production",
-			networkTfDir:    "../../../3-networks/envs/production",
 		},
 		{
 			name:            "bu2_development",
-			sharedData:      "bu2_shared",
 			perimeterEnvVar: "TF_VAR_dev_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_2/development",
-			networkTfDir:    "../../../3-networks/envs/development",
 		},
 		{
 			name:            "bu2_non-production",
-			sharedData:      "bu2_shared",
 			perimeterEnvVar: "TF_VAR_nonprod_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_2/non-production",
-			networkTfDir:    "../../../3-networks/envs/non-production",
 		},
 		{
 			name:            "bu2_production",
-			sharedData:      "bu2_shared",
 			perimeterEnvVar: "TF_VAR_prod_restricted_service_perimeter_name",
 			tfDir:           "../../../4-projects/business_unit_2/production",
-			networkTfDir:    "../../../3-networks/envs/production",
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 
+			env := strings.Split(tt.name, "_")
 			netVars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
 			}
+			// networks created to retrieve output from the network step for this environment
 			networks := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(tt.networkTfDir),
+				tft.WithTFDir(fmt.Sprintf("../../../3-networks/envs/%s", env[1])),
 				tft.WithVars(netVars),
 			)
 			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
 
 			vars := map[string]interface{}{
-				"app_infra_pipeline_cloudbuild_sa": sharedData[tt.sharedData].CloudbuildSA,
+				"app_infra_pipeline_cloudbuild_sa": sharedData[env[0]],
 				"perimeter_name":                   perimeterName,
 				"access_context_manager_policy_id": policyID,
 			}

@@ -45,11 +45,11 @@ steps:
 
 - id: converge-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'cft test run TestOrg --stage apply --verbose --test-dir /workspace/test/integration']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cft test run TestOrg --stage apply --verbose --test-dir /workspace/test/integration']
 
 - id: verify-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'cft test run TestOrg --stage verify --verbose --test-dir /workspace/test/integration']
+  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source_test_env && init_credentials && cft test run TestOrg --stage verify --verbose --test-dir /workspace/test/integration']
 
 - id: create-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'

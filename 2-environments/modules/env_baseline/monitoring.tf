@@ -20,7 +20,7 @@
 
 module "monitoring_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 12.0"
+  version                     = "~> 13.0"
   random_project_id           = "true"
   name                        = "${var.project_prefix}-${var.environment_code}-monitoring"
   org_id                      = var.org_id

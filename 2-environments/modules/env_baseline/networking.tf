@@ -20,7 +20,7 @@
 
 module "base_shared_vpc_host_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 12.0"
+  version                     = "~> 13.0"
   random_project_id           = "true"
   name                        = format("%s-%s-shared-base", var.project_prefix, var.environment_code)
   org_id                      = var.org_id
@@ -52,7 +52,7 @@ module "base_shared_vpc_host_project" {
 
 module "restricted_shared_vpc_host_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 12.0"
+  version                     = "~> 13.0"
   random_project_id           = "true"
   name                        = format("%s-%s-shared-restricted", var.project_prefix, var.environment_code)
   org_id                      = var.org_id

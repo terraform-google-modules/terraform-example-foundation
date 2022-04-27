@@ -20,7 +20,7 @@
 
 module "org_audit_logs" {
   source                  = "terraform-google-modules/project-factory/google"
-  version                 = "~> 12.0"
+  version                 = "~> 13.0"
   random_project_id       = "true"
   default_service_account = "deprivilege"
   name                    = "${var.project_prefix}-c-logging"
@@ -45,7 +45,7 @@ module "org_audit_logs" {
 
 module "org_billing_logs" {
   source                  = "terraform-google-modules/project-factory/google"
-  version                 = "~> 12.0"
+  version                 = "~> 13.0"
   random_project_id       = "true"
   default_service_account = "deprivilege"
   name                    = "${var.project_prefix}-c-billing-logs"
@@ -74,7 +74,7 @@ module "org_billing_logs" {
 
 module "org_secrets" {
   source                  = "terraform-google-modules/project-factory/google"
-  version                 = "~> 12.0"
+  version                 = "~> 13.0"
   random_project_id       = "true"
   default_service_account = "deprivilege"
   name                    = "${var.project_prefix}-c-secrets"
@@ -103,7 +103,7 @@ module "org_secrets" {
 
 module "interconnect" {
   source                  = "terraform-google-modules/project-factory/google"
-  version                 = "~> 12.0"
+  version                 = "~> 13.0"
   random_project_id       = "true"
   default_service_account = "deprivilege"
   name                    = "${var.project_prefix}-c-interconnect"
@@ -132,7 +132,7 @@ module "interconnect" {
 
 module "scc_notifications" {
   source                  = "terraform-google-modules/project-factory/google"
-  version                 = "~> 12.0"
+  version                 = "~> 13.0"
   random_project_id       = "true"
   default_service_account = "deprivilege"
   name                    = "${var.project_prefix}-c-scc"
@@ -161,7 +161,7 @@ module "scc_notifications" {
 
 module "dns_hub" {
   source                  = "terraform-google-modules/project-factory/google"
-  version                 = "~> 12.0"
+  version                 = "~> 13.0"
   random_project_id       = "true"
   default_service_account = "deprivilege"
   name                    = "${var.project_prefix}-c-dns-hub"
@@ -198,7 +198,7 @@ module "dns_hub" {
 
 module "base_network_hub" {
   source                  = "terraform-google-modules/project-factory/google"
-  version                 = "~> 12.0"
+  version                 = "~> 13.0"
   count                   = var.enable_hub_and_spoke ? 1 : 0
   random_project_id       = "true"
   default_service_account = "deprivilege"
@@ -236,7 +236,7 @@ module "base_network_hub" {
 
 module "restricted_network_hub" {
   source                  = "terraform-google-modules/project-factory/google"
-  version                 = "~> 12.0"
+  version                 = "~> 13.0"
   count                   = var.enable_hub_and_spoke ? 1 : 0
   random_project_id       = "true"
   default_service_account = "deprivilege"

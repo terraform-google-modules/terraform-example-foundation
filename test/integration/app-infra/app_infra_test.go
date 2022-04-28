@@ -18,8 +18,10 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -43,7 +45,18 @@ func TestAppInfra(t *testing.T) {
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					appInfra.DefaultVerify(assert)
+
+					projectID := appInfra.GetStringOutput("project_id")
+					instanceName := terraform.OutputList(t, appInfra.GetTFOptions(), "instances_names")[0]
+					instanceZone :=  terraform.OutputList(t, appInfra.GetTFOptions(), "instances_zones")[0]
+
+					gcOps := gcloud.WithCommonArgs([]string{"--project", projectID, "--zone", instanceZone, "--format", "json"})
+					instance := gcloud.Run(t, fmt.Sprintf("compute instances describe %s", instanceName), gcOps)
+
+					machineType := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/machineTypes/f1-micro", projectID, instanceZone)
+					assert.Equal(machineType, instance.Get("machineType").String(), "should have machine_type f1-micro")
 				})
+
 			appInfra.Test()
 		})
 

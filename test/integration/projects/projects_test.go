@@ -45,6 +45,17 @@ func TestProjects(t *testing.T) {
 		"bu2": "",
 	}
 
+	var restricted_apis_enabled = []string {
+		"accesscontextmanager.googleapis.com",
+		"billingbudgets.googleapis.com",
+	}
+
+	var shared_apis_enabled = []string {
+		"cloudbuild.googleapis.com",
+		"sourcerepo.googleapis.com",
+		"cloudkms.googleapis.com",
+	}
+
 	for _, tts := range []struct {
 		name  string
 		tfDir string
@@ -77,6 +88,14 @@ func TestProjects(t *testing.T) {
 					shared.DefaultVerify(assert)
 					// save the value of the "cloudbuild_sa" to be used in the envs tests
 					sharedData[tts.name] = shared.GetStringOutput("cloudbuild_sa")
+
+					projectID := shared.GetStringOutput("cloudbuild_project_id")
+					prj := gcloud.Run(t, fmt.Sprintf("projects describe %s", projectID))
+					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
+
+					gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "value(config.name)"})
+					enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
+					assert.Subset(enabledAPIS, shared_apis_enabled, "APIs should have been enabled")
 				})
 			shared.Test()
 		})
@@ -137,16 +156,33 @@ func TestProjects(t *testing.T) {
 				"perimeter_name":                   perimeterName,
 				"access_context_manager_policy_id": policyID,
 			}
+
 			projects := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),
 				tft.WithVars(vars),
 			)
 			projects.DefineVerify(
 				func(assert *assert.Assertions) {
-					baseProjectID := projects.GetStringOutput("base_shared_vpc_project")
-					op1 := gcloud.Run(t, fmt.Sprintf("projects describe %s", baseProjectID))
-					assert.True(op1.Exists(), "project %s should exist", baseProjectID)
+
+					for _, projectOutput := range []string {
+						"base_shared_vpc_project",
+						"floating_project",
+						"peering_project",
+						"restricted_shared_vpc_project",
+					} {
+						projectID := projects.GetStringOutput(projectOutput)
+						prj := gcloud.Run(t, fmt.Sprintf("projects describe %s", projectID))
+						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
+
+						if projectOutput == "restricted_shared_vpc_project" {
+							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "value(config.name)"})
+							enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
+							assert.Subset(enabledAPIS, restricted_apis_enabled, "APIs should have been enabled")
+						}
+					}
+
 				})
+
 			projects.Test()
 		})
 

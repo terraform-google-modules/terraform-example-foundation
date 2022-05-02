@@ -15,7 +15,6 @@
 package org
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
@@ -43,7 +42,7 @@ func TestOrg(t *testing.T) {
 				"dns_hub_project_id",
 			} {
 				projectID := org.GetStringOutput(projectOutput)
-				op := gcloud.Run(t, fmt.Sprintf("projects describe %s", projectID))
+				op := gcloud.Runf(t, "projects describe %s", projectID)
 				assert.True(op.Exists(), "project %s should exist", projectID)
 			}
 		})

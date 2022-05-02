@@ -34,7 +34,7 @@ func TestBootstrap(t *testing.T) {
 			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
 			bucketName := bootstrap.GetStringOutput("gcs_bucket_cloudbuild_artifacts")
 
-			op1 := gcloud.Run(t, fmt.Sprintf("projects describe %s", cbProjectID))
+			op1 := gcloud.Runf(t, "projects describe %s", cbProjectID)
 			assert.True(op1.Exists(), "project %s does not exist", cbProjectID)
 
 			gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--json"})

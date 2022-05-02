@@ -95,7 +95,7 @@ func TestProjects(t *testing.T) {
 					sharedCloudBuildSA[tts.name] = shared.GetStringOutput("cloudbuild_sa")
 
 					projectID := shared.GetStringOutput("cloudbuild_project_id")
-					prj := gcloud.Run(t, fmt.Sprintf("projects describe %s", projectID))
+					prj := gcloud.Runf(t, "projects describe %s", projectID)
 					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
 					gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "value(config.name)"})
@@ -197,7 +197,7 @@ func TestProjects(t *testing.T) {
 						"restricted_shared_vpc_project",
 					} {
 						projectID := projects.GetStringOutput(projectOutput)
-						prj := gcloud.Run(t, fmt.Sprintf("projects describe %s", projectID))
+						prj := gcloud.Runf(t, "projects describe %s", projectID)
 						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
 						if projectOutput == "restricted_shared_vpc_project" {
@@ -206,12 +206,12 @@ func TestProjects(t *testing.T) {
 							assert.Subset(enabledAPIS, restricted_apis_enabled, "APIs should have been enabled")
 
 							restrictedProjectNumber := projects.GetStringOutput("restricted_shared_vpc_project_number")
-							perimeter := gcloud.Run(t, fmt.Sprintf("access-context-manager perimeters describe %s --policy %s", perimeterName, policyID))
+							perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", perimeterName, policyID)
 							assert.Contains(perimeter.Get("status.resources").Array(), fmt.Sprintf("projects/%s", restrictedProjectNumber), "restricted project should be in the perimeter")
 
-							sharedVPC := gcloud.Run(t, fmt.Sprintf("compute shared-vpc get-host-project %s", projectID))
+							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())
-							hostProject := gcloud.Run(t, fmt.Sprintf("projects describe %s", sharedVPC.Get("name").String()))
+							hostProject := gcloud.Runf(t, "projects describe %s", sharedVPC.Get("name").String())
 							assert.Equal("restricted-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
 							assert.Equal(env[1], hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env[1]))
 							gcNetOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
@@ -223,17 +223,17 @@ func TestProjects(t *testing.T) {
 						if projectOutput == "base_shared_vpc_project" {
 
 							saName := projects.GetStringOutput("base_shared_vpc_project_sa")
-							saPolicy := gcloud.Run(t, fmt.Sprintf("iam service-accounts get-iam-policy  %s", saName))
+							saPolicy := gcloud.Runf(t, "iam service-accounts get-iam-policy  %s", saName)
 							assert.Contains(saPolicy.Get("bindings.0.members").Array(), fmt.Sprintf("serviceAccount:%s", sharedCloudBuildSA[env[0]]), "service account should be member of the binding")
 							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.0.role").String(), "service account should have role serviceAccountTokenCreator")
 
-							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy  %s", projectID))
+							projectPolicy := gcloud.Runf(t, "projects get-iam-policy  %s", projectID)
 							assert.Contains(projectPolicy.Get("bindings.1.members").Array(), fmt.Sprintf("serviceAccount:%s", saName), "service account should be member of the binding")
 							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.1.role").String(), "service account should have role serviceAccountTokenCreator")
 
-							sharedVPC := gcloud.Run(t, fmt.Sprintf("compute shared-vpc get-host-project %s", projectID))
+							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())
-							hostProject := gcloud.Run(t, fmt.Sprintf("projects describe %s", sharedVPC.Get("name").String()))
+							hostProject := gcloud.Runf(t, "projects describe %s", sharedVPC.Get("name").String())
 							assert.Equal("base-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
 							assert.Equal(env[1], hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env[1]))
 							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
@@ -243,7 +243,7 @@ func TestProjects(t *testing.T) {
 						}
 
 						if projectOutput == "floating_project" {
-							sharedVPC := gcloud.Run(t, fmt.Sprintf("compute shared-vpc get-host-project %s", projectID))
+							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.Empty(sharedVPC.Map())
 						}
 

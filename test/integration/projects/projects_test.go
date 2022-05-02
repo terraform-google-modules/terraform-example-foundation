@@ -211,11 +211,12 @@ func TestProjects(t *testing.T) {
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())
+
 							hostProject := gcloud.Runf(t, "projects describe %s", sharedVPC.Get("name").String())
 							assert.Equal("restricted-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
 							assert.Equal(env[1], hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env[1]))
-							gcNetOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
-							hostNetwork := gcloud.Run(t, "compute networks list", gcNetOpts).Array()[0]
+
+							hostNetwork := gcloud.Runf(t, "compute networks list --project %s", projectID).Array()[0]
 							assert.Equal(tt.restrictedNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
 
 						}
@@ -233,11 +234,12 @@ func TestProjects(t *testing.T) {
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())
+
 							hostProject := gcloud.Runf(t, "projects describe %s", sharedVPC.Get("name").String())
 							assert.Equal("base-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
 							assert.Equal(env[1], hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env[1]))
-							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
-							hostNetwork := gcloud.Run(t, "compute networks list", gcOpts).Array()[0]
+
+							hostNetwork := gcloud.Runf(t, "compute networks list --project %s", projectID).Array()[0]
 							assert.Equal(tt.baseNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
 
 						}
@@ -248,8 +250,7 @@ func TestProjects(t *testing.T) {
 						}
 
 						if projectOutput == "peering_project" {
-							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
-							peering := gcloud.Run(t, "compute networks peerings list", gcOpts).Array()[0]
+							peering := gcloud.Runf(t, "compute networks peerings list --project %s", projectID).Array()[0]
 							assert.Contains(peering.Get("peerings.0.network").String(), tt.baseNetwork, "should have a peering network")
 						}
 					}

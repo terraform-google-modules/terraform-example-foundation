@@ -25,32 +25,37 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type SharedData struct {
-	CloudbuildSA string
-}
-
 func getPolicyID(t *testing.T, orgID string) string {
 	gcOpts := gcloud.WithCommonArgs([]string{"--format", "value(name)"})
 	op := gcloud.Run(t, fmt.Sprintf("access-context-manager policies list --organization=%s ", orgID), gcOpts)
 	return op.String()
 }
 
+func getNetworkMode(t *testing.T) string {
+	mode := utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
+	if mode == "HubAndSpoke" {
+		return "-spoke"
+	}
+	return ""
+}
+
 func TestProjects(t *testing.T) {
 
 	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
 	policyID := getPolicyID(t, orgID)
+	networkMode := getNetworkMode(t)
 
-	var sharedData = map[string]string {
+	var sharedCloudBuildSA = map[string]string{
 		"bu1": "",
 		"bu2": "",
 	}
 
-	var restricted_apis_enabled = []string {
+	var restricted_apis_enabled = []string{
 		"accesscontextmanager.googleapis.com",
 		"billingbudgets.googleapis.com",
 	}
 
-	var shared_apis_enabled = []string {
+	var shared_apis_enabled = []string{
 		"cloudbuild.googleapis.com",
 		"sourcerepo.googleapis.com",
 		"cloudkms.googleapis.com",
@@ -80,14 +85,14 @@ func TestProjects(t *testing.T) {
 					// perform default apply of the blueprint
 					shared.DefaultApply(assert)
 					// save the value of the "cloudbuild_sa" to be used in the envs tests
-					sharedData[tts.name] = shared.GetStringOutput("cloudbuild_sa")
+					sharedCloudBuildSA[tts.name] = shared.GetStringOutput("cloudbuild_sa")
 				})
 			shared.DefineVerify(
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					shared.DefaultVerify(assert)
 					// save the value of the "cloudbuild_sa" to be used in the envs tests
-					sharedData[tts.name] = shared.GetStringOutput("cloudbuild_sa")
+					sharedCloudBuildSA[tts.name] = shared.GetStringOutput("cloudbuild_sa")
 
 					projectID := shared.GetStringOutput("cloudbuild_project_id")
 					prj := gcloud.Run(t, fmt.Sprintf("projects describe %s", projectID))
@@ -96,6 +101,13 @@ func TestProjects(t *testing.T) {
 					gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "value(config.name)"})
 					enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
 					assert.Subset(enabledAPIS, shared_apis_enabled, "APIs should have been enabled")
+
+					defaultRegion := shared.GetStringOutput("default_region")
+					tfRepo := shared.GetStringOutput("tf_runner_artifact_repo")
+					arOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--location", defaultRegion, "--format", "json"})
+					artifactRegistry := gcloud.Run(t, fmt.Sprintf("artifacts repositories describe %s", tfRepo), arOpts)
+					repoName := fmt.Sprintf("projects/%s/locations/%s/repositories/%s", projectID, defaultRegion, tfRepo)
+					assert.Equal(repoName, artifactRegistry.Get("name").String(), fmt.Sprintf("artifact registry %s should exist", repoName))
 				})
 			shared.Test()
 		})
@@ -103,39 +115,53 @@ func TestProjects(t *testing.T) {
 	}
 
 	for _, tt := range []struct {
-		name            string
-		perimeterEnvVar string
-		tfDir           string
+		name              string
+		perimeterEnvVar   string
+		tfDir             string
+		baseNetwork       string
+		restrictedNetwork string
 	}{
 		{
-			name:            "bu1_development",
-			perimeterEnvVar: "TF_VAR_dev_restricted_service_perimeter_name",
-			tfDir:           "../../../4-projects/business_unit_1/development",
+			name:              "bu1_development",
+			perimeterEnvVar:   "TF_VAR_dev_restricted_service_perimeter_name",
+			tfDir:             "../../../4-projects/business_unit_1/development",
+			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
+			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
-			name:            "bu1_non-production",
-			perimeterEnvVar: "TF_VAR_nonprod_restricted_service_perimeter_name",
-			tfDir:           "../../../4-projects/business_unit_1/non-production",
+			name:              "bu1_non-production",
+			perimeterEnvVar:   "TF_VAR_nonprod_restricted_service_perimeter_name",
+			tfDir:             "../../../4-projects/business_unit_1/non-production",
+			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
+			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
 		},
 		{
-			name:            "bu1_production",
-			perimeterEnvVar: "TF_VAR_prod_restricted_service_perimeter_name",
-			tfDir:           "../../../4-projects/business_unit_1/production",
+			name:              "bu1_production",
+			perimeterEnvVar:   "TF_VAR_prod_restricted_service_perimeter_name",
+			tfDir:             "../../../4-projects/business_unit_1/production",
+			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
+			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
 		},
 		{
-			name:            "bu2_development",
-			perimeterEnvVar: "TF_VAR_dev_restricted_service_perimeter_name",
-			tfDir:           "../../../4-projects/business_unit_2/development",
+			name:              "bu2_development",
+			perimeterEnvVar:   "TF_VAR_dev_restricted_service_perimeter_name",
+			tfDir:             "../../../4-projects/business_unit_2/development",
+			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
+			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
-			name:            "bu2_non-production",
-			perimeterEnvVar: "TF_VAR_nonprod_restricted_service_perimeter_name",
-			tfDir:           "../../../4-projects/business_unit_2/non-production",
+			name:              "bu2_non-production",
+			perimeterEnvVar:   "TF_VAR_nonprod_restricted_service_perimeter_name",
+			tfDir:             "../../../4-projects/business_unit_2/non-production",
+			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
+			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
 		},
 		{
-			name:            "bu2_production",
-			perimeterEnvVar: "TF_VAR_prod_restricted_service_perimeter_name",
-			tfDir:           "../../../4-projects/business_unit_2/production",
+			name:              "bu2_production",
+			perimeterEnvVar:   "TF_VAR_prod_restricted_service_perimeter_name",
+			tfDir:             "../../../4-projects/business_unit_2/production",
+			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
+			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
@@ -152,7 +178,7 @@ func TestProjects(t *testing.T) {
 			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
 
 			vars := map[string]interface{}{
-				"app_infra_pipeline_cloudbuild_sa": sharedData[env[0]],
+				"app_infra_pipeline_cloudbuild_sa": sharedCloudBuildSA[env[0]],
 				"perimeter_name":                   perimeterName,
 				"access_context_manager_policy_id": policyID,
 			}
@@ -164,7 +190,7 @@ func TestProjects(t *testing.T) {
 			projects.DefineVerify(
 				func(assert *assert.Assertions) {
 
-					for _, projectOutput := range []string {
+					for _, projectOutput := range []string{
 						"base_shared_vpc_project",
 						"floating_project",
 						"peering_project",
@@ -178,9 +204,55 @@ func TestProjects(t *testing.T) {
 							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "value(config.name)"})
 							enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
 							assert.Subset(enabledAPIS, restricted_apis_enabled, "APIs should have been enabled")
+
+							restrictedProjectNumber := projects.GetStringOutput("restricted_shared_vpc_project_number")
+							perimeter := gcloud.Run(t, fmt.Sprintf("access-context-manager perimeters describe %s --policy %s", perimeterName, policyID))
+							assert.Contains(perimeter.Get("status.resources").Array(), fmt.Sprintf("projects/%s", restrictedProjectNumber), "restricted project should be in the perimeter")
+
+							sharedVPC := gcloud.Run(t, fmt.Sprintf("compute shared-vpc get-host-project %s", projectID))
+							assert.NotEmpty(sharedVPC.Map())
+							hostProject := gcloud.Run(t, fmt.Sprintf("projects describe %s", sharedVPC.Get("name").String()))
+							assert.Equal("restricted-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
+							assert.Equal(env[1], hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env[1]))
+							gcNetOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
+							hostNetwork := gcloud.Run(t, "compute networks list", gcNetOpts).Array()[0]
+							assert.Equal(tt.restrictedNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
+
+						}
+
+						if projectOutput == "base_shared_vpc_project" {
+
+							saName := projects.GetStringOutput("base_shared_vpc_project_sa")
+							saPolicy := gcloud.Run(t, fmt.Sprintf("iam service-accounts get-iam-policy  %s", saName))
+							assert.Contains(saPolicy.Get("bindings.0.members").Array(), fmt.Sprintf("serviceAccount:%s", sharedCloudBuildSA[env[0]]), "service account should be member of the binding")
+							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.0.role").String(), "service account should have role serviceAccountTokenCreator")
+
+							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy  %s", projectID))
+							assert.Contains(projectPolicy.Get("bindings.1.members").Array(), fmt.Sprintf("serviceAccount:%s", saName), "service account should be member of the binding")
+							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.1.role").String(), "service account should have role serviceAccountTokenCreator")
+
+							sharedVPC := gcloud.Run(t, fmt.Sprintf("compute shared-vpc get-host-project %s", projectID))
+							assert.NotEmpty(sharedVPC.Map())
+							hostProject := gcloud.Run(t, fmt.Sprintf("projects describe %s", sharedVPC.Get("name").String()))
+							assert.Equal("base-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
+							assert.Equal(env[1], hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env[1]))
+							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
+							hostNetwork := gcloud.Run(t, "compute networks list", gcOpts).Array()[0]
+							assert.Equal(tt.baseNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
+
+						}
+
+						if projectOutput == "floating_project" {
+							sharedVPC := gcloud.Run(t, fmt.Sprintf("compute shared-vpc get-host-project %s", projectID))
+							assert.Empty(sharedVPC.Map())
+						}
+
+						if projectOutput == "peering_project" {
+							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
+							peering := gcloud.Run(t, "compute networks peerings list", gcOpts).Array()[0]
+							assert.Contains(peering.Get("peerings.0.network").String(), tt.baseNetwork, "should have a peering network")
 						}
 					}
-
 				})
 
 			projects.Test()

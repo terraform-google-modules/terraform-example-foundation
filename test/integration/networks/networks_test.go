@@ -156,11 +156,11 @@ func TestNetworks(t *testing.T) {
 						}
 
 						networkName := networkNames[networkType]["network_name"]
-						dnsHubNetworkUrl := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectID, networkName)
+						networkUrl := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectID, networkName)
 						dnsPolicyName :=networkNames[networkType]["dns_policy_name"]
 						dnsPolicy := gcloud.Runf(t, "dns policies describe %s --project %s", dnsPolicyName, projectID)
 						assert.True(dnsPolicy.Get("enableInboundForwarding").Bool(),fmt.Sprintf("dns policy %s should have inbound forwarding enabled", dnsPolicyName))
-						assert.Equal(dnsHubNetworkUrl, dnsPolicy.Get("networks.0.networkUrl").String(), fmt.Sprintf("dns policy %s should be on network %s", dnsPolicyName, networkName))
+						assert.Equal(networkUrl, dnsPolicy.Get("networks.0.networkUrl").String(), fmt.Sprintf("dns policy %s should be on network %s", dnsPolicyName, networkName))
 
 						//compute networks describe %s --project %s
 						projectNetwork := gcloud.Runf(t, "compute networks describe %s --project %s", networkName, projectID)
@@ -181,7 +181,7 @@ func TestNetworks(t *testing.T) {
 						usCentral1Range := cidrRanges[envName][networkType][1]
 						subnet2 := gcloud.Runf(t, "compute networks subnets describe %s --region us-central1 --project %s", subnetName2, projectID)
 						assert.Equal(subnetName2, subnet2.Get("name").String(), fmt.Sprintf("subnet %s should exist", subnetName2))
-						assert.Equal(usCentral1Range, subnet1.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usCentral1Range))
+						assert.Equal(usCentral1Range, subnet2.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usCentral1Range))
 
 						denyAllEgressName := networkNames[networkType]["fw_deny_all_egress"]
 						denyAllEgressRule := gcloud.Runf(t, "compute firewall-rules describe %s --project %s", denyAllEgressName, projectID)

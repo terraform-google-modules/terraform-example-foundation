@@ -98,9 +98,13 @@ func TestProjects(t *testing.T) {
 					prj := gcloud.Runf(t, "projects describe %s", projectID)
 					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
-					gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "value(config.name)"})
+					gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
 					enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-					assert.Subset(enabledAPIS, sharedApisEnabled, "APIs should have been enabled")
+					var listApis []string
+					for _, service := range enabledAPIS {
+						listApis = append(listApis, service.Get("config.name").String())
+					}
+					assert.Subset(listApis, sharedApisEnabled, "APIs should have been enabled")
 
 					defaultRegion := shared.GetStringOutput("default_region")
 					tfRepo := shared.GetStringOutput("tf_runner_artifact_repo")
@@ -201,9 +205,13 @@ func TestProjects(t *testing.T) {
 						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
 						if projectOutput == "restricted_shared_vpc_project" {
-							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "value(config.name)"})
+							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
 							enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-							assert.Subset(enabledAPIS, restrictedApisEnabled, "APIs should have been enabled")
+							var listApis []string
+							for _, service := range enabledAPIS {
+								listApis = append(listApis, service.Get("config.name").String())
+							}
+							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
 
 							restrictedProjectNumber := projects.GetStringOutput("restricted_shared_vpc_project_number")
 							perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", perimeterName, policyID)

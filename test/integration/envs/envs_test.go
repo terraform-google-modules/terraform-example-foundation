@@ -103,9 +103,13 @@ func TestEnvs(t *testing.T) {
 						assert.Equal(projectID, prj.Get("projectId").String(), fmt.Sprintf("project %s should exist", projectID))
 						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
-						gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "value(config.name)"})
+						gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
 						enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-						assert.Subset(enabledAPIS, projectEnvOutput.apis, "APIs should have been enabled")
+						var listApis []string
+						for _, service := range enabledAPIS {
+							listApis = append(listApis, service.Get("config.name").String())
+						}
+						assert.Subset(listApis, projectEnvOutput.apis, "APIs should have been enabled")
 
 						if projectEnvOutput.role != "" {
 							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", fmt.Sprintf("bindings.role:%s", projectEnvOutput.role), "--format", "json"})

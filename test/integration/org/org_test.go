@@ -231,9 +231,13 @@ func TestOrg(t *testing.T) {
 				prj := gcloud.Runf(t, "projects describe %s", projectID)
 				assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
-				gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "value(config.name)"})
+				gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
 				enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-				assert.Subset(enabledAPIS, projectOutput.apis, "APIs should have been enabled")
+				var listApis []string
+				for _, service := range enabledAPIS {
+					listApis = append(listApis, service.Get("config.name").String())
+				}
+				assert.Subset(listApis, projectOutput.apis, "APIs should have been enabled")
 			}
 		})
 	org.Test()

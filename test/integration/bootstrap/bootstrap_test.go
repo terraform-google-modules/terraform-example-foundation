@@ -119,9 +119,13 @@ func TestBootstrap(t *testing.T) {
 			seedPrj := gcloud.Runf(t, "projects describe %s", seedProjectID)
 			assert.True(seedPrj.Exists(), "project %s should exist", seedProjectID)
 
-			gcOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--format", "value(config.name)"})
+			gcOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--format", "json"})
 			enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-			assert.Subset(enabledAPIS, activateApis, "APIs should have been enabled")
+			var listApis []string
+			for _, service := range enabledAPIS {
+				listApis = append(listApis, service.Get("config.name").String())
+			}
+			assert.Subset(listApis, activateApis, "APIs should have been enabled")
 
 			seedAlphaOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--json"})
 			tfStateBkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", tfStateBucketName), seedAlphaOpts).Array()[0]
@@ -133,9 +137,13 @@ func TestBootstrap(t *testing.T) {
 			assert.Equal(terraformSAName, terraformSA.Get("name").String(), fmt.Sprintf("service account %s should exist", terraformSAEmail))
 
 			iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", terraformSAEmail)
-			iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "value(bindings.role)"})
+			iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
 			orgIamPolicyRoles := gcloud.Run(t, fmt.Sprintf("organizations get-iam-policy %s", orgID), iamOpts).Array()
-			assert.Subset(orgIamPolicyRoles, saOrgLevelRoles, fmt.Sprintf("service account %s should have organization level roles", terraformSAEmail))
+			var listRoles []string
+			for _, role := range orgIamPolicyRoles {
+				listRoles = append(listRoles, role.Get("bindings.role").String())
+			}
+			assert.Subset(listRoles, saOrgLevelRoles, fmt.Sprintf("service account %s should have organization level roles", terraformSAEmail))
 		})
 	bootstrap.Test()
 }

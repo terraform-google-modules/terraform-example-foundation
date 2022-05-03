@@ -49,3 +49,10 @@ module "project" {
     "billingbudgets.googleapis.com",
   ]
 }
+
+# propagation time
+resource "time_sleep" "wait_180_seconds" {
+  depends_on = [module.project.enabled_apis]
+
+  create_duration = "180s"
+}

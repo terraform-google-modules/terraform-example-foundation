@@ -31,7 +31,7 @@ func TestAppInfra(t *testing.T) {
 		"project_service_account": utils.ValFromEnv(t, "TF_VAR_terraform_service_account"),
 	}
 
-	for _, envName := range []string {
+	for _, envName := range []string{
 		"development",
 		"non-production",
 		"production",
@@ -48,7 +48,7 @@ func TestAppInfra(t *testing.T) {
 
 					projectID := appInfra.GetStringOutput("project_id")
 					instanceName := terraform.OutputList(t, appInfra.GetTFOptions(), "instances_names")[0]
-					instanceZone :=  terraform.OutputList(t, appInfra.GetTFOptions(), "instances_zones")[0]
+					instanceZone := terraform.OutputList(t, appInfra.GetTFOptions(), "instances_zones")[0]
 					machineType := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/machineTypes/f1-micro", projectID, instanceZone)
 
 					gcOps := gcloud.WithCommonArgs([]string{"--project", projectID, "--zone", instanceZone, "--format", "json"})

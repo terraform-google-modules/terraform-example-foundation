@@ -157,9 +157,9 @@ func TestNetworks(t *testing.T) {
 
 						networkName := networkNames[networkType]["network_name"]
 						networkUrl := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectID, networkName)
-						dnsPolicyName :=networkNames[networkType]["dns_policy_name"]
+						dnsPolicyName := networkNames[networkType]["dns_policy_name"]
 						dnsPolicy := gcloud.Runf(t, "dns policies describe %s --project %s", dnsPolicyName, projectID)
-						assert.True(dnsPolicy.Get("enableInboundForwarding").Bool(),fmt.Sprintf("dns policy %s should have inbound forwarding enabled", dnsPolicyName))
+						assert.True(dnsPolicy.Get("enableInboundForwarding").Bool(), fmt.Sprintf("dns policy %s should have inbound forwarding enabled", dnsPolicyName))
 						assert.Equal(networkUrl, dnsPolicy.Get("networks.0.networkUrl").String(), fmt.Sprintf("dns policy %s should be on network %s", dnsPolicyName, networkName))
 
 						//compute networks describe %s --project %s

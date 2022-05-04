@@ -120,7 +120,7 @@ func TestOrg(t *testing.T) {
 			logsExportStorageBucketName := org.GetStringOutput("logs_export_storage_bucket_name")
 			gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", auditLogsProjectID, "--json"})
 			bkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", logsExportStorageBucketName), gcAlphaOpts).Array()[0]
-			assert.Equal(logsExportStorageBucketName, bkt.Get("id").String(), fmt.Sprintf("Bucket %s should exist", logsExportStorageBucketName))
+			assert.Equal(logsExportStorageBucketName, bkt.Get("metadata.id").String(), fmt.Sprintf("Bucket %s should exist", logsExportStorageBucketName))
 
 			logsExportTopicName := org.GetStringOutput("logs_export_pubsub_topic")
 			logsExportTopicFullName := fmt.Sprintf("projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName)
@@ -160,7 +160,7 @@ func TestOrg(t *testing.T) {
 			} {
 				logSink := gcloud.Runf(t, "logging sinks describe %s --folder %s", sink.name, parentFolder)
 				assert.True(logSink.Get("includeChildren").Bool(), fmt.Sprintf("sink %s should include children", sink.name))
-				assert.Equal(sink.destination, logsExportTopic.Get("destination").String(), fmt.Sprintf("sink %s should have destination %s", sink.name, sink.destination))
+				assert.Equal(sink.destination, logSink.Get("destination").String(), fmt.Sprintf("sink %s should have destination %s", sink.name, sink.destination))
 				if sink.hasFilter {
 					for _, filter := range mainLogsFilter {
 						assert.Contains(logSink.Get("filter").String(), filter, fmt.Sprintf("sink %s should include filter %s", sink.name, filter))
@@ -171,19 +171,16 @@ func TestOrg(t *testing.T) {
 			}
 
 			// hub and spoke infrastructure
-			for _, hubAndSpokeProjectOutput := range []string{
-				"base_net_hub_project_id",
-				"restricted_net_hub_project_id",
-			} {
-				projectID := org.GetStringOutput(hubAndSpokeProjectOutput)
-				gcOps := gcloud.WithCommonArgs([]string{"--filter", fmt.Sprintf("projectId:%s", projectID), "--format", "json"})
-				projects := gcloud.Run(t, "projects list", gcOps).Array()
-
-				if isHubAndSpoke(t) {
+			if isHubAndSpoke(t) {
+				for _, hubAndSpokeProjectOutput := range []string{
+					"base_net_hub_project_id",
+					"restricted_net_hub_project_id",
+				} {
+					projectID := org.GetStringOutput(hubAndSpokeProjectOutput)
+					gcOps := gcloud.WithCommonArgs([]string{"--filter", fmt.Sprintf("projectId:%s", projectID), "--format", "json"})
+					projects := gcloud.Run(t, "projects list", gcOps).Array()
 					assert.Equal(1, len(projects), fmt.Sprintf("project %s should exist", projectID))
 					assert.Equal("ACTIVE", projects[0].Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
-				} else {
-					assert.Empty(projects, fmt.Sprintf("project %s should not exist", projectID))
 				}
 			}
 

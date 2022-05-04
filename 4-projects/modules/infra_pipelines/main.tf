@@ -22,7 +22,7 @@ locals {
   state_buckets          = { for created_csr in local.created_csrs : "${created_csr}-tfstate" => format("%s-%s-%s", created_csr, "tfstate", random_id.suffix.hex) }
   apply_branches_regex   = "^(${join("|", var.terraform_apply_branches)})$"
   cloudbuild_bucket_name = "${var.cloudbuild_project_id}_cloudbuild"
-  cloudbuild_bucket      = { "cloudbuild" = local.cloudbuild_bucket_name }
+  cloudbuild_bucket      = { "${data.google_project.cloudbuild_project.project_id}_cloudbuild" = local.cloudbuild_bucket_name }
 }
 
 # Create CSRs

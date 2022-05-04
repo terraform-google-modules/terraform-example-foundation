@@ -30,9 +30,9 @@ func isHubAndSpoke(t *testing.T) bool {
 }
 
 func getCustomerID(t *testing.T, domain string) string {
-	gcOpts := gcloud.WithCommonArgs([]string{"--filter", fmt.Sprintf("'display_name = %s'", domain), "--format", "value(owner.directoryCustomerId)"})
-	op := gcloud.Run(t, "organizations list", gcOpts)
-	return op.String()
+	gcOpts := gcloud.WithCommonArgs([]string{"--filter", fmt.Sprintf("'display_name = %s'", domain), "--format", "json"})
+	op := gcloud.Run(t, "organizations list", gcOpts).Array()[0]
+	return op.Get("owner.directoryCustomerId").String()
 }
 
 func getLastSplitElement(value string, sep string) string {

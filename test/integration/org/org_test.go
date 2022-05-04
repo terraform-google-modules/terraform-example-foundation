@@ -16,6 +16,7 @@ package org
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
@@ -45,10 +46,10 @@ func TestOrg(t *testing.T) {
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 			org.DefaultVerify(assert)
 
-			parentFolder := org.GetStringOutput("parent_resource_id")
+			parentFolder := strings.Split(org.GetStringOutput("parent_resource_id"), "/")[-1]
 
 			// creation of common folder
-			commonFolder := org.GetStringOutput("common_folder_name")
+			commonFolder := strings.Split(org.GetStringOutput("common_folder_name"), "/")[-1]
 			folder := gcloud.Runf(t, "resource-manager folders describe %s", commonFolder)
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 

@@ -16,6 +16,7 @@ package envs
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
@@ -39,7 +40,7 @@ func TestEnvs(t *testing.T) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					envs.DefaultVerify(assert)
 
-					envFolder := envs.GetStringOutput("env_folder")
+					envFolder := strings.Split(org.GetStringOutput("env_folder"), "/")[-1]
 					folder := gcloud.Runf(t, "resource-manager folders describe %s", envFolder)
 					displayName := fmt.Sprintf("fldr-%s", envName)
 					assert.Equal(displayName, folder.Get("displayName").String(), fmt.Sprintf("folder %s should have been created", displayName))

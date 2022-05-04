@@ -120,49 +120,42 @@ func TestProjects(t *testing.T) {
 
 	for _, tt := range []struct {
 		name              string
-		perimeterEnvVar   string
 		tfDir             string
 		baseNetwork       string
 		restrictedNetwork string
 	}{
 		{
 			name:              "bu1_development",
-			perimeterEnvVar:   "TF_VAR_dev_restricted_service_perimeter_name",
 			tfDir:             "../../../4-projects/business_unit_1/development",
 			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu1_non-production",
-			perimeterEnvVar:   "TF_VAR_nonprod_restricted_service_perimeter_name",
 			tfDir:             "../../../4-projects/business_unit_1/non-production",
 			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu1_production",
-			perimeterEnvVar:   "TF_VAR_prod_restricted_service_perimeter_name",
 			tfDir:             "../../../4-projects/business_unit_1/production",
 			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu2_development",
-			perimeterEnvVar:   "TF_VAR_dev_restricted_service_perimeter_name",
 			tfDir:             "../../../4-projects/business_unit_2/development",
 			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu2_non-production",
-			perimeterEnvVar:   "TF_VAR_nonprod_restricted_service_perimeter_name",
 			tfDir:             "../../../4-projects/business_unit_2/non-production",
 			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu2_production",
-			perimeterEnvVar:   "TF_VAR_prod_restricted_service_perimeter_name",
 			tfDir:             "../../../4-projects/business_unit_2/production",
 			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),

@@ -35,6 +35,11 @@ func getCustomerID(t *testing.T, domain string) string {
 	return op.String()
 }
 
+func getLastSplitElement(value string, sep string) string {
+	splitted := strings.Split(value, sep)
+	return splitted[len(splitted)-1]
+}
+
 func TestOrg(t *testing.T) {
 
 	org := tft.NewTFBlueprintTest(t,
@@ -46,10 +51,10 @@ func TestOrg(t *testing.T) {
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 			org.DefaultVerify(assert)
 
-			parentFolder := strings.Split(org.GetStringOutput("parent_resource_id"), "/")[-1]
+			parentFolder := getLastSplitElement(org.GetStringOutput("parent_resource_id"), "/")
 
 			// creation of common folder
-			commonFolder := strings.Split(org.GetStringOutput("common_folder_name"), "/")[-1]
+			commonFolder := getLastSplitElement(org.GetStringOutput("common_folder_name"), "/")
 			folder := gcloud.Runf(t, "resource-manager folders describe %s", commonFolder)
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 

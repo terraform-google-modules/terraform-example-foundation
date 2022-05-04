@@ -24,6 +24,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func getLastSplitElement(value string, sep string) string {
+	splitted := strings.Split(value, sep)
+	return splitted[len(splitted)-1]
+}
+
 func TestEnvs(t *testing.T) {
 
 	for _, envName := range []string{
@@ -40,7 +45,7 @@ func TestEnvs(t *testing.T) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					envs.DefaultVerify(assert)
 
-					envFolder := strings.Split(org.GetStringOutput("env_folder"), "/")[-1]
+					envFolder := getLastSplitElement(org.GetStringOutput("env_folder"), "/")
 					folder := gcloud.Runf(t, "resource-manager folders describe %s", envFolder)
 					displayName := fmt.Sprintf("fldr-%s", envName)
 					assert.Equal(displayName, folder.Get("displayName").String(), fmt.Sprintf("folder %s should have been created", displayName))

@@ -58,14 +58,12 @@ func TestOrg(t *testing.T) {
 			folder := gcloud.Runf(t, "resource-manager folders describe %s", commonFolder)
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 
-			//organization policies
+			// boolean organization policies
 			for _, booleanConstraint := range []string{
 				"constraints/compute.disableNestedVirtualization",
 				"constraints/compute.disableSerialPortAccess",
 				"constraints/compute.disableGuestAttributesAccess",
-				"constraints/compute.vmExternalIpAccess",
 				"constraints/compute.skipDefaultNetworkCreation",
-				"constraints/compute.requireOsLogin",
 				"constraints/compute.restrictXpnProjectLienRemoval",
 				"constraints/sql.restrictPublicIp",
 				"constraints/iam.disableServiceAccountKeyCreation",
@@ -75,9 +73,18 @@ func TestOrg(t *testing.T) {
 				orgPolicy := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", booleanConstraint, parentFolder)
 				assert.True(orgPolicy.Get("booleanPolicy.enforced").Bool(), fmt.Sprintf("org policy %s should be enforced", booleanConstraint))
 			}
+
+			// list policies
 			restrictedDomain := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", "constraints/iam.allowedPolicyMemberDomains", parentFolder)
 			allowedDomain := utils.ValFromEnv(t, "TF_VAR_domain_to_allow")
 			assert.Equal(getCustomerID(t, allowedDomain), restrictedDomain.Get("listPolicy.allowedValues.0").String(), "restricted domain org policy should be enforced")
+
+			vmExternalIpAccess := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", "constraints/compute.vmExternalIpAccess", parentFolder)
+			assert.Equal("DENY", vmExternalIpAccess.Get("listPolicy.allValues").String(), "org policy should deny all external IP access")
+
+			// compute.requireOsLogin is neither a boolean policy nor a list policy
+			requireOsLogin := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", "constraints/compute.requireOsLogin", parentFolder)
+			assert.Equal("constraints/compute.requireOsLogin", requireOsLogin.Get("constraint").String(), "org policy should require OS Login")
 
 			// security command center
 			sccProjectID := org.GetStringOutput("scc_notifications_project_id")

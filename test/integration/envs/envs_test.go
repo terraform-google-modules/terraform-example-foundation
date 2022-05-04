@@ -45,7 +45,7 @@ func TestEnvs(t *testing.T) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					envs.DefaultVerify(assert)
 
-					envFolder := getLastSplitElement(org.GetStringOutput("env_folder"), "/")
+					envFolder := getLastSplitElement(envs.GetStringOutput("env_folder"), "/")
 					folder := gcloud.Runf(t, "resource-manager folders describe %s", envFolder)
 					displayName := fmt.Sprintf("fldr-%s", envName)
 					assert.Equal(displayName, folder.Get("displayName").String(), fmt.Sprintf("folder %s should have been created", displayName))

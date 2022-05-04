@@ -29,11 +29,11 @@ func isHubAndSpoke(t *testing.T) bool {
 	return "HubAndSpoke" == utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
 }
 
-func getCustomerID(t *testing.T, domain string) string {
-	gcOpts := gcloud.WithCommonArgs([]string{"--filter", fmt.Sprintf("'display_name = %s'", domain), "--format", "json"})
-	op := gcloud.Run(t, "organizations list", gcOpts).Array()[0]
-	return op.Get("owner.directoryCustomerId").String()
-}
+// func getCustomerID(t *testing.T, domain string) string {
+// 	gcOpts := gcloud.WithCommonArgs([]string{"--filter", fmt.Sprintf("'display_name = %s'", domain), "--format", "json"})
+// 	op := gcloud.Run(t, "organizations list", gcOpts).Array()[0]
+// 	return op.Get("owner.directoryCustomerId").String()
+// }
 
 func getLastSplitElement(value string, sep string) string {
 	splitted := strings.Split(value, sep)
@@ -75,9 +75,9 @@ func TestOrg(t *testing.T) {
 			}
 
 			// list policies
-			restrictedDomain := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", "constraints/iam.allowedPolicyMemberDomains", parentFolder)
-			allowedDomain := utils.ValFromEnv(t, "TF_VAR_domain_to_allow")
-			assert.Equal(getCustomerID(t, allowedDomain), restrictedDomain.Get("listPolicy.allowedValues.0").String(), "restricted domain org policy should be enforced")
+			//restrictedDomain := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", "constraints/iam.allowedPolicyMemberDomains", parentFolder)
+			//allowedDomain := utils.ValFromEnv(t, "TF_VAR_domain_to_allow")
+			//assert.Equal(getCustomerID(t, allowedDomain), restrictedDomain.Get("listPolicy.allowedValues.0").String(), "restricted domain org policy should be enforced")
 
 			vmExternalIpAccess := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", "constraints/compute.vmExternalIpAccess", parentFolder)
 			assert.Equal("DENY", vmExternalIpAccess.Get("listPolicy.allValues").String(), "org policy should deny all external IP access")

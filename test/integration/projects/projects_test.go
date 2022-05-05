@@ -237,13 +237,13 @@ func TestProjects(t *testing.T) {
 							assert.Contains(listSaMembers, fmt.Sprintf("serviceAccount:%s", sharedCloudBuildSA[env[0]]), "service account should be member of the binding")
 							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.0.role").String(), "service account should have role serviceAccountTokenCreator")
 
-							projectPolicy := gcloud.Runf(t, "projects get-iam-policy  %s", projectID)
+							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", "bindings.role:roles/editor", "--format", "json"})
+							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()[0]
 							var listMembers []string
-							for _, member := range projectPolicy.Get("bindings.1.members").Array() {
+							for _, member := range projectPolicy.Get("bindings.members").Array() {
 								listMembers = append(listMembers, member.String())
 							}
-							assert.Contains(listMembers, fmt.Sprintf("serviceAccount:%s", saName), "service account should be member of the binding")
-							assert.Equal("roles/editor", saPolicy.Get("bindings.1.role").String(), "service account should have role editor")
+							assert.Contains(listMembers, fmt.Sprintf("serviceAccount:%s", saName), "service account should have role/editor")
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())

@@ -248,11 +248,12 @@ func TestProjects(t *testing.T) {
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())
 
-							hostProject := gcloud.Runf(t, "projects describe %s", sharedVPC.Get("name").String())
+							hostProjectID := sharedVPC.Get("name").String()
+							hostProject := gcloud.Runf(t, "projects describe %s", hostProjectID)
 							assert.Equal("base-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
 							assert.Equal(env[1], hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env[1]))
 
-							hostNetwork := gcloud.Runf(t, "compute networks list --project %s", projectID).Array()[0]
+							hostNetwork := gcloud.Runf(t, "compute networks list --project %s", hostProjectID).Array()[0]
 							assert.Equal(tt.baseNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
 
 						}

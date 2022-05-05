@@ -144,7 +144,7 @@ func TestNetworks(t *testing.T) {
 					for _, service := range servicePerimeter.Get("status.restrictedServices").Array() {
 						listServices = append(listServices, service.String())
 					}
-					assert.Contains(listServices, restrictedServices, fmt.Sprintf("service perimeter %s should restrict 'bigquery.googleapis.com' and 'storage.googleapis.com'", servicePerimeterLink))
+					assert.Subset(listServices, restrictedServices, fmt.Sprintf("service perimeter %s should restrict 'bigquery.googleapis.com' and 'storage.googleapis.com'", servicePerimeterLink))
 
 					for _, networkType := range []string{
 						"base",
@@ -196,8 +196,8 @@ func TestNetworks(t *testing.T) {
 						assert.Equal(denyAllEgressName, denyAllEgressRule.Get("name").String(), fmt.Sprintf("firewall rule %s should exist", denyAllEgressName))
 						assert.Equal("EGRESS", denyAllEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", denyAllEgressName))
 						assert.True(denyAllEgressRule.Get("logConfig.enable").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", denyAllEgressName))
-						assert.Equal([]string{"0.0.0.0/0"}, denyAllEgressRule.Get("destinationRanges").Array(), fmt.Sprintf("firewall rule %s destination ranges should be 0.0.0.0/0", denyAllEgressName))
-						assert.Equal(1, len(denyAllEgressRule.Get("denied.").Array()), fmt.Sprintf("firewall rule %s should have only one denied", denyAllEgressName))
+						assert.Equal("0.0.0.0/0", denyAllEgressRule.Get("destinationRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be 0.0.0.0/0", denyAllEgressName))
+						assert.Equal(1, len(denyAllEgressRule.Get("denied").Array()), fmt.Sprintf("firewall rule %s should have only one denied", denyAllEgressName))
 						assert.Equal(1, len(denyAllEgressRule.Get("denied.0").Map()), fmt.Sprintf("firewall rule %s should have only one denied only with no ports", denyAllEgressName))
 						assert.Equal("all", denyAllEgressRule.Get("denied.0.IPProtocol").String(), fmt.Sprintf("firewall rule %s should deny all protocols", denyAllEgressName))
 
@@ -206,12 +206,12 @@ func TestNetworks(t *testing.T) {
 						assert.Equal(allowApiEgressName, allowApiEgressRule.Get("name").String(), fmt.Sprintf("firewall rule %s should exist", allowApiEgressName))
 						assert.Equal("EGRESS", allowApiEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", allowApiEgressName))
 						assert.True(allowApiEgressRule.Get("logConfig.enable").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", allowApiEgressName))
-						assert.Equal([]string{googleapisCIDR[networkType]}, allowApiEgressRule.Get("destinationRanges").Array(), fmt.Sprintf("firewall rule %s destination ranges should be %s", allowApiEgressName, googleapisCIDR[networkType]))
+						assert.Equal(googleapisCIDR[networkType], allowApiEgressRule.Get("destinationRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be %s", allowApiEgressName, googleapisCIDR[networkType]))
 						assert.Equal(1, len(allowApiEgressRule.Get("allowed").Array()), fmt.Sprintf("firewall rule %s should have only one allowed", allowApiEgressName))
 						assert.Equal(2, len(allowApiEgressRule.Get("allowed.0").Map()), fmt.Sprintf("firewall rule %s should have only one allowed only with protocol end ports", allowApiEgressName))
 						assert.Equal("tcp", allowApiEgressRule.Get("allowed.0.IPProtocol").String(), fmt.Sprintf("firewall rule %s should allow tcp protocol", allowApiEgressName))
-						assert.Equal(1, allowApiEgressRule.Get("allowed.0.IPProtocol.port").Array(), fmt.Sprintf("firewall rule %s should allow only one port", allowApiEgressName))
-						assert.Equal("443", allowApiEgressRule.Get("allowed.0.IPProtocol.port.0").String(), fmt.Sprintf("firewall rule %s should allow port 443", allowApiEgressName))
+						assert.Equal(1, allowApiEgressRule.Get("allowed.0.ports").Array(), fmt.Sprintf("firewall rule %s should allow only one port", allowApiEgressName))
+						assert.Equal("443", allowApiEgressRule.Get("allowed.0.ports.0").String(), fmt.Sprintf("firewall rule %s should allow port 443", allowApiEgressName))
 
 						if networkMode == "" {
 							for _, router := range []struct {

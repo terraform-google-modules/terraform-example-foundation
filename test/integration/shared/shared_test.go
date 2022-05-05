@@ -71,12 +71,12 @@ func TestShared(t *testing.T) {
 			}{
 				{
 					name:      "sb-c-dns-hub-us-central1",
-					cidrRange: "172.16.0.0/25",
+					cidrRange: "172.16.0.128/25",
 					region:    "us-central1",
 				},
 				{
 					name:      "sb-c-dns-hub-us-west1",
-					cidrRange: "172.16.0.128/25",
+					cidrRange: "172.16.0.0/25",
 					region:    "us-west1",
 				},
 			} {

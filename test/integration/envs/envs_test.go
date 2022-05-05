@@ -21,6 +21,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -59,7 +60,7 @@ func TestEnvs(t *testing.T) {
 						{
 							projectOutput: "monitoring_project_id",
 							role:          "roles/monitoring.editor",
-							group:         "monitoring_workspace_users",
+							group:         "TF_VAR_monitoring_workspace_users",
 							apis: []string{
 								"logging.googleapis.com",
 								"monitoring.googleapis.com",
@@ -120,7 +121,7 @@ func TestEnvs(t *testing.T) {
 						if projectEnvOutput.role != "" {
 							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", fmt.Sprintf("bindings.role:%s", projectEnvOutput.role), "--format", "json"})
 							iamPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts)
-							group := envs.GetStringOutput(projectEnvOutput.group)
+							group := utils.ValFromEnv(t, projectEnvOutput.group)
 							assert.Contains(iamPolicy.Get("bindings.members").Array(), fmt.Sprintf("group:%s", group), fmt.Sprintf("group %s should have role %s", group, projectEnvOutput.role))
 						}
 					}

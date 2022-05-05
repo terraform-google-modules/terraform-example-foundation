@@ -38,3 +38,8 @@ output "env_secrets_project_id" {
   description = "Project for environment related secrets."
   value       = module.env.env_secrets_project_id
 }
+
+output "monitoring_workspace_users" {
+  description = "Google Workspace or Cloud Identity group that have access to Monitoring Workspaces."
+  value       = var.monitoring_workspace_users
+}

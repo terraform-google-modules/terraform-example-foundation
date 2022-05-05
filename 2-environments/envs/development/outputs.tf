@@ -41,5 +41,5 @@ output "env_secrets_project_id" {
 
 output "monitoring_workspace_users" {
   description = "Google Workspace or Cloud Identity group that have access to Monitoring Workspaces."
-  value = var.monitoring_workspace_users
+  value       = var.monitoring_workspace_users
 }

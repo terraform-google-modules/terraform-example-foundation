@@ -92,20 +92,20 @@ func TestShared(t *testing.T) {
 				region string
 			}{
 				{
-					name:   "cr-c-dns-hub-us-central1-cr1",
-					region: "us-central1",
-				},
-				{
-					name:   "cr-c-dns-hub-us-central1-cr2",
-					region: "us-central1",
-				},
-				{
-					name:   "cr-c-dns-hub-us-west1-cr3",
+					name:   "cr-c-dns-hub-us-west1-cr1",
 					region: "us-west1",
 				},
 				{
-					name:   "cr-c-dns-hub-us-west1-cr4",
+					name:   "cr-c-dns-hub-us-west1-cr2",
 					region: "us-west1",
+				},
+				{
+					name:   "cr-c-dns-hub-us-central1-cr3",
+					region: "us-central1",
+				},
+				{
+					name:   "cr-c-dns-hub-us-central1-cr4",
+					region: "us-central1",
 				},
 			} {
 				computeRouter := gcloud.Runf(t, "compute routers describe %s --region %s --project %s", router.name, router.region, projectID)

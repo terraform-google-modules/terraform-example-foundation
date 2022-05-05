@@ -120,9 +120,13 @@ func TestEnvs(t *testing.T) {
 
 						if projectEnvOutput.role != "" {
 							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", fmt.Sprintf("bindings.role:%s", projectEnvOutput.role), "--format", "json"})
-							iamPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts)
+							iamPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()[0]
 							group := utils.ValFromEnv(t, projectEnvOutput.group)
-							assert.Contains(iamPolicy.Get("bindings.members").Array(), fmt.Sprintf("group:%s", group), fmt.Sprintf("group %s should have role %s", group, projectEnvOutput.role))
+							var listMembers []string
+							for _, member := range iamPolicy.Get("bindings.members").Array() {
+								listMembers = append(listMembers, member.String())
+							}
+							assert.Contains(listMembers, fmt.Sprintf("group:%s", group), fmt.Sprintf("group %s should have role %s", group, projectEnvOutput.role))
 						}
 					}
 

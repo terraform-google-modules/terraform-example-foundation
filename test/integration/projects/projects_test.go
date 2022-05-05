@@ -208,7 +208,11 @@ func TestProjects(t *testing.T) {
 
 							restrictedProjectNumber := projects.GetStringOutput("restricted_shared_vpc_project_number")
 							perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", perimeterName, policyID)
-							assert.Contains(perimeter.Get("status.resources").Array(), fmt.Sprintf("projects/%s", restrictedProjectNumber), "restricted project should be in the perimeter")
+							var listResources []string
+							for _, resource := range perimeter.Get("status.resources").Array() {
+								listResources = append(listResources, resource.String())
+							}
+							assert.Contains(listResources, fmt.Sprintf("projects/%s", restrictedProjectNumber), "restricted project should be in the perimeter")
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())
@@ -225,12 +229,20 @@ func TestProjects(t *testing.T) {
 						if projectOutput == "base_shared_vpc_project" {
 
 							saName := projects.GetStringOutput("base_shared_vpc_project_sa")
-							saPolicy := gcloud.Runf(t, "iam service-accounts get-iam-policy  %s", saName)
-							assert.Contains(saPolicy.Get("bindings.0.members").Array(), fmt.Sprintf("serviceAccount:%s", sharedCloudBuildSA[env[0]]), "service account should be member of the binding")
+							saPolicy := gcloud.Runf(t, "iam service-accounts get-iam-policy  %s", saName).Array()[0]
+							var listSaMembers []string
+							for _, saMember := range saPolicy.Get("bindings.members").Array() {
+								listSaMembers = append(listSaMembers, saMember.String())
+							}
+							assert.Contains(listSaMembers, fmt.Sprintf("serviceAccount:%s", sharedCloudBuildSA[env[0]]), "service account should be member of the binding")
 							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.0.role").String(), "service account should have role serviceAccountTokenCreator")
 
-							projectPolicy := gcloud.Runf(t, "projects get-iam-policy  %s", projectID)
-							assert.Contains(projectPolicy.Get("bindings.1.members").Array(), fmt.Sprintf("serviceAccount:%s", saName), "service account should be member of the binding")
+							projectPolicy := gcloud.Runf(t, "projects get-iam-policy  %s", projectID).Array()[1]
+							var listMembers []string
+							for _, member := range projectPolicy.Get("bindings.members").Array() {
+								listMembers = append(listMembers, member.String())
+							}
+							assert.Contains(listMembers, fmt.Sprintf("serviceAccount:%s", saName), "service account should be member of the binding")
 							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.1.role").String(), "service account should have role serviceAccountTokenCreator")
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)

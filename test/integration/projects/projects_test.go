@@ -198,6 +198,7 @@ func TestProjects(t *testing.T) {
 						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
 						if projectOutput == "restricted_shared_vpc_project" {
+
 							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
 							enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
 							var listApis []string
@@ -217,11 +218,12 @@ func TestProjects(t *testing.T) {
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())
 
-							hostProject := gcloud.Runf(t, "projects describe %s", sharedVPC.Get("name").String())
+							hostProjectID := sharedVPC.Get("name").String()
+							hostProject := gcloud.Runf(t, "projects describe %s", hostProjectID)
 							assert.Equal("restricted-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
 							assert.Equal(env[1], hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env[1]))
 
-							hostNetwork := gcloud.Runf(t, "compute networks list --project %s", projectID).Array()[0]
+							hostNetwork := gcloud.Runf(t, "compute networks list --project %s", hostProjectID).Array()[0]
 							assert.Equal(tt.restrictedNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
 
 						}

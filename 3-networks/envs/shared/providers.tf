@@ -24,10 +24,10 @@ locals {
  *****************************************/
 provider "google" {
   impersonate_service_account = local.tf_sa
-  request_timeout             = "60s"
+  request_timeout             = "90s"
 }
 
 provider "google-beta" {
   impersonate_service_account = local.tf_sa
-  request_timeout             = "60s"
+  request_timeout             = "90s"
 }

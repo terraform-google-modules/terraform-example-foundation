@@ -21,8 +21,18 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/tidwall/gjson"
 	"github.com/stretchr/testify/assert"
 )
+
+// getResultFieldStrSlice parses a field of a results list into a string slice
+func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
+	s := make([]string, 0)
+	for _, r := range rs {
+		s = append(s, r.Get(field).String())
+	}
+	return s
+}
 
 func TestBootstrap(t *testing.T) {
 
@@ -121,10 +131,7 @@ func TestBootstrap(t *testing.T) {
 
 			gcOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--format", "json"})
 			enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-			var listApis []string
-			for _, service := range enabledAPIS {
-				listApis = append(listApis, service.Get("config.name").String())
-			}
+			listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
 			assert.Subset(listApis, activateApis, "APIs should have been enabled")
 
 			seedAlphaOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--json"})
@@ -139,10 +146,7 @@ func TestBootstrap(t *testing.T) {
 			iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", terraformSAEmail)
 			iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
 			orgIamPolicyRoles := gcloud.Run(t, fmt.Sprintf("organizations get-iam-policy %s", orgID), iamOpts).Array()
-			var listRoles []string
-			for _, role := range orgIamPolicyRoles {
-				listRoles = append(listRoles, role.Get("bindings.role").String())
-			}
+			listRoles := getResultFieldStrSlice(orgIamPolicyRoles, "bindings.role")
 			assert.Subset(listRoles, saOrgLevelRoles, fmt.Sprintf("service account %s should have organization level roles", terraformSAEmail))
 		})
 	bootstrap.Test()

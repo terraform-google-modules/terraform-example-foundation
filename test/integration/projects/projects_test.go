@@ -22,6 +22,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/tidwall/gjson"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,6 +38,15 @@ func getNetworkMode(t *testing.T) string {
 		return "-spoke"
 	}
 	return ""
+}
+
+// getResultFieldStrSlice parses a field of a results list into a string slice
+func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
+	s := make([]string, 0)
+	for _, r := range rs {
+		s = append(s, r.Get(field).String())
+	}
+	return s
 }
 
 func TestProjects(t *testing.T) {
@@ -100,10 +110,7 @@ func TestProjects(t *testing.T) {
 
 					gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
 					enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-					var listApis []string
-					for _, service := range enabledAPIS {
-						listApis = append(listApis, service.Get("config.name").String())
-					}
+					listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
 					assert.Subset(listApis, sharedApisEnabled, "APIs should have been enabled")
 
 					defaultRegion := shared.GetStringOutput("default_region")
@@ -201,18 +208,12 @@ func TestProjects(t *testing.T) {
 
 							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
 							enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-							var listApis []string
-							for _, service := range enabledAPIS {
-								listApis = append(listApis, service.Get("config.name").String())
-							}
+							listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
 							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
 
 							restrictedProjectNumber := projects.GetStringOutput("restricted_shared_vpc_project_number")
 							perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", perimeterName, policyID)
-							var listResources []string
-							for _, resource := range perimeter.Get("status.resources").Array() {
-								listResources = append(listResources, resource.String())
-							}
+							listResources := utils.GetResultStrSlice(perimeter.Get("status.resources").Array())
 							assert.Contains(listResources, fmt.Sprintf("projects/%s", restrictedProjectNumber), "restricted project should be in the perimeter")
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
@@ -232,19 +233,13 @@ func TestProjects(t *testing.T) {
 
 							saName := projects.GetStringOutput("base_shared_vpc_project_sa")
 							saPolicy := gcloud.Runf(t, "iam service-accounts get-iam-policy  %s", saName)
-							var listSaMembers []string
-							for _, saMember := range saPolicy.Get("bindings.0.members").Array() {
-								listSaMembers = append(listSaMembers, saMember.String())
-							}
+							listSaMembers := utils.GetResultStrSlice(saPolicy.Get("bindings.0.members").Array())
 							assert.Contains(listSaMembers, fmt.Sprintf("serviceAccount:%s", sharedCloudBuildSA[env[0]]), "service account should be member of the binding")
 							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.0.role").String(), "service account should have role serviceAccountTokenCreator")
 
 							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", "bindings.role:roles/editor", "--format", "json"})
 							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()[0]
-							var listMembers []string
-							for _, member := range projectPolicy.Get("bindings.members").Array() {
-								listMembers = append(listMembers, member.String())
-							}
+							listMembers := utils.GetResultStrSlice(projectPolicy.Get("bindings.members").Array())
 							assert.Contains(listMembers, fmt.Sprintf("serviceAccount:%s", saName), "service account should have role/editor")
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)

@@ -135,15 +135,9 @@ func TestNetworks(t *testing.T) {
 
 					servicePerimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
 					assert.Equal(servicePerimeterLink, servicePerimeter.Get("name").String(), fmt.Sprintf("service perimeter %s should exist", servicePerimeterLink))
-					var listLevels []string
-					for _, level := range servicePerimeter.Get("status.accessLevels").Array() {
-						listLevels = append(listLevels, level.String())
-					}
+					listLevels  := utils.GetResultStrSlice(servicePerimeter.Get("status.accessLevels").Array())
 					assert.Contains(listLevels, accessLevel, fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
-					var listServices []string
-					for _, service := range servicePerimeter.Get("status.restrictedServices").Array() {
-						listServices = append(listServices, service.String())
-					}
+					listServices := utils.GetResultStrSlice(servicePerimeter.Get("status.restrictedServices").Array())
 					assert.Subset(listServices, restrictedServices, fmt.Sprintf("service perimeter %s should restrict 'bigquery.googleapis.com' and 'storage.googleapis.com'", servicePerimeterLink))
 
 					for _, networkType := range []string{

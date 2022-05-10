@@ -21,12 +21,23 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
+	"github.com/tidwall/gjson"
 )
 
 func getLastSplitElement(value string, sep string) string {
 	splitted := strings.Split(value, sep)
 	return splitted[len(splitted)-1]
+}
+
+// getResultFieldStrSlice parses a field of a results list into a string slice
+func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
+	s := make([]string, 0)
+	for _, r := range rs {
+		s = append(s, r.Get(field).String())
+	}
+	return s
 }
 
 func TestEnvs(t *testing.T) {
@@ -111,20 +122,14 @@ func TestEnvs(t *testing.T) {
 
 						gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
 						enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-						var listApis []string
-						for _, service := range enabledAPIS {
-							listApis = append(listApis, service.Get("config.name").String())
-						}
+						listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
 						assert.Subset(listApis, projectEnvOutput.apis, "APIs should have been enabled")
 
 						if projectEnvOutput.role != "" {
 							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", fmt.Sprintf("bindings.role:%s", projectEnvOutput.role), "--format", "json"})
 							iamPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()[0]
 							group := envs.GetStringOutput(projectEnvOutput.group)
-							var listMembers []string
-							for _, member := range iamPolicy.Get("bindings.members").Array() {
-								listMembers = append(listMembers, member.String())
-							}
+							listMembers := utils.GetResultStrSlice(iamPolicy.Get("bindings.members").Array())
 							assert.Contains(listMembers, fmt.Sprintf("group:%s", group), fmt.Sprintf("group %s should have role %s", group, projectEnvOutput.role))
 						}
 					}

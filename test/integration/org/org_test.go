@@ -22,6 +22,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/tidwall/gjson"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,6 +33,15 @@ func isHubAndSpoke(t *testing.T) bool {
 func getLastSplitElement(value string, sep string) string {
 	splitted := strings.Split(value, sep)
 	return splitted[len(splitted)-1]
+}
+
+// getResultFieldStrSlice parses a field of a results list into a string slice
+func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
+	s := make([]string, 0)
+	for _, r := range rs {
+		s = append(s, r.Get(field).String())
+	}
+	return s
 }
 
 func TestOrg(t *testing.T) {
@@ -236,10 +246,7 @@ func TestOrg(t *testing.T) {
 
 				gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
 				enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
-				var listApis []string
-				for _, service := range enabledAPIS {
-					listApis = append(listApis, service.Get("config.name").String())
-				}
+				listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
 				assert.Subset(listApis, projectOutput.apis, "APIs should have been enabled")
 			}
 		})

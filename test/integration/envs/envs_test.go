@@ -79,8 +79,6 @@ func TestEnvs(t *testing.T) {
 						},
 						{
 							projectOutput: "base_shared_vpc_project_id",
-							role:          "",
-							group:         "",
 							apis: []string{
 								"compute.googleapis.com",
 								"dns.googleapis.com",
@@ -92,8 +90,6 @@ func TestEnvs(t *testing.T) {
 						},
 						{
 							projectOutput: "restricted_shared_vpc_project_id",
-							role:          "",
-							group:         "",
 							apis: []string{
 								"compute.googleapis.com",
 								"dns.googleapis.com",
@@ -107,8 +103,6 @@ func TestEnvs(t *testing.T) {
 						},
 						{
 							projectOutput: "env_secrets_project_id",
-							role:          "",
-							group:         "",
 							apis: []string{
 								"secretmanager.googleapis.com",
 								"logging.googleapis.com",

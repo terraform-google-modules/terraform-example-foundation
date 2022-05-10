@@ -129,8 +129,7 @@ func TestBootstrap(t *testing.T) {
 			seedPrj := gcloud.Runf(t, "projects describe %s", seedProjectID)
 			assert.True(seedPrj.Exists(), "project %s should exist", seedProjectID)
 
-			gcOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--format", "json"})
-			enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
+			enabledAPIS := gcloud.Runf(t, "services list --project %s", seedProjectID).Array()
 			listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
 			assert.Subset(listApis, activateApis, "APIs should have been enabled")
 

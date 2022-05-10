@@ -108,8 +108,7 @@ func TestProjects(t *testing.T) {
 					prj := gcloud.Runf(t, "projects describe %s", projectID)
 					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
-					gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
-					enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
+					enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
 					listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
 					assert.Subset(listApis, sharedApisEnabled, "APIs should have been enabled")
 
@@ -206,8 +205,7 @@ func TestProjects(t *testing.T) {
 
 						if projectOutput == "restricted_shared_vpc_project" {
 
-							gcOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})
-							enabledAPIS := gcloud.Run(t, "services list", gcOpts).Array()
+							enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
 							listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
 							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
 

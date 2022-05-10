@@ -70,7 +70,7 @@ func TestEnvs(t *testing.T) {
 						{
 							projectOutput: "monitoring_project_id",
 							role:          "roles/monitoring.editor",
-							group:         "monitoring_workspace_users",
+							group:         "TF_VAR_group_email",
 							apis: []string{
 								"logging.googleapis.com",
 								"monitoring.googleapis.com",
@@ -122,7 +122,7 @@ func TestEnvs(t *testing.T) {
 						if projectEnvOutput.role != "" {
 							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", fmt.Sprintf("bindings.role:%s", projectEnvOutput.role), "--format", "json"})
 							iamPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()[0]
-							group := envs.GetStringOutput(projectEnvOutput.group)
+							group := utils.ValFromEnv(t, projectEnvOutput.group)
 							listMembers := utils.GetResultStrSlice(iamPolicy.Get("bindings.members").Array())
 							assert.Contains(listMembers, fmt.Sprintf("group:%s", group), fmt.Sprintf("group %s should have role %s", group, projectEnvOutput.role))
 						}

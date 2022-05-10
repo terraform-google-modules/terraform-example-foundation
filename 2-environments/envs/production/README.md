@@ -19,7 +19,6 @@
 | env\_folder | Environment folder created under parent. |
 | env\_secrets\_project\_id | Project for environment related secrets. |
 | monitoring\_project\_id | Project for monitoring infra. |
-| monitoring\_workspace\_users | Google Workspace or Cloud Identity group that have access to Monitoring Workspaces. |
 | restricted\_shared\_vpc\_project\_id | Project for restricted shared VPC. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

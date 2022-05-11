@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-module "bootstrap" {
-  source               = "../../../0-bootstrap"
-  parent_folder        = var.parent_folder
-  org_id               = var.org_id
-  group_org_admins     = var.group_email
-  group_billing_admins = var.group_email
-  billing_account      = var.billing_account
-  org_project_creators = var.org_project_creators
-  project_prefix       = var.project_prefix
-  bucket_prefix        = var.bucket_prefix
+terraform {
+  required_version = ">= 0.13"
+
+  required_providers {
+
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 3.77"
+    }
+
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 3.77"
+    }
+
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 2.1"
+    }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 2.3"
+    }
+
+  }
 }

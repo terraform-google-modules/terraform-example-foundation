@@ -13,11 +13,9 @@
 # limitations under the License.
 
 steps:
-- id: prepare-network-hub-and-spoke-config
+
+- id: 'lint'
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh &&  ./test/network_test_prepare.sh -p']
-- name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  id: 'lint'
   args: ['/usr/local/bin/test_lint.sh']
   env:
   - "EXCLUDE_LINT_DIRS=\\./3-networks/modules/transitivity/assets"
@@ -26,7 +24,7 @@ tags:
 - 'lint'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.3'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.4'
 options:
   machineType: 'N1_HIGHCPU_8'
   env:

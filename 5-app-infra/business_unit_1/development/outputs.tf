@@ -32,6 +32,7 @@ output "instances_zones" {
 output "instances_details" {
   description = "List of details for compute instances"
   value       = module.base_shared_gce_instance.instances_details
+  sensitive   = true
 }
 
 output "available_zones" {

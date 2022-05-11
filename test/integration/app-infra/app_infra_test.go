@@ -20,16 +20,11 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
-	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAppInfra(t *testing.T) {
-
-	vars := map[string]interface{}{
-		"project_service_account": utils.ValFromEnv(t, "TF_VAR_terraform_service_account"),
-	}
 
 	for _, envName := range []string{
 		"development",
@@ -37,10 +32,20 @@ func TestAppInfra(t *testing.T) {
 		"production",
 	} {
 		t.Run(envName, func(t *testing.T) {
+
+			projects := tft.NewTFBlueprintTest(t,
+				tft.WithTFDir(fmt.Sprintf("../../../4-projects/business_unit_1/%s", envName)),
+			)
+
+			vars := map[string]interface{}{
+				"project_service_account": projects.GetStringOutput("base_shared_vpc_project_sa"),
+			}
+
 			appInfra := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../5-app-infra/business_unit_1/%s", envName)),
 				tft.WithVars(vars),
 			)
+
 			appInfra.DefineVerify(
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint

@@ -122,6 +122,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    ```
 1. Change to the freshly cloned repo and change to non-main branch.
    ```
+   cd gcp-networks/
    git checkout -b plan
    ```
 1. Copy contents of foundation to new repo.
@@ -159,6 +160,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    _plan_ branch is not a [named environment branch](./docs/FAQ.md), pushing your _plan_
    branch triggers _terraform plan_ but not _terraform apply_.
    ```
+   cd ../../
    git push --set-upstream origin plan
    ```
 1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID

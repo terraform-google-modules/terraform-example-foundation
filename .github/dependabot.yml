@@ -109,3 +109,21 @@ updates:
     commit-message:
       prefix: "chore(deps): "
     rebase-strategy: "disabled"
+  - package-ecosystem: "terraform"
+    directory: "test/setup"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"
+  - package-ecosystem: "gomod"
+    directory: "test/integration"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    commit-message:
+      prefix: "chore(deps): "
+    rebase-strategy: "disabled"

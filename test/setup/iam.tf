@@ -31,6 +31,7 @@ locals {
     "roles/compute.xpnAdmin",
     "roles/compute.orgSecurityPolicyAdmin",
     "roles/compute.orgSecurityResourceAdmin",
+    "roles/resourcemanager.organizationViewer",
   ]
 }
 

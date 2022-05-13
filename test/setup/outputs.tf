@@ -18,7 +18,6 @@ output "project_id" {
   value = module.project.project_id
 }
 
-
 output "parent_folder" {
   description = "Parent folder id"
   value       = split("/", google_folder.test_folder.id)[1]
@@ -47,6 +46,38 @@ output "billing_account" {
 
 output "group_email" {
   value = var.group_email
+}
+
+output "group_org_admins" {
+  value = var.group_email
+}
+
+output "group_billing_admins" {
+  value = var.group_email
+}
+
+output "audit_data_users" {
+  value = var.group_email
+}
+
+output "billing_data_users" {
+  value = var.group_email
+}
+
+output "monitoring_workspace_users" {
+  value = var.group_email
+}
+
+output "domains_to_allow" {
+  value = [var.domain_to_allow]
+}
+
+output "target_name_server_addresses" {
+  value = ["192.168.0.1", "192.168.0.2"]
+}
+
+output "scc_notification_name" {
+  value = "test-scc-notif-${random_id.random_project_id_suffix.hex}"
 }
 
 output "enable_hub_and_spoke" {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,30 @@
  * limitations under the License.
  */
 
-output "dns_hub_project_id" {
-  value       = module.shared.dns_hub_project_id
-  description = "The DNS hub project ID"
+terraform {
+  required_version = ">= 0.13"
+
+  required_providers {
+
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 3.77"
+    }
+
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 3.77"
+    }
+
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 2.1"
+    }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.1"
+    }
+
+  }
 }

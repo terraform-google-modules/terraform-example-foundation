@@ -160,7 +160,8 @@ resource "null_resource" "cloudbuild_terraform_builder" {
   EOT
   }
   depends_on = [
-    google_artifact_registry_repository_iam_member.terraform-image-iam
+    google_artifact_registry_repository_iam_member.terraform-image-iam,
+    google_storage_bucket_iam_member.cloudbuild_artifacts_iam
   ]
 }
 

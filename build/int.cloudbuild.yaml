@@ -14,110 +14,148 @@
 
 timeout: 12600s
 steps:
+
 - id: prepare
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && prepare_environment']
   env:
   - 'TF_VAR_folder_id=$_FOLDER_ID'
   - 'TF_VAR_billing_account=$_BILLING_ACCOUNT'
-  - 'TF_VAR_group_email=test-gcp-org-admins@test.infra.cft.tips'
-- id: prepare-network-hub-and-spoke-config
+
+- id: sleep
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh &&  ./test/network_test_prepare.sh -p']
-- id: create
+  args: ['/bin/bash', '-c', 'sleep 240']
+
+- id: create-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create']
+  args: ['/bin/bash', '-c', 'cft test run TestBootstrap --stage init --verbose --test-dir /workspace/test/integration']
+
 - id: converge-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do converge bootstrap-default']
+  args: ['/bin/bash', '-c', 'cft test run TestBootstrap --stage apply --verbose --test-dir /workspace/test/integration']
+
 - id: verify-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify bootstrap-default']
+  args: ['/bin/bash', '-c', 'cft test run TestBootstrap --stage verify --verbose --test-dir /workspace/test/integration']
+
 - id: create-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create org-default']
+  args: ['/bin/bash', '-c', './test/disable_tf_files.sh --org && cft test run TestOrg --stage init --verbose --test-dir /workspace/test/integration']
+
 - id: converge-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do converge org-default']
+  args: ['/bin/bash', '-c', 'cft test run TestOrg --stage apply --verbose --test-dir /workspace/test/integration']
+
 - id: verify-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify org-default']
+  args: ['/bin/bash', '-c', 'cft test run TestOrg --stage verify --verbose --test-dir /workspace/test/integration']
+
 - id: create-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create envs-default']
+  args: ['/bin/bash', '-c', './test/disable_tf_files.sh --envs && cft test run TestEnvs --stage init --verbose --test-dir /workspace/test/integration']
+
 - id: converge-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do converge envs-default']
+  args: ['/bin/bash', '-c', 'cft test run TestEnvs --stage apply --verbose --test-dir /workspace/test/integration']
+
 - id: verify-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify envs-default']
+  args: ['/bin/bash', '-c', 'cft test run TestEnvs --stage verify --verbose --test-dir /workspace/test/integration']
+
 - id: create-shared
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create shared-default']
+  args: ['/bin/bash', '-c', './test/disable_tf_files.sh --shared && cft test run TestShared --stage init --verbose --test-dir /workspace/test/integration']
+
 - id: converge-shared
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source ./test/ensure_access_policy.sh && kitchen_do converge shared-default']
+  args: ['/bin/bash', '-c', 'cft test run TestShared --stage apply --verbose --test-dir /workspace/test/integration']
+
 - id: verify-shared
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify shared-default']
+  args: ['/bin/bash', '-c', 'cft test run TestShared --stage verify --verbose --test-dir /workspace/test/integration']
+
 - id: create-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create networks-default']
+  args: ['/bin/bash', '-c', './test/disable_tf_files.sh --networks && cft test run TestNetworks --stage init --verbose --test-dir /workspace/test/integration']
+
 - id: converge-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source ./test/ensure_access_policy.sh && kitchen_do converge networks-default']
+  args: ['/bin/bash', '-c', 'cft test run TestNetworks --stage apply --verbose --test-dir /workspace/test/integration']
+
 - id: verify-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify networks-default']
+  args: ['/bin/bash', '-c', 'cft test run TestNetworks --stage verify --verbose --test-dir /workspace/test/integration']
+
 - id: create-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create projects-default']
+  args: ['/bin/bash', '-c', './test/disable_tf_files.sh --projects && cft test run TestProjects --stage init --verbose --test-dir /workspace/test/integration']
+
 - id: converge-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source ./test/export_sc.sh && source ./test/ensure_access_policy.sh && kitchen_do converge projects-default']
+  args: ['/bin/bash', '-c', 'cft test run TestProjects --stage apply --verbose --test-dir /workspace/test/integration']
+
 - id: verify-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify projects-default']
-- id: create-app-infra
+  args: ['/bin/bash', '-c', 'cft test run TestProjects --stage verify --verbose --test-dir /workspace/test/integration']
+
+- id: create-appinfra
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do create app-infra-default']
-- id: converge-app-infra
+  args: ['/bin/bash', '-c', './test/disable_tf_files.sh --appinfra && cft test run TestAppInfra --stage init --verbose --test-dir /workspace/test/integration']
+
+- id: converge-appinfra
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source ./test/export_sc.sh && kitchen_do converge app-infra-default']
-- id: verify-app-infra
+  args: ['/bin/bash', '-c', 'cft test run TestAppInfra --stage apply --verbose --test-dir /workspace/test/integration']
+
+- id: verify-appinfra
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do verify app-infra-default']
-- id: destroy-app-infra
+  args: ['/bin/bash', '-c', 'cft test run TestAppInfra --stage verify --verbose --test-dir /workspace/test/integration']
+
+- id: destroy-appinfra
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source ./test/export_sc.sh && kitchen_do destroy app-infra-default']
+  args: ['/bin/bash', '-c', 'cft test run TestAppInfra --stage destroy --verbose --test-dir /workspace/test/integration']
+
 - id: destroy-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source ./test/export_sc.sh && source ./test/ensure_access_policy.sh && kitchen_do destroy projects-default']
+  args: ['/bin/bash', '-c', 'cft test run TestProjects --stage destroy --verbose --test-dir /workspace/test/integration']
+
 - id: destroy-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source ./test/ensure_access_policy.sh && kitchen_do destroy networks-default']
+  args: ['/bin/bash', '-c', 'cft test run TestNetworks --stage destroy --verbose --test-dir /workspace/test/integration']
+
 - id: destroy-shared
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && source ./test/ensure_access_policy.sh && kitchen_do destroy shared-default']
+  args: ['/bin/bash', '-c', 'cft test run TestShared --stage destroy --verbose --test-dir /workspace/test/integration']
+
 - id: destroy-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do destroy envs-default']
+  args: ['/bin/bash', '-c', 'cft test run TestEnvs --stage destroy --verbose --test-dir /workspace/test/integration']
+
 - id: destroy-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do destroy org-default']
+  args: ['/bin/bash', '-c', 'cft test run TestOrg --stage destroy --verbose --test-dir /workspace/test/integration']
+
 - id: destroy-bootstrap
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && kitchen_do destroy bootstrap-default']
+  args: ['/bin/bash', '-c', 'cft test run TestBootstrap --stage destroy --verbose --test-dir /workspace/test/integration']
+
 tags:
 - 'ci'
 - 'integration'
 options:
   env:
   - 'TF_VAR_example_foundations_mode=$_EXAMPLE_FOUNDATIONS_TEST_MODE'
+  - 'TF_VAR_org_id=$_ORG_ID'
+  - 'TF_VAR_group_email=test-gcp-org-admins@test.infra.cft.tips'
+  - 'TF_VAR_create_access_context_manager_access_policy=false'
+  - 'TF_VAR_audit_logs_table_delete_contents_on_destroy=true'
+  - 'TF_VAR_log_export_storage_force_destroy=true'
   - 'TF_VAR_project_prefix=t02'
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
   - 'TF_VAR_domain=test.infra.cft.tips.'
-  - 'TF_VAR_org_id=$_ORG_ID'
+  - 'TF_VAR_default_region=us-west1'
+  - 'TF_VAR_default_region1=us-west1'
+  - 'TF_VAR_default_region2=us-central1'
+  - 'TF_VAR_instance_region=us-west1'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.3'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.4'

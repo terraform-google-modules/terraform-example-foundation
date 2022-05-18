@@ -42,7 +42,6 @@ data "google_netblock_ip_ranges" "iap_forwarders" {
 
 module "peering_project" {
   source                      = "../single_project"
-  impersonate_service_account = var.terraform_service_account
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = data.google_active_folder.env.name

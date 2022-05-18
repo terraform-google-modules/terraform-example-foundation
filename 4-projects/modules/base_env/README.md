@@ -28,7 +28,6 @@
 | perimeter\_name | Access context manager service perimeter name to attach the restricted svpc project. | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
 | secrets\_prj\_suffix | Name suffix to use for secrets project created. | `string` | `"env-secrets"` | no |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | `bool` | `false` | no |
 
 ## Outputs

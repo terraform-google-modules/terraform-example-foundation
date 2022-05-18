@@ -41,12 +41,12 @@ data "google_netblock_ip_ranges" "iap_forwarders" {
 }
 
 module "peering_project" {
-  source                      = "../single_project"
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
-  folder_id                   = data.google_active_folder.env.name
-  environment                 = var.env
-  project_prefix              = var.project_prefix
+  source          = "../single_project"
+  org_id          = var.org_id
+  billing_account = var.billing_account
+  folder_id       = data.google_active_folder.env.name
+  environment     = var.env
+  project_prefix  = var.project_prefix
 
   # Metadata
   project_suffix    = "sample-peering"

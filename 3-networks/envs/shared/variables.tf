@@ -41,16 +41,6 @@ variable "access_context_manager_policy_id" {
   description = "The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format=\"value(name)\"`."
 }
 
-variable "default_region1" {
-  type        = string
-  description = "First subnet region for DNS Hub network."
-}
-
-variable "default_region2" {
-  type        = string
-  description = "Second subnet region for DNS Hub network."
-}
-
 variable "dns_enable_logging" {
   type        = bool
   description = "Toggle DNS logging for VPC DNS."

@@ -19,6 +19,8 @@ locals {
   env              = "common"
   environment_code = "c"
   bgp_asn_number   = var.enable_partner_interconnect ? "16550" : "64514"
+  default_region1  = "us-west1"
+  default_region2  = "us-central1"
 }
 
 data "google_active_folder" "common" {

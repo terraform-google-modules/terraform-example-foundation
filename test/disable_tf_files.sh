@@ -45,6 +45,23 @@ function networks(){
     mv 3-networks/envs/production/common.auto.tfvars  3-networks/envs/production/common.auto.tfvars.disabled
 }
 
+function networks-hub-and-spoke(){
+    # disable backend configs in main module
+    mv 3-networks-hub-and-spoke/envs/development/backend.tf 3-networks-hub-and-spoke/envs/development/backend.tf.disabled
+    mv 3-networks-hub-and-spoke/envs/non-production/backend.tf  3-networks-hub-and-spoke/envs/non-production/backend.tf.disabled
+    mv 3-networks-hub-and-spoke/envs/production/backend.tf  3-networks-hub-and-spoke/envs/production/backend.tf.disabled
+
+    # disable access_context.auto.tfvars in main module
+    mv 3-networks-hub-and-spoke/envs/development/access_context.auto.tfvars  3-networks-hub-and-spoke/envs/development/access_context.auto.tfvars.disabled
+    mv 3-networks-hub-and-spoke/envs/non-production/access_context.auto.tfvars  3-networks-hub-and-spoke/envs/non-production/access_context.auto.tfvars.disabled
+    mv 3-networks-hub-and-spoke/envs/production/access_context.auto.tfvars  3-networks-hub-and-spoke/envs/production/access_context.auto.tfvars.disabled
+
+    # disable common.auto.tfvars in main module
+    mv 3-networks-hub-and-spoke/envs/development/common.auto.tfvars 3-networks-hub-and-spoke/envs/development/common.auto.tfvars.disabled
+    mv 3-networks-hub-and-spoke/envs/non-production/common.auto.tfvars  3-networks-hub-and-spoke/envs/non-production/common.auto.tfvars.disabled
+    mv 3-networks-hub-and-spoke/envs/production/common.auto.tfvars  3-networks-hub-and-spoke/envs/production/common.auto.tfvars.disabled
+}
+
 function shared(){
     # disable backend configs in main module
     mv 3-networks/envs/shared/backend.tf  3-networks/envs/shared/backend.tf.disabled
@@ -134,6 +151,10 @@ do
   case $arg in
     -n|--networks)
       networks
+      shift
+      ;;
+    -nh|--networks-hub-and-spoke)
+      networks-hub-and-spoke
       shift
       ;;
     -s|--shared)

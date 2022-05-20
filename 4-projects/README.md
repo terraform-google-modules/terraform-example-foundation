@@ -119,6 +119,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
 1. Change freshly cloned repo and change to non-main branch.
    ```
+   cd gcp-projects
    git checkout -b plan
    ```
 1. Copy contents of foundation to new repo.

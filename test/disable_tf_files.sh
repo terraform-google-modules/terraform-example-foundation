@@ -76,6 +76,20 @@ function shared(){
     mv 3-networks/envs/shared/shared.auto.tfvars  3-networks/envs/shared/shared.auto.tfvars.disabled
 }
 
+function shared-hub-and-spoke(){
+    # disable backend configs in main module
+    mv 3-networks-hub-and-spoke/envs/shared/backend.tf  3-networks-hub-and-spoke/envs/shared/backend.tf.disabled
+
+    # disable access_context.auto.tfvars in main module
+    mv 3-networks-hub-and-spoke/envs/shared/access_context.auto.tfvars 3-networks-hub-and-spoke/envs/shared/access_context.auto.tfvars.disabled
+
+    # disable common.auto.tfvars in main module
+    mv 3-networks-hub-and-spoke/envs/shared/common.auto.tfvars  3-networks-hub-and-spoke/envs/shared/common.auto.tfvars.disabled
+
+    # disable shared.auto.tfvars in main module
+    mv 3-networks-hub-and-spoke/envs/shared/shared.auto.tfvars  3-networks-hub-and-spoke/envs/shared/shared.auto.tfvars.disabled
+}
+
 function projects(){
     # disable backend configs in main module
     mv 4-projects/business_unit_1/development/backend.tf 4-projects/business_unit_1/development/backend.tf.disabled
@@ -159,6 +173,10 @@ do
       ;;
     -s|--shared)
       shared
+      shift
+      ;;
+    -sh|--shared-hub-and-spoke)
+      shared-hub-and-spoke
       shift
       ;;
     -o|--org)

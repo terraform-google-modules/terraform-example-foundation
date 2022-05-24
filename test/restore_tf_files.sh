@@ -76,7 +76,7 @@ function shared(){
     mv 3-networks/envs/shared/shared.auto.tfvars.disabled  3-networks/envs/shared/shared.auto.tfvars 
 }
 
-function shared(){
+function shared-hub-and-spoke(){
     # restore backend configs in main module
     mv 3-networks-hub-and-spoke/envs/shared/backend.tf.disabled  3-networks-hub-and-spoke/envs/shared/backend.tf 
 

@@ -30,17 +30,33 @@ func getPolicyID(t *testing.T, orgID string) string {
 	return op.String()
 }
 
+func getNetworkMode(t *testing.T) string {
+	mode := utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
+	if mode == "HubAndSpoke" {
+		return "-spoke"
+	}
+	return ""
+}
+
 func TestShared(t *testing.T) {
 
 	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
 	policyID := getPolicyID(t, orgID)
+	networkMode := getNetworkMode(t)
 
 	vars := map[string]interface{}{
 		"access_context_manager_policy_id": policyID,
 	}
 
+	var tfdDir string
+	if networkMode == "" {
+		tfdDir = "../../../3-networks/envs/shared"
+	} else {
+		tfdDir = "../../../3-networks-hub-and-spoke/envs/shared"
+	}
+
 	shared := tft.NewTFBlueprintTest(t,
-		tft.WithTFDir("../../../3-networks/envs/shared"),
+		tft.WithTFDir(tfdDir),
 		tft.WithVars(vars),
 	)
 	shared.DefineVerify(

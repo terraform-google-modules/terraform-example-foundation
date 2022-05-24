@@ -23,7 +23,6 @@ module "env" {
   parent_id                  = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
   org_id                     = var.org_id
   billing_account            = var.billing_account
-  terraform_service_account  = var.terraform_service_account
   monitoring_workspace_users = var.monitoring_workspace_users
   project_prefix             = var.project_prefix
   folder_prefix              = var.folder_prefix

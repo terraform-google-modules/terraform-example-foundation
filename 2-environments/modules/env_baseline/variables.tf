@@ -39,11 +39,6 @@ variable "billing_account" {
   type        = string
 }
 
-variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform."
-  type        = string
-}
-
 variable "monitoring_workspace_users" {
   description = "Google Workspace or Cloud Identity group that have access to Monitoring Workspaces."
   type        = string

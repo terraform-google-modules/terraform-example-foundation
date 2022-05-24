@@ -41,13 +41,12 @@ data "google_netblock_ip_ranges" "iap_forwarders" {
 }
 
 module "peering_project" {
-  source                      = "../single_project"
-  impersonate_service_account = var.terraform_service_account
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
-  folder_id                   = data.google_active_folder.env.name
-  environment                 = var.env
-  project_prefix              = var.project_prefix
+  source          = "../single_project"
+  org_id          = var.org_id
+  billing_account = var.billing_account
+  folder_id       = data.google_active_folder.env.name
+  environment     = var.env
+  project_prefix  = var.project_prefix
 
   # Metadata
   project_suffix    = "sample-peering"
@@ -60,7 +59,7 @@ module "peering_project" {
 
 module "peering_network" {
   source                                 = "terraform-google-modules/network/google"
-  version                                = "~> 3.0"
+  version                                = "~> 5.0"
   project_id                             = module.peering_project.project_id
   network_name                           = "vpc-${local.env_code}-peering-base"
   shared_vpc_host                        = "false"
@@ -70,7 +69,7 @@ module "peering_network" {
 
 module "peering" {
   source            = "terraform-google-modules/network/google//modules/network-peering"
-  version           = "~> 3.0"
+  version           = "~> 5.0"
   prefix            = "${var.business_code}-${local.env_code}"
   local_network     = module.peering_network.network_self_link
   peer_network      = data.google_compute_network.shared_vpc.self_link

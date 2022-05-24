@@ -25,7 +25,7 @@ resource "google_folder" "test_folder" {
 
 module "project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 10.1"
+  version = "~> 13.0"
 
   name              = "ci-foundation"
   random_project_id = true

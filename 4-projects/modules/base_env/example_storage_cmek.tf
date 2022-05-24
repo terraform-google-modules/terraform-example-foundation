@@ -15,17 +15,16 @@
  */
 
 module "env_secrets_project" {
-  source                      = "../single_project"
-  impersonate_service_account = var.terraform_service_account
-  org_id                      = var.org_id
-  billing_account             = var.billing_account
-  folder_id                   = data.google_active_folder.env.name
-  environment                 = var.env
-  alert_spent_percents        = var.alert_spent_percents
-  alert_pubsub_topic          = var.alert_pubsub_topic
-  budget_amount               = var.budget_amount
-  project_suffix              = var.secrets_prj_suffix
-  project_prefix              = var.project_prefix
+  source               = "../single_project"
+  org_id               = var.org_id
+  billing_account      = var.billing_account
+  folder_id            = data.google_active_folder.env.name
+  environment          = var.env
+  alert_spent_percents = var.alert_spent_percents
+  alert_pubsub_topic   = var.alert_pubsub_topic
+  budget_amount        = var.budget_amount
+  project_suffix       = var.secrets_prj_suffix
+  project_prefix       = var.project_prefix
 
   activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 
@@ -43,7 +42,7 @@ data "google_storage_project_service_account" "gcs_account" {
 
 module "kms" {
   source  = "terraform-google-modules/kms/google"
-  version = "~> 1.2"
+  version = "~> 2.1"
 
   project_id          = module.env_secrets_project.project_id
   keyring             = var.keyring_name

@@ -21,7 +21,6 @@ module "env" {
   env                              = "production"
   business_code                    = "bu1"
   business_unit                    = "business_unit_1"
-  terraform_service_account        = var.terraform_service_account
   org_id                           = var.org_id
   billing_account                  = var.billing_account
   access_context_manager_policy_id = var.access_context_manager_policy_id

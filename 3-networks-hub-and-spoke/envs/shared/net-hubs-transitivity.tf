@@ -15,7 +15,6 @@
  */
 
 locals {
-  enable_transitivity = var.enable_hub_and_spoke && var.enable_hub_and_spoke_transitivity
   base_regional_aggregates = {
     (local.default_region1) = [
       "10.0.0.0/16",
@@ -43,11 +42,10 @@ locals {
  */
 
 module "base_transitivity" {
-  count               = local.enable_transitivity ? 1 : 0
   source              = "../../modules/transitivity"
   project_id          = local.base_net_hub_project_id
   regions             = keys(local.base_subnet_primary_ranges)
-  vpc_name            = module.base_shared_vpc[0].network_name
+  vpc_name            = module.base_shared_vpc.network_name
   gw_subnets          = { for region in keys(local.base_subnet_primary_ranges) : region => "sb-c-shared-base-hub-${region}" }
   regional_aggregates = local.base_regional_aggregates
   commands = [
@@ -76,11 +74,10 @@ module "base_transitivity" {
  */
 
 module "restricted_transitivity" {
-  count               = local.enable_transitivity ? 1 : 0
   source              = "../../modules/transitivity"
   project_id          = local.restricted_net_hub_project_id
   regions             = keys(local.restricted_subnet_primary_ranges)
-  vpc_name            = module.restricted_shared_vpc[0].network_name
+  vpc_name            = module.restricted_shared_vpc.network_name
   gw_subnets          = { for region in keys(local.restricted_subnet_primary_ranges) : region => "sb-c-shared-restricted-hub-${region}" }
   regional_aggregates = local.restricted_regional_aggregates
   commands = [

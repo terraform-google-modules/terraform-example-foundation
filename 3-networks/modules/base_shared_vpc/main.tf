@@ -18,7 +18,7 @@ locals {
   mode                    = var.mode == null ? "" : var.mode == "hub" ? "-hub" : "-spoke"
   vpc_name                = "${var.environment_code}-shared-base${local.mode}"
   network_name            = "vpc-${local.vpc_name}"
-  private_googleapis_cidr = "199.36.153.8/30"
+  private_googleapis_cidr = module.private_service_connect.private_service_connect_ip
 }
 
 /******************************************

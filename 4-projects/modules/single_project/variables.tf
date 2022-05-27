@@ -29,11 +29,6 @@ variable "billing_account" {
   type        = string
 }
 
-variable "impersonate_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform"
-  type        = string
-}
-
 variable "project_suffix" {
   description = "The name of the GCP project. Max 16 characters with 3 character business unit code."
   type        = string

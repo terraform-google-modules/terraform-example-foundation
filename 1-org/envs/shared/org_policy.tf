@@ -27,7 +27,7 @@ locals {
 
 module "org_disable_nested_virtualization" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -38,7 +38,7 @@ module "org_disable_nested_virtualization" {
 
 module "org_disable_serial_port_access" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -49,7 +49,7 @@ module "org_disable_serial_port_access" {
 
 module "org_compute_disable_guest_attributes_access" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -60,7 +60,7 @@ module "org_compute_disable_guest_attributes_access" {
 
 module "org_vm_external_ip_access" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -71,7 +71,7 @@ module "org_vm_external_ip_access" {
 
 module "org_skip_default_network" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -82,7 +82,7 @@ module "org_skip_default_network" {
 
 module "org_shared_vpc_lien_removal" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -94,7 +94,7 @@ module "org_shared_vpc_lien_removal" {
 module "org_shared_require_os_login" {
   source          = "terraform-google-modules/org-policy/google"
   count           = var.enable_os_login_policy ? 1 : 0
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -109,7 +109,7 @@ module "org_shared_require_os_login" {
 
 module "org_cloudsql_external_ip_access" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -124,7 +124,7 @@ module "org_cloudsql_external_ip_access" {
 
 module "org_domain_restricted_sharing" {
   source           = "terraform-google-modules/org-policy/google//modules/domain_restricted_sharing"
-  version          = "~> 3.0"
+  version          = "~> 5.1"
   organization_id  = local.organization_id
   folder_id        = local.folder_id
   policy_for       = local.policy_for
@@ -133,7 +133,7 @@ module "org_domain_restricted_sharing" {
 
 module "org_disable_sa_key_creation" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -144,7 +144,7 @@ module "org_disable_sa_key_creation" {
 
 module "org_disable_automatic_iam_grants_on_default_service_accounts" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -159,7 +159,7 @@ module "org_disable_automatic_iam_grants_on_default_service_accounts" {
 
 module "org_enforce_bucket_level_access" {
   source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 3.0"
+  version         = "~> 5.1"
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for

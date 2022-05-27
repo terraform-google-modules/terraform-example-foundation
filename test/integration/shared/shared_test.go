@@ -50,7 +50,7 @@ func TestShared(t *testing.T) {
 
 	var tfdDir string
 	if networkMode == "" {
-		tfdDir = "../../../3-networks/envs/shared"
+		tfdDir = "../../../3-networks-dual-svpc/envs/shared"
 	} else {
 		tfdDir = "../../../3-networks-hub-and-spoke/envs/shared"
 	}

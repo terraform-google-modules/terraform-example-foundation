@@ -30,19 +30,19 @@ function envs(){
 
 function networks(){
     # restore backend configs in main module
-    mv 3-networks/envs/development/backend.tf.disabled  3-networks/envs/development/backend.tf
-    mv 3-networks/envs/non-production/backend.tf.disabled  3-networks/envs/non-production/backend.tf
-    mv 3-networks/envs/production/backend.tf.disabled  3-networks/envs/production/backend.tf
+    mv 3-networks-dual-svpc/envs/development/backend.tf.disabled  3-networks-dual-svpc/envs/development/backend.tf
+    mv 3-networks-dual-svpc/envs/non-production/backend.tf.disabled  3-networks-dual-svpc/envs/non-production/backend.tf
+    mv 3-networks-dual-svpc/envs/production/backend.tf.disabled  3-networks-dual-svpc/envs/production/backend.tf
 
     # restore access_context.auto.tfvars in main module
-    mv 3-networks/envs/development/access_context.auto.tfvars.disabled  3-networks/envs/development/access_context.auto.tfvars
-    mv 3-networks/envs/non-production/access_context.auto.tfvars.disabled  3-networks/envs/non-production/access_context.auto.tfvars
-    mv 3-networks/envs/production/access_context.auto.tfvars.disabled  3-networks/envs/production/access_context.auto.tfvars 
+    mv 3-networks-dual-svpc/envs/development/access_context.auto.tfvars.disabled  3-networks-dual-svpc/envs/development/access_context.auto.tfvars
+    mv 3-networks-dual-svpc/envs/non-production/access_context.auto.tfvars.disabled  3-networks-dual-svpc/envs/non-production/access_context.auto.tfvars
+    mv 3-networks-dual-svpc/envs/production/access_context.auto.tfvars.disabled  3-networks-dual-svpc/envs/production/access_context.auto.tfvars 
 
     # restore common.auto.tfvars in main module
-    mv 3-networks/envs/development/common.auto.tfvars.disabled  3-networks/envs/development/common.auto.tfvars 
-    mv 3-networks/envs/non-production/common.auto.tfvars.disabled  3-networks/envs/non-production/common.auto.tfvars  
-    mv 3-networks/envs/production/common.auto.tfvars.disabled  3-networks/envs/production/common.auto.tfvars  
+    mv 3-networks-dual-svpc/envs/development/common.auto.tfvars.disabled  3-networks-dual-svpc/envs/development/common.auto.tfvars 
+    mv 3-networks-dual-svpc/envs/non-production/common.auto.tfvars.disabled  3-networks-dual-svpc/envs/non-production/common.auto.tfvars  
+    mv 3-networks-dual-svpc/envs/production/common.auto.tfvars.disabled  3-networks-dual-svpc/envs/production/common.auto.tfvars  
 }
 
 function networks-hub-and-spoke(){
@@ -64,16 +64,16 @@ function networks-hub-and-spoke(){
 
 function shared(){
     # restore backend configs in main module
-    mv 3-networks/envs/shared/backend.tf.disabled  3-networks/envs/shared/backend.tf 
+    mv 3-networks-dual-svpc/envs/shared/backend.tf.disabled  3-networks-dual-svpc/envs/shared/backend.tf 
 
     # restore access_context.auto.tfvars in main module
-    mv 3-networks/envs/shared/access_context.auto.tfvars.disabled  3-networks/envs/shared/access_context.auto.tfvars 
+    mv 3-networks-dual-svpc/envs/shared/access_context.auto.tfvars.disabled  3-networks-dual-svpc/envs/shared/access_context.auto.tfvars 
 
     # restore common.auto.tfvars in main module
-    mv  3-networks/envs/shared/common.auto.tfvars.disabled  3-networks/envs/shared/common.auto.tfvars 
+    mv  3-networks-dual-svpc/envs/shared/common.auto.tfvars.disabled  3-networks-dual-svpc/envs/shared/common.auto.tfvars 
 
     # restore shared.auto.tfvars in main module
-    mv 3-networks/envs/shared/shared.auto.tfvars.disabled  3-networks/envs/shared/shared.auto.tfvars 
+    mv 3-networks-dual-svpc/envs/shared/shared.auto.tfvars.disabled  3-networks-dual-svpc/envs/shared/shared.auto.tfvars 
 }
 
 function shared-hub-and-spoke(){

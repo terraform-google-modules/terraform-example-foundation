@@ -15,10 +15,25 @@
  */
 
 locals {
-  mode                    = ""
+  mode                    = var.mode == null ? "" : var.mode == "hub" ? "-hub" : "-spoke"
   vpc_name                = "${var.environment_code}-shared-base${local.mode}"
   network_name            = "vpc-${local.vpc_name}"
   private_googleapis_cidr = "199.36.153.8/30"
+}
+
+/******************************************
+  Base Network Hub
+*****************************************/
+
+data "google_projects" "base_net_hub" {
+  count  = var.mode == "spoke" ? 1 : 0
+  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-base-net-hub lifecycleState=ACTIVE"
+}
+
+data "google_compute_network" "vpc_base_net_hub" {
+  count   = var.mode == "spoke" ? 1 : 0
+  name    = "vpc-c-shared-base-hub"
+  project = data.google_projects.base_net_hub[0].projects[0].project_id
 }
 
 /******************************************
@@ -70,6 +85,20 @@ module "main" {
 }
 
 /***************************************************************
+  VPC Peering Configuration
+ **************************************************************/
+
+module "peering" {
+  source                    = "terraform-google-modules/network/google//modules/network-peering"
+  version                   = "~> 2.0"
+  count                     = var.mode == "spoke" ? 1 : 0
+  prefix                    = "np"
+  local_network             = module.main.network_self_link
+  peer_network              = data.google_compute_network.vpc_base_net_hub[0].self_link
+  export_peer_custom_routes = true
+}
+
+/***************************************************************
   Configure Service Networking for Cloud SQL & future services.
  **************************************************************/
 
@@ -82,6 +111,8 @@ resource "google_compute_global_address" "private_service_access_address" {
   address       = element(split("/", var.private_service_cidr), 0)
   prefix_length = element(split("/", var.private_service_cidr), 1)
   network       = module.main.network_self_link
+
+  depends_on = [module.peering]
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
@@ -89,6 +120,8 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   network                 = module.main.network_self_link
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_service_access_address[0].name]
+
+  depends_on = [module.peering]
 }
 
 /************************************

@@ -177,7 +177,7 @@ func TestProjects(t *testing.T) {
 
 			var networkTFDir string
 			if networkMode == "" {
-				networkTFDir = "../../../3-networks/envs/%s"
+				networkTFDir = "../../../3-networks-dual-svpc/envs/%s"
 			} else {
 				networkTFDir = "../../../3-networks-hub-and-spoke/envs/%s"
 			}

@@ -15,47 +15,47 @@
  */
 
 locals {
-  env              = "non-production"
+  env              = "production"
   environment_code = substr(local.env, 0, 1)
   default_region1  = "us-west1"
   default_region2  = "us-central1"
   /*
    * Base network ranges
    */
-  base_private_service_cidr = "10.16.128.0/21"
+  base_private_service_cidr = "10.16.192.0/21"
   base_subnet_primary_ranges = {
-    (local.default_region1) = "10.0.128.0/21"
-    (local.default_region2) = "10.1.128.0/21"
+    (local.default_region1) = "10.0.192.0/21"
+    (local.default_region2) = "10.1.192.0/21"
   }
   base_subnet_secondary_ranges = {
     (local.default_region1) = [
       {
         range_name    = "rn-${local.environment_code}-shared-base-${local.default_region1}-gke-pod"
-        ip_cidr_range = "100.64.128.0/21"
+        ip_cidr_range = "100.64.192.0/21"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-base-${local.default_region1}-gke-svc"
-        ip_cidr_range = "100.64.136.0/21"
+        ip_cidr_range = "100.64.200.0/21"
       }
     ]
   }
   /*
    * Restricted network ranges
    */
-  restricted_private_service_cidr = "10.24.128.0/21"
+  restricted_private_service_cidr = "10.24.192.0/21"
   restricted_subnet_primary_ranges = {
-    (local.default_region1) = "10.8.128.0/21"
-    (local.default_region2) = "10.9.128.0/21"
+    (local.default_region1) = "10.8.192.0/21"
+    (local.default_region2) = "10.9.192.0/21"
   }
   restricted_subnet_secondary_ranges = {
     (local.default_region1) = [
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${local.default_region1}-gke-pod"
-        ip_cidr_range = "100.72.128.0/21"
+        ip_cidr_range = "100.72.192.0/21"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${local.default_region1}-gke-svc"
-        ip_cidr_range = "100.72.136.0/21"
+        ip_cidr_range = "100.72.200.0/21"
       }
     ]
   }
@@ -73,7 +73,9 @@ module "base_env" {
   default_region2                    = local.default_region2
   domain                             = var.domain
   parent_folder                      = var.parent_folder
+  enable_hub_and_spoke               = false
   enable_partner_interconnect        = false
+  enable_hub_and_spoke_transitivity  = false
   base_private_service_cidr          = local.base_private_service_cidr
   base_subnet_primary_ranges         = local.base_subnet_primary_ranges
   base_subnet_secondary_ranges       = local.base_subnet_secondary_ranges

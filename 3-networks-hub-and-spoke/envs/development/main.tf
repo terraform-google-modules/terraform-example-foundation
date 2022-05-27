@@ -73,12 +73,13 @@ module "base_env" {
   default_region2                    = local.default_region2
   domain                             = var.domain
   parent_folder                      = var.parent_folder
+  enable_hub_and_spoke               = true
   enable_partner_interconnect        = false
+  enable_hub_and_spoke_transitivity  = var.enable_hub_and_spoke_transitivity
   base_private_service_cidr          = local.base_private_service_cidr
   base_subnet_primary_ranges         = local.base_subnet_primary_ranges
   base_subnet_secondary_ranges       = local.base_subnet_secondary_ranges
   restricted_private_service_cidr    = local.restricted_private_service_cidr
   restricted_subnet_primary_ranges   = local.restricted_subnet_primary_ranges
   restricted_subnet_secondary_ranges = local.restricted_subnet_secondary_ranges
-
 }

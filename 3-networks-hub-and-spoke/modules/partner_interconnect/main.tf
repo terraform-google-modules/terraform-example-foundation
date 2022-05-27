@@ -23,8 +23,8 @@ locals {
 
   attachment_project_id = data.google_projects.attachment_project.projects[0].project_id
 
-  app_label         = "org-${var.vpc_type}-net-hub"
-  environment_label = "production"
+  app_label         = var.enable_hub_and_spoke ? "org-${var.vpc_type}-net-hub" : "${var.vpc_type}-shared-vpc-host"
+  environment_label = var.enable_hub_and_spoke ? "production" : var.environment
 }
 
 data "google_active_folder" "environment" {

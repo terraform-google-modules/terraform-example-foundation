@@ -36,7 +36,7 @@ module "googleapis" {
       name    = "*"
       type    = "CNAME"
       ttl     = 300
-      records = ["${local.googleapis_url}"]
+      records = [local.googleapis_url]
     },
     {
       name    = "${local.recordsets_name}"

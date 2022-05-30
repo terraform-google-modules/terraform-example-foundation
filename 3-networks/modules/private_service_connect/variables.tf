@@ -52,6 +52,6 @@ variable "forwarding_rule_target" {
 
   validation {
     condition     = var.forwarding_rule_target == "all-apis" || var.forwarding_rule_target == "vpc-sc"
-    error_message = "For forwarding_rule_target only `all-apis` and `vpc-sc` are valid"
+    error_message = "For forwarding_rule_target only `all-apis` and `vpc-sc` are valid."
   }
 }

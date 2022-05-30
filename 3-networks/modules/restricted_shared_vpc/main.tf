@@ -52,13 +52,6 @@ module "main" {
   secondary_ranges = var.secondary_ranges
 
   routes = concat(
-    [{
-      name              = "rt-${local.vpc_name}-1000-all-default-restricted-api"
-      description       = "Route through IGW to allow restricted google api access."
-      destination_range = local.restricted_googleapis_cidr
-      next_hop_internet = "true"
-      priority          = "1000"
-    }],
     var.nat_enabled ?
     [
       {

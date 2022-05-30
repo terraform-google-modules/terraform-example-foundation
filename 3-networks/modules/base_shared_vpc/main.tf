@@ -52,13 +52,6 @@ module "main" {
   secondary_ranges = var.secondary_ranges
 
   routes = concat(
-    [{
-      name              = "rt-${local.vpc_name}-1000-all-default-private-api"
-      description       = "Route through IGW to allow private google api access."
-      destination_range = "199.36.153.8/30"
-      next_hop_internet = "true"
-      priority          = "1000"
-    }],
     var.nat_enabled ?
     [
       {

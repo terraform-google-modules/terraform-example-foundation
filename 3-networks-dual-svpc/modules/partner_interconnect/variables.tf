@@ -109,10 +109,3 @@ variable "vpc_type" {
   type        = string
   default     = null
 }
-
-variable "enable_hub_and_spoke" {
-  description = "Support hub and spoke architecture"
-  type        = string
-  default     = false
-}
-

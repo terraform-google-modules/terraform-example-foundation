@@ -35,7 +35,6 @@ function networks(){
     else
         network_dir="3-networks-dual-svpc"
     fi
-    echo $network_dir
 
     # disable backend configs in main module
     mv $network_dir/envs/development/backend.tf $network_dir/envs/development/backend.tf.disabled
@@ -60,7 +59,6 @@ function shared(){
     else
         network_dir="3-networks-dual-svpc"
     fi
-    echo $network_dir
 
     # disable backend configs in main module
     mv $network_dir/envs/shared/backend.tf  $network_dir/envs/shared/backend.tf.disabled

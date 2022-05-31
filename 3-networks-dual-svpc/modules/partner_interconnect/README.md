@@ -20,7 +20,6 @@ Without Hub and Spoke enabled VLAN attachments will be created in `prj-{p|n|d}-s
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | cloud\_router\_labels | A map of suffixes for labelling vlans with four entries like "vlan\_1" => "suffix1" with keys from `vlan_1` to `vlan_4`. | `map(string)` | `{}` | no |
-| enable\_hub\_and\_spoke | Support hub and spoke architecture | `string` | `false` | no |
 | environment | Environment in which to deploy the Partner Interconnect, must be 'common' if enable\_hub\_and\_spoke=true | `string` | `null` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | org\_id | Organization ID | `string` | n/a | yes |

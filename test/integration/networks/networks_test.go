@@ -83,6 +83,12 @@ func TestNetworks(t *testing.T) {
 	policyID := getPolicyID(t, orgID)
 	networkMode := getNetworkMode(t)
 
+	bootstrap := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../0-bootstrap"),
+	)
+
+	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account")
+
 	restrictedServices := []string{
 		"bigquery.googleapis.com",
 		"storage.googleapis.com",
@@ -117,6 +123,7 @@ func TestNetworks(t *testing.T) {
 
 			vars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
+				"terraform_service_account":        terraformSA,
 			}
 
 			envCode := string(envName[0:1])
@@ -135,7 +142,7 @@ func TestNetworks(t *testing.T) {
 
 					servicePerimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
 					assert.Equal(servicePerimeterLink, servicePerimeter.Get("name").String(), fmt.Sprintf("service perimeter %s should exist", servicePerimeterLink))
-					listLevels  := utils.GetResultStrSlice(servicePerimeter.Get("status.accessLevels").Array())
+					listLevels := utils.GetResultStrSlice(servicePerimeter.Get("status.accessLevels").Array())
 					assert.Contains(listLevels, accessLevel, fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
 					listServices := utils.GetResultStrSlice(servicePerimeter.Get("status.restrictedServices").Array())
 					assert.Subset(listServices, restrictedServices, fmt.Sprintf("service perimeter %s should restrict 'bigquery.googleapis.com' and 'storage.googleapis.com'", servicePerimeterLink))

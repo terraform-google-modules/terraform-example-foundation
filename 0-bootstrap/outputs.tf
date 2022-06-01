@@ -24,6 +24,26 @@ output "terraform_service_account" {
   value       = module.seed_bootstrap.terraform_sa_email
 }
 
+output "projects_step_terraform_service_account" {
+  description = "Projects Step Terraform Account"
+  value       = module.granular_service_account.projects_step_terraform_service_account
+}
+
+output "networks_step_terraform_service_account" {
+  description = "Networks Step Terraform Account"
+  value       = module.granular_service_account.networks_step_terraform_service_account
+}
+
+output "environment_step_terraform_service_account" {
+  description = "Environment Step Terraform Account"
+  value       = module.granular_service_account.environment_step_terraform_service_account
+}
+
+output "organization_step_terraform_service_account" {
+  description = "Organization Step Terraform Account"
+  value       = module.granular_service_account.organization_step_terraform_service_account
+}
+
 output "terraform_sa_name" {
   description = "Fully qualified name for privileged service account for Terraform."
   value       = module.seed_bootstrap.terraform_sa_name

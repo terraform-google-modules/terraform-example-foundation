@@ -18,7 +18,14 @@
   Bootstrap GCP Organization.
 *************************************************/
 locals {
-  parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+  env_terraform_sa = [
+    "serviceAccount:${module.granular_service_account.organization_step_terraform_service_account}",
+    "serviceAccount:${module.granular_service_account.environment_step_terraform_service_account}",
+    "serviceAccount:${module.granular_service_account.networks_step_terraform_service_account}",
+    "serviceAccount:${module.granular_service_account.projects_step_terraform_service_account}",
+  ]
+  org_project_creators = distinct(concat(var.org_project_creators, local.env_terraform_sa))
+  parent               = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
   org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
     "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
   ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
@@ -40,7 +47,7 @@ module "seed_bootstrap" {
   group_org_admins               = var.group_org_admins
   group_billing_admins           = var.group_billing_admins
   default_region                 = var.default_region
-  org_project_creators           = var.org_project_creators
+  org_project_creators           = local.org_project_creators
   sa_enable_impersonation        = true
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
@@ -77,20 +84,7 @@ module "seed_bootstrap" {
     "billingbudgets.googleapis.com"
   ]
 
-  sa_org_iam_permissions = [
-    "roles/accesscontextmanager.policyAdmin",
-    "roles/billing.user",
-    "roles/compute.networkAdmin",
-    "roles/compute.xpnAdmin",
-    "roles/iam.securityAdmin",
-    "roles/iam.serviceAccountAdmin",
-    "roles/logging.configWriter",
-    "roles/orgpolicy.policyAdmin",
-    "roles/resourcemanager.projectCreator",
-    "roles/resourcemanager.folderAdmin",
-    "roles/securitycenter.notificationConfigEditor",
-    "roles/resourcemanager.organizationViewer"
-  ]
+  sa_org_iam_permissions = []
 }
 
 resource "google_billing_account_iam_member" "tf_billing_admin" {
@@ -196,32 +190,14 @@ resource "google_folder_iam_member" "folder_cb_sa_browser" {
   member = "serviceAccount:${data.google_project.cloudbuild.number}@cloudbuild.gserviceaccount.com"
 }
 
-resource "google_organization_iam_member" "org_tf_compute_security_policy_admin" {
-  count  = var.parent_folder == "" ? 1 : 0
-  org_id = var.org_id
-  role   = "roles/compute.orgSecurityPolicyAdmin"
-  member = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
-}
+module "granular_service_account" {
+  source = "./modules/granular-service-accounts"
 
-resource "google_folder_iam_member" "folder_tf_compute_security_policy_admin" {
-  count  = var.parent_folder != "" ? 1 : 0
-  folder = var.parent_folder
-  role   = "roles/compute.orgSecurityPolicyAdmin"
-  member = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
-}
-
-resource "google_organization_iam_member" "org_tf_compute_security_resource_admin" {
-  count  = var.parent_folder == "" ? 1 : 0
-  org_id = var.org_id
-  role   = "roles/compute.orgSecurityResourceAdmin"
-  member = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
-}
-
-resource "google_folder_iam_member" "folder_tf_compute_security_resource_admin" {
-  count  = var.parent_folder != "" ? 1 : 0
-  folder = var.parent_folder
-  role   = "roles/compute.orgSecurityResourceAdmin"
-  member = "serviceAccount:${module.seed_bootstrap.terraform_sa_email}"
+  org_id          = var.org_id
+  seed_project_id = module.seed_bootstrap.seed_project_id
+  billing_account = var.billing_account
+  cloud_build_sa  = "${data.google_project.cloudbuild.number}@cloudbuild.gserviceaccount.com"
+  parent_folder   = var.parent_folder
 }
 
 ## Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build

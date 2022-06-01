@@ -30,13 +30,18 @@ variable "network_self_link" {
 }
 
 variable "environment_code" {
-  type        = string
   description = "A short form of the folder level resources (environment) within the Google Cloud organization."
+  type        = string
+}
+
+variable "private_service_connect_ip" {
+  description = "The internal IP to be used for the private service connect."
+  type        = string
 }
 
 variable "forwarding_rule_target" {
-  type        = string
   description = "Target resource to receive the matched traffic. Only `all-apis` and `vpc-sc` are valid."
+  type        = string
 
   validation {
     condition     = var.forwarding_rule_target == "all-apis" || var.forwarding_rule_target == "vpc-sc"

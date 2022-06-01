@@ -23,5 +23,6 @@ module "private_service_connect" {
   dns_enable_logging            = var.dns_enable_logging
   environment_code              = var.environment_code
   network_self_link             = module.main.network_self_link
+  private_service_connect_ip    = "10.3.0.5"
   forwarding_rule_target        = "vpc-sc"
 }

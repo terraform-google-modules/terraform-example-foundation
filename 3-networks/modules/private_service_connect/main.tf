@@ -15,10 +15,9 @@
  */
 
 locals {
-  private_service_connect_ip = "10.3.0.5"
-  vpc_type                   = var.forwarding_rule_target == "vpc-sc" ? "restricted" : "base"
-  googleapis_url             = var.forwarding_rule_target == "vpc-sc" ? "restricted.googleapis.com." : "private.googleapis.com."
-  recordsets_name            = split(".", local.googleapis_url)[0]
+  vpc_type        = var.forwarding_rule_target == "vpc-sc" ? "restricted" : "base"
+  googleapis_url  = var.forwarding_rule_target == "vpc-sc" ? "restricted.googleapis.com." : "private.googleapis.com."
+  recordsets_name = split(".", local.googleapis_url)[0]
 }
 
 resource "google_compute_global_address" "private_service_connect" {
@@ -28,7 +27,7 @@ resource "google_compute_global_address" "private_service_connect" {
   address_type = "INTERNAL"
   purpose      = "PRIVATE_SERVICE_CONNECT"
   network      = var.network_id
-  address      = local.private_service_connect_ip
+  address      = var.private_service_connect_ip
 }
 
 resource "google_compute_global_forwarding_rule" "forwarding_rule_private_service_connect" {

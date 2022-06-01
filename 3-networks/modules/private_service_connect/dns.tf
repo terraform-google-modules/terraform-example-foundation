@@ -39,7 +39,7 @@ module "googleapis" {
       records = [local.googleapis_url]
     },
     {
-      name    = "${local.recordsets_name}"
+      name    = local.recordsets_name
       type    = "A"
       ttl     = 300
       records = [local.private_service_connect_ip]

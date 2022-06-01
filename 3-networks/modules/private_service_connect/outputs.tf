@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/*********************
- Restricted Outputs
-*********************/
-
 output "private_service_connect_ip" {
   value       = local.private_service_connect_ip
   description = "The private service connect ip"
@@ -25,4 +21,9 @@ output "private_service_connect_ip" {
   depends_on = [
     google_compute_global_forwarding_rule.forwarding_rule_private_service_connect
   ]
+}
+
+output "global_address_id" {
+  value       = google_compute_global_address.private_service_connect.id
+  description = "An identifier for the global address created for the private service connect with format `projects/{{project}}/global/addresses/{{name}}`"
 }

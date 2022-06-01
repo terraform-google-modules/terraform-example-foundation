@@ -29,18 +29,6 @@ variable "network_self_link" {
   type        = string
 }
 
-variable "dns_enable_inbound_forwarding" {
-  type        = bool
-  description = "Toggle inbound query forwarding for VPC DNS."
-  default     = true
-}
-
-variable "dns_enable_logging" {
-  type        = bool
-  description = "Toggle DNS logging for VPC DNS."
-  default     = true
-}
-
 variable "environment_code" {
   type        = string
   description = "A short form of the folder level resources (environment) within the Google Cloud organization."

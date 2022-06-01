@@ -26,11 +26,15 @@ organizational policy.</td>
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
-<td><a href="../3-networks">3-networks</a></td>
+<td><a href="../3-networks-dual-svpc">3-networks-dual-svpc</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
-Interconnect, and baseline firewall rules for each environment. It also sets
+Interconnect, and baseline firewall rules for each environment. Also sets
 up the global DNS hub.</td>
+</tr>
+<tr>
+<td><a href="../3-networks-hub-and-spoke">3-networks-hub-and-spoke</a></td>
+<td>Sets up base and restricted shared VPCs with all the default configuration found on step 3-networks-dual-svpc, but here the architecture will be based on the Hub and Spoke network model.</td>
 </tr>
 <tr>
 <td>4-projects (this file)</td>

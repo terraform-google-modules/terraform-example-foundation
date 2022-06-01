@@ -1,4 +1,4 @@
-# 3-networks
+# 3-networks-hub-and-spoke
 
 This repo is part of a multi-part guide that shows how to configure and deploy
 the example.com reference architecture described in
@@ -26,11 +26,15 @@ organizational policy.</td>
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
-<td>3-networks (this file)</td>
+<td><a href="../3-networks-dual-svpc">3-networks-dual-svpc</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
-Private Service networking, VPC service controls, Dedicated or Partner
-Interconnect, and baseline firewall rules for each environment. It also sets
+Private Service networking, VPC service controls, on-premises Dedicated
+Interconnect, and baseline firewall rules for each environment. Also sets
 up the global DNS hub.</td>
+</tr>
+<tr>
+<td><a>3-networks-hub-and-spoke (this file)</a></td>
+<td>Sets up base and restricted shared VPCs with all the default configuration found on step 3-networks-dual-svpc, but here the architecture will be based on the Hub and Spoke network model.</td>
 </tr>
 <tr>
 <td><a href="../4-projects">4-projects</a></td>
@@ -80,13 +84,13 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Networking Architecture
 
-You need to set variables `enable_hub_and_spoke` and `enable_hub_and_spoke_transitivity` to `true` to be able to use the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [Google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
+This step makes use of the **Hub-and-Spoke** architecture, and more details can be found described at the **Networking** section of the [Google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 
 ### Using Dedicated Interconnect
 
 If you provisioned the prerequisites listed in the [Dedicated Interconnect README](./modules/dedicated_interconnect/README.md), follow these steps to enable Dedicated Interconnect to access on-premises resources.
 
-1. Rename `interconnect.tf.example` to `interconnect.tf` in base_env folder in `3-networks/modules/base_env`.
+1. Rename `interconnect.tf.example` to `interconnect.tf` in base_env folder in `3-networks-hub-and-spoke/modules/base_env`.
 1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
 1. The candidate subnetworks and vlan_tag8021q variables can be set to `null` to allow the interconnect module to auto generate these values.
 
@@ -94,7 +98,7 @@ If you provisioned the prerequisites listed in the [Dedicated Interconnect READM
 
 If you provisioned the prerequisites listed in the [Partner Interconnect README](./modules/partner_interconnect/README.md) follow this steps to enable Partner Interconnect to access on-premises resources.
 
-1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` in the base-env folder in `3-networks/modules/base_env` .
+1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` in the base-env folder in `3-networks-hub-and-spoke/modules/base_env` .
 1. Update the file `partner_interconnect.tf` with values that are valid for your environment for the VLAN attachments, locations, and candidate subnetworks.
 1. The candidate subnetworks variable can be set to `null` to allow the interconnect module to auto generate this value.
 
@@ -102,7 +106,7 @@ If you provisioned the prerequisites listed in the [Partner Interconnect README]
 
 If you are not able to use Dedicated or Partner Interconnect, you can also use an HA Cloud VPN to access on-premises resources.
 
-1. Rename `vpn.tf.example` to `vpn.tf` in base-env folder in `3-networks/modules/base_env`.
+1. Rename `vpn.tf.example` to `vpn.tf` in base-env folder in `3-networks-hub-and-spoke/modules/base_env`.
 1. Create secret for VPN private preshared key.
    ```
    echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_PRIVATE_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-
@@ -127,7 +131,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    ```
 1. Copy contents of foundation to new repo.
    ```
-   cp -RT ../terraform-example-foundation/3-networks/ .
+   cp -RT ../terraform-example-foundation/3-networks-hub-and-spoke/ .
    ```
 1. Copy Cloud Build configuration files for Terraform.
    ```
@@ -193,18 +197,18 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 
 1. Clone the repo you created manually in 0-bootstrap.
    ```
-   git clone <YOUR_NEW_REPO-3-networks>
+   git clone <YOUR_NEW_REPO-3-networks-hub-and-spoke>
    ```
 1. Navigate into the repo and change to a non-production branch. All subsequent
    steps assume you are running them from the gcp-environments directory. If
    you run them from another directory, adjust your copy paths accordingly.
    ```
-   cd YOUR_NEW_REPO_CLONE-3-networks
+   cd YOUR_NEW_REPO_CLONE-3-networks-hub-and-spoke
    git checkout -b plan
    ```
 1. Copy contents of foundation to new repo.
    ```
-   cp -RT ../terraform-example-foundation/3-networks/ .
+   cp -RT ../terraform-example-foundation/3-networks-hub-and-spoke/ .
    ```
 1. Copy the Jenkinsfile script to the root of your new repository.
    ```
@@ -267,7 +271,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 
 ### Run Terraform locally
 
-1. Change into the 3-networks folder.
+1. Change into the 3-networks-hub-and-spoke folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`.
 1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
@@ -280,7 +284,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
 
 We will now deploy each of our environments(development/production/non-production) using this script.
-When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks step
+When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks-hub-and-spoke step
 and only the corresponding environment is applied.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/install.md) in the **Install Terraform Validator** section and install version `v0.4.0` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.

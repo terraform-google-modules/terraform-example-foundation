@@ -42,7 +42,7 @@ module "googleapis" {
       name    = local.recordsets_name
       type    = "A"
       ttl     = 300
-      records = [local.private_service_connect_ip]
+      records = [var.private_service_connect_ip]
     },
   ]
 }
@@ -75,7 +75,7 @@ module "gcr" {
       name    = ""
       type    = "A"
       ttl     = 300
-      records = [local.private_service_connect_ip]
+      records = [var.private_service_connect_ip]
     },
   ]
 }
@@ -108,7 +108,7 @@ module "pkg_dev" {
       name    = ""
       type    = "A"
       ttl     = 300
-      records = [local.private_service_connect_ip]
+      records = [var.private_service_connect_ip]
     },
   ]
 }

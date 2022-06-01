@@ -15,7 +15,7 @@
  */
 
 output "private_service_connect_ip" {
-  value       = local.private_service_connect_ip
+  value       = var.private_service_connect_ip
   description = "The private service connect ip"
 
   depends_on = [

@@ -141,6 +141,7 @@ func TestBootstrap(t *testing.T) {
 					output: "networks_step_terraform_service_account",
 					orgRoles: []string{
 						"roles/accesscontextmanager.policyAdmin",
+						"roles/compute.xpnAdmin",
 					},
 				},
 				{

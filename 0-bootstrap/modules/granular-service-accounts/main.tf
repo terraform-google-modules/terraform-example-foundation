@@ -32,7 +32,8 @@ locals {
       "roles/accesscontextmanager.policyAdmin",
     ],
     "net" = [
-      "roles/accesscontextmanager.policyAdmin"
+      "roles/accesscontextmanager.policyAdmin",
+      "roles/compute.xpnAdmin",
     ],
     "proj" = [
       "roles/accesscontextmanager.policyAdmin",
@@ -51,10 +52,10 @@ locals {
       "roles/resourcemanager.folderViewer",
       "roles/dns.admin",
       "roles/compute.networkAdmin",
-      "roles/compute.xpnAdmin",
       "roles/compute.securityAdmin",
       "roles/compute.orgSecurityPolicyAdmin",
-      "roles/compute.orgSecurityResourceAdmin"
+      "roles/compute.orgSecurityResourceAdmin",
+      "roles/iam.serviceAccountAdmin",
     ],
     "proj" = [
       "roles/resourcemanager.folderViewer",
@@ -69,7 +70,7 @@ resource "google_service_account" "terraform-env-sa" {
   for_each = local.granular_sa
 
   project      = var.seed_project_id
-  account_id   = "terrafom-${each.key}-sa"
+  account_id   = "terraform-${each.key}-sa"
   display_name = each.value
 }
 

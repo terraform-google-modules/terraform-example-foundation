@@ -49,15 +49,12 @@ locals {
       "roles/resourcemanager.folderAdmin"
     ],
     "net" = [
+      "roles/resourcemanager.folderViewer",
       "roles/compute.networkAdmin",
       "roles/compute.securityAdmin",
       "roles/compute.orgSecurityPolicyAdmin",
       "roles/compute.orgSecurityResourceAdmin",
-      "roles/compute.instanceAdmin",
       "roles/dns.admin",
-      "roles/iam.serviceAccountAdmin",
-      "roles/resourcemanager.folderViewer",
-      "roles/resourcemanager.projectIamAdmin",
     ],
     "proj" = [
       "roles/resourcemanager.folderViewer",

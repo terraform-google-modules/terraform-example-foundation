@@ -51,9 +51,11 @@ func TestOrg(t *testing.T) {
 	)
 
 	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account")
+	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account")
 
 	vars := map[string]interface{}{
-		"terraform_service_account": terraformSA,
+		"terraform_service_account":               terraformSA,
+		"networks_step_terraform_service_account": networksTerraformSA,
 	}
 
 	org := tft.NewTFBlueprintTest(t,

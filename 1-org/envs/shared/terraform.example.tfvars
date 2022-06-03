@@ -25,7 +25,9 @@ org_id = "000000000000"
 
 billing_account = "000000-000000-000000"
 
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
+terraform_service_account = "terraform-org-sa@example-project-2334.iam.gserviceaccount.com"
+
+network_step_terraform_service_account = "terraform-net-sa@example-project-2334.iam.gserviceaccount.com"
 
 default_region = "us-central1"
 
@@ -40,3 +42,7 @@ scc_notification_name = "scc-notify"
 //create_access_context_manager_access_policy = false
 
 //enable_hub_and_spoke = true
+
+// if you enable  hun and spoke you need to provide
+// the service account that will be used in the netowk step
+//networks_step_terraform_service_account = "terraform-net-sa@example-project-2334.iam.gserviceaccount.com"

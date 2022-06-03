@@ -18,7 +18,7 @@ locals {
   mode                       = var.mode == null ? "" : var.mode == "hub" ? "-hub" : "-spoke"
   vpc_name                   = "${var.environment_code}-shared-restricted${local.mode}"
   network_name               = "vpc-${local.vpc_name}"
-  restricted_googleapis_cidr = "199.36.153.4/30"
+  restricted_googleapis_cidr = module.private_service_connect.private_service_connect_ip
 }
 
 /******************************************
@@ -52,13 +52,6 @@ module "main" {
   secondary_ranges = var.secondary_ranges
 
   routes = concat(
-    [{
-      name              = "rt-${local.vpc_name}-1000-all-default-restricted-api"
-      description       = "Route through IGW to allow restricted google api access."
-      destination_range = local.restricted_googleapis_cidr
-      next_hop_internet = "true"
-      priority          = "1000"
-    }],
     var.nat_enabled ?
     [
       {

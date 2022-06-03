@@ -36,7 +36,6 @@ data "google_compute_network" "vpc_dns_hub" {
   project = data.google_projects.dns_hub.projects[0].project_id
 }
 
-
 /******************************************
   Default DNS Policy
  *****************************************/
@@ -52,110 +51,11 @@ resource "google_dns_policy" "default_policy" {
 }
 
 /******************************************
-  Restricted Google APIs DNS Zone & records.
- *****************************************/
-
-module "restricted_googleapis" {
-  source      = "terraform-google-modules/cloud-dns/google"
-  version     = "~> 3.0"
-  project_id  = var.project_id
-  type        = "private"
-  name        = "dz-${var.environment_code}-shared-restricted-apis"
-  domain      = "googleapis.com."
-  description = "Private DNS zone to configure restricted.googleapis.com"
-
-  private_visibility_config_networks = [
-    module.main.network_self_link
-  ]
-
-  recordsets = [
-    {
-      name    = "*"
-      type    = "CNAME"
-      ttl     = 300
-      records = ["restricted.googleapis.com."]
-    },
-    {
-      name    = "restricted"
-      type    = "A"
-      ttl     = 300
-      records = ["199.36.153.4", "199.36.153.5", "199.36.153.6", "199.36.153.7"]
-    },
-  ]
-}
-
-/******************************************
-  Restricted GCR DNS Zone & records.
- *****************************************/
-
-module "restricted_gcr" {
-  source      = "terraform-google-modules/cloud-dns/google"
-  version     = "~> 3.0"
-  project_id  = var.project_id
-  type        = "private"
-  name        = "dz-${var.environment_code}-shared-restricted-gcr"
-  domain      = "gcr.io."
-  description = "Private DNS zone to configure gcr.io"
-
-  private_visibility_config_networks = [
-    module.main.network_self_link
-  ]
-
-  recordsets = [
-    {
-      name    = "*"
-      type    = "CNAME"
-      ttl     = 300
-      records = ["gcr.io."]
-    },
-    {
-      name    = ""
-      type    = "A"
-      ttl     = 300
-      records = ["199.36.153.4", "199.36.153.5", "199.36.153.6", "199.36.153.7"]
-    },
-  ]
-}
-
-/**************************************************
-  Restricted Artifact Registry DNS Zone & records.
- **************************************************/
-
-module "restricted_pkg_dev" {
-  source      = "terraform-google-modules/cloud-dns/google"
-  version     = "~> 3.0"
-  project_id  = var.project_id
-  type        = "private"
-  name        = "dz-${var.environment_code}-shared-restricted-pkg-dev"
-  domain      = "pkg.dev."
-  description = "Private DNS zone to configure pkg.dev"
-
-  private_visibility_config_networks = [
-    module.main.network_self_link
-  ]
-
-  recordsets = [
-    {
-      name    = "*"
-      type    = "CNAME"
-      ttl     = 300
-      records = ["pkg.dev."]
-    },
-    {
-      name    = ""
-      type    = "A"
-      ttl     = 300
-      records = ["199.36.153.4", "199.36.153.5", "199.36.153.6", "199.36.153.7"]
-    },
-  ]
-}
-
-/******************************************
  Creates DNS Peering to DNS HUB
 *****************************************/
 module "peering_zone" {
   source      = "terraform-google-modules/cloud-dns/google"
-  version     = "~> 3.0"
+  version     = "~> 3.1"
   project_id  = var.project_id
   type        = "peering"
   name        = "dz-${var.environment_code}-shared-restricted-to-dns-hub"

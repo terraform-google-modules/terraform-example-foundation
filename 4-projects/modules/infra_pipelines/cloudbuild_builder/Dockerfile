@@ -32,8 +32,8 @@ RUN apt-get update && \
     sha256sum -c terraform_SHA256SUMS --status && \
     unzip terraform_linux_amd64.zip -d /builder/terraform && \
     rm -f terraform_linux_amd64.zip && \
-    gsutil cp gs://terraform-validator/releases/${ENV_TERRAFORM_VALIDATOR_RELEASE}/terraform-validator-linux-amd64 /builder/terraform/terraform-validator && \
-    chmod +x /builder/terraform/terraform-validator && \
+    /builder/google-cloud-sdk/bin/gcloud components update && \
+    /builder/google-cloud-sdk/bin/gcloud components install terraform-tools && \
     apt-get remove --purge -y curl unzip && \
     apt-get --purge -y autoremove && \
     apt-get clean && \

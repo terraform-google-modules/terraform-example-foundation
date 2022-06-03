@@ -1,4 +1,4 @@
-# 3-networks/production
+# 3-networks-dual-svpc/production
 
 The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated Interconnect, onprem VPN and baseline firewall rules for environment production.
 
@@ -7,7 +7,7 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. 2-environments/envs/production executed successfully.
-1. 3-networks/envs/shared executed successfully.
+1. 3-networks-dual-svpc/envs/shared executed successfully.
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

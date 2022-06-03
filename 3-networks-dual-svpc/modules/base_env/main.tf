@@ -19,9 +19,7 @@ locals {
   restricted_project_number = data.google_project.restricted_host_project.number
   base_project_id           = data.google_projects.base_host_project.projects[0].project_id
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  mode                      = null
   bgp_asn_number            = var.enable_partner_interconnect ? "16550" : "64514"
-  enable_transitivity       = false
   /*
    * Base network ranges
    */
@@ -73,7 +71,7 @@ module "restricted_shared_vpc" {
   default_region1                  = var.default_region1
   default_region2                  = var.default_region2
   domain                           = var.domain
-  mode                             = local.mode
+  mode                             = null
 
   subnets = [
     {
@@ -96,8 +94,8 @@ module "restricted_shared_vpc" {
   secondary_ranges = {
     "sb-${var.environment_code}-shared-restricted-${var.default_region1}" = var.restricted_subnet_secondary_ranges[var.default_region1]
   }
-  allow_all_ingress_ranges = local.enable_transitivity ? local.restricted_hub_subnet_ranges : null
-  allow_all_egress_ranges  = local.enable_transitivity ? local.restricted_subnet_aggregates : null
+  allow_all_ingress_ranges = null
+  allow_all_egress_ranges  = null
 }
 
 /******************************************
@@ -115,7 +113,7 @@ module "base_shared_vpc" {
   default_region2      = var.default_region2
   domain               = var.domain
   bgp_asn_subnet       = local.bgp_asn_number
-  mode                 = local.mode
+  mode                 = null
 
   subnets = [
     {
@@ -138,6 +136,6 @@ module "base_shared_vpc" {
   secondary_ranges = {
     "sb-${var.environment_code}-shared-base-${var.default_region1}" = var.base_subnet_secondary_ranges[var.default_region1]
   }
-  allow_all_ingress_ranges = local.enable_transitivity ? local.base_hub_subnet_ranges : null
-  allow_all_egress_ranges  = local.enable_transitivity ? local.base_subnet_aggregates : null
+  allow_all_ingress_ranges = null
+  allow_all_egress_ranges  = null
 }

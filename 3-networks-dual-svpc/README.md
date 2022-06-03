@@ -29,12 +29,15 @@ Google Cloud organization that you've created.</td>
 <td><a>3-networks-dual-svpc (this file)</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
-Interconnect, and baseline firewall rules for each environment. Also sets
+Interconnect, and baseline firewall rules for each environment. It also sets
 up the global DNS hub.</td>
 </tr>
 <tr>
 <td><a href="../3-networks-hub-and-spoke">3-networks-hub-and-spoke</a></td>
-<td>Sets up base and restricted shared VPCs with all the default configuration found on step 3-networks-dual-svpc, but here the architecture will be based on the Hub and Spoke network model.</td>
+<td>Sets up base and restricted shared VPCs with all the default configuration 
+found on step 3-networks-dual-svpc, but here the architecture will be based on the 
+Hub and Spoke network model.</td>
+</tr>
 </tr>
 <tr>
 <td><a href="../4-projects">4-projects</a></td>
@@ -81,6 +84,11 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 **Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
+
+### Networking Architecture
+
+This step makes use of the **Hub-and-Spoke** architecture, and more details can be found described at the **Networking** section of the [Google cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking). To see the version that makes use the Dual Shared VPC mode, check the step [3-networks-dual-svpc](../3-networks-dual-svpc).
+
 
 ### Using Dedicated Interconnect
 
@@ -193,13 +201,13 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 
 1. Clone the repo you created manually in 0-bootstrap.
    ```
-   git clone <YOUR_NEW_REPO-3-networks-dual-svpc>
+   git clone <YOUR_NEW_REPO-3-networks>
    ```
 1. Navigate into the repo and change to a non-production branch. All subsequent
    steps assume you are running them from the gcp-environments directory. If
    you run them from another directory, adjust your copy paths accordingly.
    ```
-   cd YOUR_NEW_REPO_CLONE-3-networks-dual-svpc
+   cd YOUR_NEW_REPO_CLONE-3-networks
    git checkout -b plan
    ```
 1. Copy contents of foundation to new repo.

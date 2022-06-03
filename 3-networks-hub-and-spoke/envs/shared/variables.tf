@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -179,6 +179,12 @@ variable "enable_partner_interconnect" {
 
 variable "preactivate_partner_interconnect" {
   description = "Preactivate Partner Interconnect VLAN attachment in the environment."
+  type        = bool
+  default     = false
+}
+
+variable "enable_hub_and_spoke_transitivity" {
+  description = "Enable transitivity via gateway VMs on Hub-and-Spoke architecture."
   type        = bool
   default     = false
 }

@@ -1,4 +1,4 @@
-# 3-networks/shared
+# 3-networks-hub-and-spoke/shared
 
 The purpose of this step is to set up the global [DNS Hub](https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones) that will be used by all environments.
 

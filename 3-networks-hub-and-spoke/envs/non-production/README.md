@@ -1,13 +1,13 @@
-# 3-networks/non-production
+# 3-networks-hub-and-spoke/non-production
 
-The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated Interconnect, onprem VPN and baseline firewall rules for environment non-production.
+The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated Interconnect, onprem VPN and baseline firewall rules for environment non-production. This version of the Network step will makes usage of the Hub and Spoke network architecture. 
 
 ## Prerequisites
 
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. 2-environments/envs/non-production executed successfully.
-1. 3-networks/envs/shared executed successfully.
+1. 3-networks-hub-and-spoke/envs/shared executed successfully.
 1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

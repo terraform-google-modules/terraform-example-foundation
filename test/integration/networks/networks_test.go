@@ -104,8 +104,8 @@ func TestNetworks(t *testing.T) {
 	}
 
 	googleapisCIDR := map[string]string{
-		"base":       "199.36.153.8/30",
-		"restricted": "199.36.153.4/30",
+		"base":       "10.3.0.5",
+		"restricted": "10.3.0.5",
 	}
 
 	for _, envName := range []string{

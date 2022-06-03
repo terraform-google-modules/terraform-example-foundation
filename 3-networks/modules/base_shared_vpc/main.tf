@@ -18,7 +18,7 @@ locals {
   mode                    = var.mode == null ? "" : var.mode == "hub" ? "-hub" : "-spoke"
   vpc_name                = "${var.environment_code}-shared-base${local.mode}"
   network_name            = "vpc-${local.vpc_name}"
-  private_googleapis_cidr = "199.36.153.8/30"
+  private_googleapis_cidr = module.private_service_connect.private_service_connect_ip
 }
 
 /******************************************
@@ -52,13 +52,6 @@ module "main" {
   secondary_ranges = var.secondary_ranges
 
   routes = concat(
-    [{
-      name              = "rt-${local.vpc_name}-1000-all-default-private-api"
-      description       = "Route through IGW to allow private google api access."
-      destination_range = "199.36.153.8/30"
-      next_hop_internet = "true"
-      priority          = "1000"
-    }],
     var.nat_enabled ?
     [
       {

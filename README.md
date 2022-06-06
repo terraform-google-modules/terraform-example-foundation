@@ -158,7 +158,7 @@ Usage instructions are available for the networks step in the [README](./3-netwo
 
 ### [3. networks-hub-and-spoke](./3-networks-hub-and-spoke/)
 
-This step configures the same network resources that the step 3-networks-dual-svpc does, but this time it makes usage of the architeture based on the Hub and Spoke reference network model. 
+This step configures the same network resources that the step 3-networks-dual-svpc does, but this time it makes usage of the architeture based on the Hub and Spoke reference network model.
 
 Usage instructions are available for the networks step in the [README](./3-networks-hub-and-spoke/README.md).
 

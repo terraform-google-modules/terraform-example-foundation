@@ -24,6 +24,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | bgp\_asn\_dns | BGP Autonomous System Number (ASN). | `number` | `64667` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
 | domain | The DNS name of forwarding managed zone, for instance 'example.com'. Must end with a period. | `string` | n/a | yes |
+| enable\_hub\_and\_spoke\_transitivity | Enable transitivity via gateway VMs on Hub-and-Spoke architecture. | `bool` | `false` | no |
 | enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | firewall\_policies\_enable\_logging | Toggle hierarchical firewall logging. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |

@@ -30,7 +30,8 @@ function envs(){
 
 function networks(){
 
-    if [ $TF_VAR_example_foundations_mode == "HubAndSpoke" ]; then
+    # shellcheck disable=SC2154
+    if [ "$TF_VAR_example_foundations_mode" == "HubAndSpoke" ]; then
         network_dir="3-networks-hub-and-spoke"
     else
         network_dir="3-networks-dual-svpc"
@@ -54,7 +55,7 @@ function networks(){
 
 function shared(){
 
-    if [ $TF_VAR_example_foundations_mode == "HubAndSpoke" ]; then
+    if [ "$TF_VAR_example_foundations_mode" == "HubAndSpoke" ]; then
         network_dir="3-networks-hub-and-spoke"
     else
         network_dir="3-networks-dual-svpc"

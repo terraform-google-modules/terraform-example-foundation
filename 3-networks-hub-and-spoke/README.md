@@ -34,8 +34,8 @@ up the global DNS hub.</td>
 </tr>
 <tr>
 <td><a>3-networks-hub-and-spoke (this file)</a></td>
-<td>Sets up base and restricted shared VPCs with all the default configuration 
-found on step 3-networks-dual-svpc, but here the architecture will be based on the 
+<td>Sets up base and restricted shared VPCs with all the default configuration
+found on step 3-networks-dual-svpc, but here the architecture will be based on the
 Hub and Spoke network model.</td>
 </tr>
 </tr>

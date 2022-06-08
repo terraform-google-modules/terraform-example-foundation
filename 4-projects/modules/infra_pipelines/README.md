@@ -12,6 +12,7 @@
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
 | folders\_to\_grant\_browser\_role | List of folders to grant browser role to the cloud build service account. Used by terraform validator to able to load IAM policies. | `list(string)` | `[]` | no |
 | gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
+| gcloud\_version | Default gcloud image version. | `string` | `"388.0.0-slim"` | no |
 | impersonate\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | terraform\_apply\_branches | List of git branches configured to run terraform apply Cloud Build trigger. All other branches will run plan by default. | `list(string)` | <pre>[<br>  "development",<br>  "non-production",<br>  "production"<br>]</pre> | no |

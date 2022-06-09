@@ -83,7 +83,7 @@ module "main" {
 
 module "peering" {
   source                    = "terraform-google-modules/network/google//modules/network-peering"
-  version                   = "~> 2.0"
+  version                   = "~> 5.1"
   count                     = var.mode == "spoke" ? 1 : 0
   prefix                    = "np"
   local_network             = module.main.network_self_link

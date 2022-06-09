@@ -53,7 +53,7 @@ data "google_projects" "dns_hub" {
 
 module "dns_hub_vpc" {
   source                                 = "terraform-google-modules/network/google"
-  version                                = "~> 2.0"
+  version                                = "~> 5.1"
   project_id                             = local.dns_hub_project_id
   network_name                           = "vpc-c-dns-hub"
   shared_vpc_host                        = "false"

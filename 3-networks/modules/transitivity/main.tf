@@ -71,6 +71,7 @@ module "migs" {
       min_ready_sec                = 180
       minimal_action               = "RESTART"
       type                         = "OPPORTUNISTIC"
+      replacement_method           = "SUBSTITUTE"
     }
   ]
 }

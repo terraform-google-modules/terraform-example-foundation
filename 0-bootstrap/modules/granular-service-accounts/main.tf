@@ -20,10 +20,10 @@ locals {
   parent_id   = var.parent_folder == "" ? var.org_id : var.parent_folder
 
   granular_sa = {
-    "org"  = "CFT Organization Step Terraform Account",
-    "env"  = "CFT Environment Step Terraform Account",
-    "net"  = "CFT Network Step Terraform Account",
-    "proj" = "CFT Projects Step Terraform Account",
+    "org"  = "Foundation Organization SA. Managed by Terraform.",
+    "env"  = "Foundation Environment SA. Managed by Terraform.",
+    "net"  = "Foundation Network SA. Managed by Terraform.",
+    "proj" = "Foundation Projects SA. Managed by Terraform.",
   }
 
   granular_sa_org_level_roles = {

@@ -15,6 +15,10 @@
  */
 
 locals {
+
+  parent_type = var.parent_folder == "" ? "organization" : "folder"
+  parent_id   = var.parent_folder == "" ? var.org_id : var.parent_folder
+
   granular_sa = {
     "org"  = "CFT Organization Step Terraform Account",
     "env"  = "CFT Environment Step Terraform Account",
@@ -73,29 +77,24 @@ resource "google_service_account" "terraform-env-sa" {
   display_name = each.value
 }
 
+module "org_iam_member" {
+  source   = "../parent-iam-member"
+  for_each = local.granular_sa_org_level_roles
 
-resource "google_organization_iam_member" "org" {
-  for_each = toset(local.granular_sa_org_level_roles["org"])
-
-  org_id = var.org_id
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["org"].email}"
+  member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  parent_type = "organization"
+  parent_id   = var.org_id
+  roles       = each.value
 }
 
-resource "google_organization_iam_member" "net" {
-  for_each = toset(local.granular_sa_org_level_roles["net"])
+module "parent_iam_member" {
+  source   = "../parent-iam-member"
+  for_each = local.granular_sa_parent_level_roles
 
-  org_id = var.org_id
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["net"].email}"
-}
-
-resource "google_organization_iam_member" "proj" {
-  for_each = toset(local.granular_sa_org_level_roles["proj"])
-
-  org_id = var.org_id
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["proj"].email}"
+  member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  parent_type = local.parent_type
+  parent_id   = local.parent_id
+  roles       = each.value
 }
 
 resource "google_billing_account_iam_member" "tf_billing_user" {
@@ -132,68 +131,4 @@ resource "google_service_account_iam_member" "cloudbuild_terraform_sa_impersonat
   depends_on = [
     google_service_account.terraform-env-sa
   ]
-}
-
-resource "google_organization_iam_member" "org_parent_org_step" {
-  for_each = toset(var.parent_folder == "" ? local.granular_sa_parent_level_roles["org"] : [])
-
-  org_id = var.org_id
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["org"].email}"
-}
-
-resource "google_folder_iam_member" "folder_parent_org_step" {
-  for_each = toset(var.parent_folder != "" ? local.granular_sa_parent_level_roles["org"] : [])
-
-  folder = var.parent_folder
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["org"].email}"
-}
-
-resource "google_organization_iam_member" "org_parent_env_step" {
-  for_each = toset(var.parent_folder == "" ? local.granular_sa_parent_level_roles["env"] : [])
-
-  org_id = var.org_id
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["env"].email}"
-}
-
-resource "google_folder_iam_member" "folder_parent_env_step" {
-  for_each = toset(var.parent_folder != "" ? local.granular_sa_parent_level_roles["env"] : [])
-
-  folder = var.parent_folder
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["env"].email}"
-}
-
-resource "google_organization_iam_member" "org_parent_net_step" {
-  for_each = toset(var.parent_folder == "" ? local.granular_sa_parent_level_roles["net"] : [])
-
-  org_id = var.org_id
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["net"].email}"
-}
-
-resource "google_folder_iam_member" "folder_parent_net_step" {
-  for_each = toset(var.parent_folder != "" ? local.granular_sa_parent_level_roles["net"] : [])
-
-  folder = var.parent_folder
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["net"].email}"
-}
-
-resource "google_organization_iam_member" "org_parent_proj_step" {
-  for_each = toset(var.parent_folder == "" ? local.granular_sa_parent_level_roles["proj"] : [])
-
-  org_id = var.org_id
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["proj"].email}"
-}
-
-resource "google_folder_iam_member" "folder_parent_proj_step" {
-  for_each = toset(var.parent_folder != "" ? local.granular_sa_parent_level_roles["proj"] : [])
-
-  folder = var.parent_folder
-  role   = each.key
-  member = "serviceAccount:${google_service_account.terraform-env-sa["proj"].email}"
 }

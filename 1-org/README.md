@@ -188,7 +188,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
 **Troubleshooting:**
 If you received a `PERMISSION_DENIED` error running the `gcloud access-context-manager` or the `gcloud scc notifications` commands you can append
 ```
---impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com
+--impersonate-service-account=terraform-org-sa@<SEED_PROJECT_ID>.iam.gserviceaccount.com
 ```
 to run the command as the Terraform service account.
 

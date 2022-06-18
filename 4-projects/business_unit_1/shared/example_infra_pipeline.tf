@@ -32,7 +32,6 @@ module "app_infra_cloudbuild_project" {
     "artifactregistry.googleapis.com",
     "cloudresourcemanager.googleapis.com"
   ]
-
   # Metadata
   project_suffix    = "infra-pipeline"
   application_name  = "app-infra-pipelines"

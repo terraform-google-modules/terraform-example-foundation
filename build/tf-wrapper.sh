@@ -141,6 +141,9 @@ tf_validate() {
         # Check if $policy_file_path is empty so we clone the policies repo only once
         if [ -z "$(ls -A "${policy_file_path}" 2> /dev/null)" ]; then
           gcloud source repos clone gcp-policies "${policy_file_path}" --project="${project_id}" || exit 34
+          pushd .
+          cd "${policy_file_path}" && git checkout main || exit 35
+          popd
         fi
       fi
       terraform-validator validate "${tf_env}.json" --policy-path="${policy_file_path}" --project="${project_id}" || exit 33

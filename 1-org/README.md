@@ -109,6 +109,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    adjust your copy paths accordingly.
    ```
    cd gcp-policies
+   git checkout -b main
    ```
 1. Copy contents of policy-library to new repo.
    ```
@@ -120,9 +121,9 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    git add .
    git commit -m 'Your message'
    ```
-1. Push your master branch to the new repo.
+1. Push your main branch to the new repo.
    ```
-   git push --set-upstream origin master
+   git push --set-upstream origin main
    ```
 1. Navigate out of the repo.
    ```

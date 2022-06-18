@@ -71,7 +71,7 @@ sed -i $SSHD_CONFIG_DIR/sshd_config \
         -e 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/' \
         -e 's/#AuthorizedKeysFile.*/AuthorizedKeysFile    \/etc\/ssh\/authorized_keys/'
 
-# The Jenkins Agent needs the Master public key. This can be in your github repo
+# The Jenkins Agent needs the Controller public key. This can be in your github repo
 # shellcheck disable=SC2154
 cat > $SSHD_CONFIG_DIR/authorized_keys <<-EOT
 ${tpl_SSH_PUB_KEY}

@@ -244,7 +244,7 @@ to run the command as the Terraform service account.
    git commit -m 'Your message'
    ```
 1. Push your plan branch.
-    - Assuming you configured an automatic trigger in your Jenkins Master (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
+    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
    ```
    git push --set-upstream origin plan
    ```
@@ -254,7 +254,7 @@ to run the command as the Terraform service account.
    git checkout -b production
    git push origin production
    ```
-1. Review the apply output in your Master's web UI. (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+1. Review the apply output in your Master's web UI. (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Controller UI).
 
 ### Running Terraform locally
 

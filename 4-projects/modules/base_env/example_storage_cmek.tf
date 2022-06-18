@@ -59,7 +59,7 @@ module "kms" {
 resource "random_string" "bucket_name" {
   length  = 5
   upper   = false
-  number  = true
+  numeric = true
   lower   = true
   special = false
 }

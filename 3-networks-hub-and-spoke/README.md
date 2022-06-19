@@ -89,6 +89,8 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 This step makes use of the **Dual Shared VPC** architecture mode, and more details can be found described at the **Networking** section of the [Google cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking). To see the version that makes use the Hub and Spoke mode, check the step [3-networks-hub-and-spoke](../3-networks-hub-and-spoke).
 
+To enabled [Hub-and-spoke transitivity](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke_transitivity) set the variable `enable_hub_and_spoke_transitivity` to `true`.
+
 ### Using Dedicated Interconnect
 
 If you provisioned the prerequisites listed in the [Dedicated Interconnect README](./modules/dedicated_interconnect/README.md), follow these steps to enable Dedicated Interconnect to access on-premises resources.

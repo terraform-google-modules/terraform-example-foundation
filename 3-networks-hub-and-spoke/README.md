@@ -87,9 +87,10 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Networking Architecture
 
-This step makes use of the **Dual Shared VPC** architecture mode, and more details can be found described at the **Networking** section of the [Google cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking). To see the version that makes use the Hub and Spoke mode, check the step [3-networks-hub-and-spoke](../3-networks-hub-and-spoke).
-
-To enabled [Hub-and-spoke transitivity](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke_transitivity) set the variable `enable_hub_and_spoke_transitivity` to `true`.
+This step uses the **Hub and Spoke** architecture  mode.
+More details can be found at the **Networking** section of the [Google cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke).
+To enabled **Hub and Spoke** [transitivity](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke_transitivity) set the variable `enable_hub_and_spoke_transitivity ` to `true`.
+To see the version that makes use of the **Dual Shared VPC** architecture mode check the step [3-networks-dual-svpc](../3-networks-dual-svpc).
 
 ### Using Dedicated Interconnect
 

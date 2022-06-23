@@ -34,7 +34,7 @@ data "google_projects" "interconnect_project" {
 
 module "interconnect_attachment1_region1" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 1.3.0"
+  version = "~> 2.0.0"
 
   name    = "vl-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-${local.suffix1}"
   project = local.interconnect_project_id

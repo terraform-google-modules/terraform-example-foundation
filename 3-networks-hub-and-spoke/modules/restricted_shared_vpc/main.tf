@@ -81,7 +81,7 @@ module "main" {
 
 module "peering" {
   source                    = "terraform-google-modules/network/google//modules/network-peering"
-  version                   = "~> 2.0"
+  version                   = "~> 5.1"
   prefix                    = "np"
   local_network             = module.main.network_self_link
   peer_network              = data.google_compute_network.vpc_restricted_net_hub[0].self_link

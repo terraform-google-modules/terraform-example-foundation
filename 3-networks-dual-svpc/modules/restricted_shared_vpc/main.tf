@@ -15,25 +15,9 @@
  */
 
 locals {
-  mode                       = var.mode == null ? "" : var.mode == "hub" ? "-hub" : "-spoke"
-  vpc_name                   = "${var.environment_code}-shared-restricted${local.mode}"
+  vpc_name                   = "${var.environment_code}-shared-restricted"
   network_name               = "vpc-${local.vpc_name}"
   restricted_googleapis_cidr = module.private_service_connect.private_service_connect_ip
-}
-
-/******************************************
-  Restricted Network Hub
-*****************************************/
-
-data "google_projects" "restricted_net_hub" {
-  count  = var.mode == "spoke" ? 1 : 0
-  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-restricted-net-hub lifecycleState=ACTIVE"
-}
-
-data "google_compute_network" "vpc_restricted_net_hub" {
-  count   = var.mode == "spoke" ? 1 : 0
-  name    = "vpc-c-shared-restricted-hub"
-  project = data.google_projects.restricted_net_hub[0].projects[0].project_id
 }
 
 /******************************************
@@ -79,20 +63,6 @@ module "main" {
 }
 
 /***************************************************************
-  VPC Peering Configuration
- **************************************************************/
-
-module "peering" {
-  source                    = "terraform-google-modules/network/google//modules/network-peering"
-  version                   = "~> 2.0"
-  count                     = var.mode == "spoke" ? 1 : 0
-  prefix                    = "np"
-  local_network             = module.main.network_self_link
-  peer_network              = data.google_compute_network.vpc_restricted_net_hub[0].self_link
-  export_peer_custom_routes = true
-}
-
-/***************************************************************
   Configure Service Networking for Cloud SQL & future services.
  **************************************************************/
 
@@ -126,7 +96,6 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 1.3.0"
-  count   = var.mode != "spoke" ? 1 : 0
   name    = "cr-${local.vpc_name}-${var.default_region1}-cr5"
   project = var.project_id
   network = module.main.network_name
@@ -141,7 +110,6 @@ module "region1_router1" {
 module "region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
-  count   = var.mode != "spoke" ? 1 : 0
   name    = "cr-${local.vpc_name}-${var.default_region1}-cr6"
   project = var.project_id
   network = module.main.network_name
@@ -156,7 +124,6 @@ module "region1_router2" {
 module "region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
-  count   = var.mode != "spoke" ? 1 : 0
   name    = "cr-${local.vpc_name}-${var.default_region2}-cr7"
   project = var.project_id
   network = module.main.network_name
@@ -171,7 +138,6 @@ module "region2_router1" {
 module "region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
-  count   = var.mode != "spoke" ? 1 : 0
   name    = "cr-${local.vpc_name}-${var.default_region2}-cr8"
   project = var.project_id
   network = module.main.network_name

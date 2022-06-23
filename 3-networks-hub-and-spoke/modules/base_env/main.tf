@@ -19,7 +19,6 @@ locals {
   restricted_project_number = data.google_project.restricted_host_project.number
   base_project_id           = data.google_projects.base_host_project.projects[0].project_id
   parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  mode                      = "spoke"
   bgp_asn_number            = var.enable_partner_interconnect ? "16550" : "64514"
   enable_transitivity       = true
   /*
@@ -73,7 +72,6 @@ module "restricted_shared_vpc" {
   default_region1                  = var.default_region1
   default_region2                  = var.default_region2
   domain                           = var.domain
-  mode                             = local.mode
 
   subnets = [
     {
@@ -115,7 +113,6 @@ module "base_shared_vpc" {
   default_region2      = var.default_region2
   domain               = var.domain
   bgp_asn_subnet       = local.bgp_asn_number
-  mode                 = local.mode
 
   subnets = [
     {

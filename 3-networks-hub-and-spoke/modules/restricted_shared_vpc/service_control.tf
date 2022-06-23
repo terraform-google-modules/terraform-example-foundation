@@ -22,7 +22,6 @@ locals {
 }
 
 data "google_project" "restricted_net_hub" {
-  count      = var.mode == "spoke" ? 1 : 0
   project_id = data.google_projects.restricted_net_hub[0].projects[0].project_id
 }
 
@@ -62,7 +61,6 @@ resource "google_access_context_manager_service_perimeter" "regular_service_peri
 }
 
 resource "google_access_context_manager_service_perimeter" "bridge_to_network_hub_perimeter" {
-  count          = var.mode == "spoke" ? 1 : 0
   perimeter_type = "PERIMETER_TYPE_BRIDGE"
   parent         = "accessPolicies/${var.access_context_manager_policy_id}"
   name           = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${local.bridge_name}"

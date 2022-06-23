@@ -15,9 +15,9 @@
  */
 
 locals {
-  base_net_hub_project_id           = try(data.google_projects.base_net_hub.projects[0].project_id, null)
-  restricted_net_hub_project_id     = try(data.google_projects.restricted_net_hub.projects[0].project_id, null)
-  restricted_net_hub_project_number = try(data.google_projects.restricted_net_hub.projects[0].number, null)
+  base_net_hub_project_id           = data.google_projects.base_net_hub.projects[0].project_id
+  restricted_net_hub_project_id     = data.google_projects.restricted_net_hub.projects[0].project_id
+  restricted_net_hub_project_number = data.google_projects.restricted_net_hub.projects[0].number
   /*
    * Base network ranges
    */

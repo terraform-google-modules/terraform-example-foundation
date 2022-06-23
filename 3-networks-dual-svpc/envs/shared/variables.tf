@@ -69,12 +69,6 @@ variable "folder_prefix" {
   default     = "fldr"
 }
 
-variable "base_hub_windows_activation_enabled" {
-  type        = bool
-  description = "Enable Windows license activation for Windows workloads in Base Hub"
-  default     = false
-}
-
 variable "restricted_hub_windows_activation_enabled" {
   type        = bool
   description = "Enable Windows license activation for Windows workloads in Restricted Hub."

@@ -34,12 +34,6 @@ variable "project_number" {
   description = "Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter."
 }
 
-variable "mode" {
-  type        = string
-  description = "Network deployment mode, should be set to `hub` or `spoke` when `enable_hub_and_spoke` architecture chosen, keep as `null` otherwise."
-  default     = null
-}
-
 variable "environment_code" {
   type        = string
   description = "A short form of the folder level resources (environment) within the Google Cloud organization."

@@ -30,7 +30,7 @@ data "google_projects" "base_net_hub" {
 
 data "google_compute_network" "vpc_base_net_hub" {
   name    = "vpc-c-shared-base-hub"
-  project = data.google_projects.base_net_hub[0].projects.project_id
+  project = data.google_projects.base_net_hub.projects[0].project_id
 }
 
 /******************************************
@@ -83,7 +83,7 @@ module "peering" {
   version                   = "~> 5.1"
   prefix                    = "np"
   local_network             = module.main.network_self_link
-  peer_network              = data.google_compute_network.vpc_base_net_hub[0].self_link
+  peer_network              = data.google_compute_network.vpc_base_net_hub.self_link
   export_peer_custom_routes = true
 }
 

@@ -76,7 +76,6 @@ resource "google_compute_global_address" "private_service_access_address" {
   prefix_length = element(split("/", var.private_service_cidr), 1)
   network       = module.main.network_self_link
 
-  depends_on = [module.peering]
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
@@ -85,7 +84,6 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_service_access_address[0].name]
 
-  depends_on = [module.peering]
 }
 
 /************************************

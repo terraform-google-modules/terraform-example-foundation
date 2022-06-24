@@ -22,7 +22,7 @@ locals {
 }
 
 data "google_project" "restricted_net_hub" {
-  project_id = data.google_projects.restricted_net_hub[0].projects[0].project_id
+  project_id = data.google_projects.restricted_net_hub.projects[0].project_id
 }
 
 resource "random_id" "random_access_level_suffix" {
@@ -67,7 +67,7 @@ resource "google_access_context_manager_service_perimeter" "bridge_to_network_hu
   title          = local.bridge_name
 
   status {
-    resources = formatlist("projects/%s", [var.project_number, data.google_project.restricted_net_hub[0].number])
+    resources = formatlist("projects/%s", [var.project_number, data.google_project.restricted_net_hub.number])
   }
 
   depends_on = [google_access_context_manager_service_perimeter.regular_service_perimeter]

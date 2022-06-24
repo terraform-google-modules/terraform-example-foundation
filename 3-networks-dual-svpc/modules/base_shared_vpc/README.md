@@ -14,7 +14,6 @@
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization. | `string` | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
-| mode | Network deployment mode, should be set to `hub` or `spoke` when `enable_hub_and_spoke` architecture chosen, keep as `null` otherwise. | `string` | `null` | no |
 | nat\_bgp\_asn | BGP ASN for first NAT cloud routes. | `number` | `64514` | no |
 | nat\_enabled | Toggle creation of NAT cloud router. | `bool` | `false` | no |
 | nat\_num\_addresses | Number of external IPs to reserve for Cloud NAT. | `number` | `2` | no |

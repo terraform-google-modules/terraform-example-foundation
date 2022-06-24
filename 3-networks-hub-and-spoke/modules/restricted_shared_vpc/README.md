@@ -16,7 +16,6 @@
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | members | An allowed list of members (users, service accounts). The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid} | `list(string)` | n/a | yes |
-| mode | Network deployment mode, should be set to `hub` or `spoke` when `enable_hub_and_spoke` architecture chosen, keep as `null` otherwise. | `string` | `null` | no |
 | nat\_bgp\_asn | BGP ASN for NAT cloud routes. If NAT is enabled this variable value must be a value in ranges [64512..65534] or [4200000000..4294967294]. | `number` | `64512` | no |
 | nat\_enabled | Toggle creation of NAT cloud router. | `bool` | `false` | no |
 | nat\_num\_addresses\_region1 | Number of external IPs to reserve for region 1 Cloud NAT. | `number` | `2` | no |
@@ -38,10 +37,6 @@
 | access\_level\_name | Access context manager access level name |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
-| region1\_router1 | Router 1 for Region 1 |
-| region1\_router2 | Router 2 for Region 1 |
-| region2\_router1 | Router 1 for Region 2 |
-| region2\_router2 | Router 2 for Region 2 |
 | service\_perimeter\_name | Access context manager service perimeter name |
 | subnets\_ips | The IPs and CIDRs of the subnets being created |
 | subnets\_names | The names of the subnets being created |

@@ -20,7 +20,6 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | base\_hub\_nat\_enabled | Toggle creation of NAT cloud router in Base Hub. | `bool` | `false` | no |
 | base\_hub\_nat\_num\_addresses\_region1 | Number of external IPs to reserve for first Cloud NAT in Base Hub. | `number` | `2` | no |
 | base\_hub\_nat\_num\_addresses\_region2 | Number of external IPs to reserve for second Cloud NAT in Base Hub. | `number` | `2` | no |
-| base\_hub\_windows\_activation\_enabled | Enable Windows license activation for Windows workloads in Base Hub | `bool` | `false` | no |
 | bgp\_asn\_dns | BGP Autonomous System Number (ASN). | `number` | `64667` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
 | domain | The DNS name of forwarding managed zone, for instance 'example.com'. Must end with a period. | `string` | n/a | yes |

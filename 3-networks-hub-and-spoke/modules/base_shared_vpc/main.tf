@@ -30,7 +30,7 @@ data "google_projects" "base_net_hub" {
 
 data "google_compute_network" "vpc_base_net_hub" {
   name    = "vpc-c-shared-base-hub"
-  project = data.google_projects.base_net_hub[0].projects[0].project_id
+  project = data.google_projects.base_net_hub[0].projects.project_id
 }
 
 /******************************************

@@ -15,7 +15,8 @@
  */
 
 locals {
-  vpc_name                = "${var.environment_code}-shared-base-spoke"
+  mode                    = var.mode == "hub" ? "-hub" : "-spoke"
+  vpc_name                = "${var.environment_code}-shared-base${local.mode}"
   network_name            = "vpc-${local.vpc_name}"
   private_googleapis_cidr = module.private_service_connect.private_service_connect_ip
 }
@@ -25,12 +26,14 @@ locals {
 *****************************************/
 
 data "google_projects" "base_net_hub" {
+  count  = var.mode == "spoke" ? 1 : 0
   filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-base-net-hub lifecycleState=ACTIVE"
 }
 
 data "google_compute_network" "vpc_base_net_hub" {
+  count   = var.mode == "spoke" ? 1 : 0
   name    = "vpc-c-shared-base-hub"
-  project = data.google_projects.base_net_hub.projects[0].project_id
+  project = data.google_projects.base_net_hub[0].projects[0].project_id
 }
 
 /******************************************
@@ -81,9 +84,10 @@ module "main" {
 module "peering" {
   source                    = "terraform-google-modules/network/google//modules/network-peering"
   version                   = "~> 5.1"
+  count                     = var.mode == "spoke" ? 1 : 0
   prefix                    = "np"
   local_network             = module.main.network_self_link
-  peer_network              = data.google_compute_network.vpc_base_net_hub.self_link
+  peer_network              = data.google_compute_network.vpc_base_net_hub[0].self_link
   export_peer_custom_routes = true
 }
 
@@ -111,4 +115,69 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   reserved_peering_ranges = [google_compute_global_address.private_service_access_address[0].name]
 
   depends_on = [module.peering]
+}
+
+/************************************
+  Router to advertise shared VPC
+  subnetworks and Google Private API
+************************************/
+
+module "region1_router1" {
+  source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 2.0.0"
+  count   = var.mode != "spoke" ? 1 : 0
+  name    = "cr-${local.vpc_name}-${var.default_region1}-cr1"
+  project = var.project_id
+  network = module.main.network_name
+  region  = var.default_region1
+  bgp = {
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+  }
+}
+
+module "region1_router2" {
+  source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 0.4.0"
+  count   = var.mode != "spoke" ? 1 : 0
+  name    = "cr-${local.vpc_name}-${var.default_region1}-cr2"
+  project = var.project_id
+  network = module.main.network_name
+  region  = var.default_region1
+  bgp = {
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+  }
+}
+
+module "region2_router1" {
+  source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 0.4.0"
+  count   = var.mode != "spoke" ? 1 : 0
+  name    = "cr-${local.vpc_name}-${var.default_region2}-cr3"
+  project = var.project_id
+  network = module.main.network_name
+  region  = var.default_region2
+  bgp = {
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+  }
+}
+
+module "region2_router2" {
+  source  = "terraform-google-modules/cloud-router/google"
+  version = "~> 0.4.0"
+  count   = var.mode != "spoke" ? 1 : 0
+  name    = "cr-${local.vpc_name}-${var.default_region2}-cr4"
+  project = var.project_id
+  network = module.main.network_name
+  region  = var.default_region2
+  bgp = {
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+  }
 }

@@ -72,6 +72,7 @@ module "restricted_shared_vpc" {
   default_region1                  = var.default_region1
   default_region2                  = var.default_region2
   domain                           = var.domain
+  mode                             = "spoke"
 
   subnets = [
     {
@@ -113,6 +114,7 @@ module "base_shared_vpc" {
   default_region2      = var.default_region2
   domain               = var.domain
   bgp_asn_subnet       = local.bgp_asn_number
+  mode                 = "spoke"
 
   subnets = [
     {

@@ -15,9 +15,9 @@
  */
 
 locals {
-  base_net_hub_project_id           = data.google_projects.base_net_hub.projects[0].project_id
-  restricted_net_hub_project_id     = data.google_projects.restricted_net_hub.projects[0].project_id
-  restricted_net_hub_project_number = data.google_projects.restricted_net_hub.projects[0].number
+  base_net_hub_project_id           = try(data.google_projects.base_net_hub.projects[0].project_id, null)
+  restricted_net_hub_project_id     = try(data.google_projects.restricted_net_hub.projects[0].project_id, null)
+  restricted_net_hub_project_number = try(data.google_projects.restricted_net_hub.projects[0].number, null)
   /*
    * Base network ranges
    */
@@ -73,6 +73,7 @@ module "base_shared_vpc" {
   nat_num_addresses_region2     = var.base_hub_nat_num_addresses_region2
   windows_activation_enabled    = var.base_hub_windows_activation_enabled
   folder_prefix                 = var.folder_prefix
+  mode                          = "hub"
 
   subnets = [
     {
@@ -124,7 +125,8 @@ module "restricted_shared_vpc" {
   nat_num_addresses_region2        = var.restricted_hub_nat_num_addresses_region2
   folder_prefix                    = var.folder_prefix
   windows_activation_enabled       = var.restricted_hub_windows_activation_enabled
-
+  mode                             = "hub"
+  
   subnets = [
     {
       subnet_name           = "sb-c-shared-restricted-hub-${local.default_region1}"

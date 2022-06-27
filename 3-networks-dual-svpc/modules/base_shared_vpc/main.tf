@@ -15,7 +15,7 @@
  */
 
 locals {
-  vpc_name                = "${var.environment_code}-shared-base$"
+  vpc_name                = "${var.environment_code}-shared-base"
   network_name            = "vpc-${local.vpc_name}"
   private_googleapis_cidr = module.private_service_connect.private_service_connect_ip
 }

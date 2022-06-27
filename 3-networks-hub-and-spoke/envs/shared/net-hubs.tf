@@ -126,7 +126,7 @@ module "restricted_shared_vpc" {
   folder_prefix                    = var.folder_prefix
   windows_activation_enabled       = var.restricted_hub_windows_activation_enabled
   mode                             = "hub"
-  
+
   subnets = [
     {
       subnet_name           = "sb-c-shared-restricted-hub-${local.default_region1}"

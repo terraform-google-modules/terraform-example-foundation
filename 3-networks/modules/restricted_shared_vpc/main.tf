@@ -84,7 +84,7 @@ module "main" {
 
 module "peering" {
   source                    = "terraform-google-modules/network/google//modules/network-peering"
-  version                   = "~> 2.0"
+  version                   = "~> 5.1"
   count                     = var.mode == "spoke" ? 1 : 0
   prefix                    = "np"
   local_network             = module.main.network_self_link
@@ -125,7 +125,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
 module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 1.3.0"
+  version = "~> 2.0.0"
   count   = var.mode != "spoke" ? 1 : 0
   name    = "cr-${local.vpc_name}-${var.default_region1}-cr5"
   project = var.project_id

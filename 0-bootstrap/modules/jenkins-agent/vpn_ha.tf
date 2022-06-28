@@ -16,7 +16,7 @@
 
 module "vpn_ha_agent_to_onprem" {
   source     = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  version    = "~> 1.4.0"
+  version    = "~> 2.3.0"
   project_id = module.cicd_project.project_id
   region     = var.default_region
   network    = google_compute_network.jenkins_agents.name

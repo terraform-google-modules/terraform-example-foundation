@@ -72,6 +72,12 @@ variable "enable_partner_interconnect" {
   default     = false
 }
 
+variable "enable_hub_and_spoke_transitivity" {
+  description = "Enable transitivity via gateway VMs on Hub-and-Spoke architecture."
+  type        = bool
+  default     = false
+}
+
 variable "base_private_service_cidr" {
   type        = string
   description = "CIDR range for private service networking. Used for Cloud SQL and other managed services in the Base Shared Vpc."

@@ -22,8 +22,8 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
-	"github.com/tidwall/gjson"
 	"github.com/stretchr/testify/assert"
+	"github.com/tidwall/gjson"
 )
 
 func getPolicyID(t *testing.T, orgID string) string {
@@ -174,8 +174,16 @@ func TestProjects(t *testing.T) {
 				"access_context_manager_policy_id": policyID,
 			}
 			// networks created to retrieve output from the network step for this environment
+
+			var networkTFDir string
+			if networkMode == "" {
+				networkTFDir = "../../../3-networks-dual-svpc/envs/%s"
+			} else {
+				networkTFDir = "../../../3-networks-hub-and-spoke/envs/%s"
+			}
+
 			networks := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(fmt.Sprintf("../../../3-networks/envs/%s", env[1])),
+				tft.WithTFDir(fmt.Sprintf(networkTFDir, env[1])),
 				tft.WithVars(netVars),
 			)
 			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")

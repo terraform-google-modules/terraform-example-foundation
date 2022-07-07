@@ -22,7 +22,7 @@ It is a best practice to have two separate projects here (`prj-b-seed` and `prj-
   - Custom service account `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance.
       - This service account is granted the access to generate tokens on the Terraform custom service account in the `prj-b-seed` project
 
-- **Note: these instructions do not indicate how to create a Jenkins Master.** To deploy a Jenkins Master, you should follow [Jenkins Architecture](https://www.jenkins.io/doc/book/architecting-for-scale/) recommendations.
+- **Note: these instructions do not indicate how to create a Jenkins Controller.** To deploy a Jenkins Controller, you should follow [Jenkins Architecture](https://www.jenkins.io/doc/book/architecting-for-scale/) recommendations.
 
 **If you don't have a Jenkins implementation and don't want one**, then we recommend you to [use the Cloud Build module](./README.md) instead.
 
@@ -44,7 +44,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
   - Required information:
      - Access to the Jenkins Controller host to run `ssh-keygen` command
      - Access to the Jenkins Controller Web UI
-     - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent) installed in your Jenkins Master
+     - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent) installed in your Jenkins Controller
      - Private IP address for the Jenkins Agent: usually assigned by your network administrator. You will use this IP for the GCE instance that will be created in the `prj-b-cicd` GCP Project in step [II. Create the SEED and CICD projects using Terraform](#II-Create-the-SEED-and-CICD-projects-using-Terraform).
      - Access to create five Git repositories, one for each directory in this [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation) (`0-bootstrap, 1-org, 2-environments, 3-networks, 4-projects`). These are usually private repositories that might be on-prem.
 
@@ -73,8 +73,8 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
       -----END RSA PRIVATE KEY-----
       ```
 
-1. Configure a new SSH Jenkins Agent in the Jenkins Master’s Web UI. You need the following information:
-    - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent/) installed in your Master
+1. Configure a new SSH Jenkins Agent in the Jenkins Controller’s Web UI. You need the following information:
+    - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent/) installed in your Controller
     - SSH private key you just generated in the previous step
     - Passphrase that protects the private key (the one you used in the `-N` option)
     - Jenkins Agent’s private IP address (usually assigned by your Network Administrator. In the provided examples this IP is "172.16.1.6"). This private IP will be reachable through the VPN connection that you will create later.
@@ -164,7 +164,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 Here you will configure a VPN Network tunnel to enable connectivity between the `prj-b-cicd` project and your on-prem environment. Learn more about [a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to).
 - Required information:
     - On-prem VPN public IP Address
-    - Jenkins Master’s network CIDR (the example code uses "10.1.0.0/24")
+    - Jenkins Controller’s network CIDR (the example code uses "10.1.0.0/24")
     - Jenkins Agent network CIDR (the example code uses "172.16.1.0/24")
     - VPN PSK (pre-shared secret key)
 
@@ -177,9 +177,9 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
     1. Make sure your [SSH Agent](https://plugins.jenkins.io/ssh-agent) is online and troubleshoot network connectivity if needed.
     1. Test that your Jenkins Controller can deploy a [pipeline](https://www.jenkins.io/doc/book/pipeline/getting-started/) to the Jenkins Agent located in the `prj-b-cicd` project (you can test this by running with a simple `echo "Hello World"` pipeline build).
 
-### IV. Configure the Git repositories and Multibranch Pipelines in your Jenkins Master
+### IV. Configure the Git repositories and Multibranch Pipelines in your Jenkins Controller
 
-- **Note:** this section is considered out of the scope of this document. Since there are multiple options on how to configure the Git repositories and **Multibranch Pipeline** in your Jenkins Master, here we can only provide some guidance that you should keep in mind while completing this step. Visit the [Jenkins website](http://jenkins.io) for more information, there are plenty of Jenkins Plugins that could help with the task.
+- **Note:** this section is considered out of the scope of this document. Since there are multiple options on how to configure the Git repositories and **Multibranch Pipeline** in your Jenkins Controller, here we can only provide some guidance that you should keep in mind while completing this step. Visit the [Jenkins website](http://jenkins.io) for more information, there are plenty of Jenkins Plugins that could help with the task.
     - You need to configure a **"Multibranch Pipeline"**. Note that the `Jenkinsfile` and `tf-wrapper.sh` files use the `$BRANCH_NAME` environment variable. **the `$BRANCH_NAME` variable is only available in Jenkins' Multibranch Pipelines**.
 
 

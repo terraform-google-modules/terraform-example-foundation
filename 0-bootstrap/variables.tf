@@ -93,7 +93,7 @@ variable "cloud_source_repos" {
 # }
 
 # variable "jenkins_agent_gce_private_ip_address" {
-#  description = "The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Master) and GCP (CICD Project, where the Jenkins Agent is located)."
+#  description = "The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Controller) and GCP (CICD Project, where the Jenkins Agent is located)."
 #  type        = string
 # }
 
@@ -124,12 +124,12 @@ variable "cloud_source_repos" {
 # }
 
 # variable "on_prem_vpn_public_ip_address" {
-#   description = "The public IP Address of the Jenkins Master."
+#   description = "The public IP Address of the Jenkins Controller."
 #   type        = string
 # }
 
 # variable "on_prem_vpn_public_ip_address2" {
-#   description = "The second public IP Address of the Jenkins Master."
+#   description = "The second public IP Address of the Jenkins Controller."
 #   type        = string
 # }
 

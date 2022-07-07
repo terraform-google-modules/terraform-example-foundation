@@ -255,13 +255,13 @@ to run the command as the Terraform service account.
    ```
    git push --set-upstream origin plan
    ```
-1. Review the plan output in your Master's web UI.
+1. Review the plan output in your Controller's web UI.
 1. Merge changes to production branch.
    ```
    git checkout -b production
    git push origin production
    ```
-1. Review the apply output in your Master's web UI. (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Controller UI).
+1. Review the apply output in your Controller's web UI. (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Controller UI).
 
 ### Running Terraform locally
 

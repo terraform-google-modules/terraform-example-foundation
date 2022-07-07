@@ -18,7 +18,7 @@
 echo "**** Startup Step 1/9: Update apt-get repositories. ****"
 apt-get update
 
-echo "**** Startup Step 2/9: Install Java. Needed to accept jobs from Jenkins Master. ****"
+echo "**** Startup Step 2/9: Install Java. Needed to accept jobs from Jenkins Controller. ****"
 apt-get install -y default-jdk
 
 echo "**** Startup Step 3/9: Install tools needed to run pipeline commands. ****"

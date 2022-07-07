@@ -119,9 +119,16 @@ func TestNetworks(t *testing.T) {
 				"access_context_manager_policy_id": policyID,
 			}
 
+			var tfdDir string
+			if networkMode == "" {
+				tfdDir = "../../../3-networks-dual-svpc/envs/%s"
+			} else {
+				tfdDir = "../../../3-networks-hub-and-spoke/envs/%s"
+			}
+
 			envCode := string(envName[0:1])
 			networks := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(fmt.Sprintf("../../../3-networks/envs/%s", envName)),
+				tft.WithTFDir(fmt.Sprintf(tfdDir, envName)),
 				tft.WithVars(vars),
 			)
 			networks.DefineVerify(
@@ -135,7 +142,7 @@ func TestNetworks(t *testing.T) {
 
 					servicePerimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
 					assert.Equal(servicePerimeterLink, servicePerimeter.Get("name").String(), fmt.Sprintf("service perimeter %s should exist", servicePerimeterLink))
-					listLevels  := utils.GetResultStrSlice(servicePerimeter.Get("status.accessLevels").Array())
+					listLevels := utils.GetResultStrSlice(servicePerimeter.Get("status.accessLevels").Array())
 					assert.Contains(listLevels, accessLevel, fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
 					listServices := utils.GetResultStrSlice(servicePerimeter.Get("status.restrictedServices").Array())
 					assert.Subset(listServices, restrictedServices, fmt.Sprintf("service perimeter %s should restrict 'bigquery.googleapis.com' and 'storage.googleapis.com'", servicePerimeterLink))

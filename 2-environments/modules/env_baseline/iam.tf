@@ -15,7 +15,7 @@
  */
 
 /******************************************
-  Monitoring - IAM
+  Monitoring Security - IAM
 *****************************************/
 
 resource "google_project_iam_member" "monitoring_editor" {

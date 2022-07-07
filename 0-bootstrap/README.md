@@ -94,6 +94,22 @@ For more information about the permissions that are required, and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
+### Optional - Automatic creation of required groups
+
+Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) in the foundation.
+
+To enable automatic creation of the [required groups](https://cloud.google.com/architecture/security-foundations/authentication-authorization#users_and_groups) you need to:
+
+- Have an existing project for Cloud Identity API billing.
+- Enable the Cloud Identity API(`cloudidentity.googleapis.com`) on the billing project.
+- Grant role `roles/serviceusage.serviceUsageConsumer` to the user running Terraform on the billing project.
+- Uncomment the `google-beta` provider definition at the [provider.tf](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/provider.tf).
+- Provide values for the groups and billing project in the variable `create_groups_holder`.
+
+All groups in the `create_groups_holder.required_groups` are required.
+
+All groups in the `create_groups_holder.optional_groups` are optional.
+
 ### Troubleshooting
 
 Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.

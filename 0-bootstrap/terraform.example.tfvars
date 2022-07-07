@@ -64,3 +64,24 @@ default_region = "us-central1"
 //tunnel1_bgp_peer_address = "169.254.2.1"
 //
 //tunnel1_bgp_session_range = "169.254.2.2/30"
+//
+//create_groups_holder = {
+//  create_groups = true,
+//  required_groups = {
+//    group_org_admins           = "group_org_admins_local_test@example.com"
+//    group_billing_admins       = "group_billing_admins_local_test@example.com"
+//    billing_data_users         = "billing_data_users_local_test@example.com"
+//    audit_data_users           = "audit_data_users_local_test@example.com"
+//    monitoring_workspace_users = "monitoring_workspace_users_local_test@example.com"
+//  },
+//  optional_groups = {
+//    gcp_platform_viewer      = "gcp_platform_viewer_local_test@example.com"
+//    gcp_security_reviewer    = "gcp_security_reviewer_local_test@example.com"
+//    gcp_network_viewer       = "gcp_network_viewer_local_test@example.com"
+//    gcp_scc_admin            = "gcp_scc_admin_local_test@example.com"
+//    gcp_global_secrets_admin = "gcp_global_secrets_admin_local_test@example.com"
+//    gcp_audit_viewer         = "gcp_audit_viewer_local_test@example.com"
+//  }
+//}
+//
+//billing_project = "billing-project"

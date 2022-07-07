@@ -91,3 +91,18 @@ output "terraform_validator_policies_repo" {
 //  description = "Bucket used to store Jenkins artifacts in Jenkins project."
 //  value       = module.jenkins_bootstrap.gcs_bucket_jenkins_artifacts
 //}
+
+
+/* ----------------------------------------
+    Specific to Google Groups creation module
+   ---------------------------------------- */
+
+output "required_groups" {
+  description = "List of Google Groups created that are required by the Example Foundation steps."
+  value       = var.create_groups_holder.create_groups == true ? element(module.google_groups[*].created_required_groups, 0) : {}
+}
+
+output "optional_groups" {
+  description = "List of Google Groups created that are optional to the Example Foundation steps."
+  value       = var.create_groups_holder.create_groups == true ? element(module.google_groups[*].created_optinal_groups, 0) : {}
+}

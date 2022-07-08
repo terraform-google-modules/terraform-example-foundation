@@ -116,6 +116,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    adjust your copy paths accordingly.
    ```
    cd gcp-policies
+   git checkout -b main
    ```
 1. Copy contents of policy-library to new repo.
    ```
@@ -127,9 +128,9 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    git add .
    git commit -m 'Your message'
    ```
-1. Push your master branch to the new repo.
+1. Push your main branch to the new repo.
    ```
-   git push --set-upstream origin master
+   git push --set-upstream origin main
    ```
 1. Navigate out of the repo.
    ```
@@ -250,17 +251,17 @@ to run the command as the Terraform service account.
    git commit -m 'Your message'
    ```
 1. Push your plan branch.
-    - Assuming you configured an automatic trigger in your Jenkins Master (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
+    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
    ```
    git push --set-upstream origin plan
    ```
-1. Review the plan output in your Master's web UI.
+1. Review the plan output in your Controller's web UI.
 1. Merge changes to production branch.
    ```
    git checkout -b production
    git push origin production
    ```
-1. Review the apply output in your Master's web UI. (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Master UI).
+1. Review the apply output in your Controller's web UI. (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Controller UI).
 
 ### Running Terraform locally
 

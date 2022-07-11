@@ -55,67 +55,68 @@ variable "create_groups_holder" {
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.required_groups.group_org_admins)) : true
-    error_message = "The group group_org_admins is invalid. Only valid format emails Required Groups creation."
+    error_message = "The group group_org_admins is invalid, it must be a valid email."
   }
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.required_groups.group_billing_admins)) : true
-    error_message = "The group group_billing_admins is invalid. Only valid format emails Required Groups creation."
+    error_message = "The group group_billing_admins is invalid, it must be a valid email."
   }
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.required_groups.billing_data_users)) : true
-    error_message = "The group billing_data_users is invalid. Only valid format emails Required Groups creation."
+    error_message = "The group billing_data_users is invalid, it must be a valid email."
   }
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.required_groups.audit_data_users)) : true
-    error_message = "The group audit_data_users is invalid. Only valid format emails Required Groups creation."
+    error_message = "The group audit_data_users is invalid, it must be a valid email."
   }
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.required_groups.monitoring_workspace_users)) : true
-    error_message = "The group monitoring_workspace_users is invalid. Only valid format emails Required Groups creation."
+    error_message = "The group monitoring_workspace_users is invalid, it must be a valid email."
   }
-
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? (var.create_groups_holder.optional_groups.gcp_platform_viewer == "" ? true : can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.optional_groups.gcp_platform_viewer))) : true
-    error_message = "The group gcp_platform_viewer is invalid. Only valid format emails or empty strings are valid for Optional Groups creation."
+    error_message = "The group gcp_platform_viewer is invalid, it must be a valid email or an empty string."
   }
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? (var.create_groups_holder.optional_groups.gcp_security_reviewer == "" ? true : can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.optional_groups.gcp_security_reviewer))) : true
-    error_message = "The group gcp_security_reviewer is invalid. Only valid format emails or empty strings are valid for Optional Groups creation."
+    error_message = "The group gcp_security_reviewer is invalid, it must be a valid email or an empty string."
   }
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? (var.create_groups_holder.optional_groups.gcp_network_viewer == "" ? true : can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.optional_groups.gcp_network_viewer))) : true
-    error_message = "The group gcp_network_viewer is invalid. Only valid format emails or empty strings are valid for Optional Groups creation."
+    error_message = "The group gcp_network_viewer is invalid, it must be a valid email or an empty string."
   }
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? (var.create_groups_holder.optional_groups.gcp_scc_admin == "" ? true : can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.optional_groups.gcp_scc_admin))) : true
-    error_message = "The group gcp_scc_admin is invalid. Only valid format emails or empty strings are valid for Optional Groups creation."
+    error_message = "The group gcp_scc_admin is invalid, it must be a valid email or an empty string."
   }
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? (var.create_groups_holder.optional_groups.gcp_global_secrets_admin == "" ? true : can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.optional_groups.gcp_global_secrets_admin))) : true
-    error_message = "The group gcp_global_secrets_admin is invalid. Only valid format emails or empty strings are valid for Optional Groups creation."
+    error_message = "The group gcp_global_secrets_admin is invalid, it must be a valid email or an empty string."
   }
 
   validation {
     condition     = var.create_groups_holder.create_groups == true ? (var.create_groups_holder.optional_groups.gcp_audit_viewer == "" ? true : can(regex("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?[.])+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", var.create_groups_holder.optional_groups.gcp_audit_viewer))) : true
-    error_message = "The group gcp_audit_viewer is invalid. Only valid format emails or empty strings are valid for Optional Groups creation."
+    error_message = "The group gcp_audit_viewer is invalid, it must be a valid email or an empty string."
   }
 
 }
 
 variable "customer_id" {
-  type = string
+  description = "The Organization ID where the groups will be created."
+  type        = string
 }
 
 variable "initial_group_config" {
-  type    = string
-  default = "WITH_INITIAL_OWNER"
+  description = "Define the group configuration when it are initialized. Valid values are: WITH_INITIAL_OWNER, EMPTY and INITIAL_GROUP_CONFIG_UNSPECIFIED."
+  type        = string
+  default     = "WITH_INITIAL_OWNER"
 }

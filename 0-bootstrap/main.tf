@@ -22,8 +22,8 @@ locals {
   org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
     "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
   ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
-  group_org_admins     = var.create_groups_holder.create_groups == false ? var.group_org_admins : element(module.google_groups[*].created_required_groups, 0).group_org_admins
-  group_billing_admins = var.create_groups_holder.create_groups == false ? var.group_billing_admins : element(module.google_groups[*].created_required_groups, 0).group_billing_admins
+  group_org_admins     = try(module.google_groups[0].created_required_groups.group_org_admins, var.group_org_admins)
+  group_billing_admins = try(module.google_groups[0].created_required_groups.group_billing_admins, var.group_billing_admins)
 }
 
 resource "google_folder" "bootstrap" {

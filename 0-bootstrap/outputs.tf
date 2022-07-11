@@ -99,10 +99,10 @@ output "terraform_validator_policies_repo" {
 
 output "required_groups" {
   description = "List of Google Groups created that are required by the Example Foundation steps."
-  value       = var.create_groups_holder.create_groups == true ? element(module.google_groups[*].created_required_groups, 0) : {}
+  value       = var.create_groups_holder.create_groups == true ? module.google_groups[0].created_required_groups : {}
 }
 
 output "optional_groups" {
   description = "List of Google Groups created that are optional to the Example Foundation steps."
-  value       = var.create_groups_holder.create_groups == true ? element(module.google_groups[*].created_optinal_groups, 0) : {}
+  value       = var.create_groups_holder.create_groups == true ? module.google_groups[0].created_optinal_groups : {}
 }

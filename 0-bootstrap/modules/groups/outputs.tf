@@ -15,9 +15,15 @@
  */
 
 output "created_required_groups" {
-  value = var.create_groups_holder.required_groups
+  description = "List of the Required Groups created by the module."
+  value       = var.create_groups_holder.required_groups
+
+  depends_on = [module.required_group]
 }
 
 output "created_optinal_groups" {
-  value = var.create_groups_holder.optional_groups
+  description = "List of the Optional Groups created by the module."
+  value       = var.create_groups_holder.optional_groups
+
+  depends_on = [module.optional_group]
 }

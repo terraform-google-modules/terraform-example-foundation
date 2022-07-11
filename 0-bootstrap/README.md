@@ -188,6 +188,7 @@ the following steps:
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | cloud\_source\_repos | List of Cloud Source Repositories created during bootstrap project build stage for use with Cloud Build. | `list(string)` | <pre>[<br>  "gcp-org",<br>  "gcp-environments",<br>  "gcp-networks",<br>  "gcp-projects"<br>]</pre> | no |
+| create\_groups\_holder | Contain the details of the Groups to be created. | <pre>object({<br>    create_groups   = bool<br>    billing_project = string<br>    required_groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = string<br>      audit_data_users           = string<br>      monitoring_workspace_users = string<br>    })<br>    optional_groups = object({<br>      gcp_platform_viewer      = string<br>      gcp_security_reviewer    = string<br>      gcp_network_viewer       = string<br>      gcp_scc_admin            = string<br>      gcp_global_secrets_admin = string<br>      gcp_audit_viewer         = string<br>    })<br>  })</pre> | <pre>{<br>  "billing_project": "",<br>  "create_groups": false,<br>  "optional_groups": {<br>    "gcp_audit_viewer": "",<br>    "gcp_global_secrets_admin": "",<br>    "gcp_network_viewer": "",<br>    "gcp_platform_viewer": "",<br>    "gcp_scc_admin": "",<br>    "gcp_security_reviewer": ""<br>  },<br>  "required_groups": {<br>    "audit_data_users": "",<br>    "billing_data_users": "",<br>    "group_billing_admins": "",<br>    "group_org_admins": "",<br>    "monitoring_workspace_users": ""<br>  }<br>}</pre> | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
@@ -206,6 +207,8 @@ the following steps:
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud/Build artifacts in CloudBuild project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for foundations pipelines in seed project. |
+| optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
+| required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
 | terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
 | terraform\_service\_account | Email for privileged service account for Terraform. |

@@ -120,7 +120,7 @@ If you are using the `jenkins_bootstrap` sub-module, see
 [README-Jenkins](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README-Jenkins.md)
 for requirements and instructions on how to run the 0-bootstrap step. Using
 Jenkins requires a few manual steps, including configuring connectivity with
-your current Jenkins manager (master) environment.
+your current Jenkins manager (controller) environment.
 
 ## Deploying with Cloud Build
 

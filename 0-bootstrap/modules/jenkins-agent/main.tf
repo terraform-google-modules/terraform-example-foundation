@@ -83,7 +83,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
     network_ip = google_compute_address.jenkins_agent_gce_static_ip.address
   }
 
-  // Adding ssh public keys to the GCE instance metadata, so the Jenkins Master can connect to this Agent
+  // Adding ssh public keys to the GCE instance metadata, so the Jenkins Controller can connect to this Agent
   metadata = {
     enable-oslogin = "false"
     ssh-keys       = var.jenkins_agent_gce_ssh_pub_key
@@ -109,9 +109,9 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 resource "google_compute_firewall" "fw_allow_ssh_into_jenkins_agent" {
   project       = module.cicd_project.project_id
   name          = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
-  description   = "Allow the Jenkins Master (Client) to connect to the Jenkins Agents (Servers) using SSH."
+  description   = "Allow the Jenkins Controller (Client) to connect to the Jenkins Agents (Servers) using SSH."
   network       = google_compute_network.jenkins_agents.name
-  source_ranges = var.jenkins_master_subnetwork_cidr_range
+  source_ranges = var.jenkins_controller_subnetwork_cidr_range
   target_tags   = local.jenkins_gce_fw_tags
   priority      = 1000
 
@@ -187,7 +187,7 @@ resource "google_compute_router_nat" "nat_external_addresses_region1" {
 }
 
 /******************************************
-  VPN Connectivity Master on-prem <--> CICD project
+  VPN Connectivity Controller on-prem <--> CICD project
 *******************************************/
 
 // Please add VPN connectivity manually: see README > Requirements

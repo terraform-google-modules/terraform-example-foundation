@@ -24,7 +24,7 @@ The bootstrap step includes:
   - If using Jenkins:
     - A GCE Instance configured as a Jenkins Agent
     - Custom Service Account to run Jenkins Agents GCE instances
-    - VPN connection with on-prem (or where ever your Jenkins Master is located)
+    - VPN connection with on-prem (or where ever your Jenkins Controller is located)
 
 It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CI/CD tool.
 The `prj-b-seed` project stores Terraform state and has the Service Account able to create / modify infrastructure.

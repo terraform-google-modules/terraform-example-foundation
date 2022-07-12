@@ -18,6 +18,7 @@ output "created_required_groups" {
   description = "List of the Required Groups created by the module."
   value       = var.create_groups_holder.required_groups
 
+  //This depends_on is necessary otherwhise the entered Required groups would be returned before they were properly created
   depends_on = [module.required_group]
 }
 
@@ -25,5 +26,6 @@ output "created_optinal_groups" {
   description = "List of the Optional Groups created by the module."
   value       = var.create_groups_holder.optional_groups
 
+  //This depends_on is necessary otherwhise the entered Optional groups would be returned before they were properly created
   depends_on = [module.optional_group]
 }

@@ -94,7 +94,7 @@ For more information about the permissions that are required, and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
-### Optional - Automatic creation of required groups
+### Optional - Automatic creation of Google Cloud Identity groups
 
 Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) in the foundation.
 

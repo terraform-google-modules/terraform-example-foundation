@@ -39,7 +39,7 @@ func TestShared(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
-	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account")
+	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
 
 	vars := map[string]interface{}{
 		"access_context_manager_policy_id": policyID,

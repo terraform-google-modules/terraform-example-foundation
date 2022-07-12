@@ -50,12 +50,12 @@ func TestOrg(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
-	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account")
-	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account")
+	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")
+	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
 
 	vars := map[string]interface{}{
 		"terraform_service_account":               terraformSA,
-		"networks_step_terraform_service_account": networksTerraformSA,
+		"networks_step_terraform_service_account_email": networksTerraformSA,
 	}
 
 	org := tft.NewTFBlueprintTest(t,

@@ -181,12 +181,12 @@ the following steps:
 |------|-------------|
 | cloudbuild\_project\_id | Project where CloudBuild configuration and terraform container image will reside. |
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
-| environment\_step\_terraform\_service\_account | Environment Step Terraform Account |
+| environment\_step\_terraform\_service\_account\_email | Environment Step Terraform Account |
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud/Build artifacts in CloudBuild project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for foundations pipelines in seed project. |
-| networks\_step\_terraform\_service\_account | Networks Step Terraform Account |
-| organization\_step\_terraform\_service\_account | Organization Step Terraform Account |
-| projects\_step\_terraform\_service\_account | Projects Step Terraform Account |
+| networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
+| organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |
+| projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
 | terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
 | terraform\_service\_account | Email for privileged service account for Terraform. |

@@ -244,7 +244,7 @@ resource "google_project_iam_member" "network_sa_base" {
 
   project = module.base_network_hub[0].project_id
   role    = each.key
-  member  = "serviceAccount:${var.networks_step_terraform_service_account}"
+  member  = "serviceAccount:${var.networks_step_terraform_service_account_email}"
 }
 
 /******************************************
@@ -290,5 +290,5 @@ resource "google_project_iam_member" "network_sa_restricted" {
 
   project = module.restricted_network_hub[0].project_id
   role    = each.key
-  member  = "serviceAccount:${var.networks_step_terraform_service_account}"
+  member  = "serviceAccount:${var.networks_step_terraform_service_account_email}"
 }

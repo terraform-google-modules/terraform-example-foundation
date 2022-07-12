@@ -46,7 +46,7 @@ func TestEnvs(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
-	terraformSA := bootstrap.GetStringOutput("environment_step_terraform_service_account")
+	terraformSA := bootstrap.GetStringOutput("environment_step_terraform_service_account_email")
 
 	vars := map[string]interface{}{
 		"terraform_service_account": terraformSA,

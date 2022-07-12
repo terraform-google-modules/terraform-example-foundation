@@ -59,7 +59,7 @@ func TestProjects(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
-	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account")
+	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
 
 	var sharedCloudBuildSA = map[string]string{
 		"bu1": "",

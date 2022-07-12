@@ -131,24 +131,24 @@ func TestBootstrap(t *testing.T) {
 					output: "terraform_service_account",
 				},
 				{
-					output: "projects_step_terraform_service_account",
+					output: "projects_step_terraform_service_account_email",
 					orgRoles: []string{
 						"roles/accesscontextmanager.policyAdmin",
 						"roles/serviceusage.serviceUsageConsumer",
 					},
 				},
 				{
-					output: "networks_step_terraform_service_account",
+					output: "networks_step_terraform_service_account_email",
 					orgRoles: []string{
 						"roles/accesscontextmanager.policyAdmin",
 						"roles/compute.xpnAdmin",
 					},
 				},
 				{
-					output: "environment_step_terraform_service_account",
+					output: "environment_step_terraform_service_account_email",
 				},
 				{
-					output: "organization_step_terraform_service_account",
+					output: "organization_step_terraform_service_account_email",
 					orgRoles: []string{
 						"roles/orgpolicy.policyAdmin",
 						"roles/logging.configWriter",

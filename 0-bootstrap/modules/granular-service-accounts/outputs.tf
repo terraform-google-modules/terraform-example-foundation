@@ -14,23 +14,7 @@
  * limitations under the License.
  */
 
-output "projects_step_terraform_service_account" {
-  description = "Projects Step Terraform Account"
-  value       = google_service_account.terraform-env-sa["proj"].email
+output "terraform_service_accounts" {
+  description = "Terraform Service Accounts per environment."
+  value       = google_service_account.terraform-env-sa
 }
-
-output "networks_step_terraform_service_account" {
-  description = "Networks Step Terraform Account"
-  value       = google_service_account.terraform-env-sa["net"].email
-}
-
-output "environment_step_terraform_service_account" {
-  description = "Environment Step Terraform Account"
-  value       = google_service_account.terraform-env-sa["env"].email
-}
-
-output "organization_step_terraform_service_account" {
-  description = "Organization Step Terraform Account"
-  value       = google_service_account.terraform-env-sa["org"].email
-}
-

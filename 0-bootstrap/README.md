@@ -26,11 +26,18 @@ organizational policy.</td>
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
-<td><a href="../3-networks">3-networks</a></td>
+<td><a href="../3-networks-dual-svpc">3-networks-dual-svpc</a></td>
 <td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
-Interconnect, and baseline firewall rules for each environment. Also sets
+Interconnect, and baseline firewall rules for each environment. It also sets
 up the global DNS hub.</td>
+</tr>
+<tr>
+<td><a href="../3-networks-hub-and-spoke">3-networks-hub-and-spoke</a></td>
+<td>Sets up base and restricted shared VPCs with all the default configuration
+found on step 3-networks-dual-svpc, but here the architecture will be based on the
+Hub and Spoke network model. It also sets up the global DNS hub</td>
+</tr>
 </tr>
 <tr>
 <td><a href="../4-projects">4-projects</a></td>
@@ -97,7 +104,7 @@ If you are using the `jenkins_bootstrap` sub-module, see
 [README-Jenkins](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README-Jenkins.md)
 for requirements and instructions on how to run the 0-bootstrap step. Using
 Jenkins requires a few manual steps, including configuring connectivity with
-your current Jenkins manager (master) environment.
+your current Jenkins manager (controller) environment.
 
 ## Deploying with Cloud Build
 

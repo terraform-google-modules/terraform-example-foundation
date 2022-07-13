@@ -24,7 +24,7 @@ The bootstrap step includes:
   - If using Jenkins:
     - A GCE Instance configured as a Jenkins Agent
     - Custom Service Account to run Jenkins Agents GCE instances
-    - VPN connection with on-prem (or where ever your Jenkins Master is located)
+    - VPN connection with on-prem (or where ever your Jenkins Controller is located)
 
 It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CI/CD tool.
 The `prj-b-seed` project stores Terraform state and has the Service Account able to create / modify infrastructure.
@@ -138,7 +138,7 @@ Under the environment folder, a project is created per environment (`development
 
 Usage instructions are available for the environments step in the [README](./2-environments/README.md).
 
-### [3. networks](./3-networks/)
+### [3. networks-dual-svpc](./3-networks-dual-svpc/)
 
 This step focuses on creating a Shared VPC per environment (`development`, `non-production` & `production`) in a standard configuration with a reasonable security baseline. Currently, this includes:
 
@@ -154,7 +154,14 @@ This step focuses on creating a Shared VPC per environment (`development`, `non-
 - Optional - Cloud NAT configured for all subnets with logging and static outbound IPs.
 - Default Cloud DNS policy applied, with DNS logging and [inbound query forwarding](https://cloud.google.com/dns/docs/overview#dns-server-policy-in) turned on.
 
-Usage instructions are available for the networks step in the [README](./3-networks/README.md).
+Usage instructions are available for the networks step in the [README](./3-networks-dual-svpc/README.md).
+
+### [3. networks-hub-and-spoke](./3-networks-hub-and-spoke/)
+
+This step configures the same network resources that the step 3-networks-dual-svpc does, but this time it makes usage of the architeture based on the Hub and Spoke reference network model.
+
+Usage instructions are available for the networks step in the [README](./3-networks-hub-and-spoke/README.md).
+
 
 ### [4. projects](./4-projects/)
 

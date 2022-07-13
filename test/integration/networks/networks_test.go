@@ -126,9 +126,16 @@ func TestNetworks(t *testing.T) {
 				"terraform_service_account":        terraformSA,
 			}
 
+			var tfdDir string
+			if networkMode == "" {
+				tfdDir = "../../../3-networks-dual-svpc/envs/%s"
+			} else {
+				tfdDir = "../../../3-networks-hub-and-spoke/envs/%s"
+			}
+
 			envCode := string(envName[0:1])
 			networks := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(fmt.Sprintf("../../../3-networks/envs/%s", envName)),
+				tft.WithTFDir(fmt.Sprintf(tfdDir, envName)),
 				tft.WithVars(vars),
 			)
 			networks.DefineVerify(

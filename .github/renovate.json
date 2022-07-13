@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "config:base",
+    ":semanticCommits"
+  ],
+  "stabilityDays":7,
+  "labels": ["dependencies"],
+    "vulnerabilityAlerts":{
+     "labels":[
+       "type:security"
+     ],
+     "stabilityDays":0
+  },
+  "packageRules": [
+    {
+      "matchDepTypes": ["module"],
+      "groupName": "TF modules",
+      "separateMajorMinor":false
+    }
+  ]
+}

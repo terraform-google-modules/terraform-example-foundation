@@ -4,6 +4,7 @@
     ":semanticCommits"
   ],
   "stabilityDays":7,
+  "ignorePaths": [],
   "labels": ["dependencies"],
     "vulnerabilityAlerts":{
      "labels":[
@@ -15,6 +16,12 @@
     {
       "matchDepTypes": ["module"],
       "groupName": "TF modules",
+      "separateMajorMinor":false
+    },
+    {
+      "matchDepTypes": ["require"],
+      "groupName": "GO modules",
+      "postUpdateOptions": ["gomodTidy"],
       "separateMajorMinor":false
     }
   ]

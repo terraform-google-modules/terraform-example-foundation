@@ -27,7 +27,10 @@ module "required_group" {
 }
 
 module "optional_group" {
-  for_each = var.create_groups_holder.optional_groups != null ? tomap(var.create_groups_holder.optional_groups) : {}
+  for_each = {
+    for key, value in var.create_groups_holder.optional_groups : key => value
+    if value != ""
+  }
   source   = "terraform-google-modules/group/google"
   version  = "~> 0.1"
 

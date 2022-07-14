@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+locals {
+  optional_groups_to_create = {
+    for key, value in var.create_groups_holder.optional_groups : key => value
+    if value != ""
+  }
+}
+
 module "required_group" {
   for_each = tomap(var.create_groups_holder.required_groups)
   source   = "terraform-google-modules/group/google"
@@ -27,10 +34,7 @@ module "required_group" {
 }
 
 module "optional_group" {
-  for_each = {
-    for key, value in var.create_groups_holder.optional_groups : key => value
-    if value != ""
-  }
+  for_each = local.optional_groups_to_create
   source   = "terraform-google-modules/group/google"
   version  = "~> 0.1"
 

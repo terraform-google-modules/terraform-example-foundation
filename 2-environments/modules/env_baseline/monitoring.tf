@@ -21,12 +21,13 @@
 module "monitoring_project" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 13.0"
-  random_project_id           = "true"
+  random_project_id           = true
   name                        = "${var.project_prefix}-${var.environment_code}-monitoring"
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = google_folder.env.id
   disable_services_on_destroy = false
+  depends_on                  = [time_sleep.wait_30_seconds]
   activate_apis = [
     "logging.googleapis.com",
     "monitoring.googleapis.com",

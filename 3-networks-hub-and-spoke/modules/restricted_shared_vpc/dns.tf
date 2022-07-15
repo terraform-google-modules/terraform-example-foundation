@@ -42,7 +42,7 @@ data "google_compute_network" "vpc_dns_hub" {
 
 resource "google_dns_policy" "default_policy" {
   project                   = var.project_id
-  name                      = "default-policy"
+  name                      = "dp-${var.environment_code}-shared-restricted-default-policy"
   enable_inbound_forwarding = var.dns_enable_inbound_forwarding
   enable_logging            = var.dns_enable_logging
   networks {

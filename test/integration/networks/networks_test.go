@@ -64,7 +64,7 @@ func getNetworkResourceNames(envCode string, networkMode string) map[string]map[
 			"dns_zone_gcr":          fmt.Sprintf("dz-%s-shared-restricted-gcr", envCode),
 			"dns_zone_pkg_dev":      fmt.Sprintf("dz-%s-shared-restricted-pkg-dev", envCode),
 			"dns_zone_peering_zone": fmt.Sprintf("dz-%s-shared-restricted-to-dns-hub", envCode),
-			"dns_policy_name":       "default-policy",
+			"dns_policy_name":       fmt.Sprintf("dp-%s-shared-restricted-default-policy", envCode),
 			"subnet_name1":          fmt.Sprintf("sb-%s-shared-restricted-us-west1", envCode),
 			"subnet_name2":          fmt.Sprintf("sb-%s-shared-restricted-us-central1", envCode),
 			"region1_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-west1-cr5", envCode, networkMode),

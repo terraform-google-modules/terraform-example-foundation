@@ -93,7 +93,7 @@ variable "terraform_version_sha256sum" {
 variable "gcloud_version" {
   description = "Default gcloud image version."
   type        = string
-  default     = "388.0.0-slim"
+  default     = "393.0.0-slim"
 }
 
 variable "folders_to_grant_browser_role" {

@@ -112,6 +112,16 @@ function validate_gcloud_configuration(){
         exit 1
     fi
     rm -Rf end-user-credential-output.txt
+
+    gcloud auth application-default print-access-token 2> application-default-credential-output.txt
+    cat application-default-credential-output.txt | grep "Could not automatically determine credentials"
+    if [ $? -eq 0 ]; then
+        echo "You must configure an Application Default Credential."
+        echo "Visit https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login and follow the instructions to authorize gcloud to access the Cloud Platform with Google user credentials."
+        rm -Rf application-default-credential-output.txt
+        exit 1
+    fi
+    rm -Rf application-default-credential-output.txt
 }
 
 # Function to validate the Configuration of the Gcloud CLI

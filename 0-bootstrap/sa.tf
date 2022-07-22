@@ -72,13 +72,13 @@ locals {
 resource "google_service_account" "terraform-env-sa" {
   for_each = local.granular_sa
 
-  project      = var.seed_project_id
+  project      = module.seed_bootstrap.seed_project_id
   account_id   = "terraform-${each.key}-sa"
   display_name = each.value
 }
 
 module "org_iam_member" {
-  source   = "../parent-iam-member"
+  source   = "./modules/parent-iam-member"
   for_each = local.granular_sa_org_level_roles
 
   member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
@@ -88,7 +88,7 @@ module "org_iam_member" {
 }
 
 module "parent_iam_member" {
-  source   = "../parent-iam-member"
+  source   = "./modules/parent-iam-member"
   for_each = local.granular_sa_parent_level_roles
 
   member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
@@ -126,7 +126,7 @@ resource "google_service_account_iam_member" "cloudbuild_terraform_sa_impersonat
 
   service_account_id = google_service_account.terraform-env-sa[each.key].id
   role               = "roles/iam.serviceAccountTokenCreator"
-  member             = "serviceAccount:${var.cloud_build_sa}"
+  member             = "serviceAccount:${data.google_project.cloudbuild.number}@cloudbuild.gserviceaccount.com"
 
   depends_on = [
     google_service_account.terraform-env-sa

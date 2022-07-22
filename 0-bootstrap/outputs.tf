@@ -26,22 +26,22 @@ output "terraform_service_account" {
 
 output "projects_step_terraform_service_account_email" {
   description = "Projects Step Terraform Account"
-  value       = module.granular_service_account.terraform_service_accounts["proj"].email
+  value       = google_service_account.terraform-env-sa["proj"].email
 }
 
 output "networks_step_terraform_service_account_email" {
   description = "Networks Step Terraform Account"
-  value       = module.granular_service_account.terraform_service_accounts["net"].email
+  value       = google_service_account.terraform-env-sa["net"].email
 }
 
 output "environment_step_terraform_service_account_email" {
   description = "Environment Step Terraform Account"
-  value       = module.granular_service_account.terraform_service_accounts["env"].email
+  value       = google_service_account.terraform-env-sa["env"].email
 }
 
 output "organization_step_terraform_service_account_email" {
   description = "Organization Step Terraform Account"
-  value       = module.granular_service_account.terraform_service_accounts["org"].email
+  value       = google_service_account.terraform-env-sa["org"].email
 }
 
 output "terraform_sa_name" {

@@ -22,10 +22,10 @@ locals {
   // in the list "org_project_creators" will have the Project Creator role,
   // so the granular service accounts for each step need to be added to the list.
   step_terraform_sa = [
-    "serviceAccount:${module.granular_service_account.terraform_service_accounts["org"].email}",
-    "serviceAccount:${module.granular_service_account.terraform_service_accounts["env"].email}",
-    "serviceAccount:${module.granular_service_account.terraform_service_accounts["net"].email}",
-    "serviceAccount:${module.granular_service_account.terraform_service_accounts["proj"].email}",
+    "serviceAccount:${google_service_account.terraform-env-sa["org"].email}",
+    "serviceAccount:${google_service_account.terraform-env-sa["env"].email}",
+    "serviceAccount:${google_service_account.terraform-env-sa["net"].email}",
+    "serviceAccount:${google_service_account.terraform-env-sa["proj"].email}",
   ]
   org_project_creators = distinct(concat(var.org_project_creators, local.step_terraform_sa))
   parent               = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
@@ -197,16 +197,6 @@ resource "google_folder_iam_member" "folder_cb_sa_browser" {
   folder = var.parent_folder
   role   = "roles/browser"
   member = "serviceAccount:${data.google_project.cloudbuild.number}@cloudbuild.gserviceaccount.com"
-}
-
-module "granular_service_account" {
-  source = "./modules/granular-service-accounts"
-
-  org_id          = var.org_id
-  seed_project_id = module.seed_bootstrap.seed_project_id
-  billing_account = var.billing_account
-  cloud_build_sa  = "${data.google_project.cloudbuild.number}@cloudbuild.gserviceaccount.com"
-  parent_folder   = var.parent_folder
 }
 
 ## Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build

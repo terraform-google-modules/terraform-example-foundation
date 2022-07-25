@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
+#Groups creation resources
+
 locals {
   optional_groups_to_create = {
-    for key, value in var.create_groups_holder.optional_groups : key => value
-    if value != ""
+    for key, value in var.groups.optional_groups : key => value
+    if value != "" && var.groups.create_groups == true
+  }
+  required_groups_to_create = {
+    for key, value in var.groups.required_groups : key => value
+    if var.groups.create_groups == true
   }
 }
 
+data "google_organization" "org" {
+  count        = var.groups.create_groups ? 1 : 0
+  organization = var.org_id
+}
+
 module "required_group" {
-  for_each = tomap(var.create_groups_holder.required_groups)
+  for_each = local.required_groups_to_create
   source   = "terraform-google-modules/group/google"
   version  = "~> 0.1"
 
@@ -30,7 +41,7 @@ module "required_group" {
   display_name         = each.key
   description          = each.key
   initial_group_config = var.initial_group_config
-  customer_id          = var.customer_id
+  customer_id          = data.google_organization.org[0].directory_customer_id
 }
 
 module "optional_group" {
@@ -42,5 +53,5 @@ module "optional_group" {
   display_name         = each.key
   description          = each.key
   initial_group_config = var.initial_group_config
-  customer_id          = var.customer_id
+  customer_id          = data.google_organization.org[0].directory_customer_id
 }

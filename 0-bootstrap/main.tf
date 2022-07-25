@@ -22,8 +22,8 @@ locals {
   org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
     "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
   ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
-  group_org_admins     = try(module.google_groups[0].created_required_groups.group_org_admins, var.group_org_admins)
-  group_billing_admins = try(module.google_groups[0].created_required_groups.group_billing_admins, var.group_billing_admins)
+  group_org_admins     = var.groups.create_groups ? var.groups.required_groups.group_org_admins : var.group_org_admins
+  group_billing_admins = var.groups.create_groups ? var.groups.required_groups.group_billing_admins : var.group_billing_admins
 }
 
 resource "google_folder" "bootstrap" {
@@ -49,7 +49,7 @@ module "seed_bootstrap" {
   project_prefix                 = var.project_prefix
 
   # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
-  depends_on = [google_folder.bootstrap, module.google_groups]
+  depends_on = [google_folder.bootstrap, module.required_group, module.optional_group]
 
   project_labels = {
     environment       = "bootstrap"
@@ -128,7 +128,7 @@ module "cloudbuild_bootstrap" {
   terraform_version_sha256sum = "4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"
 
   # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
-  depends_on = [module.seed_bootstrap, module.google_groups]
+  depends_on = [google_folder.bootstrap, module.required_group, module.optional_group]
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -277,16 +277,3 @@ resource "google_folder_iam_member" "folder_tf_compute_security_resource_admin" 
 #   role   = "roles/browser"
 #   member = "serviceAccount:${module.jenkins_bootstrap.jenkins_agent_sa_email}"
 # }
-
-
-#Groups creation resources
-data "google_organization" "org" {
-  organization = var.org_id
-}
-
-module "google_groups" {
-  count                = var.create_groups_holder.create_groups ? 1 : 0
-  source               = "./modules/groups"
-  create_groups_holder = var.create_groups_holder
-  customer_id          = data.google_organization.org.directory_customer_id
-}

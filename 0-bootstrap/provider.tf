@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * Uncomment this provider definition in order to be able to perform the Groups Creation
- *provider "google-beta" {
- *  user_project_override = true
- *  billing_project       = var.create_groups_holder.billing_project
- *}
- */
+provider "google-beta" {
+  user_project_override = true
+  billing_project       = var.groups.billing_project
+}

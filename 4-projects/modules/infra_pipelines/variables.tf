@@ -90,10 +90,10 @@ variable "terraform_version_sha256sum" {
   default     = "4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"
 }
 
-variable "terraform_validator_release" {
-  description = "Default terraform-validator release."
+variable "gcloud_version" {
+  description = "Default gcloud image version."
   type        = string
-  default     = "v0.4.0"
+  default     = "393.0.0-slim"
 }
 
 variable "folders_to_grant_browser_role" {

@@ -42,6 +42,16 @@ func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
 
 func TestEnvs(t *testing.T) {
 
+	bootstrap := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../0-bootstrap"),
+	)
+
+	terraformSA := bootstrap.GetStringOutput("environment_step_terraform_service_account_email")
+
+	vars := map[string]interface{}{
+		"terraform_service_account": terraformSA,
+	}
+
 	for _, envName := range []string{
 		"development",
 		"non-production",
@@ -50,6 +60,7 @@ func TestEnvs(t *testing.T) {
 		t.Run(envName, func(t *testing.T) {
 			envs := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../2-environments/envs/%s", envName)),
+				tft.WithVars(vars),
 			)
 			envs.DefineVerify(
 				func(assert *assert.Assertions) {

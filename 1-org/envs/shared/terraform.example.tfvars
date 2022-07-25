@@ -21,7 +21,7 @@ billing_data_users = "gcp-billing-admins@example.com"
 
 audit_data_users = "gcp-security-admins@example.com"
 
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
+terraform_service_account = "terraform-org-sa@example-project-2334.iam.gserviceaccount.com"
 
 scc_notification_name = "scc-notify"
 
@@ -32,3 +32,7 @@ backend_bucket = "<TERRAFORM-STATE-BUCKET>"
 //create_access_context_manager_access_policy = false
 
 //enable_hub_and_spoke = true
+
+// if you enable hub and spoke you need to provide
+// the service account that will be used in the network step
+//networks_step_terraform_service_account = "terraform-net-sa@example-project-2334.iam.gserviceaccount.com"

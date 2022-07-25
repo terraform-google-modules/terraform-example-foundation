@@ -155,7 +155,7 @@ you can re-run the command using impersonation or providing a billing project:
 - Impersonate the Terraform Service Account
 
 ```
---impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com
+--impersonate-service-account=terraform-org-sa@<SEED_PROJECT_ID>.iam.gserviceaccount.com
 ```
 
 - Provide a billing project

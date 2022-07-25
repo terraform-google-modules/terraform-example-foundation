@@ -99,14 +99,10 @@ output "terraform_validator_policies_repo" {
 
 output "required_groups" {
   description = "List of Google Groups created that are required by the Example Foundation steps."
-  //This depends_on is necessary otherwhise the entered Required groups would be returned before they were properly created
-  depends_on = [module.required_group]
-  value      = var.groups.create_groups == true ? local.required_groups_to_create : {}
+  value       = var.groups.create_groups == true ? module.required_group : {}
 }
 
 output "optional_groups" {
   description = "List of Google Groups created that are optional to the Example Foundation steps."
-  //This depends_on is necessary otherwhise the entered Required groups would be returned before they were properly created
-  depends_on = [module.optional_group]
-  value      = var.groups.create_groups == true ? local.optional_groups_to_create : {}
+  value       = var.groups.create_groups == true ? module.optional_group : {}
 }

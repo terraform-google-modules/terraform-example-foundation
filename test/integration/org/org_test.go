@@ -22,8 +22,8 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
-	"github.com/tidwall/gjson"
 	"github.com/stretchr/testify/assert"
+	"github.com/tidwall/gjson"
 )
 
 func isHubAndSpoke(t *testing.T) bool {
@@ -46,8 +46,21 @@ func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
 
 func TestOrg(t *testing.T) {
 
+	bootstrap := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../0-bootstrap"),
+	)
+
+	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")
+	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
+
+	vars := map[string]interface{}{
+		"terraform_service_account":               terraformSA,
+		"networks_step_terraform_service_account_email": networksTerraformSA,
+	}
+
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
+		tft.WithVars(vars),
 	)
 
 	org.DefineVerify(

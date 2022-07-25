@@ -28,6 +28,11 @@ variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform."
   type        = string
 }
+variable "networks_step_terraform_service_account_email" {
+  description = "Service account email of the account to impersonate to run Terraform in the network step."
+  type        = string
+  default     = ""
+}
 
 variable "default_region" {
   description = "Default region for BigQuery resources."

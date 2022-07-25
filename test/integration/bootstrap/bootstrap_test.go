@@ -21,8 +21,8 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
-	"github.com/tidwall/gjson"
 	"github.com/stretchr/testify/assert"
+	"github.com/tidwall/gjson"
 )
 
 // getResultFieldStrSlice parses a field of a results list into a string slice
@@ -75,20 +75,6 @@ func TestBootstrap(t *testing.T) {
 		"accesscontextmanager.googleapis.com",
 	}
 
-	saOrgLevelRoles := []string{
-		"roles/accesscontextmanager.policyAdmin",
-		"roles/billing.user",
-		"roles/compute.networkAdmin",
-		"roles/compute.xpnAdmin",
-		"roles/iam.securityAdmin",
-		"roles/iam.serviceAccountAdmin",
-		"roles/logging.configWriter",
-		"roles/orgpolicy.policyAdmin",
-		"roles/resourcemanager.folderAdmin",
-		"roles/securitycenter.notificationConfigEditor",
-		"roles/resourcemanager.organizationViewer",
-	}
-
 	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
 
 	bootstrap.DefineVerify(
@@ -137,16 +123,57 @@ func TestBootstrap(t *testing.T) {
 			tfStateBkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", tfStateBucketName), seedAlphaOpts).Array()[0]
 			assert.True(tfStateBkt.Exists(), "bucket %s should exist", tfStateBucketName)
 
-			terraformSAEmail := bootstrap.GetStringOutput("terraform_service_account")
-			terraformSAName := fmt.Sprintf("projects/%s/serviceAccounts/%s", seedProjectID, terraformSAEmail)
-			terraformSA := gcloud.Runf(t, "iam service-accounts describe %s --project %s", terraformSAEmail, seedProjectID)
-			assert.Equal(terraformSAName, terraformSA.Get("name").String(), fmt.Sprintf("service account %s should exist", terraformSAEmail))
+			for _, sa := range []struct {
+				output   string
+				orgRoles []string
+			}{
+				{
+					output: "terraform_service_account",
+				},
+				{
+					output: "projects_step_terraform_service_account_email",
+					orgRoles: []string{
+						"roles/accesscontextmanager.policyAdmin",
+						"roles/serviceusage.serviceUsageConsumer",
+					},
+				},
+				{
+					output: "networks_step_terraform_service_account_email",
+					orgRoles: []string{
+						"roles/accesscontextmanager.policyAdmin",
+						"roles/compute.xpnAdmin",
+					},
+				},
+				{
+					output: "environment_step_terraform_service_account_email",
+				},
+				{
+					output: "organization_step_terraform_service_account_email",
+					orgRoles: []string{
+						"roles/orgpolicy.policyAdmin",
+						"roles/logging.configWriter",
+						"roles/resourcemanager.organizationAdmin",
+						"roles/securitycenter.notificationConfigEditor",
+						"roles/resourcemanager.organizationViewer",
+						"roles/accesscontextmanager.policyAdmin",
+					},
+				},
+			} {
+				terraformSAEmail := bootstrap.GetStringOutput(sa.output)
+				terraformSAName := fmt.Sprintf("projects/%s/serviceAccounts/%s", seedProjectID, terraformSAEmail)
+				terraformSA := gcloud.Runf(t, "iam service-accounts describe %s --project %s", terraformSAEmail, seedProjectID)
+				assert.Equal(terraformSAName, terraformSA.Get("name").String(), fmt.Sprintf("service account %s should exist", terraformSAEmail))
 
-			iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", terraformSAEmail)
-			iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
-			orgIamPolicyRoles := gcloud.Run(t, fmt.Sprintf("organizations get-iam-policy %s", orgID), iamOpts).Array()
-			listRoles := getResultFieldStrSlice(orgIamPolicyRoles, "bindings.role")
-			assert.Subset(listRoles, saOrgLevelRoles, fmt.Sprintf("service account %s should have organization level roles", terraformSAEmail))
+				iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", terraformSAEmail)
+				iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
+				orgIamPolicyRoles := gcloud.Run(t, fmt.Sprintf("organizations get-iam-policy %s", orgID), iamOpts).Array()
+				listRoles := getResultFieldStrSlice(orgIamPolicyRoles, "bindings.role")
+				if len(sa.orgRoles) == 0 {
+					assert.Empty(listRoles, fmt.Sprintf("service account %s should not have organization level roles", terraformSAEmail))
+				} else {
+					assert.Subset(listRoles, sa.orgRoles, fmt.Sprintf("service account %s should have organization level roles", terraformSAEmail))
+				}
+			}
 		})
 	bootstrap.Test()
 }

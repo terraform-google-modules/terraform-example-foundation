@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+locals {
+  hub_and_spoke_roles = [
+    "roles/compute.instanceAdmin",
+    "roles/iam.serviceAccountAdmin",
+    "roles/resourcemanager.projectIamAdmin",
+    "roles/iam.serviceAccountUser",
+  ]
+}
+
 /******************************************
   Projects for log sinks
 *****************************************/
@@ -230,6 +239,14 @@ module "base_network_hub" {
   budget_amount               = var.base_net_hub_project_budget_amount
 }
 
+resource "google_project_iam_member" "network_sa_base" {
+  for_each = toset(var.enable_hub_and_spoke ? local.hub_and_spoke_roles : [])
+
+  project = module.base_network_hub[0].project_id
+  role    = each.key
+  member  = "serviceAccount:${var.networks_step_terraform_service_account_email}"
+}
+
 /******************************************
   Project for Restricted Network Hub
 *****************************************/
@@ -266,4 +283,12 @@ module "restricted_network_hub" {
   budget_alert_pubsub_topic   = var.restricted_net_hub_project_alert_pubsub_topic
   budget_alert_spent_percents = var.restricted_net_hub_project_alert_spent_percents
   budget_amount               = var.restricted_net_hub_project_budget_amount
+}
+
+resource "google_project_iam_member" "network_sa_restricted" {
+  for_each = toset(var.enable_hub_and_spoke ? local.hub_and_spoke_roles : [])
+
+  project = module.restricted_network_hub[0].project_id
+  role    = each.key
+  member  = "serviceAccount:${var.networks_step_terraform_service_account_email}"
 }

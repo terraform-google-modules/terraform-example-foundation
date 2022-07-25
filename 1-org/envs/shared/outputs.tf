@@ -15,7 +15,7 @@
  */
 
 output "org_id" {
-  value       = var.org_id
+  value       = local.org_id
   description = "The organization id"
 }
 

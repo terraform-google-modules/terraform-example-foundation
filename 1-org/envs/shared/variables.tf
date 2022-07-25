@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-variable "org_id" {
-  description = "The organization id for the associated services"
-  type        = string
-}
-
-variable "billing_account" {
-  description = "The ID of the billing account to associate this project with"
-  type        = string
-}
-
 variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform."
-  type        = string
-}
-
-variable "default_region" {
-  description = "Default region for BigQuery resources."
   type        = string
 }
 
@@ -82,12 +67,6 @@ variable "scc_notification_filter" {
   description = "Filter used to create the Security Command Center Notification, you can see more details on how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter"
   type        = string
   default     = "state = \"ACTIVE\""
-}
-
-variable "parent_folder" {
-  description = "Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step."
-  type        = string
-  default     = ""
 }
 
 variable "create_access_context_manager_access_policy" {
@@ -280,18 +259,6 @@ variable "scc_notifications_project_budget_amount" {
   default     = 1000
 }
 
-variable "project_prefix" {
-  description = "Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters."
-  type        = string
-  default     = "prj"
-}
-
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created. Should be the same in all steps."
-  type        = string
-  default     = "fldr"
-}
-
 variable "gcp_platform_viewer" {
   description = "G Suite or Cloud Identity group that have the ability to view resource information across the Google Cloud organization."
   type        = string
@@ -344,4 +311,9 @@ variable "gcp_billing_admin_user" {
   description = "Identity that has billing administrator permissions"
   type        = string
   default     = null
+}
+
+variable "backend_bucket" {
+  description = "Backend bucket to load remote state information from previous steps."
+  type        = string
 }

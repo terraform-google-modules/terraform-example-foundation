@@ -83,6 +83,12 @@ func TestNetworks(t *testing.T) {
 	policyID := getPolicyID(t, orgID)
 	networkMode := getNetworkMode(t)
 
+	bootstrap := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../0-bootstrap"),
+	)
+
+	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
+
 	restrictedServices := []string{
 		"bigquery.googleapis.com",
 		"storage.googleapis.com",
@@ -117,6 +123,7 @@ func TestNetworks(t *testing.T) {
 
 			vars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
+				"terraform_service_account":        terraformSA,
 			}
 
 			var tfdDir string

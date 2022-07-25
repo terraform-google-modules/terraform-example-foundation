@@ -37,6 +37,7 @@
 | log\_export\_storage\_location | The location of the storage bucket used to export logs. | `string` | `"US"` | no |
 | log\_export\_storage\_retention\_policy | Configuration of the bucket's data retention policy for how long objects in the bucket should be retained. | <pre>object({<br>    is_locked             = bool<br>    retention_period_days = number<br>  })</pre> | `null` | no |
 | log\_export\_storage\_versioning | (Optional) Toggles bucket versioning, ability to retain a non-current object version when the live object version gets replaced or deleted. | `bool` | `false` | no |
+| networks\_step\_terraform\_service\_account\_email | Service account email of the account to impersonate to run Terraform in the network step. | `string` | `""` | no |
 | org\_audit\_logs\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the org audit logs project. | `string` | `null` | no |
 | org\_audit\_logs\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the org audit logs project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | org\_audit\_logs\_project\_budget\_amount | The amount to use as the budget for the org audit logs project. | `number` | `1000` | no |

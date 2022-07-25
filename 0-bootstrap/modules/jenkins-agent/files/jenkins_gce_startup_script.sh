@@ -41,13 +41,12 @@ wget "https://releases.hashicorp.com/terraform/${tpl_TERRAFORM_VERSION}/terrafor
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-echo "**** Startup Step 6/9: Download and install the Terraform validator ****"
-gsutil cp gs://terraform-validator/releases/v0.4.0/terraform-validator-linux-amd64 .
-chmod 755 "${tpl_TERRAFORM_DIR}terraform-validator-linux-amd64"
-mv "${tpl_TERRAFORM_DIR}terraform-validator-linux-amd64" "${tpl_TERRAFORM_DIR}terraform-validator"
+echo "**** Startup Step 6/9: Download and install the Terraform tools. ****"
+gcloud components update
+gcloud components install terraform-tools
 
-echo "**** Startup Step 7/9: Set the Linux PATH to point to the Terraform directory. ****"
-export PATH=$PATH:${tpl_TERRAFORM_DIR}
+echo "**** Startup Step 7/9: Verify that the tool is installed.  ****"
+gcloud beta terraform vet --help
 
 echo "**** Startup Step 8/9: Create jenkins user. ****"
 # Home directory for the jenkins user

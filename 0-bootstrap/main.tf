@@ -41,7 +41,7 @@ resource "google_folder" "bootstrap" {
 
 module "seed_bootstrap" {
   source                         = "terraform-google-modules/bootstrap/google"
-  version                        = "~> 5.0"
+  version                        = "~> 6.0"
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
   project_id                     = "${var.project_prefix}-b-seed"
@@ -102,7 +102,7 @@ resource "google_billing_account_iam_member" "tf_billing_admin" {
 // Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 module "cloudbuild_bootstrap" {
   source                      = "terraform-google-modules/bootstrap/google//modules/cloudbuild"
-  version                     = "~> 5.0"
+  version                     = "~> 6.0"
   org_id                      = var.org_id
   folder_id                   = google_folder.bootstrap.id
   project_id                  = "${var.project_prefix}-b-cicd"
@@ -117,7 +117,6 @@ module "cloudbuild_bootstrap" {
   cloudbuild_apply_filename   = "cloudbuild-tf-apply.yaml"
   project_prefix              = var.project_prefix
   cloud_source_repos          = var.cloud_source_repos
-  terraform_validator_release = "v0.6.0"
   terraform_version           = "0.13.7"
   terraform_version_sha256sum = "4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"
 

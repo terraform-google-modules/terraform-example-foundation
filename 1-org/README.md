@@ -196,7 +196,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
 **Troubleshooting:**
 If you received a `PERMISSION_DENIED` error running the `gcloud access-context-manager` or the `gcloud scc notifications` commands you can append
 ```
---impersonate-service-account=org-terraform@<SEED_PROJECT_ID>.iam.gserviceaccount.com
+--impersonate-service-account=terraform-org-sa@<SEED_PROJECT_ID>.iam.gserviceaccount.com
 ```
 to run the command as the Terraform service account.
 
@@ -282,11 +282,11 @@ to run the command as the Terraform service account.
 We will now deploy our environment (production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 1-org step and only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/install.md) in the **Install Terraform Validator** section and install version `v0.4.0` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
 1. Run `./tf-wrapper.sh init production`.
-1. Run `./tf-wrapper.sh plan production` and review output.
-1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
-1. Run `./tf-wrapper.sh apply production`.
+2. Run `./tf-wrapper.sh plan production` and review output.
+3. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
+4. Run `./tf-wrapper.sh apply production`.
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan production` before run `./tf-wrapper.sh apply production`.

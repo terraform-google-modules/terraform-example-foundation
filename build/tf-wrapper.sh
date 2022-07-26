@@ -127,10 +127,7 @@ tf_validate() {
   echo "      At environment: ${tf_component}/${tf_env} "
   echo "      Using policy from: ${policy_file_path} "
   echo "*****************************************************"
-  if ! command -v terraform-validator &> /dev/null; then
-    echo "terraform-validator not found!  Check path or visit"
-    echo "https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/install.md"
-  elif [ -z "$policy_file_path" ]; then
+  if [ -z "$policy_file_path" ]; then
     echo "no policy repo found! Check the argument provided for policysource to this script."
     echo "https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/policy_library.md"
   else
@@ -146,7 +143,7 @@ tf_validate() {
           popd
         fi
       fi
-      terraform-validator validate "${tf_env}.json" --policy-path="${policy_file_path}" --project="${project_id}" || exit 33
+      gcloud beta terraform vet "${tf_env}.json" --policy-library="${policy_file_path}" --project="${project_id}" || exit 33
       cd "$base_dir" || exit
     else
       echo "ERROR:  ${path} does not exist"

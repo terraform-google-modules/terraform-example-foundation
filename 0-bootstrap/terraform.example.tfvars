@@ -31,9 +31,9 @@ default_region = "us-central1"
 // The folder must already exist.
 //parent_folder = "01234567890"
 
-// Optional - for enabling the automatic groups creation, uncoment the create_groups_holder
+// Optional - for enabling the automatic groups creation, uncoment the groups
 // variable and update the values with the desired group names
-//create_groups_holder = {
+//groups = {
 //  create_groups = true,
 //  billing_project = "billing-project",
 //  required_groups = {

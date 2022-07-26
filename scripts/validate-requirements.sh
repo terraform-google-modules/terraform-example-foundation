@@ -17,7 +17,6 @@ BILLING_ACCOUNT="$3"
 
 # Compare the two float numbers
 function compare_version(){
-    echo "comparing versions $1 and $2"
 
     if [[ $1 == $2 ]]; then
         return 0
@@ -49,11 +48,10 @@ function compare_version(){
 
 # Validate the Terraform installation and version
 function validate_terraform(){
-    which terraform
+    which terraform >/dev/null
     if [ $? -ne 0 ]; then
         echo "Terraform not found."
         echo "Visit https://learn.hashicorp.com/tutorials/terraform/install-cli and follow the instructions to install Terraform."
-        exit 1
     else
         TERRAFORM_CURRENT_VERSION=$(terraform version -json | jq -r .terraform_version)
         compare_version $TERRAFORM_CURRENT_VERSION $TF_VERSION
@@ -61,65 +59,62 @@ function validate_terraform(){
             echo "An error was found with the Terraform installation."
             echo "Terraform version $TF_VERSION is required."
             echo "Visit https://learn.hashicorp.com/tutorials/terraform/install-cli and follow the instructions to install Terraform."
-            exit 1
         fi
     fi
 }
 
 # Validate the Google Cloud SDK installation and version
 function validate_gcloud(){
-    which gcloud
+    which gcloud >/dev/null
     if [ $? -ne 0 ]; then
         echo "Gcloud not found."
         echo "Visit https://cloud.google.com/sdk/docs/install and follow the instructions to install gcloud CLI."
-        exit 1
     else
         GCLOUD_CURRENT_VERSION=$(gcloud version --format=json | jq -r '."Google Cloud SDK"')
         compare_version $GCLOUD_CURRENT_VERSION $GCLOUD_SDK_VERSION
         if [ $? -eq 2 ]; then
             echo "Gcloud version $GCLOUD_SDK_VERSION is required."
             echo "Visit https://cloud.google.com/sdk/docs/install and follow the instructions to install gcloud CLI."
-            exit 1
         fi
     fi
 }
 # Validate the Git installation and version
 function validate_git(){
-    which git
+    which git >/dev/null
     if [ $? -ne 0 ]; then
         echo "git not found."
         echo "Visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git and follow the instructions to install Git."
-        exit 1
     else
-        git version | grep -e $GIT_VERSION
+        git version | grep -e $GIT_VERSION >/dev/null
         if [ $? -ne 0 ]; then
             echo "An error was found with the git installation."
             echo "Version required is $GIT_VERSION"
             echo "Visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git and follow the instructions to install Git."
-            exit 1
         fi
+    fi
+
+    git config init.defaultBranch | grep "main" >/dev/null
+    if [ $? -ne 0 ]; then
+        echo "git defaul branch must be configured."
+        echo "See the instructions at https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/TROUBLESHOOTING.md#default-branch-setting ."
     fi
 }
 
 # Validate the Configuration of the Gcloud CLI
 function validate_gcloud_configuration(){
-    gcloud config get-value account 2> end-user-credential-output.txt
-    cat end-user-credential-output.txt | grep "unset"
+    gcloud config get-value account 2> end-user-credential-output.txt >/dev/null
+    cat end-user-credential-output.txt | grep "unset" >/dev/null
     if [ $? -eq 0 ]; then
         echo "You must configure an End User Credential."
         echo "Visit https://cloud.google.com/sdk/gcloud/reference/auth/login and follow the instructions to authorize gcloud to access the Cloud Platform with Google user credentials."
-        rm -Rf end-user-credential-output.txt
-        exit 1
     fi
     rm -Rf end-user-credential-output.txt
 
-    gcloud auth application-default print-access-token 2> application-default-credential-output.txt
+    gcloud auth application-default print-access-token 2> application-default-credential-output.txt >/dev/null
     cat application-default-credential-output.txt | grep "Could not automatically determine credentials"
     if [ $? -eq 0 ]; then
         echo "You must configure an Application Default Credential."
         echo "Visit https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login and follow the instructions to authorize gcloud to access the Cloud Platform with Google user credentials."
-        rm -Rf application-default-credential-output.txt
-        exit 1
     fi
     rm -Rf application-default-credential-output.txt
 }
@@ -132,7 +127,6 @@ function validate_credential_roles(){
 
 # Verifies wheter a user is assigned to the expected Orgzanization Level roles
 function check_org_level_roles(){
-    echo "Checking org level roles for $1 at organization $2..."
 
     gcloud organizations get-iam-policy $2 \
     --filter="bindings.members:$1" \
@@ -142,15 +136,12 @@ function check_org_level_roles(){
     lines=$(cat org-level-roles-output.txt | grep -e roles/resourcemanager.folderCreator -e roles/resourcemanager.organizationAdmin| wc -l)
     if [ $lines -ne 2 ]; then
         echo "The User must have the Organization Roles resourcemanager.folderCreator and resourcemanager.organizationAdmin"
-        rm -Rf org-level-roles-output.txt
-        exit 1
     fi
     rm -Rf org-level-roles-output.txt
 }
 
 # Verifies wheter a user is assigned to the expected Billing Level roles
 function check_billing_account_roles(){
-    echo "Checking billing account roles for $1 at billing account $2..."
 
     gcloud beta billing accounts get-iam-policy $2 \
         --filter="bindings.members:$1" \
@@ -160,12 +151,21 @@ function check_billing_account_roles(){
     lines=$(cat billing-account-roles.txt | grep -e roles/billing.admin | wc -l)
     if [ $lines -ne 1 ]; then
         echo "The User must have the Billing Account Role billing.admin"
-        rm -Rf billing-account-roles.txt
-        exit 1
     fi
     rm -Rf billing-account-roles.txt
 }
 
+# Checks if initial config was done for 0-bootstrap step
+function validate_bootstrap_step(){
+    FILE=0-bootstrap/terraform.tfvars
+    if [ ! -f "$FILE" ]; then
+        echo "$FILE does not exists."
+    else
+        if [ $(grep -c "REPLACE_ME" $FILE) != 0 ]; then
+            echo "$FILE must have required values fullfiled."
+        fi
+    fi
+}
 
 echo "Validating Terraform installation..."
 validate_terraform
@@ -181,3 +181,6 @@ validate_gcloud_configuration
 
 echo "Validating roles assignement for current end user credential..."
 validate_credential_roles
+
+echo "Validating 0-bootstrap configuration..."
+validate_bootstrap_step

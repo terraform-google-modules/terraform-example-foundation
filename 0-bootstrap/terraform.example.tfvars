@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
+org_id = "REPLACE_ME"
 
-billing_account = "000000-000000-000000"
+billing_account = "REPLACE_ME"
 
-group_org_admins = "gcp-organization-admins@example.com"
+group_org_admins = "REPLACE_ME"
 
-group_billing_admins = "gcp-billing-admins@example.com"
+group_billing_admins = "REPLACE_ME"
 
-default_region = "us-central1"
+# Example filling
+# group_org_admins = "gcp-organization-admins@example.com"
+# group_billing_admins = "gcp-billing-admins@example.com"
+
+default_region = "REPLACE_ME"
 
 // Optional - for an organization with existing projects or for development/validation.
 // Uncomment this variable to place all the example foundation resources under

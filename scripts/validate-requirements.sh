@@ -13,6 +13,7 @@ END_USER_CREDENTIAL="$1"
 ORGANIZATION_ID="$2"
 BILLING_ACCOUNT="$3"
 
+ERRORS=""
 # -------------------------- Funcions ---------------------------
 
 # Compare the two float numbers
@@ -52,6 +53,7 @@ function validate_terraform(){
     if [ $? -ne 0 ]; then
         echo "Terraform not found."
         echo "Visit https://learn.hashicorp.com/tutorials/terraform/install-cli and follow the instructions to install Terraform."
+        ERRORS+=$'Terraform not found\n'
     else
         TERRAFORM_CURRENT_VERSION=$(terraform version -json | jq -r .terraform_version)
         compare_version $TERRAFORM_CURRENT_VERSION $TF_VERSION
@@ -59,6 +61,7 @@ function validate_terraform(){
             echo "An error was found with the Terraform installation."
             echo "Terraform version $TF_VERSION is required."
             echo "Visit https://learn.hashicorp.com/tutorials/terraform/install-cli and follow the instructions to install Terraform."
+            ERRORS+=$'Terraform version is incompatible.\n'
         fi
     fi
 }
@@ -69,12 +72,14 @@ function validate_gcloud(){
     if [ $? -ne 0 ]; then
         echo "Gcloud not found."
         echo "Visit https://cloud.google.com/sdk/docs/install and follow the instructions to install gcloud CLI."
+        ERRORS+=$'gcloud not found.\n'
     else
         GCLOUD_CURRENT_VERSION=$(gcloud version --format=json | jq -r '."Google Cloud SDK"')
         compare_version $GCLOUD_CURRENT_VERSION $GCLOUD_SDK_VERSION
         if [ $? -eq 2 ]; then
             echo "Gcloud version $GCLOUD_SDK_VERSION is required."
             echo "Visit https://cloud.google.com/sdk/docs/install and follow the instructions to install gcloud CLI."
+            ERRORS+=$'gcloud version is incompatible.\n'
         fi
     fi
 }
@@ -84,12 +89,14 @@ function validate_git(){
     if [ $? -ne 0 ]; then
         echo "git not found."
         echo "Visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git and follow the instructions to install Git."
+        ERRORS+=$'git not found.\n'
     else
         git version | grep -e $GIT_VERSION >/dev/null
         if [ $? -ne 0 ]; then
             echo "An error was found with the git installation."
             echo "Version required is $GIT_VERSION"
             echo "Visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git and follow the instructions to install Git."
+            ERRORS+=$'git version is incompatible.\n'
         fi
     fi
 
@@ -97,6 +104,7 @@ function validate_git(){
     if [ $? -ne 0 ]; then
         echo "git defaul branch must be configured."
         echo "See the instructions at https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/TROUBLESHOOTING.md#default-branch-setting ."
+        ERRORS+=$'git default branch must be configured.\n'
     fi
 }
 
@@ -107,6 +115,7 @@ function validate_gcloud_configuration(){
     if [ $? -eq 0 ]; then
         echo "You must configure an End User Credential."
         echo "Visit https://cloud.google.com/sdk/gcloud/reference/auth/login and follow the instructions to authorize gcloud to access the Cloud Platform with Google user credentials."
+        ERRORS+=$'gcloud end user credential not configured.\n'
     fi
     rm -Rf end-user-credential-output.txt
 
@@ -115,6 +124,7 @@ function validate_gcloud_configuration(){
     if [ $? -eq 0 ]; then
         echo "You must configure an Application Default Credential."
         echo "Visit https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login and follow the instructions to authorize gcloud to access the Cloud Platform with Google user credentials."
+        ERRORS+=$'gcloud application default credential not configured.\n'
     fi
     rm -Rf application-default-credential-output.txt
 }
@@ -136,6 +146,7 @@ function check_org_level_roles(){
     lines=$(cat org-level-roles-output.txt | grep -e roles/resourcemanager.folderCreator -e roles/resourcemanager.organizationAdmin| wc -l)
     if [ $lines -ne 2 ]; then
         echo "The User must have the Organization Roles resourcemanager.folderCreator and resourcemanager.organizationAdmin"
+        ERRORS+=$'There are missing organization level roles on the Credential.\n'
     fi
     rm -Rf org-level-roles-output.txt
 }
@@ -151,6 +162,7 @@ function check_billing_account_roles(){
     lines=$(cat billing-account-roles.txt | grep -e roles/billing.admin | wc -l)
     if [ $lines -ne 1 ]; then
         echo "The User must have the Billing Account Role billing.admin"
+        ERRORS+=$'There are missing billing account level roles on the Credential.\n'
     fi
     rm -Rf billing-account-roles.txt
 }
@@ -163,6 +175,7 @@ function validate_bootstrap_step(){
     else
         if [ $(grep -c "REPLACE_ME" $FILE) != 0 ]; then
             echo "$FILE must have required values fullfiled."
+            ERRORS+=$'terraform.tfvars file must be correctly fullfiled for 0-bootstrap step.\n'
         fi
     fi
 }
@@ -184,3 +197,13 @@ validate_credential_roles
 
 echo "Validating 0-bootstrap configuration..."
 validate_bootstrap_step
+
+echo "......................................."
+if [ -z "$ERRORS" ]; then
+    echo "Validation successfull!"
+    echo "No errors found."
+else
+    echo "Validation failed!"
+    echo "Errors found:"
+    echo "$ERRORS"
+fi

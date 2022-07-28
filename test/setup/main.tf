@@ -15,7 +15,7 @@
  */
 
 locals {
-  random_id      = replace(lower(random_id.random_project_id_suffix.id), "/[_-=]/", "t")
+  random_id      = replace(lower(random_id.random_project_id_suffix.id), "/[_-]/", "t")
   project_prefix = "${replace(substr(local.random_id, 0, 1), "/[0123456789]/", "z")}${substr(local.random_id, 1, 3)}"
 }
 

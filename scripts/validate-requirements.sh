@@ -160,7 +160,7 @@ function check_billing_account_roles(){
         --format="table(bindings.role)" > billing-account-roles.txt
 
     lines=$(cat billing-account-roles.txt | grep -e roles/billing.admin | wc -l)
-    if [ $lines -ne 1 ]; then
+    if [ "$lines" -ne 1 ]; then
         echo "The User must have the Billing Account Role billing.admin"
         ERRORS+=$'There are missing billing account level roles on the Credential.\n'
     fi
@@ -173,7 +173,7 @@ function validate_bootstrap_step(){
     if [ ! -f "$FILE" ]; then
         echo "$FILE does not exists."
     else
-        if [ $(grep -c "REPLACE_ME" $FILE) != 0 ]; then
+        if [ '$(grep -c "REPLACE_ME" $FILE)' != 0 ]; then
             echo "$FILE must have required values fullfiled."
             ERRORS+=$'terraform.tfvars file must be correctly fullfiled for 0-bootstrap step.\n'
         fi

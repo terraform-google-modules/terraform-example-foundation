@@ -68,6 +68,10 @@ output "monitoring_workspace_users" {
   value = var.group_email
 }
 
+output "project_prefix" {
+  value = local.project_prefix
+}
+
 output "domains_to_allow" {
   value = [var.domain_to_allow]
 }

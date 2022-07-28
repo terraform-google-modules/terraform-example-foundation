@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+locals {
+  random_id      = replace(lower(random_id.random_project_id_suffix.id), "/[_-=]/", "t")
+  project_prefix = "${replace(substr(local.random_id, 0, 1), "/[0123456789]/", "z")}${substr(local.random_id, 1, 3)}"
+}
+
 resource "random_id" "random_project_id_suffix" {
   byte_length = 2
 }
@@ -27,7 +32,7 @@ module "project" {
   source  = "terraform-google-modules/project-factory/google"
   version = "~> 13.0"
 
-  name              = "ci-foundation"
+  name              = "ci-foundation-${local.project_prefix}"
   random_project_id = true
   org_id            = var.org_id
   folder_id         = var.folder_id

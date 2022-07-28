@@ -103,7 +103,6 @@ To enable automatic creation of the [required groups](https://cloud.google.com/a
 - Have an existing project for Cloud Identity API billing.
 - Enable the Cloud Identity API(`cloudidentity.googleapis.com`) on the billing project.
 - Grant role `roles/serviceusage.serviceUsageConsumer` to the user running Terraform on the billing project.
-- Uncomment the `google-beta` provider definition at the [provider.tf](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/provider.tf).
 - Provide values for the groups and billing project in the variable `groups`.
 
 All groups in the `groups.required_groups` are required.

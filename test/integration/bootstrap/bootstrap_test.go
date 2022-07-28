@@ -17,6 +17,7 @@ package bootstrap
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
@@ -38,6 +39,7 @@ func TestBootstrap(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
+		tft.WithRetryableTerraformErrors(tft.CommonRetryableErrors, 3, 3*time.Minute),
 	)
 
 	cloudSourceRepos := []string{

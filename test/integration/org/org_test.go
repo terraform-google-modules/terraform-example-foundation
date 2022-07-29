@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
@@ -48,6 +49,7 @@ func TestOrg(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
+		tft.WithRetryableTerraformErrors(tft.CommonRetryableErrors, 2, 10*time.Minute),
 	)
 
 	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")

@@ -39,7 +39,7 @@ func TestBootstrap(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
-		tft.WithRetryableTerraformErrors(tft.CommonRetryableErrors, 3, 3*time.Minute),
+		tft.WithRetryableTerraformErrors(tft.CommonRetryableErrors, 2, 10*time.Minute),
 	)
 
 	cloudSourceRepos := []string{

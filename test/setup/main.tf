@@ -15,16 +15,16 @@
  */
 
 locals {
-  random_id      = replace(lower(random_id.random_project_id_suffix.id), "/[_-]/", "t")
-  project_prefix = "${replace(substr(local.random_id, 0, 1), "/[0123456789]/", "z")}${substr(local.random_id, 1, 3)}"
+  random_id          = replace(lower(random_id.source.id), "/[_-]/", "t")
+  project_randomness = "${replace(substr(local.random_id, 0, 1), "/[0123456789]/", "z")}${substr(local.random_id, 1, 3)}"
 }
 
-resource "random_id" "random_project_id_suffix" {
+resource "random_id" "source" {
   byte_length = 2
 }
 
 resource "google_folder" "test_folder" {
-  display_name = "test_foundation_folder_${random_id.random_project_id_suffix.hex}"
+  display_name = "test_foundation_folder_${random_id.source.hex}"
   parent       = "folders/${var.folder_id}"
 }
 
@@ -32,7 +32,7 @@ module "project" {
   source  = "terraform-google-modules/project-factory/google"
   version = "~> 13.0"
 
-  name              = "ci-foundation-${local.project_prefix}"
+  name              = "ci-foundation-${local.project_randomness}"
   random_project_id = true
   org_id            = var.org_id
   folder_id         = var.folder_id

@@ -22,11 +22,11 @@ group_org_admins = "REPLACE_ME"
 
 group_billing_admins = "REPLACE_ME"
 
-# Example filling
+# Example of values for the groups
 # group_org_admins = "gcp-organization-admins@example.com"
 # group_billing_admins = "gcp-billing-admins@example.com"
 
-default_region = "REPLACE_ME"
+default_region = "us-central1"
 
 // Optional - for an organization with existing projects or for development/validation.
 // Uncomment this variable to place all the example foundation resources under

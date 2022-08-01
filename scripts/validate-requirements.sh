@@ -19,7 +19,7 @@
 
 # -------------------------- Variables --------------------------
 # Expected versions of the installers
-TF_VERSION="0.13.7"
+TF_VERSION="1.2.1"
 GCLOUD_SDK_VERSION="319.0.0"
 GIT_VERSION="2.25.1"
 # User Inputs
@@ -30,7 +30,7 @@ BILLING_ACCOUNT="$3"
 ERRORS=""
 # -------------------------- Funcions ---------------------------
 
-# Compare the two float numbers
+# Compare two semantic versions
 function compare_version(){
     # echo "comparing $1 and $2"
     if [[ "$1" == "$2" ]]; then
@@ -73,8 +73,8 @@ function validate_terraform(){
     else
         TERRAFORM_CURRENT_VERSION=$(terraform version -json | jq -r .terraform_version)
         compare_version "$TERRAFORM_CURRENT_VERSION" "$TF_VERSION"
-        if [ $? -eq 2 ]; then
-            echo "An error was found with the Terraform installation."
+        if [ $? -ne 0 ]; then
+            echo "An incompatibly was found in Terraform version."
             echo "Terraform version $TF_VERSION is required."
             echo "Visit https://learn.hashicorp.com/tutorials/terraform/install-cli and follow the instructions to install Terraform."
             ERRORS+=$'Terraform version is incompatible.\n'
@@ -85,19 +85,21 @@ function validate_terraform(){
 # Validate the Google Cloud SDK installation and version
 function validate_gcloud(){
     if [ ! "$(command -v gcloud)" ]; then
-        echo "Gcloud not found."
+        echo "gcloud CLI not found."
         echo "Visit https://cloud.google.com/sdk/docs/install and follow the instructions to install gcloud CLI."
         ERRORS+=$'gcloud not found.\n'
     else
         GCLOUD_CURRENT_VERSION=$(gcloud version --format=json | jq -r '."Google Cloud SDK"')
         compare_version "$GCLOUD_CURRENT_VERSION" "$GCLOUD_SDK_VERSION"
         if [ $? -eq 2 ]; then
-            echo "Gcloud version $GCLOUD_SDK_VERSION is required."
+            echo "An incompatibly was found in gcloud version."
+            echo "Version required is at least $GCLOUD_SDK_VERSION"
             echo "Visit https://cloud.google.com/sdk/docs/install and follow the instructions to install gcloud CLI."
             ERRORS+=$'gcloud version is incompatible.\n'
         fi
     fi
 }
+
 # Validate the Git installation and version
 function validate_git(){
     if [ ! "$(command -v git)" ]; then
@@ -108,8 +110,8 @@ function validate_git(){
         GIT_CURRENT_VERSION=$(git version | awk '{print $3}')
         compare_version "$GIT_CURRENT_VERSION" "$GIT_VERSION"
         if [ $? -eq 2 ]; then
-            echo "An error was found with the git installation."
-            echo "Version required is $GIT_VERSION"
+            echo "An incompatibly was found in git version."
+            echo "Version required is at least $GIT_VERSION"
             echo "Visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git and follow the instructions to install Git."
             ERRORS+=$'git version is incompatible.\n'
         fi
@@ -124,21 +126,20 @@ function validate_git(){
 
 # Validate the Configuration of the Gcloud CLI
 function validate_gcloud_configuration(){
-    gcloud config get-value account 2> end-user-credential-output.txt >/dev/null
-    if grep -q 'unset' end-user-credential-output.txt ; then
+
+    END_USER_CREDENTIAL_OUTPUT="$(gcloud config get-value account 2>&1 >/dev/null)"
+    if [ "$(echo "$END_USER_CREDENTIAL_OUTPUT" | grep -c unset)" -eq 1 ]; then
         echo "You must configure an End User Credential."
         echo "Visit https://cloud.google.com/sdk/gcloud/reference/auth/login and follow the instructions to authorize gcloud to access the Cloud Platform with Google user credentials."
         ERRORS+=$'gcloud end user credential not configured.\n'
     fi
-    rm -Rf end-user-credential-output.txt
 
-    gcloud auth application-default print-access-token 2> application-default-credential-output.txt >/dev/null
-    if grep -q 'Could not automatically determine credentials' application-default-credential-output.txt ; then
+    APPLICATION_DEFAULT_CREDENTIAL_OUTPUT="$(gcloud auth application-default print-access-token 2>&1 >/dev/null)"
+    if [ "$(echo "$APPLICATION_DEFAULT_CREDENTIAL_OUTPUT" | grep -c 'Could not automatically determine credentials')" -eq 1 ]; then
         echo "You must configure an Application Default Credential."
         echo "Visit https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login and follow the instructions to authorize gcloud to access the Cloud Platform with Google user credentials."
         ERRORS+=$'gcloud application default credential not configured.\n'
     fi
-    rm -Rf application-default-credential-output.txt
 }
 
 # Function to validate the Configuration of the Gcloud CLI
@@ -150,33 +151,35 @@ function validate_credential_roles(){
 # Verifies wheter a user is assigned to the expected Orgzanization Level roles
 function check_org_level_roles(){
 
-    gcloud organizations get-iam-policy "$2" \
-    --filter="bindings.members:$1" \
-    --flatten="bindings[].members" \
-    --format="table(bindings.role)" 2>/dev/null > org-level-roles-output.txt
+    ORG_LEVEL_ROLES_OUTPUT=$(
+        gcloud organizations get-iam-policy "$2" \
+        --filter="bindings.members:$1" \
+        --flatten="bindings[].members" \
+        --format="table(bindings.role)" 2>/dev/null)
 
-    lines=$(grep -c -e roles/resourcemanager.folderCreator -e roles/resourcemanager.organizationAdmin org-level-roles-output.txt)
+    lines=$(echo "$ORG_LEVEL_ROLES_OUTPUT" | grep -o -e roles/resourcemanager.folderCreator -e roles/resourcemanager.organizationAdmin | wc -l)
+
     if [ "$lines" -ne 2 ]; then
         echo "The User must have the Organization Roles resourcemanager.folderCreator and resourcemanager.organizationAdmin"
         ERRORS+=$'There are missing organization level roles on the Credential.\n'
     fi
-    rm -Rf org-level-roles-output.txt
 }
 
 # Verifies wheter a user is assigned to the expected Billing Level roles
 function check_billing_account_roles(){
 
-    gcloud beta billing accounts get-iam-policy "$2" \
+    BILLING_LEVEL_ROLES_OUTPUT=$(
+        gcloud beta billing accounts get-iam-policy "$2" \
         --filter="bindings.members:$1" \
         --flatten="bindings[].members" \
-        --format="table(bindings.role)" 2>/dev/null > billing-account-roles.txt
+        --format="table(bindings.role)" 2>/dev/null)
 
-    lines=$(grep -c roles/billing.admin billing-account-roles.txt)
+    lines=$(echo "$BILLING_LEVEL_ROLES_OUTPUT" | grep -o -e roles/billing.admin | wc -l)
+
     if [ "$lines" -ne 1 ]; then
         echo "The User must have the Billing Account Role billing.admin"
         ERRORS+=$'There are missing billing account level roles on the Credential.\n'
     fi
-    rm -Rf billing-account-roles.txt
 }
 
 # Checks if initial config was done for 0-bootstrap step
@@ -192,30 +195,42 @@ function validate_bootstrap_step(){
     fi
 }
 
-echo "Validating Terraform installation..."
-validate_terraform
+function main(){
 
-echo "Validating Google Cloud SDK installation..."
-validate_gcloud
+    if [ -z "$END_USER_CREDENTIAL" ] || [ -z "$ORGANIZATION_ID" ] || [ -z "$BILLING_ACCOUNT" ]; then
+        echo "Some parameter is missing."
+        echo "To use the script correctly make sure to pass the varibles like the following:"
+        echo "bash scripts/validate-requirements.sh END_USER_EMAIL ORGANIZATION_ID BILLING_ACCOUNT_ID"
+        exit 1
+    fi
 
-echo "Validating Git installation..."
-validate_git
+    echo "Validating Terraform installation..."
+    validate_terraform
 
-echo "Validating local gcloud configuration..."
-validate_gcloud_configuration
+    echo "Validating Google Cloud SDK installation..."
+    validate_gcloud
 
-echo "Validating roles assignement for current end user credential..."
-validate_credential_roles
+    echo "Validating Git installation..."
+    validate_git
 
-echo "Validating 0-bootstrap configuration..."
-validate_bootstrap_step
+    echo "Validating local gcloud configuration..."
+    validate_gcloud_configuration
 
-echo "......................................."
-if [ -z "$ERRORS" ]; then
-    echo "Validation successfull!"
-    echo "No errors found."
-else
-    echo "Validation failed!"
-    echo "Errors found:"
-    echo "$ERRORS"
-fi
+    echo "Validating roles assignement for current end user credential..."
+    validate_credential_roles
+
+    echo "Validating 0-bootstrap configuration..."
+    validate_bootstrap_step
+
+    echo "......................................."
+    if [ -z "$ERRORS" ]; then
+        echo "Validation successfull!"
+        echo "No errors found."
+    else
+        echo "Validation failed!"
+        echo "Errors found:"
+        echo "$ERRORS"
+    fi
+}
+
+main

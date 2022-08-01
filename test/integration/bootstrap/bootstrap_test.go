@@ -15,15 +15,20 @@
 package bootstrap
 
 import (
+	"context"
 	"fmt"
+	"io"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
+	"golang.org/x/oauth2/google"
 )
 
 // getResultFieldStrSlice parses a field of a results list into a string slice
@@ -35,11 +40,35 @@ func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
 	return s
 }
 
+func checkAPIEnabled(t *testing.T, projectID, api string) (string, error) {
+	httpClient, err := google.DefaultClient(context.Background(), "https://www.googleapis.com/auth/cloud-platform")
+	if err != nil {
+		return "", err
+	}
+	serviceUsageEndpoint := fmt.Sprintf("https://serviceusage.googleapis.com/v1/projects/%s/services/%s", projectID, api)
+	resp, err := httpClient.Get(serviceUsageEndpoint)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	result := utils.ParseJSONResult(t, string(body))
+	resultName := result.Get("name").String()
+	resultState := result.Get("state").String()
+	if !strings.Contains(resultName, api) || resultState != "ENABLED" {
+		return "", fmt.Errorf("API %s not enable in project %s", api, projectID)
+	}
+	return "API enabled", nil
+}
+
 func TestBootstrap(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
-		tft.WithRetryableTerraformErrors(tft.CommonRetryableErrors, 2, 10*time.Minute),
+		tft.WithRetryableTerraformErrors(tft.CommonRetryableErrors, 3, 3*time.Minute),
 	)
 
 	cloudSourceRepos := []string{
@@ -78,6 +107,16 @@ func TestBootstrap(t *testing.T) {
 	}
 
 	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
+
+	bootstrap.DefineApply(
+		func(assert *assert.Assertions) {
+			projectID := bootstrap.GetTFSetupStringOutput("project_id")
+			api := "cloudresourcemanager.googleapis.com"
+			retry.DoWithRetry(t, "api warm up", 5, 2*time.Minute, func() (string, error) {
+				return checkAPIEnabled(t, projectID, api)
+			})
+			bootstrap.DefaultApply(assert)
+		})
 
 	bootstrap.DefineVerify(
 		func(assert *assert.Assertions) {

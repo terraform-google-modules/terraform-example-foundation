@@ -34,6 +34,7 @@ ERRORS=""
 function compare_version(){
     # echo "comparing $1 and $2"
     if [[ "$1" == "$2" ]]; then
+        echo 0
         return 0
     fi
 
@@ -53,10 +54,12 @@ function compare_version(){
         fi
         if [[ ${version1[i]} > ${version2[i]} ]]
         then
+            echo 1
             return 1
         fi
         if [[ ${version1[i]} < ${version2[i]} ]]
         then
+            echo 2
             return 2
         fi
     done
@@ -72,8 +75,7 @@ function validate_terraform(){
         ERRORS+=$'Terraform not found\n'
     else
         TERRAFORM_CURRENT_VERSION=$(terraform version -json | jq -r .terraform_version)
-        compare_version "$TERRAFORM_CURRENT_VERSION" "$TF_VERSION"
-        if [ $? -ne 0 ]; then
+        if [ "$(compare_version "$TERRAFORM_CURRENT_VERSION" "$TF_VERSION")" -ne 0 ]; then
             echo "An incompatibly was found in Terraform version."
             echo "Terraform version $TF_VERSION is required."
             echo "Visit https://learn.hashicorp.com/tutorials/terraform/install-cli and follow the instructions to install Terraform."
@@ -90,8 +92,7 @@ function validate_gcloud(){
         ERRORS+=$'gcloud not found.\n'
     else
         GCLOUD_CURRENT_VERSION=$(gcloud version --format=json | jq -r '."Google Cloud SDK"')
-        compare_version "$GCLOUD_CURRENT_VERSION" "$GCLOUD_SDK_VERSION"
-        if [ $? -eq 2 ]; then
+        if [ "$(compare_version "$GCLOUD_CURRENT_VERSION" "$GCLOUD_SDK_VERSION")" -eq 2 ]; then
             echo "An incompatibly was found in gcloud version."
             echo "Version required is at least $GCLOUD_SDK_VERSION"
             echo "Visit https://cloud.google.com/sdk/docs/install and follow the instructions to install gcloud CLI."
@@ -108,8 +109,7 @@ function validate_git(){
         ERRORS+=$'git not found.\n'
     else
         GIT_CURRENT_VERSION=$(git version | awk '{print $3}')
-        compare_version "$GIT_CURRENT_VERSION" "$GIT_VERSION"
-        if [ $? -eq 2 ]; then
+        if [ "$(compare_version "$GIT_CURRENT_VERSION" "$GIT_VERSION")" -eq 2 ]; then
             echo "An incompatibly was found in git version."
             echo "Version required is at least $GIT_VERSION"
             echo "Visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git and follow the instructions to install Git."

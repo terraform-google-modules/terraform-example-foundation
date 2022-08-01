@@ -111,10 +111,26 @@ func TestBootstrap(t *testing.T) {
 	bootstrap.DefineApply(
 		func(assert *assert.Assertions) {
 			projectID := bootstrap.GetTFSetupStringOutput("project_id")
-			api := "cloudresourcemanager.googleapis.com"
-			retry.DoWithRetry(t, "api warm up", 5, 2*time.Minute, func() (string, error) {
-				return checkAPIEnabled(t, projectID, api)
-			})
+			for _, api := range []string{
+				"cloudresourcemanager.googleapis.com",
+				"cloudbilling.googleapis.com",
+				"iam.googleapis.com",
+				"storage-api.googleapis.com",
+				"serviceusage.googleapis.com",
+				"cloudbuild.googleapis.com",
+				"sourcerepo.googleapis.com",
+				"cloudkms.googleapis.com",
+				"bigquery.googleapis.com",
+				"accesscontextmanager.googleapis.com",
+				"securitycenter.googleapis.com",
+				"servicenetworking.googleapis.com",
+				"billingbudgets.googleapis.com",
+			} {
+				retry.DoWithRetry(t, fmt.Sprintf("checking if %s API is enabled", api), 5, 2*time.Minute, func() (string, error) {
+					return checkAPIEnabled(t, projectID, api)
+				})
+			}
+
 			bootstrap.DefaultApply(assert)
 		})
 

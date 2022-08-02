@@ -214,12 +214,6 @@ func TestProjects(t *testing.T) {
 			)
 			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
 
-			// validate requirements
-			require.NotEmpty(t, sharedCloudBuildSA[env[0]])
-			require.NotEmpty(t, perimeterName)
-			require.NotEmpty(t, policyID)
-			require.NotEmpty(t, terraformSA)
-
 			vars := map[string]interface{}{
 				"app_infra_pipeline_cloudbuild_sa": sharedCloudBuildSA[env[0]],
 				"perimeter_name":                   perimeterName,
@@ -232,6 +226,17 @@ func TestProjects(t *testing.T) {
 				tft.WithVars(vars),
 				tft.WithRetryableTerraformErrors(retryableErrors, 3, 3*time.Minute),
 			)
+			projects.DefineApply(
+				func(assert *assert.Assertions) {
+					// validate requirements
+					require.NotEmpty(t, sharedCloudBuildSA[env[0]], "app_infra_pipeline_cloudbuild_sa should not be empty")
+					require.NotEmpty(t, perimeterName, "perimeter_name should not be empty")
+					require.NotEmpty(t, policyID, "access_context_manager_policy_id should not be empty")
+					require.NotEmpty(t, terraformSA, "terraform_service_account should not be empty")
+
+					projects.DefaultApply(assert)
+				})
+
 			projects.DefineVerify(
 				func(assert *assert.Assertions) {
 

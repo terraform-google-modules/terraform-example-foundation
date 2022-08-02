@@ -19,20 +19,16 @@
 
 # -------------------------- Variables --------------------------
 # Expected versions of the installers
-TF_VERSION="1.2.1"
+TF_VERSION="0.13.7"
 GCLOUD_SDK_VERSION="319.0.0"
 GIT_VERSION="2.25.1"
-# User Inputs
-END_USER_CREDENTIAL="$1"
-ORGANIZATION_ID="$2"
-BILLING_ACCOUNT="$3"
 
+# Collect the errors
 ERRORS=""
 # -------------------------- Funcions ---------------------------
 
 # Compare two semantic versions
 function compare_version(){
-    # echo "comparing $1 and $2"
     if [[ "$1" == "$2" ]]; then
         echo 0
         return 0
@@ -197,12 +193,9 @@ function validate_bootstrap_step(){
 
 function main(){
 
-    if [ -z "$END_USER_CREDENTIAL" ] || [ -z "$ORGANIZATION_ID" ] || [ -z "$BILLING_ACCOUNT" ]; then
-        echo "Some parameter is missing."
-        echo "To use the script correctly make sure to pass the varibles like the following:"
-        echo "bash scripts/validate-requirements.sh END_USER_EMAIL ORGANIZATION_ID BILLING_ACCOUNT_ID"
-        exit 1
-    fi
+    END_USER_CREDENTIAL="$u"
+    ORGANIZATION_ID="$o"
+    BILLING_ACCOUNT="$b"
 
     echo "Validating Terraform installation..."
     validate_terraform
@@ -232,5 +225,50 @@ function main(){
         echo "$ERRORS"
     fi
 }
+
+usage() {
+    echo
+    echo " Usage:"
+    echo "     $0 -o <organization id> -b <billing account id> -u <end user email>"
+    echo "         organization id          (required)"
+    echo "         billing account id       (required)"
+    echo "         end user email           (required)"
+    echo
+    exit 1
+}
+
+
+# Check for input variables
+while getopts ":o:b:u:" OPT; do
+  case ${OPT} in
+    o )
+      o=$OPTARG
+      ;;
+    b )
+      b=$OPTARG
+      ;;
+    u )
+      u=$OPTARG
+      ;;
+    : )
+      echo
+      echo " Error: option -${OPTARG} requires an argument"
+      usage
+      ;;
+   \? )
+      echo
+      echo " Error: invalid option -${OPTARG}"
+      usage
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+
+# Check for required input variables
+if [ -z "${o}" ] || [ -z "${b}" ]|| [ -z "${u}" ]; then
+  echo
+  echo " Error: -o <organization id>, -b <billing project> and -u <end user email> required."
+  usage
+fi
 
 main

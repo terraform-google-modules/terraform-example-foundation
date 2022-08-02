@@ -31,8 +31,6 @@ var (
 	retryableErrors = map[string]string{
 		// API Rate limit exceeded errors can be retryed.
 		".*rateLimitExceeded.*": "Rate limit exceeded.",
-		// Service Account error due to propagation.
-		".*Invalid service account.*": "Service account provided is not valid.",
 	}
 )
 

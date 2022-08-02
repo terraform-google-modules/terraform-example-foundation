@@ -126,7 +126,7 @@ func TestBootstrap(t *testing.T) {
 				"servicenetworking.googleapis.com",
 				"billingbudgets.googleapis.com",
 			} {
-				retry.DoWithRetry(t, fmt.Sprintf("checking if %s API is enabled", api), 5, 2*time.Minute, func() (string, error) {
+				retry.DoWithRetry(t, fmt.Sprintf("checking if %s API is enabled in project %s", api, projectID), 5, 2*time.Minute, func() (string, error) {
 					return checkAPIEnabled(t, projectID, api)
 				})
 			}

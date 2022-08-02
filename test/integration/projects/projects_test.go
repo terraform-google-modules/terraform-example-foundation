@@ -24,6 +24,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 )
 
@@ -212,6 +213,12 @@ func TestProjects(t *testing.T) {
 				tft.WithVars(netVars),
 			)
 			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
+
+			// validate requirements
+			require.NotEmpty(t, sharedCloudBuildSA[env[0]])
+			require.NotEmpty(t, perimeterName)
+			require.NotEmpty(t, policyID)
+			require.NotEmpty(t, terraformSA)
 
 			vars := map[string]interface{}{
 				"app_infra_pipeline_cloudbuild_sa": sharedCloudBuildSA[env[0]],

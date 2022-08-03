@@ -115,10 +115,10 @@ your current Jenkins manager (controller) environment.
     ```
 1. Run `terraform init`.
 1. Run `terraform plan` and review the output.
-1. To run terraform-validator steps please follow the [instructions](https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/install.md) in the **Install Terraform Validator** section and install version `v0.4.0`. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the terraform-validator binary must be in your PATH.
+1. To run terraform-validator steps please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
     1. Run `terraform plan -input=false -out bootstrap.tfplan`
     1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
-    1. Run `terraform-validator validate bootstrap.json --policy-path="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).
+    1. Run `gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).
 1. Run `terraform apply`.
 1. Run `terraform output terraform_service_account` to get the email address of the admin. You need this address in a later procedure.
 1. Run `terraform output gcs_bucket_tfstate` to get your Google Cloud bucket name from Terraform's state.
@@ -188,8 +188,12 @@ the following steps:
 |------|-------------|
 | cloudbuild\_project\_id | Project where CloudBuild configuration and terraform container image will reside. |
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
+| environment\_step\_terraform\_service\_account\_email | Environment Step Terraform Account |
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud/Build artifacts in CloudBuild project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for foundations pipelines in seed project. |
+| networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
+| organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |
+| projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
 | terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
 | terraform\_service\_account | Email for privileged service account for Terraform. |

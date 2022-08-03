@@ -21,7 +21,7 @@ steps:
     '--tag=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform',
     '--build-arg=TERRAFORM_VERSION=${_TERRAFORM_VERSION}',
     '--build-arg=TERRAFORM_VERSION_SHA256SUM=${_TERRAFORM_VERSION_SHA256SUM}',
-    '--build-arg=TERRAFORM_VALIDATOR_RELEASE=${_TERRAFORM_VALIDATOR_RELEASE}',
+    '--build-arg=GCLOUD_VERSION=${_GCLOUD_VERSION}',
     '.'
     ]
 - name: '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform'
@@ -29,5 +29,5 @@ steps:
 substitutions:
   _TERRAFORM_VERSION: '0.13.7' # default value
   _TERRAFORM_VERSION_SHA256SUM: '4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957' # default value
-  _TERRAFORM_VALIDATOR_RELEASE: 'v0.4.0'
+  _GCLOUD_VERSION: '393.0.0-slim'
 images: ['${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform']

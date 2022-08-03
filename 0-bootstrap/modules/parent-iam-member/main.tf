@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-/******************************************
-  Folder lookups
-*****************************************/
-
-data "google_active_folder" "common" {
-  display_name = "${var.folder_prefix}-common"
-  parent       = local.parent
+locals {
+  org_id    = var.parent_type == "organization" ? var.parent_id : ""
+  folder_id = var.parent_type == "folder" ? var.parent_id : ""
 }
 
-/******************************************
-  Environment Folder
-*****************************************/
+resource "google_organization_iam_member" "org_parent_iam" {
+  for_each = toset(local.org_id != "" ? var.roles : [])
 
-resource "google_folder" "env" {
-  display_name = "${var.folder_prefix}-${var.env}"
-  parent       = local.parent
+  org_id = local.org_id
+  role   = each.key
+  member = var.member
 }
 
-resource "time_sleep" "wait_30_seconds" {
-  depends_on = [google_folder.env]
+resource "google_folder_iam_member" "folder_parent_iam" {
+  for_each = toset(local.folder_id != "" ? var.roles : [])
 
-  destroy_duration = "30s"
+  folder = local.folder_id
+  role   = each.key
+  member = var.member
 }

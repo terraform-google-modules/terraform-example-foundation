@@ -22,7 +22,7 @@ locals {
 module "project" {
   source            = "terraform-google-modules/project-factory/google"
   version           = "~> 13.0"
-  random_project_id = "true"
+  random_project_id = true
   activate_apis     = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
   name              = "${var.project_prefix}-${var.business_code}-${local.env_code}-${var.project_suffix}"
   org_id            = var.org_id

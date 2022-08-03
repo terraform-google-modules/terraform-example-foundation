@@ -23,6 +23,11 @@ TF_VERSION="0.13.7"
 GCLOUD_SDK_VERSION="319.0.0"
 GIT_VERSION="2.25.1"
 
+# Input variables
+END_USER_CREDENTIAL=""
+ORGANIZATION_ID=""
+BILLING_ACCOUNT=""
+
 # Collect the errors
 ERRORS=""
 # -------------------------- Funcions ---------------------------
@@ -193,10 +198,6 @@ function validate_bootstrap_step(){
 
 function main(){
 
-    END_USER_CREDENTIAL="$u"
-    ORGANIZATION_ID="$o"
-    BILLING_ACCOUNT="$b"
-
     echo "Validating Terraform installation..."
     validate_terraform
 
@@ -237,18 +238,17 @@ usage() {
     exit 1
 }
 
-
 # Check for input variables
 while getopts ":o:b:u:" OPT; do
   case ${OPT} in
     o )
-      o=$OPTARG
+      ORGANIZATION_ID=$OPTARG
       ;;
     b )
-      b=$OPTARG
+      BILLING_ACCOUNT=$OPTARG
       ;;
     u )
-      u=$OPTARG
+      END_USER_CREDENTIAL=$OPTARG
       ;;
     : )
       echo
@@ -265,7 +265,7 @@ done
 shift $((OPTIND -1))
 
 # Check for required input variables
-if [ -z "${o}" ] || [ -z "${b}" ]|| [ -z "${u}" ]; then
+if [ -z "${ORGANIZATION_ID}" ] || [ -z "${BILLING_ACCOUNT}" ]|| [ -z "${END_USER_CREDENTIAL}" ]; then
   echo
   echo " Error: -o <organization id>, -b <billing project> and -u <end user email> required."
   usage

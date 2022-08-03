@@ -74,12 +74,6 @@ variable "scc_notification_filter" {
   default     = "state = \"ACTIVE\""
 }
 
-variable "create_access_context_manager_access_policy" {
-  description = "Whether to create access context manager access policy"
-  type        = bool
-  default     = true
-}
-
 variable "data_access_logs_enabled" {
   description = "Enable Data Access logs of types DATA_READ, DATA_WRITE for all GCP services. Enabling Data Access logs might result in your organization being charged for the additional logs usage. See https://cloud.google.com/logging/docs/audit#data-access The ADMIN_READ logs are enabled by default."
   type        = bool

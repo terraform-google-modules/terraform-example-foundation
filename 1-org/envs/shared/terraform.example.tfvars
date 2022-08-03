@@ -29,8 +29,6 @@ backend_bucket = "<TERRAFORM-STATE-BUCKET>"
 
 //scc_notification_filter = "state=\\\"ACTIVE\\\""
 
-//create_access_context_manager_access_policy = false
-
 //enable_hub_and_spoke = true
 
 // if you enable hub and spoke you need to provide

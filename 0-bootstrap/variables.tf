@@ -82,6 +82,12 @@ variable "cloud_source_repos" {
   default     = ["gcp-org", "gcp-environments", "gcp-networks", "gcp-projects"]
 }
 
+variable "create_access_context_manager_access_policy" {
+  description = "Whether to create access context manager access policy"
+  type        = bool
+  default     = true
+}
+
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */

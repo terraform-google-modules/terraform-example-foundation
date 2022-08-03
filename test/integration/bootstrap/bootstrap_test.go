@@ -16,12 +16,16 @@ package bootstrap
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+	"path"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
-	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
 )
 
@@ -74,8 +78,6 @@ func TestBootstrap(t *testing.T) {
 		"securitycenter.googleapis.com",
 		"accesscontextmanager.googleapis.com",
 	}
-
-	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
 
 	bootstrap.DefineVerify(
 		func(assert *assert.Assertions) {
@@ -166,6 +168,7 @@ func TestBootstrap(t *testing.T) {
 
 				iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", terraformSAEmail)
 				iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
+				orgID := bootstrap.GetTFSetupStringOutput("org_id")
 				orgIamPolicyRoles := gcloud.Run(t, fmt.Sprintf("organizations get-iam-policy %s", orgID), iamOpts).Array()
 				listRoles := getResultFieldStrSlice(orgIamPolicyRoles, "bindings.role")
 				if len(sa.orgRoles) == 0 {
@@ -174,6 +177,20 @@ func TestBootstrap(t *testing.T) {
 					assert.Subset(listRoles, sa.orgRoles, fmt.Sprintf("service account %s should have organization level roles", terraformSAEmail))
 				}
 			}
+
+			// push state to GCS bucket
+			temOptions := bootstrap.GetTFOptions()
+			temOptions.BackendConfig = map[string]interface{}{
+				"bucket": bootstrap.GetStringOutput("gcs_bucket_tfstate"),
+			}
+			temOptions.MigrateState = true
+			cwd, err := os.Getwd()
+			require.NoError(t, err)
+			srcFile := path.Join(cwd, "../../../0-bootstrap/backend.tf.example")
+			destFile := path.Join(cwd, "../../../0-bootstrap/backend.tf")
+			_, err2 := exec.Command("cp", srcFile, destFile).CombinedOutput()
+			require.NoError(t, err2)
+			terraform.Init(t, temOptions)
 		})
 	bootstrap.Test()
 }

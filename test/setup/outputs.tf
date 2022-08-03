@@ -69,7 +69,7 @@ output "monitoring_workspace_users" {
 }
 
 output "project_prefix" {
-  value = local.project_randomness
+  value = local.project_prefix
 }
 
 output "domains_to_allow" {
@@ -81,7 +81,7 @@ output "target_name_server_addresses" {
 }
 
 output "scc_notification_name" {
-  value = "test-scc-notif-${random_id.source.hex}"
+  value = "test-scc-notif-${random_string.suffix.result}"
 }
 
 output "enable_hub_and_spoke" {

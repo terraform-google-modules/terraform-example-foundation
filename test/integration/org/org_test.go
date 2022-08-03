@@ -15,7 +15,9 @@
 package org
 
 import (
+	"context"
 	"fmt"
+	"io"
 	"strings"
 	"testing"
 	"time"
@@ -23,8 +25,10 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
+	"golang.org/x/oauth2/google"
 )
 
 func isHubAndSpoke(t *testing.T) bool {
@@ -45,6 +49,30 @@ func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
 	return s
 }
 
+func checkAPIEnabled(t *testing.T, projectID, api string) (string, error) {
+	httpClient, err := google.DefaultClient(context.Background(), "https://www.googleapis.com/auth/cloud-platform")
+	if err != nil {
+		return "", err
+	}
+	serviceUsageEndpoint := fmt.Sprintf("https://serviceusage.googleapis.com/v1/projects/%s/services/%s", projectID, api)
+	resp, err := httpClient.Get(serviceUsageEndpoint)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	result := utils.ParseJSONResult(t, string(body))
+	resultName := result.Get("name").String()
+	resultState := result.Get("state").String()
+	if !strings.Contains(resultName, api) || resultState != "ENABLED" {
+		return "", fmt.Errorf("API %s not enable in project %s", api, projectID)
+	}
+	return "API enabled", nil
+}
+
 func TestOrg(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
@@ -56,7 +84,7 @@ func TestOrg(t *testing.T) {
 	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
 
 	vars := map[string]interface{}{
-		"terraform_service_account":               terraformSA,
+		"terraform_service_account":                     terraformSA,
 		"networks_step_terraform_service_account_email": networksTerraformSA,
 	}
 
@@ -65,6 +93,36 @@ func TestOrg(t *testing.T) {
 		tft.WithVars(vars),
 	)
 
+	org.DefineApply(
+		func(assert *assert.Assertions) {
+			projectID := bootstrap.GetStringOutput("seed_project_id")
+			for _, api := range []string{
+				"serviceusage.googleapis.com",
+				"servicenetworking.googleapis.com",
+				"cloudkms.googleapis.com",
+				"compute.googleapis.com",
+				"logging.googleapis.com",
+				"bigquery.googleapis.com",
+				"cloudresourcemanager.googleapis.com",
+				"cloudbilling.googleapis.com",
+				"cloudbuild.googleapis.com",
+				"iam.googleapis.com",
+				"admin.googleapis.com",
+				"appengine.googleapis.com",
+				"storage-api.googleapis.com",
+				"monitoring.googleapis.com",
+				"pubsub.googleapis.com",
+				"securitycenter.googleapis.com",
+				"accesscontextmanager.googleapis.com",
+				"billingbudgets.googleapis.com",
+			} {
+				retry.DoWithRetry(t, fmt.Sprintf("checking if %s API is enabled in project %s", api, projectID), 5, 2*time.Minute, func() (string, error) {
+					return checkAPIEnabled(t, projectID, api)
+				})
+			}
+
+			org.DefaultApply(assert)
+		})
 	org.DefineVerify(
 		func(assert *assert.Assertions) {
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint

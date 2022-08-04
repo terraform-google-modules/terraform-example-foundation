@@ -38,10 +38,27 @@ func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
 	return s
 }
 
+// fileExists check if a give file exists
+func fileExists(filePath string) (bool, error) {
+	_, err := os.Stat(filePath)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
 func TestBootstrap(t *testing.T) {
+
+	vars := map[string]interface{}{
+		"tfstate_storage_force_destroy": "true",
+	}
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
+		tft.WithVars(vars),
 	)
 
 	cloudSourceRepos := []string{
@@ -178,19 +195,46 @@ func TestBootstrap(t *testing.T) {
 				}
 			}
 
-			// push state to GCS bucket
-			temOptions := bootstrap.GetTFOptions()
-			temOptions.BackendConfig = map[string]interface{}{
+			// configure options to push state to GCS bucket
+			tempOptions := bootstrap.GetTFOptions()
+			tempOptions.BackendConfig = map[string]interface{}{
 				"bucket": bootstrap.GetStringOutput("gcs_bucket_tfstate"),
 			}
-			temOptions.MigrateState = true
+			tempOptions.MigrateState = true
+			// create backend file
 			cwd, err := os.Getwd()
 			require.NoError(t, err)
-			srcFile := path.Join(cwd, "../../../0-bootstrap/backend.tf.example")
 			destFile := path.Join(cwd, "../../../0-bootstrap/backend.tf")
-			_, err2 := exec.Command("cp", srcFile, destFile).CombinedOutput()
+			fExists, err2 := fileExists(destFile)
 			require.NoError(t, err2)
-			terraform.Init(t, temOptions)
+			if !fExists {
+				srcFile := path.Join(cwd, "../../../0-bootstrap/backend.tf.example")
+				_, err3 := exec.Command("cp", srcFile, destFile).CombinedOutput()
+				require.NoError(t, err3)
+			}
+			terraform.Init(t, tempOptions)
 		})
+
+	bootstrap.DefineTeardown(func(assert *assert.Assertions) {
+		// configure options to pull state from GCS bucket
+		cwd, err := os.Getwd()
+		require.NoError(t, err)
+		statePath := path.Join(cwd, "../../../0-bootstrap/local_backend.tfstate")
+		tempOptions := bootstrap.GetTFOptions()
+		tempOptions.BackendConfig = map[string]interface{}{
+			"path": statePath,
+		}
+		tempOptions.MigrateState = true
+		// remove backend file
+		backendFile := path.Join(cwd, "../../../0-bootstrap/backend.tf")
+		fExists, err2 := fileExists(backendFile)
+		require.NoError(t, err2)
+		if fExists {
+			_, err3 := exec.Command("rm", backendFile).CombinedOutput()
+			require.NoError(t, err3)
+		}
+		terraform.Init(t, tempOptions)
+		bootstrap.DefaultTeardown(assert)
+	})
 	bootstrap.Test()
 }

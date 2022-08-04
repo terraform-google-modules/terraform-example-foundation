@@ -88,6 +88,12 @@ variable "create_access_context_manager_access_policy" {
   default     = true
 }
 
+variable "tfstate_storage_force_destroy" {
+  description = "(Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present."
+  type        = bool
+  default     = false
+}
+
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */

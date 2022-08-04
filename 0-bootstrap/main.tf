@@ -52,6 +52,7 @@ module "seed_bootstrap" {
   default_region                 = var.default_region
   org_project_creators           = local.org_project_creators
   sa_enable_impersonation        = true
+  force_destroy                  = var.tfstate_storage_force_destroy
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
   project_prefix                 = var.project_prefix

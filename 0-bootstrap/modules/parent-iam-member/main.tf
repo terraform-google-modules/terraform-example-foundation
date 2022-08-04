@@ -21,7 +21,7 @@ locals {
 }
 
 resource "google_organization_iam_member" "org_parent_iam" {
-  for_each = toset(local.org_id != "" ? var.roles : [])
+  for_each = toset(var.parent_type == "organization" ? var.roles : [])
 
   org_id = local.org_id
   role   = each.key
@@ -29,7 +29,7 @@ resource "google_organization_iam_member" "org_parent_iam" {
 }
 
 resource "google_folder_iam_member" "folder_parent_iam" {
-  for_each = toset(local.folder_id != "" ? var.roles : [])
+  for_each = toset(var.parent_type == "folder" ? var.roles : [])
 
   folder = local.folder_id
   role   = each.key
@@ -37,7 +37,7 @@ resource "google_folder_iam_member" "folder_parent_iam" {
 }
 
 resource "google_project_iam_member" "project_parent_iam" {
-  for_each = toset(local.project_id != "" ? var.roles : [])
+  for_each = toset(var.parent_type == "project" ? var.roles : [])
 
   project = local.project_id
   role    = each.key

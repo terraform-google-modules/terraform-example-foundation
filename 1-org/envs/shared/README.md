@@ -73,6 +73,7 @@
 | parent\_resource\_id | The parent resource id |
 | parent\_resource\_type | The parent resource type |
 | restricted\_net\_hub\_project\_id | The Restricted Network hub project ID |
+| restricted\_net\_hub\_project\_number | The Restricted Network hub project number |
 | scc\_notification\_name | Name of SCC Notification |
 | scc\_notifications\_project\_id | The SCC notifications project ID |
 

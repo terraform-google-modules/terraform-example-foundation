@@ -79,6 +79,11 @@ output "restricted_net_hub_project_id" {
   description = "The Restricted Network hub project ID"
 }
 
+output "restricted_net_hub_project_number" {
+  value       = try(module.restricted_network_hub[0].project_number, null)
+  description = "The Restricted Network hub project number"
+}
+
 output "domains_to_allow" {
   value       = var.domains_to_allow
   description = "The list of domains to allow users from in IAM."

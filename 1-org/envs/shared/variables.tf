@@ -18,6 +18,7 @@ variable "terraform_service_account" {
   description = "Service account email of the account to impersonate to run Terraform."
   type        = string
 }
+
 variable "networks_step_terraform_service_account_email" {
   description = "Service account email of the account to impersonate to run Terraform in the network step."
   type        = string
@@ -202,7 +203,6 @@ variable "org_secrets_project_budget_amount" {
   type        = number
   default     = 1000
 }
-
 
 variable "org_billing_logs_project_alert_spent_percents" {
   description = "A list of percentages of the budget to alert on when threshold is exceeded for the org billing logs project."

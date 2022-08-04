@@ -19,11 +19,13 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 3.50"
+      // remove "<= 4.30.0" after new provider release with https://github.com/hashicorp/terraform-provider-google/pull/12248
+      version = ">= 3.50, <= 4.30.0"
     }
     google-beta = {
       source  = "hashicorp/google-beta"
-      version = ">= 3.50"
+      // remove "<= 4.30.0" after new provider release with https://github.com/hashicorp/terraform-provider-google-beta/pull/4566
+      version = ">= 3.50, <= 4.30.0"
     }
     null = {
       source = "hashicorp/null"

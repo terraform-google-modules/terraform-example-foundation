@@ -20,7 +20,7 @@
 # -------------------------- Variables --------------------------
 # Expected versions of the installers
 TF_VERSION="0.13.7"
-GCLOUD_SDK_VERSION="319.0.0"
+GCLOUD_SDK_VERSION="391.0.0"
 GIT_VERSION="2.25.1"
 
 # Input variables
@@ -158,10 +158,10 @@ function check_org_level_roles(){
         --flatten="bindings[].members" \
         --format="table(bindings.role)" 2>/dev/null)
 
-    lines=$(echo "$ORG_LEVEL_ROLES_OUTPUT" | grep -o -e roles/resourcemanager.folderCreator -e roles/resourcemanager.organizationAdmin | wc -l)
+    lines=$(echo "$ORG_LEVEL_ROLES_OUTPUT" | grep -o -e roles/resourcemanager.folderCreator -e roles/resourcemanager.organizationAdmin -e roles/orgpolicy.policyAdmin | wc -l)
 
-    if [ "$lines" -ne 2 ]; then
-        echo "The User must have the Organization Roles resourcemanager.folderCreator and resourcemanager.organizationAdmin"
+    if [ "$lines" -ne 3 ]; then
+        echo "The User must have the Organization Roles resourcemanager.folderCreator, resourcemanager.organizationAdmin and roles/orgpolicy.policyAdmin"
         ERRORS+=$'There are missing organization level roles on the Credential.\n'
     fi
 }

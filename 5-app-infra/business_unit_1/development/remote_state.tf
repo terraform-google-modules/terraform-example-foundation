@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
+data "terraform_remote_state" "projects_env" {
+  backend = "gcs"
 
-instance_region = "us-central1" // should be one of the regions used to create network on step 3-networks
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/projects/${local.business_unit}/${local.environment}"
 
-// Optional - for an organization with existing projects or for development/validation.
-// Must be the same value used in previous steps.
-//parent_folder = "000000000000"
+    impersonate_service_account = local.terraform_service_account
+  }
+}

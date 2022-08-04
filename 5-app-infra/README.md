@@ -147,10 +147,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
    chmod 755 ./tf-wrapper.sh
    ```
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and 0-bootstrap. See any of the business unit 1 envs folders [README.md](./business_unit_1/development/README.md) files for additional information on the values in the `common.auto.tfvars` file.
-1. Rename `bu1-development.auto.example.tfvars` to `bu1-development.auto.tfvars` and update the file with values from your environment.
-1. Rename `bu1-non-production.auto.example.tfvars` to `bu1-non-production.auto.tfvars` and update the file with values from your environment.
-1. Rename `bu1-production.auto.example.tfvars` to `bu1-production.auto.tfvars` and update the file with values from your environment.
+1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from 0-bootstrap.
 1. Commit changes.
    ```
    git add .
@@ -190,10 +187,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Change into the  `5-app-infra` folder.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`.
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and 0-bootstrap.
-1. Rename `bu1-development.auto.example.tfvars` to `bu1-development.auto.tfvars` and update the file with values from your environment.
-1. Rename `bu1-non-production.auto.example.tfvars` to `bu1-non-production.auto.tfvars` and update the file with values from your environment.
-1. Rename `bu1-production.auto.example.tfvars` to `bu1-production.auto.tfvars` and update the file with values from your environment.
+1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from 0-bootstrap.
 1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 project service accounts
 1. Provide the user permissions to run the terraform locally with the `serviceAccountTokenCreator` permission.
    ```

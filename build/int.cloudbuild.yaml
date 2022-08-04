@@ -44,7 +44,7 @@ steps:
 
 - id: create-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', './test/disable_tf_files.sh --org && cft test run TestOrg --stage init --verbose --test-dir /workspace/test/integration']
+  args: ['/bin/bash', '-c', 'cft test run TestOrg --stage init --verbose --test-dir /workspace/test/integration']
 
 - id: converge-org
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
@@ -56,7 +56,7 @@ steps:
 
 - id: create-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', './test/disable_tf_files.sh --envs && cft test run TestEnvs --stage init --verbose --test-dir /workspace/test/integration']
+  args: ['/bin/bash', '-c', 'cft test run TestEnvs --stage init --verbose --test-dir /workspace/test/integration']
 
 - id: converge-envs
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'

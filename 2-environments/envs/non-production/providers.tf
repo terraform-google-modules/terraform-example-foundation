@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-locals {
-  tf_sa = var.terraform_service_account
-}
-
 /******************************************
   Provider credential configuration
  *****************************************/

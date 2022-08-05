@@ -47,9 +47,17 @@ func TestEnvs(t *testing.T) {
 	)
 
 	terraformSA := bootstrap.GetStringOutput("environment_step_terraform_service_account_email")
+	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
+	monitoringWorkspaceUsers := bootstrap.GetTFSetupStringOutput("monitoring_workspace_users")
 
 	vars := map[string]interface{}{
-		"terraform_service_account": terraformSA,
+		"backend_bucket":             backend_bucket,
+		"terraform_service_account":  terraformSA,
+		"monitoring_workspace_users": monitoringWorkspaceUsers,
+	}
+
+	backendConfig := map[string]interface{}{
+		"bucket": backend_bucket,
 	}
 
 	for _, envName := range []string{
@@ -61,6 +69,7 @@ func TestEnvs(t *testing.T) {
 			envs := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../2-environments/envs/%s", envName)),
 				tft.WithVars(vars),
+				tft.WithBackendConfig(backendConfig),
 			)
 			envs.DefineVerify(
 				func(assert *assert.Assertions) {
@@ -81,7 +90,7 @@ func TestEnvs(t *testing.T) {
 						{
 							projectOutput: "monitoring_project_id",
 							role:          "roles/monitoring.editor",
-							group:         "TF_VAR_group_email",
+							group:         monitoringWorkspaceUsers,
 							apis: []string{
 								"logging.googleapis.com",
 								"monitoring.googleapis.com",
@@ -132,9 +141,8 @@ func TestEnvs(t *testing.T) {
 						if projectEnvOutput.role != "" {
 							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", fmt.Sprintf("bindings.role:%s", projectEnvOutput.role), "--format", "json"})
 							iamPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()[0]
-							group := utils.ValFromEnv(t, projectEnvOutput.group)
 							listMembers := utils.GetResultStrSlice(iamPolicy.Get("bindings.members").Array())
-							assert.Contains(listMembers, fmt.Sprintf("group:%s", group), fmt.Sprintf("group %s should have role %s", group, projectEnvOutput.role))
+							assert.Contains(listMembers, fmt.Sprintf("group:%s", projectEnvOutput.group), fmt.Sprintf("group %s should have role %s", projectEnvOutput.group, projectEnvOutput.role))
 						}
 					}
 

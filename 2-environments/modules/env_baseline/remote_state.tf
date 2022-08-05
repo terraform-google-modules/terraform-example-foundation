@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-/******************************************
-  Environment Folder
-*****************************************/
+data "terraform_remote_state" "bootstrap" {
+  backend = "gcs"
 
-resource "google_folder" "env" {
-  display_name = "${local.folder_prefix}-${var.env}"
-  parent       = local.parent
-}
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/bootstrap/state"
 
-resource "time_sleep" "wait_30_seconds" {
-  depends_on = [google_folder.env]
-
-  destroy_duration = "30s"
+    impersonate_service_account = local.terraform_service_account
+  }
 }

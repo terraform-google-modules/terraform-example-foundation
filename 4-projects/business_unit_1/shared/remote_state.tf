@@ -14,4 +14,24 @@
  * limitations under the License.
  */
 
-app_infra_pipeline_cloudbuild_sa = "<bu2_infra_pipeline_project_number>@cloudbuild.gserviceaccount.com"
+data "terraform_remote_state" "bootstrap" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/bootstrap/state"
+
+    impersonate_service_account = local.terraform_service_account
+  }
+}
+
+data "terraform_remote_state" "org" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/org/state"
+
+    impersonate_service_account = local.terraform_service_account
+  }
+}

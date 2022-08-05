@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+variable "terraform_service_account" {
+  description = "Service account email of the account to impersonate to run Terraform"
+  type        = string
+}
+
 variable "business_code" {
   description = "The business code (ex. bu1)."
   type        = string
@@ -26,32 +31,6 @@ variable "business_unit" {
 
 variable "env" {
   description = "The environment to prepare (ex. development)."
-  type        = string
-}
-
-variable "org_id" {
-  description = "The organization id for the associated services"
-  type        = string
-}
-
-variable "billing_account" {
-  description = "The ID of the billing account to associated this project with"
-  type        = string
-}
-
-variable "access_context_manager_policy_id" {
-  type        = string
-  description = "The ID of the access context manager policy the perimeter lies in. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format=\"value(name)\"`."
-}
-
-variable "parent_folder" {
-  description = "Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step."
-  type        = string
-  default     = ""
-}
-
-variable "perimeter_name" {
-  description = "Access context manager service perimeter name to attach the restricted svpc project."
   type        = string
 }
 
@@ -97,29 +76,6 @@ variable "budget_amount" {
   default     = 1000
 }
 
-variable "project_prefix" {
-  description = "Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters."
-  type        = string
-  default     = "prj"
-}
-
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created. Should be the same in all steps."
-  type        = string
-  default     = "fldr"
-}
-
-variable "enable_hub_and_spoke" {
-  description = "Enable Hub-and-Spoke architecture."
-  type        = bool
-  default     = false
-}
-
-variable "app_infra_pipeline_cloudbuild_sa" {
-  description = "Cloud Build SA used for deploying infrastructure"
-  type        = string
-}
-
 variable "secrets_prj_suffix" {
   description = "Name suffix to use for secrets project created."
   type        = string
@@ -160,4 +116,9 @@ variable "gcs_bucket_prefix" {
   description = "Name prefix to be used for GCS Bucket"
   type        = string
   default     = "cmek-encrypted-bucket"
+}
+
+variable "backend_bucket" {
+  description = "Backend bucket to load remote state information from previous steps."
+  type        = string
 }

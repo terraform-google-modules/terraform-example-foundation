@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
+locals {
+  terraform_service_account = var.terraform_service_account
+}
 
 module "env" {
   source = "../../modules/base_env"
 
-  env                              = "non-production"
-  business_code                    = "bu1"
-  business_unit                    = "business_unit_1"
-  org_id                           = var.org_id
-  billing_account                  = var.billing_account
-  access_context_manager_policy_id = var.access_context_manager_policy_id
-  parent_folder                    = var.parent_folder
-  perimeter_name                   = var.perimeter_name
-  peering_module_depends_on        = var.peering_module_depends_on
-  project_prefix                   = var.project_prefix
-  folder_prefix                    = var.folder_prefix
-  enable_hub_and_spoke             = var.enable_hub_and_spoke
-  app_infra_pipeline_cloudbuild_sa = var.app_infra_pipeline_cloudbuild_sa
+  env                       = "non-production"
+  business_code             = "bu1"
+  business_unit             = "business_unit_1"
+  backend_bucket            = var.backend_bucket
+  location_kms              = var.location_kms
+  location_gcs              = var.location_gcs
+  terraform_service_account = local.terraform_service_account
+  peering_module_depends_on = var.peering_module_depends_on
 }

@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
@@ -26,13 +25,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/gjson"
-)
-
-var (
-	retryableErrors = map[string]string{
-		// API Rate limit exceeded errors can be retryed.
-		".*rateLimitExceeded.*": "Rate limit exceeded.",
-	}
 )
 
 func getPolicyID(t *testing.T, orgID string) string {
@@ -86,11 +78,6 @@ func TestProjects(t *testing.T) {
 		"cloudkms.googleapis.com",
 	}
 
-	// Add CommonRetryableErrors to our retry list
-	for k, v := range tft.CommonRetryableErrors {
-		retryableErrors[k] = v
-	}
-
 	for _, tts := range []struct {
 		name  string
 		tfDir string
@@ -113,7 +100,6 @@ func TestProjects(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tts.tfDir),
 				tft.WithVars(sharedVars),
-				tft.WithRetryableTerraformErrors(retryableErrors, 3, 3*time.Minute),
 			)
 
 			shared.DefineApply(
@@ -224,7 +210,6 @@ func TestProjects(t *testing.T) {
 			projects := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),
 				tft.WithVars(vars),
-				tft.WithRetryableTerraformErrors(retryableErrors, 3, 3*time.Minute),
 			)
 			projects.DefineApply(
 				func(assert *assert.Assertions) {

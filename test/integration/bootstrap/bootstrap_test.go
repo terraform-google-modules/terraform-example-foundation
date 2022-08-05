@@ -96,6 +96,30 @@ func TestBootstrap(t *testing.T) {
 		"accesscontextmanager.googleapis.com",
 	}
 
+	bootstrap.DefineApply(
+		func(assert *assert.Assertions){
+
+			bootstrap.DefaultApply(assert)
+			// configure options to push state to GCS bucket
+			tempOptions := bootstrap.GetTFOptions()
+			tempOptions.BackendConfig = map[string]interface{}{
+				"bucket": bootstrap.GetStringOutput("gcs_bucket_tfstate"),
+			}
+			tempOptions.MigrateState = true
+			// create backend file
+			cwd, err := os.Getwd()
+			require.NoError(t, err)
+			destFile := path.Join(cwd, "../../../0-bootstrap/backend.tf")
+			fExists, err2 := fileExists(destFile)
+			require.NoError(t, err2)
+			if !fExists {
+				srcFile := path.Join(cwd, "../../../0-bootstrap/backend.tf.example")
+				_, err3 := exec.Command("cp", srcFile, destFile).CombinedOutput()
+				require.NoError(t, err3)
+			}
+			terraform.Init(t, tempOptions)
+		})
+
 	bootstrap.DefineVerify(
 		func(assert *assert.Assertions) {
 
@@ -194,25 +218,6 @@ func TestBootstrap(t *testing.T) {
 					assert.Subset(listRoles, sa.orgRoles, fmt.Sprintf("service account %s should have organization level roles", terraformSAEmail))
 				}
 			}
-
-			// configure options to push state to GCS bucket
-			tempOptions := bootstrap.GetTFOptions()
-			tempOptions.BackendConfig = map[string]interface{}{
-				"bucket": bootstrap.GetStringOutput("gcs_bucket_tfstate"),
-			}
-			tempOptions.MigrateState = true
-			// create backend file
-			cwd, err := os.Getwd()
-			require.NoError(t, err)
-			destFile := path.Join(cwd, "../../../0-bootstrap/backend.tf")
-			fExists, err2 := fileExists(destFile)
-			require.NoError(t, err2)
-			if !fExists {
-				srcFile := path.Join(cwd, "../../../0-bootstrap/backend.tf.example")
-				_, err3 := exec.Command("cp", srcFile, destFile).CombinedOutput()
-				require.NoError(t, err3)
-			}
-			terraform.Init(t, tempOptions)
 		})
 
 	bootstrap.DefineTeardown(func(assert *assert.Assertions) {

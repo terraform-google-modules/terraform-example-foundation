@@ -120,15 +120,3 @@ resource "google_billing_account_iam_member" "billing_admin_user" {
     google_billing_account_iam_member.tf_billing_user
   ]
 }
-
-resource "google_service_account_iam_member" "cloudbuild_terraform_sa_impersonate_permissions" {
-  for_each = local.granular_sa
-
-  service_account_id = google_service_account.terraform-env-sa[each.key].id
-  role               = "roles/iam.serviceAccountTokenCreator"
-  member             = "serviceAccount:${data.google_project.cloudbuild.number}@cloudbuild.gserviceaccount.com"
-
-  depends_on = [
-    google_service_account.terraform-env-sa
-  ]
-}

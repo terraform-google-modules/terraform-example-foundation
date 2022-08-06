@@ -198,6 +198,5 @@ the following steps:
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
 | terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
 | terraform\_service\_account | Email for privileged service account for Terraform. |
-| terraform\_validator\_policies\_repo | Cloud Source Repository created for terraform-validator policies. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

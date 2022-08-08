@@ -93,6 +93,8 @@ module "tf_cloud_builder" {
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos["tf-cloudbuilder"].url
+  gar_repo_location            = var.default_region
+  workflow_region              = var.default_region
   cb_logs_bucket_force_destroy = true
 }
 

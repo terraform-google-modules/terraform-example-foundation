@@ -70,3 +70,5 @@ artifacts:
   objects:
     location: 'gs://${_ARTIFACT_BUCKET_NAME}/terraform/cloudbuild/apply/${BUILD_ID}'
     paths: ['cloudbuild-tf-apply.yaml', 'tmp_plan/*.tfplan']
+
+logsBucket: 'gs://${_LOG_BUCKET_NAME}'

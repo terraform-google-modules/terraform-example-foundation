@@ -42,6 +42,7 @@ spec:
     - "clouddebugger.googleapis.com"
     - "cloudkms.googleapis.com"
     - "cloudresourcemanager.googleapis.com"
+    - "cloudscheduler.googleapis.com"
     - "cloudtrace.googleapis.com"
     - "compute.googleapis.com"
     - "container.googleapis.com"
@@ -62,3 +63,4 @@ spec:
     - "sql-component.googleapis.com"
     - "storage-api.googleapis.com"
     - "storage-component.googleapis.com"
+    - "workflows.googleapis.com"

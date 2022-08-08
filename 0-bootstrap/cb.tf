@@ -67,7 +67,7 @@ module "tf_source" {
     "gcp-policies",
     "gcp-bootstrap",
     "gcp-org",
-    "gcp-envs",
+    "gcp-environments",
     "gcp-networks",
     "gcp-projects",
     "tf-cloudbuilder",

@@ -65,7 +65,12 @@ output "cloudbuild_project_id" {
 
 output "gcs_bucket_cloudbuild_artifacts" {
   description = "Bucket used to store Cloud/Build artifacts in CloudBuild project."
-  value       = module.tf_workspace[*].artifacts_bucket
+  value = {
+    "org"  = replace(module.tf_workspace["org"].artifacts_bucket,local.bucket_self_link_prefix,""),
+    "env"  = replace(module.tf_workspace["env"].artifacts_bucket,local.bucket_self_link_prefix,""),
+    "net"  = replace(module.tf_workspace["net"].artifacts_bucket,local.bucket_self_link_prefix,""),
+    "proj" = replace(module.tf_workspace["proj"].artifacts_bucket,local.bucket_self_link_prefix,""),
+  }
 }
 
 output "csr_repos" {

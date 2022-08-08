@@ -32,6 +32,7 @@ locals {
   org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
     "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
   ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
+  bucket_self_link_prefix = "https://www.googleapis.com/storage/v1/b/"
 }
 
 resource "google_folder" "bootstrap" {

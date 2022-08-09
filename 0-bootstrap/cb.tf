@@ -125,10 +125,11 @@ module "tf_workspace" {
   buckets_force_destroy     = true
 
   substitutions = {
-    "_ORG_ID"         = var.org_id
-    "_BILLING_ID"     = var.billing_account
-    "_DEFAULT_REGION" = var.default_region
-    "_GAR_REPOSITORY" = local.gar_repository
+    "_ORG_ID"                       = var.org_id
+    "_BILLING_ID"                   = var.billing_account
+    "_DEFAULT_REGION"               = var.default_region
+    "_GAR_REPOSITORY"               = local.gar_repository
+    "_DOCKER_TAG_VERSION_TERRAFORM" = "v0"
   }
 
   tf_apply_branches = ["development", "non\\-production", "production"]

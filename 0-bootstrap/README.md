@@ -185,6 +185,5 @@ the following steps:
 | projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
 | terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
-| terraform\_service\_account | Email for privileged service account for Terraform. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

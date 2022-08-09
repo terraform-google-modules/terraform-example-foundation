@@ -137,9 +137,6 @@ func TestBootstrap(t *testing.T) {
 				orgRoles []string
 			}{
 				{
-					output: "terraform_service_account",
-				},
-				{
 					output: "projects_step_terraform_service_account_email",
 					orgRoles: []string{
 						"roles/accesscontextmanager.policyAdmin",

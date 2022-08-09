@@ -19,11 +19,6 @@ output "seed_project_id" {
   value       = module.seed_bootstrap.seed_project_id
 }
 
-output "terraform_service_account" {
-  description = "Email for privileged service account for Terraform."
-  value       = module.seed_bootstrap.terraform_sa_email
-}
-
 output "projects_step_terraform_service_account_email" {
   description = "Projects Step Terraform Account"
   value       = google_service_account.terraform-env-sa["proj"].email

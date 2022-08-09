@@ -54,9 +54,11 @@ func TestOrg(t *testing.T) {
 	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
 
 	vars := map[string]interface{}{
-		"terraform_service_account":               terraformSA,
 		"networks_step_terraform_service_account_email": networksTerraformSA,
 	}
+
+	// Configure impersonation for test execution
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),

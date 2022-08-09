@@ -21,7 +21,7 @@ variable "org_id" {
 
 variable "terraform_service_account" {
   type        = string
-  description = "Service account email of the account to impersonate to run Terraform."
+  description = "Service account email of the account to be added to the VPC-SC perimeter."
 }
 
 variable "access_context_manager_policy_id" {
@@ -67,6 +67,11 @@ variable "folder_prefix" {
   description = "Name prefix to use for folders created. Should be the same in all steps."
   type        = string
   default     = "fldr"
+}
+
+variable "members" {
+  type        = list(string)
+  description = "An allowed list of members (users, service accounts)to be include in the VPC-SC perimeter. The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid}"
 }
 
 variable "base_hub_windows_activation_enabled" {

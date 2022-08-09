@@ -22,29 +22,32 @@ import (
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/logger"
 	"golang.org/x/oauth2/google"
 )
 
 func CheckAPIEnabled(t *testing.T, projectID, api string) (bool, error) {
+	logger.Log(t, fmt.Sprintf("checking if API %s is enabled in project %s", api, projectID))
 	httpClient, err := google.DefaultClient(context.Background(), "https://www.googleapis.com/auth/cloud-platform")
 	if err != nil {
-		return false, err
+		return true, err
 	}
 	serviceUsageEndpoint := fmt.Sprintf("https://serviceusage.googleapis.com/v1/projects/%s/services/%s", projectID, api)
 	resp, err := httpClient.Get(serviceUsageEndpoint)
 	if err != nil {
-		return false, err
+		return true, err
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return false, err
+		return true, err
 	}
 	result := utils.ParseJSONResult(t, string(body))
 	resultName := result.Get("name").String()
 	resultState := result.Get("state").String()
 	if !strings.Contains(resultName, api) || resultState != "ENABLED" {
-		return false, fmt.Errorf("API %s not enable in project %s", api, projectID)
+		return true, fmt.Errorf("API %s not enable in project %s", api, projectID)
 	}
-	return true, nil
+	logger.Log(t, fmt.Sprintf("API %s is enabled in project %s", api, projectID))
+	return false, nil
 }

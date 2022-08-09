@@ -20,13 +20,12 @@
 # -------------------------- Variables --------------------------
 # Expected versions of the installers
 TF_VERSION="0.13.7"
-# GCLOUD_SDK_VERSION="391.0.0"
-GCLOUD_SDK_VERSION="380.0.0"
+GCLOUD_SDK_VERSION="391.0.0"
 GIT_VERSION="2.25.1"
 
 # Expected roles
-ORGANIZATION_LEVEL_ROLES=["roles/resourcemanager.folderCreator", "roles/resourcemanager.organizationAdmin", "roles/orgpolicy.policyAdmin"]
-BILLING_LEVEL_ROLES=["roles/billing.admin"]
+ORGANIZATION_LEVEL_ROLES=("roles/resourcemanager.folderCreator" "roles/resourcemanager.organizationAdmin" "roles/orgpolicy.policyAdmin")
+BILLING_LEVEL_ROLES=("roles/billing.admin")
 
 # Input variables
 END_USER_CREDENTIAL=""
@@ -35,7 +34,8 @@ BILLING_ACCOUNT=""
 
 # Collect the errors
 ERRORS=""
--------------------------- Functions ---------------------------
+
+# -------------------------- Functions ---------------------------
 
 # Compare two semantic versions
 # returns:
@@ -128,6 +128,7 @@ function validate_git(){
     fi
 }
 
+# Validate some utility tools that the environment must have before running the other checkers
 function validate_utils(){
     if [ ! "$(command -v jq)" ]; then
         echo_missing_installation "jq" "https://stedolan.github.io/jq/download/"
@@ -168,9 +169,15 @@ function check_org_level_roles(){
         --flatten="bindings[].members" \
         --format="table(bindings.role)" 2>/dev/null)
 
-    lines=$(echo "$ORG_LEVEL_ROLES_OUTPUT" | grep -o -e roles/resourcemanager.folderCreator -e roles/resourcemanager.organizationAdmin -e roles/orgpolicy.policyAdmin | wc -l)
+    lines=0
+    for i in "${ORGANIZATION_LEVEL_ROLES[@]}"
+    do
+        if [[ "$ORG_LEVEL_ROLES_OUTPUT" == *"$i"* ]]; then
+            lines=$((lines + 1))
+        fi
+    done
 
-    if [ "$lines" -ne 3 ]; then
+    if [ "$lines" -ne ${#ORGANIZATION_LEVEL_ROLES[@]} ]; then
         echo "The User must have the Organization Roles resourcemanager.folderCreator, resourcemanager.organizationAdmin and roles/orgpolicy.policyAdmin"
         ERRORS+=$'There are missing organization level roles on the Credential.\n'
     fi
@@ -185,12 +192,19 @@ function check_billing_account_roles(){
         --flatten="bindings[].members" \
         --format="table(bindings.role)" 2>/dev/null)
 
-    lines=$(echo "$BILLING_LEVEL_ROLES_OUTPUT" | grep -o -e roles/billing.admin | wc -l)
+    lines=0
+    for i in "${BILLING_LEVEL_ROLES[@]}"
+    do
+        if [[ "$BILLING_LEVEL_ROLES_OUTPUT" == *"$i"* ]]; then
+            lines=$((lines + 1))
+        fi
+    done
 
-    if [ "$lines" -ne 1 ]; then
+    if [ "$lines" -ne ${#BILLING_LEVEL_ROLES[@]} ]; then
         echo "The User must have the Billing Account Role billing.admin"
         ERRORS+=$'There are missing billing account level roles on the Credential.\n'
     fi
+
 }
 
 # Checks if initial config was done for 0-bootstrap step

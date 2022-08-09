@@ -46,7 +46,7 @@ func CheckAPIEnabled(t *testing.T, projectID, api string) (bool, error) {
 	resultName := result.Get("name").String()
 	resultState := result.Get("state").String()
 	if !strings.Contains(resultName, api) || resultState != "ENABLED" {
-		return true, fmt.Errorf("API %s not enable in project %s", api, projectID)
+		return true, fmt.Errorf("API %s is not enabled in project %s", api, projectID)
 	}
 	logger.Log(t, fmt.Sprintf("API %s is enabled in project %s", api, projectID))
 	return false, nil

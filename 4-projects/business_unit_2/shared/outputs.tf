@@ -48,6 +48,11 @@ output "state_buckets" {
   value       = module.infra_pipelines.state_buckets
 }
 
+output "log_buckets" {
+  description = "GCS Buckets to store Cloud Build logs"
+  value       = module.infra_pipelines.log_buckets
+}
+
 output "plan_triggers" {
   description = "CB plan triggers"
   value       = module.infra_pipelines.plan_triggers

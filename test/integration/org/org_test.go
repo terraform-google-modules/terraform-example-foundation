@@ -15,62 +15,20 @@
 package org
 
 import (
-	"context"
 	"fmt"
-	"io"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
-	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/stretchr/testify/assert"
-	"github.com/tidwall/gjson"
-	"golang.org/x/oauth2/google"
+
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
 func isHubAndSpoke(t *testing.T) bool {
-	return "HubAndSpoke" == utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
-}
-
-func getLastSplitElement(value string, sep string) string {
-	splitted := strings.Split(value, sep)
-	return splitted[len(splitted)-1]
-}
-
-// getResultFieldStrSlice parses a field of a results list into a string slice
-func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
-	s := make([]string, 0)
-	for _, r := range rs {
-		s = append(s, r.Get(field).String())
-	}
-	return s
-}
-
-func checkAPIEnabled(t *testing.T, projectID, api string) (string, error) {
-	httpClient, err := google.DefaultClient(context.Background(), "https://www.googleapis.com/auth/cloud-platform")
-	if err != nil {
-		return "", err
-	}
-	serviceUsageEndpoint := fmt.Sprintf("https://serviceusage.googleapis.com/v1/projects/%s/services/%s", projectID, api)
-	resp, err := httpClient.Get(serviceUsageEndpoint)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	result := utils.ParseJSONResult(t, string(body))
-	resultName := result.Get("name").String()
-	resultState := result.Get("state").String()
-	if !strings.Contains(resultName, api) || resultState != "ENABLED" {
-		return "", fmt.Errorf("API %s not enable in project %s", api, projectID)
-	}
-	return "API enabled", nil
+	return utils.ValFromEnv(t, "TF_VAR_example_foundations_mode") == "HubAndSpoke"
 }
 
 func TestOrg(t *testing.T) {
@@ -115,9 +73,7 @@ func TestOrg(t *testing.T) {
 				"accesscontextmanager.googleapis.com",
 				"billingbudgets.googleapis.com",
 			} {
-				retry.DoWithRetry(t, fmt.Sprintf("checking if %s API is enabled in project %s", api, projectID), 5, 2*time.Minute, func() (string, error) {
-					return checkAPIEnabled(t, projectID, api)
-				})
+				utils.Poll(t, func() (bool, error) { return testutils.CheckAPIEnabled(t, projectID, api) }, 5, 2*time.Minute)
 			}
 
 			org.DefaultApply(assert)
@@ -127,10 +83,10 @@ func TestOrg(t *testing.T) {
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 			org.DefaultVerify(assert)
 
-			parentFolder := getLastSplitElement(org.GetStringOutput("parent_resource_id"), "/")
+			parentFolder := testutils.GetLastSplitElement(org.GetStringOutput("parent_resource_id"), "/")
 
 			// creation of common folder
-			commonFolder := getLastSplitElement(org.GetStringOutput("common_folder_name"), "/")
+			commonFolder := testutils.GetLastSplitElement(org.GetStringOutput("common_folder_name"), "/")
 			folder := gcloud.Runf(t, "resource-manager folders describe %s", commonFolder)
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 
@@ -317,7 +273,7 @@ func TestOrg(t *testing.T) {
 				assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
 				enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
-				listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
+				listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 				assert.Subset(listApis, projectOutput.apis, "APIs should have been enabled")
 			}
 		})

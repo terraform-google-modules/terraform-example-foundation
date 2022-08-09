@@ -15,54 +15,17 @@
 package bootstrap
 
 import (
-	"context"
 	"fmt"
-	"io"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
-	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/stretchr/testify/assert"
-	"github.com/tidwall/gjson"
-	"golang.org/x/oauth2/google"
+
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
-
-// getResultFieldStrSlice parses a field of a results list into a string slice
-func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
-	s := make([]string, 0)
-	for _, r := range rs {
-		s = append(s, r.Get(field).String())
-	}
-	return s
-}
-
-func checkAPIEnabled(t *testing.T, projectID, api string) (string, error) {
-	httpClient, err := google.DefaultClient(context.Background(), "https://www.googleapis.com/auth/cloud-platform")
-	if err != nil {
-		return "", err
-	}
-	serviceUsageEndpoint := fmt.Sprintf("https://serviceusage.googleapis.com/v1/projects/%s/services/%s", projectID, api)
-	resp, err := httpClient.Get(serviceUsageEndpoint)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	result := utils.ParseJSONResult(t, string(body))
-	resultName := result.Get("name").String()
-	resultState := result.Get("state").String()
-	if !strings.Contains(resultName, api) || resultState != "ENABLED" {
-		return "", fmt.Errorf("API %s not enable in project %s", api, projectID)
-	}
-	return "API enabled", nil
-}
 
 func TestBootstrap(t *testing.T) {
 
@@ -125,9 +88,7 @@ func TestBootstrap(t *testing.T) {
 				"servicenetworking.googleapis.com",
 				"billingbudgets.googleapis.com",
 			} {
-				retry.DoWithRetry(t, fmt.Sprintf("checking if %s API is enabled in project %s", api, projectID), 5, 2*time.Minute, func() (string, error) {
-					return checkAPIEnabled(t, projectID, api)
-				})
+				utils.Poll(t, func() (bool, error) { return testutils.CheckAPIEnabled(t, projectID, api) }, 5, 2*time.Minute)
 			}
 
 			bootstrap.DefaultApply(assert)
@@ -172,7 +133,7 @@ func TestBootstrap(t *testing.T) {
 			assert.True(seedPrj.Exists(), "project %s should exist", seedProjectID)
 
 			enabledAPIS := gcloud.Runf(t, "services list --project %s", seedProjectID).Array()
-			listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
+			listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 			assert.Subset(listApis, activateApis, "APIs should have been enabled")
 
 			seedAlphaOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--json"})
@@ -223,7 +184,7 @@ func TestBootstrap(t *testing.T) {
 				iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", terraformSAEmail)
 				iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
 				orgIamPolicyRoles := gcloud.Run(t, fmt.Sprintf("organizations get-iam-policy %s", orgID), iamOpts).Array()
-				listRoles := getResultFieldStrSlice(orgIamPolicyRoles, "bindings.role")
+				listRoles := testutils.GetResultFieldStrSlice(orgIamPolicyRoles, "bindings.role")
 				if len(sa.orgRoles) == 0 {
 					assert.Empty(listRoles, fmt.Sprintf("service account %s should not have organization level roles", terraformSAEmail))
 				} else {

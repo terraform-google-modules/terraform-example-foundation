@@ -16,29 +16,15 @@ package envs
 
 import (
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/tidwall/gjson"
+
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
-
-func getLastSplitElement(value string, sep string) string {
-	splitted := strings.Split(value, sep)
-	return splitted[len(splitted)-1]
-}
-
-// getResultFieldStrSlice parses a field of a results list into a string slice
-func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
-	s := make([]string, 0)
-	for _, r := range rs {
-		s = append(s, r.Get(field).String())
-	}
-	return s
-}
 
 func TestEnvs(t *testing.T) {
 
@@ -67,7 +53,7 @@ func TestEnvs(t *testing.T) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					envs.DefaultVerify(assert)
 
-					envFolder := getLastSplitElement(envs.GetStringOutput("env_folder"), "/")
+					envFolder := testutils.GetLastSplitElement(envs.GetStringOutput("env_folder"), "/")
 					folder := gcloud.Runf(t, "resource-manager folders describe %s", envFolder)
 					displayName := fmt.Sprintf("fldr-%s", envName)
 					assert.Equal(displayName, folder.Get("displayName").String(), fmt.Sprintf("folder %s should have been created", displayName))
@@ -126,7 +112,7 @@ func TestEnvs(t *testing.T) {
 						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
 						enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
-						listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
+						listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 						assert.Subset(listApis, projectEnvOutput.apis, "APIs should have been enabled")
 
 						if projectEnvOutput.role != "" {

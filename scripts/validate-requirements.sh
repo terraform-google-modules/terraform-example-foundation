@@ -244,7 +244,7 @@ function main(){
     echo "Validating required utility tools..."
     validate_utils
 
-    if [ ! -z "$ERRORS" ]; then
+    if [ -n "$ERRORS" ]; then
         echo "Some requirements are missing:"
         echo "$ERRORS"
         exit 1

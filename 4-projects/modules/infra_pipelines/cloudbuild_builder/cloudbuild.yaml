@@ -30,4 +30,7 @@ substitutions:
   _TERRAFORM_VERSION: '0.13.7' # default value
   _TERRAFORM_VERSION_SHA256SUM: '4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957' # default value
   _GCLOUD_VERSION: '393.0.0-slim'
+serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${_CLOUD_BUILD_SA}'
+options:
+  logging: CLOUD_LOGGING_ONLY
 images: ['${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform']

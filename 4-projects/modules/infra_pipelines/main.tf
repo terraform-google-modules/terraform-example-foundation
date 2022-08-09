@@ -64,9 +64,10 @@ resource "google_storage_bucket" "pipeline_infra" {
 # IAM for Cloud Build SA to access cloudbuild_artifacts and tfstate buckets
 resource "google_storage_bucket_iam_member" "cloudbuild_artifacts_iam" {
   for_each = merge(local.artifact_buckets, local.state_buckets, local.cloudbuild_bucket, local.log_buckets)
-  bucket   = each.value
-  role     = "roles/storage.admin"
-  member   = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
+
+  bucket = each.value
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${var.cloudbuild_sa}"
 
   depends_on = [
     google_storage_bucket.pipeline_infra
@@ -75,7 +76,8 @@ resource "google_storage_bucket_iam_member" "cloudbuild_artifacts_iam" {
 
 # Cloud Build plan/apply triggers
 resource "google_cloudbuild_trigger" "main_trigger" {
-  for_each    = local.created_csrs
+  for_each = local.created_csrs
+
   project     = var.cloudbuild_project_id
   description = "${each.value}-terraform apply."
 
@@ -94,14 +96,17 @@ resource "google_cloudbuild_trigger" "main_trigger" {
     _TF_ACTION            = "apply"
   }
 
-  filename = var.cloudbuild_apply_filename
+  service_account = var.cloudbuild_sa
+  filename        = var.cloudbuild_apply_filename
+
   depends_on = [
     google_sourcerepo_repository.app_infra_repo,
   ]
 }
 
 resource "google_cloudbuild_trigger" "non_main_trigger" {
-  for_each    = local.created_csrs
+  for_each = local.created_csrs
+
   project     = var.cloudbuild_project_id
   description = "${each.value}-terraform plan."
 
@@ -121,7 +126,9 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
     _TF_ACTION            = "plan"
   }
 
-  filename = var.cloudbuild_plan_filename
+  service_account = var.cloudbuild_sa
+  filename        = var.cloudbuild_plan_filename
+
   depends_on = [
     google_sourcerepo_repository.app_infra_repo,
   ]
@@ -158,8 +165,8 @@ resource "null_resource" "cloudbuild_terraform_builder" {
       gcloud builds submit ${path.module}/cloudbuild_builder/ \
       --project ${var.cloudbuild_project_id} \
       --config=${path.module}/cloudbuild_builder/cloudbuild.yaml \
-      --substitutions=_GCLOUD_VERSION=${var.gcloud_version},_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_REGION=${google_artifact_registry_repository.tf-image-repo.location},_REPOSITORY=${local.gar_name} \
-      --impersonate-service-account=${var.impersonate_service_account}
+      --substitutions=_CLOUD_BUILD_SA=${var.cloudbuild_sa},_GCLOUD_VERSION=${var.gcloud_version},_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_REGION=${google_artifact_registry_repository.tf-image-repo.location},_REPOSITORY=${local.gar_name} \
+      --impersonate-service-account=${var.cloudbuild_sa}
   EOT
   }
   depends_on = [
@@ -179,7 +186,7 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
   location   = google_artifact_registry_repository.tf-image-repo.location
   repository = google_artifact_registry_repository.tf-image-repo.name
   role       = "roles/artifactregistry.writer"
-  member     = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
+  member     = "serviceAccount:${var.cloudbuild_sa}"
 }
 
 resource "google_folder_iam_member" "browser_cloud_build" {
@@ -187,5 +194,14 @@ resource "google_folder_iam_member" "browser_cloud_build" {
 
   folder = each.value
   role   = "roles/browser"
-  member = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
+  member = "serviceAccount:${var.cloudbuild_sa}"
+}
+
+resource "google_sourcerepo_repository_iam_member" "member" {
+  for_each = local.created_csrs
+
+  project    = var.cloudbuild_project_id
+  repository = each.value
+  role       = "roles/viewer"
+  member     = "serviceAccount:${var.cloudbuild_sa}"
 }

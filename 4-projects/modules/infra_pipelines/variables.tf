@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-variable "impersonate_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform"
+variable "cloudbuild_sa" {
+  description = "Service Account email to be used by the CloudBuild trigger."
   type        = string
+  default     = ""
 }
 
 variable "default_region" {

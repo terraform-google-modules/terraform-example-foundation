@@ -20,8 +20,13 @@
 # -------------------------- Variables --------------------------
 # Expected versions of the installers
 TF_VERSION="0.13.7"
-GCLOUD_SDK_VERSION="391.0.0"
+# GCLOUD_SDK_VERSION="391.0.0"
+GCLOUD_SDK_VERSION="380.0.0"
 GIT_VERSION="2.25.1"
+
+# Expected roles
+ORGANIZATION_LEVEL_ROLES=["roles/resourcemanager.folderCreator", "roles/resourcemanager.organizationAdmin", "roles/orgpolicy.policyAdmin"]
+BILLING_LEVEL_ROLES=["roles/billing.admin"]
 
 # Input variables
 END_USER_CREDENTIAL=""
@@ -30,10 +35,16 @@ BILLING_ACCOUNT=""
 
 # Collect the errors
 ERRORS=""
-# -------------------------- Funcions ---------------------------
+-------------------------- Functions ---------------------------
 
 # Compare two semantic versions
+# returns:
+# 0 = $1 is equal $2
+# 1 = $1 is higher than $2
+# 2 = $1 is lower than $2
 function compare_version(){
+
+    # when both inputs are the equal, just return 0
     if [[ "$1" == "$2" ]]; then
         echo 0
         return 0
@@ -43,23 +54,24 @@ function compare_version(){
     local i
     local version1=("$1")
     local version2=("$2")
+    # completing with zeroes on $1 so it can have the same size than $2
     for ((i=${#version1[@]}; i<${#version2[@]}; i++))
     do
         version1[i]=0
     done
     for ((i=0; i<${#version1[@]}; i++))
     do
-        if [[ -z ${version2[i]} ]]
-        then
+        # completing with zeroes on $2 so it can have the same size than $1
+        if [[ -z ${version2[i]} ]]; then
             version2[i]=0
         fi
-        if [[ ${version1[i]} > ${version2[i]} ]]
-        then
+        # if the number at index i for $1 is higher than $2, return 1
+        if [[ ${version1[i]} > ${version2[i]} ]]; then
             echo 1
             return 1
         fi
-        if [[ ${version1[i]} < ${version2[i]} ]]
-        then
+        # if the number at index i for $1 is lower than $2, return 2
+        if [[ ${version1[i]} < ${version2[i]} ]]; then
             echo 2
             return 2
         fi
@@ -71,15 +83,12 @@ function compare_version(){
 function validate_terraform(){
 
     if [ ! "$(command -v terraform )" ]; then
-        echo "Terraform not found."
-        echo "Visit https://learn.hashicorp.com/tutorials/terraform/install-cli and follow the instructions to install Terraform."
+        echo_missing_installation "Terraform" "https://learn.hashicorp.com/tutorials/terraform/install-cli"
         ERRORS+=$'Terraform not found\n'
     else
         TERRAFORM_CURRENT_VERSION=$(terraform version -json | jq -r .terraform_version)
         if [ "$(compare_version "$TERRAFORM_CURRENT_VERSION" "$TF_VERSION")" -ne 0 ]; then
-            echo "An incompatibly was found in Terraform version."
-            echo "Terraform version $TF_VERSION is required."
-            echo "Visit https://learn.hashicorp.com/tutorials/terraform/install-cli and follow the instructions to install Terraform."
+            echo_wrong_version "Terraform" "exactly" "$TF_VERSION" "Visit https://learn.hashicorp.com/tutorials/terraform/install-cli"
             ERRORS+=$'Terraform version is incompatible.\n'
         fi
     fi
@@ -88,15 +97,12 @@ function validate_terraform(){
 # Validate the Google Cloud SDK installation and version
 function validate_gcloud(){
     if [ ! "$(command -v gcloud)" ]; then
-        echo "gcloud CLI not found."
-        echo "Visit https://cloud.google.com/sdk/docs/install and follow the instructions to install gcloud CLI."
+        echo_missing_installation "gcloud CLI" "https://cloud.google.com/sdk/docs/install"
         ERRORS+=$'gcloud not found.\n'
     else
         GCLOUD_CURRENT_VERSION=$(gcloud version --format=json | jq -r '."Google Cloud SDK"')
         if [ "$(compare_version "$GCLOUD_CURRENT_VERSION" "$GCLOUD_SDK_VERSION")" -eq 2 ]; then
-            echo "An incompatibly was found in gcloud version."
-            echo "Version required is at least $GCLOUD_SDK_VERSION"
-            echo "Visit https://cloud.google.com/sdk/docs/install and follow the instructions to install gcloud CLI."
+            echo_wrong_version "gcloud CLI" "at least" "$GCLOUD_SDK_VERSION" "https://cloud.google.com/sdk/docs/install"
             ERRORS+=$'gcloud version is incompatible.\n'
         fi
     fi
@@ -105,15 +111,12 @@ function validate_gcloud(){
 # Validate the Git installation and version
 function validate_git(){
     if [ ! "$(command -v git)" ]; then
-        echo "git not found."
-        echo "Visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git and follow the instructions to install Git."
+        echo_missing_installation "git" "https://git-scm.com/book/en/v2/Getting-Started-Installing-Git"
         ERRORS+=$'git not found.\n'
     else
         GIT_CURRENT_VERSION=$(git version | awk '{print $3}')
         if [ "$(compare_version "$GIT_CURRENT_VERSION" "$GIT_VERSION")" -eq 2 ]; then
-            echo "An incompatibly was found in git version."
-            echo "Version required is at least $GIT_VERSION"
-            echo "Visit https://git-scm.com/book/en/v2/Getting-Started-Installing-Git and follow the instructions to install Git."
+            echo_wrong_version "git" "at least" "$GIT_VERSION" "https://git-scm.com/book/en/v2/Getting-Started-Installing-Git"
             ERRORS+=$'git version is incompatible.\n'
         fi
     fi
@@ -125,31 +128,38 @@ function validate_git(){
     fi
 }
 
-# Validate the Configuration of the Gcloud CLI
+function validate_utils(){
+    if [ ! "$(command -v jq)" ]; then
+        echo_missing_installation "jq" "https://stedolan.github.io/jq/download/"
+        ERRORS+=$'jq not found.\n'
+    fi
+}
+
+# Validate the configuration of the Gcloud CLI
 function validate_gcloud_configuration(){
 
     END_USER_CREDENTIAL_OUTPUT="$(gcloud config get-value account 2>&1 >/dev/null)"
     if [ "$(echo "$END_USER_CREDENTIAL_OUTPUT" | grep -c unset)" -eq 1 ]; then
         echo "You must configure an End User Credential."
         echo "Visit https://cloud.google.com/sdk/gcloud/reference/auth/login and follow the instructions to authorize gcloud to access the Cloud Platform with Google user credentials."
-        ERRORS+=$'gcloud end user credential not configured.\n'
+        ERRORS+=$'gcloud not configured with end user credential.\n'
     fi
 
     APPLICATION_DEFAULT_CREDENTIAL_OUTPUT="$(gcloud auth application-default print-access-token 2>&1 >/dev/null)"
     if [ "$(echo "$APPLICATION_DEFAULT_CREDENTIAL_OUTPUT" | grep -c 'Could not automatically determine credentials')" -eq 1 ]; then
         echo "You must configure an Application Default Credential."
         echo "Visit https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login and follow the instructions to authorize gcloud to access the Cloud Platform with Google user credentials."
-        ERRORS+=$'gcloud application default credential not configured.\n'
+        ERRORS+=$'gcloud not configured with application default credential.\n'
     fi
 }
 
-# Function to validate the Configuration of the Gcloud CLI
+#  Function to validate the roles attached to credentialled account
 function validate_credential_roles(){
     check_org_level_roles "$END_USER_CREDENTIAL" "$ORGANIZATION_ID"
     check_billing_account_roles "$END_USER_CREDENTIAL" "$BILLING_ACCOUNT"
 }
 
-# Verifies wheter a user is assigned to the expected Orgzanization Level roles
+# Verifies whether a user has the expected Organization level roles
 function check_org_level_roles(){
 
     ORG_LEVEL_ROLES_OUTPUT=$(
@@ -166,7 +176,7 @@ function check_org_level_roles(){
     fi
 }
 
-# Verifies wheter a user is assigned to the expected Billing Level roles
+# Verifies whether a user has the expected Billing Level roles
 function check_billing_account_roles(){
 
     BILLING_LEVEL_ROLES_OUTPUT=$(
@@ -187,7 +197,7 @@ function check_billing_account_roles(){
 function validate_bootstrap_step(){
     FILE=0-bootstrap/terraform.tfvars
     if [ ! -f "$FILE" ]; then
-        echo "$FILE does not exists."
+        echo "$FILE has have required values that must be replaced."
     else
         if [ "$(grep -c REPLACE_ME $FILE)" != 0 ]; then
             echo "$FILE must have required values fullfiled."
@@ -196,7 +206,35 @@ function validate_bootstrap_step(){
     fi
 }
 
+# Echoes messages for cases where an installation is missing
+# $1 = name of the missing binary
+# $2 = web site to find the installation details of the missing binary
+function echo_missing_installation () {
+    echo "$1 not found."
+    echo "Visit $2 and follow the instructions to install $1."
+}
+
+# Echoes messages for cases where an installation version is incompatible
+# $1 = name of the missing binary
+# $2 = "at least" / "equal"
+# $3 = version to be displayed
+# $4 = web site to find the installation details of the missing binary
+function echo_wrong_version () {
+    echo "An incompatible $1 version was found."
+    echo "Version required is $2 $3"
+    echo "Visit $4 and follow the instructions to install $1."
+}
+
 function main(){
+
+    echo "Validating required utility tools..."
+    validate_utils
+
+    if [ ! -z "$ERRORS" ]; then
+        echo "Some requirements are missing:"
+        echo "$ERRORS"
+        exit 1
+    fi
 
     echo "Validating Terraform installation..."
     validate_terraform
@@ -207,11 +245,15 @@ function main(){
     echo "Validating Git installation..."
     validate_git
 
-    echo "Validating local gcloud configuration..."
-    validate_gcloud_configuration
+    if [[ ! "$ERRORS" == *"gcloud"* ]]; then
+        echo "Validating local gcloud configuration..."
+        validate_gcloud_configuration
 
-    echo "Validating roles assignement for current end user credential..."
-    validate_credential_roles
+        if [[ ! "$ERRORS" == *"gcloud not configured"* ]]; then
+        echo "Validating roles assignement for current end user credential..."
+        validate_credential_roles
+        fi
+    fi
 
     echo "Validating 0-bootstrap configuration..."
     validate_bootstrap_step

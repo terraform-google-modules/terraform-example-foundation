@@ -95,6 +95,21 @@ For more information about the permissions that are required, and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
+### Optional - Automatic creation of Google Cloud Identity groups
+
+Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) in the foundation.
+
+To enable automatic creation of the [required groups](https://cloud.google.com/architecture/security-foundations/authentication-authorization#users_and_groups) you need to:
+
+- Have an existing project for Cloud Identity API billing.
+- Enable the Cloud Identity API(`cloudidentity.googleapis.com`) on the billing project.
+- Grant role `roles/serviceusage.serviceUsageConsumer` to the user running Terraform on the billing project.
+- Provide values for the groups and billing project in the variable `groups`.
+
+All groups in the `groups.required_groups` are required.
+
+All groups in the `groups.optional_groups` are optional.
+
 ### Troubleshooting
 
 Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
@@ -177,6 +192,8 @@ the following steps:
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
+| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_groups   = bool<br>    billing_project = string<br>    required_groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = string<br>      audit_data_users           = string<br>      monitoring_workspace_users = string<br>    })<br>    optional_groups = object({<br>      gcp_platform_viewer      = string<br>      gcp_security_reviewer    = string<br>      gcp_network_viewer       = string<br>      gcp_scc_admin            = string<br>      gcp_global_secrets_admin = string<br>      gcp_audit_viewer         = string<br>    })<br>  })</pre> | <pre>{<br>  "billing_project": "",<br>  "create_groups": false,<br>  "optional_groups": {<br>    "gcp_audit_viewer": "",<br>    "gcp_global_secrets_admin": "",<br>    "gcp_network_viewer": "",<br>    "gcp_platform_viewer": "",<br>    "gcp_scc_admin": "",<br>    "gcp_security_reviewer": ""<br>  },<br>  "required_groups": {<br>    "audit_data_users": "",<br>    "billing_data_users": "",<br>    "group_billing_admins": "",<br>    "group_org_admins": "",<br>    "monitoring_workspace_users": ""<br>  }<br>}</pre> | no |
+| initial\_group\_config | Define the group configuration when it are initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
@@ -193,8 +210,10 @@ the following steps:
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud/Build artifacts in CloudBuild project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for foundations pipelines in seed project. |
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
+| optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |
 | projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
+| required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
 | terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
 | terraform\_service\_account | Email for privileged service account for Terraform. |

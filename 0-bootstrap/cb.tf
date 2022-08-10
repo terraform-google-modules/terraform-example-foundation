@@ -40,7 +40,7 @@ module "tf_source" {
   folder_id             = google_folder.bootstrap.id
   project_id            = "${var.project_prefix}-b-cicd-${random_string.suffix.result}"
   billing_account       = var.billing_account
-  group_org_admins      = var.group_org_admins
+  group_org_admins      = local.group_org_admins
   buckets_force_destroy = true
 
   activate_apis = [

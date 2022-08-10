@@ -31,6 +31,30 @@ default_region = "us-central1"
 // The folder must already exist.
 //parent_folder = "01234567890"
 
+// Optional - for enabling the automatic groups creation, uncoment the groups
+// variable and update the values with the desired group names
+//groups = {
+//  create_groups = true,
+//  billing_project = "billing-project",
+//  required_groups = {
+//    group_org_admins           = "group_org_admins_local_test@example.com"
+//    group_billing_admins       = "group_billing_admins_local_test@example.com"
+//    billing_data_users         = "billing_data_users_local_test@example.com"
+//    audit_data_users           = "audit_data_users_local_test@example.com"
+//    monitoring_workspace_users = "monitoring_workspace_users_local_test@example.com"
+//  },
+//  optional_groups = {
+//    gcp_platform_viewer      = "gcp_platform_viewer_local_test@example.com"
+//    gcp_security_reviewer    = "gcp_security_reviewer_local_test@example.com"
+//    gcp_network_viewer       = "gcp_network_viewer_local_test@example.com"
+//    gcp_scc_admin            = "gcp_scc_admin_local_test@example.com"
+//    gcp_global_secrets_admin = "gcp_global_secrets_admin_local_test@example.com"
+//    gcp_audit_viewer         = "gcp_audit_viewer_local_test@example.com"
+//  }
+//}
+//
+
+
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */

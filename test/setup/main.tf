@@ -14,12 +14,33 @@
  * limitations under the License.
  */
 
-resource "random_id" "random_project_id_suffix" {
-  byte_length = 2
+locals {
+  //project IDs must start with a letter.
+  //Max length for project_prefix is 3, basde in the projects create in the foundation
+  project_prefix = "${random_string.one_letter.result}${random_string.two_alphanumeric.result}"
+}
+
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
+resource "random_string" "one_letter" {
+  length  = 1
+  numeric = false
+  special = false
+  upper   = false
+}
+
+resource "random_string" "two_alphanumeric" {
+  length  = 2
+  special = false
+  upper   = false
 }
 
 resource "google_folder" "test_folder" {
-  display_name = "test_foundation_folder_${random_id.random_project_id_suffix.hex}"
+  display_name = "test_foundation_folder_${random_string.suffix.result}"
   parent       = "folders/${var.folder_id}"
 }
 
@@ -27,7 +48,7 @@ module "project" {
   source  = "terraform-google-modules/project-factory/google"
   version = "~> 13.0"
 
-  name              = "ci-foundation"
+  name              = "ci-foundation-${random_string.suffix.result}"
   random_project_id = true
   org_id            = var.org_id
   folder_id         = var.folder_id

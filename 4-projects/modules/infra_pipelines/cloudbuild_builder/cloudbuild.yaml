@@ -27,8 +27,8 @@ steps:
 - name: '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/terraform'
   args: ['version']
 substitutions:
-  _TERRAFORM_VERSION: '0.13.7' # default value
-  _TERRAFORM_VERSION_SHA256SUM: '4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957' # default value
+  _TERRAFORM_VERSION: '0.15.5' # default value
+  _TERRAFORM_VERSION_SHA256SUM: '3b144499e08c245a8039027eb2b84c0495e119f57d79e8fb605864bb48897a7d' # default value
   _GCLOUD_VERSION: '393.0.0-slim'
 serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${_CLOUD_BUILD_SA}'
 options:

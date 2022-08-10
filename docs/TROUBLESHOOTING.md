@@ -78,12 +78,12 @@ This could be due to init.defaultBranch being set to something other than
 When running the build for the branch `production` in step 3-networks in your **Foundation Pipeline** the build fails with:
 
 ```
-state snapshot was created by Terraform v0.x.x, which is newer than current v0.13.7; upgrade to Terraform v0.x.x or greater to work with this state
+state snapshot was created by Terraform v0.x.x, which is newer than current v0.15.5; upgrade to Terraform v0.x.x or greater to work with this state
 ```
 
 **Cause:**
 
-The manual deploy step for the shared environment in [3-networks](../3-networks#deploying-with-cloud-build) was executed with a Terraform version newer than version v0.13.7 used in the **Foundation Pipeline**.
+The manual deploy step for the shared environment in [3-networks](../3-networks#deploying-with-cloud-build) was executed with a Terraform version newer than version v0.15.5 used in the **Foundation Pipeline**.
 
 **Solution:**
 
@@ -91,7 +91,7 @@ You have two options:
 
 #### Downgrade your local Terraform version
 
-You will need to re-run the deploy of the 3-networks shared environment with Terraform v0.13.7.
+You will need to re-run the deploy of the 3-networks shared environment with Terraform v0.15.5.
 
 Steps:
 
@@ -99,12 +99,10 @@ Steps:
 - Update `backend.tf` with your bucket name from the 0-bootstrap step.
 - Run `terraform destroy` in the folder using the Terraform v0.x.x version.
 - Delete the Terraform state file in `gs://YOUR-TF-STATE-BUCKET/terraform/networks/envs/shared/default.tfstate`. This bucket is in your **Seed Project**.
-- Install Terraform v0.13.7.
-- Re-run the manual deploy of 3-networks shared environment using Terraform v0.13.7.
+- Install Terraform v0.15.5.
+- Re-run the manual deploy of 3-networks shared environment using Terraform v0.15.5.
 
 #### Upgrade your 0-bootstrap runner image Terraform version
-
-The current version of the foundation does not work with terraform version `0.15.x`,upgrade option is only valid to upgrade to version `0.14.x`.
 
 Replace `0.x.x` with the actual version of your local Terraform version in the following instructions:
 
@@ -114,7 +112,7 @@ Replace `0.x.x` with the actual version of your local Terraform version in the f
 - Get the value of the SHA 256 SUM for the amd64 linux version of the release 0.x.x (`terraform_0.x.x_linux_amd64.zip`)
 - Go to folder `0-bootstrap`.
 - Edit the module `cloudbuild_bootstrap` in the Terraform [main.tf](../0-bootstrap/main.tf) file:
-  - Upgrade `terraform_version` from `"0.13.7"` to `"0.x.x"`
+  - Upgrade `terraform_version` from `"0.15.5"` to `"0.x.x"`
   - Update `terraform_version_sha256sum` with the value you got from the file `terraform_0.x.x_SHA256SUMS`
 - Run `terraform init`.
 - Run `terraform plan` and review the output.

@@ -82,13 +82,13 @@ variable "cloudbuild_apply_filename" {
 variable "terraform_version" {
   description = "Default terraform version."
   type        = string
-  default     = "0.13.7"
+  default     = "0.15.5"
 }
 
 variable "terraform_version_sha256sum" {
   description = "sha256sum for default terraform version."
   type        = string
-  default     = "4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"
+  default     = "3b144499e08c245a8039027eb2b84c0495e119f57d79e8fb605864bb48897a7d"
 }
 
 variable "gcloud_version" {

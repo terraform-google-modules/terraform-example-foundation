@@ -74,7 +74,7 @@ This pipeline can be utilized for deploying resources in projects across develop
    gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
    ```
 
-1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 0.13.7 to be installed.
+1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 0.15.5 to be installed.
 
    **Note:** Make sure that you use the same version of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 

@@ -70,6 +70,7 @@
 | dns\_hub\_project\_id | The DNS hub project ID |
 | domains\_to\_allow | The list of domains to allow users from in IAM. |
 | interconnect\_project\_id | The Dedicated Interconnect project ID |
+| logs\_export\_logbucket\_name | The log bucket for destination of log exports |
 | logs\_export\_pubsub\_topic | The Pub/Sub topic for destination of log exports |
 | logs\_export\_storage\_bucket\_name | The storage bucket for destination of log exports |
 | org\_audit\_logs\_project\_id | The org audit logs project ID |

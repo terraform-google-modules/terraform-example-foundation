@@ -15,7 +15,14 @@ module "logging_storage" {
     fldr2 = "<folder2_id>"
   }
   resource_type                  = "folder"
-  logging_sink_filter            = local.all_logs_filter
+  logging_sink_filter            = <<EOF
+    logName: /logs/cloudaudit.googleapis.com%2Factivity OR
+    logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
+    logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR
+    logName: /logs/compute.googleapis.com%2Fvpc_flows OR
+    logName: /logs/compute.googleapis.com%2Ffirewall OR
+    logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
+EOF
   logging_sink_name              = "sk-c-logging-bkt"
   include_children               = true
   logging_target_type            = "storage"

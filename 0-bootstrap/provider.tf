@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,7 @@
  * limitations under the License.
  */
 
-locals {
-  tf_sa = var.terraform_service_account
-}
-
-
-/******************************************
-  Provider credential configuration
- *****************************************/
-provider "google" {
-  impersonate_service_account = local.tf_sa
-  request_timeout             = "2m"
-}
-
 provider "google-beta" {
-  impersonate_service_account = local.tf_sa
-  request_timeout             = "2m"
+  user_project_override = true
+  billing_project       = var.groups.billing_project
 }

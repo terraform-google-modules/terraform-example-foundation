@@ -32,6 +32,8 @@ locals {
   org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
     "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
   ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
+  group_org_admins     = var.groups.create_groups ? var.groups.required_groups.group_org_admins : var.group_org_admins
+  group_billing_admins = var.groups.create_groups ? var.groups.required_groups.group_billing_admins : var.group_billing_admins
 }
 
 resource "google_folder" "bootstrap" {
@@ -47,8 +49,8 @@ module "seed_bootstrap" {
   project_id                     = "${var.project_prefix}-b-seed"
   state_bucket_name              = "${var.bucket_prefix}-b-tfstate"
   billing_account                = var.billing_account
-  group_org_admins               = var.group_org_admins
-  group_billing_admins           = var.group_billing_admins
+  group_org_admins               = local.group_org_admins
+  group_billing_admins           = local.group_billing_admins
   default_region                 = var.default_region
   org_project_creators           = local.org_project_creators
   sa_enable_impersonation        = true
@@ -57,7 +59,7 @@ module "seed_bootstrap" {
   project_prefix                 = var.project_prefix
 
   # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
-  depends_on = [google_folder.bootstrap]
+  depends_on = [google_folder.bootstrap, module.required_group, module.optional_group]
 
   project_labels = {
     environment       = "bootstrap"
@@ -107,7 +109,7 @@ module "cloudbuild_bootstrap" {
   folder_id                   = google_folder.bootstrap.id
   project_id                  = "${var.project_prefix}-b-cicd"
   billing_account             = var.billing_account
-  group_org_admins            = var.group_org_admins
+  group_org_admins            = local.group_org_admins
   default_region              = var.default_region
   terraform_sa_email          = module.seed_bootstrap.terraform_sa_email
   terraform_sa_name           = module.seed_bootstrap.terraform_sa_name
@@ -121,7 +123,7 @@ module "cloudbuild_bootstrap" {
   terraform_version_sha256sum = "4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"
 
   # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
-  depends_on = [module.seed_bootstrap]
+  depends_on = [google_folder.bootstrap, module.required_group, module.optional_group]
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -153,7 +155,9 @@ module "cloudbuild_bootstrap" {
     "non\\-production", //non-production needs a \ to ensure regex matches correct branches.
     "production"
   ]
+
 }
+
 
 // Standalone repo for Terraform-validator policies.
 // This repo does not need to trigger builds in Cloud Build.

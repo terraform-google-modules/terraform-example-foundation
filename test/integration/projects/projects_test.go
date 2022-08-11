@@ -23,7 +23,9 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/tidwall/gjson"
+	"github.com/stretchr/testify/require"
+
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
 func getPolicyID(t *testing.T, orgID string) string {
@@ -38,15 +40,6 @@ func getNetworkMode(t *testing.T) string {
 		return "-spoke"
 	}
 	return ""
-}
-
-// getResultFieldStrSlice parses a field of a results list into a string slice
-func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
-	s := make([]string, 0)
-	for _, r := range rs {
-		s = append(s, r.Get(field).String())
-	}
-	return s
 }
 
 func TestProjects(t *testing.T) {
@@ -120,7 +113,7 @@ func TestProjects(t *testing.T) {
 					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
 					enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
-					listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
+					listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 					assert.Subset(listApis, sharedApisEnabled, "APIs should have been enabled")
 
 					defaultRegion := shared.GetStringOutput("default_region")
@@ -210,6 +203,17 @@ func TestProjects(t *testing.T) {
 				tft.WithTFDir(tt.tfDir),
 				tft.WithVars(vars),
 			)
+			projects.DefineApply(
+				func(assert *assert.Assertions) {
+					// validate requirements
+					require.NotEmpty(t, sharedCloudBuildSA[env[0]], "app_infra_pipeline_cloudbuild_sa should not be empty")
+					require.NotEmpty(t, perimeterName, "perimeter_name should not be empty")
+					require.NotEmpty(t, policyID, "access_context_manager_policy_id should not be empty")
+					require.NotEmpty(t, terraformSA, "terraform_service_account should not be empty")
+
+					projects.DefaultApply(assert)
+				})
+
 			projects.DefineVerify(
 				func(assert *assert.Assertions) {
 
@@ -226,7 +230,7 @@ func TestProjects(t *testing.T) {
 						if projectOutput == "restricted_shared_vpc_project" {
 
 							enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
-							listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
+							listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
 
 							restrictedProjectNumber := projects.GetStringOutput("restricted_shared_vpc_project_number")

@@ -16,32 +16,19 @@ package org
 
 import (
 	"fmt"
-	"strings"
 	"testing"
+	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/tidwall/gjson"
+
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
 func isHubAndSpoke(t *testing.T) bool {
-	return "HubAndSpoke" == utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
-}
-
-func getLastSplitElement(value string, sep string) string {
-	splitted := strings.Split(value, sep)
-	return splitted[len(splitted)-1]
-}
-
-// getResultFieldStrSlice parses a field of a results list into a string slice
-func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
-	s := make([]string, 0)
-	for _, r := range rs {
-		s = append(s, r.Get(field).String())
-	}
-	return s
+	return utils.ValFromEnv(t, "TF_VAR_example_foundations_mode") == "HubAndSpoke"
 }
 
 func TestOrg(t *testing.T) {
@@ -54,7 +41,7 @@ func TestOrg(t *testing.T) {
 	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
 
 	vars := map[string]interface{}{
-		"terraform_service_account":               terraformSA,
+		"terraform_service_account":                     terraformSA,
 		"networks_step_terraform_service_account_email": networksTerraformSA,
 	}
 
@@ -63,15 +50,43 @@ func TestOrg(t *testing.T) {
 		tft.WithVars(vars),
 	)
 
+	org.DefineApply(
+		func(assert *assert.Assertions) {
+			projectID := bootstrap.GetStringOutput("seed_project_id")
+			for _, api := range []string{
+				"serviceusage.googleapis.com",
+				"servicenetworking.googleapis.com",
+				"cloudkms.googleapis.com",
+				"compute.googleapis.com",
+				"logging.googleapis.com",
+				"bigquery.googleapis.com",
+				"cloudresourcemanager.googleapis.com",
+				"cloudbilling.googleapis.com",
+				"cloudbuild.googleapis.com",
+				"iam.googleapis.com",
+				"admin.googleapis.com",
+				"appengine.googleapis.com",
+				"storage-api.googleapis.com",
+				"monitoring.googleapis.com",
+				"pubsub.googleapis.com",
+				"securitycenter.googleapis.com",
+				"accesscontextmanager.googleapis.com",
+				"billingbudgets.googleapis.com",
+			} {
+				utils.Poll(t, func() (bool, error) { return testutils.CheckAPIEnabled(t, projectID, api) }, 5, 2*time.Minute)
+			}
+
+			org.DefaultApply(assert)
+		})
 	org.DefineVerify(
 		func(assert *assert.Assertions) {
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 			org.DefaultVerify(assert)
 
-			parentFolder := getLastSplitElement(org.GetStringOutput("parent_resource_id"), "/")
+			parentFolder := testutils.GetLastSplitElement(org.GetStringOutput("parent_resource_id"), "/")
 
 			// creation of common folder
-			commonFolder := getLastSplitElement(org.GetStringOutput("common_folder_name"), "/")
+			commonFolder := testutils.GetLastSplitElement(org.GetStringOutput("common_folder_name"), "/")
 			folder := gcloud.Runf(t, "resource-manager folders describe %s", commonFolder)
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 
@@ -258,7 +273,7 @@ func TestOrg(t *testing.T) {
 				assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
 				enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
-				listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
+				listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 				assert.Subset(listApis, projectOutput.apis, "APIs should have been enabled")
 			}
 		})

@@ -110,19 +110,19 @@ variable "labels" {
   default     = {}
 }
 variable "kms_key_name" {
-  description = "(Optional) ID of a Cloud KMS CryptoKey that will be used to encrypt the logging destination."
+  description = "(Optional) ID of a Cloud KMS CryptoKey that will be used to encrypt the logging destination. Applies to destinations: bigquery, storage, and pubsub."
   type        = string
   default     = null
 }
 
 variable "logging_location" {
-  description = "(Optional) The location of the logging destination. Applies to destination: bigquery and storage."
+  description = "(Optional) The location of the logging destination. Applies to destinations: bigquery and storage."
   type        = string
   default     = "US"
 }
 
 variable "delete_contents_on_destroy" {
-  description = "(Optional) If set to true, delete all contained objects in the logging destination. Applies to destination: bigquery and storage."
+  description = "(Optional) If set to true, delete all contained objects in the logging destination. Applies to destinations: bigquery and storage."
   type        = bool
   default     = false
 }

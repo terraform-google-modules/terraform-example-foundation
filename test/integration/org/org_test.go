@@ -153,6 +153,12 @@ func TestOrg(t *testing.T) {
 			bkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", logsExportStorageBucketName), gcAlphaOpts).Array()[0]
 			assert.Equal(logsExportStorageBucketName, bkt.Get("metadata.id").String(), fmt.Sprintf("Bucket %s should exist", logsExportStorageBucketName))
 
+			logsExportLogBktName := org.GetStringOutput("logs_export_logbucket_name")
+			defaultRegion := utils.ValFromEnv(t, "TF_VAR_default_region")
+			logBktFullName := fmt.Sprintf("projects/%s/locations/%s/buckets/%s", auditLogsProjectID, defaultRegion, logsExportLogBktName)
+			logBktDetails := gcloud.Runf(t, fmt.Sprintf("logging buckets describe %s --location=%s --project=%s", logsExportLogBktName, defaultRegion, auditLogsProjectID))
+			assert.Equal(logBktFullName, logBktDetails.Get("name").String(), "log bucket name should match")
+
 			logsExportTopicName := org.GetStringOutput("logs_export_pubsub_topic")
 			logsExportTopicFullName := fmt.Sprintf("projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName)
 			logsExportTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", logsExportTopicName, auditLogsProjectID)
@@ -177,6 +183,11 @@ func TestOrg(t *testing.T) {
 					name:        "sk-c-logging-bkt",
 					hasFilter:   false,
 					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
+				},
+				{
+					name:        "sk-c-logging-logbkt",
+					hasFilter:   false,
+					destination: fmt.Sprintf("logging.googleapis.com/%s", logBktFullName),
 				},
 				{
 					name:        "sk-c-logging-pub",

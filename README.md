@@ -69,7 +69,7 @@ example-organization
 
 Among the eight projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
 The first one for organization wide audit logs, and the latter for billing logs.
-In both cases the logs are collected into BigQuery datasets which can then be used general querying, dashboarding & reporting. Logs are also exported to Pub/Sub and GCS bucket.
+In both cases the logs are collected into BigQuery datasets which can then be used general querying, dashboarding & reporting. Logs are also exported to Pub/Sub, GCS bucket, and Log Bucket.
 
 **Notes**:
 

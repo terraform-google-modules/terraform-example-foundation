@@ -79,7 +79,7 @@ Enabling Data Access logs might result in your project being charged for the add
 For details on costs you might incur, go to [Pricing](https://cloud.google.com/stackdriver/pricing).
 You can choose not to enable the Data Access logs by setting variable `data_access_logs_enabled` to false.
 
-**Note:** This module creates a sink to export all logs to Google Storage. It also creates sinks to export a subset of security related logs
+**Note:** This module creates a sink to export all logs to Google Storage and Log Bucket. It also creates sinks to export a subset of security related logs
 to Bigquery and Pub/Sub. This will result in additional charges for those copies of logs.
 You can change the filters & sinks by modifying the configuration in `envs/shared/log_sinks.tf`.
 

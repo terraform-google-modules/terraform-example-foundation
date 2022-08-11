@@ -93,3 +93,8 @@ output "logs_export_storage_bucket_name" {
   value       = module.storage_destination.resource_name
   description = "The storage bucket for destination of log exports"
 }
+
+output "logs_export_logbucket_name" {
+  value       = module.logbucket_destination.resource_name
+  description = "The log bucket for destination of log exports"
+}

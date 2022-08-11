@@ -109,7 +109,7 @@ module "restricted_shared_vpc" {
   environment_code                 = local.environment_code
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = ["bigquery.googleapis.com", "storage.googleapis.com"]
-  members                          = var.members
+  members                          = ["serviceAccount:${var.terraform_service_account}"]
   org_id                           = var.org_id
   parent_folder                    = var.parent_folder
   bgp_asn_subnet                   = local.bgp_asn_number

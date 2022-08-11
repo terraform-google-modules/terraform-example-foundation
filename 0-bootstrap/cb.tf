@@ -88,13 +88,15 @@ module "tf_source" {
 }
 
 module "tf_cloud_builder" {
-  source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
-  version = "~> 6.1"
+  source = "github.com/daniel-cit/terraform-google-bootstrap.git//modules/tf_cloudbuild_builder?ref=add-terrafrom-version-input"
+  # source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
+  # version = "~> 6.1"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos["tf-cloudbuilder"].url
   gar_repo_location            = var.default_region
   workflow_region              = var.default_region
+  terraform_version            = "0.15.5"
   cb_logs_bucket_force_destroy = true
 }
 
@@ -105,6 +107,19 @@ module "bootstrap_csr_repo" {
 
   create_cmd_entrypoint = "${path.module}/scripts/push-to-repo.sh"
   create_cmd_body       = "${module.tf_source.cloudbuild_project_id} ${split("/", module.tf_source.csr_repos["tf-cloudbuilder"].id)[3]} ${path.module}/Dockerfile"
+}
+
+module "build_terraform_image" {
+  source  = "terraform-google-modules/gcloud/google"
+  version = "~> 3.1.0"
+  upgrade = false
+
+  create_cmd_body = "beta builds triggers run ${split("/", module.tf_cloud_builder.cloudbuild_trigger_id)[3]} --branch main --project ${module.tf_source.cloudbuild_project_id}"
+
+  module_depends_on = [
+    module.tf_cloud_builder,
+    module.bootstrap_csr_repo,
+  ]
 }
 
 module "tf_workspace" {

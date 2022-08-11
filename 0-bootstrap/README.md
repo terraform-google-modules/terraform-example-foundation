@@ -139,6 +139,7 @@ your current Jenkins manager (controller) environment.
 1. Run `terraform output environment_step_terraform_service_account_email` to get the email address of the admin of step `2-environments`. You need this address in a later procedure.
 1. Run `terraform output networks_step_terraform_service_account_email` to get the email address of the admin of steps `3-networks-dual-svpc` and `3-networks-hub-and-spoke`. You need this address in a later procedure.
 1. Run `terraform output projects_step_terraform_service_account_email` to get the email address of the admin of step `4-projects`. You need this address in a later procedure.
+1. Run `terraform output cloudbuild_project_id` to get the ID of your Cloud Build project.
 1. Run `terraform output gcs_bucket_tfstate` to get your Google Cloud bucket name from Terraform's state.
 1. Copy the backend:
    ```

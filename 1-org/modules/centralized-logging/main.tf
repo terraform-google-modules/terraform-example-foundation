@@ -63,9 +63,9 @@ module "log_export" {
 #-------------------------#
 module "destination_logbucket" {
   //  source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  //  version = "~> 7.4.0"
+  //  version = "~> 7.4.2"
 
-  source = "/work/terraform-google-log-export/modules/logbucket"
+  source = "github.com/terraform-google-modules/terraform-google-log-export//modules/logbucket"
 
   count = local.create_destination && var.logging_target_type == "logbucket" ? 1 : 0
 

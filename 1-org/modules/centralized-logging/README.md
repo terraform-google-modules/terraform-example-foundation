@@ -1,68 +1,28 @@
 # Centralized Logging Module
 
-This module handles logging configuration enabling destination to: buckets, Big Query or Pub/Sub.
+This module handles logging configuration enabling destination to: GCS bucket, Big Query, Pub/Sub, or Log Bucket.
 
 ## Usage
 
-Before using this module, one should get familiar with the `google_dataflow_flex_template_job`’s [Note on "destroy"/"apply"](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dataflow_flex_template_job#note-on-destroy--apply) as the behavior is atypical when compared to other resources.
-
-## Requirements
-
-These sections describe requirements for running this module.
-
-### Software
-
-Install the following dependencies:
-
-- [Google Cloud SDK](https://cloud.google.com/sdk/install) version 357.0.0 or later.
-- [Terraform](https://www.terraform.io/downloads.html) version 0.13.7 or later.
-
-### Deployer entity
-
-To provision the resources of this module, create a service account
-with the following IAM roles:
-
-- Dataflow Developer:`roles/dataflow.developer`.
-
-### APIs
-
-The following APIs must be enabled in the project where the service account was created:
-
-- BigQuery API: `bigquery.googleapis.com`.
-- Cloud Key Management Service (KMS) API: `cloudkms.googleapis.com`.
-- Google Cloud Storage JSON API:`storage-api.googleapis.com`.
-- Compute Engine API: `compute.googleapis.com`.
-- Dataflow API: `dataflow.googleapis.com`.
-
-Any others APIs you pipeline may need.
-
-### Assumption
-
-One assumption is that, before using this module, you already have a working Dataflow flex job template(s) in a GCS location.
-If you are not using public IPs, you need to [Configure Private Google Access](https://cloud.google.com/vpc/docs/configure-private-google-access)
-on the VPC used by Dataflow.
-
-This is a simple usage:
+The following example exports just audit logs from two folders to the same storage destination:
 
 ```hcl
-module "dataflow-flex-job" {
-  source  = "terraform-google-modules/secured-data-warehouse/google//modules/dataflow-flex-job"
-  version = "~> 0.1"
+module "logging_storage" {
+  source = "terraform-google-modules/terraform-example-foundation/google//1-org/modules/centralized-logging"
 
-  project_id              = "<project_id>"
-  region                  = "us-east4"
-  name                    = "dataflow-flex-job-00001"
-  container_spec_gcs_path = "gs://<path-to-template>"
-  staging_location        = "gs://<gcs_path_staging_data_bucket>"
-  temp_location           = "gs://<gcs_path_temp_data_bucket>"
-  subnetwork_self_link    = "<subnetwork-self-link>"
-  kms_key_name            = "<fully-qualified-kms-key-id>"
-  service_account_email   = "<dataflow-controller-service-account-email>"
-
-  parameters = {
-    firstParameter  = "ONE",
-    secondParameter = "TWO
+  resources = {
+    fldr1 = "<folder1_id>"
+    fldr2 = "<folder2_id>"
   }
+  resource_type                  = "folder"
+  logging_sink_filter            = local.all_logs_filter
+  logging_sink_name              = "sk-c-logging-bkt"
+  include_children               = true
+  logging_target_type            = "storage"
+  logging_destination_project_id = "<log_destination_project_id>"
+  logging_target_name            = "bkt-audit-logs"
+  uniform_bucket_level_access    = true
+  logging_location               = "US"
 }
 ```
 

@@ -102,6 +102,7 @@ module "destination_bigquery" {
   log_sink_writer_identity   = module.log_export[local.key_first_resource].writer_identity
   labels                     = var.labels
   description                = var.dataset_description
+  kms_key_name               = var.kms_key_name
   expiration_days            = var.expiration_days
   delete_contents_on_destroy = var.delete_contents_on_destroy
 }
@@ -130,6 +131,7 @@ module "destination_storage" {
   project_id                  = var.logging_destination_project_id
   storage_bucket_name         = local.logging_target_name
   log_sink_writer_identity    = module.log_export[local.key_first_resource].writer_identity
+  kms_key_name                = var.kms_key_name
   uniform_bucket_level_access = var.uniform_bucket_level_access
   location                    = var.logging_location
   storage_bucket_labels       = var.labels
@@ -164,6 +166,7 @@ module "destination_pubsub" {
   project_id               = var.logging_destination_project_id
   topic_name               = local.logging_target_name
   log_sink_writer_identity = module.log_export[local.key_first_resource].writer_identity
+  kms_key_name             = var.kms_key_name
   topic_labels             = var.labels
   create_subscriber        = var.create_subscriber
   subscription_labels      = var.subscription_labels

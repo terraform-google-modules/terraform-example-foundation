@@ -69,11 +69,6 @@ variable "folder_prefix" {
   default     = "fldr"
 }
 
-variable "members" {
-  type        = list(string)
-  description = "An allowed list of members (users, service accounts)to be include in the VPC-SC perimeter. The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid}"
-}
-
 variable "base_hub_windows_activation_enabled" {
   type        = bool
   description = "Enable Windows license activation for Windows workloads in Base Hub"

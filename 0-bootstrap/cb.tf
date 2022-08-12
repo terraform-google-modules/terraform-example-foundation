@@ -88,7 +88,7 @@ module "tf_source" {
 }
 
 module "tf_cloud_builder" {
-  source = "github.com/daniel-cit/terraform-google-bootstrap.git//modules/tf_cloudbuild_builder?ref=add-terrafrom-version-input"
+  source = "github.com/terraform-google-modules/terraform-google-bootstrap.git//modules/tf_cloudbuild_builder"
   # source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
   # version = "~> 6.1"
 

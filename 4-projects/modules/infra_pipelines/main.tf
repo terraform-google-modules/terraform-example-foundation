@@ -96,7 +96,7 @@ resource "google_cloudbuild_trigger" "main_trigger" {
     _TF_ACTION            = "apply"
   }
 
-  service_account = var.cloudbuild_sa
+  service_account = var.cloudbuild_sa_id
   filename        = var.cloudbuild_apply_filename
 
   depends_on = [
@@ -126,7 +126,7 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
     _TF_ACTION            = "plan"
   }
 
-  service_account = var.cloudbuild_sa
+  service_account = var.cloudbuild_sa_id
   filename        = var.cloudbuild_plan_filename
 
   depends_on = [
@@ -171,7 +171,9 @@ resource "null_resource" "cloudbuild_terraform_builder" {
   }
   depends_on = [
     google_artifact_registry_repository_iam_member.terraform-image-iam,
-    google_storage_bucket_iam_member.cloudbuild_artifacts_iam
+    google_storage_bucket_iam_member.cloudbuild_artifacts_iam,
+    google_project_iam_member.cloud_build_roles,
+    google_service_account_iam_member.cb_sa_self,
   ]
 }
 
@@ -204,4 +206,19 @@ resource "google_sourcerepo_repository_iam_member" "member" {
   repository = each.value
   role       = "roles/viewer"
   member     = "serviceAccount:${var.cloudbuild_sa}"
+}
+
+resource "google_project_iam_member" "cloud_build_roles" {
+  for_each = toset(["roles/cloudbuild.builds.editor", "roles/viewer", "roles/logging.logWriter", "roles/serviceusage.serviceUsageConsumer"])
+
+  project = var.cloudbuild_project_id
+  role    = each.value
+  member  = "serviceAccount:${var.cloudbuild_sa}"
+}
+
+resource "google_service_account_iam_member" "cb_sa_self" {
+  for_each           = toset(["roles/iam.serviceAccountUser", "roles/iam.serviceAccountTokenCreator"])
+  service_account_id = var.cloudbuild_sa_id
+  role               = each.value
+  member             = "serviceAccount:${var.cloudbuild_sa}"
 }

@@ -15,7 +15,13 @@
  */
 
 variable "cloudbuild_sa" {
-  description = "Service Account email to be used by the CloudBuild trigger."
+  description = "Service Account email to be grasnted permissions for running cloud build."
+  type        = string
+  default     = ""
+}
+
+variable "cloudbuild_sa_id" {
+  description = "Service Account ID to be used by the CloudBuild trigger."
   type        = string
   default     = ""
 }

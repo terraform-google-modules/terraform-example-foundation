@@ -25,7 +25,7 @@ variable "resources" {
 }
 
 variable "resource_type" {
-  description = "Resource type of the resource that will export logs to destination. Must be: project, organization, or folder"
+  description = "Resource type of the resource that will export logs to destination. Must be: project, organization, or folder."
   type        = string
 
   validation {
@@ -46,7 +46,7 @@ variable "logging_destination_project_id" {
 }
 
 variable "logging_target_type" {
-  description = "Resource type of the resource that will store the logs. Must be: logbucket, bigquery, storage, or pubsub"
+  description = "Resource type of the resource that will store the logs. Must be: logbucket, bigquery, storage, or pubsub."
   type        = string
 
   validation {
@@ -97,7 +97,7 @@ variable "exclusions" {
 }
 
 variable "bigquery_options" {
-  description = "(Optional) Options that affect sinks exporting data to BigQuery. use_partitioned_tables - (Required) Whether to use BigQuery's partition tables."
+  description = "(Optional) Options that affect sinks exporting data to BigQuery. use_partitioned_tables - (Required) Whether to use BigQuery's partition tables. Applies to logging target type: bigquery."
   type = object({
     use_partitioned_tables = bool
   })
@@ -110,19 +110,19 @@ variable "labels" {
   default     = {}
 }
 variable "kms_key_name" {
-  description = "(Optional) ID of a Cloud KMS CryptoKey that will be used to encrypt the logging destination. Applies to destinations: bigquery, storage, and pubsub."
+  description = "(Optional) ID of a Cloud KMS CryptoKey that will be used to encrypt the logging destination. Applies to logging target types: bigquery, storage, and pubsub."
   type        = string
   default     = null
 }
 
 variable "logging_location" {
-  description = "(Optional) The location of the logging destination. Applies to destinations: bigquery and storage."
+  description = "(Optional) The location of the logging destination. Applies to logging target types: bigquery and storage."
   type        = string
   default     = "US"
 }
 
 variable "delete_contents_on_destroy" {
-  description = "(Optional) If set to true, delete all contained objects in the logging destination. Applies to destinations: bigquery and storage."
+  description = "(Optional) If set to true, delete all contained objects in the logging destination. Applies to logging target types: bigquery and storage."
   type        = bool
   default     = false
 }
@@ -131,7 +131,7 @@ variable "delete_contents_on_destroy" {
 # Logbucket specific variables #
 #----------------------------- #
 variable "retention_days" {
-  description = "(Optional) The number of days data should be retained for the log bucket. Applies to destination: logbucket."
+  description = "(Optional) The number of days data should be retained for the log bucket. Applies to logging target type: logbucket."
   type        = number
   default     = 30
 }
@@ -140,13 +140,13 @@ variable "retention_days" {
 # Big Query specific variables #
 #----------------------------- #
 variable "dataset_description" {
-  description = "(Optional) A user-friendly description of the dataset. Applies to destination: bigquery."
+  description = "(Optional) A user-friendly description of the dataset. Applies to logging target type: bigquery."
   type        = string
   default     = ""
 }
 
 variable "expiration_days" {
-  description = "(Optional) Table expiration time. If null logs will never be deleted. Applies to destination: bigquery."
+  description = "(Optional) Table expiration time. If null logs will never be deleted. Applies to logging target type: bigquery."
   type        = number
   default     = null
 }
@@ -155,13 +155,13 @@ variable "expiration_days" {
 # Storage specific variables #
 #--------------------------- #
 variable "storage_class" {
-  description = "(Optional) The storage class of the storage bucket. Applies to destination: storage."
+  description = "(Optional) The storage class of the storage bucket. Applies to logging target type: storage."
   type        = string
   default     = "STANDARD"
 }
 
 variable "uniform_bucket_level_access" {
-  description = "(Optional) Enables Uniform bucket-level access to a bucket. Applies to destination: storage."
+  description = "(Optional) Enables Uniform bucket-level access to a bucket. Applies to logging target type: storage."
   type        = bool
   default     = true
 }
@@ -182,12 +182,12 @@ variable "lifecycle_rules" {
     # - days_since_custom_time - (Optional) The number of days from the Custom-Time metadata attribute after which this condition becomes true.
     condition = map(string)
   }))
-  description = "(Optional) List of lifecycle rules to configure. Format is the same as described in provider documentation https://www.terraform.io/docs/providers/google/r/storage_bucket.html#lifecycle_rule except condition.matches_storage_class should be a comma delimited string. Applies to destination: storage."
+  description = "(Optional) List of lifecycle rules to configure. Format is the same as described in provider documentation https://www.terraform.io/docs/providers/google/r/storage_bucket.html#lifecycle_rule except condition.matches_storage_class should be a comma delimited string. Applies to logging target type: storage."
   default     = []
 }
 
 variable "retention_policy" {
-  description = "(Optional) Configuration of the bucket's data retention policy for how long objects in the bucket should be retained. Applies to destination: storage."
+  description = "(Optional) Configuration of the bucket's data retention policy for how long objects in the bucket should be retained. Applies to logging target type: storage."
   type = object({
     is_locked             = bool
     retention_period_days = number
@@ -196,7 +196,7 @@ variable "retention_policy" {
 }
 
 variable "versioning" {
-  description = "(Optional) Toggles bucket versioning, ability to retain a non-current object version when the live object version gets replaced or deleted. Applies to destination: storage."
+  description = "(Optional) Toggles bucket versioning, ability to retain a non-current object version when the live object version gets replaced or deleted. Applies to logging target type: storage."
   type        = bool
   default     = false
 }
@@ -205,31 +205,31 @@ variable "versioning" {
 # Pubsub specific variables #
 #-------------------------- #
 variable "create_subscriber" {
-  description = "(Optional) Whether to create a subscription to the topic that was created and used for log entries matching the filter. If 'true', a pull subscription is created along with a service account that is granted roles/pubsub.subscriber and roles/pubsub.viewer to the topic. Applies to destination: pubsub."
+  description = "(Optional) Whether to create a subscription to the topic that was created and used for log entries matching the filter. If 'true', a pull subscription is created along with a service account that is granted roles/pubsub.subscriber and roles/pubsub.viewer to the topic. Applies to logging target type: pubsub."
   type        = bool
   default     = false
 }
 
 variable "subscriber_id" {
-  description = "(Optional) The ID to give the pubsub pull subscriber service account. Applies to destination: pubsub."
+  description = "(Optional) The ID to give the pubsub pull subscriber service account. Applies to logging target type: pubsub."
   type        = string
   default     = ""
 }
 
 variable "subscription_labels" {
-  description = "(Optional) A set of key/value label pairs to assign to the pubsub subscription. Applies to destination: pubsub."
+  description = "(Optional) A set of key/value label pairs to assign to the pubsub subscription. Applies to logging target type: pubsub."
   type        = map(string)
   default     = {}
 }
 
 variable "create_push_subscriber" {
-  description = "(Optional) Whether to add a push configuration to the subcription. If 'true', a push subscription is created along with a service account that is granted roles/pubsub.subscriber and roles/pubsub.viewer to the topic. Applies to destination: pubsub."
+  description = "(Optional) Whether to add a push configuration to the subcription. If 'true', a push subscription is created along with a service account that is granted roles/pubsub.subscriber and roles/pubsub.viewer to the topic. Applies to logging target type: pubsub."
   type        = bool
   default     = false
 }
 
 variable "push_endpoint" {
-  description = "(Optional) The URL locating the endpoint to which messages should be pushed. Applies to destination: pubsub."
+  description = "(Optional) The URL locating the endpoint to which messages should be pushed. Applies to logging target type: pubsub."
   type        = string
   default     = ""
 }

@@ -15,7 +15,8 @@
  */
 
 output "destination_uri" {
-  value = local.destination_uri
+  description = "The destination URI for the selected logging target type."
+  value       = local.destination_uri
 }
 
 output "filter" {

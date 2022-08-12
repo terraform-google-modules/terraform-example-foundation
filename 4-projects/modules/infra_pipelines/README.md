@@ -17,8 +17,8 @@
 | gcloud\_version | Default gcloud image version. | `string` | `"393.0.0-slim"` | no |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | terraform\_apply\_branches | List of git branches configured to run terraform apply Cloud Build trigger. All other branches will run plan by default. | `list(string)` | <pre>[<br>  "development",<br>  "non-production",<br>  "production"<br>]</pre> | no |
-| terraform\_version | Default terraform version. | `string` | `"0.15.5"` | no |
-| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"3b144499e08c245a8039027eb2b84c0495e119f57d79e8fb605864bb48897a7d"` | no |
+| terraform\_version | Default terraform version. | `string` | `"1.0.0"` | no |
+| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"8be33cc3be8089019d95eb8f546f35d41926e7c1e5deff15792e969dde573eb5"` | no |
 
 ## Outputs
 

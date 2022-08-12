@@ -96,7 +96,7 @@ module "tf_cloud_builder" {
   dockerfile_repo_uri          = module.tf_source.csr_repos["tf-cloudbuilder"].url
   gar_repo_location            = var.default_region
   workflow_region              = var.default_region
-  terraform_version            = "0.15.5"
+  terraform_version            = "1.0.0"
   cb_logs_bucket_force_destroy = true
 }
 

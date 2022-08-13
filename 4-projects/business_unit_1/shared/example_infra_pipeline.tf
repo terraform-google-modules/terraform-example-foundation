@@ -44,6 +44,7 @@ module "app_infra_cloudbuild_project" {
 module "infra_pipelines" {
   source                = "../../modules/infra_pipelines"
   cloudbuild_sa         = module.app_infra_cloudbuild_project.sa
+  cloudbuild_sa_id      = "projects/${module.app_infra_cloudbuild_project.project_id}/serviceAccounts/${module.app_infra_cloudbuild_project.sa}"
   cloudbuild_project_id = module.app_infra_cloudbuild_project.project_id
   project_prefix        = var.project_prefix
   billing_account       = var.billing_account

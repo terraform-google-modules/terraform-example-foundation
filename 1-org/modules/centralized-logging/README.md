@@ -35,7 +35,9 @@ EOF
 }
 ```
 
-Heads up when the destination is a Log Bucket and the logging destination project is also a resource. If it is the case, do not forget to set `logging_project_key` variable with the logging destination project key from map resources. Get more details at [Configure and manage sinks](https://cloud.google.com/logging/docs/export/configure_export_v2#dest-auth:~:text=If%20you%27re%20using%20a%20sink%20to%20route%20logs%20between%20Logging%20buckets%20in%20the%20same%20Cloud%20project%2C%20no%20new%20service%20account%20is%20created%3B%20the%20sink%20works%20without%20the%20unique%20writer%20identity.).
+**Note:** when the destination is a Log Bucket and a sink is been created in the same project, set variable 
+ `logging_project_key` with the **key** used to map the Log Bucket project in the `resources` map.
+Get more details at [Configure and manage sinks](https://cloud.google.com/logging/docs/export/configure_export_v2#dest-auth:~:text=If%20you%27re%20using%20a%20sink%20to%20route%20logs%20between%20Logging%20buckets%20in%20the%20same%20Cloud%20project%2C%20no%20new%20service%20account%20is%20created%3B%20the%20sink%20works%20without%20the%20unique%20writer%20identity.).
 
 The following example exports all logs from three projects - including the logging destination project - to a Log Bucket destination. As it exports all logs be aware of additional charges for this amount of logs:
 

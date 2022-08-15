@@ -21,17 +21,11 @@ locals {
   destination_uri            = length(var.logging_destination_uri) > 0 ? var.logging_destination_uri : var.logging_target_type == "bigquery" ? module.destination_bigquery[0].destination_uri : var.logging_target_type == "pubsub" ? module.destination_pubsub[0].destination_uri : var.logging_target_type == "storage" ? module.destination_storage[0].destination_uri : module.destination_logbucket[0].destination_uri
   create_destination         = !(length(var.logging_destination_uri) > 0)
   logging_sink_name          = length(var.logging_sink_name) > 0 ? var.logging_sink_name : "sk-to-${local.logging_target_name_prefix}-${var.logging_destination_project_id}"
-  logging_target_name_prefix = var.logging_target_type == "bigquery" ? "ds" : var.logging_target_type == "pubsub" ? "topic" : var.logging_target_type == "storage" ? "bkt" : "logbkt"
-  logging_target_name        = length(var.logging_target_name) > 0 ? var.logging_target_name : "${local.logging_target_name_prefix}-${random_string.suffix.result}"
-  log_exports                = setunion(local.log_exports_others)
-  parent_resource_ids        = [for parent_resource_id in local.log_exports[*].parent_resource_id : parent_resource_id]
+  logging_target_name_prefix = var.logging_target_type == "bigquery" ? "ds_logs_" : var.logging_target_type == "pubsub" ? "topic-logs-" : var.logging_target_type == "storage" ? "bkt-logs-" : "logbkt-logs-"
+  logging_target_name        = length(var.logging_target_name) > 0 ? var.logging_target_name : "${local.logging_target_name_prefix}${random_string.suffix.result}"
 
-  # Bigquery sink options
   bigquery_options = var.logging_target_type == "bigquery" && var.bigquery_options != null ? var.bigquery_options : null
-
-  log_exports_others = toset([
-    for value in module.log_export : value
-  ])
+  # Bigquery sink options - Enabling option use_partitioned_tables will store logs into a single table that is internally partitioned by day which can improve query performance.
 }
 
 resource "random_string" "suffix" {

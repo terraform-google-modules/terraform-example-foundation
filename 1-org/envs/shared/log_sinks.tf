@@ -110,7 +110,7 @@ module "logbucket_destination" {
   include_children               = true
   logging_target_type            = "logbucket"
   logging_destination_project_id = module.org_audit_logs.project_id
-  logging_target_name            = "logbkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
+  logging_target_name            = "logbkt-org-logs-${random_string.suffix.result}"
   logging_location               = var.default_region
 }
 

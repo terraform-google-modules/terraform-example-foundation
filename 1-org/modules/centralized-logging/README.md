@@ -1,6 +1,6 @@
 # Centralized Logging Module
 
-This module handles logging configuration enabling one or more resources such as organization, folders, or projects to send logs to a destination: GCS bucket, Big Query, Pub/Sub, or Log Bucket.
+This module handles logging configuration enabling one or more resources such as organization, folders, or projects to send logs to a destination: [GCS bucket](https://cloud.google.com/logging/docs/export/using_exported_logs#gcs-overview), [Big Query](https://cloud.google.com/logging/docs/export/bigquery), [Pub/Sub](https://cloud.google.com/logging/docs/export/using_exported_logs#pubsub-overview), or [Log Buckets](https://cloud.google.com/logging/docs/routing/overview#buckets).
 
 ## Usage
 

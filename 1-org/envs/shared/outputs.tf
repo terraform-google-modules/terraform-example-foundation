@@ -96,5 +96,5 @@ output "logs_export_storage_bucket_name" {
 
 output "logs_export_logbucket_name" {
   value       = module.logbucket_destination.resource_name
-  description = "The log bucket for destination of log exports"
+  description = "The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets"
 }

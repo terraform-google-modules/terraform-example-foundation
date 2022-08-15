@@ -20,6 +20,11 @@ variable "default_region" {
   default     = "us-central1"
 }
 
+variable "impersonate_service_account" {
+  description = "Service account email of the account to impersonate to run gcloud build submit"
+  type        = string
+}
+
 variable "org_id" {
   description = "The organization id for the associated services"
   type        = string

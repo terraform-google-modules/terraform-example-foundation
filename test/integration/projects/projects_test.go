@@ -86,8 +86,14 @@ func TestProjects(t *testing.T) {
 		},
 	} {
 		t.Run(tts.name, func(t *testing.T) {
+
+			sharedVars := map[string]interface{}{
+				"impersonate_service_account": terraformSA,
+			}
+
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tts.tfDir),
+				tft.WithVars(sharedVars),
 			)
 
 			shared.DefineApply(

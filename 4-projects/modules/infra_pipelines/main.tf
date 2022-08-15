@@ -161,13 +161,7 @@ resource "null_resource" "cloudbuild_terraform_builder" {
   }
 
   provisioner "local-exec" {
-    command = <<EOT
-      gcloud builds submit ${path.module}/cloudbuild_builder/ \
-      --project ${var.cloudbuild_project_id} \
-      --config=${path.module}/cloudbuild_builder/cloudbuild.yaml \
-      --substitutions=_CLOUD_BUILD_SA=${var.cloudbuild_sa},_GCLOUD_VERSION=${var.gcloud_version},_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_REGION=${google_artifact_registry_repository.tf-image-repo.location},_REPOSITORY=${local.gar_name} \
-      --impersonate-service-account=${var.cloudbuild_sa}
-  EOT
+    command = "gcloud builds submit ${path.module}/cloudbuild_builder/ --project ${var.cloudbuild_project_id} --config=${path.module}/cloudbuild_builder/cloudbuild.yaml --substitutions=_CLOUD_BUILD_SA=${var.cloudbuild_sa},_GCLOUD_VERSION=${var.gcloud_version},_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_REGION=${google_artifact_registry_repository.tf-image-repo.location},_REPOSITORY=${local.gar_name} --impersonate-service-account=${var.impersonate_service_account}"
   }
   depends_on = [
     google_artifact_registry_repository_iam_member.terraform-image-iam,

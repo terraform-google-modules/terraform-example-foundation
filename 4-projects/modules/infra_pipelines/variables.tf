@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
+variable "impersonate_service_account" {
+  description = "Service account email of the account to impersonate to run gcloud build submit"
+  type        = string
+}
+
 variable "cloudbuild_sa" {
-  description = "Service Account email to be grasnted permissions for running cloud build."
+  description = "Service Account email to be granted permissions for running cloud build."
   type        = string
   default     = ""
 }

@@ -85,6 +85,7 @@ func TestNetworks(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
+		// tft.WithPolicyLibraryPath("../../../policy-library"),
 	)
 
 	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")

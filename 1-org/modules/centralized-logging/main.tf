@@ -15,21 +15,44 @@
  */
 
 locals {
-  key_first_resource         = keys(var.resources)[0]
-  logbucket_sink_member      = { for k, v in var.resources : k => v if k != var.logging_project_key }
-  resource_name              = var.logging_target_type == "bigquery" ? module.destination_bigquery[0].resource_name : var.logging_target_type == "pubsub" ? module.destination_pubsub[0].resource_name : var.logging_target_type == "storage" ? module.destination_storage[0].resource_name : module.destination_logbucket[0].resource_name
-  destination_uri            = length(var.logging_destination_uri) > 0 ? var.logging_destination_uri : var.logging_target_type == "bigquery" ? module.destination_bigquery[0].destination_uri : var.logging_target_type == "pubsub" ? module.destination_pubsub[0].destination_uri : var.logging_target_type == "storage" ? module.destination_storage[0].destination_uri : module.destination_logbucket[0].destination_uri
-  create_destination         = !(length(var.logging_destination_uri) > 0)
-  logging_sink_name          = length(var.logging_sink_name) > 0 ? var.logging_sink_name : "sk-to-${local.logging_target_name_prefix}-${var.logging_destination_project_id}"
-  logging_target_name_prefix = var.logging_target_type == "bigquery" ? "ds_logs_" : var.logging_target_type == "pubsub" ? "topic-logs-" : var.logging_target_type == "storage" ? "bkt-logs-" : "logbkt-logs-"
-  logging_target_name        = length(var.logging_target_name) > 0 ? var.logging_target_name : "${local.logging_target_name_prefix}${random_string.suffix.result}"
+  key_first_resource    = keys(var.resources)[0]
+  logbucket_sink_member = { for k, v in var.resources : k => v if k != var.logging_project_key }
+  create_destination    = !(length(var.logging_destination_uri) > 0)
+  logging_sink_name     = length(var.logging_sink_name) > 0 ? var.logging_sink_name : "sk-to-${lookup(local.logging_sink_name_map, var.logging_target_type, "log_dest_")}"
+  logging_sink_name_map = {
+    bigquery  = try("ds-logs-${var.logging_destination_project_id}", "ds-logs")
+    pubsub    = try("tp-logs-${var.logging_destination_project_id}", "tp-logs")
+    storage   = try("bkt-logs-${var.logging_destination_project_id}", "bkt-logs")
+    logbucket = try("logbkt-logs-${var.logging_destination_project_id}", "logbkt-logs")
+  }
+  resource_name = lookup(local.resource_name_map, var.logging_target_type, "")
+  resource_name_map = {
+    bigquery  = try(module.destination_bigquery[0].resource_name, "")
+    pubsub    = try(module.destination_pubsub[0].resource_name, "")
+    storage   = try(module.destination_storage[0].resource_name, "")
+    logbucket = try(module.destination_logbucket[0].resource_name, "")
+  }
+  destination_uri = length(var.logging_destination_uri) > 0 ? var.logging_destination_uri : lookup(local.destination_uri_map, var.logging_target_type, "")
+  destination_uri_map = {
+    bigquery  = try(module.destination_bigquery[0].destination_uri, "")
+    pubsub    = try(module.destination_pubsub[0].destination_uri, "")
+    storage   = try(module.destination_storage[0].destination_uri, "")
+    logbucket = try(module.destination_logbucket[0].destination_uri, "")
+  }
+  logging_target_name = length(var.logging_target_name) > 0 ? var.logging_target_name : "${lookup(local.logging_target_name_prefix, var.logging_target_type, "log_dest_")}${random_string.suffix.result}"
+  logging_target_name_prefix = {
+    bigquery  = "ds_logs_"
+    pubsub    = "tp-logs-"
+    storage   = try("bkt-logs-${var.logging_destination_project_id}-", "bkt-logs-")
+    logbucket = "logbkt-logs-"
+  }
 
   bigquery_options = var.logging_target_type == "bigquery" && var.bigquery_options != null ? var.bigquery_options : null
   # Bigquery sink options - Enabling option use_partitioned_tables will store logs into a single table that is internally partitioned by day which can improve query performance.
 }
 
 resource "random_string" "suffix" {
-  length  = 8
+  length  = 4
   upper   = false
   special = false
 }

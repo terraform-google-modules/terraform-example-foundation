@@ -30,7 +30,6 @@ func TestEnvs(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
-		tft.WithPolicyLibraryPath("/workspace/policy-library"),
 	)
 
 	terraformSA := bootstrap.GetStringOutput("environment_step_terraform_service_account_email")
@@ -48,6 +47,7 @@ func TestEnvs(t *testing.T) {
 			envs := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../2-environments/envs/%s", envName)),
 				tft.WithVars(vars),
+				tft.WithPolicyLibraryPath("/workspace/policy-library"),
 			)
 			envs.DefineVerify(
 				func(assert *assert.Assertions) {

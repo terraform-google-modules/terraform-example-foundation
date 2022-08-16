@@ -85,7 +85,6 @@ func TestNetworks(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
-		tft.WithPolicyLibraryPath("/workspace/policy-library"),
 	)
 
 	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
@@ -138,6 +137,7 @@ func TestNetworks(t *testing.T) {
 			networks := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tfdDir, envName)),
 				tft.WithVars(vars),
+				tft.WithPolicyLibraryPath("/workspace/policy-library"),
 			)
 			networks.DefineVerify(
 				func(assert *assert.Assertions) {

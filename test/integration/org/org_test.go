@@ -35,7 +35,6 @@ func TestOrg(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
-		tft.WithPolicyLibraryPath("/workspace/policy-library"),
 	)
 
 	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")
@@ -49,6 +48,7 @@ func TestOrg(t *testing.T) {
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
 		tft.WithVars(vars),
+		tft.WithPolicyLibraryPath("/workspace/policy-library"),
 	)
 
 	org.DefineApply(

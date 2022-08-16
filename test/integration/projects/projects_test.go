@@ -50,7 +50,6 @@ func TestProjects(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
-		tft.WithPolicyLibraryPath("/workspace/policy-library"),
 	)
 
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
@@ -93,6 +92,7 @@ func TestProjects(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tts.tfDir),
 				tft.WithVars(sharedVars),
+				tft.WithPolicyLibraryPath("/workspace/policy-library"),
 			)
 
 			shared.DefineApply(
@@ -203,6 +203,7 @@ func TestProjects(t *testing.T) {
 			projects := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),
 				tft.WithVars(vars),
+				tft.WithPolicyLibraryPath("/workspace/policy-library"),
 			)
 			projects.DefineApply(
 				func(assert *assert.Assertions) {

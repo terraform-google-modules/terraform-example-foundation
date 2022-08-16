@@ -45,7 +45,6 @@ func TestShared(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
-		tft.WithPolicyLibraryPath("../../../policy-library"),
 	)
 
 	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
@@ -65,6 +64,7 @@ func TestShared(t *testing.T) {
 	shared := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir(tfdDir),
 		tft.WithVars(vars),
+		tft.WithPolicyLibraryPath("/workspace/policy-library"),
 	)
 	shared.DefineVerify(
 		func(assert *assert.Assertions) {

@@ -15,8 +15,7 @@
  */
 
 module "app_infra_cloudbuild_project" {
-  source = "../../modules/single_project"
-
+  source               = "../../modules/single_project"
   org_id               = var.org_id
   billing_account      = var.billing_account
   folder_id            = data.google_active_folder.common.name
@@ -43,11 +42,8 @@ module "app_infra_cloudbuild_project" {
 }
 
 module "infra_pipelines" {
-  source = "../../modules/infra_pipelines"
-
+  source                      = "../../modules/infra_pipelines"
   impersonate_service_account = var.impersonate_service_account
-  cloudbuild_sa               = module.app_infra_cloudbuild_project.sa
-  cloudbuild_sa_id            = "projects/${module.app_infra_cloudbuild_project.project_id}/serviceAccounts/${module.app_infra_cloudbuild_project.sa}"
   cloudbuild_project_id       = module.app_infra_cloudbuild_project.project_id
   project_prefix              = var.project_prefix
   billing_account             = var.billing_account

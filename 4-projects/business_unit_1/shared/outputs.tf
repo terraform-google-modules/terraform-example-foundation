@@ -30,7 +30,7 @@ output "cloudbuild_project_id" {
 
 output "cloudbuild_sa" {
   description = "Cloud Build service account"
-  value       = module.app_infra_cloudbuild_project.sa
+  value       = module.infra_pipelines.cloudbuild_sa
 }
 
 output "repos" {
@@ -46,11 +46,6 @@ output "artifact_buckets" {
 output "state_buckets" {
   description = "GCS Buckets to store TF state"
   value       = module.infra_pipelines.state_buckets
-}
-
-output "log_buckets" {
-  description = "GCS Buckets to store Cloud Build logs"
-  value       = module.infra_pipelines.log_buckets
 }
 
 output "plan_triggers" {

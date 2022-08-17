@@ -67,7 +67,7 @@ resource "google_storage_bucket_iam_member" "cloudbuild_artifacts_iam" {
 
   bucket = each.value
   role   = "roles/storage.admin"
-  member = "serviceAccount:${var.cloudbuild_sa}"
+  member = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 
   depends_on = [
     google_storage_bucket.pipeline_infra
@@ -76,8 +76,7 @@ resource "google_storage_bucket_iam_member" "cloudbuild_artifacts_iam" {
 
 # Cloud Build plan/apply triggers
 resource "google_cloudbuild_trigger" "main_trigger" {
-  for_each = local.created_csrs
-
+  for_each    = local.created_csrs
   project     = var.cloudbuild_project_id
   description = "${each.value}-terraform apply."
 
@@ -96,17 +95,14 @@ resource "google_cloudbuild_trigger" "main_trigger" {
     _TF_ACTION            = "apply"
   }
 
-  service_account = var.cloudbuild_sa_id
-  filename        = var.cloudbuild_apply_filename
-
+  filename = var.cloudbuild_apply_filename
   depends_on = [
     google_sourcerepo_repository.app_infra_repo,
   ]
 }
 
 resource "google_cloudbuild_trigger" "non_main_trigger" {
-  for_each = local.created_csrs
-
+  for_each    = local.created_csrs
   project     = var.cloudbuild_project_id
   description = "${each.value}-terraform plan."
 
@@ -126,9 +122,7 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
     _TF_ACTION            = "plan"
   }
 
-  service_account = var.cloudbuild_sa_id
-  filename        = var.cloudbuild_plan_filename
-
+  filename = var.cloudbuild_plan_filename
   depends_on = [
     google_sourcerepo_repository.app_infra_repo,
   ]
@@ -161,13 +155,17 @@ resource "null_resource" "cloudbuild_terraform_builder" {
   }
 
   provisioner "local-exec" {
-    command = "gcloud builds submit ${path.module}/cloudbuild_builder/ --project ${var.cloudbuild_project_id} --config=${path.module}/cloudbuild_builder/cloudbuild.yaml --substitutions=_CLOUD_BUILD_SA=${var.cloudbuild_sa},_GCLOUD_VERSION=${var.gcloud_version},_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_REGION=${google_artifact_registry_repository.tf-image-repo.location},_REPOSITORY=${local.gar_name} --impersonate-service-account=${var.impersonate_service_account}"
+    command = <<EOT
+      gcloud builds submit ${path.module}/cloudbuild_builder/ \
+      --project ${var.cloudbuild_project_id} \
+      --config=${path.module}/cloudbuild_builder/cloudbuild.yaml \
+      --substitutions=_GCLOUD_VERSION=${var.gcloud_version},_TERRAFORM_VERSION=${var.terraform_version},_TERRAFORM_VERSION_SHA256SUM=${var.terraform_version_sha256sum},_REGION=${google_artifact_registry_repository.tf-image-repo.location},_REPOSITORY=${local.gar_name} \
+      --impersonate-service-account=${var.impersonate_service_account}
+  EOT
   }
   depends_on = [
     google_artifact_registry_repository_iam_member.terraform-image-iam,
-    google_storage_bucket_iam_member.cloudbuild_artifacts_iam,
-    google_project_iam_member.cloud_build_roles,
-    google_service_account_iam_member.cb_sa_self,
+    google_storage_bucket_iam_member.cloudbuild_artifacts_iam
   ]
 }
 
@@ -182,7 +180,7 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
   location   = google_artifact_registry_repository.tf-image-repo.location
   repository = google_artifact_registry_repository.tf-image-repo.name
   role       = "roles/artifactregistry.writer"
-  member     = "serviceAccount:${var.cloudbuild_sa}"
+  member     = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 }
 
 resource "google_folder_iam_member" "browser_cloud_build" {
@@ -190,29 +188,5 @@ resource "google_folder_iam_member" "browser_cloud_build" {
 
   folder = each.value
   role   = "roles/browser"
-  member = "serviceAccount:${var.cloudbuild_sa}"
-}
-
-resource "google_sourcerepo_repository_iam_member" "member" {
-  for_each = local.created_csrs
-
-  project    = var.cloudbuild_project_id
-  repository = each.value
-  role       = "roles/viewer"
-  member     = "serviceAccount:${var.cloudbuild_sa}"
-}
-
-resource "google_project_iam_member" "cloud_build_roles" {
-  for_each = toset(["roles/cloudbuild.builds.editor", "roles/viewer", "roles/logging.logWriter", "roles/serviceusage.serviceUsageConsumer"])
-
-  project = var.cloudbuild_project_id
-  role    = each.value
-  member  = "serviceAccount:${var.cloudbuild_sa}"
-}
-
-resource "google_service_account_iam_member" "cb_sa_self" {
-  for_each           = toset(["roles/iam.serviceAccountUser", "roles/iam.serviceAccountTokenCreator"])
-  service_account_id = var.cloudbuild_sa_id
-  role               = each.value
-  member             = "serviceAccount:${var.cloudbuild_sa}"
+  member = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 }

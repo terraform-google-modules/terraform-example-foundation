@@ -19,18 +19,6 @@ variable "impersonate_service_account" {
   type        = string
 }
 
-variable "cloudbuild_sa" {
-  description = "Service Account email to be granted permissions for running cloud build."
-  type        = string
-  default     = ""
-}
-
-variable "cloudbuild_sa_id" {
-  description = "Service Account ID to be used by the CloudBuild trigger."
-  type        = string
-  default     = ""
-}
-
 variable "default_region" {
   description = "Default region to create resources where applicable."
   type        = string

@@ -133,7 +133,7 @@ your current Jenkins manager (controller) environment.
 1. To run `gcloud beta terraform vet` steps please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
     1. Run `terraform plan -input=false -out bootstrap.tfplan`
     1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
-    1. Run `gcloud beta terraform vet bootstrap.json --policy-library="../policy-library"` and check for violations.
+    1. Run `gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).
 1. Run `terraform apply`.
 1. Run `terraform output organization_step_terraform_service_account_email` to get the email address of the admin of step `1-org`. You need this address in a later procedure.
 1. Run `terraform output environment_step_terraform_service_account_email` to get the email address of the admin of step `2-environments`. You need this address in a later procedure.

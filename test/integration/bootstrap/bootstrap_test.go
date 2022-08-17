@@ -31,7 +31,7 @@ func TestBootstrap(t *testing.T) {
 
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
-		tft.WithPolicyLibraryPath("/workspace/policy-library"),
+		tft.WithOutputMaxLineSize(10),
 	)
 
 	cloudSourceRepos := []string{

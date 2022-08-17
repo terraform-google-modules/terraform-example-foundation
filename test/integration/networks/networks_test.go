@@ -137,7 +137,6 @@ func TestNetworks(t *testing.T) {
 			networks := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tfdDir, envName)),
 				tft.WithVars(vars),
-				tft.WithPolicyLibraryPath("/workspace/policy-library"),
 			)
 			networks.DefineVerify(
 				func(assert *assert.Assertions) {

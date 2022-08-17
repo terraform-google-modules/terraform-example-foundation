@@ -109,6 +109,15 @@ module "bootstrap_csr_repo" {
   create_cmd_body       = "${module.tf_source.cloudbuild_project_id} ${split("/", module.tf_source.csr_repos["tf-cloudbuilder"].id)[3]} ${path.module}/Dockerfile"
 }
 
+resource "time_sleep" "cloud_builder" {
+  create_duration = "30s"
+
+  depends_on = [
+    module.tf_cloud_builder,
+    module.bootstrap_csr_repo,
+  ]
+}
+
 module "build_terraform_image" {
   source  = "terraform-google-modules/gcloud/google"
   version = "~> 3.1.0"
@@ -117,8 +126,7 @@ module "build_terraform_image" {
   create_cmd_body = "beta builds triggers run ${split("/", module.tf_cloud_builder.cloudbuild_trigger_id)[3]} --branch main --project ${module.tf_source.cloudbuild_project_id}"
 
   module_depends_on = [
-    module.tf_cloud_builder,
-    module.bootstrap_csr_repo,
+    time_sleep.cloud_builder,
   ]
 }
 

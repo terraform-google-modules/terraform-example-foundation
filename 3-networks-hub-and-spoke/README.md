@@ -162,6 +162,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
     1. Run `cd ./envs/shared/`.
     1. Update `backend.tf` with your bucket name from the bootstrap step.
+    1. Export the network (`terraform-net-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
     1. Run `terraform init`.
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.

@@ -154,6 +154,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. You need to manually plan and apply only once the `business_unit_1/shared` environment since `development`, `non-production`, and `production` depend on it.
     1. Run `cd ./business_unit_1/shared/`.
     1. Update `backend.tf` with your bucket name from the 0-bootstrap step.
+    1. Export the projects (`terraform-proj-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
     1. Run `terraform init`.
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.

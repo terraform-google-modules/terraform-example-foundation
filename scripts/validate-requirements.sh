@@ -211,7 +211,8 @@ function check_billing_account_roles(){
 function validate_bootstrap_step(){
     FILE=0-bootstrap/terraform.tfvars
     if [ ! -f "$FILE" ]; then
-        echo "$FILE has have required values that must be replaced."
+        echo "$FILE has required values that must be replaced."
+        echo "Please rename the file 0-bootstrap/terraform.example.tfvars to $FILE"
     else
         if [ "$(grep -c REPLACE_ME $FILE)" != 0 ]; then
             echo "$FILE must have required values fullfiled."

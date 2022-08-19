@@ -20,23 +20,17 @@ import (
 	"os/exec"
 	"path"
 	"testing"
+	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tidwall/gjson"
-)
 
-// getResultFieldStrSlice parses a field of a results list into a string slice
-func getResultFieldStrSlice(rs []gjson.Result, field string) []string {
-	s := make([]string, 0)
-	for _, r := range rs {
-		s = append(s, r.Get(field).String())
-	}
-	return s
-}
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
+)
 
 // fileExists check if a give file exists
 func fileExists(filePath string) (bool, error) {
@@ -97,7 +91,7 @@ func TestBootstrap(t *testing.T) {
 	}
 
 	bootstrap.DefineApply(
-		func(assert *assert.Assertions){
+		func(assert *assert.Assertions) {
 
 			bootstrap.DefaultApply(assert)
 			// configure options to push state to GCS bucket
@@ -118,6 +112,30 @@ func TestBootstrap(t *testing.T) {
 				require.NoError(t, err3)
 			}
 			terraform.Init(t, tempOptions)
+		})
+
+	bootstrap.DefineApply(
+		func(assert *assert.Assertions) {
+			projectID := bootstrap.GetTFSetupStringOutput("project_id")
+			for _, api := range []string{
+				"cloudresourcemanager.googleapis.com",
+				"cloudbilling.googleapis.com",
+				"iam.googleapis.com",
+				"storage-api.googleapis.com",
+				"serviceusage.googleapis.com",
+				"cloudbuild.googleapis.com",
+				"sourcerepo.googleapis.com",
+				"cloudkms.googleapis.com",
+				"bigquery.googleapis.com",
+				"accesscontextmanager.googleapis.com",
+				"securitycenter.googleapis.com",
+				"servicenetworking.googleapis.com",
+				"billingbudgets.googleapis.com",
+			} {
+				utils.Poll(t, func() (bool, error) { return testutils.CheckAPIEnabled(t, projectID, api) }, 5, 2*time.Minute)
+			}
+
+			bootstrap.DefaultApply(assert)
 		})
 
 	bootstrap.DefineVerify(
@@ -159,7 +177,7 @@ func TestBootstrap(t *testing.T) {
 			assert.True(seedPrj.Exists(), "project %s should exist", seedProjectID)
 
 			enabledAPIS := gcloud.Runf(t, "services list --project %s", seedProjectID).Array()
-			listApis := getResultFieldStrSlice(enabledAPIS, "config.name")
+			listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 			assert.Subset(listApis, activateApis, "APIs should have been enabled")
 
 			seedAlphaOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--json"})
@@ -211,7 +229,7 @@ func TestBootstrap(t *testing.T) {
 				iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
 				orgID := bootstrap.GetTFSetupStringOutput("org_id")
 				orgIamPolicyRoles := gcloud.Run(t, fmt.Sprintf("organizations get-iam-policy %s", orgID), iamOpts).Array()
-				listRoles := getResultFieldStrSlice(orgIamPolicyRoles, "bindings.role")
+				listRoles := testutils.GetResultFieldStrSlice(orgIamPolicyRoles, "bindings.role")
 				if len(sa.orgRoles) == 0 {
 					assert.Empty(listRoles, fmt.Sprintf("service account %s should not have organization level roles", terraformSAEmail))
 				} else {

@@ -7,6 +7,7 @@ require (
 	github.com/gruntwork-io/terratest v0.40.7
 	github.com/stretchr/testify v1.7.1
 	github.com/tidwall/gjson v1.12.1
+	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
 )
 
 require (
@@ -56,7 +57,6 @@ require (
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/mod v0.4.2 // indirect
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
-	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c // indirect
 	golang.org/x/sys v0.0.0-20210603125802-9665404d3644 // indirect
 	golang.org/x/text v0.3.6 // indirect
 	golang.org/x/tools v0.1.2 // indirect

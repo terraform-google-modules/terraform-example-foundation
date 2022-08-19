@@ -153,7 +153,6 @@ options:
   - 'TF_VAR_create_access_context_manager_access_policy=false'
   - 'TF_VAR_audit_logs_table_delete_contents_on_destroy=true'
   - 'TF_VAR_log_export_storage_force_destroy=true'
-  - 'TF_VAR_project_prefix=t02'
   - 'TF_VAR_domain_to_allow=test.infra.cft.tips'
   - 'TF_VAR_domain=test.infra.cft.tips.'
   - 'TF_VAR_default_region=us-west1'

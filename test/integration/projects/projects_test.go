@@ -92,6 +92,7 @@ func TestProjects(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tts.tfDir),
 				tft.WithVars(sharedVars),
+				tft.WithPolicyLibraryPath("/workspace/policy-library"),
 			)
 
 			shared.DefineApply(
@@ -202,6 +203,7 @@ func TestProjects(t *testing.T) {
 			projects := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),
 				tft.WithVars(vars),
+				tft.WithPolicyLibraryPath("/workspace/policy-library"),
 			)
 			projects.DefineApply(
 				func(assert *assert.Assertions) {

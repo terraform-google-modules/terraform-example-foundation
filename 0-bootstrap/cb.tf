@@ -16,14 +16,23 @@
  */
 
 locals {
+  // terraform version image configuration
+  terraform_version = "1.0.0"
+
   cb_source = {
     "org"  = "gcp-org",
     "env"  = "gcp-environments",
     "net"  = "gcp-networks",
     "proj" = "gcp-projects",
   }
-
-  gar_repository = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
+  cloud_source_repos = values(local.cb_source)
+  cloudbuilder_repo  = "tf-cloudbuilder"
+  base_cloud_source_repos = [
+    "gcp-policies",
+    "gcp-bootstrap",
+    local.cloudbuilder_repo,
+  ]
+  gar_repository    = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
 }
 
 resource "random_string" "suffix" {
@@ -41,7 +50,7 @@ module "tf_source" {
   project_id            = "${var.project_prefix}-b-cicd-${random_string.suffix.result}"
   billing_account       = var.billing_account
   group_org_admins      = local.group_org_admins
-  buckets_force_destroy = true
+  buckets_force_destroy = var.bucket_force_destroy
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -63,15 +72,7 @@ module "tf_source" {
     "billingbudgets.googleapis.com",
   ]
 
-  cloud_source_repos = [
-    "gcp-policies",
-    "gcp-bootstrap",
-    "gcp-org",
-    "gcp-environments",
-    "gcp-networks",
-    "gcp-projects",
-    "tf-cloudbuilder",
-  ]
+  cloud_source_repos = distinct(concat(local.base_cloud_source_repos, local.cloud_source_repos))
 
   project_labels = {
     environment       = "bootstrap"
@@ -93,11 +94,11 @@ module "tf_cloud_builder" {
   # version = "~> 6.1"
 
   project_id                   = module.tf_source.cloudbuild_project_id
-  dockerfile_repo_uri          = module.tf_source.csr_repos["tf-cloudbuilder"].url
+  dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
   gar_repo_location            = var.default_region
   workflow_region              = var.default_region
-  terraform_version            = "1.0.0"
-  cb_logs_bucket_force_destroy = true
+  terraform_version            = local.terraform_version
+  cb_logs_bucket_force_destroy = var.bucket_force_destroy
 }
 
 module "bootstrap_csr_repo" {
@@ -106,7 +107,7 @@ module "bootstrap_csr_repo" {
   upgrade = false
 
   create_cmd_entrypoint = "${path.module}/scripts/push-to-repo.sh"
-  create_cmd_body       = "${module.tf_source.cloudbuild_project_id} ${split("/", module.tf_source.csr_repos["tf-cloudbuilder"].id)[3]} ${path.module}/Dockerfile"
+  create_cmd_body       = "${module.tf_source.cloudbuild_project_id} ${split("/", module.tf_source.csr_repos[local.cloudbuilder_repo].id)[3]} ${path.module}/Dockerfile"
 }
 
 resource "time_sleep" "cloud_builder" {
@@ -123,6 +124,10 @@ module "build_terraform_image" {
   version = "~> 3.1.0"
   upgrade = false
 
+  create_cmd_triggers = {
+    "terraform_version" = local.terraform_version
+  }
+
   create_cmd_body = "beta builds triggers run ${split("/", module.tf_cloud_builder.cloudbuild_trigger_id)[3]} --branch main --project ${module.tf_source.cloudbuild_project_id}"
 
   module_depends_on = [
@@ -137,7 +142,7 @@ module "tf_workspace" {
 
   project_id                = module.tf_source.cloudbuild_project_id
   location                  = var.default_region
-  state_bucket_self_link    = "https://www.googleapis.com/storage/v1/b/${module.seed_bootstrap.gcs_bucket_tfstate}"
+  state_bucket_self_link    = "${local.bucket_self_link_prefix}${module.seed_bootstrap.gcs_bucket_tfstate}"
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
   tf_repo_uri               = module.tf_source.csr_repos[local.cb_source[each.key]].url
@@ -145,7 +150,7 @@ module "tf_workspace" {
   create_cloudbuild_sa      = false
   diff_sa_project           = true
   create_state_bucket       = false
-  buckets_force_destroy     = true
+  buckets_force_destroy     = var.bucket_force_destroy
 
   substitutions = {
     "_ORG_ID"                       = var.org_id

@@ -30,8 +30,13 @@ import (
 
 func TestBootstrap(t *testing.T) {
 
+	vars := map[string]interface{}{
+		"bucket_force_destroy": true,
+	}
+
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
+		tft.WithVars(vars),
 	)
 
 	cloudSourceRepos := []string{
@@ -40,6 +45,8 @@ func TestBootstrap(t *testing.T) {
 		"gcp-networks",
 		"gcp-projects",
 		"gcp-policies",
+		"tf-cloudbuilder",
+		"gcp-bootstrap",
 	}
 
 	triggerRepos := []string{
@@ -100,7 +107,6 @@ func TestBootstrap(t *testing.T) {
 
 			// cloud build project
 			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
-			//bucketName := bootstrap.GetStringOutput("gcs_bucket_cloudbuild_artifacts")
 			bucketName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_artifacts")
 
 			prj := gcloud.Runf(t, "projects describe %s", cbProjectID)

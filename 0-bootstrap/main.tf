@@ -49,6 +49,7 @@ module "seed_bootstrap" {
   folder_id                      = google_folder.bootstrap.id
   project_id                     = "${var.project_prefix}-b-seed"
   state_bucket_name              = "${var.bucket_prefix}-b-tfstate"
+  force_destroy                  = var.bucket_force_destroy
   billing_account                = var.billing_account
   group_org_admins               = local.group_org_admins
   group_billing_admins           = local.group_billing_admins

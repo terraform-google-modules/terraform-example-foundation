@@ -32,7 +32,7 @@ locals {
     "gcp-bootstrap",
     local.cloudbuilder_repo,
   ]
-  gar_repository    = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
+  gar_repository = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
 }
 
 resource "random_string" "suffix" {

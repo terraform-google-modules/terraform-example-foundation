@@ -26,34 +26,29 @@ resource "random_id" "random_access_level_suffix" {
 }
 
 module "access_level_members" {
-  source      = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
-  version     = "~> 2.0.0"
+  source  = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
+  version = "~> 4.0"
+
   description = "${local.prefix} Access Level"
   policy      = var.access_context_manager_policy_id
   name        = local.access_level_name
   members     = var.members
 }
 
-resource "google_access_context_manager_service_perimeter" "regular_service_perimeter" {
-  parent         = "accessPolicies/${var.access_context_manager_policy_id}"
-  perimeter_type = "PERIMETER_TYPE_REGULAR"
-  name           = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${local.perimeter_name}"
-  title          = local.perimeter_name
+module "regular_service_perimeter" {
+  source  = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
+  version = "~> 4.0"
+
+  policy         = var.access_context_manager_policy_id
+  perimeter_name = local.perimeter_name
   description    = "Default VPC Service Controls perimeter"
+  resources      = [var.project_number]
+  access_levels  = [module.access_level_members.name]
 
-  status {
-    restricted_services = var.restricted_services
-    resources           = formatlist("projects/%s", [var.project_number])
+  restricted_services = var.restricted_services
 
-    access_levels = formatlist(
-      "accessPolicies/${var.access_context_manager_policy_id}/accessLevels/%s",
-      [module.access_level_members.name]
-    )
-  }
-
-  lifecycle {
-    ignore_changes = [status[0].resources]
-  }
+  ingress_policies = var.ingress_policies
+  egress_policies  = var.egress_policies
 }
 
 resource "google_access_context_manager_service_perimeter" "bridge_to_network_hub_perimeter" {

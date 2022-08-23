@@ -53,6 +53,11 @@ func TestProjects(t *testing.T) {
 	)
 
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
+	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
+
+	backendConfig := map[string]interface{}{
+		"bucket": backend_bucket,
+	}
 
 	var sharedCloudBuildSA = map[string]string{
 		"bu1": "",
@@ -87,11 +92,13 @@ func TestProjects(t *testing.T) {
 
 			sharedVars := map[string]interface{}{
 				"terraform_service_account": terraformSA,
+				"backend_bucket":            backend_bucket,
 			}
 
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tts.tfDir),
 				tft.WithVars(sharedVars),
+				tft.WithBackendConfig(backendConfig),
 			)
 
 			shared.DefineApply(
@@ -197,11 +204,13 @@ func TestProjects(t *testing.T) {
 				"perimeter_name":                   perimeterName,
 				"access_context_manager_policy_id": policyID,
 				"terraform_service_account":        terraformSA,
+				"backend_bucket":                   backend_bucket,
 			}
 
 			projects := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(tt.tfDir),
 				tft.WithVars(vars),
+				tft.WithBackendConfig(backendConfig),
 			)
 			projects.DefineApply(
 				func(assert *assert.Assertions) {

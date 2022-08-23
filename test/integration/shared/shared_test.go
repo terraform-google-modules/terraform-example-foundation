@@ -48,10 +48,16 @@ func TestShared(t *testing.T) {
 	)
 
 	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
+	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
 	vars := map[string]interface{}{
 		"access_context_manager_policy_id": policyID,
+		"backend_bucket":                   backend_bucket,
 		"terraform_service_account":        terraformSA,
+	}
+
+	backendConfig := map[string]interface{}{
+		"bucket": backend_bucket,
 	}
 
 	var tfdDir string
@@ -64,6 +70,7 @@ func TestShared(t *testing.T) {
 	shared := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir(tfdDir),
 		tft.WithVars(vars),
+		tft.WithBackendConfig(backendConfig),
 	)
 	shared.DefineVerify(
 		func(assert *assert.Assertions) {

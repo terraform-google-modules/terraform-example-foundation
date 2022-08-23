@@ -62,7 +62,7 @@ variable "logging_target_name" {
 }
 
 variable "logging_destination_uri" {
-  description = "The self_link URI of the destination resource. If provided all needed permitions will be assinged and this resource will be used as log destination for all resources."
+  description = "The self_link URI of the destination resource. If provided all needed permissions will be assigned and this resource will be used as log destination for all resources."
   type        = string
   default     = ""
 }

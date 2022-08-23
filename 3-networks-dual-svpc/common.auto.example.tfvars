@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
-
 terraform_service_account = "org-terraform@prj-b-seed-2334.iam.gserviceaccount.com"
 
 // The DNS name of peering managed zone. Must end with a period.
 domain = "example.com."
-
-// Optional - for an organization with existing projects or for development/validation.
-// Must be the same value used in previous steps.
-//parent_folder = "000000000000"
-

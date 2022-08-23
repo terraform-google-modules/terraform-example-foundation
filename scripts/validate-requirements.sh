@@ -122,7 +122,7 @@ function validate_git(){
     fi
 
     if ! git config init.defaultBranch | grep "main" >/dev/null ; then
-        echo "git defaul branch must be configured."
+        echo "git default branch must be configured."
         echo "See the instructions at https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/TROUBLESHOOTING.md#default-branch-setting ."
         ERRORS+=$'git default branch must be configured.\n'
     fi
@@ -167,7 +167,7 @@ function check_org_level_roles(){
         gcloud organizations get-iam-policy "$2" \
         --filter="bindings.members:$1" \
         --flatten="bindings[].members" \
-        --format="table(bindings.role)" 2>/dev/null)
+        --format="value(bindings.role)" 2>/dev/null)
 
     lines=0
     for i in "${ORGANIZATION_LEVEL_ROLES[@]}"
@@ -190,7 +190,7 @@ function check_billing_account_roles(){
         gcloud beta billing accounts get-iam-policy "$2" \
         --filter="bindings.members:$1" \
         --flatten="bindings[].members" \
-        --format="table(bindings.role)" 2>/dev/null)
+        --format="value(bindings.role)" 2>/dev/null)
 
     lines=0
     for i in "${BILLING_LEVEL_ROLES[@]}"

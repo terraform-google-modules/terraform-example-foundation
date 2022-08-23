@@ -17,9 +17,8 @@
 module "dns_hub_interconnect" {
   source = "../../modules/dedicated_interconnect"
 
-  org_id        = var.org_id
-  parent_folder = var.parent_folder
-  vpc_name      = "c-dns-hub"
+  vpc_name                = "c-dns-hub"
+  interconnect_project_id = local.interconnect_project_id
 
   region1                                 = local.default_region1
   region1_router1_name                    = module.dns_hub_region1_router1.router.name

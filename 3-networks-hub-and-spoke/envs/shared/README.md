@@ -13,6 +13,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`. | `number` | n/a | yes |
+| backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 | base\_hub\_dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for Base Hub VPC DNS. | `bool` | `true` | no |
 | base\_hub\_dns\_enable\_logging | Toggle DNS logging for Base Hub VPC DNS. | `bool` | `true` | no |
 | base\_hub\_firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls in Base Hub VPC. | `bool` | `true` | no |
@@ -27,9 +28,6 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | enable\_hub\_and\_spoke\_transitivity | Enable transitivity via gateway VMs on Hub-and-Spoke architecture. | `bool` | `false` | no |
 | enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | firewall\_policies\_enable\_logging | Toggle hierarchical firewall logging. | `bool` | `true` | no |
-| folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
-| org\_id | Organization ID | `string` | n/a | yes |
-| parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step. | `string` | `""` | no |
 | preactivate\_partner\_interconnect | Preactivate Partner Interconnect VLAN attachment in the environment. | `bool` | `false` | no |
 | restricted\_hub\_dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for Restricted Hub VPC DNS. | `bool` | `true` | no |
 | restricted\_hub\_dns\_enable\_logging | Toggle DNS logging for Restricted Hub VPC DNS. | `bool` | `true` | no |

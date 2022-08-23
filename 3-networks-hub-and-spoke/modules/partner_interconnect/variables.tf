@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-variable "org_id" {
+variable "attachment_project_id" {
   type        = string
-  description = "Organization ID"
-}
-
-variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
-  type        = string
-  default     = ""
+  description = "the Interconnect project ID."
 }
 
 variable "vpc_name" {
@@ -86,22 +80,10 @@ variable "cloud_router_labels" {
   default     = {}
 }
 
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
-  type        = string
-  default     = "fldr"
-}
-
 variable "preactivate" {
   description = "Preactivate Partner Interconnect attachments, works only for level3 Partner Interconnect"
   type        = string
   default     = false
-}
-
-variable "environment" {
-  description = "Environment in which to deploy the Partner Interconnect, must be 'common' if enable_hub_and_spoke=true"
-  type        = string
-  default     = null
 }
 
 variable "vpc_type" {

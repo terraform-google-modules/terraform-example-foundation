@@ -15,12 +15,23 @@
  */
 
 locals {
-  restricted_project_id     = data.google_projects.restricted_host_project.projects[0].project_id
-  restricted_project_number = data.google_project.restricted_host_project.number
-  base_project_id           = data.google_projects.base_host_project.projects[0].project_id
-  parent_id                 = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  bgp_asn_number            = var.enable_partner_interconnect ? "16550" : "64514"
-  enable_transitivity       = var.enable_hub_and_spoke_transitivity
+  parent_folder                     = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
+  org_id                            = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
+  billing_account                   = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
+  default_region                    = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  folder_prefix                     = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
+  parent_id                         = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
+  restricted_project_id             = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_id
+  restricted_project_number         = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_number
+  base_project_id                   = data.terraform_remote_state.environments_env.outputs.base_shared_vpc_project_id
+  env_secret_project_id             = data.terraform_remote_state.environments_env.outputs.env_secrets_project_id
+  interconnect_project_id           = data.terraform_remote_state.org.outputs.interconnect_project_id
+  dns_hub_project_id                = data.terraform_remote_state.org.outputs.dns_hub_project_id
+  base_net_hub_project_id           = data.terraform_remote_state.org.outputs.base_net_hub_project_id
+  restricted_net_hub_project_id     = data.terraform_remote_state.org.outputs.restricted_net_hub_project_id
+  restricted_net_hub_project_number = data.terraform_remote_state.org.outputs.restricted_net_hub_project_number
+  bgp_asn_number                    = var.enable_partner_interconnect ? "16550" : "64514"
+  enable_transitivity               = var.enable_hub_and_spoke_transitivity
   /*
    * Base network ranges
    */
@@ -33,46 +44,27 @@ locals {
   restricted_hub_subnet_ranges = ["10.8.0.0/24", "10.9.0.0/24"]
 }
 
-data "google_active_folder" "env" {
-  display_name = "${var.folder_prefix}-${var.env}"
-  parent       = local.parent_id
-}
-
-/******************************************
-  VPC Host Projects
-*****************************************/
-
-data "google_projects" "restricted_host_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=restricted-shared-vpc-host labels.environment=${var.env} lifecycleState=ACTIVE"
-}
-
-data "google_project" "restricted_host_project" {
-  project_id = data.google_projects.restricted_host_project.projects[0].project_id
-}
-
-data "google_projects" "base_host_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=base-shared-vpc-host labels.environment=${var.env} lifecycleState=ACTIVE"
-}
-
 /******************************************
  Restricted shared VPC
 *****************************************/
 module "restricted_shared_vpc" {
-  source                           = "../restricted_shared_vpc"
-  project_id                       = local.restricted_project_id
-  project_number                   = local.restricted_project_number
-  environment_code                 = var.environment_code
-  access_context_manager_policy_id = var.access_context_manager_policy_id
-  restricted_services              = ["bigquery.googleapis.com", "storage.googleapis.com"]
-  members                          = ["serviceAccount:${var.terraform_service_account}"]
-  private_service_cidr             = var.restricted_private_service_cidr
-  org_id                           = var.org_id
-  parent_folder                    = var.parent_folder
-  bgp_asn_subnet                   = local.bgp_asn_number
-  default_region1                  = var.default_region1
-  default_region2                  = var.default_region2
-  domain                           = var.domain
-  mode                             = "spoke"
+  source                            = "../restricted_shared_vpc"
+  project_id                        = local.restricted_project_id
+  project_number                    = local.restricted_project_number
+  dns_hub_project_id                = local.dns_hub_project_id
+  restricted_net_hub_project_id     = local.restricted_net_hub_project_id
+  restricted_net_hub_project_number = local.restricted_net_hub_project_number
+  environment_code                  = var.environment_code
+  access_context_manager_policy_id  = var.access_context_manager_policy_id
+  restricted_services               = ["bigquery.googleapis.com", "storage.googleapis.com"]
+  members                           = ["serviceAccount:${var.terraform_service_account}"]
+  private_service_cidr              = var.restricted_private_service_cidr
+  org_id                            = local.org_id
+  bgp_asn_subnet                    = local.bgp_asn_number
+  default_region1                   = var.default_region1
+  default_region2                   = var.default_region2
+  domain                            = var.domain
+  mode                              = "spoke"
 
   subnets = [
     {
@@ -104,17 +96,18 @@ module "restricted_shared_vpc" {
 *****************************************/
 
 module "base_shared_vpc" {
-  source               = "../base_shared_vpc"
-  project_id           = local.base_project_id
-  environment_code     = var.environment_code
-  private_service_cidr = var.base_private_service_cidr
-  org_id               = var.org_id
-  parent_folder        = var.parent_folder
-  default_region1      = var.default_region1
-  default_region2      = var.default_region2
-  domain               = var.domain
-  bgp_asn_subnet       = local.bgp_asn_number
-  mode                 = "spoke"
+  source                  = "../base_shared_vpc"
+  project_id              = local.base_project_id
+  dns_hub_project_id      = local.dns_hub_project_id
+  base_net_hub_project_id = local.base_net_hub_project_id
+  environment_code        = var.environment_code
+  private_service_cidr    = var.base_private_service_cidr
+  org_id                  = local.org_id
+  default_region1         = var.default_region1
+  default_region2         = var.default_region2
+  domain                  = var.domain
+  bgp_asn_subnet          = local.bgp_asn_number
+  mode                    = "spoke"
 
   subnets = [
     {

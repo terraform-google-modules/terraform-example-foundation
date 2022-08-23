@@ -66,13 +66,11 @@ module "base_env" {
 
   env                                = local.env
   environment_code                   = local.environment_code
-  org_id                             = var.org_id
   access_context_manager_policy_id   = var.access_context_manager_policy_id
   terraform_service_account          = var.terraform_service_account
   default_region1                    = local.default_region1
   default_region2                    = local.default_region2
   domain                             = var.domain
-  parent_folder                      = var.parent_folder
   enable_partner_interconnect        = false
   enable_hub_and_spoke_transitivity  = var.enable_hub_and_spoke_transitivity
   base_private_service_cidr          = local.base_private_service_cidr
@@ -81,5 +79,5 @@ module "base_env" {
   restricted_private_service_cidr    = local.restricted_private_service_cidr
   restricted_subnet_primary_ranges   = local.restricted_subnet_primary_ranges
   restricted_subnet_secondary_ranges = local.restricted_subnet_secondary_ranges
-
+  backend_bucket                     = var.backend_bucket
 }

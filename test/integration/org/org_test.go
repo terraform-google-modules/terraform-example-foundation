@@ -72,6 +72,7 @@ func TestOrg(t *testing.T) {
 				"securitycenter.googleapis.com",
 				"accesscontextmanager.googleapis.com",
 				"billingbudgets.googleapis.com",
+				"essentialcontacts.googleapis.com",
 			} {
 				utils.Poll(t, func() (bool, error) { return testutils.CheckAPIEnabled(t, projectID, api) }, 5, 2*time.Minute)
 			}

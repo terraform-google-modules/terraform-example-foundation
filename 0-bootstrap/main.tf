@@ -89,7 +89,8 @@ module "seed_bootstrap" {
     "pubsub.googleapis.com",
     "securitycenter.googleapis.com",
     "accesscontextmanager.googleapis.com",
-    "billingbudgets.googleapis.com"
+    "billingbudgets.googleapis.com",
+    "essentialcontacts.googleapis.com"
   ]
 
   sa_org_iam_permissions = []
@@ -137,7 +138,8 @@ module "cloudbuild_bootstrap" {
     "admin.googleapis.com",
     "appengine.googleapis.com",
     "storage-api.googleapis.com",
-    "billingbudgets.googleapis.com"
+    "billingbudgets.googleapis.com",
+    "essentialcontacts.googleapis.com"
   ]
 
   project_labels = {

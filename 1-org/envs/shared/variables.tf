@@ -15,12 +15,12 @@
  */
 
 variable "org_id" {
-  description = "The organization id for the associated services"
+  description = "The organization id for the associated services."
   type        = string
 }
 
 variable "billing_account" {
-  description = "The ID of the billing account to associate this project with"
+  description = "The ID of the billing account to associate this project with."
   type        = string
 }
 
@@ -80,7 +80,7 @@ variable "skip_gcloud_download" {
 }
 
 variable "scc_notification_filter" {
-  description = "Filter used to create the Security Command Center Notification, you can see more details on how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter"
+  description = "Filter used to create the Security Command Center Notification, you can see more details on how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter."
   type        = string
   default     = "state = \"ACTIVE\""
 }
@@ -92,7 +92,7 @@ variable "parent_folder" {
 }
 
 variable "create_access_context_manager_access_policy" {
-  description = "Whether to create access context manager access policy"
+  description = "Whether to create access context manager access policy."
   type        = bool
   default     = true
 }
@@ -294,37 +294,37 @@ variable "folder_prefix" {
 }
 
 variable "gcp_platform_viewer" {
-  description = "G Suite or Cloud Identity group that have the ability to view resource information across the Google Cloud organization."
+  description = "Google Workspace or Cloud Identity group that have the ability to view resource information across the Google Cloud organization."
   type        = string
   default     = null
 }
 
 variable "gcp_security_reviewer" {
-  description = "G Suite or Cloud Identity group that members are part of the security team responsible for reviewing cloud security."
+  description = "Google Workspace or Cloud Identity group that members are part of the security team responsible for reviewing cloud security."
   type        = string
   default     = null
 }
 
 variable "gcp_network_viewer" {
-  description = "G Suite or Cloud Identity group that members are part of the networking team and review network configurations"
+  description = "Google Workspace or Cloud Identity group that members are part of the networking team and review network configurations."
   type        = string
   default     = null
 }
 
 variable "gcp_scc_admin" {
-  description = "G Suite or Cloud Identity group that can administer Security Command Center."
+  description = "Google Workspace or Cloud Identity group that can administer Security Command Center."
   type        = string
   default     = null
 }
 
 variable "gcp_audit_viewer" {
-  description = "Members are part of an audit team and view audit logs in the logging project."
+  description = "Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project."
   type        = string
   default     = null
 }
 
 variable "gcp_global_secrets_admin" {
-  description = "G Suite or Cloud Identity group that members are responsible for putting secrets into Secrets Manager."
+  description = "Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Manager."
   type        = string
   default     = null
 }
@@ -342,7 +342,33 @@ variable "gcp_billing_creator_user" {
 }
 
 variable "gcp_billing_admin_user" {
-  description = "Identity that has billing administrator permissions"
+  description = "Identity that has billing administrator permissions."
   type        = string
   default     = null
+}
+
+variable "essential_contacts" {
+  description = <<EOT
+Essential Contacts configuration object:
+- language: The preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages.
+- enable_technical_incidents: See [Assigning contacts for outage and disruption notifications](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#technical-incidents-contacts) for conditions to use Technical Incidents.
+EOT
+  type = object({
+    language                   = string
+    enable_technical_incidents = bool
+  })
+  default = {
+    language                   = "en"
+    enable_technical_incidents = false
+  }
+}
+
+variable "group_org_admins" {
+  description = "Google Group for GCP Organization Administrators. Should be the same at 0-bootstrap step."
+  type        = string
+}
+
+variable "group_billing_admins" {
+  description = "Google Group for GCP Billing Administrators. Should be the same at 0-bootstrap step."
+  type        = string
 }

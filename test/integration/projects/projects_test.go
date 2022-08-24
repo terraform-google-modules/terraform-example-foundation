@@ -200,9 +200,6 @@ func TestProjects(t *testing.T) {
 			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
 
 			vars := map[string]interface{}{
-				"app_infra_pipeline_cloudbuild_sa": sharedCloudBuildSA[env[0]],
-				"perimeter_name":                   perimeterName,
-				"access_context_manager_policy_id": policyID,
 				"terraform_service_account":        terraformSA,
 				"backend_bucket":                   backend_bucket,
 			}

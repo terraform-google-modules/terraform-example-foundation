@@ -134,6 +134,22 @@ func TestOrg(t *testing.T) {
 			notification := gcloud.Runf(t, "scc notifications describe %s --organization %s", notificationName, orgID)
 			assert.Equal(topicFullName, notification.Get("pubsubTopic").String(), fmt.Sprintf("notification %s should use topic %s", notificationName, topicName))
 
+			//essential contacts
+			essentialContacts := gcloud.Runf(t, "essential-contacts list --folder=%s", parentFolder).Array()
+			assert.Len(essentialContacts, 1, "only one essential contact email should be created")
+
+			groupOrgAdmins := org.GetStringOutput("group_org_admins")
+			assert.Equal(groupOrgAdmins, essentialContacts[0].Get("email").String(), "essential contact email should be group org admin")
+			assert.Equal("VALID", essentialContacts[0].Get("validationState").String(), "state of essential contact should be valid")
+
+			// listCategories := testutils.GetResultFieldStrSlice(essentialContacts, "notificationCategorySubscriptions")
+			var listCategories []string
+			for _, category := range essentialContacts[0].Get("notificationCategorySubscriptions").Array() {
+				listCategories = append(listCategories, category.String())
+			}
+			expectedCategories = {"BILLING","LEGAL","PRODUCT_UPDATES","SECURITY","SUSPENSION","TECHNICAL"}
+			assert.Subset(listCategories, expectedCategories, "notification category subscriptions should be the same")
+
 			//logging
 			billingLogsProjectID := org.GetStringOutput("org_billing_logs_project_id")
 			billingDatasetName := "billing_data"

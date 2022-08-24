@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform"
-  type        = string
-}
-
 variable "business_code" {
   description = "The business code (ex. bu1)."
   type        = string

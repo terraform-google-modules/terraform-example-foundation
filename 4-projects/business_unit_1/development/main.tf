@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-locals {
-  terraform_service_account = var.terraform_service_account
-}
-
 module "env" {
   source = "../../modules/base_env"
 
@@ -27,6 +23,5 @@ module "env" {
   backend_bucket            = var.backend_bucket
   location_kms              = var.location_kms
   location_gcs              = var.location_gcs
-  terraform_service_account = local.terraform_service_account
   peering_module_depends_on = var.peering_module_depends_on
 }

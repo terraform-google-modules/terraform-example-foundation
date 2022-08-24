@@ -20,8 +20,6 @@ data "terraform_remote_state" "bootstrap" {
   config = {
     bucket = "${var.backend_bucket}"
     prefix = "terraform/bootstrap/state"
-
-    impersonate_service_account = var.terraform_service_account
   }
 }
 
@@ -31,8 +29,6 @@ data "terraform_remote_state" "org" {
   config = {
     bucket = "${var.backend_bucket}"
     prefix = "terraform/org/state"
-
-    impersonate_service_account = var.terraform_service_account
   }
 }
 
@@ -42,8 +38,6 @@ data "terraform_remote_state" "network_shared" {
   config = {
     bucket = "${var.backend_bucket}"
     prefix = "terraform/networks/envs/shared"
-
-    impersonate_service_account = var.terraform_service_account
   }
 }
 
@@ -53,7 +47,5 @@ data "terraform_remote_state" "environments_env" {
   config = {
     bucket = "${var.backend_bucket}"
     prefix = "terraform/environments/${var.env}"
-
-    impersonate_service_account = var.terraform_service_account
   }
 }

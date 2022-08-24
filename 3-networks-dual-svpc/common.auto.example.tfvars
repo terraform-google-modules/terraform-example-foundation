@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-terraform_service_account = "org-terraform@prj-b-seed-2334.iam.gserviceaccount.com"
+terraform_service_account = "terraform-net-sa@prj-b-seed-2334.iam.gserviceaccount.com"
 
 // The DNS name of peering managed zone. Must end with a period.
 domain = "example.com."

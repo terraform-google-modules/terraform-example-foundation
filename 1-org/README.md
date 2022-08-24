@@ -66,7 +66,7 @@ The purpose of this step is to set up top-level shared folders, monitoring and n
 4. Security Command Center notifications require that you choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as outlined in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center)
 5. Ensure that you have requested for sufficient projects quota, as the Terraform scripts will create multiple projects from this point onwards. For more information, please [see the FAQ](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/FAQ.md).
 
-**Note:** Make sure that you use the same version of Terraform throughout this series, otherwise you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series, otherwise you might experience Terraform state snapshot lock errors.
 
 ### Troubleshooting
 

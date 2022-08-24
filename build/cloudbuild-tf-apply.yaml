@@ -15,9 +15,10 @@
 timeout: 3600s
 substitutions:
   _POLICY_REPO: '/workspace/policy-library' # add path to policies as per https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/policy_library.md
+  _DOCKER_TAG_VERSION_TERRAFORM: 'latest'
 steps:
 - id: 'setup'
-  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
   entrypoint: /bin/bash
   args:
   - -c
@@ -32,7 +33,7 @@ steps:
 
 # [START tf-init]
 - id: 'tf init'
-  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
   entrypoint: /bin/bash
   args:
   - -c
@@ -41,7 +42,7 @@ steps:
 
 # [START tf-plan]
 - id: 'tf plan'
-  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
   entrypoint: /bin/bash
   args:
   - -c
@@ -50,7 +51,7 @@ steps:
 
 # [START tf-validate]
 - id: 'tf validate'
-  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
   entrypoint: /bin/bash
   args:
   - -c
@@ -59,7 +60,7 @@ steps:
 
 # [START tf-apply]
 - id: 'tf apply'
-  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform
+  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
   entrypoint: /bin/bash
   args:
   - -c
@@ -70,3 +71,5 @@ artifacts:
   objects:
     location: 'gs://${_ARTIFACT_BUCKET_NAME}/terraform/cloudbuild/apply/${BUILD_ID}'
     paths: ['cloudbuild-tf-apply.yaml', 'tmp_plan/*.tfplan']
+
+logsBucket: 'gs://${_LOG_BUCKET_NAME}'

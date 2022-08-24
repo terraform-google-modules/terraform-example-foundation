@@ -23,5 +23,4 @@ locals {
   folder_prefix        = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
   parent               = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   create_access_policy = data.terraform_remote_state.bootstrap.outputs.common_config.create_access_context_manager_access_policy
-  tf_sa                = var.terraform_service_account
 }

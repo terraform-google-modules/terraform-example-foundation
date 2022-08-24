@@ -7,7 +7,6 @@
 | location\_gcs | Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring) | `string` | `"US"` | no |
 | location\_kms | Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket) | `string` | `"us"` | no |
 | peering\_module\_depends\_on | List of modules or resources peering module depends on. | `list(any)` | `[]` | no |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 
 ## Outputs
 

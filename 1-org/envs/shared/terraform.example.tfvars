@@ -21,8 +21,6 @@ billing_data_users = "gcp-billing-admins@example.com"
 
 audit_data_users = "gcp-security-admins@example.com"
 
-terraform_service_account = "terraform-org-sa@example-project-2334.iam.gserviceaccount.com"
-
 scc_notification_name = "scc-notify"
 
 backend_bucket = "<TERRAFORM-STATE-BUCKET>"

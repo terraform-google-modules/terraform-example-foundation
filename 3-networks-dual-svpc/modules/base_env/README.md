@@ -14,10 +14,10 @@
 | enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | env | The environment to prepare (ex. development) | `string` | n/a | yes |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization (ex. d). | `string` | n/a | yes |
+| members | An allowed list of members (users, service accounts)to be include in the VPC-SC perimeter. The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid} | `list(string)` | n/a | yes |
 | restricted\_private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services in the Restricted Shared Vpc. | `string` | n/a | yes |
 | restricted\_subnet\_primary\_ranges | The base subnet primary IPTs ranges to the Restricted Shared Vpc. | `map(string)` | n/a | yes |
 | restricted\_subnet\_secondary\_ranges | The base subnet secondary IPTs ranges to the Restricted Shared Vpc | `map(list(map(string)))` | n/a | yes |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
 
 ## Outputs
 

@@ -20,7 +20,6 @@
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | peering\_module\_depends\_on | List of modules or resources peering module depends on. | `list(any)` | `[]` | no |
 | secrets\_prj\_suffix | Name suffix to use for secrets project created. | `string` | `"env-secrets"` | no |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | `bool` | `false` | no |
 
 ## Outputs

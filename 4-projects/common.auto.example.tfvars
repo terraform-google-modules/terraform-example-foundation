@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-terraform_service_account = "org-terraform@prj-b-seed-2334.iam.gserviceaccount.com"
-
 backend_bucket = "<TERRAFORM-STATE-BUCKET>"

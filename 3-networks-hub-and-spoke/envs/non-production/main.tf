@@ -67,7 +67,7 @@ module "base_env" {
   env                                = local.env
   environment_code                   = local.environment_code
   access_context_manager_policy_id   = var.access_context_manager_policy_id
-  terraform_service_account          = var.terraform_service_account
+  members                            = ["serviceAccount:${var.terraform_service_account}"]
   default_region1                    = local.default_region1
   default_region2                    = local.default_region2
   domain                             = var.domain

@@ -74,9 +74,9 @@ This pipeline can be utilized for deploying resources in projects across develop
    gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
    ```
 
-1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 0.13.7 to be installed.
+1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 1.0.0 or later to be installed.
 
-   **Note:** Make sure that you use the same version of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+   **Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 1. Obtain the values for the `perimeter_name` for each environment variable.
 
@@ -154,6 +154,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. You need to manually plan and apply only once the `business_unit_1/shared` environment since `development`, `non-production`, and `production` depend on it.
     1. Run `cd ./business_unit_1/shared/`.
     1. Update `backend.tf` with your bucket name from the 0-bootstrap step.
+    1. Export the projects (`terraform-proj-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
     1. Run `terraform init`.
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.

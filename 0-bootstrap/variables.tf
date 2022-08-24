@@ -76,22 +76,16 @@ variable "bucket_prefix" {
   default     = "bkt"
 }
 
-variable "cloud_source_repos" {
-  description = "List of Cloud Source Repositories created during bootstrap project build stage for use with Cloud Build."
-  type        = list(string)
-  default     = ["gcp-org", "gcp-environments", "gcp-networks", "gcp-projects"]
+variable "bucket_force_destroy" {
+  description = "When deleting a bucket, this boolean option will delete all contained objects. If false, Terraform will fail to delete buckets which contain objects."
+  type        = bool
+  default     = false
 }
 
 variable "create_access_context_manager_access_policy" {
   description = "Whether to create access context manager access policy"
   type        = bool
   default     = true
-}
-
-variable "tfstate_storage_force_destroy" {
-  description = "(Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present."
-  type        = bool
-  default     = false
 }
 
 /* ----------------------------------------

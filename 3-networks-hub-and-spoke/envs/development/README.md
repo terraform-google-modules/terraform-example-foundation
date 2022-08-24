@@ -19,7 +19,7 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 | domain | The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period. | `string` | n/a | yes |
 | enable\_hub\_and\_spoke\_transitivity | Enable transitivity via gateway VMs on Hub-and-Spoke architecture. | `bool` | `false` | no |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
+| terraform\_service\_account | Service account email of the account to be added to the VPC-SC perimeter. | `string` | n/a | yes |
 
 ## Outputs
 

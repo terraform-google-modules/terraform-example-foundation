@@ -24,11 +24,6 @@ variable "environment_code" {
   description = "A short form of the folder level resources (environment) within the Google Cloud organization (ex. d)."
 }
 
-variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform."
-  type        = string
-}
-
 variable "backend_bucket" {
   description = "Backend bucket to load remote state information from previous steps."
   type        = string

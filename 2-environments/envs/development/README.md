@@ -5,7 +5,6 @@
 |------|-------------|------|---------|:--------:|
 | backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 | monitoring\_workspace\_users | Google Workspace or Cloud Identity group that have access to Monitoring Workspaces. | `string` | n/a | yes |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
 
 ## Outputs
 

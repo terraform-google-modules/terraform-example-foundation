@@ -15,7 +15,6 @@
  */
 
 locals {
-  terraform_service_account        = var.terraform_service_account
   parent_folder                    = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
   org_id                           = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
   billing_account                  = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account

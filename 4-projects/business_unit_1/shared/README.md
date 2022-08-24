@@ -8,7 +8,7 @@
 | backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 | budget\_amount | The amount to use as the budget | `number` | `1000` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
+| impersonate\_service\_account | Service account email of the account to impersonate to run gcloud build submit | `string` | n/a | yes |
 
 ## Outputs
 

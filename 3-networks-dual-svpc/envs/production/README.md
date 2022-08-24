@@ -18,7 +18,7 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`. | `number` | n/a | yes |
 | backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 | domain | The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period. | `string` | n/a | yes |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
+| terraform\_service\_account | Service account email of the account to be added to the VPC-SC perimeter. | `string` | n/a | yes |
 
 ## Outputs
 

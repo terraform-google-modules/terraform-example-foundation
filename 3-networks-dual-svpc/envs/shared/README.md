@@ -37,7 +37,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | restricted\_hub\_windows\_activation\_enabled | Enable Windows license activation for Windows workloads in Restricted Hub. | `bool` | `false` | no |
 | subnetworks\_enable\_logging | Toggle subnetworks flow logging for VPC Subnetworks. | `bool` | `true` | no |
 | target\_name\_server\_addresses | List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones. | `list(string)` | n/a | yes |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
+| terraform\_service\_account | Service account email of the account to be added to the VPC-SC perimeter. | `string` | n/a | yes |
 
 ## Outputs
 

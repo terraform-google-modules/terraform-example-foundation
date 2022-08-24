@@ -52,9 +52,11 @@ func TestProjects(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
+	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
-	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
+	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 	backendConfig := map[string]interface{}{
 		"bucket": backend_bucket,
 	}
@@ -91,8 +93,8 @@ func TestProjects(t *testing.T) {
 		t.Run(tts.name, func(t *testing.T) {
 
 			sharedVars := map[string]interface{}{
-				"terraform_service_account": terraformSA,
-				"backend_bucket":            backend_bucket,
+				"backend_bucket":              backend_bucket,
+				"impersonate_service_account": terraformSA,
 			}
 
 			shared := tft.NewTFBlueprintTest(t,
@@ -184,8 +186,8 @@ func TestProjects(t *testing.T) {
 			netVars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
 			}
-			// networks created to retrieve output from the network step for this environment
 
+			// networks created to retrieve output from the network step for this environment
 			var networkTFDir string
 			if networkMode == "" {
 				networkTFDir = "../../../3-networks-dual-svpc/envs/%s"
@@ -200,8 +202,8 @@ func TestProjects(t *testing.T) {
 			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
 
 			vars := map[string]interface{}{
-				"terraform_service_account":        terraformSA,
-				"backend_bucket":                   backend_bucket,
+				"terraform_service_account": terraformSA,
+				"backend_bucket":            backend_bucket,
 			}
 
 			projects := tft.NewTFBlueprintTest(t,

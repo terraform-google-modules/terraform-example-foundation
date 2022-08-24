@@ -35,21 +35,23 @@ func TestOrg(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
-	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")
 	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
 	vars := map[string]interface{}{
-		"backend_bucket":                                backend_bucket,
-		"terraform_service_account":                     terraformSA,
 		"networks_step_terraform_service_account_email": networksTerraformSA,
-		"log_export_storage_force_destroy":              "true",
-		"audit_logs_table_delete_contents_on_destroy":   "true",
+		"backend_bucket":                              backend_bucket,
+		"log_export_storage_force_destroy":            "true",
+		"audit_logs_table_delete_contents_on_destroy": "true",
 	}
 
 	backendConfig := map[string]interface{}{
 		"bucket": backend_bucket,
 	}
+
+	// Configure impersonation for test execution
+	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),

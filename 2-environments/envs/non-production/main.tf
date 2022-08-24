@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-locals {
-  tf_sa = var.terraform_service_account
-}
-
 module "env" {
   source = "../../modules/env_baseline"
 
@@ -25,5 +21,4 @@ module "env" {
   environment_code           = "n"
   monitoring_workspace_users = var.monitoring_workspace_users
   backend_bucket             = var.backend_bucket
-  terraform_service_account  = local.tf_sa
 }

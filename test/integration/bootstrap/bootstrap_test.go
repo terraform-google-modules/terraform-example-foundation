@@ -47,7 +47,7 @@ func fileExists(filePath string) (bool, error) {
 func TestBootstrap(t *testing.T) {
 
 	vars := map[string]interface{}{
-		"tfstate_storage_force_destroy": "true",
+		"bucket_force_destroy": true,
 	}
 
 	bootstrap := tft.NewTFBlueprintTest(t,
@@ -61,6 +61,8 @@ func TestBootstrap(t *testing.T) {
 		"gcp-networks",
 		"gcp-projects",
 		"gcp-policies",
+		"tf-cloudbuilder",
+		"gcp-bootstrap",
 	}
 
 	triggerRepos := []string{
@@ -139,14 +141,21 @@ func TestBootstrap(t *testing.T) {
 
 			// cloud build project
 			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
-			bucketName := bootstrap.GetStringOutput("gcs_bucket_cloudbuild_artifacts")
+			bucketName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_artifacts")
 
 			prj := gcloud.Runf(t, "projects describe %s", cbProjectID)
 			assert.True(prj.Exists(), "project %s should exist", cbProjectID)
 
-			gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--json"})
-			bkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", bucketName), gcAlphaOpts).Array()[0]
-			assert.True(bkt.Exists(), "bucket %s should exist", bucketName)
+			for _, env := range []string{
+				"org",
+				"env",
+				"net",
+				"proj",
+			} {
+				gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--json"})
+				bkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", bucketName[env]), gcAlphaOpts).Array()[0]
+				assert.True(bkt.Exists(), "bucket %s should exist", bucketName[env])
+			}
 
 			for _, repo := range cloudSourceRepos {
 				sourceRepoFullName := fmt.Sprintf("projects/%s/repos/%s", cbProjectID, repo)
@@ -156,8 +165,8 @@ func TestBootstrap(t *testing.T) {
 
 			for _, triggerRepo := range triggerRepos {
 				for _, filter := range []string{
-					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND substitutions._TF_ACTION='apply'", branchesRegex, triggerRepo),
-					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND substitutions._TF_ACTION='plan' AND trigger_template.invert_regex=true", branchesRegex, triggerRepo),
+					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-apply'", branchesRegex, triggerRepo, triggerRepo),
+					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-plan' AND trigger_template.invert_regex=true", branchesRegex, triggerRepo, triggerRepo),
 				} {
 					cbOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--filter", filter, "--format", "json"})
 					cbTriggers := gcloud.Run(t, "beta builds triggers list", cbOpts).Array()
@@ -184,9 +193,6 @@ func TestBootstrap(t *testing.T) {
 				output   string
 				orgRoles []string
 			}{
-				{
-					output: "terraform_service_account",
-				},
 				{
 					output: "projects_step_terraform_service_account_email",
 					orgRoles: []string{

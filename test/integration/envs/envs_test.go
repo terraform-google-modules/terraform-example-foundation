@@ -32,13 +32,15 @@ func TestEnvs(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
+	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("environment_step_terraform_service_account_email")
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
+
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 	monitoringWorkspaceUsers := bootstrap.GetTFSetupStringOutput("monitoring_workspace_users")
 
 	vars := map[string]interface{}{
 		"backend_bucket":             backend_bucket,
-		"terraform_service_account":  terraformSA,
 		"monitoring_workspace_users": monitoringWorkspaceUsers,
 	}
 

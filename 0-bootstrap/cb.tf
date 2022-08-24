@@ -18,6 +18,8 @@
 locals {
   // terraform version image configuration
   terraform_version = "1.0.0"
+  // The version of the terraform docker image to be used in the workspace builds
+  docker_tag_version_terraform = "v1"
 
   cb_source = {
     "org"  = "gcp-org",
@@ -157,7 +159,7 @@ module "tf_workspace" {
     "_BILLING_ID"                   = var.billing_account
     "_DEFAULT_REGION"               = var.default_region
     "_GAR_REPOSITORY"               = local.gar_repository
-    "_DOCKER_TAG_VERSION_TERRAFORM" = "v1"
+    "_DOCKER_TAG_VERSION_TERRAFORM" = local.docker_tag_version_terraform
   }
 
   tf_apply_branches = ["development", "non\\-production", "production"]

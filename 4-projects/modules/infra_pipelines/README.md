@@ -13,11 +13,11 @@
 | folders\_to\_grant\_browser\_role | List of folders to grant browser role to the cloud build service account. Used by terraform validator to able to load IAM policies. | `list(string)` | `[]` | no |
 | gar\_repo\_name | Custom name to use for GAR repo. | `string` | `""` | no |
 | gcloud\_version | Default gcloud image version. | `string` | `"393.0.0-slim"` | no |
-| impersonate\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
+| impersonate\_service\_account | Service account email of the account to impersonate to run gcloud build submit | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | terraform\_apply\_branches | List of git branches configured to run terraform apply Cloud Build trigger. All other branches will run plan by default. | `list(string)` | <pre>[<br>  "development",<br>  "non-production",<br>  "production"<br>]</pre> | no |
-| terraform\_version | Default terraform version. | `string` | `"0.13.7"` | no |
-| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"` | no |
+| terraform\_version | Default terraform version. | `string` | `"1.0.0"` | no |
+| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"8be33cc3be8089019d95eb8f546f35d41926e7c1e5deff15792e969dde573eb5"` | no |
 
 ## Outputs
 
@@ -28,6 +28,7 @@
 | cloudbuild\_sa | Cloud Build service account |
 | default\_region | Default region to create resources where applicable. |
 | gar\_name | GAR Repo name created to store runner images |
+| log\_buckets | GCS Buckets to store Cloud Build logs |
 | plan\_triggers | CB plan triggers |
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |

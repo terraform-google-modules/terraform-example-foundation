@@ -43,7 +43,7 @@ module "app_infra_cloudbuild_project" {
 
 module "infra_pipelines" {
   source                      = "../../modules/infra_pipelines"
-  impersonate_service_account = var.terraform_service_account
+  impersonate_service_account = var.impersonate_service_account
   cloudbuild_project_id       = module.app_infra_cloudbuild_project.project_id
   project_prefix              = var.project_prefix
   billing_account             = var.billing_account

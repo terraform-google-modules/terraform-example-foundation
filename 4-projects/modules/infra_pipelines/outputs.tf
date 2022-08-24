@@ -49,6 +49,11 @@ output "state_buckets" {
   value       = values(local.state_buckets)
 }
 
+output "log_buckets" {
+  description = "GCS Buckets to store Cloud Build logs"
+  value       = values(local.log_buckets)
+}
+
 output "plan_triggers" {
   description = "CB plan triggers"
   value       = [for trigger in google_cloudbuild_trigger.non_main_trigger : trigger.name]

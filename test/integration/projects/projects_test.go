@@ -52,7 +52,9 @@ func TestProjects(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
+	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	var sharedCloudBuildSA = map[string]string{
 		"bu1": "",
@@ -86,7 +88,7 @@ func TestProjects(t *testing.T) {
 		t.Run(tts.name, func(t *testing.T) {
 
 			sharedVars := map[string]interface{}{
-				"terraform_service_account": terraformSA,
+				"impersonate_service_account": terraformSA,
 			}
 
 			shared := tft.NewTFBlueprintTest(t,
@@ -177,8 +179,8 @@ func TestProjects(t *testing.T) {
 			netVars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
 			}
-			// networks created to retrieve output from the network step for this environment
 
+			// networks created to retrieve output from the network step for this environment
 			var networkTFDir string
 			if networkMode == "" {
 				networkTFDir = "../../../3-networks-dual-svpc/envs/%s"
@@ -196,7 +198,6 @@ func TestProjects(t *testing.T) {
 				"app_infra_pipeline_cloudbuild_sa": sharedCloudBuildSA[env[0]],
 				"perimeter_name":                   perimeterName,
 				"access_context_manager_policy_id": policyID,
-				"terraform_service_account":        terraformSA,
 			}
 
 			projects := tft.NewTFBlueprintTest(t,

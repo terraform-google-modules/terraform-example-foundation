@@ -64,7 +64,7 @@ func TestShared(t *testing.T) {
 	shared := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir(tfdDir),
 		tft.WithVars(vars),
-		tft.WithPolicyLibraryPath("/workspace/policy-library"),
+		tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 	)
 	shared.DefineVerify(
 		func(assert *assert.Assertions) {

@@ -47,7 +47,7 @@ func TestEnvs(t *testing.T) {
 			envs := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../2-environments/envs/%s", envName)),
 				tft.WithVars(vars),
-				tft.WithPolicyLibraryPath("/workspace/policy-library"),
+				tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 			)
 			envs.DefineVerify(
 				func(assert *assert.Assertions) {

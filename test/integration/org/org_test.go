@@ -147,7 +147,7 @@ func TestOrg(t *testing.T) {
 			for _, category := range essentialContacts[0].Get("notificationCategorySubscriptions").Array() {
 				listCategories = append(listCategories, category.String())
 			}
-			expectedCategories = {"BILLING","LEGAL","PRODUCT_UPDATES","SECURITY","SUSPENSION","TECHNICAL"}
+			expectedCategories := []string{"BILLING", "LEGAL", "PRODUCT_UPDATES", "SECURITY", "SUSPENSION", "TECHNICAL"}
 			assert.Subset(listCategories, expectedCategories, "notification category subscriptions should be the same")
 
 			//logging

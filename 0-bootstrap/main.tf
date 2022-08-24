@@ -44,7 +44,7 @@ resource "google_folder" "bootstrap" {
 
 module "seed_bootstrap" {
   source                         = "terraform-google-modules/bootstrap/google"
-  version                        = "~> 6.0"
+  version                        = "~> 6.2"
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
   project_id                     = "${var.project_prefix}-b-seed"

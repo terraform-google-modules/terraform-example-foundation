@@ -42,20 +42,6 @@ resource "google_folder" "bootstrap" {
   parent       = local.parent
 }
 
-resource "google_essential_contacts_contact" "billing_contact" {
-  parent = local.parent
-  email = local.group_billing_admins
-  language_tag = "en"
-  notification_category_subscriptions = ["BILLING"]
-}
-
-resource "google_essential_contacts_contact" "legal_contact" {
-  parent = local.parent
-  email = local.group_org_admins
-  language_tag = "en"
-  notification_category_subscriptions = ["LEGAL"]
-}
-
 module "seed_bootstrap" {
   source                         = "terraform-google-modules/bootstrap/google"
   version                        = "~> 6.2"

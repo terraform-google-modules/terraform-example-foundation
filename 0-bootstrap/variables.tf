@@ -76,10 +76,10 @@ variable "bucket_prefix" {
   default     = "bkt"
 }
 
-variable "cloud_source_repos" {
-  description = "List of Cloud Source Repositories created during bootstrap project build stage for use with Cloud Build."
-  type        = list(string)
-  default     = ["gcp-org", "gcp-environments", "gcp-networks", "gcp-projects"]
+variable "bucket_force_destroy" {
+  description = "When deleting a bucket, this boolean option will delete all contained objects. If false, Terraform will fail to delete buckets which contain objects."
+  type        = bool
+  default     = false
 }
 
 /* ----------------------------------------

@@ -16,3 +16,5 @@
 
 # We suggest you to use the same region from the 0-bootstrap step
 default_region = "us-central1"
+
+impersonate_service_account = "terraform-proj-sa@example-project-2334.iam.gserviceaccount.com"

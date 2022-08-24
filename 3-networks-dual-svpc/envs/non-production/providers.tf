@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-locals {
-  tf_sa = var.terraform_service_account
-}
-
-
 /******************************************
-  Provider credential configuration
+  Provider request timeout configuration
  *****************************************/
 provider "google" {
-  impersonate_service_account = local.tf_sa
-  request_timeout             = "2m"
+  request_timeout = "2m"
 }
 
 provider "google-beta" {
-  impersonate_service_account = local.tf_sa
-  request_timeout             = "2m"
+  request_timeout = "2m"
 }

@@ -20,6 +20,7 @@ locals {
   created_csrs           = toset([for repo in google_sourcerepo_repository.app_infra_repo : repo.name])
   artifact_buckets       = { for created_csr in local.created_csrs : "${created_csr}-ab" => format("%s-%s-%s", created_csr, "cloudbuild-artifacts", random_id.suffix.hex) }
   state_buckets          = { for created_csr in local.created_csrs : "${created_csr}-tfstate" => format("%s-%s-%s", created_csr, "tfstate", random_id.suffix.hex) }
+  log_buckets            = { for created_csr in local.created_csrs : "${created_csr}-logs" => format("%s-%s-%s", created_csr, "build-logs", random_id.suffix.hex) }
   apply_branches_regex   = "^(${join("|", var.terraform_apply_branches)})$"
   cloudbuild_bucket_name = "${var.cloudbuild_project_id}_cloudbuild"
   cloudbuild_bucket      = { "cloudbuild" = local.cloudbuild_bucket_name }
@@ -47,7 +48,7 @@ resource "random_id" "suffix" {
 }
 
 resource "google_storage_bucket" "pipeline_infra" {
-  for_each = merge(local.artifact_buckets, local.state_buckets, local.cloudbuild_bucket)
+  for_each = merge(local.artifact_buckets, local.state_buckets, local.cloudbuild_bucket, local.log_buckets)
 
   project  = var.cloudbuild_project_id
   name     = each.value
@@ -62,10 +63,11 @@ resource "google_storage_bucket" "pipeline_infra" {
 
 # IAM for Cloud Build SA to access cloudbuild_artifacts and tfstate buckets
 resource "google_storage_bucket_iam_member" "cloudbuild_artifacts_iam" {
-  for_each = merge(local.artifact_buckets, local.state_buckets, local.cloudbuild_bucket)
-  bucket   = each.value
-  role     = "roles/storage.admin"
-  member   = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
+  for_each = merge(local.artifact_buckets, local.state_buckets, local.cloudbuild_bucket, local.log_buckets)
+
+  bucket = each.value
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 
   depends_on = [
     google_storage_bucket.pipeline_infra
@@ -89,6 +91,7 @@ resource "google_cloudbuild_trigger" "main_trigger" {
     _GAR_REPOSITORY       = local.gar_name
     _STATE_BUCKET_NAME    = google_storage_bucket.pipeline_infra["${each.value}-tfstate"].name
     _ARTIFACT_BUCKET_NAME = google_storage_bucket.pipeline_infra["${each.value}-ab"].name
+    _LOG_BUCKET_NAME      = google_storage_bucket.pipeline_infra["${each.value}-logs"].name
     _TF_ACTION            = "apply"
   }
 
@@ -115,6 +118,7 @@ resource "google_cloudbuild_trigger" "non_main_trigger" {
     _GAR_REPOSITORY       = local.gar_name
     _STATE_BUCKET_NAME    = google_storage_bucket.pipeline_infra["${each.value}-tfstate"].name
     _ARTIFACT_BUCKET_NAME = google_storage_bucket.pipeline_infra["${each.value}-ab"].name
+    _LOG_BUCKET_NAME      = google_storage_bucket.pipeline_infra["${each.value}-logs"].name
     _TF_ACTION            = "plan"
   }
 

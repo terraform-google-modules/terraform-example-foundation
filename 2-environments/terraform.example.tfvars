@@ -18,8 +18,6 @@ org_id = "000000000000"
 
 billing_account = "000000-000000-000000"
 
-terraform_service_account = "org-terraform@example-project-2334.iam.gserviceaccount.com"
-
 monitoring_workspace_users = "gcp-monitoring-admins@example.com"
 
 // Optional - for an organization with existing projects or for development/validation.

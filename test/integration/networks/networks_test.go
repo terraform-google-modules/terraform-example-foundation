@@ -87,7 +87,9 @@ func TestNetworks(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
+	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	restrictedServices := []string{
 		"bigquery.googleapis.com",

@@ -25,8 +25,6 @@ org_id = "000000000000"
 
 billing_account = "000000-000000-000000"
 
-terraform_service_account = "terraform-org-sa@example-project-2334.iam.gserviceaccount.com"
-
 default_region = "us-central1"
 
 scc_notification_name = "scc-notify"

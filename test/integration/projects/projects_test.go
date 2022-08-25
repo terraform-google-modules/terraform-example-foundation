@@ -202,7 +202,6 @@ func TestProjects(t *testing.T) {
 			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
 
 			vars := map[string]interface{}{
-				"terraform_service_account": terraformSA,
 				"backend_bucket":            backend_bucket,
 			}
 

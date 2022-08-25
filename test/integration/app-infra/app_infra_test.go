@@ -38,13 +38,8 @@ func TestAppInfra(t *testing.T) {
 	} {
 		t.Run(envName, func(t *testing.T) {
 
-			projects := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(fmt.Sprintf("../../../4-projects/business_unit_1/%s", envName)),
-			)
-
 			vars := map[string]interface{}{
-				"project_service_account": projects.GetStringOutput("base_shared_vpc_project_sa"),
-				"backend_bucket":          backend_bucket,
+				"backend_bucket": backend_bucket,
 			}
 
 			appInfra := tft.NewTFBlueprintTest(t,

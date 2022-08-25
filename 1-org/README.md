@@ -112,6 +112,24 @@ gcloud scc notifications describe <scc_notification_name> --organization=<org_id
 | gcp_scc_admin | Product Updates and Security | Org Admins |
 | gcp_security_reviewer | Security and Technical | Org Admins |
 
+**Note:** There is also possible to assign Essential Contacts directly to projects using project-factory [essential_contacts submodule](https://registry.terraform.io/modules/terraform-google-modules/project-factory/google/13.1.0/submodules/essential_contacts). Here is an example:
+
+```hcl
+module "essential_contacts" {
+  source  = "terraform-google-modules/project-factory/google//modules/essential_contacts"
+  version = "~> 13.0"
+
+  project_id = "<project_id>"
+
+  essential_contacts = {
+    "<security group email>"  = ["SECURITY", "TECHNICAL"],
+    "<financial group email>" = ["BILLING"]
+  }
+
+  language_tag = "en"
+}
+```
+
 ### Deploying with Cloud Build
 
 1. Clone the policy repo based on the Terraform output from the previous section.

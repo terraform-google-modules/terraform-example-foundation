@@ -140,7 +140,7 @@ func TestOrg(t *testing.T) {
 			essentialContacts := gcloud.Runf(t, "essential-contacts list --folder=%s", parentFolder).Array()
 			assert.Len(essentialContacts, 1, "only one essential contact email should be created")
 
-			groupOrgAdmins := org.GetStringOutput("group_org_admins")
+			groupOrgAdmins := utils.ValFromEnv(t, "TF_VAR_group_email")
 			assert.Equal(groupOrgAdmins, essentialContacts[0].Get("email").String(), "essential contact email should be group org admin")
 			assert.Equal("VALID", essentialContacts[0].Get("validationState").String(), "state of essential contact should be valid")
 

@@ -19,7 +19,7 @@
 
 # -------------------------- Variables --------------------------
 # Expected versions of the installers
-TF_VERSION="0.13.7"
+TF_VERSION="1.0.0"
 GCLOUD_SDK_VERSION="391.0.0"
 GIT_VERSION="2.25.1"
 

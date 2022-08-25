@@ -31,6 +31,9 @@ locals {
   }
 
   contacts_list = transpose(local.categories_map)
+  # Convert a map indexed by category to a map indexed by email
+  # this way is simpler to understand and maintain than the opposite
+  # google_essential_contacts_contact resource needs one email with a list of categories
 }
 
 resource "google_essential_contacts_contact" "essential_contacts" {

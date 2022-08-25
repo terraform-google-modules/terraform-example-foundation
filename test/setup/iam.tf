@@ -33,6 +33,7 @@ locals {
     "roles/compute.orgSecurityResourceAdmin",
     "roles/resourcemanager.organizationViewer",
     "roles/viewer",
+    "roles/essentialcontacts.admin",
   ]
 }
 

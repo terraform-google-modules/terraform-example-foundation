@@ -54,8 +54,17 @@ function shared(){
     mv $network_dir/envs/shared/shared.auto.tfvars  $network_dir/envs/shared/shared.auto.tfvars.disabled
 }
 
-function projects(){
+function projectsshared(){
+    # disable shared.auto.tfvars
+    mv 4-projects/business_unit_1/shared/shared.auto.tfvars  4-projects/business_unit_1/shared/shared.auto.tfvars.disabled
+    mv 4-projects/business_unit_2/shared/shared.auto.tfvars  4-projects/business_unit_2/shared/shared.auto.tfvars.disabled
 
+    # disable common.auto.tfvars
+    mv 4-projects/business_unit_1/shared/common.auto.tfvars 4-projects/business_unit_1/shared/common.auto.tfvars.disabled
+    mv 4-projects/business_unit_2/shared/common.auto.tfvars 4-projects/business_unit_2/shared/common.auto.tfvars.disabled
+}
+
+function projects(){
     # disable ENVS.auto.tfvars in main module
     mv 4-projects/business_unit_1/development/development.auto.tfvars 4-projects/business_unit_1/development/development.auto.tfvars.disabled
     mv 4-projects/business_unit_2/development/development.auto.tfvars 4-projects/business_unit_2/development/development.auto.tfvars.disabled
@@ -63,19 +72,14 @@ function projects(){
     mv 4-projects/business_unit_2/non-production/non-production.auto.tfvars  4-projects/business_unit_2/non-production/non-production.auto.tfvars.disabled
     mv 4-projects/business_unit_1/production/production.auto.tfvars 4-projects/business_unit_1/production/production.auto.tfvars.disabled
     mv 4-projects/business_unit_2/production/production.auto.tfvars 4-projects/business_unit_2/production/production.auto.tfvars.disabled
-    mv 4-projects/business_unit_1/shared/shared.auto.tfvars  4-projects/business_unit_1/shared/shared.auto.tfvars.disabled
-    mv 4-projects/business_unit_2/shared/shared.auto.tfvars  4-projects/business_unit_2/shared/shared.auto.tfvars.disabled
 
     # disable common.auto.tfvars in main module
     mv 4-projects/business_unit_1/development/common.auto.tfvars 4-projects/business_unit_1/development/common.auto.tfvars.disabled
     mv 4-projects/business_unit_1/non-production/common.auto.tfvars  4-projects/business_unit_1/non-production/common.auto.tfvars.disabled
     mv 4-projects/business_unit_1/production/common.auto.tfvars 4-projects/business_unit_1/production/common.auto.tfvars.disabled
-    mv 4-projects/business_unit_1/shared/common.auto.tfvars 4-projects/business_unit_1/shared/common.auto.tfvars.disabled
     mv 4-projects/business_unit_2/development/common.auto.tfvars 4-projects/business_unit_2/development/common.auto.tfvars.disabled
     mv 4-projects/business_unit_2/non-production/common.auto.tfvars  4-projects/business_unit_2/non-production/common.auto.tfvars.disabled
     mv 4-projects/business_unit_2/production/common.auto.tfvars 4-projects/business_unit_2/production/common.auto.tfvars.disabled
-    mv 4-projects/business_unit_2/shared/common.auto.tfvars 4-projects/business_unit_2/shared/common.auto.tfvars.disabled
-
 }
 
 function appinfra(){
@@ -105,6 +109,10 @@ do
       ;;
     -a|--appinfra)
       appinfra
+      shift
+      ;;
+    -d|--projectsshared)
+      projectsshared
       shift
       ;;
     -p|--projects)

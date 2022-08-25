@@ -90,6 +90,18 @@ steps:
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'cft test run TestNetworks --stage verify --verbose --test-dir /workspace/test/integration']
 
+- id: create-projects-shared
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', './test/disable_tf_files.sh --projectsshared && cft test run TestProjectsShared --stage init --verbose --test-dir /workspace/test/integration']
+
+- id: converge-projects-shared
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', 'cft test run TestProjectsShared --stage apply --verbose --test-dir /workspace/test/integration']
+
+- id: verify-projects-shared
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', 'cft test run TestProjectsShared --stage verify --verbose --test-dir /workspace/test/integration']
+
 - id: create-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', './test/disable_tf_files.sh --projects && cft test run TestProjects --stage init --verbose --test-dir /workspace/test/integration']
@@ -121,6 +133,10 @@ steps:
 - id: destroy-projects
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'cft test run TestProjects --stage destroy --verbose --test-dir /workspace/test/integration']
+
+- id: destroy-projects-shared
+  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
+  args: ['/bin/bash', '-c', 'cft test run TestProjectsShared --stage destroy --verbose --test-dir /workspace/test/integration']
 
 - id: destroy-networks
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'

@@ -24,11 +24,6 @@ variable "billing_account" {
   type        = string
 }
 
-variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform."
-  type        = string
-}
-
 variable "parent_folder" {
   description = "Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step."
   type        = string

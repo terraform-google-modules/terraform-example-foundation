@@ -32,11 +32,9 @@ func TestEnvs(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
+	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("environment_step_terraform_service_account_email")
-
-	vars := map[string]interface{}{
-		"terraform_service_account": terraformSA,
-	}
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	for _, envName := range []string{
 		"development",
@@ -46,7 +44,6 @@ func TestEnvs(t *testing.T) {
 		t.Run(envName, func(t *testing.T) {
 			envs := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../2-environments/envs/%s", envName)),
-				tft.WithVars(vars),
 			)
 			envs.DefineVerify(
 				func(assert *assert.Assertions) {

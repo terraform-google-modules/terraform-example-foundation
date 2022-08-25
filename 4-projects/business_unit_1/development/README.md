@@ -13,7 +13,6 @@
 | peering\_module\_depends\_on | List of modules or resources peering module depends on. | `list(any)` | `[]` | no |
 | perimeter\_name | Access context manager service perimeter name to attach the restricted svpc project. | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
 
 ## Outputs
 

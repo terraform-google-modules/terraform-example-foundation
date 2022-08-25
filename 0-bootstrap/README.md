@@ -65,10 +65,9 @@ To run the commands described in this document, you need to have the following
 installed:
 
 - The [Google Cloud SDK](https://cloud.google.com/sdk/install) version 391.0.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 0.13.7.
-- An existing project which the user has access to be used by terraform-validator.
+- [Terraform](https://www.terraform.io/downloads.html) version 1.0.0 or later
 
-**Note:** Make sure that you use the same version of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 Also make sure that you've done the following:
 
@@ -131,12 +130,16 @@ your current Jenkins manager (controller) environment.
     ```
 1. Run `terraform init`.
 1. Run `terraform plan` and review the output.
-1. To run terraform-validator steps please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
+1. To run `gcloud beta terraform vet` steps please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
     1. Run `terraform plan -input=false -out bootstrap.tfplan`
     1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
     1. Run `gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).
 1. Run `terraform apply`.
-1. Run `terraform output terraform_service_account` to get the email address of the admin. You need this address in a later procedure.
+1. Run `terraform output organization_step_terraform_service_account_email` to get the email address of the admin of step `1-org`. You need this address in a later procedure.
+1. Run `terraform output environment_step_terraform_service_account_email` to get the email address of the admin of step `2-environments`. You need this address in a later procedure.
+1. Run `terraform output networks_step_terraform_service_account_email` to get the email address of the admin of steps `3-networks-dual-svpc` and `3-networks-hub-and-spoke`. You need this address in a later procedure.
+1. Run `terraform output projects_step_terraform_service_account_email` to get the email address of the admin of step `4-projects`. You need this address in a later procedure.
+1. Run `terraform output cloudbuild_project_id` to get the ID of your Cloud Build project.
 1. Run `terraform output gcs_bucket_tfstate` to get your Google Cloud bucket name from Terraform's state.
 1. Copy the backend:
    ```
@@ -148,21 +151,7 @@ your current Jenkins manager (controller) environment.
 1. (Optional) Run `terraform apply` to verify that state is configured
    correctly. You should see no changes from the previous state.
 
-**Note 1:** The output of terraform-validator will contain lines like
-
-```
-ERROR: logging before flag.Parse: I0413 13:49:49.852283 6380 convert.go:189] unsupported resource: google_billing_account_iam_member
-```
-
-or
-
-```
-ERROR: logging before flag.Parse: I0413 13:49:49.852290 6380 convert.go:183] unknown resource: random_id
-```
-
-These are warnings for resources that are not yet supported or not known by terraform-validator, these are not actual errors.
-
-**Note 2:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the service account, `terraform_service_account`, created in this step.
+**Note:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the four service accounts created in this step.
 
 ## Running Terraform locally
 
@@ -186,8 +175,8 @@ the following steps:
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| bucket\_force\_destroy | When deleting a bucket, this boolean option will delete all contained objects. If false, Terraform will fail to delete buckets which contain objects. | `bool` | `false` | no |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
-| cloud\_source\_repos | List of Cloud Source Repositories created during bootstrap project build stage for use with Cloud Build. | `list(string)` | <pre>[<br>  "gcp-org",<br>  "gcp-environments",<br>  "gcp-networks",<br>  "gcp-projects"<br>]</pre> | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
@@ -216,7 +205,5 @@ the following steps:
 | required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
 | terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
-| terraform\_service\_account | Email for privileged service account for Terraform. |
-| terraform\_validator\_policies\_repo | Cloud Source Repository created for terraform-validator policies. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

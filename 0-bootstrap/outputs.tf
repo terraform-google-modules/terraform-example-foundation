@@ -19,11 +19,6 @@ output "seed_project_id" {
   value       = module.seed_bootstrap.seed_project_id
 }
 
-output "terraform_service_account" {
-  description = "Email for privileged service account for Terraform."
-  value       = module.seed_bootstrap.terraform_sa_email
-}
-
 output "projects_step_terraform_service_account_email" {
   description = "Projects Step Terraform Account"
   value       = google_service_account.terraform-env-sa["proj"].email
@@ -60,22 +55,17 @@ output "gcs_bucket_tfstate" {
 // Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 output "cloudbuild_project_id" {
   description = "Project where CloudBuild configuration and terraform container image will reside."
-  value       = module.cloudbuild_bootstrap.cloudbuild_project_id
+  value       = module.tf_source.cloudbuild_project_id
 }
 
 output "gcs_bucket_cloudbuild_artifacts" {
   description = "Bucket used to store Cloud/Build artifacts in CloudBuild project."
-  value       = module.cloudbuild_bootstrap.gcs_bucket_cloudbuild_artifacts
+  value       = { for key, value in module.tf_workspace : key => replace(value.artifacts_bucket, local.bucket_self_link_prefix, "") }
 }
 
 output "csr_repos" {
   description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
-  value       = module.cloudbuild_bootstrap.csr_repos
-}
-
-output "terraform_validator_policies_repo" {
-  description = "Cloud Source Repository created for terraform-validator policies."
-  value       = google_sourcerepo_repository.gcp_policies
+  value       = module.tf_source.csr_repos
 }
 
 /* ----------------------------------------

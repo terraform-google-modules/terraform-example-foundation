@@ -26,7 +26,7 @@ variable "access_context_manager_policy_id" {
 
 variable "terraform_service_account" {
   type        = string
-  description = "Service account email of the account to impersonate to run Terraform."
+  description = "Service account email of the account to be added to the VPC-SC perimeter."
 }
 
 variable "domain" {

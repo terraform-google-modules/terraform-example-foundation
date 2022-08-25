@@ -72,9 +72,9 @@ The purpose of this step is to:
    gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
    ```
 
-1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 0.13.7 to be installed.
+1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 1.0.0 or later to be installed.
 
-   **Note:** Make sure that you use the same version of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+   **Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 ### Troubleshooting
 
@@ -162,6 +162,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
     1. Run `cd ./envs/shared/`.
     1. Update `backend.tf` with your bucket name from the bootstrap step.
+    1. Export the network (`terraform-net-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
     1. Run `terraform init`.
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.

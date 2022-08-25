@@ -59,7 +59,6 @@
 | scc\_notifications\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the SCC notifications project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | scc\_notifications\_project\_budget\_amount | The amount to use as the budget for the SCC notifications project. | `number` | `1000` | no |
 | skip\_gcloud\_download | Whether to skip downloading gcloud (assumes gcloud is already available outside the module. If set to true you, must ensure that Gcloud Alpha module is installed.) | `bool` | `true` | no |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform. | `string` | n/a | yes |
 
 ## Outputs
 

@@ -121,6 +121,49 @@ func TestNetworks(t *testing.T) {
 		"restricted": "10.3.0.5",
 	}
 
+	operationService := "storage.googleapis.com"
+
+	ingressPolicies := []map[string]interface{}{
+		{
+			"from": map[string]interface{}{
+				"sources": map[string][]string{
+					"access_levels": {"*"},
+				},
+				"identity_type": "ANY_IDENTITY",
+			},
+			"to": map[string]interface{}{
+				"resources": []string{"*"},
+				"operations": map[string]map[string][]string{
+					"storage.googleapis.com": {
+						"methods": {
+							"google.storage.objects.get",
+							"google.storage.objects.list",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	egressPolicies := []map[string]interface{}{
+		{
+			"from": map[string]interface{}{
+				"identity_type": "ANY_IDENTITY",
+			},
+			"to": map[string]interface{}{
+				"resources": []string{"*"},
+				"operations": map[string]map[string][]string{
+					"storage.googleapis.com": {
+						"methods": {
+							"google.storage.objects.get",
+							"google.storage.objects.list",
+						},
+					},
+				},
+			},
+		},
+	}
+
 	for _, envName := range []string{
 		"development",
 		"non-production",
@@ -132,6 +175,8 @@ func TestNetworks(t *testing.T) {
 				"access_context_manager_policy_id": policyID,
 				"backend_bucket":                   backend_bucket,
 				"terraform_service_account":        terraformSA,
+				"ingress_policies":                 ingressPolicies,
+				"egress_policies":                  egressPolicies,
 			}
 
 			var tfdDir string
@@ -162,6 +207,15 @@ func TestNetworks(t *testing.T) {
 					assert.Contains(listLevels, accessLevel, fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
 					listServices := utils.GetResultStrSlice(servicePerimeter.Get("status.restrictedServices").Array())
 					assert.Subset(listServices, restrictedServices, fmt.Sprintf("service perimeter %s should restrict 'bigquery.googleapis.com' and 'storage.googleapis.com'", servicePerimeterLink))
+
+					listIngressPolicies := servicePerimeter.Get("status.ingressPolicies").Array()
+					assert.Equal(len(listIngressPolicies), len(ingressPolicies), fmt.Sprintf("service perimeter %s should have the same number of input ingress policies (%d)", servicePerimeterLink, len(ingressPolicies)))
+					ingressOp := servicePerimeter.Get("status.ingressPolicies.0.ingressTo.operations.0")
+					assert.Equal(operationService, ingressOp.Get("serviceName").String(), fmt.Sprintf("ingress policy should support operations on %s", operationService))
+					listEgressPolicies := servicePerimeter.Get("status.egressPolicies").Array()
+					assert.Equal(len(listEgressPolicies), len(egressPolicies), fmt.Sprintf("service perimeter %s should have the same number of input egress policies (%d)", servicePerimeterLink, len(egressPolicies)))
+					egressOp := servicePerimeter.Get("status.egressPolicies.0.egressTo.operations.0")
+					assert.Equal(operationService, egressOp.Get("serviceName").String(), fmt.Sprintf("egress policy should support operations on %s", operationService))
 
 					for _, networkType := range []string{
 						"base",

@@ -44,6 +44,42 @@ locals {
   restricted_hub_subnet_ranges = ["10.8.0.0/24", "10.9.0.0/24"]
 }
 
+data "terraform_remote_state" "bootstrap" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/bootstrap/state"
+  }
+}
+
+data "terraform_remote_state" "org" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/org/state"
+  }
+}
+
+data "terraform_remote_state" "network_shared" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/networks/envs/shared"
+  }
+}
+
+data "terraform_remote_state" "environments_env" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/environments/${var.env}"
+  }
+}
+
 /******************************************
  Restricted shared VPC
 *****************************************/

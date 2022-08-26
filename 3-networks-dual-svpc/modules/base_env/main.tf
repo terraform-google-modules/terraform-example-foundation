@@ -42,9 +42,40 @@ locals {
   restricted_hub_subnet_ranges = ["10.8.0.0/24", "10.9.0.0/24"]
 }
 
-data "google_active_folder" "env" {
-  display_name = "${local.folder_prefix}-${var.env}"
-  parent       = local.parent_id
+data "terraform_remote_state" "bootstrap" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/bootstrap/state"
+  }
+}
+
+data "terraform_remote_state" "org" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/org/state"
+  }
+}
+
+data "terraform_remote_state" "network_shared" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/networks/envs/shared"
+  }
+}
+
+data "terraform_remote_state" "environments_env" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/environments/${var.env}"
+  }
 }
 
 /******************************************

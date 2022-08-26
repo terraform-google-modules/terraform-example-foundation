@@ -23,3 +23,12 @@ locals {
   folder_prefix   = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
   parent          = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
 }
+
+data "terraform_remote_state" "bootstrap" {
+  backend = "gcs"
+
+  config = {
+    bucket = "${var.backend_bucket}"
+    prefix = "terraform/bootstrap/state"
+  }
+}

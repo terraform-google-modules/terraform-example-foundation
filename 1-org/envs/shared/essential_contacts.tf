@@ -20,6 +20,7 @@ locals {
   gcp_security_reviewer = var.gcp_security_reviewer == null ? var.group_org_admins : var.gcp_security_reviewer
   gcp_network_viewer    = var.gcp_network_viewer == null ? var.group_org_admins : var.gcp_network_viewer
 
+  # Notification categories details: https://cloud.google.com/resource-manager/docs/managing-notification-contacts#notification-categories
   categories_map = {
     "BILLING"             = setunion([var.group_billing_admins, var.billing_data_users])
     "LEGAL"               = setunion([var.group_org_admins, var.audit_data_users])
@@ -30,10 +31,10 @@ locals {
     "TECHNICAL_INCIDENTS" = !var.essential_contacts.enable_technical_incidents ? [] : setunion([local.gcp_platform_viewer, local.gcp_security_reviewer, local.gcp_network_viewer])
   }
 
-  contacts_list = transpose(local.categories_map)
   # Convert a map indexed by category to a map indexed by email
   # this way is simpler to understand and maintain than the opposite
   # google_essential_contacts_contact resource needs one email with a list of categories
+  contacts_list = transpose(local.categories_map)
 }
 
 resource "google_essential_contacts_contact" "essential_contacts" {

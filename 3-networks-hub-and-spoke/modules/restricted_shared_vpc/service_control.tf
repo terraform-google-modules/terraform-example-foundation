@@ -62,5 +62,5 @@ resource "google_access_context_manager_service_perimeter" "bridge_to_network_hu
     resources = formatlist("projects/%s", [var.project_number, var.restricted_net_hub_project_number])
   }
 
-  depends_on = [google_access_context_manager_service_perimeter.regular_service_perimeter]
+  depends_on = [module.regular_service_perimeter]
 }

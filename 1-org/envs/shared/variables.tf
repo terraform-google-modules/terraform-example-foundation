@@ -64,6 +64,12 @@ variable "skip_gcloud_download" {
   default     = true
 }
 
+variable "create_access_context_manager_access_policy" {
+  description = "Whether to create access context manager access policy"
+  type        = bool
+  default     = true
+}
+
 variable "scc_notification_filter" {
   description = "Filter used to create the Security Command Center Notification, you can see more details on how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter"
   type        = string

@@ -52,15 +52,14 @@ output "gcs_bucket_tfstate" {
 output "common_config" {
   description = "Common configuration data to be used in other steps."
   value = {
-    org_id                                      = var.org_id,
-    parent_folder                               = var.parent_folder,
-    billing_account                             = var.billing_account,
-    default_region                              = var.default_region,
-    project_prefix                              = var.project_prefix,
-    folder_prefix                               = var.folder_prefix
-    create_access_context_manager_access_policy = var.create_access_context_manager_access_policy
-    parent_id                                   = local.parent
-    bootstrap_folder_name                       = google_folder.bootstrap.name
+    org_id                = var.org_id,
+    parent_folder         = var.parent_folder,
+    billing_account       = var.billing_account,
+    default_region        = var.default_region,
+    project_prefix        = var.project_prefix,
+    folder_prefix         = var.folder_prefix
+    parent_id             = local.parent
+    bootstrap_folder_name = google_folder.bootstrap.name
   }
 }
 

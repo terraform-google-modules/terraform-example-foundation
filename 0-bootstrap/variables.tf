@@ -82,12 +82,6 @@ variable "bucket_force_destroy" {
   default     = false
 }
 
-variable "create_access_context_manager_access_policy" {
-  description = "Whether to create access context manager access policy"
-  type        = bool
-  default     = true
-}
-
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */

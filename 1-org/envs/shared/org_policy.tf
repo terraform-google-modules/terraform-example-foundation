@@ -173,7 +173,7 @@ module "org_enforce_bucket_level_access" {
 *******************************************/
 
 resource "google_access_context_manager_access_policy" "access_policy" {
-  count  = local.create_access_policy ? 1 : 0
+  count  = var.create_access_context_manager_access_policy ? 1 : 0
   parent = "organizations/${local.org_id}"
   title  = "default policy"
 }

@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-terraform_service_account = "org-terraform@prj-b-seed-2334.iam.gserviceaccount.com"
+org_id = "000000000000"
 
 instance_region = "us-central1" // should be one of the regions used to create network on step 3-networks
 
-backend_bucket = "<TERRAFORM-STATE-BUCKET>"
+// Optional - for an organization with existing projects or for development/validation.
+// Must be the same value used in previous steps.
+//parent_folder = "000000000000"

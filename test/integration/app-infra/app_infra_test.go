@@ -26,11 +26,6 @@ import (
 
 func TestAppInfra(t *testing.T) {
 
-	bootstrap := tft.NewTFBlueprintTest(t,
-		tft.WithTFDir("../../../0-bootstrap"),
-	)
-	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
-
 	for _, envName := range []string{
 		"development",
 		"non-production",
@@ -38,8 +33,12 @@ func TestAppInfra(t *testing.T) {
 	} {
 		t.Run(envName, func(t *testing.T) {
 
+			projects := tft.NewTFBlueprintTest(t,
+				tft.WithTFDir(fmt.Sprintf("../../../4-projects/business_unit_1/%s", envName)),
+			)
+
 			vars := map[string]interface{}{
-				"backend_bucket": backend_bucket,
+				"project_service_account": projects.GetStringOutput("base_shared_vpc_project_sa"),
 			}
 
 			appInfra := tft.NewTFBlueprintTest(t,

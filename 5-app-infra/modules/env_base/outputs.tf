@@ -31,7 +31,7 @@ output "available_zones" {
 
 output "project_id" {
   description = "Project where compute instance was created"
-  value       = local.env_project_id
+  value       = data.google_project.env_project.project_id
 }
 
 output "region" {

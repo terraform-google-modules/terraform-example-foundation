@@ -15,22 +15,11 @@
  */
 
 locals {
-  environment_code          = element(split("", var.environment), 0)
-  terraform_service_account = var.terraform_service_account
-  env_project_ids = {
-    "sample-base"     = data.terraform_remote_state.projects_env.outputs.base_shared_vpc_project,
-    "sample-restrict" = data.terraform_remote_state.projects_env.outputs.restricted_shared_vpc_project,
-  }
-  subnets_self_links = {
-    "sample-base"     = data.terraform_remote_state.network_env.outputs.base_subnets_self_links,
-    "sample-restrict" = data.terraform_remote_state.network_env.outputs.restricted_subnets_self_links,
-  }
-  env_project_id        = local.env_project_ids[var.project_suffix]
-  subnetwork_self_links = local.subnets_self_links[var.project_suffix]
-  subnetwork_self_link  = [for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
+  environment_code = element(split("", var.environment), 0)
 }
+
 resource "google_service_account" "compute_engine_service_account" {
-  project      = local.env_project_id
+  project      = data.google_project.env_project.project_id
   account_id   = "sa-example-app"
   display_name = "Example app service Account"
 }
@@ -40,8 +29,8 @@ module "instance_template" {
   version      = "7.8.0"
   machine_type = var.machine_type
   region       = var.region
-  project_id   = local.env_project_id
-  subnetwork   = local.subnetwork_self_link
+  project_id   = data.google_project.env_project.project_id
+  subnetwork   = data.google_compute_subnetwork.subnetwork.self_link
   service_account = {
     email  = google_service_account.compute_engine_service_account.email
     scopes = ["compute-rw"]
@@ -52,7 +41,7 @@ module "compute_instance" {
   source            = "terraform-google-modules/vm/google//modules/compute_instance"
   version           = "6.2.0"
   region            = var.region
-  subnetwork        = local.subnetwork_self_link
+  subnetwork        = data.google_compute_subnetwork.subnetwork.self_link
   num_instances     = var.num_instances
   hostname          = var.hostname
   instance_template = module.instance_template.self_link

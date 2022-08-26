@@ -3,9 +3,11 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
+| folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | n/a | yes |
-| terraform\_service\_account | Service account email of the account to impersonate to run Terraform | `string` | n/a | yes |
+| org\_id | The organization id for the associated services | `string` | n/a | yes |
+| parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step. | `string` | `""` | no |
+| project\_service\_account | Email of the service account created on step 4-projects for the business unit 1 sample base project where the GCE instance will be created | `string` | n/a | yes |
 
 ## Outputs
 

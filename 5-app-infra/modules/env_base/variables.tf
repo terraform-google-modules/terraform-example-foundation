@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-variable "terraform_service_account" {
-  description = "Service account email of the account to impersonate to run Terraform"
-  type        = string
-}
-
 variable "environment" {
   description = "The environment the single project belongs to"
   type        = string
 }
 
-variable "business_unit" {
-  description = "The business (ex. business_unit_1)."
+variable "vpc_type" {
+  description = "The type of VPC to attach the project to. Possible options are base or restricted."
   type        = string
-  default     = "business_unit_1"
 }
 
 variable "region" {
@@ -60,6 +54,11 @@ variable "service_account" {
   description = "Service account to attach to the instance. See https://www.terraform.io/docs/providers/google/r/compute_instance_template.html#service_account."
 }
 
+variable "folder_id" {
+  description = "The folder id where project will be created"
+  type        = string
+}
+
 variable "business_code" {
   description = "The code that describes which business unit owns the project"
   type        = string
@@ -67,11 +66,6 @@ variable "business_code" {
 }
 
 variable "project_suffix" {
-  description = "The name of the GCP project. Max 16 characters with 3 character business unit code. Valid options are `sample-base` or `sample-restrict`."
-  type        = string
-}
-
-variable "backend_bucket" {
-  description = "Backend bucket to load remote state information from previous steps."
+  description = "The name of the GCP project. Max 16 characters with 3 character business unit code."
   type        = string
 }

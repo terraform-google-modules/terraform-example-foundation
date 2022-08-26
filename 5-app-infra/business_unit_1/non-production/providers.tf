@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+locals {
+  tf_sa = var.project_service_account
+}
+
 /******************************************
   Provider credential configuration
  *****************************************/
 provider "google" {
-  impersonate_service_account = local.project_service_account
+  impersonate_service_account = local.tf_sa
 }
 
 provider "google-beta" {
-  impersonate_service_account = local.project_service_account
+  impersonate_service_account = local.tf_sa
 }

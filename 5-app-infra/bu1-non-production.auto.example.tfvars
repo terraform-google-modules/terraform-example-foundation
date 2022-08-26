@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-data "terraform_remote_state" "projects_env" {
-  backend = "gcs"
-
-  config = {
-    bucket = "${var.backend_bucket}"
-    prefix = "terraform/projects/${local.business_unit}/${local.environment}"
-
-    impersonate_service_account = local.terraform_service_account
-  }
-}
+// Email of the service account created on step 4-projects for the sample base project in the non-production environment
+// of the business unit 1 where the GCE instance will be created
+project_service_account = "project-service-account@prj-bu1-n-sample-base-<random>.iam.gserviceaccount.com"

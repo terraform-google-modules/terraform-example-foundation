@@ -24,3 +24,21 @@ locals {
   parent             = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   common_folder_name = data.terraform_remote_state.org.outputs.common_folder_name
 }
+
+data "terraform_remote_state" "bootstrap" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.backend_bucket
+    prefix = "terraform/bootstrap/state"
+  }
+}
+
+data "terraform_remote_state" "org" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.backend_bucket
+    prefix = "terraform/org/state"
+  }
+}

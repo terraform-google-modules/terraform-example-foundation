@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+// These values are retrieved from the saved terraform state of the execution
+// of step 0-bootstrap using the terraform_remote_state data source.
+// These values can be overridden here if needed.
+// Some values, like org_id, parent_folder, and parent, must be consistent in all steps.
 locals {
   org_id          = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
   parent_folder   = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder

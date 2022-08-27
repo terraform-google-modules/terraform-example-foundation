@@ -15,12 +15,12 @@
  */
 
 locals {
-  parent_folder             = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
   org_id                    = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
+  parent_folder             = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
+  parent_id                 = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   billing_account           = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
   default_region            = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   folder_prefix             = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  parent_id                 = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   restricted_project_id     = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_id
   restricted_project_number = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_number
   base_project_id           = data.terraform_remote_state.environments_env.outputs.base_shared_vpc_project_id

@@ -15,13 +15,13 @@
  */
 
 locals {
-  parent_folder                    = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
   org_id                           = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
+  parent_folder                    = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
+  parent                           = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   billing_account                  = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
   default_region                   = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   project_prefix                   = data.terraform_remote_state.bootstrap.outputs.common_config.project_prefix
   folder_prefix                    = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  parent                           = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   perimeter_name                   = data.terraform_remote_state.network_env.outputs.restricted_service_perimeter_name
   base_network_self_link           = data.terraform_remote_state.network_env.outputs.base_network_self_link
   base_subnets_self_links          = data.terraform_remote_state.network_env.outputs.base_subnets_self_links

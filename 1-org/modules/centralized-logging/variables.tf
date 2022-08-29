@@ -166,11 +166,6 @@ EOT
     condition     = var.storage_options == null ? true : !contains(keys(var.storage_options), "include_children") ? true : can(tobool(var.storage_options["include_children"]))
     error_message = "Include_children option must be a bool (true or false). Default false."
   }
-
-  validation {
-    condition     = var.storage_options == null ? true : !contains(keys(var.storage_options), "include_children") ? true : can(tobool(var.storage_options["include_children"]))
-    error_message = "Include_children option must be a bool (true or false). Default false."
-  }
 }
 
 

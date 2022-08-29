@@ -35,84 +35,62 @@ resource "random_string" "suffix" {
   special = false
 }
 
-/******************************************
+module "logs_export" {
+  source = "../../modules/centralized-logging"
+
+  resources                      = local.parent_resources
+  resource_type                  = local.parent_resource_type
+  logging_destination_project_id = module.org_audit_logs.project_id
+
+  /******************************************
   Send logs to BigQuery
 *****************************************/
-
-module "bigquery_destination" {
-  source = "../../modules/centralized-logging"
-
-  resources           = local.parent_resources
-  resource_type       = local.parent_resource_type
-  logging_sink_filter = local.main_logs_filter
-  logging_sink_name   = "sk-c-logging-bq"
-  logging_target_type = "bigquery"
-  include_children    = true
   bigquery_options = {
-    use_partitioned_tables = true
+    logging_sink_name          = "sk-c-logging-bq"
+    logging_sink_filter        = local.main_logs_filter
+    dataset_name               = "audit_logs"
+    partitioned_tables         = "true"
+    include_children           = true
+    expiration_days            = var.audit_logs_table_expiration_days
+    delete_contents_on_destroy = var.audit_logs_table_delete_contents_on_destroy
   }
-  logging_destination_project_id = module.org_audit_logs.project_id
-  logging_target_name            = "audit_logs"
-  expiration_days                = var.audit_logs_table_expiration_days
-  delete_contents_on_destroy     = var.audit_logs_table_delete_contents_on_destroy
-}
 
-/******************************************
+  /******************************************
   Send logs to Storage
 *****************************************/
+  storage_options = {
+    logging_sink_filter = local.all_logs_filter
+    logging_sink_name   = "sk-c-logging-bkt"
+    include_children    = true
+    storage_bucket_name = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
+    location            = var.log_export_storage_location
+    retention_policy    = var.log_export_storage_retention_policy
+    force_destroy       = var.log_export_storage_force_destroy
+    versioning          = var.log_export_storage_versioning
+  }
 
-module "storage_destination" {
-  source = "../../modules/centralized-logging"
-
-  logging_sink_filter            = local.all_logs_filter
-  logging_sink_name              = "sk-c-logging-bkt"
-  resources                      = local.parent_resources
-  resource_type                  = local.parent_resource_type
-  include_children               = true
-  logging_target_type            = "storage"
-  logging_destination_project_id = module.org_audit_logs.project_id
-  logging_target_name            = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
-  uniform_bucket_level_access    = true
-  logging_location               = var.log_export_storage_location
-  retention_policy               = var.log_export_storage_retention_policy
-  delete_contents_on_destroy     = var.log_export_storage_force_destroy
-  versioning                     = var.log_export_storage_versioning
-}
-
-/******************************************
+  /******************************************
   Send logs to Pub\Sub
 *****************************************/
+  pubsub_options = {
+    logging_sink_filter = local.main_logs_filter
+    logging_sink_name   = "sk-c-logging-pub"
+    include_children    = true
+    topic_name          = "tp-org-logs-${random_string.suffix.result}"
+    create_subscriber   = true
+  }
 
-module "pubsub_destination" {
-  source = "../../modules/centralized-logging"
-
-  logging_sink_filter            = local.main_logs_filter
-  logging_sink_name              = "sk-c-logging-pub"
-  resources                      = local.parent_resources
-  resource_type                  = local.parent_resource_type
-  include_children               = true
-  logging_target_type            = "pubsub"
-  logging_destination_project_id = module.org_audit_logs.project_id
-  logging_target_name            = "tp-org-logs-${random_string.suffix.result}"
-  create_subscriber              = true
-}
-
-/******************************************
+  /******************************************
   Send logs to Logbucket
 *****************************************/
-module "logbucket_destination" {
-  source = "../../modules/centralized-logging"
-
-  logging_sink_filter            = local.all_logs_filter
-  logging_sink_name              = "sk-c-logging-logbkt"
-  resources                      = local.parent_resources
-  resource_type                  = local.parent_resource_type
-  include_children               = true
-  logging_target_type            = "logbucket"
-  logging_destination_project_id = module.org_audit_logs.project_id
-  logging_target_name            = "logbkt-org-logs-${random_string.suffix.result}"
-  logging_location               = var.default_region
+  logbucket_options = {
+    logging_sink_name   = "sk-c-logging-logbkt"
+    logging_sink_filter = local.all_logs_filter
+    include_children    = true
+    name                = "logbkt-org-logs-${random_string.suffix.result}"
+  }
 }
+
 
 /******************************************
   Billing logs (Export configured manually)

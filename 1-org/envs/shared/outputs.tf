@@ -85,16 +85,16 @@ output "domains_to_allow" {
 }
 
 output "logs_export_pubsub_topic" {
-  value       = module.pubsub_destination.resource_name
+  value       = module.logs_export.resource_name_pubsub
   description = "The Pub/Sub topic for destination of log exports"
 }
 
 output "logs_export_storage_bucket_name" {
-  value       = module.storage_destination.resource_name
+  value       = module.logs_export.resource_name_storage
   description = "The storage bucket for destination of log exports"
 }
 
 output "logs_export_logbucket_name" {
-  value       = module.logbucket_destination.resource_name
+  value       = module.logs_export.resource_name_logbucket
   description = "The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets"
 }

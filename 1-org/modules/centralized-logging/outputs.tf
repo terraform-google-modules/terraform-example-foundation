@@ -14,38 +14,22 @@
  * limitations under the License.
  */
 
-output "destination_uri" {
-  description = "The destination URI for the selected logging target type."
-  value       = local.destination_uri
+output "resource_name_bigquery" {
+  description = "The resource name for the destination BigQuery."
+  value       = module.destination_bigquery[0].resource_name
 }
 
-output "filter" {
-  description = "The filter to be applied when exporting logs."
-  value       = var.logging_sink_filter
+output "resource_name_storage" {
+  description = "The resource name for the destination Storage."
+  value       = module.destination_storage[0].resource_name
 }
 
-output "log_sinks_id" {
-  description = "The resource ID of the log sink that was created."
-  value = toset([
-    for value in module.log_export : value.log_sink_resource_id
-  ])
+output "resource_name_pubsub" {
+  description = "The resource name for the destination Pub/Sub."
+  value       = module.destination_pubsub[0].resource_name
 }
 
-output "log_sinks_name" {
-  description = "The resource name of the log sink that was created."
-  value = toset([
-    for value in module.log_export : value.log_sink_resource_name
-  ])
-}
-
-output "parent_resource_ids" {
-  description = "The ID of the GCP resource in which you create the log sink."
-  value = toset([
-    for value in module.log_export : value.parent_resource_id
-  ])
-}
-
-output "resource_name" {
-  description = "The resource name for the destination"
-  value       = local.resource_name
+output "resource_name_logbucket" {
+  description = "The resource name for the destination Log Bucket."
+  value       = module.destination_logbucket[0].resource_name
 }

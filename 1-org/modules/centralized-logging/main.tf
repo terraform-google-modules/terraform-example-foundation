@@ -158,7 +158,7 @@ module "destination_storage" {
   force_destroy               = lookup(var.storage_options, "force_destroy", "false")
   versioning                  = lookup(var.storage_options, "versioning", "false")
 
-  retention_policy = !contains(keys(var.storage_options), "retention_policy_is_locked") ? null : {
+  retention_policy = !contains(keys(var.storage_options), "retention_policy_is_locked") ? null : var.storage_options.retention_policy_is_locked == null ? null : {
     is_locked             = tobool(lookup(var.storage_options, "retention_policy_is_locked", "false"))
     retention_period_days = tonumber(lookup(var.storage_options, "retention_policy_period_days", "30"))
   }

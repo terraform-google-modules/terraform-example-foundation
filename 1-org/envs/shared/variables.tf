@@ -347,20 +347,10 @@ variable "gcp_billing_admin_user" {
   default     = null
 }
 
-variable "essential_contacts" {
-  description = <<EOT
-Essential Contacts configuration object:
-- language: The preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages.
-- enable_technical_incidents: See [Assigning contacts for outage and disruption notifications](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#technical-incidents-contacts) for conditions to use Technical Incidents.
-EOT
-  type = object({
-    language                   = string
-    enable_technical_incidents = bool
-  })
-  default = {
-    language                   = "en"
-    enable_technical_incidents = false
-  }
+variable "essential_contacts_language" {
+  description = "Essential Contacts preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages."
+  type        = string
+  default     = "en"
 }
 
 variable "group_org_admins" {

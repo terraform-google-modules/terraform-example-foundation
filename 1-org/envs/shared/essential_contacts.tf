@@ -40,6 +40,6 @@ resource "google_essential_contacts_contact" "essential_contacts" {
   for_each                            = local.contacts_list
   parent                              = local.parent
   email                               = each.key
-  language_tag                        = var.essential_contacts.language
+  language_tag                        = var.essential_contacts_language
   notification_category_subscriptions = each.value
 }

@@ -85,9 +85,9 @@ You can change the filters & sinks by modifying the configuration in `envs/share
 
 **Note:** Currently, this module does not enable [bucket policy retention](https://cloud.google.com/storage/docs/bucket-lock) for organization logs, please, enable it if needed.
 
-**Note:** It is possible to enable an organization policy for [OS Login](https://cloud.google.com/compute/docs/oslogin/manage-oslogin-in-an-org) with this module.
+**Note:** By default the organization policy for [OS Login](https://cloud.google.com/compute/docs/oslogin/manage-oslogin-in-an-org) is enabled with this module.
 OS Login has some [limitations](https://cloud.google.com/compute/docs/instances/managing-instance-access#limitations).
-If those limitations do not apply to your workload/environment, you can choose to enable the OS Login policy by setting variable `enable_os_login_policy` to `true`.
+If those limitations apply to your workload/environment, you can choose to disable the OS Login policy by setting variable `enable_os_login_policy` to `false`.
 
 **Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to used the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 

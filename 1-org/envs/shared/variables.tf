@@ -59,7 +59,7 @@ variable "domains_to_allow" {
 variable "enable_os_login_policy" {
   description = "Enable OS Login Organization Policy."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "audit_logs_table_expiration_days" {

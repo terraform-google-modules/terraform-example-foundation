@@ -179,18 +179,6 @@ resource "google_access_context_manager_access_policy" "access_policy" {
 }
 
 
-
-module "require_os_login" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 5.1"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/compute.requireOsLogin"
-}
-
 module "restrict_procotol_fowarding" {
   source          = "terraform-google-modules/org-policy/google"
   version         = "~> 5.1"

@@ -34,6 +34,13 @@ It is a best practice to separate concerns by having two projects here: one for 
 The `prj-b-seed` project stores Terraform state and has the Service Accounts able to create / modify infrastructure.
 On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project named `prj-b-cicd`.
 
+To further separate the concerns at the IAM level as well, a distinct service account is created for each stage.
+If using Cloud Build, these service accounts are used directly in the pipeline to execute the pipeline steps (`plan` or `apply`).
+In this configuration, the baseline permissions of the CI/CD tool are unchanged, and the Terraform custom Service Accounts are granted the IAM permissions required to build the foundation.
+
+If using Jenkins The CI/CD tool account (`sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com`) is granted access to generate tokens over the Terraform custom Service Accounts.
+In this configuration, the baseline permissions of the CI/CD tool are limited, and the Terraform custom Service Accounts are granted the IAM permissions required to build the foundation.
+
 After executing this step, you will have the following structure:
 
 ```

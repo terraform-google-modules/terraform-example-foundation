@@ -90,6 +90,7 @@ module "logs_export" {
     logging_sink_filter = local.all_logs_filter
     include_children    = true
     name                = "logbkt-org-logs-${random_string.suffix.result}"
+    location            = var.default_region
   }
 }
 

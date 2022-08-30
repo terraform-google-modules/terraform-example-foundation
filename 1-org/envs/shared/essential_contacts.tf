@@ -22,13 +22,12 @@ locals {
 
   # Notification categories details: https://cloud.google.com/resource-manager/docs/managing-notification-contacts#notification-categories
   categories_map = {
-    "BILLING"             = setunion([var.group_billing_admins, var.billing_data_users])
-    "LEGAL"               = setunion([var.group_org_admins, var.audit_data_users])
-    "PRODUCT_UPDATES"     = setunion([local.gcp_scc_admin, local.gcp_platform_viewer])
-    "SECURITY"            = setunion([local.gcp_scc_admin, local.gcp_security_reviewer])
-    "SUSPENSION"          = [var.group_org_admins]
-    "TECHNICAL"           = setunion([local.gcp_platform_viewer, local.gcp_security_reviewer, local.gcp_network_viewer])
-    "TECHNICAL_INCIDENTS" = !var.essential_contacts.enable_technical_incidents ? [] : setunion([local.gcp_platform_viewer, local.gcp_security_reviewer, local.gcp_network_viewer])
+    "BILLING"         = setunion([var.group_billing_admins, var.billing_data_users])
+    "LEGAL"           = setunion([var.group_org_admins, var.audit_data_users])
+    "PRODUCT_UPDATES" = setunion([local.gcp_scc_admin, local.gcp_platform_viewer])
+    "SECURITY"        = setunion([local.gcp_scc_admin, local.gcp_security_reviewer])
+    "SUSPENSION"      = [var.group_org_admins]
+    "TECHNICAL"       = setunion([local.gcp_platform_viewer, local.gcp_security_reviewer, local.gcp_network_viewer])
   }
 
   # Convert a map indexed by category to a map indexed by email

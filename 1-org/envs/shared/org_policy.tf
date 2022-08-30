@@ -186,7 +186,7 @@ module "restrict_procotol_fowarding" {
   folder_id       = local.folder_id
   policy_for      = local.policy_for
   policy_type     = "list"
-  allow           = ["internal"] // ???
+  allow           = ["internal"]
   enforce         = "true"
   constraint      = "constraints/compute.restrictProtocolForwardingCreationForTypes"
 }
@@ -225,7 +225,7 @@ module "domain_restricted_contacts" {
   folder_id       = local.folder_id
   policy_for      = local.policy_for
   policy_type     = "list"
-  allow           =  [data.google_organization.org.directory_customer_id] //directoryCustomerID
+  allow           = [data.google_organization.org.directory_customer_id]
   enforce         = "true"
   constraint      = "constraints/essentialcontacts.allowedContactDomains"
 }

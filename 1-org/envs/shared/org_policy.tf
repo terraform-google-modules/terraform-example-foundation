@@ -177,3 +177,78 @@ resource "google_access_context_manager_access_policy" "access_policy" {
   parent = "organizations/${var.org_id}"
   title  = "default policy"
 }
+
+
+
+module "require_os_login" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 5.1"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "boolean"
+  enforce         = "true"
+  constraint      = "constraints/compute.requireOsLogin"
+}
+
+module "restrict_procotol_fowarding" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 5.1"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "list"
+  allow           = ["internal"] // ???
+  enforce         = "true"
+  constraint      = "constraints/compute.restrictProtocolForwardingCreationForTypes"
+}
+
+module "disable_vpc_external_ipv6" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 5.1"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "boolean"
+  enforce         = "true"
+  constraint      = "constraints/compute.disableVpcExternalIpv6"
+}
+
+
+module "disable_service_account_key_upload" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 5.1"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "boolean"
+  enforce         = "true"
+  constraint      = "constraints/iam.disableServiceAccountKeyUpload"
+}
+
+data "google_organization" "org" {
+  organization = var.org_id
+}
+
+module "domain_restricted_contacts" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 5.1"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "list"
+  allow           =  [data.google_organization.org.directory_customer_id] //directoryCustomerID
+  enforce         = "true"
+  constraint      = "constraints/essentialcontacts.allowedContactDomains"
+}
+
+module "internal_dns_on_new_project_to_zonal_dns_only" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 5.1"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "boolean"
+  enforce         = "true"
+  constraint      = "constraints/compute.setNewProjectDefaultToZonalDNSOnly"
+}

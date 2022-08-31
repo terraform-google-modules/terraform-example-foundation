@@ -1,10 +1,12 @@
 # terraform-example-foundation
+
 This is an example repo showing how the CFT Terraform modules can be composed to build a secure GCP foundation, following the [Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations).
 The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults you can customize to meet your own requirements. Currently, the step 0 is manually executed.
 From step 1 onwards, the Terraform code is deployed by leveraging either Google Cloud Build (by default) or Jenkins.
 Cloud Build has been chosen by default to allow teams to quickly get started without needing to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
 
 ## Overview
+
 This repo contains several distinct Terraform projects each within their own directory that must be applied separately, but in sequence.
 Each of these Terraform projects are to be layered on top of each other, running in the following order.
 
@@ -14,25 +16,30 @@ This stage executes the [CFT Bootstrap module](https://github.com/terraform-goog
 For CI/CD pipelines, you can use either Cloud Build (by default) or Jenkins. If you want to use Jenkins instead of Cloud Build, please see [README-Jenkins](./0-bootstrap/README-Jenkins.md) on how to use the included Jenkins sub-module.
 
 The bootstrap step includes:
+
 - The `prj-b-seed` project, which contains:
   - Terraform state bucket
-  - Custom Service Account used by Terraform to create new resources in GCP
+  - Custom Service Accounts used by Terraform to create new resources in GCP
 - The `prj-b-cicd` project, which contains:
   - A CI/CD pipeline implemented with either Cloud Build or Jenkins
   - If using Cloud Build:
     - Cloud Source Repository
+    - Artifact Registry
   - If using Jenkins:
     - A GCE Instance configured as a Jenkins Agent
     - Custom Service Account to run Jenkins Agents GCE instances
     - VPN connection with on-prem (or where ever your Jenkins Controller is located)
 
 It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CI/CD tool.
-The `prj-b-seed` project stores Terraform state and has the Service Account able to create / modify infrastructure.
+The `prj-b-seed` project stores Terraform state and has the Service Accounts able to create / modify infrastructure.
 On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project named `prj-b-cicd`.
 
-To further separate the concerns at the IAM level as well, the service account of the CI/CD tool is given different permissions than the Terraform account.
-The CI/CD tool account (`@cloudbuild.gserviceaccount.com` if using Cloud Build and `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` if using Jenkins) is granted access to generate tokens over the Terraform custom service account.
-In this configuration, the baseline permissions of the CI/CD tool are limited, and the Terraform custom Service Account is granted the IAM permissions required to build the foundation.
+To further separate the concerns at the IAM level as well, a distinct service account is created for each stage.
+If using Cloud Build, these service accounts are used directly in the pipeline to execute the pipeline steps (`plan` or `apply`).
+In this configuration, the baseline permissions of the CI/CD tool are unchanged, and the Terraform custom Service Accounts are granted the IAM permissions required to build the foundation.
+
+If using Jenkins The CI/CD tool account (`sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com`) is granted access to generate tokens over the Terraform custom Service Accounts.
+In this configuration, the baseline permissions of the CI/CD tool are limited, and the Terraform custom Service Accounts are granted the IAM permissions required to build the foundation.
 
 After executing this step, you will have the following structure:
 
@@ -130,7 +137,7 @@ If you have strong IAM requirements for these monitoring workspaces, it is worth
 #### Networking
 
 Under the environment folder, two projects, one for base and another for restricted network, are created per environment (`development`, `non-production` & `production`) which is intended to be used as a [Shared VPC Host project](https://cloud.google.com/vpc/docs/shared-vpc) for all projects in that environment.
-This stage only creates the projects and enables the correct APIs, the following [networks stage](./3-networks/) creates the actual Shared VPC networks.
+This stage only creates the projects and enables the correct APIs, the following networks stages, [3-networks-dual-svpc](./3-networks-dual-svpc/) and [3-networks-hub-and-spoke](./3-networks-hub-and-spoke/), create the actual Shared VPC networks.
 
 #### Secrets
 
@@ -140,13 +147,12 @@ Usage instructions are available for the environments step in the [README](./2-e
 
 ### [3. networks-dual-svpc](./3-networks-dual-svpc/)
 
-This step focuses on creating a Shared VPC per environment (`development`, `non-production` & `production`) in a standard configuration with a reasonable security baseline. Currently, this includes:
+This step focuses on creating a [Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) per environment (`development`, `non-production` & `production`) in a standard configuration with a reasonable security baseline. Currently, this includes:
 
 - Optional - Example subnets for `development`, `non-production` & `production` inclusive of secondary ranges for those that want to use GKE.
-- Optional - Default firewall rules created to allow remote access to [VMs through IAP](https://cloud.google.com/iap/docs/using-tcp-forwarding), without needing public IPs.
-  - `allow-iap-ssh` and `allow-iap-rdp` network tags respectively.
-- Optional - Default firewall rule created to allow for [load balancing health checks](https://cloud.google.com/load-balancing/docs/health-checks#firewall_rules) using `allow-lb` tag.
-- Optional - Default firewall rule created to allow [Windows KMS activation](https://cloud.google.com/compute/docs/instances/windows/creating-managing-windows-instances#kms-server) using `allow-win-activation` tag.
+- Hierarchical firewall policy created to allow remote access to [VMs through IAP](https://cloud.google.com/iap/docs/using-tcp-forwarding), without needing public IPs.
+- Hierarchical firewall policy created to allow for [load balancing health checks](https://cloud.google.com/load-balancing/docs/health-checks#firewall_rules).
+- Hierarchical firewall policy created to allow [Windows KMS activation](https://cloud.google.com/compute/docs/instances/windows/creating-managing-windows-instances#kms-server).
 - [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workload dependant resources like Cloud SQL.
 - Base Shared VPC with [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for base access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
 - Restricted Shared VPC with [restricted.googleapis.com](https://cloud.google.com/vpc-service-controls/docs/supported-products) configured for restricted access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
@@ -158,10 +164,9 @@ Usage instructions are available for the networks step in the [README](./3-netwo
 
 ### [3. networks-hub-and-spoke](./3-networks-hub-and-spoke/)
 
-This step configures the same network resources that the step 3-networks-dual-svpc does, but this time it makes usage of the architeture based on the Hub and Spoke reference network model.
+This step configures the same network resources that the step 3-networks-dual-svpc does, but this time it makes usage of the architecture based on the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) reference network model.
 
 Usage instructions are available for the networks step in the [README](./3-networks-hub-and-spoke/README.md).
-
 
 ### [4. projects](./4-projects/)
 
@@ -297,27 +302,28 @@ Once validated in `development`, changes can be promoted to `non-production` by 
 
 ### Terraform-validator
 
-This repo uses [terraform-validator](https://github.com/GoogleCloudPlatform/terraform-validator) to validate the terraform plans against a [library of GCP policies](https://github.com/GoogleCloudPlatform/policy-library).
+This repo uses the [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies) component of the `gcloud` CLI to validate the terraform plans against a [library of GCP policies](https://github.com/GoogleCloudPlatform/policy-library).
 
 The [Scorecard bundle](https://github.com/GoogleCloudPlatform/policy-library/blob/master/docs/bundles/scorecard-v1.md) was used to create the [policy-library folder](./policy-library) with [one extra constraint](https://github.com/GoogleCloudPlatform/policy-library/blob/master/samples/serviceusage_allow_basic_apis.yaml) added.
 
 See the [policy-library documentation](https://github.com/GoogleCloudPlatform/policy-library/blob/master/docs/index.md) if you need to add more constraints from the [samples folder](https://github.com/GoogleCloudPlatform/policy-library/tree/master/samples) in your configuration based in your type of workload.
 
-Step 1-org has instructions on the creation of the shared repository to host these policies.
+Step 1-org has [instructions](./1-org/README.md#deploying-with-cloud-build) on the creation of the shared repository to host these policies.
 
 ### Optional Variables
 
 Some variables used to deploy the steps have default values, check those **before deployment** to ensure they match your requirements. For more information, there are tables of inputs and outputs for the Terraform modules, each with a detailed description of their variables. Look for variables marked as **not required** in the section **Inputs** of these READMEs:
 
-- Step 0-bootstrap: If you are using Cloud Build in the CICD pipeline, check the main [README](./0-bootstrap/README.md#Inputs) of the step. If you are using Jenkins, check the [README](./0-bootstrap/modules/jenkins-agent/README.md#Inputs) of the module `jenkins-agent`.
-- Step 1-org: The [README](./1-org/envs/shared/README.md#Inputs) of the module `shared`.
+- Step 0-bootstrap: If you are using Cloud Build in the CI/CD pipeline, check the main [README](./0-bootstrap/README.md#Inputs) of the step. If you are using Jenkins, check the [README](./0-bootstrap/modules/jenkins-agent/README.md#Inputs) of the module `jenkins-agent`.
+- Step 1-org: The [README](./1-org/envs/shared/README.md#Inputs) of the environment `shared`.
 - Step 2-environments: The README's of the environments [development](./2-environments/envs/development/README.md#Inputs), [non-production](./2-environments/envs/non-production/README.md#Inputs) and [production](./2-environments/envs/production/README.md#Inputs)
-- Step 3-networks: The README's of the environments [development](./3-networks/envs/development/README.md#Inputs), [non-production](./3-networks/envs/non-production/README.md#Inputs) and [production](./3-networks/envs/production/README.md#Inputs)
-- Step 4-projects: The README's of the environments [development](./4-projects/business_unit_1/development/README.md#Inputs), [non-production](./4-projects/business_unit_1/non-production/README.md#Inputs) and [production](./4-projects/business_unit_1/production/README.md#Inputs)
+- Step 3-networks-dual-svpc: The README's of the environments [shared](./3-networks-dual-svpc/envs/shared/README.md#inputs), [development](./3-networks-dual-svpc/envs/development/README.md#Inputs), [non-production](./3-networks/envs/non-production/README.md#Inputs) and [production](./3-networks/envs/production/README.md#Inputs)
+- Step 3-networks-hub-and-spoke: The README's of the environments [shared](./3-networks-hub-and-spoke/envs/shared/README.md#inputs), [development](./3-networks-hub-and-spoke/envs/development/README.md#Inputs), [non-production](./3-networks/envs/non-production/README.md#Inputs) and [production](./3-networks/envs/production/README.md#Inputs)
+- Step 4-projects: The README's of the environments [shared](./4-projects/business_unit_1/shared/README.md#inputs), [development](./4-projects/business_unit_1/development/README.md#Inputs), [non-production](./4-projects/business_unit_1/non-production/README.md#Inputs) and [production](./4-projects/business_unit_1/production/README.md#Inputs)
 
 ## Errata Summary
 
-Refer to the [Errata Summary](./ERRATA.md) for an overview of the delta between the example foundation repository and the [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
+Refer to the [Errata Summary](./ERRATA.md) for an overview of the delta between the example foundation repository and the [Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations).
 
 ## Contributing
 

@@ -162,10 +162,12 @@ function validate_credential_roles(){
 
 # Verifies whether a user has the expected Organization level roles
 function check_org_level_roles(){
+    local end_user=$1
+    local organization_id=$2
 
     ORG_LEVEL_ROLES_OUTPUT=$(
-        gcloud organizations get-iam-policy "$2" \
-        --filter="bindings.members:$1" \
+        gcloud organizations get-iam-policy "$organization_id" \
+        --filter="bindings.members:$end_user" \
         --flatten="bindings[].members" \
         --format="value(bindings.role)" 2>/dev/null)
 
@@ -185,10 +187,12 @@ function check_org_level_roles(){
 
 # Verifies whether a user has the expected Billing Level roles
 function check_billing_account_roles(){
+    local end_user=$1
+    local billing_account_id=$2
 
     BILLING_LEVEL_ROLES_OUTPUT=$(
-        gcloud beta billing accounts get-iam-policy "$2" \
-        --filter="bindings.members:$1" \
+        gcloud beta billing accounts get-iam-policy "$billing_account_id" \
+        --filter="bindings.members:$end_user" \
         --flatten="bindings[].members" \
         --format="value(bindings.role)" 2>/dev/null)
 
@@ -225,8 +229,11 @@ function validate_bootstrap_step(){
 # $1 = name of the missing binary
 # $2 = web site to find the installation details of the missing binary
 function echo_missing_installation () {
-    echo "  $1 not found."
-    echo "  Visit $2 and follow the instructions to install $1."
+    local binary_name=$1
+    local installer_url=$2
+
+    echo "  $binary_name not found."
+    echo "  Visit $installer_url and follow the instructions to install $binary_name."
 }
 
 # Echoes messages for cases where an installation version is incompatible
@@ -234,10 +241,17 @@ function echo_missing_installation () {
 # $2 = "at least" / "equal"
 # $3 = version to be displayed
 # $4 = web site to find the installation details of the missing binary
+# $5 = current version
 function echo_wrong_version () {
-    echo "  An incompatible $1 version, $5, was found."
-    echo "  Version required is $2 $3"
-    echo "  Visit $4 and follow the instructions to install $1."
+    local binary_name=$1
+    local constraint=$2
+    local target_version=$3
+    local installer_url=$4
+    local current_version=$5
+
+    echo "  An incompatible $binary_name version, $current_version, was found."
+    echo "  Version required is $constraint $target_version"
+    echo "  Visit $installer_url and follow the instructions to install $binary_name."
 }
 
 function main(){

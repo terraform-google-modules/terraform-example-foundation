@@ -21,7 +21,7 @@
 # Expected versions of the installers
 TF_VERSION="1.0.0"
 GCLOUD_SDK_VERSION="391.0.0"
-GIT_VERSION="2.25.1"
+GIT_VERSION="2.28.0"
 
 # Expected roles
 ORGANIZATION_LEVEL_ROLES=("roles/resourcemanager.folderCreator" "roles/resourcemanager.organizationAdmin" "roles/orgpolicy.policyAdmin")
@@ -122,9 +122,9 @@ function validate_git(){
     fi
 
     if ! git config init.defaultBranch | grep "main" >/dev/null ; then
-        echo "  git default branch must be configured."
+        echo "  git default branch must be configured as main."
         echo "  See the instructions at https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/TROUBLESHOOTING.md#default-branch-setting ."
-        ERRORS+=$'  git default branch must be configured.\n'
+        ERRORS+=$'  git default branch must be configured as main.\n'
     fi
 }
 

@@ -98,7 +98,6 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    adjust your copy paths accordingly.
    ```
    cd gcp-policies
-   git checkout -b main
    ```
 1. Copy contents of policy-library to new repo.
    ```

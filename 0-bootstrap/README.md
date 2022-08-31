@@ -2,8 +2,7 @@
 
 This repo is part of a multi-part guide that shows how to configure and deploy
 the example.com reference architecture described in
-[Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf)
-(PDF). The following table lists the parts of the guide.
+[Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations). The following table lists the parts of the guide.
 
 <table>
 <tbody>
@@ -65,9 +64,9 @@ To run the commands described in this document, you need to have the following
 installed:
 
 - The [Google Cloud SDK](https://cloud.google.com/sdk/install) version 391.0.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.0.0 or later
+- [Terraform](https://www.terraform.io/downloads.html) version 1.0.0
 
-**Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use version 1.0.0 of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 Also make sure that you've done the following:
 
@@ -82,8 +81,7 @@ Also make sure that you've done the following:
    `roles/resourcemanager.projectCreator` access.
 1. For the user who will run the procedures in this document, granted the
    following roles:
-   -  The `roles/resourcemanager.organizationAdmin` role on the Google
-      Cloud organization.
+   -  The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
    -  The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
    -  The `roles/billing.admin` role on the billing account.
    -  The `roles/resourcemanager.folderCreator` role.
@@ -93,6 +91,14 @@ represented by the `org_project_creators` variable.
 For more information about the permissions that are required, and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
+
+Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
+
+```shell
+./scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+```
+
+**Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
 
 ### Optional - Automatic creation of Google Cloud Identity groups
 
@@ -135,8 +141,6 @@ your current Jenkins manager (controller) environment.
     1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
     1. Run `gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).
 1. Run `terraform apply`.
-1. Run `terraform output organization_step_terraform_service_account_email` to get the email address of the admin of step `1-org`. You need this address in a later procedure.
-1. Run `terraform output environment_step_terraform_service_account_email` to get the email address of the admin of step `2-environments`. You need this address in a later procedure.
 1. Run `terraform output networks_step_terraform_service_account_email` to get the email address of the admin of steps `3-networks-dual-svpc` and `3-networks-hub-and-spoke`. You need this address in a later procedure.
 1. Run `terraform output projects_step_terraform_service_account_email` to get the email address of the admin of step `4-projects`. You need this address in a later procedure.
 1. Run `terraform output cloudbuild_project_id` to get the ID of your Cloud Build project.

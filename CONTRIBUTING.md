@@ -93,7 +93,7 @@ maintain a standard of quality.
 Run `make docker_test_lint`.
 
 [docker-engine]: https://www.docker.com/products/docker-engine
-[flake8]: http://flake8.pycqa.org/en/latest/
+[flake8]: https://flake8.pycqa.org/en/latest/
 [gofmt]: https://golang.org/cmd/gofmt/
 [google-cloud-sdk]: https://cloud.google.com/sdk/install
 [hadolint]: https://github.com/hadolint/hadolint

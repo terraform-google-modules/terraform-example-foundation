@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-variable "org_id" {
+variable "interconnect_project_id" {
   type        = string
-  description = "Organization ID"
-}
-
-variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
-  type        = string
-  default     = ""
+  description = "Interconnect project ID."
 }
 
 variable "vpc_name" {

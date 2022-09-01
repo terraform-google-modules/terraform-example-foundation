@@ -49,6 +49,16 @@ output "restricted_shared_vpc_project_number" {
   value       = module.restricted_shared_vpc_project.project_number
 }
 
+output "vpc_service_control_perimeter_name" {
+  description = "VPC Service Control name."
+  value       = local.perimeter_name
+}
+
+output "access_context_manager_policy_id" {
+  description = "Access Context Manager Policy ID."
+  value       = local.access_context_manager_policy_id
+}
+
 output "restricted_enabled_apis" {
   description = "Activated APIs."
   value       = module.restricted_shared_vpc_project.enabled_apis

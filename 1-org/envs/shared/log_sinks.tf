@@ -43,8 +43,8 @@ module "logs_export" {
   logging_destination_project_id = module.org_audit_logs.project_id
 
   /******************************************
-  Send logs to BigQuery
-*****************************************/
+    Send logs to BigQuery
+  *****************************************/
   bigquery_options = {
     logging_sink_name          = "sk-c-logging-bq"
     logging_sink_filter        = local.main_logs_filter
@@ -56,8 +56,8 @@ module "logs_export" {
   }
 
   /******************************************
-  Send logs to Storage
-*****************************************/
+    Send logs to Storage
+  *****************************************/
   storage_options = {
     logging_sink_filter          = local.all_logs_filter
     logging_sink_name            = "sk-c-logging-bkt"
@@ -72,8 +72,8 @@ module "logs_export" {
 
 
   /******************************************
-  Send logs to Pub\Sub
-*****************************************/
+    Send logs to Pub\Sub
+  *****************************************/
   pubsub_options = {
     logging_sink_filter = local.main_logs_filter
     logging_sink_name   = "sk-c-logging-pub"
@@ -83,8 +83,8 @@ module "logs_export" {
   }
 
   /******************************************
-  Send logs to Logbucket
-*****************************************/
+    Send logs to Logbucket
+  *****************************************/
   logbucket_options = {
     logging_sink_name   = "sk-c-logging-logbkt"
     logging_sink_filter = local.all_logs_filter
@@ -103,5 +103,5 @@ resource "google_bigquery_dataset" "billing_dataset" {
   dataset_id    = "billing_data"
   project       = module.org_billing_logs.project_id
   friendly_name = "GCP Billing Data"
-  location      = var.default_region
+  location      = local.default_region
 }

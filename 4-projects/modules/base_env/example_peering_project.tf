@@ -15,17 +15,7 @@
  */
 
 locals {
-  shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
-  env_code        = substr(var.env, 0, 1)
-}
-
-data "google_projects" "projects" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=base-shared-vpc-host labels.environment=${var.env} lifecycleState=ACTIVE"
-}
-
-data "google_compute_network" "shared_vpc" {
-  name    = "vpc-${local.env_code}-shared-base${local.shared_vpc_mode}"
-  project = data.google_projects.projects.projects[0].project_id
+  env_code = substr(var.env, 0, 1)
 }
 
 data "google_netblock_ip_ranges" "legacy_health_checkers" {
@@ -41,12 +31,13 @@ data "google_netblock_ip_ranges" "iap_forwarders" {
 }
 
 module "peering_project" {
-  source          = "../single_project"
-  org_id          = var.org_id
-  billing_account = var.billing_account
-  folder_id       = data.google_active_folder.env.name
+  source = "../single_project"
+
+  org_id          = local.org_id
+  billing_account = local.billing_account
+  folder_id       = local.env_folder_name
   environment     = var.env
-  project_prefix  = var.project_prefix
+  project_prefix  = local.project_prefix
 
   # Metadata
   project_suffix    = "sample-peering"
@@ -72,7 +63,7 @@ module "peering" {
   version           = "~> 5.0"
   prefix            = "${var.business_code}-${local.env_code}"
   local_network     = module.peering_network.network_self_link
-  peer_network      = data.google_compute_network.shared_vpc.self_link
+  peer_network      = local.base_network_self_link
   module_depends_on = var.peering_module_depends_on
 }
 

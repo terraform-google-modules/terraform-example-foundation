@@ -68,52 +68,16 @@ This pipeline can be utilized for deploying resources in projects across develop
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
 1. 3-networks executed successfully.
-1. Obtain the value for the `access_context_manager_policy_id` variable.
-
-   ```bash
-   gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
-   ```
 
 1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 1.0.0 or later to be installed.
 
    **Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
-
-1. Obtain the values for the `perimeter_name` for each environment variable.
-
-   ```bash
-   gcloud access-context-manager perimeters list --policy ACCESS_CONTEXT_MANAGER_POLICY_ID --format="value(name)"
-   ```
-
-   **Note:** If you have more than one service perimeter for each environment, you can also get the values from the `restricted_service_perimeter_name` output from each of the`3-networks` environments.
-
-   If you are using Cloud Build you can also search for the values in the outputs from the build logs:
-
-   ```console
-   gcloud builds list \
-     --project=YOUR_CLOUD_BUILD_PROJECT_ID \
-     --filter="status=SUCCESS \
-       AND source.repoSource.repoName=gcp-networks \
-       AND substitutions.BRANCH_NAME=development" \
-     --format="value(id)"
-   ```
-
-   Use the result of this command as the `BUILD_ID` value in the next command:
-
-   ```console
-   gcloud builds log BUILD_ID \
-     --project=YOUR_CLOUD_BUILD_PROJECT_ID | \
-     grep "restricted_service_perimeter_name = "
-   ```
-
-   Change the `BRANCH_NAME` from `development` to `non-production` or `production` for the other two service perimeters.
 
 ### Troubleshooting
 
 Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Usage
-
-**Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to use the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
 
 **Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
@@ -147,10 +111,9 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
 1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the business unit envs folders [README.md](./business_unit_1/development/README.md) files for additional information on the values in the `common.auto.tfvars` file.
 1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the business unit shared envs folders [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.example.tfvars`.
-1. Rename `development.auto.example.tfvars` to `development.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_d_shared_restricted`.
-1. Rename `non-production.auto.example.tfvars` to `non-production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_n_shared_restricted`.
-1. Rename `production.auto.example.tfvars` to `production.auto.tfvars` and update the file with the `perimeter_name` that starts with `sp_p_shared_restricted`.
-1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
+1. Rename `development.auto.example.tfvars` to `development.auto.tfvars`.
+1. Rename `non-production.auto.example.tfvars` to `non-production.auto.tfvars`.
+1. Rename `production.auto.example.tfvars` to `production.auto.tfvars`.
 1. You need to manually plan and apply only once the `business_unit_1/shared` environment since `development`, `non-production`, and `production` depend on it.
     1. Run `cd ./business_unit_1/shared/`.
     1. Update `backend.tf` with your bucket name from the 0-bootstrap step.
@@ -158,11 +121,8 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
     1. Run `terraform init`.
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.
-    1. Run `terraform output cloudbuild_sa` to get the cloud build service account from the apply step.
     1. If you would like the bucket to be replaced by cloud build at run time, change the bucket name back to `UPDATE_ME`
 1. Once you have done the instructions for the `business_unit_1`, you need to repeat same steps for `business_unit_2` folder.
-1. Rename `business_unit_1.auto.example.tfvars` to `business_unit_1.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` which is the output of `cloudbuild_sa` from `business_unit_1/shared` steps.
-1. Rename `business_unit_2.auto.example.tfvars` to `business_unit_2.auto.tfvars` and update the file with the `app_infra_pipeline_cloudbuild_sa` which is the output of `cloudbuild_sa` from `business_unit_2/shared` steps.
 1. Commit changes.
    ```
    git add .

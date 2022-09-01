@@ -15,7 +15,7 @@
  */
 
 output "org_id" {
-  value       = var.org_id
+  value       = local.org_id
   description = "The organization id"
 }
 
@@ -77,6 +77,11 @@ output "base_net_hub_project_id" {
 output "restricted_net_hub_project_id" {
   value       = try(module.restricted_network_hub[0].project_id, null)
   description = "The Restricted Network hub project ID"
+}
+
+output "restricted_net_hub_project_number" {
+  value       = try(module.restricted_network_hub[0].project_number, null)
+  description = "The Restricted Network hub project number"
 }
 
 output "domains_to_allow" {

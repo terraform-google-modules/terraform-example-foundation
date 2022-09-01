@@ -17,9 +17,8 @@
 module "shared_restricted_interconnect" {
   source = "../dedicated_interconnect"
 
-  org_id        = var.org_id
-  parent_folder = var.parent_folder
-  vpc_name      = "${var.environment_code}-shared-restricted"
+  vpc_name                = "${var.environment_code}-shared-restricted"
+  interconnect_project_id = local.interconnect_project_id
 
   region1                                 = var.default_region1
   region1_router1_name                    = module.restricted_shared_vpc.region1_router1.router.name
@@ -59,9 +58,8 @@ module "shared_restricted_interconnect" {
 module "shared_base_interconnect" {
   source = "../dedicated_interconnect"
 
-  org_id        = var.org_id
-  parent_folder = var.parent_folder
-  vpc_name      = "${var.environment_code}-shared-base"
+  vpc_name                = "${var.environment_code}-shared-base"
+  interconnect_project_id = local.interconnect_project_id
 
   region1                                 = var.default_region1
   region1_router1_name                    = module.base_shared_vpc.region1_router1.router.name

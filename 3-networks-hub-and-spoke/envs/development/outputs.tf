@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+output "access_context_manager_policy_id" {
+  description = "Access Context Manager Policy ID."
+  value       = var.access_context_manager_policy_id
+}
+
 /*********************
  Restricted Outputs
 *********************/

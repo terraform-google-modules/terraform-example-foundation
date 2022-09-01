@@ -34,6 +34,23 @@ variable "project_number" {
   description = "Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter."
 }
 
+variable "dns_hub_project_id" {
+  type        = string
+  description = "The DNS hub project ID"
+}
+
+variable "restricted_net_hub_project_id" {
+  type        = string
+  description = "The restricted net hub project ID"
+  default     = ""
+}
+
+variable "restricted_net_hub_project_number" {
+  type        = string
+  description = "The restricted net hub project number"
+  default     = ""
+}
+
 variable "mode" {
   type        = string
   description = "Network deployment mode, should be set to `hub` or `spoke` when `enable_hub_and_spoke` architecture chosen, keep as `null` otherwise."
@@ -139,18 +156,6 @@ variable "members" {
 variable "restricted_services" {
   type        = list(string)
   description = "List of services to restrict."
-}
-
-variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
-  type        = string
-  default     = ""
-}
-
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
-  type        = string
-  default     = "fldr"
 }
 
 variable "allow_all_egress_ranges" {

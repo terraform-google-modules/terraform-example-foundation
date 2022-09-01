@@ -15,21 +15,24 @@
  */
 
 module "restricted_shared_vpc_project" {
-  source               = "../single_project"
-  org_id               = var.org_id
-  billing_account      = var.billing_account
-  folder_id            = data.google_active_folder.env.name
-  environment          = var.env
-  vpc_type             = "restricted"
-  alert_spent_percents = var.alert_spent_percents
-  alert_pubsub_topic   = var.alert_pubsub_topic
-  budget_amount        = var.budget_amount
-  project_prefix       = var.project_prefix
-  enable_hub_and_spoke = var.enable_hub_and_spoke
+  source = "../single_project"
+
+  org_id                     = local.org_id
+  billing_account            = local.billing_account
+  folder_id                  = local.env_folder_name
+  environment                = var.env
+  vpc_type                   = "restricted"
+  shared_vpc_host_project_id = local.restricted_host_project_id
+  shared_vpc_subnets         = local.restricted_subnets_self_links
+  alert_spent_percents       = var.alert_spent_percents
+  alert_pubsub_topic         = var.alert_pubsub_topic
+  budget_amount              = var.budget_amount
+  project_prefix             = local.project_prefix
+
 
   activate_apis                      = ["accesscontextmanager.googleapis.com"]
   vpc_service_control_attach_enabled = "true"
-  vpc_service_control_perimeter_name = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${var.perimeter_name}"
+  vpc_service_control_perimeter_name = "accessPolicies/${local.access_context_manager_policy_id}/servicePerimeters/${local.perimeter_name}"
 
   # Metadata
   project_suffix    = "sample-restrict"

@@ -15,9 +15,6 @@
  */
 
 locals {
-  base_net_hub_project_id           = data.google_projects.base_net_hub.projects[0].project_id
-  restricted_net_hub_project_id     = data.google_projects.restricted_net_hub.projects[0].project_id
-  restricted_net_hub_project_number = data.google_projects.restricted_net_hub.projects[0].number
   /*
    * Base network ranges
    */
@@ -35,31 +32,15 @@ locals {
 }
 
 /******************************************
-  Base Network Hub Project
-*****************************************/
-
-data "google_projects" "base_net_hub" {
-  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-base-net-hub lifecycleState=ACTIVE"
-}
-
-/******************************************
-  Restricted Network Hub Project
-*****************************************/
-
-data "google_projects" "restricted_net_hub" {
-  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-restricted-net-hub lifecycleState=ACTIVE"
-}
-
-/******************************************
   Base Network VPC
 *****************************************/
 
 module "base_shared_vpc" {
   source                        = "../../modules/base_shared_vpc"
   project_id                    = local.base_net_hub_project_id
+  dns_hub_project_id            = local.dns_hub_project_id
   environment_code              = local.environment_code
-  org_id                        = var.org_id
-  parent_folder                 = var.parent_folder
+  org_id                        = local.org_id
   bgp_asn_subnet                = local.bgp_asn_number
   default_region1               = local.default_region1
   default_region2               = local.default_region2
@@ -72,7 +53,6 @@ module "base_shared_vpc" {
   nat_num_addresses_region1     = var.base_hub_nat_num_addresses_region1
   nat_num_addresses_region2     = var.base_hub_nat_num_addresses_region2
   windows_activation_enabled    = var.base_hub_windows_activation_enabled
-  folder_prefix                 = var.folder_prefix
   mode                          = "hub"
 
   subnets = [
@@ -106,12 +86,12 @@ module "restricted_shared_vpc" {
   source                           = "../../modules/restricted_shared_vpc"
   project_id                       = local.restricted_net_hub_project_id
   project_number                   = local.restricted_net_hub_project_number
+  dns_hub_project_id               = local.dns_hub_project_id
   environment_code                 = local.environment_code
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = ["bigquery.googleapis.com", "storage.googleapis.com"]
   members                          = ["serviceAccount:${var.terraform_service_account}"]
-  org_id                           = var.org_id
-  parent_folder                    = var.parent_folder
+  org_id                           = local.org_id
   bgp_asn_subnet                   = local.bgp_asn_number
   default_region1                  = local.default_region1
   default_region2                  = local.default_region2
@@ -123,7 +103,6 @@ module "restricted_shared_vpc" {
   nat_bgp_asn                      = var.restricted_hub_nat_bgp_asn
   nat_num_addresses_region1        = var.restricted_hub_nat_num_addresses_region1
   nat_num_addresses_region2        = var.restricted_hub_nat_num_addresses_region2
-  folder_prefix                    = var.folder_prefix
   windows_activation_enabled       = var.restricted_hub_windows_activation_enabled
   mode                             = "hub"
 

@@ -243,6 +243,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
     1. Run `cd ./envs/shared/`.
     1. Update `backend.tf` with your bucket name from the bootstrap step.
+    1. Export the network (`terraform-net-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
     1. Run `terraform init`.
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.
@@ -293,6 +294,7 @@ and only the corresponding environment is applied.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
+1. Export the network (`terraform-net-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
 1. Run `./tf-wrapper.sh init shared`.
 1. Run `./tf-wrapper.sh plan shared` and review output.
 1. Run `./tf-wrapper.sh validate shared $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.

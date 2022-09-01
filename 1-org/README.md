@@ -283,6 +283,7 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
+1. Export the projects (`terraform-org-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
 1. Run `./tf-wrapper.sh init production`.
 2. Run `./tf-wrapper.sh plan production` and review output.
 3. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.

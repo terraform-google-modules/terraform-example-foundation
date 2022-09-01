@@ -212,7 +212,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Run `cp ../build/tf-wrapper.sh .`
 1. Run `chmod 755 ./tf-wrapper.sh`.
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
-1. Update backend.tf with your bucket from bootstrap.
+1. Update `backend.tf` with your bucket from bootstrap.
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
    ```
@@ -223,6 +223,7 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
+1. Export the projects (`terraform-env-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
 1. Run `./tf-wrapper.sh init development`.
 2. Run `./tf-wrapper.sh plan development` and review output.
 3. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.

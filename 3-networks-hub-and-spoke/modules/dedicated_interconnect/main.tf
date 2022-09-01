@@ -15,21 +15,10 @@
  */
 
 locals {
-  parent_id               = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  interconnect_project_id = data.google_projects.interconnect_project.projects[0].project_id
-  suffix1                 = lookup(var.cloud_router_labels, "vlan_1", "cr1")
-  suffix2                 = lookup(var.cloud_router_labels, "vlan_2", "cr2")
-  suffix3                 = lookup(var.cloud_router_labels, "vlan_3", "cr3")
-  suffix4                 = lookup(var.cloud_router_labels, "vlan_4", "cr4")
-}
-
-data "google_active_folder" "common" {
-  display_name = "${var.folder_prefix}-common"
-  parent       = local.parent_id
-}
-
-data "google_projects" "interconnect_project" {
-  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-interconnect lifecycleState=ACTIVE"
+  suffix1 = lookup(var.cloud_router_labels, "vlan_1", "cr1")
+  suffix2 = lookup(var.cloud_router_labels, "vlan_2", "cr2")
+  suffix3 = lookup(var.cloud_router_labels, "vlan_3", "cr3")
+  suffix4 = lookup(var.cloud_router_labels, "vlan_4", "cr4")
 }
 
 module "interconnect_attachment1_region1" {
@@ -37,7 +26,7 @@ module "interconnect_attachment1_region1" {
   version = "~> 2.0.0"
 
   name    = "vl-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-${local.suffix1}"
-  project = local.interconnect_project_id
+  project = var.interconnect_project_id
   region  = var.region1
   router  = var.region1_router1_name
 
@@ -60,7 +49,7 @@ module "interconnect_attachment2_region1" {
   version = "~> 0.4.0"
 
   name    = "vl-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-${local.suffix2}"
-  project = local.interconnect_project_id
+  project = var.interconnect_project_id
   region  = var.region1
   router  = var.region1_router2_name
 
@@ -83,7 +72,7 @@ module "interconnect_attachment1_region2" {
   version = "~> 0.4.0"
 
   name    = "vl-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-${local.suffix3}"
-  project = local.interconnect_project_id
+  project = var.interconnect_project_id
   region  = var.region2
   router  = var.region2_router1_name
 
@@ -106,7 +95,7 @@ module "interconnect_attachment2_region2" {
   version = "~> 0.4.0"
 
   name    = "vl-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-${local.suffix4}"
-  project = local.interconnect_project_id
+  project = var.interconnect_project_id
   region  = var.region2
   router  = var.region2_router2_name
 

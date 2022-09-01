@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
-
-billing_account = "000000-000000-000000"
 
 monitoring_workspace_users = "gcp-monitoring-admins@example.com"
 
-// Optional - for an organization with existing projects or for development/validation.
-// Must be the same value used in previous steps.
-//parent_folder = "01234567890"
+backend_bucket = "<TERRAFORM-STATE-BUCKET>"

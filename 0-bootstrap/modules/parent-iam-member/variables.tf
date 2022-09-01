@@ -15,12 +15,12 @@
  */
 
 variable "parent_type" {
-  description = "Type of the parent resource. valid values are `organization` and `folder`."
+  description = "Type of the parent resource. valid values are `organization`, `folder`, and `project`."
   type        = string
 
   validation {
-    condition     = var.parent_type == "organization" || var.parent_type == "folder"
-    error_message = "For parent_type only `organization` and `folder` are valid."
+    condition     = var.parent_type == "organization" || var.parent_type == "folder" || var.parent_type == "project"
+    error_message = "For parent_type only `organization`, `folder`, and `project` are valid."
   }
 }
 

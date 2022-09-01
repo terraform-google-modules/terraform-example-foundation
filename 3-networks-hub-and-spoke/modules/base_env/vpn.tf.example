@@ -17,19 +17,16 @@
 module "shared_base_vpn" {
   source = "../vpn-ha"
 
-  project_id           = local.base_project_id
-  default_region1      = var.default_region1
-  default_region2      = var.default_region2
-  vpc_name             = "${var.environment_code}-shared-base"
-  region1_router1_name = module.base_shared_vpc.region1_router1.router.name
-  region1_router2_name = module.base_shared_vpc.region1_router2.router.name
-  region2_router1_name = module.base_shared_vpc.region2_router1.router.name
-  region2_router2_name = module.base_shared_vpc.region2_router2.router.name
-  environment          = var.env
-  parent_folder        = var.parent_folder
-  org_id               = var.org_id
-  vpn_psk_secret_name  = "<VPN_PRIVATE_PSK_SECRET_NAME>"
-  folder_prefix        = var.folder_prefix
+  project_id            = local.base_project_id
+  env_secret_project_id = local.env_secret_project_id
+  default_region1       = var.default_region1
+  default_region2       = var.default_region2
+  vpc_name              = "${var.environment_code}-shared-base"
+  region1_router1_name  = module.base_shared_vpc.region1_router1.router.name
+  region1_router2_name  = module.base_shared_vpc.region1_router2.router.name
+  region2_router1_name  = module.base_shared_vpc.region2_router1.router.name
+  region2_router2_name  = module.base_shared_vpc.region2_router2.router.name
+  vpn_psk_secret_name   = "<VPN_PRIVATE_PSK_SECRET_NAME>"
 
   on_prem_router_ip_address1 = "<8.8.8.8>" # on-prem router ip address 1
   on_prem_router_ip_address2 = "<8.8.8.8>" # on-prem router ip address 2
@@ -63,18 +60,16 @@ module "shared_base_vpn" {
 module "shared_restricted_vpn" {
   source = "../vpn-ha"
 
-  project_id           = local.restricted_project_id
-  default_region1      = var.default_region1
-  default_region2      = var.default_region2
-  vpc_name             = "${var.environment_code}-shared-restricted"
-  region1_router1_name = module.restricted_shared_vpc.region1_router1.router.name
-  region1_router2_name = module.restricted_shared_vpc.region1_router2.router.name
-  region2_router1_name = module.restricted_shared_vpc.region2_router1.router.name
-  region2_router2_name = module.restricted_shared_vpc.region2_router2.router.name
-  environment          = var.env
-  parent_folder        = var.parent_folder
-  org_id               = var.org_id
-  vpn_psk_secret_name  = "<VPN_RESTRICTED_PSK_SECRET_NAME>"
+  project_id            = local.restricted_project_id
+  env_secret_project_id = local.env_secret_project_id
+  default_region1       = var.default_region1
+  default_region2       = var.default_region2
+  vpc_name              = "${var.environment_code}-shared-restricted"
+  region1_router1_name  = module.restricted_shared_vpc.region1_router1.router.name
+  region1_router2_name  = module.restricted_shared_vpc.region1_router2.router.name
+  region2_router1_name  = module.restricted_shared_vpc.region2_router1.router.name
+  region2_router2_name  = module.restricted_shared_vpc.region2_router2.router.name
+  vpn_psk_secret_name   = "<VPN_RESTRICTED_PSK_SECRET_NAME>"
 
   on_prem_router_ip_address1 = "<8.8.8.8>" # on-prem router ip address 1
   on_prem_router_ip_address2 = "<8.8.8.8>" # on-prem router ip address 2

@@ -2,8 +2,7 @@
 
 This repo is part of a multi-part guide that shows how to configure and deploy
 the example.com reference architecture described in
-[Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf)
-(PDF). The following table lists the parts of the guide.
+[Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations). The following table lists the parts of the guide.
 
 <table>
 <tbody>
@@ -64,9 +63,9 @@ The purpose of this step is to set up top-level shared folders, monitoring and n
 2. Cloud Identity / Google Workspace group for security admins.
 3. Membership in the security admins group for the user running Terraform.
 4. Security Command Center notifications require that you choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as outlined in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center)
-5. Ensure that you have requested for sufficient projects quota, as the Terraform scripts will create multiple projects from this point onwards. For more information, please [see the FAQ](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/FAQ.md).
+5. Ensure that you have requested a sufficient project quota, as the Terraform scripts will create multiple projects from this point onwards. For more information, please [see the FAQ](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/FAQ.md#why-am-i-encountering-a-low-quota-with-projects-created-via-terraform-example-foundation).
 
-**Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series, otherwise you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use version 1.0.0 of Terraform throughout this series, otherwise you might experience Terraform state snapshot lock errors.
 
 ### Troubleshooting
 
@@ -79,7 +78,7 @@ Enabling Data Access logs might result in your project being charged for the add
 For details on costs you might incur, go to [Pricing](https://cloud.google.com/stackdriver/pricing).
 You can choose not to enable the Data Access logs by setting variable `data_access_logs_enabled` to false.
 
-**Note:** This module creates a sink to export all logs to Google Storage. It also creates sinks to export a subset of security related logs
+**Note:** This module creates a sink to export all logs to Google Storage. It also creates sinks to export a subset of security-related logs
 to Bigquery and Pub/Sub. This will result in additional charges for those copies of logs.
 You can change the filters & sinks by modifying the configuration in `envs/shared/log_sinks.tf`.
 
@@ -89,7 +88,7 @@ You can change the filters & sinks by modifying the configuration in `envs/share
 OS Login has some [limitations](https://cloud.google.com/compute/docs/instances/managing-instance-access#limitations).
 If those limitations do not apply to your workload/environment, you can choose to enable the OS Login policy by setting variable `enable_os_login_policy` to `true`.
 
-**Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to used the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [google cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf).
+**Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to use the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke).
 
 **Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
@@ -149,7 +148,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    cd gcp-org
    git checkout -b plan
    ```
-1. Copy contents of foundation to new repo (terraform variables will updated in a future step).
+1. Copy contents of foundation to new repo (terraform variables will be updated in a future step).
    ```
    cp -RT ../terraform-example-foundation/1-org/ .
    ```
@@ -279,7 +278,7 @@ to run the command as the Terraform service account.
    ```
 
 We will now deploy our environment (production) using this script.
-When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 1-org step and only the corresponding environment is applied.
+When using Cloud Build or Jenkins as your CI/CD tool each environment corresponding to a branch is the repository for 1-org step and only the corresponding environment is applied.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 

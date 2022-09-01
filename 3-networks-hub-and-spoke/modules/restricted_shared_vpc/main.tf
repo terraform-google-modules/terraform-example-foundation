@@ -22,21 +22,6 @@ locals {
 }
 
 /******************************************
-  Restricted Network Hub
-*****************************************/
-
-data "google_projects" "restricted_net_hub" {
-  count  = var.mode == "spoke" ? 1 : 0
-  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-restricted-net-hub lifecycleState=ACTIVE"
-}
-
-data "google_compute_network" "vpc_restricted_net_hub" {
-  count   = var.mode == "spoke" ? 1 : 0
-  name    = "vpc-c-shared-restricted-hub"
-  project = data.google_projects.restricted_net_hub[0].projects[0].project_id
-}
-
-/******************************************
   Shared VPC configuration
  *****************************************/
 
@@ -81,6 +66,11 @@ module "main" {
 /***************************************************************
   VPC Peering Configuration
  **************************************************************/
+data "google_compute_network" "vpc_restricted_net_hub" {
+  count   = var.mode == "spoke" ? 1 : 0
+  name    = "vpc-c-shared-restricted-hub"
+  project = var.restricted_net_hub_project_id
+}
 
 module "peering" {
   source                    = "terraform-google-modules/network/google//modules/network-peering"

@@ -14,28 +14,6 @@
  * limitations under the License.
  */
 
-locals {
-  parent_id = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-}
-
-data "google_active_folder" "common" {
-  display_name = "${var.folder_prefix}-common"
-  parent       = local.parent_id
-}
-
-/******************************************
-  DNS Hub Project
-*****************************************/
-
-data "google_projects" "dns_hub" {
-  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-dns-hub lifecycleState=ACTIVE"
-}
-
-data "google_compute_network" "vpc_dns_hub" {
-  name    = "vpc-c-dns-hub"
-  project = data.google_projects.dns_hub.projects[0].project_id
-}
-
 /******************************************
   Default DNS Policy
  *****************************************/
@@ -53,6 +31,11 @@ resource "google_dns_policy" "default_policy" {
 /******************************************
  Creates DNS Peering to DNS HUB
 *****************************************/
+data "google_compute_network" "vpc_dns_hub" {
+  name    = "vpc-c-dns-hub"
+  project = var.dns_hub_project_id
+}
+
 module "peering_zone" {
   source      = "terraform-google-modules/cloud-dns/google"
   version     = "~> 3.1"

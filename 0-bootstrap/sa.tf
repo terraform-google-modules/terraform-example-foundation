@@ -67,6 +67,21 @@ locals {
       "roles/compute.xpnAdmin",
     ],
   }
+
+  granular_sa_seed_project = {
+    "org" = [
+      "roles/storage.objectAdmin",
+    ],
+    "env" = [
+      "roles/storage.objectAdmin"
+    ],
+    "net" = [
+      "roles/storage.objectAdmin",
+    ],
+    "proj" = [
+      "roles/storage.objectAdmin",
+    ],
+  }
 }
 
 resource "google_service_account" "terraform-env-sa" {
@@ -94,6 +109,16 @@ module "parent_iam_member" {
   member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
   parent_type = local.parent_type
   parent_id   = local.parent_id
+  roles       = each.value
+}
+
+module "project_iam_member" {
+  source   = "./modules/parent-iam-member"
+  for_each = local.granular_sa_seed_project
+
+  member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  parent_type = "project"
+  parent_id   = module.seed_bootstrap.seed_project_id
   roles       = each.value
 }
 

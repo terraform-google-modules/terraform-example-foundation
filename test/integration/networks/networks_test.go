@@ -91,6 +91,11 @@ func TestNetworks(t *testing.T) {
 	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
+	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
+	backendConfig := map[string]interface{}{
+		"bucket": backend_bucket,
+	}
+
 	restrictedServices := []string{
 		"bigquery.googleapis.com",
 		"storage.googleapis.com",
@@ -125,6 +130,7 @@ func TestNetworks(t *testing.T) {
 
 			vars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
+				"backend_bucket":                   backend_bucket,
 				"terraform_service_account":        terraformSA,
 			}
 
@@ -140,6 +146,7 @@ func TestNetworks(t *testing.T) {
 				tft.WithTFDir(fmt.Sprintf(tfdDir, envName)),
 				tft.WithVars(vars),
 				tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
+				tft.WithBackendConfig(backendConfig),
 			)
 			networks.DefineVerify(
 				func(assert *assert.Assertions) {

@@ -21,11 +21,6 @@ locals {
   bridge_name       = "spb_c_to_${local.prefix}_bridge_${random_id.random_access_level_suffix.hex}"
 }
 
-data "google_project" "restricted_net_hub" {
-  count      = var.mode == "spoke" ? 1 : 0
-  project_id = data.google_projects.restricted_net_hub[0].projects[0].project_id
-}
-
 resource "random_id" "random_access_level_suffix" {
   byte_length = 2
 }
@@ -69,7 +64,7 @@ resource "google_access_context_manager_service_perimeter" "bridge_to_network_hu
   title          = local.bridge_name
 
   status {
-    resources = formatlist("projects/%s", [var.project_number, data.google_project.restricted_net_hub[0].number])
+    resources = formatlist("projects/%s", [var.project_number, var.restricted_net_hub_project_number])
   }
 
   depends_on = [google_access_context_manager_service_perimeter.regular_service_perimeter]

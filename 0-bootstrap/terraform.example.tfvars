@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-org_id = "000000000000"
+org_id = "REPLACE_ME" # format "000000000000"
 
-billing_account = "000000-000000-000000"
+billing_account = "REPLACE_ME" # format "000000-000000-000000"
 
-group_org_admins = "gcp-organization-admins@example.com"
+group_org_admins = "REPLACE_ME"
 
-group_billing_admins = "gcp-billing-admins@example.com"
+group_billing_admins = "REPLACE_ME"
+
+# Example of values for the groups
+# group_org_admins = "gcp-organization-admins@example.com"
+# group_billing_admins = "gcp-billing-admins@example.com"
 
 default_region = "us-central1"
 

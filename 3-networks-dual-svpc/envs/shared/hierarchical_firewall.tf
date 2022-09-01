@@ -16,14 +16,14 @@
 
 module "hierarchical_firewall_policy" {
   source = "../../modules/hierarchical_firewall_policy/"
-  parent = data.google_active_folder.common.name
+  parent = local.common_folder_name
   name   = "common-firewall-rules"
   associations = [
-    data.google_active_folder.common.name,
-    data.google_active_folder.bootstrap.name,
-    data.google_active_folder.development.name,
-    data.google_active_folder.production.name,
-    data.google_active_folder.non-production.name,
+    local.common_folder_name,
+    local.bootstrap_folder_name,
+    local.development_folder_name,
+    local.production_folder_name,
+    local.non_production_folder_name,
   ]
   rules = {
     delegate-rfc1918-ingress = {

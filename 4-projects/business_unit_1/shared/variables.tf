@@ -25,22 +25,6 @@ variable "impersonate_service_account" {
   type        = string
 }
 
-variable "org_id" {
-  description = "The organization id for the associated services"
-  type        = string
-}
-
-variable "billing_account" {
-  description = "The ID of the billing account to associated this project with"
-  type        = string
-}
-
-variable "parent_folder" {
-  description = "Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. Must be the same value used in previous step."
-  type        = string
-  default     = ""
-}
-
 variable "alert_spent_percents" {
   description = "A list of percentages of the budget to alert on when threshold is exceeded"
   type        = list(number)
@@ -59,14 +43,7 @@ variable "budget_amount" {
   default     = 1000
 }
 
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created. Should be the same in all steps."
+variable "backend_bucket" {
+  description = "Backend bucket to load remote state information from previous steps."
   type        = string
-  default     = "fldr"
-}
-
-variable "project_prefix" {
-  description = "Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters."
-  type        = string
-  default     = "prj"
 }

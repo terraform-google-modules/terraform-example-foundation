@@ -16,6 +16,7 @@ package org
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 
@@ -23,13 +24,10 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
-
-func isHubAndSpoke(t *testing.T) bool {
-	return utils.ValFromEnv(t, "TF_VAR_example_foundations_mode") == "HubAndSpoke"
-}
 
 func TestOrg(t *testing.T) {
 
@@ -38,8 +36,17 @@ func TestOrg(t *testing.T) {
 	)
 
 	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
+	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
+
 	vars := map[string]interface{}{
 		"networks_step_terraform_service_account_email": networksTerraformSA,
+		"backend_bucket":                              backend_bucket,
+		"log_export_storage_force_destroy":            "true",
+		"audit_logs_table_delete_contents_on_destroy": "true",
+	}
+
+	backendConfig := map[string]interface{}{
+		"bucket": backend_bucket,
 	}
 
 	// Configure impersonation for test execution
@@ -49,6 +56,7 @@ func TestOrg(t *testing.T) {
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
 		tft.WithVars(vars),
+		tft.WithBackendConfig(backendConfig),
 	)
 
 	org.DefineApply(
@@ -131,7 +139,7 @@ func TestOrg(t *testing.T) {
 			subscription := gcloud.Runf(t, "pubsub subscriptions describe %s --project %s", subscriptionName, sccProjectID)
 			assert.Equal(subscriptionFullName, subscription.Get("name").String(), fmt.Sprintf("subscription %s should have been created", subscriptionName))
 
-			orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
+			orgID := bootstrap.GetTFSetupStringOutput("org_id")
 			notificationName := org.GetStringOutput("scc_notification_name")
 			notification := gcloud.Runf(t, "scc notifications describe %s --organization %s", notificationName, orgID)
 			assert.Equal(topicFullName, notification.Get("pubsubTopic").String(), fmt.Sprintf("notification %s should use topic %s", notificationName, topicName))
@@ -217,7 +225,9 @@ func TestOrg(t *testing.T) {
 			}
 
 			// hub and spoke infrastructure
-			if isHubAndSpoke(t) {
+			enable_hub_and_spoke, err := strconv.ParseBool(bootstrap.GetTFSetupStringOutput("enable_hub_and_spoke"))
+			require.NoError(t, err)
+			if enable_hub_and_spoke {
 				for _, hubAndSpokeProjectOutput := range []string{
 					"base_net_hub_project_id",
 					"restricted_net_hub_project_id",

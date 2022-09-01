@@ -10,6 +10,7 @@
 | default\_region2 | Default region 2 for subnets and Cloud Routers | `string` | n/a | yes |
 | dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for VPC DNS. | `bool` | `true` | no |
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
+| dns\_hub\_project\_id | The DNS hub project ID | `string` | n/a | yes |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | `string` | n/a | yes |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization. | `string` | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |

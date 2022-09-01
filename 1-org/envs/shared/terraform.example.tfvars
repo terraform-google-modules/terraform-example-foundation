@@ -25,23 +25,15 @@ billing_data_users = "gcp-billing-data-users@example.com"
 
 audit_data_users = "gcp-security-admins@example.com"
 
-org_id = "000000000000"
-
-billing_account = "000000-000000-000000"
-
-default_region = "us-central1"
-
 scc_notification_name = "scc-notify"
 
-// Optional - for an organization with existing projects or for development/validation.
-// Must be the same value used in step 0-bootstrap.
-//parent_folder = "01234567890"
+backend_bucket = "<TERRAFORM-STATE-BUCKET>"
 
 //scc_notification_filter = "state=\\\"ACTIVE\\\""
 
-//create_access_context_manager_access_policy = false
-
 //enable_hub_and_spoke = true
+
+//create_access_context_manager_access_policy = false
 
 // if you enable hub and spoke you need to provide
 // the service account that will be used in the network step

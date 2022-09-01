@@ -49,6 +49,20 @@ output "gcs_bucket_tfstate" {
   value       = module.seed_bootstrap.gcs_bucket_tfstate
 }
 
+output "common_config" {
+  description = "Common configuration data to be used in other steps."
+  value = {
+    org_id                = var.org_id,
+    parent_folder         = var.parent_folder,
+    billing_account       = var.billing_account,
+    default_region        = var.default_region,
+    project_prefix        = var.project_prefix,
+    folder_prefix         = var.folder_prefix
+    parent_id             = local.parent
+    bootstrap_folder_name = google_folder.bootstrap.name
+  }
+}
+
 /* ----------------------------------------
     Specific to cloudbuild_module
    ---------------------------------------- */
@@ -66,6 +80,16 @@ output "gcs_bucket_cloudbuild_artifacts" {
 output "csr_repos" {
   description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
   value       = module.tf_source.csr_repos
+}
+
+output "group_org_admins" {
+  description = "Google Group for GCP Organization Administrators."
+  value       = var.groups.create_groups == true ? module.required_group["group_org_admins"].id : var.group_org_admins
+}
+
+output "group_billing_admins" {
+  description = "Google Group for GCP Billing Administrators."
+  value       = var.groups.create_groups == true ? module.required_group["group_billing_admins"].id : var.group_billing_admins
 }
 
 /* ----------------------------------------

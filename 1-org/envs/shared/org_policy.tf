@@ -15,9 +15,9 @@
  */
 
 locals {
-  organization_id = var.parent_folder != "" ? null : var.org_id
-  folder_id       = var.parent_folder != "" ? var.parent_folder : null
-  policy_for      = var.parent_folder != "" ? "folder" : "organization"
+  organization_id = local.parent_folder != "" ? null : local.org_id
+  folder_id       = local.parent_folder != "" ? local.parent_folder : null
+  policy_for      = local.parent_folder != "" ? "folder" : "organization"
 }
 
 
@@ -174,6 +174,6 @@ module "org_enforce_bucket_level_access" {
 
 resource "google_access_context_manager_access_policy" "access_policy" {
   count  = var.create_access_context_manager_access_policy ? 1 : 0
-  parent = "organizations/${var.org_id}"
+  parent = "organizations/${local.org_id}"
   title  = "default policy"
 }

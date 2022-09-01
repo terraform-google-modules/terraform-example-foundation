@@ -15,18 +15,18 @@
  */
 
 locals {
-  gcp_scc_admin         = var.gcp_scc_admin == null ? var.group_org_admins : var.gcp_scc_admin
-  gcp_platform_viewer   = var.gcp_platform_viewer == null ? var.group_org_admins : var.gcp_platform_viewer
-  gcp_security_reviewer = var.gcp_security_reviewer == null ? var.group_org_admins : var.gcp_security_reviewer
-  gcp_network_viewer    = var.gcp_network_viewer == null ? var.group_org_admins : var.gcp_network_viewer
+  gcp_scc_admin         = var.gcp_scc_admin == null ? local.group_org_admins : var.gcp_scc_admin
+  gcp_platform_viewer   = var.gcp_platform_viewer == null ? local.group_org_admins : var.gcp_platform_viewer
+  gcp_security_reviewer = var.gcp_security_reviewer == null ? local.group_org_admins : var.gcp_security_reviewer
+  gcp_network_viewer    = var.gcp_network_viewer == null ? local.group_org_admins : var.gcp_network_viewer
 
   # Notification categories details: https://cloud.google.com/resource-manager/docs/managing-notification-contacts#notification-categories
   categories_map = {
-    "BILLING"         = setunion([var.group_billing_admins, var.billing_data_users])
-    "LEGAL"           = setunion([var.group_org_admins, var.audit_data_users])
+    "BILLING"         = setunion([local.group_billing_admins, var.billing_data_users])
+    "LEGAL"           = setunion([local.group_org_admins, var.audit_data_users])
     "PRODUCT_UPDATES" = setunion([local.gcp_scc_admin, local.gcp_platform_viewer])
     "SECURITY"        = setunion([local.gcp_scc_admin, local.gcp_security_reviewer])
-    "SUSPENSION"      = [var.group_org_admins]
+    "SUSPENSION"      = [local.group_org_admins]
     "TECHNICAL"       = setunion([local.gcp_platform_viewer, local.gcp_security_reviewer, local.gcp_network_viewer])
   }
 

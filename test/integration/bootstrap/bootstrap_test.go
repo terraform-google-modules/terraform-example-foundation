@@ -16,6 +16,9 @@ package bootstrap
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+	"path"
 	"testing"
 	"time"
 
@@ -24,9 +27,22 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
+
+// fileExists check if a give file exists
+func fileExists(filePath string) (bool, error) {
+	_, err := os.Stat(filePath)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
 
 func TestBootstrap(t *testing.T) {
 
@@ -76,10 +92,9 @@ func TestBootstrap(t *testing.T) {
 		"accesscontextmanager.googleapis.com",
 	}
 
-	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
-
 	bootstrap.DefineApply(
 		func(assert *assert.Assertions) {
+			// check APIs
 			projectID := bootstrap.GetTFSetupStringOutput("project_id")
 			for _, api := range []string{
 				"cloudresourcemanager.googleapis.com",
@@ -100,6 +115,25 @@ func TestBootstrap(t *testing.T) {
 			}
 
 			bootstrap.DefaultApply(assert)
+
+			// configure options to push state to GCS bucket
+			tempOptions := bootstrap.GetTFOptions()
+			tempOptions.BackendConfig = map[string]interface{}{
+				"bucket": bootstrap.GetStringOutput("gcs_bucket_tfstate"),
+			}
+			tempOptions.MigrateState = true
+			// create backend file
+			cwd, err := os.Getwd()
+			require.NoError(t, err)
+			destFile := path.Join(cwd, "../../../0-bootstrap/backend.tf")
+			fExists, err2 := fileExists(destFile)
+			require.NoError(t, err2)
+			if !fExists {
+				srcFile := path.Join(cwd, "../../../0-bootstrap/backend.tf.example")
+				_, err3 := exec.Command("cp", srcFile, destFile).CombinedOutput()
+				require.NoError(t, err3)
+			}
+			terraform.Init(t, tempOptions)
 		})
 
 	bootstrap.DefineVerify(
@@ -195,6 +229,7 @@ func TestBootstrap(t *testing.T) {
 
 				iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", terraformSAEmail)
 				iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
+				orgID := bootstrap.GetTFSetupStringOutput("org_id")
 				orgIamPolicyRoles := gcloud.Run(t, fmt.Sprintf("organizations get-iam-policy %s", orgID), iamOpts).Array()
 				listRoles := testutils.GetResultFieldStrSlice(orgIamPolicyRoles, "bindings.role")
 				if len(sa.orgRoles) == 0 {
@@ -204,5 +239,27 @@ func TestBootstrap(t *testing.T) {
 				}
 			}
 		})
+
+	bootstrap.DefineTeardown(func(assert *assert.Assertions) {
+		// configure options to pull state from GCS bucket
+		cwd, err := os.Getwd()
+		require.NoError(t, err)
+		statePath := path.Join(cwd, "../../../0-bootstrap/local_backend.tfstate")
+		tempOptions := bootstrap.GetTFOptions()
+		tempOptions.BackendConfig = map[string]interface{}{
+			"path": statePath,
+		}
+		tempOptions.MigrateState = true
+		// remove backend file
+		backendFile := path.Join(cwd, "../../../0-bootstrap/backend.tf")
+		fExists, err2 := fileExists(backendFile)
+		require.NoError(t, err2)
+		if fExists {
+			_, err3 := exec.Command("rm", backendFile).CombinedOutput()
+			require.NoError(t, err3)
+		}
+		terraform.Init(t, tempOptions)
+		bootstrap.DefaultTeardown(assert)
+	})
 	bootstrap.Test()
 }

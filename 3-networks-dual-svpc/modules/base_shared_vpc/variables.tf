@@ -24,6 +24,11 @@ variable "project_id" {
   description = "Project ID for Private Shared VPC."
 }
 
+variable "dns_hub_project_id" {
+  type        = string
+  description = "The DNS hub project ID"
+}
+
 variable "environment_code" {
   type        = string
   description = "A short form of the folder level resources (environment) within the Google Cloud organization."

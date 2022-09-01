@@ -317,3 +317,9 @@ variable "backend_bucket" {
   description = "Backend bucket to load remote state information from previous steps."
   type        = string
 }
+
+variable "essential_contacts_domains_to_allow" {
+  description = "The list of domains that email addresses added to Essential Contacts can have."
+  type        = list(string)
+  default     = ["@clsecteam.com"]
+}

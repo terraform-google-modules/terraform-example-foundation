@@ -217,15 +217,6 @@ module "org_enforce_bucket_level_access" {
   Essential Contacts
 *******************************************/
 
-# data "google_organization" "org" {
-#   organization = var.org_id
-# }
-
-data "google_organization" "orgs" {
-  for_each = toset(var.domains_to_allow)
-  domain   = each.value
-}
-
 module "domain_restricted_contacts" {
   source            = "terraform-google-modules/org-policy/google"
   version           = "~> 5.1"
@@ -233,8 +224,8 @@ module "domain_restricted_contacts" {
   folder_id         = local.folder_id
   policy_for        = local.policy_for
   policy_type       = "list"
-  allow_list_length = length(var.domains_to_allow)
-  allow             = [for org in data.google_organization.orgs : org["directory_customer_id"]]
+  allow_list_length = length(var.essential_contacts_domains_to_allow)
+  allow             = var.essential_contacts_domains_to_allow
   constraint        = "constraints/essentialcontacts.allowedContactDomains"
 }
 

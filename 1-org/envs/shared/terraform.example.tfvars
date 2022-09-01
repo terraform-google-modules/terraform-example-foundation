@@ -17,6 +17,10 @@
 // Must include the domain of the organization you are deploying the foundation.
 domains_to_allow = ["example.com"]
 
+// The list of domains that email addresses added to Essential Contacts can have.
+// The domains entered here must starts with "@"
+essential_contacts_domains_to_allow = ["@example.com"]
+
 billing_data_users = "gcp-billing-admins@example.com"
 
 audit_data_users = "gcp-security-admins@example.com"

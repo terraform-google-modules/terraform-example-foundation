@@ -161,7 +161,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
    git push --set-upstream origin plan
    ```
- 1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
+1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
@@ -198,7 +198,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
    gcloud iam service-accounts add-iam-policy-binding $PROJECT_SERVICE_ACCOUNT --project $PROJECT --member="user:$(gcloud auth list --format="value(account)")" --role="roles/iam.serviceAccountTokenCreator"
    ```
-3. Update `backend.tf` with your bucket from the infra pipeline example.
+1. Update `backend.tf` with your bucket from the infra pipeline example.
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
    ```

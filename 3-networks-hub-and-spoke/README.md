@@ -88,7 +88,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 This step uses the **Hub and Spoke** architecture  mode.
 More details can be found at the **Networking** section of the [Google cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke).
-To enabled **Hub and Spoke** [transitivity](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke_transitivity) set the variable `enable_hub_and_spoke_transitivity ` to `true`.
+To enabled **Hub and Spoke** [transitivity](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke_transitivity) set the variable `enable_hub_and_spoke_transitivity` to `true`.
 To see the version that makes use of the **Dual Shared VPC** architecture mode check the step [3-networks-dual-svpc](../3-networks-dual-svpc).
 
 ### Using Dedicated Interconnect
@@ -112,11 +112,11 @@ If you provisioned the prerequisites listed in the [Partner Interconnect README]
 If you are not able to use Dedicated or Partner Interconnect, you can also use an HA Cloud VPN to access on-premises resources.
 
 1. Rename `vpn.tf.example` to `vpn.tf` in base-env folder in `3-networks-hub-and-spoke/modules/base_env`.
-1. Create secret for VPN private preshared key.
+1. Create secret for VPN private pre-shared key.
    ```
    echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_PRIVATE_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-
    ```
-1. Create secret for VPN restricted preshared key.
+1. Create secret for VPN restricted pre-shared key.
    ```
    echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_RESTRICTED_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-
    ```
@@ -224,7 +224,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
     ```
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
-    _PROJECT_ID (the cicd project id)
+    _PROJECT_ID (the CI/CD project ID)
     ```
 1. Copy Terraform wrapper script to the root of your new repository.
    ```

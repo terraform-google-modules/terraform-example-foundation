@@ -229,7 +229,7 @@ to run the command as the Terraform service account.
     ```
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
-    _PROJECT_ID (the cicd project id)
+    _PROJECT_ID (the CI/CD project ID)
     ```
 1. Copy Terraform wrapper script to the root of your new repository.
    ```

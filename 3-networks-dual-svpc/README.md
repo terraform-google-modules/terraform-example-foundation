@@ -86,7 +86,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Networking Architecture
 
-This step makes use of the **Dual Shared VPC** architecture, and more details can be found described at the **Networking** section of the [Google cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking). To see the version that makes use the Hub and Spoce mode, check the step [3-networks-hub-and-spoke](../3-networks-hub-and-spoke).
+This step makes use of the **Dual Shared VPC** architecture, and more details can be found described at the **Networking** section of the [Google cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking). To see the version that makes use the Hub and Spoke mode, check the step [3-networks-hub-and-spoke](../3-networks-hub-and-spoke).
 
 
 ### Using Dedicated Interconnect
@@ -110,11 +110,11 @@ If you provisioned the prerequisites listed in the [Partner Interconnect README]
 If you are not able to use Dedicated or Partner Interconnect, you can also use an HA Cloud VPN to access on-premises resources.
 
 1. Rename `vpn.tf.example` to `vpn.tf` in base-env folder in `3-networks-dual-svpc/modules/base_env`.
-1. Create secret for VPN private preshared key.
+1. Create secret for VPN private pre-shared key.
    ```
    echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_PRIVATE_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-
    ```
-1. Create secret for VPN restricted preshared key.
+1. Create secret for VPN restricted pre-shared key.
    ```
    echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_RESTRICTED_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-
    ```
@@ -222,7 +222,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
     ```
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
-    _PROJECT_ID (the cicd project id)
+    _PROJECT_ID (the CI/CD project ID)
     ```
 1. Copy Terraform wrapper script to the root of your new repository.
    ```

@@ -19,23 +19,12 @@
  *****************************************/
 
 locals {
-  parent_id             = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
-  network_name          = "vpc-${var.vpc_name}"
-  env_secret_project_id = data.google_projects.env_secrets.projects[0].project_id
-  psk_secret_data       = chomp(data.google_secret_manager_secret_version.psk.secret_data)
-}
-
-data "google_active_folder" "env" {
-  display_name = "${var.folder_prefix}-${var.environment}"
-  parent       = local.parent_id
-}
-
-data "google_projects" "env_secrets" {
-  filter = "parent.id:${split("/", data.google_active_folder.env.name)[1]} labels.application_name=env-secrets labels.environment=${var.environment} lifecycleState=ACTIVE"
+  network_name    = "vpc-${var.vpc_name}"
+  psk_secret_data = chomp(data.google_secret_manager_secret_version.psk.secret_data)
 }
 
 data "google_secret_manager_secret_version" "psk" {
-  project = local.env_secret_project_id
+  project = var.env_secret_project_id
   secret  = var.vpn_psk_secret_name
 }
 

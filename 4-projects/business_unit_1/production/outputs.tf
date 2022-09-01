@@ -51,7 +51,7 @@ output "restricted_shared_vpc_project_number" {
 
 output "vpc_service_control_perimeter_name" {
   description = "VPC Service Control name."
-  value       = var.perimeter_name
+  value       = module.env.vpc_service_control_perimeter_name
 }
 
 output "restricted_enabled_apis" {
@@ -61,7 +61,7 @@ output "restricted_enabled_apis" {
 
 output "access_context_manager_policy_id" {
   description = "Access Context Manager Policy ID."
-  value       = var.access_context_manager_policy_id
+  value       = module.env.access_context_manager_policy_id
 }
 
 output "peering_complete" {

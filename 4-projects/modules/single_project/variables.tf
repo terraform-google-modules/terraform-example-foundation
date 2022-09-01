@@ -78,6 +78,18 @@ variable "vpc_type" {
   default     = ""
 }
 
+variable "shared_vpc_host_project_id" {
+  description = "Shared VPC host project ID"
+  type        = string
+  default     = ""
+}
+
+variable "shared_vpc_subnets" {
+  description = "List of the shared vpc subnets self links."
+  type        = list(string)
+  default     = []
+}
+
 variable "vpc_service_control_attach_enabled" {
   description = "Whether the project will be attached to a VPC Service Control Perimeter"
   type        = bool

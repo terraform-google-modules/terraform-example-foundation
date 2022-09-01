@@ -19,6 +19,11 @@ variable "project_id" {
   description = "VPC Project ID"
 }
 
+variable "env_secret_project_id" {
+  type        = string
+  description = "the environment secrets project ID"
+}
+
 variable "default_region1" {
   type        = string
   description = "Default region 1 for Cloud Routers"
@@ -27,16 +32,6 @@ variable "default_region1" {
 variable "default_region2" {
   type        = string
   description = "Default region 2 for Cloud Routers"
-}
-
-variable "environment" {
-  type        = string
-  description = "Environment for the VPN configuration. Valid options are development, non-production, production"
-}
-
-variable "org_id" {
-  type        = string
-  description = "Organization ID"
 }
 
 variable "vpn_psk_secret_name" {

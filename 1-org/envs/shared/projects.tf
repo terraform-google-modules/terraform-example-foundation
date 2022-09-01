@@ -32,9 +32,9 @@ module "org_audit_logs" {
   version                 = "~> 13.0"
   random_project_id       = true
   default_service_account = "deprivilege"
-  name                    = "${var.project_prefix}-c-logging"
-  org_id                  = var.org_id
-  billing_account         = var.billing_account
+  name                    = "${local.project_prefix}-c-logging"
+  org_id                  = local.org_id
+  billing_account         = local.billing_account
   folder_id               = google_folder.common.id
   activate_apis           = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
@@ -57,9 +57,9 @@ module "org_billing_logs" {
   version                 = "~> 13.0"
   random_project_id       = true
   default_service_account = "deprivilege"
-  name                    = "${var.project_prefix}-c-billing-logs"
-  org_id                  = var.org_id
-  billing_account         = var.billing_account
+  name                    = "${local.project_prefix}-c-billing-logs"
+  org_id                  = local.org_id
+  billing_account         = local.billing_account
   folder_id               = google_folder.common.id
   activate_apis           = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
@@ -86,9 +86,9 @@ module "org_secrets" {
   version                 = "~> 13.0"
   random_project_id       = true
   default_service_account = "deprivilege"
-  name                    = "${var.project_prefix}-c-secrets"
-  org_id                  = var.org_id
-  billing_account         = var.billing_account
+  name                    = "${local.project_prefix}-c-secrets"
+  org_id                  = local.org_id
+  billing_account         = local.billing_account
   folder_id               = google_folder.common.id
   activate_apis           = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
 
@@ -115,9 +115,9 @@ module "interconnect" {
   version                 = "~> 13.0"
   random_project_id       = true
   default_service_account = "deprivilege"
-  name                    = "${var.project_prefix}-c-interconnect"
-  org_id                  = var.org_id
-  billing_account         = var.billing_account
+  name                    = "${local.project_prefix}-c-interconnect"
+  org_id                  = local.org_id
+  billing_account         = local.billing_account
   folder_id               = google_folder.common.id
   activate_apis           = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
 
@@ -144,9 +144,9 @@ module "scc_notifications" {
   version                 = "~> 13.0"
   random_project_id       = true
   default_service_account = "deprivilege"
-  name                    = "${var.project_prefix}-c-scc"
-  org_id                  = var.org_id
-  billing_account         = var.billing_account
+  name                    = "${local.project_prefix}-c-scc"
+  org_id                  = local.org_id
+  billing_account         = local.billing_account
   folder_id               = google_folder.common.id
   activate_apis           = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com"]
 
@@ -173,9 +173,9 @@ module "dns_hub" {
   version                 = "~> 13.0"
   random_project_id       = true
   default_service_account = "deprivilege"
-  name                    = "${var.project_prefix}-c-dns-hub"
-  org_id                  = var.org_id
-  billing_account         = var.billing_account
+  name                    = "${local.project_prefix}-c-dns-hub"
+  org_id                  = local.org_id
+  billing_account         = local.billing_account
   folder_id               = google_folder.common.id
 
   activate_apis = [
@@ -211,9 +211,9 @@ module "base_network_hub" {
   count                   = var.enable_hub_and_spoke ? 1 : 0
   random_project_id       = true
   default_service_account = "deprivilege"
-  name                    = "${var.project_prefix}-c-base-net-hub"
-  org_id                  = var.org_id
-  billing_account         = var.billing_account
+  name                    = "${local.project_prefix}-c-base-net-hub"
+  org_id                  = local.org_id
+  billing_account         = local.billing_account
   folder_id               = google_folder.common.id
 
   activate_apis = [
@@ -257,9 +257,9 @@ module "restricted_network_hub" {
   count                   = var.enable_hub_and_spoke ? 1 : 0
   random_project_id       = true
   default_service_account = "deprivilege"
-  name                    = "${var.project_prefix}-c-restricted-net-hub"
-  org_id                  = var.org_id
-  billing_account         = var.billing_account
+  name                    = "${local.project_prefix}-c-restricted-net-hub"
+  org_id                  = local.org_id
+  billing_account         = local.billing_account
   folder_id               = google_folder.common.id
 
   activate_apis = [

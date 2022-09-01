@@ -23,8 +23,8 @@ locals {
 }
 
 resource "google_organization_iam_audit_config" "org_config" {
-  count   = var.parent_folder == "" ? 1 : 0
-  org_id  = var.org_id
+  count   = local.parent_folder == "" ? 1 : 0
+  org_id  = local.org_id
   service = "allServices"
 
   ###################################################################################################
@@ -44,8 +44,8 @@ resource "google_organization_iam_audit_config" "org_config" {
 }
 
 resource "google_folder_iam_audit_config" "folder_config" {
-  count   = var.parent_folder != "" ? 1 : 0
-  folder  = "folders/${var.parent_folder}"
+  count   = local.parent_folder != "" ? 1 : 0
+  folder  = "folders/${local.parent_folder}"
   service = "allServices"
 
   ###################################################################################################
@@ -97,7 +97,7 @@ resource "google_project_iam_member" "billing_bq_viewer" {
 *****************************************/
 
 resource "google_organization_iam_member" "billing_viewer" {
-  org_id = var.org_id
+  org_id = local.org_id
   role   = "roles/billing.viewer"
   member = "group:${var.billing_data_users}"
 }
@@ -107,43 +107,43 @@ resource "google_organization_iam_member" "billing_viewer" {
 *****************************************/
 
 resource "google_organization_iam_member" "organization_viewer" {
-  count  = var.gcp_platform_viewer != null && var.parent_folder == "" ? 1 : 0
-  org_id = var.org_id
+  count  = var.gcp_platform_viewer != null && local.parent_folder == "" ? 1 : 0
+  org_id = local.org_id
   role   = "roles/viewer"
   member = "group:${var.gcp_platform_viewer}"
 }
 
 resource "google_folder_iam_member" "organization_viewer" {
-  count  = var.gcp_platform_viewer != null && var.parent_folder != "" ? 1 : 0
-  folder = "folders/${var.parent_folder}"
+  count  = var.gcp_platform_viewer != null && local.parent_folder != "" ? 1 : 0
+  folder = "folders/${local.parent_folder}"
   role   = "roles/viewer"
   member = "group:${var.gcp_platform_viewer}"
 }
 
 resource "google_organization_iam_member" "security_reviewer" {
-  count  = var.gcp_security_reviewer != null && var.parent_folder == "" ? 1 : 0
-  org_id = var.org_id
+  count  = var.gcp_security_reviewer != null && local.parent_folder == "" ? 1 : 0
+  org_id = local.org_id
   role   = "roles/iam.securityReviewer"
   member = "group:${var.gcp_security_reviewer}"
 }
 
 resource "google_folder_iam_member" "security_reviewer" {
-  count  = var.gcp_security_reviewer != null && var.parent_folder != "" ? 1 : 0
-  folder = "folders/${var.parent_folder}"
+  count  = var.gcp_security_reviewer != null && local.parent_folder != "" ? 1 : 0
+  folder = "folders/${local.parent_folder}"
   role   = "roles/iam.securityReviewer"
   member = "group:${var.gcp_security_reviewer}"
 }
 
 resource "google_organization_iam_member" "network_viewer" {
-  count  = var.gcp_network_viewer != null && var.parent_folder == "" ? 1 : 0
-  org_id = var.org_id
+  count  = var.gcp_network_viewer != null && local.parent_folder == "" ? 1 : 0
+  org_id = local.org_id
   role   = "roles/compute.networkViewer"
   member = "group:${var.gcp_network_viewer}"
 }
 
 resource "google_folder_iam_member" "network_viewer" {
-  count  = var.gcp_network_viewer != null && var.parent_folder != "" ? 1 : 0
-  folder = "folders/${var.parent_folder}"
+  count  = var.gcp_network_viewer != null && local.parent_folder != "" ? 1 : 0
+  folder = "folders/${local.parent_folder}"
   role   = "roles/compute.networkViewer"
   member = "group:${var.gcp_network_viewer}"
 }
@@ -188,29 +188,29 @@ resource "google_project_iam_member" "global_secrets_admin" {
 *****************************************/
 
 resource "google_organization_iam_member" "org_admin_user" {
-  count  = var.gcp_org_admin_user != null && var.parent_folder == "" ? 1 : 0
-  org_id = var.org_id
+  count  = var.gcp_org_admin_user != null && local.parent_folder == "" ? 1 : 0
+  org_id = local.org_id
   role   = "roles/resourcemanager.organizationAdmin"
   member = "user:${var.gcp_org_admin_user}"
 }
 
 resource "google_folder_iam_member" "org_admin_user" {
-  count  = var.gcp_org_admin_user != null && var.parent_folder != "" ? 1 : 0
-  folder = "folders/${var.parent_folder}"
+  count  = var.gcp_org_admin_user != null && local.parent_folder != "" ? 1 : 0
+  folder = "folders/${local.parent_folder}"
   role   = "roles/resourcemanager.folderAdmin"
   member = "user:${var.gcp_org_admin_user}"
 }
 
 resource "google_organization_iam_member" "billing_creator_user" {
-  count  = var.gcp_billing_creator_user != null && var.parent_folder == "" ? 1 : 0
-  org_id = var.org_id
+  count  = var.gcp_billing_creator_user != null && local.parent_folder == "" ? 1 : 0
+  org_id = local.org_id
   role   = "roles/billing.creator"
   member = "user:${var.gcp_billing_creator_user}"
 }
 
 resource "google_billing_account_iam_member" "billing_admin_user" {
   count              = var.gcp_billing_admin_user != null ? 1 : 0
-  billing_account_id = var.billing_account
+  billing_account_id = local.billing_account
   role               = "roles/billing.admin"
   member             = "user:${var.gcp_billing_admin_user}"
 }

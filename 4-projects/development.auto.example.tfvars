@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-perimeter_name = "sp_d_shared_restricted_default_perimeter_????"
-
-//enable_hub_and_spoke = true
+location_kms = "us"
+location_gcs = "US"

@@ -22,21 +22,6 @@ locals {
 }
 
 /******************************************
-  Base Network Hub
-*****************************************/
-
-data "google_projects" "base_net_hub" {
-  count  = var.mode == "spoke" ? 1 : 0
-  filter = "parent.id:${split("/", data.google_active_folder.common.name)[1]} labels.application_name=org-base-net-hub lifecycleState=ACTIVE"
-}
-
-data "google_compute_network" "vpc_base_net_hub" {
-  count   = var.mode == "spoke" ? 1 : 0
-  name    = "vpc-c-shared-base-hub"
-  project = data.google_projects.base_net_hub[0].projects[0].project_id
-}
-
-/******************************************
   Shared VPC configuration
  *****************************************/
 
@@ -80,6 +65,11 @@ module "main" {
 /***************************************************************
   VPC Peering Configuration
  **************************************************************/
+data "google_compute_network" "vpc_base_net_hub" {
+  count   = var.mode == "spoke" ? 1 : 0
+  name    = "vpc-c-shared-base-hub"
+  project = var.base_net_hub_project_id
+}
 
 module "peering" {
   source                    = "terraform-google-modules/network/google//modules/network-peering"

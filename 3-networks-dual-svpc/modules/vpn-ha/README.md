@@ -23,11 +23,10 @@ If you are not able to use Dedicated Interconnect or Partner Interconnect you ca
 | bgp\_peer\_asn | BGP ASN for cloud routes. | `number` | n/a | yes |
 | default\_region1 | Default region 1 for Cloud Routers | `string` | n/a | yes |
 | default\_region2 | Default region 2 for Cloud Routers | `string` | n/a | yes |
-| environment | Environment for the VPN configuration. Valid options are development, non-production, production | `string` | n/a | yes |
+| env\_secret\_project\_id | the environment secrets project ID | `string` | n/a | yes |
 | folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | on\_prem\_router\_ip\_address1 | On-Prem Router IP address | `string` | n/a | yes |
 | on\_prem\_router\_ip\_address2 | On-Prem Router IP address | `string` | n/a | yes |
-| org\_id | Organization ID | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
 | project\_id | VPC Project ID | `string` | n/a | yes |
 | region1\_router1\_name | Name of the Router 1 for Region 1 where the attachment resides. | `string` | n/a | yes |

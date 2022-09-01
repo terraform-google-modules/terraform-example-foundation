@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-variable "org_id" {
+variable "interconnect_project_id" {
   type        = string
-  description = "Organization ID"
-}
-
-variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
-  type        = string
-  default     = ""
+  description = "Interconnect project ID."
 }
 
 variable "vpc_name" {
@@ -160,10 +154,4 @@ variable "region2_interconnect2_vlan_tag8021q" {
   type        = string
   description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
   default     = null
-}
-
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
-  type        = string
-  default     = "fldr"
 }

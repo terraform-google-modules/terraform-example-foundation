@@ -16,18 +16,6 @@
 
 set -e
 
-function org(){
-    # disable backend configs in main module
-    mv 1-org/envs/shared/backend.tf 1-org/envs/shared/backend.tf.disabled
-}
-
-function envs(){
-    # disable backend configs in main module
-    mv 2-environments/envs/development/backend.tf 2-environments/envs/development/backend.tf.disabled
-    mv 2-environments/envs/non-production/backend.tf  2-environments/envs/non-production/backend.tf.disabled
-    mv 2-environments/envs/production/backend.tf  2-environments/envs/production/backend.tf.disabled
-}
-
 function networks(){
 
     # shellcheck disable=SC2154
@@ -36,11 +24,6 @@ function networks(){
     else
         network_dir="3-networks-dual-svpc"
     fi
-
-    # disable backend configs in main module
-    mv $network_dir/envs/development/backend.tf $network_dir/envs/development/backend.tf.disabled
-    mv $network_dir/envs/non-production/backend.tf  $network_dir/envs/non-production/backend.tf.disabled
-    mv $network_dir/envs/production/backend.tf  $network_dir/envs/production/backend.tf.disabled
 
     # disable access_context.auto.tfvars in main module
     mv $network_dir/envs/development/access_context.auto.tfvars  $network_dir/envs/development/access_context.auto.tfvars.disabled
@@ -61,9 +44,6 @@ function shared(){
         network_dir="3-networks-dual-svpc"
     fi
 
-    # disable backend configs in main module
-    mv $network_dir/envs/shared/backend.tf  $network_dir/envs/shared/backend.tf.disabled
-
     # disable access_context.auto.tfvars in main module
     mv $network_dir/envs/shared/access_context.auto.tfvars $network_dir/envs/shared/access_context.auto.tfvars.disabled
 
@@ -74,35 +54,17 @@ function shared(){
     mv $network_dir/envs/shared/shared.auto.tfvars  $network_dir/envs/shared/shared.auto.tfvars.disabled
 }
 
+function projectsshared(){
+    # disable shared.auto.tfvars
+    mv 4-projects/business_unit_1/shared/shared.auto.tfvars  4-projects/business_unit_1/shared/shared.auto.tfvars.disabled
+    mv 4-projects/business_unit_2/shared/shared.auto.tfvars  4-projects/business_unit_2/shared/shared.auto.tfvars.disabled
+
+    # disable common.auto.tfvars
+    mv 4-projects/business_unit_1/shared/common.auto.tfvars 4-projects/business_unit_1/shared/common.auto.tfvars.disabled
+    mv 4-projects/business_unit_2/shared/common.auto.tfvars 4-projects/business_unit_2/shared/common.auto.tfvars.disabled
+}
+
 function projects(){
-    # disable backend configs in main module
-    mv 4-projects/business_unit_1/development/backend.tf 4-projects/business_unit_1/development/backend.tf.disabled
-    mv 4-projects/business_unit_1/non-production/backend.tf  4-projects/business_unit_1/non-production/backend.tf.disabled
-    mv 4-projects/business_unit_1/production/backend.tf 4-projects/business_unit_1/production/backend.tf.disabled
-    mv 4-projects/business_unit_1/shared/backend.tf  4-projects/business_unit_1/shared/backend.tf.disabled
-    mv 4-projects/business_unit_2/development/backend.tf 4-projects/business_unit_2/development/backend.tf.disabled
-    mv 4-projects/business_unit_2/non-production/backend.tf  4-projects/business_unit_2/non-production/backend.tf.disabled
-    mv 4-projects/business_unit_2/production/backend.tf 4-projects/business_unit_2/production/backend.tf.disabled
-    mv 4-projects/business_unit_2/shared/backend.tf  4-projects/business_unit_2/shared/backend.tf.disabled
-
-    # disable access_context.auto.tfvars in main module
-    mv 4-projects/business_unit_1/development/access_context.auto.tfvars 4-projects/business_unit_1/development/access_context.auto.tfvars.disabled
-    mv 4-projects/business_unit_1/non-production/access_context.auto.tfvars  4-projects/business_unit_1/non-production/access_context.auto.tfvars.disabled
-    mv 4-projects/business_unit_1/production/access_context.auto.tfvars 4-projects/business_unit_1/production/access_context.auto.tfvars.disabled
-    mv 4-projects/business_unit_2/development/access_context.auto.tfvars 4-projects/business_unit_2/development/access_context.auto.tfvars.disabled
-    mv 4-projects/business_unit_2/non-production/access_context.auto.tfvars  4-projects/business_unit_2/non-production/access_context.auto.tfvars.disabled
-    mv 4-projects/business_unit_2/production/access_context.auto.tfvars 4-projects/business_unit_2/production/access_context.auto.tfvars.disabled
-
-    # disable business_unit_1.auto.tfvars in main module
-    mv 4-projects/business_unit_1/development/business_unit_1.auto.tfvars 4-projects/business_unit_1/development/business_unit_1.auto.tfvars.disabled
-    mv 4-projects/business_unit_1/non-production/business_unit_1.auto.tfvars  4-projects/business_unit_1/non-production/business_unit_1.auto.tfvars.disabled
-    mv 4-projects/business_unit_1/production/business_unit_1.auto.tfvars  4-projects/business_unit_1/production/business_unit_1.auto.tfvars.disabled
-
-    # disable business_unit_2.auto.tfvars in main module
-    mv 4-projects/business_unit_2/development/business_unit_2.auto.tfvars 4-projects/business_unit_2/development/business_unit_2.auto.tfvars.disabled
-    mv 4-projects/business_unit_2/non-production/business_unit_2.auto.tfvars  4-projects/business_unit_2/non-production/business_unit_2.auto.tfvars.disabled
-    mv 4-projects/business_unit_2/production/business_unit_2.auto.tfvars  4-projects/business_unit_2/production/business_unit_2.auto.tfvars.disabled
-
     # disable ENVS.auto.tfvars in main module
     mv 4-projects/business_unit_1/development/development.auto.tfvars 4-projects/business_unit_1/development/development.auto.tfvars.disabled
     mv 4-projects/business_unit_2/development/development.auto.tfvars 4-projects/business_unit_2/development/development.auto.tfvars.disabled
@@ -110,19 +72,14 @@ function projects(){
     mv 4-projects/business_unit_2/non-production/non-production.auto.tfvars  4-projects/business_unit_2/non-production/non-production.auto.tfvars.disabled
     mv 4-projects/business_unit_1/production/production.auto.tfvars 4-projects/business_unit_1/production/production.auto.tfvars.disabled
     mv 4-projects/business_unit_2/production/production.auto.tfvars 4-projects/business_unit_2/production/production.auto.tfvars.disabled
-    mv 4-projects/business_unit_1/shared/shared.auto.tfvars  4-projects/business_unit_1/shared/shared.auto.tfvars.disabled
-    mv 4-projects/business_unit_2/shared/shared.auto.tfvars  4-projects/business_unit_2/shared/shared.auto.tfvars.disabled
 
     # disable common.auto.tfvars in main module
     mv 4-projects/business_unit_1/development/common.auto.tfvars 4-projects/business_unit_1/development/common.auto.tfvars.disabled
     mv 4-projects/business_unit_1/non-production/common.auto.tfvars  4-projects/business_unit_1/non-production/common.auto.tfvars.disabled
     mv 4-projects/business_unit_1/production/common.auto.tfvars 4-projects/business_unit_1/production/common.auto.tfvars.disabled
-    mv 4-projects/business_unit_1/shared/common.auto.tfvars 4-projects/business_unit_1/shared/common.auto.tfvars.disabled
     mv 4-projects/business_unit_2/development/common.auto.tfvars 4-projects/business_unit_2/development/common.auto.tfvars.disabled
     mv 4-projects/business_unit_2/non-production/common.auto.tfvars  4-projects/business_unit_2/non-production/common.auto.tfvars.disabled
     mv 4-projects/business_unit_2/production/common.auto.tfvars 4-projects/business_unit_2/production/common.auto.tfvars.disabled
-    mv 4-projects/business_unit_2/shared/common.auto.tfvars 4-projects/business_unit_2/shared/common.auto.tfvars.disabled
-
 }
 
 function appinfra(){
@@ -155,16 +112,12 @@ do
       shared
       shift
       ;;
-    -o|--org)
-      org
-      shift
-      ;;
-    -e|--envs)
-      envs
-      shift
-      ;;
     -a|--appinfra)
       appinfra
+      shift
+      ;;
+    -d|--projectsshared)
+      projectsshared
       shift
       ;;
     -p|--projects)

@@ -31,7 +31,7 @@ resource "google_pubsub_subscription" "scc_notification_subscription" {
 
 resource "google_scc_notification_config" "scc_notification_config" {
   config_id    = var.scc_notification_name
-  organization = var.org_id
+  organization = local.org_id
   description  = "SCC Notification for all active findings"
   pubsub_topic = google_pubsub_topic.scc_notification_topic.id
 

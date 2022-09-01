@@ -194,6 +194,7 @@ the following steps:
 | Name | Description |
 |------|-------------|
 | cloudbuild\_project\_id | Project where CloudBuild configuration and terraform container image will reside. |
+| common\_config | Common configuration data to be used in other steps. |
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
 | environment\_step\_terraform\_service\_account\_email | Environment Step Terraform Account |
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud/Build artifacts in CloudBuild project. |

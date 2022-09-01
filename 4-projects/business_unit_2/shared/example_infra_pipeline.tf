@@ -16,14 +16,14 @@
 
 module "app_infra_cloudbuild_project" {
   source               = "../../modules/single_project"
-  org_id               = var.org_id
-  billing_account      = var.billing_account
-  folder_id            = data.google_active_folder.common.name
+  org_id               = local.org_id
+  billing_account      = local.billing_account
+  folder_id            = local.common_folder_name
   environment          = "common"
   alert_spent_percents = var.alert_spent_percents
   alert_pubsub_topic   = var.alert_pubsub_topic
   budget_amount        = var.budget_amount
-  project_prefix       = var.project_prefix
+  project_prefix       = local.project_prefix
   activate_apis = [
     "cloudbuild.googleapis.com",
     "sourcerepo.googleapis.com",
@@ -45,8 +45,8 @@ module "infra_pipelines" {
   source                      = "../../modules/infra_pipelines"
   impersonate_service_account = var.impersonate_service_account
   cloudbuild_project_id       = module.app_infra_cloudbuild_project.project_id
-  project_prefix              = var.project_prefix
-  billing_account             = var.billing_account
+  project_prefix              = local.project_prefix
+  billing_account             = local.billing_account
   default_region              = var.default_region
   bucket_region               = var.default_region
   app_infra_repos             = ["bu2-example-app"]

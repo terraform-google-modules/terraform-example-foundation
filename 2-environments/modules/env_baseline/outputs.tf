@@ -34,6 +34,11 @@ output "restricted_shared_vpc_project_id" {
   value       = module.restricted_shared_vpc_host_project.project_id
 }
 
+output "restricted_shared_vpc_project_number" {
+  description = "Project number for restricted shared VPC."
+  value       = module.restricted_shared_vpc_host_project.project_number
+}
+
 output "env_secrets_project_id" {
   description = "Project for environment secrets."
   value       = module.env_secrets.project_id

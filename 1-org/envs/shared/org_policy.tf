@@ -103,6 +103,40 @@ module "org_shared_require_os_login" {
   constraint      = "constraints/compute.requireOsLogin"
 }
 
+module "restrict_protocol_fowarding" {
+  source            = "terraform-google-modules/org-policy/google"
+  version           = "~> 5.1"
+  organization_id   = local.organization_id
+  folder_id         = local.folder_id
+  policy_for        = local.policy_for
+  policy_type       = "list"
+  allow             = ["INTERNAL"]
+  allow_list_length = 1
+  constraint        = "constraints/compute.restrictProtocolForwardingCreationForTypes"
+}
+
+module "disable_vpc_external_ipv6" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 5.1"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "boolean"
+  enforce         = "true"
+  constraint      = "constraints/compute.disableVpcExternalIpv6"
+}
+
+module "internal_dns_on_new_project_to_zonal_dns_only" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 5.1"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "boolean"
+  enforce         = "true"
+  constraint      = "constraints/compute.setNewProjectDefaultToZonalDNSOnly"
+}
+
 /******************************************
   Cloud SQL
 *******************************************/
@@ -153,6 +187,17 @@ module "org_disable_automatic_iam_grants_on_default_service_accounts" {
   constraint      = "constraints/iam.automaticIamGrantsForDefaultServiceAccounts"
 }
 
+module "disable_service_account_key_upload" {
+  source          = "terraform-google-modules/org-policy/google"
+  version         = "~> 5.1"
+  organization_id = local.organization_id
+  folder_id       = local.folder_id
+  policy_for      = local.policy_for
+  policy_type     = "boolean"
+  enforce         = "true"
+  constraint      = "constraints/iam.disableServiceAccountKeyUpload"
+}
+
 /******************************************
   Storage
 *******************************************/
@@ -169,6 +214,31 @@ module "org_enforce_bucket_level_access" {
 }
 
 /******************************************
+  Essential Contacts
+*******************************************/
+
+# data "google_organization" "org" {
+#   organization = var.org_id
+# }
+
+data "google_organization" "orgs" {
+  for_each = toset(var.domains_to_allow)
+  domain   = each.value
+}
+
+module "domain_restricted_contacts" {
+  source            = "terraform-google-modules/org-policy/google"
+  version           = "~> 5.1"
+  organization_id   = local.organization_id
+  folder_id         = local.folder_id
+  policy_for        = local.policy_for
+  policy_type       = "list"
+  # allow_list_length = 1
+  allow             = [for org in data.google_organization.orgs : org["directory_customer_id"]]
+  constraint        = "constraints/essentialcontacts.allowedContactDomains"
+}
+
+/******************************************
   Access Context Manager Policy
 *******************************************/
 
@@ -176,67 +246,4 @@ resource "google_access_context_manager_access_policy" "access_policy" {
   count  = var.create_access_context_manager_access_policy ? 1 : 0
   parent = "organizations/${local.org_id}"
   title  = "default policy"
-}
-
-
-module "restrict_procotol_fowarding" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 5.1"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "list"
-  allow           = ["internal"]
-  enforce         = "true"
-  constraint      = "constraints/compute.restrictProtocolForwardingCreationForTypes"
-}
-
-module "disable_vpc_external_ipv6" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 5.1"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/compute.disableVpcExternalIpv6"
-}
-
-
-module "disable_service_account_key_upload" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 5.1"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/iam.disableServiceAccountKeyUpload"
-}
-
-data "google_organization" "org" {
-  organization = var.org_id
-}
-
-module "domain_restricted_contacts" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 5.1"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "list"
-  allow           = [data.google_organization.org.directory_customer_id]
-  enforce         = "true"
-  constraint      = "constraints/essentialcontacts.allowedContactDomains"
-}
-
-module "internal_dns_on_new_project_to_zonal_dns_only" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 5.1"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/compute.setNewProjectDefaultToZonalDNSOnly"
 }

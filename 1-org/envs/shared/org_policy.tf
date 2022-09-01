@@ -233,7 +233,7 @@ module "domain_restricted_contacts" {
   folder_id         = local.folder_id
   policy_for        = local.policy_for
   policy_type       = "list"
-  # allow_list_length = 1
+  allow_list_length = length(var.domains_to_allow)
   allow             = [for org in data.google_organization.orgs : org["directory_customer_id"]]
   constraint        = "constraints/essentialcontacts.allowedContactDomains"
 }

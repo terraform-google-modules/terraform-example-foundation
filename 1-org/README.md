@@ -115,6 +115,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    adjust your copy paths accordingly.
    ```
    cd gcp-policies
+   git checkout -b main
    ```
 1. Copy contents of policy-library to new repo.
    ```

@@ -56,6 +56,7 @@ func TestOrg(t *testing.T) {
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
 		tft.WithVars(vars),
+		tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 		tft.WithBackendConfig(backendConfig),
 	)
 

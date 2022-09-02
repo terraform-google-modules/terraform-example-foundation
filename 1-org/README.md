@@ -110,6 +110,7 @@ gcloud scc notifications describe <scc_notification_name> --organization=<org_id
 | gcp_platform_viewer | Product Updates and Technical | Org Admins |
 | gcp_scc_admin | Product Updates and Security | Org Admins |
 | gcp_security_reviewer | Security and Technical | Org Admins |
+
 ### Deploying with Cloud Build
 
 1. Clone the policy repo based on the Terraform output from the previous section.

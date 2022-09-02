@@ -90,16 +90,21 @@ output "domains_to_allow" {
 }
 
 output "logs_export_pubsub_topic" {
-  value       = module.logs_export.resource_name_pubsub
+  value       = module.logs_export.pubsub_destination_name
   description = "The Pub/Sub topic for destination of log exports"
 }
 
 output "logs_export_storage_bucket_name" {
-  value       = module.logs_export.resource_name_storage
+  value       = module.logs_export.storage_destination_name
   description = "The storage bucket for destination of log exports"
 }
 
 output "logs_export_logbucket_name" {
-  value       = module.logs_export.resource_name_logbucket
+  value       = module.logs_export.logbucket_destination_name
+  description = "The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets"
+}
+
+output "logs_export_bigquery_dataset_name" {
+  value       = module.logs_export.bigquery_destination_name
   description = "The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets"
 }

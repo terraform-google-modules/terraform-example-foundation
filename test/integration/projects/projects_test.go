@@ -141,6 +141,7 @@ func TestProjects(t *testing.T) {
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, env)),
 				tft.WithVars(vars),
 				tft.WithBackendConfig(backendConfig),
+				tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 			)
 
 			projects.DefineVerify(

@@ -1,6 +1,6 @@
 # Centralized Logging Module
 
-This module handles logging configuration enabling one or more resources such as organization, folders, or projects to send logs to a destination: [GCS bucket](https://cloud.google.com/logging/docs/export/using_exported_logs#gcs-overview), [Big Query](https://cloud.google.com/logging/docs/export/bigquery), [Pub/Sub](https://cloud.google.com/logging/docs/export/using_exported_logs#pubsub-overview), or [Log Buckets](https://cloud.google.com/logging/docs/routing/overview#buckets).
+This module handles logging configuration enabling one or more resources such as organization, folders, or projects to send logs to multiple destinations: [GCS bucket](https://cloud.google.com/logging/docs/export/using_exported_logs#gcs-overview), [Big Query](https://cloud.google.com/logging/docs/export/bigquery), [Pub/Sub](https://cloud.google.com/logging/docs/export/using_exported_logs#pubsub-overview), and [Log Buckets](https://cloud.google.com/logging/docs/routing/overview#buckets).
 
 ## Usage
 
@@ -9,7 +9,7 @@ Before using this module, get familiar with the [log-export](https://registry.te
 The following example exports audit logs from two folders to the same storage destination:
 
 ```hcl
-module "logging_storage" {
+module "logs_export" {
   source = "terraform-google-modules/terraform-example-foundation/google//1-org/modules/centralized-logging"
 
   resources = {
@@ -17,7 +17,19 @@ module "logging_storage" {
     fldr2 = "<folder2_id>"
   }
   resource_type                  = "folder"
-  logging_sink_filter            = <<EOF
+  logging_destination_project_id = "<log_destination_project_id>"
+
+  storage_options = {
+    logging_sink_filter = ""
+    logging_sink_name   = "sk-c-logging-bkt"
+    storage_bucket_name = "bkt-logs"
+    location            = "us-central1"
+  }
+
+  bigquery_options = {
+    dataset_name               = "ds_logs"
+    logging_sink_name          = "sk-c-logging-bq"
+    logging_sink_filter        = <<EOF
     logName: /logs/cloudaudit.googleapis.com%2Factivity OR
     logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
     logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR
@@ -25,13 +37,7 @@ module "logging_storage" {
     logName: /logs/compute.googleapis.com%2Ffirewall OR
     logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
 EOF
-  logging_sink_name              = "sk-c-logging-bkt"
-  include_children               = true
-  logging_target_type            = "storage"
-  logging_destination_project_id = "<log_destination_project_id>"
-  logging_target_name            = "bkt-audit-logs"
-  uniform_bucket_level_access    = true
-  logging_location               = "us-central1"
+  }
 }
 ```
 
@@ -50,15 +56,14 @@ module "logging_logbucket" {
     prjx = "<prjx_id>"
   }
   resource_type                  = "project"
-  logging_sink_filter            = ""
-  logging_sink_name              = "sk-c-logging-logbkt"
-  include_children               = true
-  logging_target_type            = "logbucket"
   logging_destination_project_id = "<log_destination_project_id>"
-  logging_target_name            = "logbkt-logs"
-  uniform_bucket_level_access    = true
-  logging_location               = "us-central1"
   logging_project_key            = "prj1"
+
+  logbucket_options = {
+    logging_sink_name   = "sk-c-logging-logbkt"
+    logging_sink_filter = ""
+    name                = "logbkt-logs"
+  }
 }
 ```
 
@@ -67,22 +72,22 @@ module "logging_logbucket" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| bigquery\_options | Destination BigQuery options:<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is '' which exports all logs.<br>- include\_children: Only valid if 'organization' or 'folder' is chosen as var.resource\_type. Determines whether or not to include children organizations/folders in the sink export. If true, logs associated with child projects are also exported; otherwise only logs relating to the provided organization/folder are included.<br>- dataset\_name: The name of the bigquery dataset to be created and used for log entries.<br>- expiration\_days: (Optional) Table expiration time. If null logs will never be deleted.<br>- partitioned\_tables: (Optional) Options that affect sinks exporting data to BigQuery. use\_partitioned\_tables - (Required) Whether to use BigQuery's partition tables.<br>- delete\_contents\_on\_destroy: (Optional) If set to true, delete all contained objects in the logging destination.<br><br>Destination BigQuery options example:<pre>bigquery_options = {<br>  logging_sink_name          = "sk-c-logging-bq"<br>  dataset_name               = "audit_logs"<br>  partitioned_tables         = "true"<br>  include_children           = "true"<br>  expiration_days            = 30<br>  delete_contents_on_destroy = false<br>  logging_sink_filter        = <<EOF<br>  logName: /logs/cloudaudit.googleapis.com%2Factivity OR<br>  logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR<br>  logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR<br>  logName: /logs/compute.googleapis.com%2Fvpc_flows OR<br>  logName: /logs/compute.googleapis.com%2Ffirewall OR<br>  logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency<br>EOF<br>}</pre> | `map(string)` | `null` | no |
-| logbucket\_options | Destination LogBucket options:<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is '' which exports all logs.<br>- include\_children: Only valid if 'organization' or 'folder' is chosen as var.resource\_type. Determines whether or not to include children organizations/folders in the sink export. If true, logs associated with child projects are also exported; otherwise only logs relating to the provided organization/folder are included.<br>- name: The name of the log bucket to be created and used for log entries matching the filter.<br>- location: The location of the log bucket. Default: global.<br>- retention\_days: (Optional) The number of days data should be retained for the log bucket. Default 30.<br><br>Destination LogBucket options example:<pre>logbucket_options = {<br>  logging_sink_name   = "sk-c-logging-logbkt"<br>  logging_sink_filter = ""<br>  name                = "logbkt-org-logs"<br>  retention_days      = "30"<br>  include_children    = "true"<br>  location            = "global"<br>}</pre> | `map(any)` | `null` | no |
+| bigquery\_options | Destination BigQuery options:<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is '' which exports all logs.<br>- dataset\_name: The name of the bigquery dataset to be created and used for log entries.<br>- expiration\_days: (Optional) Table expiration time. If null logs will never be deleted.<br>- partitioned\_tables: (Optional) Options that affect sinks exporting data to BigQuery. use\_partitioned\_tables - (Required) Whether to use BigQuery's partition tables.<br>- delete\_contents\_on\_destroy: (Optional) If set to true, delete all contained objects in the logging destination.<br><br>Destination BigQuery options example:<pre>bigquery_options = {<br>  logging_sink_name          = "sk-c-logging-bq"<br>  dataset_name               = "audit_logs"<br>  partitioned_tables         = "true"<br>  expiration_days            = 30<br>  delete_contents_on_destroy = false<br>  logging_sink_filter        = <<EOF<br>  logName: /logs/cloudaudit.googleapis.com%2Factivity OR<br>  logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR<br>  logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR<br>  logName: /logs/compute.googleapis.com%2Fvpc_flows OR<br>  logName: /logs/compute.googleapis.com%2Ffirewall OR<br>  logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency<br>EOF<br>}</pre> | `map(string)` | `null` | no |
+| logbucket\_options | Destination LogBucket options:<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is '' which exports all logs.<br>- name: The name of the log bucket to be created and used for log entries matching the filter.<br>- location: The location of the log bucket. Default: global.<br>- retention\_days: (Optional) The number of days data should be retained for the log bucket. Default 30.<br><br>Destination LogBucket options example:<pre>logbucket_options = {<br>  logging_sink_name   = "sk-c-logging-logbkt"<br>  logging_sink_filter = ""<br>  name                = "logbkt-org-logs"<br>  retention_days      = "30"<br>  location            = "global"<br>}</pre> | `map(any)` | `null` | no |
 | logging\_destination\_project\_id | The ID of the project that will have the resources where the logs will be created. | `string` | n/a | yes |
 | logging\_project\_key | (Optional) The key of logging destination project if it is inside resources map. It is mandatory when resource\_type = project and logging\_target\_type = logbucket. | `string` | `""` | no |
-| pubsub\_options | Destination Pubsub options:<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is '' which exports all logs.<br>- include\_children: Only valid if 'organization' or 'folder' is chosen as var.resource\_type. Determines whether or not to include children organizations/folders in the sink export. If true, logs associated with child projects are also exported; otherwise only logs relating to the provided organization/folder are included.<br>- topic\_name: The name of the pubsub topic to be created and used for log entries matching the filter.<br>- create\_subscriber: (Optional) Whether to create a subscription to the topic that was created and used for log entries matching the filter. If 'true', a pull subscription is created along with a service account that is granted roles/pubsub.subscriber and roles/pubsub.viewer to the topic.<br><br>Destination Storage options example:<pre>pubsub_options = {<br>  logging_sink_name   = "sk-c-logging-pub"<br>  include_children    = true<br>  topic_name          = "tp-org-logs"<br>  create_subscriber   = true<br>  logging_sink_filter = <<EOF<br>  logName: /logs/cloudaudit.googleapis.com%2Factivity OR<br>  logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR<br>  logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR<br>  logName: /logs/compute.googleapis.com%2Fvpc_flows OR<br>  logName: /logs/compute.googleapis.com%2Ffirewall OR<br>  logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency<br>EOF<br>}</pre> | `map(any)` | `null` | no |
+| pubsub\_options | Destination Pubsub options:<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is '' which exports all logs.<br>- topic\_name: The name of the pubsub topic to be created and used for log entries matching the filter.<br>- create\_subscriber: (Optional) Whether to create a subscription to the topic that was created and used for log entries matching the filter. If 'true', a pull subscription is created along with a service account that is granted roles/pubsub.subscriber and roles/pubsub.viewer to the topic.<br><br>Destination Storage options example:<pre>pubsub_options = {<br>  logging_sink_name   = "sk-c-logging-pub"<br>  topic_name          = "tp-org-logs"<br>  create_subscriber   = true<br>  logging_sink_filter = <<EOF<br>  logName: /logs/cloudaudit.googleapis.com%2Factivity OR<br>  logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR<br>  logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR<br>  logName: /logs/compute.googleapis.com%2Fvpc_flows OR<br>  logName: /logs/compute.googleapis.com%2Ffirewall OR<br>  logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency<br>EOF<br>}</pre> | `map(any)` | `null` | no |
 | resource\_type | Resource type of the resource that will export logs to destination. Must be: project, organization, or folder. | `string` | n/a | yes |
 | resources | Export logs from the specified resources. | `map(string)` | n/a | yes |
-| storage\_options | Destination Storage options:<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is '' which exports all logs.<br>- include\_children: Only valid if 'organization' or 'folder' is chosen as var.resource\_type. Determines whether or not to include children organizations/folders in the sink export. If true, logs associated with child projects are also exported; otherwise only logs relating to the provided organization/folder are included.<br>- storage\_bucket\_name: The name of the storage bucket to be created and used for log entries matching the filter.<br>- location: (Optional) The location of the logging destination. Default: US.<br>- Retention Policy variables: (Optional) Configuration of the bucket's data retention policy for how long objects in the bucket should be retained.<br>  - retention\_policy\_is\_locked: Set if policy is locked.<br>  - retention\_policy\_period\_days: Set the period of days for log retention. Default: 30.<br>- versioning: (Optional) Toggles bucket versioning, ability to retain a non-current object version when the live object version gets replaced or deleted.<br>- force\_destroy: When deleting a bucket, this boolean option will delete all contained objects.<br><br>Destination Storage options example:<pre>storage_options = {<br>  logging_sink_name   = "sk-c-logging-bkt"<br>  logging_sink_filter = ""<br>  include_children    = "true"<br>  storage_bucket_name = "bkt-org-logs"<br>  location            = "US"<br>  force_destroy       = false<br>  versioning          = false<br>}</pre> | `map(any)` | `null` | no |
+| storage\_options | Destination Storage options:<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is '' which exports all logs.<br>- storage\_bucket\_name: The name of the storage bucket to be created and used for log entries matching the filter.<br>- location: (Optional) The location of the logging destination. Default: US.<br>- Retention Policy variables: (Optional) Configuration of the bucket's data retention policy for how long objects in the bucket should be retained.<br>  - retention\_policy\_is\_locked: Set if policy is locked.<br>  - retention\_policy\_period\_days: Set the period of days for log retention. Default: 30.<br>- versioning: (Optional) Toggles bucket versioning, ability to retain a non-current object version when the live object version gets replaced or deleted.<br>- force\_destroy: When deleting a bucket, this boolean option will delete all contained objects.<br><br>Destination Storage options example:<pre>storage_options = {<br>  logging_sink_name   = "sk-c-logging-bkt"<br>  logging_sink_filter = ""<br>  storage_bucket_name = "bkt-org-logs"<br>  location            = "US"<br>  force_destroy       = false<br>  versioning          = false<br>}</pre> | `map(any)` | `null` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| resource\_name\_bigquery | The resource name for the destination BigQuery. |
-| resource\_name\_logbucket | The resource name for the destination Log Bucket. |
-| resource\_name\_pubsub | The resource name for the destination Pub/Sub. |
-| resource\_name\_storage | The resource name for the destination Storage. |
+| bigquery\_destination\_name | The resource name for the destination BigQuery. |
+| logbucket\_destination\_name | The resource name for the destination Log Bucket. |
+| pubsub\_destination\_name | The resource name for the destination Pub/Sub. |
+| storage\_destination\_name | The resource name for the destination Storage. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -17,47 +17,60 @@
 locals {
   value_first_resource  = values(var.resources)[0]
   logbucket_sink_member = { for k, v in var.resources : k => v if k != var.logging_project_key }
+  include_children      = (var.resource_type == "organization" || var.resource_type == "folder")
 
-  all_sinks = merge(
-    var.bigquery_options == null ? {} : {
-      for k, v in var.resources : "${v}_bgq" => var.bigquery_options
-    },
-    var.logbucket_options == null ? {} : {
-      for k, v in var.resources : "${v}_lbk" => var.logbucket_options
-    },
-    var.pubsub_options == null ? {} : {
-      for k, v in var.resources : "${v}_pub" => var.pubsub_options
-    },
-    var.storage_options == null ? {} : {
-      for k, v in var.resources : "${v}_sto" => var.storage_options
-    },
-  )
+  # Create an intermediate list with all resources X all destinations
+  exports_list = flatten([
+    # Iterate in all resources
+    for res_k, res_v in var.resources : [
+      # Iterate in all log destinations
+      for dest_k, dest_v in local.destinations_options : {
+        # Create an object that is the base for a map creation below
+        "res"     = res_v,
+        "options" = dest_v,
+        "type"    = dest_k
+      } if dest_v != null
+    ]
+  ])
+
+  # Create a map based on the intermediate list above
+  # with keys "<resource>_<dest>" that is used by iam permissions on destinations
+  log_exports = {
+    for v in local.exports_list : "${v.res}_${v.type}" => v
+  }
+  destinations_options = {
+    bgq = var.bigquery_options
+    pub = var.pubsub_options
+    sto = var.storage_options
+    lbk = var.logbucket_options
+  }
 
   logging_sink_name_map = {
-    bgq = try("ds-logs-${var.logging_destination_project_id}", "ds-logs")
-    pub = try("tp-logs-${var.logging_destination_project_id}", "tp-logs")
-    sto = try("bkt-logs-${var.logging_destination_project_id}", "bkt-logs")
-    lbk = try("logbkt-logs-${var.logging_destination_project_id}", "logbkt-logs")
+    bgq = try("sk-to-ds-logs-${var.logging_destination_project_id}", "sk-to-ds-logs")
+    pub = try("sk-to-tp-logs-${var.logging_destination_project_id}", "sk-to-tp-logs")
+    sto = try("sk-to-bkt-logs-${var.logging_destination_project_id}", "sk-to-bkt-logs")
+    lbk = try("sk-to-logbkt-logs-${var.logging_destination_project_id}", "sk-to-logbkt-logs")
   }
+
+  logging_tgt_name = {
+    bgq = replace("${local.logging_tgt_prefix.bgq}${random_string.suffix.result}", "-", "_")
+    pub = "${local.logging_tgt_prefix.pub}${random_string.suffix.result}"
+    sto = "${local.logging_tgt_prefix.sto}${random_string.suffix.result}"
+    lbk = "${local.logging_tgt_prefix.lbk}${random_string.suffix.result}"
+  }
+
   destination_uri_map = {
     bgq = try(module.destination_bigquery[0].destination_uri, "")
     pub = try(module.destination_pubsub[0].destination_uri, "")
     sto = try(module.destination_storage[0].destination_uri, "")
     lbk = try(module.destination_logbucket[0].destination_uri, "")
   }
-  logging_target_name_prefix = {
+  logging_tgt_prefix = {
     bgq = "ds_logs_"
     pub = "tp-logs-"
     sto = try("bkt-logs-${var.logging_destination_project_id}-", "bkt-logs-")
     lbk = "logbkt-logs-"
   }
-
-  part_tables = {
-    false = { use_partitioned_tables = false }
-    true  = { use_partitioned_tables = true }
-  }
-
-  bgq_options_part_tables = var.bigquery_options == null ? local.part_tables.false : !contains(keys(var.bigquery_options), "partitioned_tables") ? local.part_tables.false : var.bigquery_options.partitioned_tables == "true" ? local.part_tables.true : local.part_tables.false
 }
 
 resource "random_string" "suffix" {
@@ -70,31 +83,29 @@ module "log_export" {
   source  = "terraform-google-modules/log-export/google"
   version = "~> 7.3.0"
 
-  for_each = local.all_sinks
+  for_each = local.log_exports
 
-  destination_uri        = lookup(each.value, "destination_uri", lookup(local.destination_uri_map, substr(each.key, -3, -1), ""))
-  filter                 = lookup(each.value, "logging_sink_filter", "")
-  log_sink_name          = lookup(each.value, "logging_sink_name", "sk-to-${lookup(local.logging_sink_name_map, substr(each.key, -3, -1), "log_dest_")}")
-  parent_resource_id     = substr(each.key, 0, length(each.key) - 4)
+  destination_uri        = lookup(each.value.options, "destination_uri", local.destination_uri_map[each.value.type])
+  filter                 = lookup(each.value.options, "logging_sink_filter", "")
+  log_sink_name          = lookup(each.value.options, "logging_sink_name", local.logging_sink_name_map[each.value.type])
+  parent_resource_id     = each.value.res
   parent_resource_type   = var.resource_type
   unique_writer_identity = true
-  include_children       = tobool(lookup(each.value, "include_children", "false"))
-  bigquery_options       = substr(each.key, -3, -1) == "bgq" ? local.bgq_options_part_tables : null
+  include_children       = local.include_children
+  bigquery_options       = each.value.type == "bgq" ? { use_partitioned_tables = true } : null
 }
 
 #-------------------------#
 # Send logs to Log Bucket #
 #-------------------------#
 module "destination_logbucket" {
-  //  source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  //  version = "~> 7.4.2"
-
-  source = "github.com/terraform-google-modules/terraform-google-log-export//modules/logbucket"
+  source  = "terraform-google-modules/log-export/google//modules/logbucket"
+  version = "~> 7.4.2"
 
   count = var.logbucket_options != null ? 1 : 0
 
   project_id                    = var.logging_destination_project_id
-  name                          = lookup(var.logbucket_options, "name", "${lookup(local.logging_target_name_prefix, "lbk", "log_dest_")}${random_string.suffix.result}")
+  name                          = lookup(var.logbucket_options, "name", local.logging_tgt_name.lbk)
   log_sink_writer_identity      = module.log_export["${local.value_first_resource}_lbk"].writer_identity
   location                      = lookup(var.logbucket_options, "location", "global")
   retention_days                = lookup(var.logbucket_options, "retention_days", 30)
@@ -109,7 +120,10 @@ resource "google_project_iam_member" "logbucket_sink_member" {
 
   project = var.logging_destination_project_id
   role    = "roles/logging.bucketWriter"
-  member  = module.log_export["${each.value}_lbk"].writer_identity
+
+  # Set permission only on sinks for this destination using
+  # module.log_export key "<resource>_<dest>"
+  member = module.log_export["${each.value}_lbk"].writer_identity
 }
 
 
@@ -123,7 +137,7 @@ module "destination_bigquery" {
   count = var.bigquery_options != null ? 1 : 0
 
   project_id                 = var.logging_destination_project_id
-  dataset_name               = replace(lookup(var.bigquery_options, "dataset_name", "${lookup(local.logging_target_name_prefix, "bgq", "log_dest_")}${random_string.suffix.result}"), "-", "_")
+  dataset_name               = lookup(var.bigquery_options, "dataset_name", local.logging_tgt_name.bgq)
   log_sink_writer_identity   = module.log_export["${local.value_first_resource}_bgq"].writer_identity
   expiration_days            = lookup(var.bigquery_options, "expiration_days", null)
   delete_contents_on_destroy = lookup(var.bigquery_options, "delete_contents_on_destroy", false)
@@ -151,7 +165,7 @@ module "destination_storage" {
   count = var.storage_options != null ? 1 : 0
 
   project_id                  = var.logging_destination_project_id
-  storage_bucket_name         = lookup(var.storage_options, "storage_bucket_name", "${lookup(local.logging_target_name_prefix, "sto", "log_dest_")}${random_string.suffix.result}")
+  storage_bucket_name         = lookup(var.storage_options, "storage_bucket_name", local.logging_tgt_name.sto)
   log_sink_writer_identity    = module.log_export["${local.value_first_resource}_sto"].writer_identity
   uniform_bucket_level_access = true
   location                    = lookup(var.storage_options, "location", "US")
@@ -186,9 +200,9 @@ module "destination_pubsub" {
   count = var.pubsub_options != null ? 1 : 0
 
   project_id               = var.logging_destination_project_id
-  topic_name               = lookup(var.pubsub_options, "topic_name", "${lookup(local.logging_target_name_prefix, "pub", "log_dest_")}${random_string.suffix.result}")
+  topic_name               = lookup(var.pubsub_options, "topic_name", local.logging_tgt_name.pub)
   log_sink_writer_identity = module.log_export["${local.value_first_resource}_pub"].writer_identity
-  create_subscriber        = lookup(var.pubsub_options, "create_subscriber", false)
+  create_subscriber        = !contains(keys(var.pubsub_options), "create_subscriber") ? false : var.pubsub_options.create_subscriber
 }
 
 #---------------------------------------#

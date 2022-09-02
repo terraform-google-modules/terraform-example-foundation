@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-output "resource_name_bigquery" {
+output "bigquery_destination_name" {
   description = "The resource name for the destination BigQuery."
   value       = try(module.destination_bigquery[0].resource_name, "")
 }
 
-output "resource_name_storage" {
+output "storage_destination_name" {
   description = "The resource name for the destination Storage."
   value       = try(module.destination_storage[0].resource_name, "")
 }
 
-output "resource_name_pubsub" {
+output "pubsub_destination_name" {
   description = "The resource name for the destination Pub/Sub."
   value       = try(module.destination_pubsub[0].resource_name, "")
 }
 
-output "resource_name_logbucket" {
+output "logbucket_destination_name" {
   description = "The resource name for the destination Log Bucket."
   value       = try(module.destination_logbucket[0].resource_name, "")
 }

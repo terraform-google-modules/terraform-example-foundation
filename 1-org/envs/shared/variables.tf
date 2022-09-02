@@ -321,5 +321,4 @@ variable "backend_bucket" {
 variable "essential_contacts_domains_to_allow" {
   description = "The list of domains that email addresses added to Essential Contacts can have."
   type        = list(string)
-  default     = ["@clsecteam.com"]
 }

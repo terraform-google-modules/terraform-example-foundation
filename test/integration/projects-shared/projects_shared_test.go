@@ -71,6 +71,7 @@ func TestProjectsShared(t *testing.T) {
 				tft.WithTFDir(tts.tfDir),
 				tft.WithVars(sharedVars),
 				tft.WithBackendConfig(backendConfig),
+				tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 			)
 
 			shared.DefineVerify(

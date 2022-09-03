@@ -50,9 +50,14 @@ func TestBootstrap(t *testing.T) {
 		"bucket_force_destroy": true,
 	}
 
+	temp := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../0-bootstrap"),
+	)
+
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
 		tft.WithVars(vars),
+		tft.WithPolicyLibraryPath("/workspace/policy-library", temp.GetTFSetupStringOutput("project_id")),
 	)
 
 	cloudSourceRepos := []string{

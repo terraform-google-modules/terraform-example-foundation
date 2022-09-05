@@ -18,6 +18,10 @@ locals {
   organization_id = local.parent_folder != "" ? null : local.org_id
   folder_id       = local.parent_folder != "" ? local.parent_folder : null
   policy_for      = local.parent_folder != "" ? "folder" : "organization"
+  essential_contacts_domains_to_allow = concat(
+    [for domain in var.essential_contacts_domains_to_allow : "${domain}" if can(regex("^@.*$", domain)) == true],
+    [for domain in var.essential_contacts_domains_to_allow : "@${domain}" if can(regex("^@.*$", domain)) == false]
+  )
 }
 
 
@@ -216,12 +220,6 @@ module "org_enforce_bucket_level_access" {
 /******************************************
   Essential Contacts
 *******************************************/
-locals {
-  essential_contacts_domains_to_allow = concat(
-    [for domain in var.essential_contacts_domains_to_allow : "${domain}" if can(regex("^@.*$", domain)) == true],
-    [for domain in var.essential_contacts_domains_to_allow : "@${domain}" if can(regex("^@.*$", domain)) == false]
-  )
-}
 
 module "domain_restricted_contacts" {
   source            = "terraform-google-modules/org-policy/google"

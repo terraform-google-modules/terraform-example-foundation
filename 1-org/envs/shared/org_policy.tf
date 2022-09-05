@@ -228,8 +228,8 @@ module "domain_restricted_contacts" {
   folder_id         = local.folder_id
   policy_for        = local.policy_for
   policy_type       = "list"
-  allow_list_length = length(locals.essential_contacts_domains_to_allow)
-  allow             = locals.essential_contacts_domains_to_allow
+  allow_list_length = length(local.essential_contacts_domains_to_allow)
+  allow             = local.essential_contacts_domains_to_allow
   constraint        = "constraints/essentialcontacts.allowedContactDomains"
 }
 

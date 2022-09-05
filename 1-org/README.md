@@ -60,8 +60,6 @@ The purpose of this step is to set up top-level shared folders, monitoring and n
 ## Prerequisites
 
 1. 0-bootstrap executed successfully.
-2. Cloud Identity / Google Workspace group for security admins.
-3. Membership in the security admins group for the user running Terraform.
 4. Security Command Center notifications require that you choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as outlined in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center)
 5. Ensure that you have requested a sufficient project quota, as the Terraform scripts will create multiple projects from this point onwards. For more information, please [see the FAQ](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/FAQ.md#why-am-i-encountering-a-low-quota-with-projects-created-via-terraform-example-foundation).
 

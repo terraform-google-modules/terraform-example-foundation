@@ -59,6 +59,9 @@ locals {
     org_enforce_bucket_level_access = {
       constraint = "constraints/storage.uniformBucketLevelAccess"
     }
+    org_shared_require_os_login = {
+      constraint = "constraints/compute.requireOsLogin"
+    }
   }
 }
 
@@ -87,18 +90,6 @@ module "org_vm_external_ip_access" {
   policy_type     = "list"
   enforce         = "true"
   constraint      = "constraints/compute.vmExternalIpAccess"
-}
-
-module "org_shared_require_os_login" {
-  source          = "terraform-google-modules/org-policy/google"
-  count           = var.enable_os_login_policy ? 1 : 0
-  version         = "~> 5.1"
-  organization_id = local.organization_id
-  folder_id       = local.folder_id
-  policy_for      = local.policy_for
-  policy_type     = "boolean"
-  enforce         = "true"
-  constraint      = "constraints/compute.requireOsLogin"
 }
 
 module "restrict_protocol_fowarding" {

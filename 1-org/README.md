@@ -60,8 +60,6 @@ The purpose of this step is to set up top-level shared folders, monitoring and n
 ## Prerequisites
 
 1. 0-bootstrap executed successfully.
-2. Cloud Identity / Google Workspace group for security admins.
-3. Membership in the security admins group for the user running Terraform.
 4. Security Command Center notifications require that you choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as outlined in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center)
 5. Ensure that you have requested a sufficient project quota, as the Terraform scripts will create multiple projects from this point onwards. For more information, please [see the FAQ](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/FAQ.md#why-am-i-encountering-a-low-quota-with-projects-created-via-terraform-example-foundation).
 
@@ -78,8 +76,8 @@ Enabling Data Access logs might result in your project being charged for the add
 For details on costs you might incur, go to [Pricing](https://cloud.google.com/stackdriver/pricing).
 You can choose not to enable the Data Access logs by setting variable `data_access_logs_enabled` to false.
 
-**Note:** This module creates a sink to export all logs to Google Storage. It also creates sinks to export a subset of security-related logs
-to Bigquery and Pub/Sub. This will result in additional charges for those copies of logs.
+**Note:** This module creates a sink to export all logs to Google Storage and Log Bucket. It also creates sinks to export a subset of security related logs
+to Bigquery and Pub/Sub. This will result in additional charges for those copies of logs. For Log Bucket destination, logs retained for the default retention period (30 days) [don't incur a storage cost](https://cloud.google.com/stackdriver/pricing#:~:text=Logs%20retained%20for%20the%20default%20retention%20period%20don%27t%20incur%20a%20storage%20cost.).
 You can change the filters & sinks by modifying the configuration in `envs/shared/log_sinks.tf`.
 
 **Note:** Currently, this module does not enable [bucket policy retention](https://cloud.google.com/storage/docs/bucket-lock) for organization logs, please, enable it if needed.
@@ -101,6 +99,15 @@ To check if it already exists run:
 ```
 gcloud scc notifications describe <scc_notification_name> --organization=<org_id>
 ```
+
+**Note:** This module manages contacts for notifications using [Essential Contacts](https://cloud.google.com/resource-manager/docs/managing-notification-contacts) API. This is assigned at the Parent Level (Organization or Folder) you configured to be inherited by all child resources. There is also possible to assign Essential Contacts directly to projects using project-factory [essential_contacts submodule](https://registry.terraform.io/modules/terraform-google-modules/project-factory/google/13.1.0/submodules/essential_contacts#example-usage). Billing notifications are assigned to be sent to `group_billing_admins` mandatory group. Legal and Suspension notifications are assigned to `group_org_admins` mandatory group. If you provide all other groups notifications will be configured like the table below:
+
+| Group | Notification Category | Fallback Group |
+|-------|-----------------------|----------------|
+| gcp_network_viewer | Technical | Org Admins |
+| gcp_platform_viewer | Product Updates and Technical | Org Admins |
+| gcp_scc_admin | Product Updates and Security | Org Admins |
+| gcp_security_reviewer | Security and Technical | Org Admins |
 
 ### Deploying with Cloud Build
 

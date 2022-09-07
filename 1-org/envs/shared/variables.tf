@@ -65,7 +65,7 @@ variable "skip_gcloud_download" {
 }
 
 variable "create_access_context_manager_access_policy" {
-  description = "Whether to create access context manager access policy"
+  description = "Whether to create access context manager access policy."
   type        = bool
   default     = true
 }
@@ -260,37 +260,37 @@ variable "scc_notifications_project_budget_amount" {
 }
 
 variable "gcp_platform_viewer" {
-  description = "G Suite or Cloud Identity group that have the ability to view resource information across the Google Cloud organization."
+  description = "Google Workspace or Cloud Identity group that have the ability to view resource information across the Google Cloud organization."
   type        = string
   default     = null
 }
 
 variable "gcp_security_reviewer" {
-  description = "G Suite or Cloud Identity group that members are part of the security team responsible for reviewing cloud security."
+  description = "Google Workspace or Cloud Identity group that members are part of the security team responsible for reviewing cloud security."
   type        = string
   default     = null
 }
 
 variable "gcp_network_viewer" {
-  description = "G Suite or Cloud Identity group that members are part of the networking team and review network configurations"
+  description = "Google Workspace or Cloud Identity group that members are part of the networking team and review network configurations."
   type        = string
   default     = null
 }
 
 variable "gcp_scc_admin" {
-  description = "G Suite or Cloud Identity group that can administer Security Command Center."
+  description = "Google Workspace or Cloud Identity group that can administer Security Command Center."
   type        = string
   default     = null
 }
 
 variable "gcp_audit_viewer" {
-  description = "Members are part of an audit team and view audit logs in the logging project."
+  description = "Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project."
   type        = string
   default     = null
 }
 
 variable "gcp_global_secrets_admin" {
-  description = "G Suite or Cloud Identity group that members are responsible for putting secrets into Secrets Manager."
+  description = "Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Manager."
   type        = string
   default     = null
 }
@@ -308,9 +308,15 @@ variable "gcp_billing_creator_user" {
 }
 
 variable "gcp_billing_admin_user" {
-  description = "Identity that has billing administrator permissions"
+  description = "Identity that has billing administrator permissions."
   type        = string
   default     = null
+}
+
+variable "essential_contacts_language" {
+  description = "Essential Contacts preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages."
+  type        = string
+  default     = "en"
 }
 
 variable "backend_bucket" {

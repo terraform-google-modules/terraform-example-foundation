@@ -56,6 +56,7 @@ func TestOrg(t *testing.T) {
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
 		tft.WithVars(vars),
+		tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 		tft.WithBackendConfig(backendConfig),
 	)
 
@@ -81,6 +82,7 @@ func TestOrg(t *testing.T) {
 				"securitycenter.googleapis.com",
 				"accesscontextmanager.googleapis.com",
 				"billingbudgets.googleapis.com",
+				"essentialcontacts.googleapis.com",
 			} {
 				utils.Poll(t, func() (bool, error) { return testutils.CheckAPIEnabled(t, projectID, api) }, 5, 2*time.Minute)
 			}
@@ -143,6 +145,19 @@ func TestOrg(t *testing.T) {
 			notification := gcloud.Runf(t, "scc notifications describe %s --organization %s", notificationName, orgID)
 			assert.Equal(topicFullName, notification.Get("pubsubTopic").String(), fmt.Sprintf("notification %s should use topic %s", notificationName, topicName))
 
+			//essential contacts
+			//test case considers that just the Org Admin group exists and will subscribe for all categories
+			essentialContacts := gcloud.Runf(t, "essential-contacts list --folder=%s", parentFolder).Array()
+			assert.Len(essentialContacts, 1, "only one essential contact email should be created")
+
+			groupOrgAdmins := utils.ValFromEnv(t, "TF_VAR_group_email")
+			assert.Equal(groupOrgAdmins, essentialContacts[0].Get("email").String(), "essential contact email should be group org admin")
+			assert.Equal("VALID", essentialContacts[0].Get("validationState").String(), "state of essential contact should be valid")
+
+			listCategories := utils.GetResultStrSlice(essentialContacts[0].Get("notificationCategorySubscriptions").Array())
+			expectedCategories := []string{"BILLING", "LEGAL", "PRODUCT_UPDATES", "SECURITY", "SUSPENSION", "TECHNICAL"}
+			assert.Subset(listCategories, expectedCategories, "notification category subscriptions should be the same")
+
 			//logging
 			billingLogsProjectID := org.GetStringOutput("org_billing_logs_project_id")
 			billingDatasetName := "billing_data"
@@ -161,6 +176,12 @@ func TestOrg(t *testing.T) {
 			gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", auditLogsProjectID, "--json"})
 			bkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", logsExportStorageBucketName), gcAlphaOpts).Array()[0]
 			assert.Equal(logsExportStorageBucketName, bkt.Get("metadata.id").String(), fmt.Sprintf("Bucket %s should exist", logsExportStorageBucketName))
+
+			logsExportLogBktName := org.GetStringOutput("logs_export_logbucket_name")
+			defaultRegion := utils.ValFromEnv(t, "TF_VAR_default_region")
+			logBktFullName := fmt.Sprintf("projects/%s/locations/%s/buckets/%s", auditLogsProjectID, defaultRegion, logsExportLogBktName)
+			logBktDetails := gcloud.Runf(t, fmt.Sprintf("logging buckets describe %s --location=%s --project=%s", logsExportLogBktName, defaultRegion, auditLogsProjectID))
+			assert.Equal(logBktFullName, logBktDetails.Get("name").String(), "log bucket name should match")
 
 			logsExportTopicName := org.GetStringOutput("logs_export_pubsub_topic")
 			logsExportTopicFullName := fmt.Sprintf("projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName)
@@ -186,6 +207,11 @@ func TestOrg(t *testing.T) {
 					name:        "sk-c-logging-bkt",
 					hasFilter:   false,
 					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
+				},
+				{
+					name:        "sk-c-logging-logbkt",
+					hasFilter:   false,
+					destination: fmt.Sprintf("logging.googleapis.com/%s", logBktFullName),
 				},
 				{
 					name:        "sk-c-logging-pub",

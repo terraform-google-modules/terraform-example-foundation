@@ -48,6 +48,7 @@ spec:
     - "container.googleapis.com"
     - "datastore.googleapis.com"
     - "dns.googleapis.com"
+    - "essentialcontacts.googleapis.com"
     - "iam.googleapis.com"
     - "iamcredentials.googleapis.com"
     - "logging.googleapis.com"

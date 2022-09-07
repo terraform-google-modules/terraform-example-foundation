@@ -82,6 +82,7 @@ func TestOrg(t *testing.T) {
 				"securitycenter.googleapis.com",
 				"accesscontextmanager.googleapis.com",
 				"billingbudgets.googleapis.com",
+				"essentialcontacts.googleapis.com",
 			} {
 				utils.Poll(t, func() (bool, error) { return testutils.CheckAPIEnabled(t, projectID, api) }, 5, 2*time.Minute)
 			}
@@ -143,6 +144,19 @@ func TestOrg(t *testing.T) {
 			notificationName := org.GetStringOutput("scc_notification_name")
 			notification := gcloud.Runf(t, "scc notifications describe %s --organization %s", notificationName, orgID)
 			assert.Equal(topicFullName, notification.Get("pubsubTopic").String(), fmt.Sprintf("notification %s should use topic %s", notificationName, topicName))
+
+			//essential contacts
+			//test case considers that just the Org Admin group exists and will subscribe for all categories
+			essentialContacts := gcloud.Runf(t, "essential-contacts list --folder=%s", parentFolder).Array()
+			assert.Len(essentialContacts, 1, "only one essential contact email should be created")
+
+			groupOrgAdmins := utils.ValFromEnv(t, "TF_VAR_group_email")
+			assert.Equal(groupOrgAdmins, essentialContacts[0].Get("email").String(), "essential contact email should be group org admin")
+			assert.Equal("VALID", essentialContacts[0].Get("validationState").String(), "state of essential contact should be valid")
+
+			listCategories := utils.GetResultStrSlice(essentialContacts[0].Get("notificationCategorySubscriptions").Array())
+			expectedCategories := []string{"BILLING", "LEGAL", "PRODUCT_UPDATES", "SECURITY", "SUSPENSION", "TECHNICAL"}
+			assert.Subset(listCategories, expectedCategories, "notification category subscriptions should be the same")
 
 			//logging
 			billingLogsProjectID := org.GetStringOutput("org_billing_logs_project_id")

@@ -199,6 +199,8 @@ the following steps:
 | environment\_step\_terraform\_service\_account\_email | Environment Step Terraform Account |
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud/Build artifacts in CloudBuild project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for foundations pipelines in seed project. |
+| group\_billing\_admins | Google Group for GCP Billing Administrators. |
+| group\_org\_admins | Google Group for GCP Organization Administrators. |
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
 | optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |

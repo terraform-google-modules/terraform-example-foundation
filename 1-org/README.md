@@ -102,6 +102,15 @@ To check if it already exists run:
 gcloud scc notifications describe <scc_notification_name> --organization=<org_id>
 ```
 
+**Note:** This module manages contacts for notifications using [Essential Contacts](https://cloud.google.com/resource-manager/docs/managing-notification-contacts) API. This is assigned at the Parent Level (Organization or Folder) you configured to be inherited by all child resources. There is also possible to assign Essential Contacts directly to projects using project-factory [essential_contacts submodule](https://registry.terraform.io/modules/terraform-google-modules/project-factory/google/13.1.0/submodules/essential_contacts#example-usage). Billing notifications are assigned to be sent to `group_billing_admins` mandatory group. Legal and Suspension notifications are assigned to `group_org_admins` mandatory group. If you provide all other groups notifications will be configured like the table below:
+
+| Group | Notification Category | Fallback Group |
+|-------|-----------------------|----------------|
+| gcp_network_viewer | Technical | Org Admins |
+| gcp_platform_viewer | Product Updates and Technical | Org Admins |
+| gcp_scc_admin | Product Updates and Security | Org Admins |
+| gcp_security_reviewer | Security and Technical | Org Admins |
+
 ### Deploying with Cloud Build
 
 1. Clone the policy repo based on the Terraform output from the previous section.

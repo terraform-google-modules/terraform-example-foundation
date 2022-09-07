@@ -2,8 +2,7 @@
 
 This repo is part of a multi-part guide that shows how to configure and deploy
 the example.com reference architecture described in
-[Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf)
-(PDF). The following table lists the parts of the guide.
+[Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations). The following table lists the parts of the guide.
 
 <table>
 <tbody>
@@ -65,9 +64,10 @@ To run the commands described in this document, you need to have the following
 installed:
 
 - The [Google Cloud SDK](https://cloud.google.com/sdk/install) version 391.0.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.0.0 or later
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
+- [Terraform](https://www.terraform.io/downloads.html) version 1.0.0
 
-**Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use version 1.0.0 of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 Also make sure that you've done the following:
 
@@ -82,8 +82,7 @@ Also make sure that you've done the following:
    `roles/resourcemanager.projectCreator` access.
 1. For the user who will run the procedures in this document, granted the
    following roles:
-   -  The `roles/resourcemanager.organizationAdmin` role on the Google
-      Cloud organization.
+   -  The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
    -  The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
    -  The `roles/billing.admin` role on the billing account.
    -  The `roles/resourcemanager.folderCreator` role.
@@ -93,6 +92,14 @@ represented by the `org_project_creators` variable.
 For more information about the permissions that are required, and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
+
+Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
+
+```shell
+./scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+```
+
+**Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
 
 ### Optional - Automatic creation of Google Cloud Identity groups
 
@@ -199,6 +206,8 @@ the following steps:
 | environment\_step\_terraform\_service\_account\_email | Environment Step Terraform Account |
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud/Build artifacts in CloudBuild project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for foundations pipelines in seed project. |
+| group\_billing\_admins | Google Group for GCP Billing Administrators. |
+| group\_org\_admins | Google Group for GCP Organization Administrators. |
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
 | optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |

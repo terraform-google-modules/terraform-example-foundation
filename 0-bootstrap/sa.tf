@@ -34,6 +34,7 @@ locals {
       "roles/securitycenter.notificationConfigEditor",
       "roles/resourcemanager.organizationViewer",
       "roles/accesscontextmanager.policyAdmin",
+      "roles/essentialcontacts.admin",
     ],
     "net" = [
       "roles/accesscontextmanager.policyAdmin",

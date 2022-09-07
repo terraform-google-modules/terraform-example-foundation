@@ -68,5 +68,6 @@ module "project" {
     "securitycenter.googleapis.com",
     "servicenetworking.googleapis.com",
     "billingbudgets.googleapis.com",
+    "essentialcontacts.googleapis.com",
   ]
 }

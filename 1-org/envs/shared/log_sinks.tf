@@ -17,6 +17,7 @@
 locals {
   parent_resource_id   = local.parent_folder != "" ? local.parent_folder : local.org_id
   parent_resource_type = local.parent_folder != "" ? "folder" : "organization"
+  parent_resources     = { resource = local.parent_resource_id }
   main_logs_filter     = <<EOF
     logName: /logs/cloudaudit.googleapis.com%2Factivity OR
     logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
@@ -34,88 +35,59 @@ resource "random_string" "suffix" {
   special = false
 }
 
-/******************************************
-  Send logs to BigQuery
-*****************************************/
+module "logs_export" {
+  source = "../../modules/centralized-logging"
 
-module "log_export_to_biqquery" {
-  source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 7.3.0"
-  destination_uri        = module.bigquery_destination.destination_uri
-  filter                 = local.main_logs_filter
-  log_sink_name          = "sk-c-logging-bq"
-  parent_resource_id     = local.parent_resource_id
-  parent_resource_type   = local.parent_resource_type
-  include_children       = true
-  unique_writer_identity = true
+  resources                      = local.parent_resources
+  resource_type                  = local.parent_resource_type
+  logging_destination_project_id = module.org_audit_logs.project_id
+
+  /******************************************
+    Send logs to BigQuery
+  *****************************************/
   bigquery_options = {
-    use_partitioned_tables = true
+    logging_sink_name          = "sk-c-logging-bq"
+    logging_sink_filter        = local.main_logs_filter
+    dataset_name               = "audit_logs"
+    expiration_days            = var.audit_logs_table_expiration_days
+    delete_contents_on_destroy = var.audit_logs_table_delete_contents_on_destroy
+  }
+
+  /******************************************
+    Send logs to Storage
+  *****************************************/
+  storage_options = {
+    logging_sink_filter          = local.all_logs_filter
+    logging_sink_name            = "sk-c-logging-bkt"
+    storage_bucket_name          = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
+    location                     = var.log_export_storage_location
+    retention_policy_is_locked   = var.log_export_storage_retention_policy == null ? null : var.log_export_storage_retention_policy.is_locked
+    retention_policy_period_days = var.log_export_storage_retention_policy == null ? null : var.log_export_storage_retention_policy.retention_period_days
+    force_destroy                = var.log_export_storage_force_destroy
+    versioning                   = var.log_export_storage_versioning
+  }
+
+  /******************************************
+    Send logs to Pub\Sub
+  *****************************************/
+  pubsub_options = {
+    logging_sink_filter = local.main_logs_filter
+    logging_sink_name   = "sk-c-logging-pub"
+    topic_name          = "tp-org-logs-${random_string.suffix.result}"
+    create_subscriber   = true
+  }
+
+  /******************************************
+    Send logs to Logbucket
+  *****************************************/
+  logbucket_options = {
+    logging_sink_name   = "sk-c-logging-logbkt"
+    logging_sink_filter = local.all_logs_filter
+    name                = "logbkt-org-logs-${random_string.suffix.result}"
+    location            = local.default_region
   }
 }
 
-module "bigquery_destination" {
-  source                     = "terraform-google-modules/log-export/google//modules/bigquery"
-  version                    = "~> 7.3.0"
-  project_id                 = module.org_audit_logs.project_id
-  dataset_name               = "audit_logs"
-  log_sink_writer_identity   = module.log_export_to_biqquery.writer_identity
-  expiration_days            = var.audit_logs_table_expiration_days
-  delete_contents_on_destroy = var.audit_logs_table_delete_contents_on_destroy
-}
-
-/******************************************
-  Send logs to Storage
-*****************************************/
-
-module "log_export_to_storage" {
-  source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 7.3.0"
-  destination_uri        = module.storage_destination.destination_uri
-  filter                 = local.all_logs_filter
-  log_sink_name          = "sk-c-logging-bkt"
-  parent_resource_id     = local.parent_resource_id
-  parent_resource_type   = local.parent_resource_type
-  include_children       = true
-  unique_writer_identity = true
-}
-
-module "storage_destination" {
-  source                      = "terraform-google-modules/log-export/google//modules/storage"
-  version                     = "~> 7.3.0"
-  project_id                  = module.org_audit_logs.project_id
-  storage_bucket_name         = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
-  log_sink_writer_identity    = module.log_export_to_storage.writer_identity
-  uniform_bucket_level_access = true
-  location                    = var.log_export_storage_location
-  retention_policy            = var.log_export_storage_retention_policy
-  force_destroy               = var.log_export_storage_force_destroy
-  versioning                  = var.log_export_storage_versioning
-}
-
-/******************************************
-  Send logs to Pub\Sub
-*****************************************/
-
-module "log_export_to_pubsub" {
-  source                 = "terraform-google-modules/log-export/google"
-  version                = "~> 7.3.0"
-  destination_uri        = module.pubsub_destination.destination_uri
-  filter                 = local.main_logs_filter
-  log_sink_name          = "sk-c-logging-pub"
-  parent_resource_id     = local.parent_resource_id
-  parent_resource_type   = local.parent_resource_type
-  include_children       = true
-  unique_writer_identity = true
-}
-
-module "pubsub_destination" {
-  source                   = "terraform-google-modules/log-export/google//modules/pubsub"
-  version                  = "~> 7.3.0"
-  project_id               = module.org_audit_logs.project_id
-  topic_name               = "tp-org-logs-${random_string.suffix.result}"
-  log_sink_writer_identity = module.log_export_to_pubsub.writer_identity
-  create_subscriber        = true
-}
 
 /******************************************
   Billing logs (Export configured manually)

@@ -78,8 +78,8 @@ Enabling Data Access logs might result in your project being charged for the add
 For details on costs you might incur, go to [Pricing](https://cloud.google.com/stackdriver/pricing).
 You can choose not to enable the Data Access logs by setting variable `data_access_logs_enabled` to false.
 
-**Note:** This module creates a sink to export all logs to Google Storage. It also creates sinks to export a subset of security-related logs
-to Bigquery and Pub/Sub. This will result in additional charges for those copies of logs.
+**Note:** This module creates a sink to export all logs to Google Storage and Log Bucket. It also creates sinks to export a subset of security related logs
+to Bigquery and Pub/Sub. This will result in additional charges for those copies of logs. For Log Bucket destination, logs retained for the default retention period (30 days) [don't incur a storage cost](https://cloud.google.com/stackdriver/pricing#:~:text=Logs%20retained%20for%20the%20default%20retention%20period%20don%27t%20incur%20a%20storage%20cost.).
 You can change the filters & sinks by modifying the configuration in `envs/shared/log_sinks.tf`.
 
 **Note:** Currently, this module does not enable [bucket policy retention](https://cloud.google.com/storage/docs/bucket-lock) for organization logs, please, enable it if needed.

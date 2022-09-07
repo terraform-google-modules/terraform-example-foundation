@@ -139,7 +139,12 @@ tf_validate() {
         if [ -z "$(ls -A "${policy_file_path}" 2> /dev/null)" ]; then
           gcloud source repos clone gcp-policies "${policy_file_path}" --project="${project_id}" || exit 34
           pushd .
-          cd "${policy_file_path}" && git checkout main || exit 35
+          cd "${policy_file_path}"
+          current_branch=$(git branch --show-current)
+          echo "current gcp-policies branch $current_branch"
+          if [[ "$current_branch" != "main" ]]; then
+            git checkout main || exit 35
+          fi
           popd
         fi
       fi

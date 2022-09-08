@@ -22,47 +22,21 @@ locals {
     [for domain in var.essential_contacts_domains_to_allow : "${domain}" if can(regex("^@.*$", domain)) == true],
     [for domain in var.essential_contacts_domains_to_allow : "@${domain}" if can(regex("^@.*$", domain)) == false]
   )
-  boolean_type_organization_policies = {
-    org_disable_nested_virtualization = {
-      constraint = "constraints/compute.disableNestedVirtualization"
-    }
-    org_disable_serial_port_access = {
-      constraint = "constraints/compute.disableSerialPortAccess"
-    }
-    org_compute_disable_guest_attributes_access = {
-      constraint = "constraints/compute.disableGuestAttributesAccess"
-    }
-    org_skip_default_network = {
-      constraint = "constraints/compute.skipDefaultNetworkCreation"
-    }
-    org_shared_vpc_lien_removal = {
-      constraint = "constraints/compute.restrictXpnProjectLienRemoval"
-    }
-    disable_vpc_external_ipv6 = {
-      constraint = "constraints/compute.disableVpcExternalIpv6"
-    }
-    internal_dns_on_new_project_to_zonal_dns_only = {
-      constraint = "constraints/compute.setNewProjectDefaultToZonalDNSOnly"
-    }
-    org_cloudsql_external_ip_access = {
-      constraint = "constraints/sql.restrictPublicIp"
-    }
-    org_disable_sa_key_creation = {
-      constraint = "constraints/iam.disableServiceAccountKeyCreation"
-    }
-    org_disable_automatic_iam_grants_on_default_service_accounts = {
-      constraint = "constraints/iam.automaticIamGrantsForDefaultServiceAccounts"
-    }
-    disable_service_account_key_upload = {
-      constraint = "constraints/iam.disableServiceAccountKeyUpload"
-    }
-    org_enforce_bucket_level_access = {
-      constraint = "constraints/storage.uniformBucketLevelAccess"
-    }
-    org_shared_require_os_login = {
-      constraint = "constraints/compute.requireOsLogin"
-    }
-  }
+  boolean_type_organization_policies = toset([
+    "compute.disableNestedVirtualization",
+    "compute.disableSerialPortAccess",
+    "compute.disableGuestAttributesAccess",
+    "compute.skipDefaultNetworkCreation",
+    "compute.restrictXpnProjectLienRemoval",
+    "compute.disableVpcExternalIpv6",
+    "compute.setNewProjectDefaultToZonalDNSOnly",
+    "compute.requireOsLogin",
+    "sql.restrictPublicIp",
+    "iam.disableServiceAccountKeyCreation",
+    "iam.automaticIamGrantsForDefaultServiceAccounts",
+    "iam.disableServiceAccountKeyUpload",
+    "storage.uniformBucketLevelAccess"
+  ])
 }
 
 module "organization_policies_type_boolean" {
@@ -74,7 +48,7 @@ module "organization_policies_type_boolean" {
   policy_for      = local.policy_for
   policy_type     = "boolean"
   enforce         = "true"
-  constraint      = each.value.constraint
+  constraint      = "constraints/${each.value}"
 }
 
 /******************************************

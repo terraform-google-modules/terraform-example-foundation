@@ -11,6 +11,7 @@
 | base\_net\_hub\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the base net hub project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | base\_net\_hub\_project\_budget\_amount | The amount to use as the budget for the base net hub project. | `number` | `1000` | no |
 | billing\_data\_users | Google Workspace or Cloud Identity group that have access to billing data set. | `string` | n/a | yes |
+| billing\_export\_dataset\_location | The location of the dataset for billing data export. | `string` | `"US"` | no |
 | create\_access\_context\_manager\_access\_policy | Whether to create access context manager access policy. | `bool` | `true` | no |
 | data\_access\_logs\_enabled | Enable Data Access logs of types DATA\_READ, DATA\_WRITE for all GCP services. Enabling Data Access logs might result in your organization being charged for the additional logs usage. See https://cloud.google.com/logging/docs/audit#data-access The ADMIN\_READ logs are enabled by default. | `bool` | `false` | no |
 | dns\_hub\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the DNS hub project. | `string` | `null` | no |
@@ -18,7 +19,7 @@
 | dns\_hub\_project\_budget\_amount | The amount to use as the budget for the DNS hub project. | `number` | `1000` | no |
 | domains\_to\_allow | The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the terraform service account used in the deploy. | `list(string)` | n/a | yes |
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
-| enable\_os\_login\_policy | Enable OS Login Organization Policy. | `bool` | `false` | no |
+| essential\_contacts\_domains\_to\_allow | The list of domains that email addresses added to Essential Contacts can have. | `list(string)` | n/a | yes |
 | essential\_contacts\_language | Essential Contacts preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages. | `string` | `"en"` | no |
 | gcp\_audit\_viewer | Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project. | `string` | `null` | no |
 | gcp\_billing\_admin\_user | Identity that has billing administrator permissions. | `string` | `null` | no |

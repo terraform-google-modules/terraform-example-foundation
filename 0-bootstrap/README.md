@@ -158,7 +158,9 @@ your current Jenkins manager (controller) environment.
 1. (Optional) Run `terraform apply` to verify that state is configured
    correctly. You should see no changes from the previous state.
 
-**Note:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the four service accounts created in this step.
+**Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage. They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
+
+**Note 2:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the four service accounts created in this step.
 
 ## Running Terraform locally
 

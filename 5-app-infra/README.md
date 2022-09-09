@@ -88,15 +88,15 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
    terraform output cloudbuild_project_id
    ```
-1. Clone the policies repo. (This repo has the same name of the repo created in step 1-org, but it is from a different project, you may need to rename the previous one to prevent a collision if you are cloning it in the same folder).
+1. Clone the policies repo. **Note:** This repo has the same name as the repo created in step 1-org, to prevent a collision the command below will clone it in folder gcp-policies-app-infra.
    ```
-   gcloud source repos clone gcp-policies --project=YOUR_INFRA_PIPELINE_PROJECT_ID
+   gcloud source repos clone gcp-policies gcp-policies-app-infra --project=YOUR_INFRA_PIPELINE_PROJECT_ID
    ```
 1. Navigate into the repo. All subsequent steps assume you are running them
-   from the gcp-environments directory. If you run them from another directory,
+   from the gcp-policies-app-infra directory. If you run them from another directory,
    adjust your copy paths accordingly.
    ```
-   cd gcp-policies
+   cd gcp-policies-app-infra
    git checkout -b main
    ```
 1. Copy contents of policy-library to new repo.

@@ -82,6 +82,12 @@ variable "log_export_storage_location" {
   default     = "US"
 }
 
+variable "billing_export_dataset_location" {
+  description = "The location of the dataset for billing data export."
+  type        = string
+  default     = "US"
+}
+
 variable "log_export_storage_force_destroy" {
   description = "(Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present."
   type        = bool

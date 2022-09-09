@@ -17,6 +17,8 @@
 // Must include the domain of the organization you are deploying the foundation.
 domains_to_allow = ["example.com"]
 
+essential_contacts_domains_to_allow = ["@example.com"]
+
 group_org_admins = "gcp-organization-admins@example.com"
 
 group_billing_admins = "gcp-billing-admins@example.com"

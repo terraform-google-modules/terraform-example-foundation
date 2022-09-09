@@ -76,6 +76,10 @@ output "domains_to_allow" {
   value = tolist([var.domain_to_allow])
 }
 
+output "essential_contacts_domains_to_allow" {
+  value = tolist(["@${var.domain_to_allow}"])
+}
+
 output "target_name_server_addresses" {
   value = ["192.168.0.1", "192.168.0.2"]
 }

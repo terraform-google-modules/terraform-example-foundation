@@ -18,7 +18,7 @@
 | dns\_hub\_project\_budget\_amount | The amount to use as the budget for the DNS hub project. | `number` | `1000` | no |
 | domains\_to\_allow | The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the terraform service account used in the deploy. | `list(string)` | n/a | yes |
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
-| enable\_os\_login\_policy | Enable OS Login Organization Policy. | `bool` | `false` | no |
+| essential\_contacts\_domains\_to\_allow | The list of domains that email addresses added to Essential Contacts can have. | `list(string)` | n/a | yes |
 | essential\_contacts\_language | Essential Contacts preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages. | `string` | `"en"` | no |
 | gcp\_audit\_viewer | Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project. | `string` | `null` | no |
 | gcp\_billing\_admin\_user | Identity that has billing administrator permissions. | `string` | `null` | no |

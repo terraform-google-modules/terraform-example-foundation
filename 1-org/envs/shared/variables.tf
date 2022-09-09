@@ -41,12 +41,6 @@ variable "domains_to_allow" {
   type        = list(string)
 }
 
-variable "enable_os_login_policy" {
-  description = "Enable OS Login Organization Policy."
-  type        = bool
-  default     = false
-}
-
 variable "audit_logs_table_expiration_days" {
   description = "Period before tables expire for all audit logs in milliseconds. Default is 30 days."
   type        = number
@@ -322,4 +316,9 @@ variable "essential_contacts_language" {
 variable "backend_bucket" {
   description = "Backend bucket to load remote state information from previous steps."
   type        = string
+}
+
+variable "essential_contacts_domains_to_allow" {
+  description = "The list of domains that email addresses added to Essential Contacts can have."
+  type        = list(string)
 }

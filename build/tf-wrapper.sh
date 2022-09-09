@@ -140,7 +140,7 @@ tf_validate() {
           gcloud source repos clone gcp-policies "${policy_file_path}" --project="${project_id}" || exit 34
           pushd .
           cd "${policy_file_path}"
-          current_branch=$(git branch --show-current)
+          current_branch=$(git symbolic-ref --short HEAD)
           echo "current gcp-policies branch $current_branch"
           if [[ "$current_branch" != "main" ]]; then
             git checkout main || exit 35

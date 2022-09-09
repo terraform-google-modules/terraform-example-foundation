@@ -71,6 +71,8 @@ module "base_env" {
   default_region1                    = local.default_region1
   default_region2                    = local.default_region2
   domain                             = var.domain
+  ingress_policies                   = var.ingress_policies
+  egress_policies                    = var.egress_policies
   enable_partner_interconnect        = false
   base_private_service_cidr          = local.base_private_service_cidr
   base_subnet_primary_ranges         = local.base_subnet_primary_ranges

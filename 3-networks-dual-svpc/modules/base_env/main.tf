@@ -97,6 +97,8 @@ module "restricted_shared_vpc" {
   default_region1                  = var.default_region1
   default_region2                  = var.default_region2
   domain                           = var.domain
+  ingress_policies                 = var.ingress_policies
+  egress_policies                  = var.egress_policies
 
   subnets = [
     {

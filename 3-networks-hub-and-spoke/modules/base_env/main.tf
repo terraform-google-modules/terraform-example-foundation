@@ -95,6 +95,8 @@ module "restricted_shared_vpc" {
   restricted_services               = ["bigquery.googleapis.com", "storage.googleapis.com"]
   members                           = var.members
   private_service_cidr              = var.restricted_private_service_cidr
+  ingress_policies                  = var.ingress_policies
+  egress_policies                   = var.egress_policies
   org_id                            = local.org_id
   bgp_asn_subnet                    = local.bgp_asn_number
   default_region1                   = var.default_region1

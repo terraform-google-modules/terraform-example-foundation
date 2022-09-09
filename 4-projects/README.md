@@ -2,8 +2,7 @@
 
 This repo is part of a multi-part guide that shows how to configure and deploy
 the example.com reference architecture described in
-[Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf)
-(PDF). The following table lists the parts of the guide.
+[Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations). The following table lists the parts of the guide.
 
 <table>
 <tbody>
@@ -129,13 +128,13 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    git commit -m 'Your message'
    ```
 1. Push your plan branch to trigger a plan for all environments. Because the
-   _plan_ branch is not a [named environment branch](./docs/FAQ.md), pushing your _plan_
+   _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch)), pushing your _plan_
    branch triggers _terraform plan_ but not _terraform apply_.
    ```
    git push --set-upstream origin plan
    ```
 1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to production. Because this is a [named environment branch](./docs/FAQ.md#what-is-a-named-branch),
+1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b production
@@ -143,7 +142,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
 1. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. After production has been applied, apply development.
-1. Merge changes to development. Because this is a [named environment branch](./docs/FAQ.md#what-is-a-named-branch),
+1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b development
@@ -151,7 +150,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. After development has been applied, apply non-production.
-1. Merge changes to non-production. Because this is a [named environment branch](./docs/FAQ.md#what-is-a-named-branch),
+1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b non-production
@@ -185,7 +184,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
     ```
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
-    _PROJECT_ID (the cicd project id)
+    _PROJECT_ID (the CI/CD project ID)
     ```
 1. Copy Terraform wrapper script  to the root of your new repository.
    ```
@@ -204,6 +203,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. You need to manually plan and apply only once the `business_unit_1/shared` environment since `development`, `non-production`, and `production` depend on it.
     1. Run `cd ./business_unit_1/shared/`.
     1. Update `backend.tf` with your bucket name from the 0-bootstrap step.
+    1. Export the projects (`terraform-proj-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
     1. Run `terraform init`.
     1. Run `terraform plan` and review output.
     1. Run `terraform apply`.
@@ -221,7 +221,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
    git push --set-upstream origin plan
    ```
-    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
+    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 1. Review the plan output in your Controller's web UI.
 1. Merge changes to production branch.
    ```
@@ -266,6 +266,7 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
+1. Export the projects (`terraform-proj-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
 1. Run `./tf-wrapper.sh init shared`.
 1. Run `./tf-wrapper.sh plan shared` and review output.
 1. Run `./tf-wrapper.sh validate shared $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.

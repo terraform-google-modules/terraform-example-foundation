@@ -21,6 +21,9 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Terraform State Snapshot lock](#terraform-state-snapshot-lock)
 - [Application authenticated using end user credentials](#application-authenticated-using-end-user-credentials)
 - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
+- [Error: Unsupported attribute](#error-unsupported-attribute)
+
+- - -
 
 ### Project quota exceeded
 
@@ -183,6 +186,30 @@ At this time the alternatives are:
 1. To deploy the foundation code from a local machine that supports IPv6.
 
 If you use the workaround, the API list should include the ones that are [allowed](../policy-library/policies/constraints/serviceusage_allow_basic_apis.yaml) in the terraform-example-foundation policy library.
+
+### Error: Unsupported attribute
+
+**Error message:**
+
+```
+Error: Unsupported attribute
+
+  on main.tf line 22, in locals:
+  22:   org_id               = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
+    ├────────────────
+    │ data.terraform_remote_state.bootstrap.outputs is object with no attributes
+
+This object does not have an attribute named "common_config".
+```
+
+**Cause:**
+
+The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage.
+The error means that the Terraform state of the `0-bootstrap` stage was not copied to the Terraform state bucket created in stage `0-bootstrap`.
+
+**Solution:**
+
+Follow the instructions at the end of the [Deploying with Cloud Build](../0-bootstrap/README.md#deploying-with-cloud-build) section in the `0-bootstrap` README to copy the Terraform state to the Cloud Storage bucket created in stage `0-bootstrap` and retry planning/applying the stage you are deploying.
 
 - - -
 

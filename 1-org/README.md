@@ -180,13 +180,13 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    git commit -m 'Your message'
    ```
 1. Push your plan branch to trigger a plan for all environments. Because the
-   _plan_ branch is not a [named environment branch](./docs/FAQ.md), pushing your _plan_
+   _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
    branch triggers _terraform plan_ but not _terraform apply_.
    ```
    git push --set-upstream origin plan
    ```
 1. Review the plan output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to production branch.  Because the _production_ branch is a [named environment branch](./docs/FAQ.md#what-is-a-named-branch),
+1. Merge changes to production branch.  Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b production
@@ -232,7 +232,7 @@ to run the command as the Terraform service account.
     ```
     _TF_SA_EMAIL
     _STATE_BUCKET_NAME
-    _PROJECT_ID (the cicd project id)
+    _PROJECT_ID (the CI/CD project ID)
     ```
 1. Copy Terraform wrapper script to the root of your new repository.
    ```
@@ -253,7 +253,7 @@ to run the command as the Terraform service account.
    git commit -m 'Your message'
    ```
 1. Push your plan branch.
-    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](http://www.jenkins.io) for more details.
+    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
    ```
    git push --set-upstream origin plan
    ```
@@ -286,6 +286,7 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
+1. Export the projects (`terraform-org-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
 1. Run `./tf-wrapper.sh init production`.
 2. Run `./tf-wrapper.sh plan production` and review output.
 3. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.

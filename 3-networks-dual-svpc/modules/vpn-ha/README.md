@@ -8,7 +8,7 @@ If you are not able to use Dedicated Interconnect or Partner Interconnect you ca
 ## Usage
 
 1. Rename `vpn.tf.example` to `vpn.tf` in the environment folder in `3-networks-dual-svpc/envs/<environment>`
-1. Create secret for VPN preshared key `echo 'MY_PSK' | gcloud secrets create VPN_PSK_SECRET_NAME --project ENV_SECRETS_PROJECT --replication-policy=automatic --data-file=-`
+1. Create secret for VPN pre-shared key `echo 'MY_PSK' | gcloud secrets create VPN_PSK_SECRET_NAME --project ENV_SECRETS_PROJECT --replication-policy=automatic --data-file=-`
 1. Update in the file the values for `environment`, `vpn_psk_secret_name`, `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
 1. Verify other default values are valid for your environment.
 

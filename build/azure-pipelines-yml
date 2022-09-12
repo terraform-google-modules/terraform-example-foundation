@@ -1,0 +1,161 @@
+
+trigger:
+  - none
+#****************************** AGENT POOL ***************************
+pool:
+  vmImage: ubuntu-latest
+# *********************************************************************
+
+stages:
+  - stage: Build
+    displayName: Build Terraform Coded
+    jobs:
+      - job: Build
+        displayName: Build-TF-Code
+        steps:
+          - checkout: self
+            persistCredentials: true
+            clean: true
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Terraform Code
+            inputs:
+              targetPath: $(System.DefaultWorkingDirectory)/0-bootstrap
+              artifact: 'terraformBuildArtif'
+  - stage: DownloadAritfact
+    displayName: "DownLoad Artifact"
+    jobs:
+      - job: Build
+        displayName: DownloadCode
+        steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'terraformBuildArtif'
+              buildVersionToDownload: latest
+              targetPath: '$(System.DefaultWorkingDirectory)/0-bootstrap'
+              
+#•••••••••••••••••••••••••••••••••••••••••0-Bootstrap •••••••••••••••••••••••
+  - stage: 'bootstrap'
+    displayName: 0-bootstrap'
+    dependsOn: Build
+    
+    jobs:
+      - deployment: Apply
+        displayName: 0-bootstrap'
+        environment: 0-bootstrap'
+        strategy:
+          runOnce:
+            deploy:
+            
+                steps:
+                  - checkout: self
+                    persistCredentials: true
+                    clean: true
+                  - task: DownloadPipelineArtifact@2
+                    displayName: Download Artifact For Dev Stage
+                    inputs:
+                      buildType: 'current'
+                      artifactName: 'terraformBuildArtif'
+                      buildVersionToDownload: latest
+                      targetPath: '$(System.DefaultWorkingDirectory)/0-bootstrap'
+
+                  - task: TerraformTaskV3@3
+                    displayName: Terraform Init
+                    inputs:
+                      provider: 'gcp'
+                      command: 'init'
+                      workingDirectory: '$(System.DefaultWorkingDirectory)/0-bootstrap'
+                      backendServiceGCP: 'mannual-cft'
+                      backendGCPBucketName: 'bkt-b-tfstate-d48e'
+                      backendGCPPrefix: 'terraform/bootstrap/state'
+                  - task: TerraformTaskV3@3
+                    displayName: Validation
+                    inputs:
+                      provider: 'gcp'
+                      command: 'validate'
+                      workingDirectory: '$(System.DefaultWorkingDirectory)/0-bootstrap'
+                      
+                  - task: TerraformTaskV3@3
+                    displayName: Terraform Plan
+                    inputs:
+                      provider: 'gcp'
+                      command: 'plan'
+                      workingDirectory: '$(System.DefaultWorkingDirectory)/0-bootstrap'
+                      environmentServiceNameGCP: 'mannual-cft'
+                      backendGCPBucketName: 'bkt-b-tfstate-d48e'
+                      backendGCPPrefix: 'terraform/bootstrap/state'
+   #...................1-ORG.............................                   
+  - stage: 'org'
+    displayName: 1-org'
+    dependsOn: Build
+    
+    jobs:
+      - deployment: Apply
+        displayName: 1-org'
+        environment: 1-org'
+        strategy:
+          runOnce:
+            deploy:
+            
+                steps:
+                  - checkout: self
+                    persistCredentials: true
+                    clean: true
+                  - task: DownloadPipelineArtifact@2
+                    displayName: Download Artifact For Dev Stage
+                    inputs:
+                      buildType: 'current'
+                      artifactName: 'terraformBuildArtif'
+                      buildVersionToDownload: latest
+                      targetPath: '$(System.DefaultWorkingDirectory)/1-org'
+
+                  - task: TerraformTaskV3@3
+                    displayName: Terraform Init
+                    inputs:
+                      provider: 'gcp'
+                      command: 'init'
+                      workingDirectory: '$(System.DefaultWorkingDirectory)/1-org'
+                      backendServiceGCP: 'mannual-cft'
+                      backendGCPBucketName: 'bkt-b-tfstate-d48e'
+                      backendGCPPrefix: 'terraform/bootstrap/state'
+            #      - task: Bash@3
+             #       inputs:
+              #       filePath: 'build/tf-wrapper.sh'
+  
+                  - task: TerraformTaskV3@3
+                    displayName: Validation
+                    inputs:
+                      provider: 'gcp'
+                      command: 'validate'
+                      workingDirectory: '$(System.DefaultWorkingDirectory)/1-org'
+           #       - task: Bash@3
+            #        inputs:
+             #         filePath: 'build/tf-wrapper.sh'
+                  - task: TerraformTaskV3@3
+                    displayName: plan
+                    inputs:
+                          provider: 'gcp'
+                          command: 'plan'
+                          workingDirectory: '$(System.DefaultWorkingDirectory)/1-org'
+                          environmentServiceNameGCP: 'mannual-cft'
+                          backendGCPBucketName: 'bkt-b-tfstate-d48e'
+                          backendGCPPrefix: 'terraform/bootstrap/state'
+         #         - task: Bash@3
+          #          inputs:
+           #           filePath: 'build/tf-wrapper.sh'        
+                  - task: TerraformTaskV3@3
+                    displayName: apply
+                    inputs:
+                      provider: 'gcp'
+                      command: 'apply'
+                      workingDirectory: '$(System.DefaultWorkingDirectory)/1-org'
+                      environmentServiceNameGCP: 'mannual-cft'
+                      backendGCPBucketName: 'bkt-b-tfstate-d48e'
+                      backendGCPPrefix: 'terraform/bootstrap/state'
+          #        - task: Bash@3
+           #         inputs:
+            #          filePath: 'build/tf-wrapper.sh'  
+                     
+                      
+
+

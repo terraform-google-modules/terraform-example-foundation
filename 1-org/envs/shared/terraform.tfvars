@@ -15,21 +15,23 @@
  */
 
 // Must include the domain of the organization you are deploying the foundation.
-domains_to_allow = ["example.com"]
+domains_to_allow = ["gcp-lz-endava.com"]
 
-essential_contacts_domains_to_allow = ["@example.com"]
+//essential_contacts_domains_to_allow = ["@example.com"]
 
-group_org_admins = "gcp-organization-admins@example.com"
+group_org_admins = "group_org_admins@gcp-lz-endava.com"
 
-group_billing_admins = "gcp-billing-admins@example.com"
+group_billing_admins = "group_billing_admins@gcp-lz-endava.com"
 
-billing_data_users = "gcp-billing-data-users@example.com"
+//billing_data_users = "gcp-billing-data-users@example.com"
 
-audit_data_users = "gcp-security-admins@example.com"
+audit_data_users = "group_security_admins@gcp-lz-endava.com"
 
 scc_notification_name = "scc-notify"
+terraform_service_account = "org-terraform@prj-b-seed-5db5.iam.gserviceaccount.com"
 
-backend_bucket = "<TERRAFORM-STATE-BUCKET>"
+default_region = "europe-west2"
+backend_bucket = "bkt-b-tfstate-d48e"
 
 //scc_notification_filter = "state=\\\"ACTIVE\\\""
 

@@ -20,7 +20,7 @@
 
 module "org_audit_logs" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.1"
+  version                     = "10.1.1"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "deprivilege"
@@ -46,7 +46,7 @@ module "org_audit_logs" {
 
 module "org_billing_logs" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.1"
+  version                     = "10.1.1"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "deprivilege"
@@ -76,7 +76,7 @@ module "org_billing_logs" {
 
 module "org_secrets" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.1"
+  version                     = "10.1.1"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "deprivilege"
@@ -106,7 +106,7 @@ module "org_secrets" {
 
 module "interconnect" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.1"
+  version                     = "10.1.1"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "deprivilege"
@@ -136,7 +136,7 @@ module "interconnect" {
 
 module "scc_notifications" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.1"
+  version                     = "10.1.1"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "deprivilege"
@@ -166,7 +166,7 @@ module "scc_notifications" {
 
 module "dns_hub" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.1"
+  version                     = "10.1.1"
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
   default_service_account     = "deprivilege"
@@ -204,7 +204,7 @@ module "dns_hub" {
 
 module "base_network_hub" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.1"
+  version                     = "10.1.1"
   count                       = var.enable_hub_and_spoke ? 1 : 0
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account
@@ -243,7 +243,7 @@ module "base_network_hub" {
 
 module "restricted_network_hub" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 10.1"
+  version                     = "10.1.1"
   count                       = var.enable_hub_and_spoke ? 1 : 0
   random_project_id           = "true"
   impersonate_service_account = var.terraform_service_account

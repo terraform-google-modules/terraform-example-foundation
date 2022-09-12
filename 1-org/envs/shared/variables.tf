@@ -37,7 +37,7 @@ variable "audit_data_users" {
 }
 
 variable "domains_to_allow" {
-  description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the terraform service account used in the deploy."
+  description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the TERRAFORM SERVICE ACCOUNT used in the deploy."
   type        = list(string)
 }
 
@@ -320,7 +320,7 @@ variable "essential_contacts_language" {
 }
 
 variable "backend_bucket" {
-  description = "Backend bucket to load remote state information from previous steps."
+  description = "Backend bucket to load REMOTE STATE DATA from previous steps."
   type        = string
 }
 

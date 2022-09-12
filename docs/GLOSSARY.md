@@ -24,3 +24,7 @@ It is located under folder `bootstrap`.
 A project created in step 4-projects to host a Cloud Build pipeline configured to manage infrastructure **within projects**.
 A separate pipeline exists for each of the business units and it can be configured to use a service account that has limited permissions to deploy into certain projects created in 4-projects.
 They are located under folder `common`.
+
+## Terraform Remote State Data
+
+A Terraform Data Source that enables retrieving root module output values. In the Terraform Example Foundation context, it reads values from 0-bootstrap step preventing users from replicating values along other steps.

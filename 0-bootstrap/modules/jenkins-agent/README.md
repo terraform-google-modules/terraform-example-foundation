@@ -76,9 +76,9 @@ module "jenkins_bootstrap" {
 | service\_account\_prefix | Name prefix to use for service accounts. | `string` | `"sa"` | no |
 | storage\_bucket\_labels | Labels to apply to the storage bucket. | `map(string)` | `{}` | no |
 | storage\_bucket\_prefix | Name prefix to use for storage buckets. | `string` | `"bkt"` | no |
-| terraform\_sa\_name | Fully-qualified name of the terraform service account. It must be supplied by the seed project | `string` | n/a | yes |
-| terraform\_service\_account | Email for terraform service account. It must be supplied by the seed project | `string` | n/a | yes |
-| terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the seed project | `string` | n/a | yes |
+| terraform\_sa\_name | Fully-qualified name of the Terraform Service Account. It must be supplied by the Seed Project | `string` | n/a | yes |
+| terraform\_service\_account | Email for Terraform Service Account. It must be supplied by the Seed Project | `string` | n/a | yes |
+| terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the Seed Project | `string` | n/a | yes |
 | terraform\_version | Default terraform version. | `string` | `"0.13.7"` | no |
 | terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"` | no |
 | tunnel0\_bgp\_peer\_address | BGP peer address for tunnel 0 | `string` | n/a | yes |
@@ -91,7 +91,7 @@ module "jenkins_bootstrap" {
 
 | Name | Description |
 |------|-------------|
-| cicd\_project\_id | Project where the cicd pipeline (Jenkins Agents and terraform builder container image) reside. |
+| cicd\_project\_id | Project where the Foundation Pipeline (Jenkins Agents and terraform builder container image) reside. |
 | gcs\_bucket\_jenkins\_artifacts | Bucket used to store Jenkins artifacts in Jenkins project. |
 | jenkins\_agent\_gce\_instance\_id | Jenkins Agent GCE Instance id. |
 | jenkins\_agent\_sa\_email | Email for privileged custom service account for Jenkins Agent GCE instance. |

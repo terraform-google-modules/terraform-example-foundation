@@ -10,7 +10,7 @@ the example.com reference architecture described in
 <td><a href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
-step also configures a CI/CD pipeline for foundations code in subsequent
+step also configures a Foundation Pipeline for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
@@ -200,7 +200,7 @@ If you received a `PERMISSION_DENIED` error running the `gcloud access-context-m
 ```
 --impersonate-service-account=terraform-org-sa@<SEED_PROJECT_ID>.iam.gserviceaccount.com
 ```
-to run the command as the Terraform service account.
+to run the command as the Terraform Service Account.
 
 ### Deploying with Jenkins
 

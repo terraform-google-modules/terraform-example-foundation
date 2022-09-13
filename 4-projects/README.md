@@ -166,7 +166,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    git clone <YOUR_NEW_REPO-4-projects>
    ```
 1. Navigate into the repo and change to a non-production branch. All subsequent
-   steps assume you are running them from the gcp-environments directory. If
+   steps assume you are running them from the <YOUR_NEW_REPO-4-projects> directory. If
    you run them from another directory, adjust your copy paths accordingly.
    ```
    cd YOUR_NEW_REPO_CLONE-4-projects

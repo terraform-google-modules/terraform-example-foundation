@@ -71,7 +71,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "dns-forwarding-zone" {
   source  = "terraform-google-modules/cloud-dns/google"
-  version = "3.0.2"
+  version = "4.1.0"
 
   project_id = local.dns_hub_project_id
   type       = "forwarding"
@@ -90,7 +90,7 @@ module "dns-forwarding-zone" {
 
 module "dns_hub_region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 2.0"
+  version = "~> 3.0"
   name    = "cr-c-dns-hub-${local.default_region1}-cr1"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
@@ -103,7 +103,7 @@ module "dns_hub_region1_router1" {
 
 module "dns_hub_region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 2.0"
+  version = "~> 3.0"
   name    = "cr-c-dns-hub-${local.default_region1}-cr2"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
@@ -116,7 +116,7 @@ module "dns_hub_region1_router2" {
 
 module "dns_hub_region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 2.0"
+  version = "~> 3.0"
   name    = "cr-c-dns-hub-${local.default_region2}-cr3"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
@@ -129,7 +129,7 @@ module "dns_hub_region2_router1" {
 
 module "dns_hub_region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 2.0"
+  version = "~> 3.0"
   name    = "cr-c-dns-hub-${local.default_region2}-cr4"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name

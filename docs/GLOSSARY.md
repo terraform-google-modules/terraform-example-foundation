@@ -27,4 +27,5 @@ They are located under folder `common`.
 
 ## Terraform Remote State Data
 
-A Terraform Data Source that enables retrieving root module output values. In the Terraform Example Foundation context, it reads values from 0-bootstrap step preventing users from replicating values along other steps.
+A Terraform Data Source that retrieves output values from a remote [Backend Configuration](https://www.terraform.io/language/settings/backends/configuration).
+In the Terraform Example Foundation context, it reads output values from previous steps like `0-bootstrap` so that users don't need to provide again values given as inputs on previous steps or find the values/attributes of resources created in previous steps.

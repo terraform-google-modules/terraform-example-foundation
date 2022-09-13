@@ -35,7 +35,7 @@ default_region = "us-central1"
 // The folder must already exist.
 //parent_folder = "01234567890"
 
-// Optional - for enabling the automatic groups creation, uncoment the groups
+// Optional - for enabling the automatic groups creation, uncomment the groups
 // variable and update the values with the desired group names
 //groups = {
 //  create_groups = true,

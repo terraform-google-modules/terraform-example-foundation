@@ -146,7 +146,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    The message `warning: You appear to have cloned an empty repository.` is
    normal and can be ignored.
 1. Navigate into the repo and change to a non-production branch. All subsequent
-   steps assume you are running them from the gcp-environments directory. If
+   steps assume you are running them from the gcp-org directory. If
    you run them from another directory, adjust your copy paths accordingly.
    ```
    cd gcp-org
@@ -209,7 +209,7 @@ to run the command as the Terraform service account.
    git clone <YOUR_NEW_REPO-1-org>
    ```
 1. Navigate into the repo and change to a non-production branch. All subsequent
-   steps assume you are running them from the gcp-environments directory. If
+   steps assume you are running them from the <YOUR_NEW_REPO-1-org> directory. If
    you run them from another directory, adjust your copy paths accordingly.
    ```
    cd YOUR_NEW_REPO_CLONE-1-org

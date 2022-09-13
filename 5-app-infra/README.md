@@ -121,7 +121,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    gcloud source repos clone bu1-example-app --project=YOUR_INFRA_PIPELINE_PROJECT_ID
    ```
 1. Navigate into the repo. All subsequent steps assume you are running them
-   from the gcp-environments directory. If you run them from another directory,
+   from the bu1-example-app directory. If you run them from another directory,
    adjust your copy paths accordingly.
    ```
    cd bu1-example-app

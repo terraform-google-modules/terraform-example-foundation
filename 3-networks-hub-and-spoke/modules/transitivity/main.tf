@@ -31,7 +31,7 @@ module "service_account" {
 
 module "templates" {
   source         = "terraform-google-modules/vm/google//modules/instance_template"
-  version        = "7.8.0"
+  version        = "~> 7.8"
   for_each       = toset(var.regions)
   can_ip_forward = true
   disk_size_gb   = 10
@@ -78,7 +78,7 @@ module "migs" {
 
 module "ilbs" {
   source                  = "GoogleCloudPlatform/lb-internal/google"
-  version                 = "~> 5.0.0"
+  version                 = "~> 5.0"
   for_each                = toset(var.regions)
   region                  = each.key
   name                    = each.key

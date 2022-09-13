@@ -26,7 +26,7 @@ resource "google_service_account" "compute_engine_service_account" {
 
 module "instance_template" {
   source       = "terraform-google-modules/vm/google//modules/instance_template"
-  version      = "7.8.0"
+  version      = "~> 7.8"
   machine_type = var.machine_type
   region       = var.region
   project_id   = data.google_project.env_project.project_id
@@ -39,7 +39,7 @@ module "instance_template" {
 
 module "compute_instance" {
   source            = "terraform-google-modules/vm/google//modules/compute_instance"
-  version           = "7.8.0"
+  version           = "~> 7.8"
   region            = var.region
   subnetwork        = data.google_compute_subnetwork.subnetwork.self_link
   num_instances     = var.num_instances

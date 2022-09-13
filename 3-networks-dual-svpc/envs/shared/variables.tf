@@ -54,7 +54,7 @@ variable "bgp_asn_dns" {
 
 variable "target_name_server_addresses" {
   description = "List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones."
-  type        = list(string)
+  type        = list(map(any))
 }
 
 variable "restricted_hub_windows_activation_enabled" {

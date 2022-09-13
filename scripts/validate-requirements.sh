@@ -21,7 +21,7 @@
 # Expected versions of the installers
 TF_VERSION="1.0.0"
 GCLOUD_SDK_VERSION="391.0.0"
-GIT_VERSION="2.20.1"
+GIT_VERSION="2.28.0"
 
 # Expected roles
 ORGANIZATION_LEVEL_ROLES=("roles/resourcemanager.folderCreator" "roles/resourcemanager.organizationAdmin" "roles/orgpolicy.policyAdmin")

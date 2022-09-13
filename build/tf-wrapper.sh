@@ -140,6 +140,10 @@ tf_validate() {
           gcloud source repos clone gcp-policies "${policy_file_path}" --project="${project_id}" || exit 34
           pushd .
           cd "${policy_file_path}"
+          # Commented command below works only on Git 2.22.0+
+          # current_branch=$(git branch --show-current)
+          # As Cloud Build is based on step 4-projects docker image having
+          # git version 2.20.1 installed the command below keeps compatibility
           current_branch=$(git symbolic-ref --short HEAD)
           echo "current gcp-policies branch $current_branch"
           if [[ "$current_branch" != "main" ]]; then

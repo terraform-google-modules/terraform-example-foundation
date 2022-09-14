@@ -278,13 +278,13 @@ to run the command as the Terraform service account.
    cd envs/shared
    mv terraform.example.tfvar terraform.tfvar
    ```
-1. Update the file with values from your environment and bootstrap. Use `terraform output` to get values 0-bootstrap output.
+1. Update the file with values from your environment and 0-bootstrap output.
+1. Use `terraform output` to get the backend bucket and networks step Terraform service account (when using Hub and Spoke architecture) values from 0-bootstrap output.
    ```
    terraform -chdir="../../../0-bootstrap/" output gcs_bucket_tfstate
-   terraform -chdir="../../../0-bootstrap/" output cloudbuild_project_id
-   terraform -chdir="../../../0-bootstrap/" output organization_step_terraform_service_account_email
+   terraform -chdir="../../../0-bootstrap/" output networks_step_terraform_service_account_email
    ```
-1. Update `backend.tf` with your bucket from bootstrap.
+1. Also Update `backend.tf` with your backend bucket from bootstrap.
    ```
    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
    ```
@@ -294,10 +294,17 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
-1. Export the organization step (`terraform-org-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"` before running the Terraform wrapper script.
+1. Use `terraform output` to get the Cloud Build project ID and the Organization Step Terraform Service Account (to configure impersonation) from 0-bootstrap output.
+   ```
+   CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../../../0-bootstrap/" output cloudbuild_project_id)
+   echo ${CLOUD_BUILD_PROJECT_ID}
+
+   GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../../../0-bootstrap/" output organization_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
 1. Run `./tf-wrapper.sh init production`.
 2. Run `./tf-wrapper.sh plan production` and review output.
-3. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
+3. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}` and check for violations.
 4. Run `./tf-wrapper.sh apply production`.
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan production` before run `./tf-wrapper.sh apply production`.

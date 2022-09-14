@@ -267,14 +267,22 @@ to run the command as the Terraform service account.
 
 ### Running Terraform locally
 
-1. Change into 1-org folder.
-1. Run `cp ../build/tf-wrapper.sh .`
-1. Run `chmod 755 ./tf-wrapper.sh`
-1. Change into 1-org/envs/shared/ folder.
-1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap.
-1. Obtain your bucket name by running the following command in the 0-bootstrap folder.
+1. Change into `1-org` folder, copy the Terraform wrapper script and ensure it can be executed.
    ```
-   terraform output gcs_bucket_tfstate
+   cd 1-org
+   cp ../build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
+1. Change into `envs/shared` folder and rename `terraform.example.tfvars` to `terraform.tfvars`.
+   ```
+   cd envs/shared
+   mv terraform.example.tfvar terraform.tfvar
+   ```
+1. Update the file with values from your environment and bootstrap. Use `terraform output` to get values 0-bootstrap output.
+   ```
+   terraform -chdir="../../../0-bootstrap/" output gcs_bucket_tfstate
+   terraform -chdir="../../../0-bootstrap/" output cloudbuild_project_id
+   terraform -chdir="../../../0-bootstrap/" output organization_step_terraform_service_account_email
    ```
 1. Update `backend.tf` with your bucket from bootstrap.
    ```
@@ -286,7 +294,7 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
-1. Export the projects (`terraform-org-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
+1. Export the organization step (`terraform-org-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"` before running the Terraform wrapper script.
 1. Run `./tf-wrapper.sh init production`.
 2. Run `./tf-wrapper.sh plan production` and review output.
 3. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.

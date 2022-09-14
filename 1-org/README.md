@@ -307,7 +307,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output organization_step_terraform_service_account_email | tr -d '"')
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
-1. Return to
 1. Run `./tf-wrapper.sh init production` .
 2. Run `./tf-wrapper.sh plan production` and review output.
 3. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}` and check for violations.

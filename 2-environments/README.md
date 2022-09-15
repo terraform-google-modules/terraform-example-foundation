@@ -222,7 +222,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
    ```
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output gcs_bucket_tfstate | tr -d '"')
-   echo ${backend_bucket}
+    echo "backend_bucket = ${backend_bucket}"
    ```
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
    ```

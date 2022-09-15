@@ -282,8 +282,10 @@ to run the command as the Terraform service account.
 1. Use `terraform output` to get the backend bucket and networks step Terraform Service Account (when using Hub and Spoke architecture) values from 0-bootstrap output.
    ```
    export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output gcs_bucket_tfstate | tr -d '"')
-   echo ${backend_bucket}
-   terraform -chdir="../../../0-bootstrap/" output networks_step_terraform_service_account_email | tr -d '"'
+    echo "backend_bucket = ${backend_bucket}"
+
+   networks_step_terraform_sa_email=$(terraform -chdir="../../../0-bootstrap/" output networks_step_terraform_service_account_email | tr -d '"')
+   echo "networks_step_terraform_service_account_email = ${networks_step_terraform_sa_email}"
    ```
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
    ```

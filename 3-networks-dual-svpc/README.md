@@ -276,17 +276,37 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 
 ### Run Terraform locally
 
-1. Change into the 3-networks-dual-svpc folder.
-1. Run `cp ../build/tf-wrapper.sh .`
-1. Run `chmod 755 ./tf-wrapper.sh`.
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
-1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with the `target_name_server_addresses`.
-1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
-1. Update `backend.tf` with your bucket name from the bootstrap step.
+1. Change into `3-networks-dual-svpc` folder, copy the Terraform wrapper script and ensure it can be executed.
    ```
-   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
+   cd 3-networks-dual-svpc
+   cp ../build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
    ```
-   You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
+   ```
+   mv common.auto.example.tfvars common.auto.tfvars
+   mv shared.auto.example.tfvars shared.auto.tfvars
+   mv access_context.auto.example.tfvars access_context.auto.tfvars
+   ```
+1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
+1. Update `shared.auto.tfvars` file with the `target_name_server_addresses`.
+1. Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
+1. Use `terraform output` to get the backend bucket and networks step Terraform Service Account values from 0-bootstrap output.
+   ```
+   export ORGANIZATION_ID=$(terraform  -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' | tr -d '"')
+   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output gcs_bucket_tfstate | tr -d '"')
+   echo "backend_bucket = ${backend_bucket}"
+
+   export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output networks_step_terraform_service_account_email | tr -d '"')
+   echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
+   ```
+1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
+   ```
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   ```
 
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks-dual-svpc step
@@ -294,22 +314,34 @@ and only the corresponding environment is applied.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
-1. Export the network (`terraform-net-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
+1. Use `terraform output` to get the Cloud Build project ID and the environment step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+   ```
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output cloudbuild_project_id | tr -d '"')
+   echo ${CLOUD_BUILD_PROJECT_ID}
+
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output networks_step_terraform_service_account_email | tr -d '"')
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
 1. Run `./tf-wrapper.sh init shared`.
 1. Run `./tf-wrapper.sh plan shared` and review output.
-1. Run `./tf-wrapper.sh validate shared $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
+1. Run `./tf-wrapper.sh validate shared $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}` and check for violations.
 1. Run `./tf-wrapper.sh apply shared`.
 1. Run `./tf-wrapper.sh init production`.
 1. Run `./tf-wrapper.sh plan production` and review output.
-1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
+1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}` and check for violations.
 1. Run `./tf-wrapper.sh apply production`.
 1. Run `./tf-wrapper.sh init non-production`.
 1. Run `./tf-wrapper.sh plan non-production` and review output.
-1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
+1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}` and check for violations.
 1. Run `./tf-wrapper.sh apply non-production`.
 1. Run `./tf-wrapper.sh init development`.
 1. Run `./tf-wrapper.sh plan development` and review output.
-1. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
+1. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}` and check for violations.
 1. Run `./tf-wrapper.sh apply development`.
 
 If you received any errors or made any changes to the Terraform config or any `.tfvars`you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.
+
+Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+```
+unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+```

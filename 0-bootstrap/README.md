@@ -63,7 +63,7 @@ The purpose of this step is to bootstrap a Google Cloud organization, creating a
 To run the commands described in this document, you need to have the following
 installed:
 
-- The [Google Cloud SDK](https://cloud.google.com/sdk/install) version 391.0.0 or later
+- The [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 1.0.0
 

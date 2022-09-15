@@ -25,7 +25,7 @@ A project created in step 4-projects to host a Cloud Build pipeline configured t
 A separate pipeline exists for each of the business units and it can be configured to use a service account that has limited permissions to deploy into certain projects created in 4-projects.
 They are located under folder `common`.
 
-## Terraform Remote State Data
+## Terraform Remote State Data Source
 
 A Terraform Data Source that retrieves output values from a remote [Backend Configuration](https://www.terraform.io/language/settings/backends/configuration).
 In the Terraform Example Foundation context, it reads output values from previous steps like `0-bootstrap` so that users don't need to provide again values given as inputs on previous steps or find the values/attributes of resources created in previous steps.

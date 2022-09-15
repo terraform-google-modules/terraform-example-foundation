@@ -1,6 +1,6 @@
 # 0-bootstrap - deploying a Jenkins-compatible environment
 
-The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also guides you on how to configure a CICD project to host a Jenkins Agent, which connects to your existing Jenkins Controller infrastructure & your own Git repos (which might live on-prem). The Jenkins Agent will run Foundation Pipelines for foundations code in subsequent stages.
+The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also guides you on how to configure a CICD project to host a Jenkins Agent, which connects to your existing Jenkins Controller infrastructure & your own Git repos (which might live on-prem). The Jenkins Agent will run [CI/CD Pipelines](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages.
 
 Another CICD option is to use Cloud Build & Cloud Source Repos. If you don't have a Jenkins implementation and don't want one, then we recommend you to [use the Cloud Build module](./README.md) instead.
 

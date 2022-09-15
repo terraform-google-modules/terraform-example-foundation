@@ -10,7 +10,7 @@ the example.com reference architecture described in
 <td><a href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
-step also configures a Foundation Pipeline for foundations code in subsequent
+step also configures a <a href="../docs/GLOSSARY.md#foundation-cicd-pipeline">CI/CD Pipeline</a> for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
@@ -61,7 +61,7 @@ To enable deployment via this pipeline, the projects deployed should [enable](ht
 
 This enables the Cloud Build service account to impersonate the project service account and use it to deploy infrastructure. The roles required for the project SA can also be [managed](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/business_unit_1/development/example_base_shared_vpc_project.tf#L30) via `sa_roles`. (Note: This requires per project SA impersonation. If you would like to have a single SA managing an environment and all associated projects, that is also possible by [granting](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/modules/single_project/main.tf#L62-L68) `roles/iam.serviceAccountTokenCreator` to an SA with the right roles in `4-projects/env`.)
 
-There is also a [Source Repository](https://cloud.google.com/source-repositories) configured with build triggers similar to the [foundation pipeline](https://github.com/terraform-google-modules/terraform-example-foundation#0-bootstrap) setup in `0-bootstrap`.
+There is also a [Source Repository](https://cloud.google.com/source-repositories) configured with build triggers similar to the [CI/CD Pipeline](https://github.com/terraform-google-modules/terraform-example-foundation#0-bootstrap) setup in `0-bootstrap`.
 This Compute Engine instance is created using the base network from step `3-networks` and is used to access private services.
 
 ## Prerequisites

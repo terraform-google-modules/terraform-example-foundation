@@ -10,7 +10,7 @@ the example.com reference architecture described in
 <td>0-bootstrap (this file)</td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
-step also configures a Foundation Pipeline for foundations code in subsequent
+step also configures a <a href="../docs/GLOSSARY.md#foundation-cicd-pipeline">CI/CD Pipeline</a> for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
@@ -56,7 +56,7 @@ file.
 
 ## Purpose
 
-The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a Foundation Pipeline for foundations code in subsequent stages. The Foundation Pipeline can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
+The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages. The [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
 
 ## Prerequisites
 

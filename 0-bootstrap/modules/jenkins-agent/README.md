@@ -91,7 +91,7 @@ module "jenkins_bootstrap" {
 
 | Name | Description |
 |------|-------------|
-| cicd\_project\_id | Project where the Foundation Pipeline (Jenkins Agents and terraform builder container image) reside. |
+| cicd\_project\_id | Project where the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) (Jenkins Agents and terraform builder container image) reside. |
 | gcs\_bucket\_jenkins\_artifacts | Bucket used to store Jenkins artifacts in Jenkins project. |
 | jenkins\_agent\_gce\_instance\_id | Jenkins Agent GCE Instance id. |
 | jenkins\_agent\_sa\_email | Email for privileged custom service account for Jenkins Agent GCE instance. |

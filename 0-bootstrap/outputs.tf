@@ -97,7 +97,7 @@ output "group_billing_admins" {
    ---------------------------------------- */
 //// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 //output "cicd_project_id" {
-//  description = "Project where the Foundation Pipeline (Jenkins Agents and terraform builder container image) reside."
+//  description = "Project where the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) (Jenkins Agents and terraform builder container image) reside."
 //  value       = module.jenkins_bootstrap.cicd_project_id
 //}
 //

@@ -12,7 +12,7 @@ This service account is used to run Terraform by Cloud Build and Jenkins using s
 
 Seed Project created in the 0-bootstrap step. It is the project where the Terraform Service Account (`terraform_service_account`) is created and hosts the GCS bucket used to store Terraform state of each environment in subsequent phases.
 
-## Foundation Pipeline
+## Foundation CI/CD Pipeline
 
 A project created in step 0-bootstrap to manage infrastructure **within the organization**.
 The pipeline can use **Cloud Build** or **Jenkins** depending or your context and Terraform is executed using the seed project service account.

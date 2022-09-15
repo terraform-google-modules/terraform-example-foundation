@@ -78,7 +78,7 @@ This could be due to init.defaultBranch being set to something other than
 
 **Error message:**
 
-When running the build for the branch `production` in step 3-networks in your **Foundation Pipeline** the build fails with:
+When running the build for the branch `production` in step 3-networks in your **Foundation CI/CD Pipeline** the build fails with:
 
 ```
 state snapshot was created by Terraform v1.x.x, which is newer than current v1.0.0; upgrade to Terraform v1.x.x or greater to work with this state
@@ -86,7 +86,7 @@ state snapshot was created by Terraform v1.x.x, which is newer than current v1.0
 
 **Cause:**
 
-The manual deploy step for the shared environment in [3-networks](../3-networks#deploying-with-cloud-build) was executed with a Terraform version newer than version v1.0.0 used in the **Foundation Pipeline**.
+The manual deploy step for the shared environment in [3-networks](../3-networks#deploying-with-cloud-build) was executed with a Terraform version newer than version v1.0.0 used in the **Foundation CI/CD Pipeline**.
 
 **Solution:**
 

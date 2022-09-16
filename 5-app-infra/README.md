@@ -243,17 +243,44 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
    echo ${INFRA_PIPELINE_PROJECT_ID}
    ```
-1. Run `./tf-wrapper.sh init production`.
-1. Run `./tf-wrapper.sh plan production` and review output.
-1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}` and check for violations.
-1. Run `./tf-wrapper.sh apply production`.
-1. Run `./tf-wrapper.sh init non-production`.
-1. Run `./tf-wrapper.sh plan non-production` and review output.
-1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}` and check for violations.
-1. Run `./tf-wrapper.sh apply non-production`.
-1. Run `./tf-wrapper.sh init development`.
-1. Run `./tf-wrapper.sh plan development` and review output.
-1. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}` and check for violations.
-1. Run `./tf-wrapper.sh apply development`.
+1. Run `init` and `plan` and review output for environment production.
+   ```
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
+   ```
+1. Run `apply` production.
+   ```
+   ./tf-wrapper.sh apply production
+   ```
+1. Run `init` and `plan` and review output for environment non-production.
+   ```
+   ./tf-wrapper.sh init non-production
+   ./tf-wrapper.sh plan non-production
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
+   ```
+1. Run `apply` non-production.
+   ```
+   ./tf-wrapper.sh apply non-production
+   ```
+1. Run `init` and `plan` and review output for environment development.
+   ```
+   ./tf-wrapper.sh init development
+   ./tf-wrapper.sh plan development
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate development $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
+   ```
+1. Run `apply` development.
+   ```
+   ./tf-wrapper.sh apply development
+   ```
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.

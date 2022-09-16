@@ -309,10 +309,19 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw organization_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
-1. Run `./tf-wrapper.sh init production` .
-2. Run `./tf-wrapper.sh plan production` and review output.
-3. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}` and check for violations.
-4. Run `./tf-wrapper.sh apply production` .
+1. Run `init` and `plan` and review output.
+   ```
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
+1. Run `apply` production.
+   ```
+   ./tf-wrapper.sh apply production
+   ```
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan production` before run `./tf-wrapper.sh apply production`.
 

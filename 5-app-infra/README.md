@@ -203,9 +203,9 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Update files `bu1-development.auto.tfvars`, `bu1-non-production.auto.tfvars`, and `bu1-production.auto.tfvars` with values from 4-projects output.
 1. Use `terraform output` to get the project service account values from 4-projects output.
    ```
-   export dev_sa=$(terraform -chdir="../4-projects/business_unit_1/development/"  output base_shared_vpc_project_sa| tr -d '"')
-   export non_prod_sa=$(terraform -chdir="../4-projects/business_unit_1/non-production/"  output base_shared_vpc_project_sa| tr -d '"')
-   export prod_sa=$(terraform -chdir="../4-projects/business_unit_1/production/"  output base_shared_vpc_project_sa| tr -d '"')
+   export dev_sa=$(terraform -chdir="../4-projects/business_unit_1/development/" output -raw base_shared_vpc_project_sa)
+   export non_prod_sa=$(terraform -chdir="../4-projects/business_unit_1/non-production/" output -raw base_shared_vpc_project_sa)
+   export prod_sa=$(terraform -chdir="../4-projects/business_unit_1/production/" output -raw base_shared_vpc_project_sa)
 
    echo "development project_service_account = ${dev_sa}"
    echo "non-production project_service_account = ${non_prod_sa}"
@@ -217,9 +217,9 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    member="user:$(gcloud auth list --filter="status=ACTIVE" --format="value(account)")"
    echo ${member}
 
-   dev_project=$(terraform -chdir="../4-projects/business_unit_1/development/"  output base_shared_vpc_project| tr -d '"')
-   non_prod_project=$(terraform -chdir="../4-projects/business_unit_1/non-production/"  output base_shared_vpc_project| tr -d '"')
-   prod_project=$(terraform -chdir="../4-projects/business_unit_1/production/"  output base_shared_vpc_project| tr -d '"')
+   dev_project=$(terraform -chdir="../4-projects/business_unit_1/development/" output -raw base_shared_vpc_project)
+   non_prod_project=$(terraform -chdir="../4-projects/business_unit_1/non-production/" output -raw base_shared_vpc_project)
+   prod_project=$(terraform -chdir="../4-projects/business_unit_1/production/" output -raw base_shared_vpc_project)
 
    gcloud iam service-accounts add-iam-policy-binding "${dev_sa}" --project "${dev_project}" --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
    gcloud iam service-accounts add-iam-policy-binding "${non_prod_sa}" --project "${non_prod_project}" --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
@@ -227,7 +227,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
 1. Update `backend.tf` with your bucket from the infra pipeline example.
    ```
-   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/"  output -json state_buckets | jq '.[0]' | tr -d '"')
+   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq '.[0]' | tr -d '"')
    echo "backend_bucket = ${backend_bucket}"
 
    for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
@@ -240,7 +240,7 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 
 1. Use `terraform output` to get the Infra Pipeline Project ID from 4-projects output.
    ```
-   export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../4-projects/business_unit_1/shared/"  output cloudbuild_project_id | tr -d '"')
+   export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
    echo ${INFRA_PIPELINE_PROJECT_ID}
    ```
 1. Run `./tf-wrapper.sh init production`.

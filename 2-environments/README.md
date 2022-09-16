@@ -221,8 +221,8 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Update the file with values from your environment and 0-bootstrap output.See any of the envs folder [README.md](./envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
 1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
    ```
-   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output gcs_bucket_tfstate | tr -d '"')
-    echo "backend_bucket = ${backend_bucket}"
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
    ```
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
    ```
@@ -236,10 +236,10 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 
 1. Use `terraform output` to get the Cloud Build project ID and the environment step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
    ```
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output cloudbuild_project_id | tr -d '"')
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output environment_step_terraform_service_account_email | tr -d '"')
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw environment_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 1. Run `./tf-wrapper.sh init development` .

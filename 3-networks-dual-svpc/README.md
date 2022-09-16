@@ -73,7 +73,7 @@ The purpose of this step is to:
 
 1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 1.0.0 or later to be installed.
 
-   **Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 ### Troubleshooting
 
@@ -293,14 +293,14 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 1. Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
 1. Use `terraform output` to get the backend bucket and networks step Terraform Service Account values from 0-bootstrap output.
    ```
-   export ORGANIZATION_ID=$(terraform  -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' | tr -d '"')
+   export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' | tr -d '"')
    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
 
-   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output gcs_bucket_tfstate | tr -d '"')
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
 
-   export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output networks_step_terraform_service_account_email | tr -d '"')
+   export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
    ```
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
@@ -316,10 +316,10 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 
 1. Use `terraform output` to get the Cloud Build project ID and the environment step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
    ```
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output cloudbuild_project_id | tr -d '"')
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output networks_step_terraform_service_account_email | tr -d '"')
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 1. Run `./tf-wrapper.sh init shared`.

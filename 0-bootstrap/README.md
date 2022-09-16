@@ -96,7 +96,7 @@ that are created, see the organization bootstrap module
 Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
 ```shell
-./scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+./scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
 ```
 
 **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.

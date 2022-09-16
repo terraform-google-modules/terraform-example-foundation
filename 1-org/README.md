@@ -186,7 +186,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    git push --set-upstream origin plan
    ```
 1. Review the plan output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to production branch.  Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
+1. Merge changes to production branch. Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b production
@@ -281,17 +281,17 @@ to run the command as the Terraform service account.
 1. Update the file with values from your environment and 0-bootstrap output.
 1. Use `terraform output` to get the backend bucket and networks step Terraform Service Account (when using Hub and Spoke architecture) values from 0-bootstrap output.
    ```
-   export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output gcs_bucket_tfstate | tr -d '"')
-    echo "backend_bucket = ${backend_bucket}"
+   export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
 
-   networks_step_terraform_sa_email=$(terraform -chdir="../../../0-bootstrap/" output networks_step_terraform_service_account_email | tr -d '"')
+   networks_step_terraform_sa_email=$(terraform -chdir="../../../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "networks_step_terraform_service_account_email = ${networks_step_terraform_sa_email}"
    ```
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
    ```
    for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
-1. Return to  `1-org` folder
+1. Return to `1-org` folder
    ```
    cd ../../../1-org
    ```
@@ -303,10 +303,10 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 
 1. Use `terraform output` to get the Cloud Build project ID and the organization step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
    ```
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output cloudbuild_project_id | tr -d '"')
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output organization_step_terraform_service_account_email | tr -d '"')
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw organization_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 1. Run `./tf-wrapper.sh init production` .

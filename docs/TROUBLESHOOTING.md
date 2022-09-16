@@ -261,7 +261,7 @@ Most likely this is related to a billing quota issue.
 
 try
 
-```text
+```bash
 gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX
 ```
 
@@ -279,13 +279,15 @@ Error: Error acquiring the state lock
 
 This message means you are trying to execute a Terraform command with the [Terraform State locked](https://www.terraform.io/language/state/locking).
 
-If the Terraform process was unable to finish due to an unexpected event, it will keep the Terraform State locked.
+If the Terraform process was unable to finish due to an unexpected event, i.e build timeout or terraform process killed. It will keep the Terraform State **locked**.
 
 **Solution:**
 
-You have to unlock the Terraform State:
+Keep in mind that after removing the Terraform State lock you will need to [review and manipulate](https://www.terraform.io/cli/state#manipulating-terraform-state) your Terraform State and maybe [import](https://www.terraform.io/cli/import#import) some resources.
 
-- Update `<YOUR-REPO-DIR>` in the command below to navigate to repo directory of the step you got the error, it should be: `gcp-org`, `gcp-environments`, `gcp-networks`, `gcp-projects`, or `bu*-example-app`.
+Here are some sample commands on how to remove the Terraform State lock.
+
+- Update `<YOUR-REPO-DIR>` in the command below to navigate to repo directory of the step you got the error, it should be `gcp-org`, `gcp-environments`, `gcp-networks`, `gcp-projects`, or `bu*-example-app`.
 - Update `<YOUR-FOUNDATION-EXAMPLE-DIR>` in the command below to get the backend state bucket and update `backend.tf` file.
 - Run `terraform init` to initialize terraform with the terraform state from gcs bucket.
 

@@ -9,8 +9,9 @@ See [GLOSSARY.md](./GLOSSARY.md).
 ## Problems
 
 - [Common issues](#common-issues)
-- [Caller does not have permission in the Organization](#Caller-does-not-have-permission-in-the-organization)
-- [Billing quota exceeded](#Billing-quota-exceeded)
+- [Caller does not have permission in the Organization](#caller-does-not-have-permission-in-the-organization)
+- [Billing quota exceeded](#billing-quota-exceeded)
+- [Terraform Error acquiring the state lock](#terraform-error-acquiring-the-state-lock)
 
 - - -
 
@@ -29,7 +30,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 
 **Error message:**
 
-```
+```text
 Error code 8, message: The project cannot be created because you have exceeded your allotted project quota
 ```
 
@@ -54,9 +55,10 @@ use the email address of `terraform_service_account` that is created by the Terr
 
 **Error message:**
 
-```
+```text
 error: src refspec master does not match any
 ```
+
 **Cause:**
 
 This could be due to init.defaultBranch being set to something other than
@@ -65,12 +67,15 @@ This could be due to init.defaultBranch being set to something other than
 **Solution:**
 
 1. Determine your default branch:
-   ```
+
+   ```bash
    git config init.defaultBranch
    ```
+
    Outputs `main` if you are in the main branch.
 1. If your default branch is not set to `main`, set it:
-   ```
+
+   ```bash
    git config --global init.defaultBranch main
    ```
 
@@ -80,7 +85,7 @@ This could be due to init.defaultBranch being set to something other than
 
 When running the build for the branch `production` in step 3-networks in your **Foundation Pipeline** the build fails with:
 
-```
+```text
 state snapshot was created by Terraform v1.x.x, which is newer than current v1.0.0; upgrade to Terraform v1.x.x or greater to work with this state
 ```
 
@@ -111,7 +116,7 @@ Replace `1.x.x` with the actual version of your local Terraform version in the f
 
 - Go to folder `0-bootstrap`.
 - Edit the local `terraform_version` in the Terraform [cb.tf](../0-bootstrap/cb.tf) file:
-  - Upgrade loca `terraform_version` from `"1.0.0"` to `"1.x.x"`
+  - Upgrade local `terraform_version` from `"1.0.0"` to `"1.x.x"`
 - Run `terraform init`.
 - Run `terraform plan` and review the output.
 - Run `terraform apply`.
@@ -122,19 +127,19 @@ Replace `1.x.x` with the actual version of your local Terraform version in the f
 
 When running `gcloud` commands in Cloud Shell like
 
-```
+```bash
 gcloud scc notifications describe <scc_notification_name> --organization YOUR_ORGANIZATION_ID
 ```
 
 or
 
-```
+```bash
 gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
 ```
 
 you receive the error:
 
-```
+```text
 Error 403: Your application has authenticated using end user credentials from the Google Cloud SDK or Google Cloud Shell which are not supported by the X.googleapis.com.
 We recommend configuring the billing/quota_project setting in gcloud or using a service account through the auth/impersonate_service_account setting.
 For more information about service accounts and how to use them in your application, see https://cloud.google.com/docs/authentication/.
@@ -150,13 +155,13 @@ you can re-run the command using impersonation or providing a billing project:
 
 - Impersonate the Terraform Service Account
 
-```
+```bash
 --impersonate-service-account=terraform-org-sa@<SEED_PROJECT_ID>.iam.gserviceaccount.com
 ```
 
 - Provide a billing project
 
-```
+```bash
 --billing-project=<A-VALID-PROJECT-ID>
 ```
 
@@ -168,7 +173,7 @@ If you provide a billing project, you must have the `serviceusage.services.use` 
 
 When using [Google Cloud Shell](https://cloud.google.com/shell/docs) to deploy the code in ths repository, you may face an error like
 
-```
+```text
 dial tcp [2607:f8b0:400c:c15::5f]:443: connect: cannot assign requested address
 ```
 
@@ -191,7 +196,7 @@ If you use the workaround, the API list should include the ones that are [allowe
 
 **Error message:**
 
-```
+```text
 Error: Unsupported attribute
 
   on main.tf line 22, in locals:
@@ -217,7 +222,7 @@ Follow the instructions at the end of the [Deploying with Cloud Build](../0-boot
 
 **Error message:**
 
-```
+```text
 Error: Error when reading or editing Organization Not Found : <organization-id>: googleapi: Error 403: The caller does not have permission, forbidden
 ```
 
@@ -233,7 +238,7 @@ You will need to request the roles to be granted to your user by your organizati
 
 - If the user **does have the role Organization Administrator** try the following:
 
-```
+```bash
 gcloud auth application-default login
 gcloud auth list # <- confirm that correct account has a star next to it
 ```
@@ -244,7 +249,7 @@ Re-run `terraform` after.
 
 **Error message:**
 
-```
+```text
 Error: Error setting billing account "XXXXXX-XXXXXX-XXXXXX" for project "projects/some-project": googleapi: Error 400: Precondition check failed., failedPrecondition
 ```
 
@@ -256,8 +261,49 @@ Most likely this is related to a billing quota issue.
 
 try
 
-```
+```text
 gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX
 ```
 
 If output states `Cloud billing quota exceeded`, you can use the [Request Billing Quota Increase](https://support.google.com/code/contact/billing_quota_increase) form to request a billing quota increase.
+
+### Terraform Error acquiring the state lock
+
+**Error message:**
+
+```text
+Error: Error acquiring the state lock
+```
+
+**Cause:**
+
+This message means you are trying to execute a Terraform command with the [Terraform State locked](https://www.terraform.io/language/state/locking).
+
+If the Terraform process was unable to finish due to an unexpected event, it will keep the Terraform State locked.
+
+**Solution:**
+
+You have to unlock the Terraform State:
+
+- Update `<YOUR-REPO-DIR>` in the command below to navigate to repo directory of the step you got the error, it should be: `gcp-org`, `gcp-environments`, `gcp-networks`, `gcp-projects`, or `bu*-example-app`.
+- Update `<YOUR-FOUNDATION-EXAMPLE-DIR>` in the command below to get the backend state bucket and update `backend.tf` file.
+- Run `terraform init` to initialize terraform with the terraform state from gcs bucket.
+
+```bash
+cd <YOUR-REPO-DIR>
+export backend_bucket=$(terraform -chdir="<YOUR-FOUNDATION-EXAMPLE-DIR>/0-bootstrap/" output -raw gcs_bucket_tfstate)
+for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+terraform init
+```
+
+- Run the command below to remove the Terraform State lock, it will ask for a confirmation and you will be able to run terraform commands again.
+
+```bash
+terraform force-unlock $(terraform apply 2>&1 > /dev/null | grep "ID:" | sed -e 's/.*[^0-9]\([0-9]\+\)[^0-9]*$/\1/')
+```
+
+**Notes:**
+
+- The remove Terraform State lock command **does not** change anything in your state.
+- If you got a Terraform State locked error **most of the time** the Terraform State will be inconsistent.
+- It is a **strong recommendation** to review the Terraform State before trying to continue on the step you stopped.

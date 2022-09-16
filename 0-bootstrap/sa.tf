@@ -35,14 +35,20 @@ locals {
       "roles/resourcemanager.organizationViewer",
       "roles/accesscontextmanager.policyAdmin",
       "roles/essentialcontacts.admin",
+      "roles/browser",
+    ],
+    "env" = [
+       "roles/browser",
     ],
     "net" = [
       "roles/accesscontextmanager.policyAdmin",
       "roles/compute.xpnAdmin",
+      "roles/browser",
     ],
     "proj" = [
       "roles/accesscontextmanager.policyAdmin",
-      "roles/serviceusage.serviceUsageConsumer"
+      "roles/serviceusage.serviceUsageConsumer",
+      "roles/browser",
     ],
   }
 

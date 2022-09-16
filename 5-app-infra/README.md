@@ -186,21 +186,51 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Run Terraform locally
 
-1. Change into the  `5-app-infra` folder.
-1. Run `cp ../build/tf-wrapper.sh .`
-1. Run `chmod 755 ./tf-wrapper.sh`.
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and 0-bootstrap.
-1. Rename `bu1-development.auto.example.tfvars` to `bu1-development.auto.tfvars` and update the file with values from your environment.
-1. Rename `bu1-non-production.auto.example.tfvars` to `bu1-non-production.auto.tfvars` and update the file with values from your environment.
-1. Rename `bu1-production.auto.example.tfvars` to `bu1-production.auto.tfvars` and update the file with values from your environment.
+1. Change into `5-app-infra` folder, copy the Terraform wrapper script and ensure it can be executed.
+   ```
+   cd 5-app-infra
+   cp ../build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
+1. Rename `auto.example.tfvars` files to `auto.tfvars`.
+   ```
+   mv common.auto.example.tfvars common.auto.tfvars
+   mv bu1-development.auto.example.tfvars bu1-development.auto.tfvars
+   mv bu1-non-production.auto.example.tfvars bu1-non-production.auto.tfvars
+   mv bu1-production.auto.example.tfvars bu1-production.auto.tfvars
+   ```
+1. Update `common.auto.tfvars` file with values from your environment.
+1. Update files `bu1-development.auto.tfvars`, `bu1-non-production.auto.tfvars`, and `bu1-production.auto.tfvars` with values from 4-projects output.
+1. Use `terraform output` to get the project service account values from 4-projects output.
+   ```
+   export dev_sa=$(terraform -chdir="../4-projects/business_unit_1/development/"  output base_shared_vpc_project_sa| tr -d '"')
+   export non_prod_sa=$(terraform -chdir="../4-projects/business_unit_1/non-production/"  output base_shared_vpc_project_sa| tr -d '"')
+   export prod_sa=$(terraform -chdir="../4-projects/business_unit_1/production/"  output base_shared_vpc_project_sa| tr -d '"')
+
+   echo "development project_service_account = ${dev_sa}"
+   echo "non-production project_service_account = ${non_prod_sa}"
+   echo "production project_service_account = ${prod_sa}"
+   ```
 1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 project service accounts
 1. Provide the user permissions to run the terraform locally with the `serviceAccountTokenCreator` permission.
    ```
-   gcloud iam service-accounts add-iam-policy-binding $PROJECT_SERVICE_ACCOUNT --project $PROJECT --member="user:$(gcloud auth list --format="value(account)")" --role="roles/iam.serviceAccountTokenCreator"
+   member="user:$(gcloud auth list --filter="status=ACTIVE" --format="value(account)")"
+   echo ${member}
+
+   dev_project=$(terraform -chdir="../4-projects/business_unit_1/development/"  output base_shared_vpc_project| tr -d '"')
+   non_prod_project=$(terraform -chdir="../4-projects/business_unit_1/non-production/"  output base_shared_vpc_project| tr -d '"')
+   prod_project=$(terraform -chdir="../4-projects/business_unit_1/production/"  output base_shared_vpc_project| tr -d '"')
+
+   gcloud iam service-accounts add-iam-policy-binding "${dev_sa}" --project "${dev_project}" --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
+   gcloud iam service-accounts add-iam-policy-binding "${non_prod_sa}" --project "${non_prod_project}" --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
+   gcloud iam service-accounts add-iam-policy-binding "${prod_sa}" --project "${prod_project}" --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
    ```
 1. Update `backend.tf` with your bucket from the infra pipeline example.
    ```
-   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
+   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/"  output -json state_buckets | jq '.[0]' | tr -d '"')
+   echo "backend_bucket = ${backend_bucket}"
+
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 
 We will now deploy each of our environments (development/production/non-production) using this script.
@@ -208,17 +238,22 @@ When using Cloud Build or Jenkins as your CI/CD tool, each environment correspon
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
+1. Use `terraform output` to get the Infra Pipeline Project ID from 4-projects output.
+   ```
+   export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../4-projects/business_unit_1/shared/"  output cloudbuild_project_id | tr -d '"')
+   echo ${INFRA_PIPELINE_PROJECT_ID}
+   ```
 1. Run `./tf-wrapper.sh init production`.
 1. Run `./tf-wrapper.sh plan production` and review output.
-1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_INFRA_PIPELINE_PROJECT_ID>` and check for violations.
+1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}` and check for violations.
 1. Run `./tf-wrapper.sh apply production`.
 1. Run `./tf-wrapper.sh init non-production`.
 1. Run `./tf-wrapper.sh plan non-production` and review output.
-1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library <YOUR_INFRA_PIPELINE_PROJECT_ID>` and check for violations.
+1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}` and check for violations.
 1. Run `./tf-wrapper.sh apply non-production`.
 1. Run `./tf-wrapper.sh init development`.
 1. Run `./tf-wrapper.sh plan development` and review output.
-1. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library <YOUR_INFRA_PIPELINE_PROJECT_ID>` and check for violations.
+1. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}` and check for violations.
 1. Run `./tf-wrapper.sh apply development`.
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.

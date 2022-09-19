@@ -29,7 +29,7 @@ audit_data_users = "gcp-security-admins@example.com"
 
 scc_notification_name = "scc-notify"
 
-backend_bucket = "<TERRAFORM-STATE-BUCKET>"
+backend_bucket = "TERRAFORM_STATE_BUCKET"
 
 //scc_notification_filter = "state=\\\"ACTIVE\\\""
 

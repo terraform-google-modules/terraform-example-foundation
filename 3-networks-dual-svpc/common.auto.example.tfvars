@@ -19,4 +19,4 @@ terraform_service_account = "terraform-net-sa@prj-b-seed-2334.iam.gserviceaccoun
 // The DNS name of peering managed zone. Must end with a period.
 domain = "example.com."
 
-backend_bucket = "<TERRAFORM-STATE-BUCKET>"
+backend_bucket = "TERRAFORM_STATE_BUCKET"

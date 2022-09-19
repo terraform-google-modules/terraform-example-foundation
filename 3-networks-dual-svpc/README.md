@@ -296,9 +296,11 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' | tr -d '"')
    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+   sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
 
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
 
    export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"

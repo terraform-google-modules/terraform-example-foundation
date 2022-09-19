@@ -266,6 +266,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
 
    export PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw projects_step_terraform_service_account_email)
    echo "impersonate_service_account = ${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"

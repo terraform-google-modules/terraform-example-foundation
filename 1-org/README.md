@@ -283,6 +283,7 @@ to run the command as the Terraform service account.
    ```
    export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
 
    networks_step_terraform_sa_email=$(terraform -chdir="../../../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "networks_step_terraform_service_account_email = ${networks_step_terraform_sa_email}"

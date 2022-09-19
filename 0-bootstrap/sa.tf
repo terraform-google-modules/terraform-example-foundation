@@ -38,7 +38,7 @@ locals {
       "roles/browser",
     ],
     "env" = [
-       "roles/browser",
+      "roles/browser",
     ],
     "net" = [
       "roles/accesscontextmanager.policyAdmin",

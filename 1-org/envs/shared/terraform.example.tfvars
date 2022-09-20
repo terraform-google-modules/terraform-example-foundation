@@ -36,7 +36,3 @@ backend_bucket = "TERRAFORM_STATE_BUCKET"
 //enable_hub_and_spoke = true
 
 //create_access_context_manager_access_policy = false
-
-// if you enable hub and spoke you need to provide
-// the service account that will be used in the network step
-//networks_step_terraform_service_account_email = "terraform-net-sa@example-project-2334.iam.gserviceaccount.com"

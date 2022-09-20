@@ -262,14 +262,11 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
 1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
 1. See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
-1. Use `terraform output` to get the backend bucket and projects step Terraform Service Account values from 0-bootstrap output.
+1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
    ```
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
    sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
-
-   export PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw projects_step_terraform_service_account_email)
-   echo "impersonate_service_account = ${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
    ```
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
    ```

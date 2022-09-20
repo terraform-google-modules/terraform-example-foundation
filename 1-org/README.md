@@ -279,14 +279,11 @@ to run the command as the Terraform service account.
    mv terraform.example.tfvars terraform.tfvars
    ```
 1. Update the file with values from your environment and 0-bootstrap output.
-1. Use `terraform output` to get the backend bucket and networks step Terraform Service Account (when using Hub and Spoke architecture) values from 0-bootstrap output.
+1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
    ```
    export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
    sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
-
-   networks_step_terraform_sa_email=$(terraform -chdir="../../../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
-   echo "networks_step_terraform_service_account_email = ${networks_step_terraform_sa_email}"
    ```
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
    ```

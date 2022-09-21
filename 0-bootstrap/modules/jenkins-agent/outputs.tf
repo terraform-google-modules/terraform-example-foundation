@@ -18,7 +18,7 @@
     Specific to CICD Project
    ---------------------------------------- */
 output "cicd_project_id" {
-  description = "Project where the cicd pipeline (Jenkins Agents and terraform builder container image) reside."
+  description = "Project where the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) (Jenkins Agents and terraform builder container image) reside."
   value       = module.cicd_project.project_id
 }
 

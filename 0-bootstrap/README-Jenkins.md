@@ -1,6 +1,6 @@
 # 0-bootstrap - deploying a Jenkins-compatible environment
 
-The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also guides you on how to configure a CICD project to host a Jenkins Agent, which connects to your existing Jenkins Controller infrastructure & your own Git repos (which might live on-prem). The Jenkins Agent will run CICD pipelines for foundations code in subsequent stages.
+The purpose of this step is to bootstrap a GCP organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also guides you on how to configure a CICD project to host a Jenkins Agent, which connects to your existing Jenkins Controller infrastructure & your own Git repos (which might live on-prem). The Jenkins Agent will run [CI/CD Pipelines](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages.
 
 Another CICD option is to use Cloud Build & Cloud Source Repos. If you don't have a Jenkins implementation and don't want one, then we recommend you to [use the Cloud Build module](./README.md) instead.
 
@@ -148,13 +148,13 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
     ```
     - The Terraform script will take about 10 to 15 minutes. Once it finishes, note that communication between on-prem and the `prj-b-cicd` project won’t happen yet - you will configure the VPN network connectivity in step [III. Create VPN connection](#III-Create-VPN-connection).
 
-1. Move Terraform State to the GCS bucket created in the seed project
+1. Move Terraform State to the GCS bucket created in the Seed Project
    1. Run `terraform output gcs_bucket_tfstate` to get the tfstate bucket name
    1. Rename `backend.tf.example` to `backend.tf`
    1. Edit file `backend.tf` and replace `UPDATE_ME` with the tfstate bucket name
 
 1. Re-run `terraform init` and agree to copy state to gcs when prompted
-    - (Optional) Run `terraform apply` to verify state is configured correctly. You can confirm the terraform state is now in that bucket by visiting the bucket url in your seed project.
+    - (Optional) Run `terraform apply` to verify state is configured correctly. You can confirm the terraform state is now in that bucket by visiting the bucket url in your Seed Project.
 
 1. Commit changes with `git add backend.tf` and `git commit -m 'Your message - Terraform Backend configuration using GCS'`
 1. Push my-0-bootstrap branch to your repository YOUR_NEW_REPO-0-bootstrap with `git push`

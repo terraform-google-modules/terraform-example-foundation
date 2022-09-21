@@ -13,7 +13,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`. | `number` | n/a | yes |
-| backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
+| backend\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | base\_hub\_dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for Base Hub VPC DNS. | `bool` | `true` | no |
 | base\_hub\_dns\_enable\_logging | Toggle DNS logging for Base Hub VPC DNS. | `bool` | `true` | no |
 | base\_hub\_firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls in Base Hub VPC. | `bool` | `true` | no |

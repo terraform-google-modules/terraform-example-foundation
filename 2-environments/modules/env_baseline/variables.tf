@@ -25,7 +25,7 @@ variable "environment_code" {
 }
 
 variable "backend_bucket" {
-  description = "Backend bucket to load remote state information from previous steps."
+  description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string
 }
 

@@ -4,7 +4,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`. | `number` | n/a | yes |
-| backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
+| backend\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | base\_private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services in the Base Shared Vpc. | `string` | n/a | yes |
 | base\_subnet\_primary\_ranges | The base subnet primary IPTs ranges to the Base Shared Vpc. | `map(string)` | n/a | yes |
 | base\_subnet\_secondary\_ranges | The base subnet secondary IPTs ranges to the Base Shared Vpc. | `map(list(map(string)))` | n/a | yes |

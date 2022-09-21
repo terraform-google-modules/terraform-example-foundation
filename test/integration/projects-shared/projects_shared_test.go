@@ -64,7 +64,6 @@ func TestProjectsShared(t *testing.T) {
 
 			sharedVars := map[string]interface{}{
 				"backend_bucket":              backend_bucket,
-				"impersonate_service_account": terraformSA,
 			}
 
 			shared := tft.NewTFBlueprintTest(t,
@@ -86,13 +85,6 @@ func TestProjectsShared(t *testing.T) {
 					enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
 					listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 					assert.Subset(listApis, sharedApisEnabled, "APIs should have been enabled")
-
-					defaultRegion := shared.GetStringOutput("default_region")
-					tfRepo := shared.GetStringOutput("tf_runner_artifact_repo")
-					arOpts := gcloud.WithCommonArgs([]string{"--project", projectID, "--location", defaultRegion, "--format", "json"})
-					artifactRegistry := gcloud.Run(t, fmt.Sprintf("artifacts repositories describe %s", tfRepo), arOpts)
-					repoName := fmt.Sprintf("projects/%s/locations/%s/repositories/%s", projectID, defaultRegion, tfRepo)
-					assert.Equal(repoName, artifactRegistry.Get("name").String(), fmt.Sprintf("artifact registry %s should exist", repoName))
 				})
 			shared.Test()
 		})

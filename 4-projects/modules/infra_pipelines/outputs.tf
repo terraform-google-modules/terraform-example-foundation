@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-output "tf_runner_artifact_repo" {
-  description = "GAR Repo created to store runner images"
-  value       = google_artifact_registry_repository.tf-image-repo.name
-}
-
 output "default_region" {
   description = "Default region to create resources where applicable."
   value       = var.default_region
 }
 
+output "terraform_service_account" {
+  description = "APP Infra Pipeline Terraform Account."
+  value       = local.workspace_sa_email
+}
+
 output "gar_name" {
   description = "GAR Repo name created to store runner images"
   value       = local.gar_name
-}
-
-output "cloudbuild_sa" {
-  description = "Cloud Build service account"
-  value       = "${data.google_project.cloudbuild_project.number}@cloudbuild.gserviceaccount.com"
 }
 
 output "repos" {
@@ -41,25 +36,25 @@ output "repos" {
 
 output "artifact_buckets" {
   description = "GCS Buckets to store Cloud Build Artifacts"
-  value       = values(local.artifact_buckets)
+  value       = [for ws in module.tf_workspace : ws.artifacts_bucket]
 }
 
 output "state_buckets" {
   description = "GCS Buckets to store TF state"
-  value       = values(local.state_buckets)
+  value       = [for ws in module.tf_workspace : ws.state_bucket]
 }
 
 output "log_buckets" {
   description = "GCS Buckets to store Cloud Build logs"
-  value       = values(local.log_buckets)
+  value       = [for ws in module.tf_workspace : ws.logs_bucket]
 }
 
-output "plan_triggers" {
+output "plan_triggers_id" {
   description = "CB plan triggers"
-  value       = [for trigger in google_cloudbuild_trigger.non_main_trigger : trigger.name]
+  value       = [for ws in module.tf_workspace : ws.cloudbuild_plan_trigger_id]
 }
 
-output "apply_triggers" {
+output "apply_triggers_id" {
   description = "CB apply triggers"
-  value       = [for trigger in google_cloudbuild_trigger.main_trigger : trigger.name]
+  value       = [for ws in module.tf_workspace : ws.cloudbuild_apply_trigger_id]
 }

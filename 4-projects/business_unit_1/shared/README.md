@@ -14,14 +14,13 @@
 
 | Name | Description |
 |------|-------------|
-| apply\_triggers | CB apply triggers |
+| apply\_triggers\_id | CB apply triggers |
 | artifact\_buckets | GCS Buckets to store Cloud Build Artifacts |
 | cloudbuild\_project\_id | n/a |
-| cloudbuild\_sa | Cloud Build service account |
 | default\_region | Default region to create resources where applicable. |
-| plan\_triggers | CB plan triggers |
+| plan\_triggers\_id | CB plan triggers |
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |
-| tf\_runner\_artifact\_repo | GAR Repo created to store runner images |
+| terraform\_service\_account | APP Infra Pipeline Terraform Account. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

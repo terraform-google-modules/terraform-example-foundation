@@ -49,6 +49,11 @@ output "gcs_bucket_tfstate" {
   value       = module.seed_bootstrap.gcs_bucket_tfstate
 }
 
+output "projects_gcs_bucket_tfstate" {
+  description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
+  value       = local.projects_gcs_bucket_tfstate
+}
+
 output "common_config" {
   description = "Common configuration data to be used in other steps."
   value = {
@@ -75,6 +80,11 @@ output "cloudbuild_project_id" {
 output "gcs_bucket_cloudbuild_artifacts" {
   description = "Bucket used to store Cloud/Build artifacts in CloudBuild project."
   value       = { for key, value in module.tf_workspace : key => replace(value.artifacts_bucket, local.bucket_self_link_prefix, "") }
+}
+
+output "cloud_builder_artifact_repo" {
+  description = "GAR Repo created to store TF Cloud Builder images."
+  value       = module.tf_cloud_builder.artifact_repo
 }
 
 output "csr_repos" {

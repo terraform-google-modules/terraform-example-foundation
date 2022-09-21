@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-
-
-data "google_active_folder" "env" {
-  display_name = "${var.folder_prefix}-non-production"
-  parent       = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+locals {
+  business_unit = "business_unit_1"
+  environment   = "non-production"
 }
 
 module "base_shared_gce_instance" {
-  source         = "../../modules/env_base"
-  environment    = "non-production"
-  vpc_type       = "base"
-  num_instances  = 1
-  machine_type   = "f1-micro"
-  folder_id      = data.google_active_folder.env.name
+  source = "../../modules/env_base"
+
+  environment    = local.environment
   business_code  = "bu1"
+  business_unit  = local.business_unit
   project_suffix = "sample-base"
   region         = var.instance_region
+  backend_bucket = var.backend_bucket
 }

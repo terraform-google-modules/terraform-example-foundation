@@ -21,7 +21,7 @@ output "default_region" {
 
 output "terraform_service_account" {
   description = "APP Infra Pipeline Terraform Account."
-  value       = local.workspace_sa_email
+  value       = values(local.workspace_sa_email)
 }
 
 output "gar_name" {

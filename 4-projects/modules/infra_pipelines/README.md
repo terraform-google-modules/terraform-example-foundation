@@ -8,7 +8,7 @@
 | cloud\_builder\_artifact\_repo | GAR Repo that stores TF Cloud Builder images. | `string` | n/a | yes |
 | cloudbuild\_project\_id | The project id where the pipelines and repos should be created. | `string` | n/a | yes |
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
-| folders\_to\_grant\_browser\_role | List of folders to grant browser role to the cloud build service account. Used by terraform validator to able to load IAM policies. | `list(string)` | `[]` | no |
+| org\_id | GCP Organization ID | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | terraform\_docker\_tag\_version | TAG version of the terraform docker image. | `string` | `"v1"` | no |
 

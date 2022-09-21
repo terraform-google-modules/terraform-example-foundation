@@ -16,7 +16,7 @@
 
 locals {
   cloudbuild_bucket_name = "${var.cloudbuild_project_id}_cloudbuild"
-  workspace_sa_email     = { for k, v in module.tf_workspace.cloudbuild_sa : k => element(split("/", v), length(split("/", v)) - 1) }
+  workspace_sa_email     = { for k, v in module.tf_workspace : k => element(split("/", v.cloudbuild_sa), length(split("/", v.cloudbuild_sa)) - 1) }
   gar_region             = split("-docker.pkg.dev", var.cloud_builder_artifact_repo)[0]
   gar_project_id         = split("/", var.cloud_builder_artifact_repo)[length(split("/", var.cloud_builder_artifact_repo)) - 2]
   gar_name               = split("/", var.cloud_builder_artifact_repo)[length(split("/", var.cloud_builder_artifact_repo)) - 1]
@@ -47,8 +47,6 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
     enabled = true
   }
 }
-
-//=========================
 
 module "tf_workspace" {
   source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
@@ -94,10 +92,26 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
   member     = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
 
-resource "google_folder_iam_member" "browser_cloud_build" {
-  for_each = toset(var.folders_to_grant_browser_role)
+resource "google_organization_iam_member" "browser" {
+  for_each = toset(var.app_infra_repos)
 
-  folder = each.value
+  org_id = var.org_id
   role   = "roles/browser"
+  member = "serviceAccount:${local.workspace_sa_email[each.key]}"
+}
+
+resource "google_organization_iam_member" "instance_Admin" {
+  for_each = toset(var.app_infra_repos)
+
+  org_id = var.org_id
+  role   = "roles/compute.instanceAdmin.v1"
+  member = "serviceAccount:${local.workspace_sa_email[each.key]}"
+}
+
+resource "google_organization_iam_member" "network_viewer" {
+  for_each = toset(var.app_infra_repos)
+
+  org_id = var.org_id
+  role   = "roles/compute.networkViewer"
   member = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }

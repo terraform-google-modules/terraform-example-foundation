@@ -42,7 +42,9 @@ module "app_infra_cloudbuild_project" {
 }
 
 module "infra_pipelines" {
-  source                      = "../../modules/infra_pipelines"
+  source = "../../modules/infra_pipelines"
+
+  org_id                      = local.org_id
   cloudbuild_project_id       = module.app_infra_cloudbuild_project.project_id
   cloud_builder_artifact_repo = local.cloud_builder_artifact_repo
   project_prefix              = local.project_prefix

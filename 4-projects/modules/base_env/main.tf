@@ -30,7 +30,6 @@ locals {
   restricted_subnets_self_links    = data.terraform_remote_state.network_env.outputs.restricted_subnets_self_links
   access_context_manager_policy_id = data.terraform_remote_state.network_env.outputs.access_context_manager_policy_id
   env_folder_name                  = data.terraform_remote_state.environments_env.outputs.env_folder
-  app_infra_pipeline_cloudbuild_sa = data.terraform_remote_state.business_unit_shared.outputs.cloudbuild_sa
 }
 
 data "terraform_remote_state" "bootstrap" {
@@ -57,14 +56,5 @@ data "terraform_remote_state" "environments_env" {
   config = {
     bucket = var.backend_bucket
     prefix = "terraform/environments/${var.env}"
-  }
-}
-
-data "terraform_remote_state" "business_unit_shared" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.backend_bucket
-    prefix = "terraform/projects/${var.business_unit}/shared"
   }
 }

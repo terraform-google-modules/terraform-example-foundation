@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+variable "org_id" {
+  description = "GCP Organization ID"
+  type        = string
+}
+
 variable "default_region" {
   description = "Default region to create resources where applicable."
   type        = string
@@ -50,10 +55,4 @@ variable "cloud_builder_artifact_repo" {
   description = "GAR Repo that stores TF Cloud Builder images."
   type        = string
 
-}
-
-variable "folders_to_grant_browser_role" {
-  description = "List of folders to grant browser role to the cloud build service account. Used by terraform validator to able to load IAM policies."
-  type        = list(string)
-  default     = []
 }

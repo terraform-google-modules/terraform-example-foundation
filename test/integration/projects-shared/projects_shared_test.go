@@ -37,8 +37,9 @@ func TestProjectsShared(t *testing.T) {
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
+	projects_backend_bucket := bootstrap.GetStringOutput("projects_gcs_bucket_tfstate")
 	backendConfig := map[string]interface{}{
-		"bucket": backend_bucket,
+		"bucket": projects_backend_bucket,
 	}
 
 	var sharedApisEnabled = []string{

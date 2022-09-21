@@ -26,6 +26,22 @@ import (
 
 func TestAppInfra(t *testing.T) {
 
+	bootstrap := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../0-bootstrap"),
+	)
+	projects_backend_bucket := bootstrap.GetStringOutput("projects_gcs_bucket_tfstate")
+	vars := map[string]interface{}{
+		"backend_bucket": projects_backend_bucket,
+	}
+
+	shared := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../4-projects/business_unit_1/shared"),
+	)
+	backend_bucket := terraform.OutputList(t, shared.GetTFOptions(), "state_buckets")[0]
+	backendConfig := map[string]interface{}{
+		"bucket": backend_bucket,
+	}
+
 	for _, envName := range []string{
 		"development",
 		"non-production",
@@ -37,12 +53,9 @@ func TestAppInfra(t *testing.T) {
 				tft.WithTFDir(fmt.Sprintf("../../../4-projects/business_unit_1/%s", envName)),
 			)
 
-			vars := map[string]interface{}{
-				"project_service_account": projects.GetStringOutput("base_shared_vpc_project_sa"),
-			}
-
 			appInfra := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../5-app-infra/business_unit_1/%s", envName)),
+				tft.WithBackendConfig(backendConfig),
 				tft.WithPolicyLibraryPath("/workspace/policy-library", projects.GetStringOutput("base_shared_vpc_project")),
 				tft.WithVars(vars),
 			)

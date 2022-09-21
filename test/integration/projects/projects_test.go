@@ -54,10 +54,11 @@ func TestProjects(t *testing.T) {
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
-	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
+	projects_backend_bucket := bootstrap.GetStringOutput("projects_gcs_bucket_tfstate")
 	backendConfig := map[string]interface{}{
-		"bucket": backend_bucket,
+		"bucket": projects_backend_bucket,
 	}
+	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
 	var restrictedApisEnabled = []string{
 		"accesscontextmanager.googleapis.com",

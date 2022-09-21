@@ -20,11 +20,6 @@ variable "default_region" {
   default     = "us-central1"
 }
 
-variable "impersonate_service_account" {
-  description = "Service account email of the account to impersonate to run gcloud build submit"
-  type        = string
-}
-
 variable "alert_spent_percents" {
   description = "A list of percentages of the budget to alert on when threshold is exceeded"
   type        = list(number)

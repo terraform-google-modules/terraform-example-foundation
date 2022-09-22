@@ -42,6 +42,7 @@ locals {
     ],
     "proj" = [
       "roles/accesscontextmanager.policyAdmin",
+      "roles/resourcemanager.organizationAdmin",
       "roles/serviceusage.serviceUsageConsumer"
     ],
   }
@@ -64,6 +65,7 @@ locals {
     "proj" = [
       "roles/resourcemanager.folderViewer",
       "roles/resourcemanager.folderIamAdmin",
+      "roles/artifactregistry.admin",
       "roles/compute.networkAdmin",
       "roles/compute.xpnAdmin",
     ],

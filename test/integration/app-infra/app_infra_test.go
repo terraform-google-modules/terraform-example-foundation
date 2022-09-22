@@ -20,6 +20,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
@@ -37,6 +38,11 @@ func TestAppInfra(t *testing.T) {
 	shared := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../4-projects/business_unit_1/shared"),
 	)
+
+	// Configure impersonation for test execution
+	terraformSA := terraform.OutputList(t, shared.GetTFOptions(), "terraform_service_account")[0]
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
+
 	backend_bucket := terraform.OutputList(t, shared.GetTFOptions(), "state_buckets")[0]
 	backendConfig := map[string]interface{}{
 		"bucket": backend_bucket,

@@ -35,6 +35,11 @@ variable "cloudbuild_project_id" {
   type        = string
 }
 
+variable "remote_tfstate_bucket" {
+  description = "Bucket with remote state data to be used by the pipeline."
+  type        = string
+}
+
 variable "billing_account" {
   description = "The ID of the billing account to associated this project with."
   type        = string

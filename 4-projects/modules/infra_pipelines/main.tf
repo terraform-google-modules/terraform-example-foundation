@@ -17,8 +17,8 @@
 locals {
   cloudbuild_bucket_name = "${var.cloudbuild_project_id}_cloudbuild"
   workspace_sa_email     = { for k, v in module.tf_workspace : k => element(split("/", v.cloudbuild_sa), length(split("/", v.cloudbuild_sa)) - 1) }
-  gar_region             = split("-docker.pkg.dev", var.cloud_builder_artifact_repo)[0]
-  gar_project_id         = split("/", var.cloud_builder_artifact_repo)[length(split("/", var.cloud_builder_artifact_repo)) - 2]
+  gar_project_id         = split("/", var.cloud_builder_artifact_repo)[1]
+  gar_region             = split("/", var.cloud_builder_artifact_repo)[3]
   gar_name               = split("/", var.cloud_builder_artifact_repo)[length(split("/", var.cloud_builder_artifact_repo)) - 1]
   created_csrs           = toset([for repo in google_sourcerepo_repository.app_infra_repo : repo.name])
 }
@@ -92,6 +92,17 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
   member     = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
 
+// Remote state data source needs "storage.objects.create"
+// to be able to create a state lock while reading the data.
+resource "google_storage_bucket_iam_member" "tf_state" {
+  for_each = toset(var.app_infra_repos)
+
+  bucket = var.remote_tfstate_bucket
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${local.workspace_sa_email[each.key]}"
+}
+
+// Required by gcloud beta terraform vet
 resource "google_organization_iam_member" "browser" {
   for_each = toset(var.app_infra_repos)
 
@@ -100,18 +111,15 @@ resource "google_organization_iam_member" "browser" {
   member = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
 
-resource "google_organization_iam_member" "instance_Admin" {
+//TODO apply only to the project we will deploy need to move to the simple project
+
+
+resource "google_organization_iam_member" "service_account_admin" {
   for_each = toset(var.app_infra_repos)
 
   org_id = var.org_id
-  role   = "roles/compute.instanceAdmin.v1"
+  role   = "roles/iam.serviceAccountAdmin"
   member = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
 
-resource "google_organization_iam_member" "network_viewer" {
-  for_each = toset(var.app_infra_repos)
 
-  org_id = var.org_id
-  role   = "roles/compute.networkViewer"
-  member = "serviceAccount:${local.workspace_sa_email[each.key]}"
-}

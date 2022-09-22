@@ -24,6 +24,11 @@ output "base_shared_vpc_project_sa" {
   value       = module.env.base_shared_vpc_project_sa
 }
 
+output "base_subnets_self_links" {
+  value       = module.env.base_subnets_self_links
+  description = "The self-links of subnets from base environment."
+}
+
 output "floating_project" {
   description = "Project sample floating project."
   value       = module.env.floating_project
@@ -47,6 +52,11 @@ output "restricted_shared_vpc_project" {
 output "restricted_shared_vpc_project_number" {
   description = "Project sample restricted project."
   value       = module.env.restricted_shared_vpc_project_number
+}
+
+output "restricted_subnets_self_links" {
+  value       = module.env.restricted_subnets_self_links
+  description = "The self-links of subnets from restricted environment."
 }
 
 output "vpc_service_control_perimeter_name" {

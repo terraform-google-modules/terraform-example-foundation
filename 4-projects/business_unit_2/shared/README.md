@@ -20,6 +20,6 @@
 | plan\_triggers\_id | CB plan triggers |
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |
-| terraform\_service\_account | APP Infra Pipeline Terraform Account. |
+| terraform\_service\_accounts | APP Infra Pipeline Terraform Accounts. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

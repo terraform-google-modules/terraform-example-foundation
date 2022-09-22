@@ -17,4 +17,4 @@
 
 monitoring_workspace_users = "gcp-monitoring-admins@example.com"
 
-backend_bucket = "<TERRAFORM-STATE-BUCKET>"
+backend_bucket = "REMOTE_STATE_BUCKET"

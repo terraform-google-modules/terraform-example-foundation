@@ -17,6 +17,14 @@
 locals {
   env_code        = element(split("", var.environment), 0)
   shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
+  pipeline_roles = var.enable_cloudbuild_deploy ? flatten([
+    for role in var.sa_roles : [
+      for sa in var.app_infra_pipeline_service_accounts : {
+        role = role
+        sa   = sa
+      }
+    ]
+  ]) : {}
 }
 
 module "project" {
@@ -48,4 +56,21 @@ module "project" {
   budget_alert_pubsub_topic   = var.alert_pubsub_topic
   budget_alert_spent_percents = var.alert_spent_percents
   budget_amount               = var.budget_amount
+}
+
+# Additional roles to the App Infra Pipeline service account
+resource "google_project_iam_member" "app_infra_pipeline_sa_roles" {
+  for_each = { for pr in local.pipeline_roles : "${pr.sa}-${pr.role}" => pr }
+
+  project = module.project.project_id
+  role    = each.value.role
+  member  = "serviceAccount:${each.value.sa}"
+}
+
+resource "google_folder_iam_member" "folder_network_viewer" {
+  for_each = toset(var.app_infra_pipeline_service_accounts)
+
+  folder = var.folder_id
+  role   = "roles/compute.networkViewer"
+  member = "serviceAccount:${each.value}"
 }

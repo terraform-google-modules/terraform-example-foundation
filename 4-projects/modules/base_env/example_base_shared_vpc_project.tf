@@ -28,6 +28,13 @@ module "base_shared_vpc_project" {
   alert_pubsub_topic         = var.alert_pubsub_topic
   budget_amount              = var.budget_amount
   project_prefix             = local.project_prefix
+  enable_cloudbuild_deploy   = true
+  sa_roles = [
+    "roles/compute.instanceAdmin.v1",
+    "roles/iam.serviceAccountAdmin",
+    "roles/iam.serviceAccountTokenCreator",
+  ]
+  app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
   activate_apis = [
     "iam.googleapis.com",
     "cloudresourcemanager.googleapis.com"

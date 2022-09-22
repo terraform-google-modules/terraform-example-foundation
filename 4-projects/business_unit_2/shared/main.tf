@@ -15,15 +15,16 @@
  */
 
 locals {
-  org_id                      = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
-  parent_folder               = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
-  parent                      = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
-  billing_account             = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
-  common_folder_name          = data.terraform_remote_state.org.outputs.common_folder_name
-  default_region              = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  project_prefix              = data.terraform_remote_state.bootstrap.outputs.common_config.project_prefix
-  folder_prefix               = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  cloud_builder_artifact_repo = data.terraform_remote_state.bootstrap.outputs.cloud_builder_artifact_repo
+  org_id                         = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
+  parent_folder                  = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
+  parent                         = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
+  billing_account                = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
+  common_folder_name             = data.terraform_remote_state.org.outputs.common_folder_name
+  default_region                 = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  project_prefix                 = data.terraform_remote_state.bootstrap.outputs.common_config.project_prefix
+  folder_prefix                  = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
+  cloud_builder_artifact_repo    = data.terraform_remote_state.bootstrap.outputs.cloud_builder_artifact_repo
+  projects_remote_bucket_tfstate = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
 }
 
 data "terraform_remote_state" "bootstrap" {

@@ -10,6 +10,7 @@
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
+| remote\_tfstate\_bucket | Bucket with remote state data to be used by the pipeline. | `string` | n/a | yes |
 | terraform\_docker\_tag\_version | TAG version of the terraform docker image. | `string` | `"v1"` | no |
 
 ## Outputs
@@ -24,6 +25,6 @@
 | plan\_triggers\_id | CB plan triggers |
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |
-| terraform\_service\_account | APP Infra Pipeline Terraform Account. |
+| terraform\_service\_accounts | APP Infra Pipeline Terraform Accounts. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

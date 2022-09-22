@@ -23,9 +23,9 @@ output "cloudbuild_project_id" {
   value = module.app_infra_cloudbuild_project.project_id
 }
 
-output "terraform_service_account" {
-  description = "APP Infra Pipeline Terraform Account."
-  value       = module.infra_pipelines.terraform_service_account
+output "terraform_service_accounts" {
+  description = "APP Infra Pipeline Terraform Accounts."
+  value       = module.infra_pipelines.terraform_service_accounts
 }
 
 output "repos" {

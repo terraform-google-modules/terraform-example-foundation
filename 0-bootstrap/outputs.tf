@@ -84,7 +84,7 @@ output "gcs_bucket_cloudbuild_artifacts" {
 
 output "cloud_builder_artifact_repo" {
   description = "GAR Repo created to store TF Cloud Builder images."
-  value       = module.tf_cloud_builder.artifact_repo
+  value       = "projects/${module.tf_source.cloudbuild_project_id}/locations/${var.default_region}/repositories/${module.tf_cloud_builder.artifact_repo}"
 }
 
 output "csr_repos" {

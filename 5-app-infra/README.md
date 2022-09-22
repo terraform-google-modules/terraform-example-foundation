@@ -191,11 +191,11 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    mv common.auto.example.tfvars common.auto.tfvars
    ```
 1. Update `common.auto.tfvars` file with values from your environment.
-1. Use `terraform output` to get the backend bucket value from the infra pipeline output.
+1. Use `terraform output` to get the project backend bucket value from 0-bootstrap.
    ```
-   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq '.[0]' | tr -d '"')
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
-   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
 
 1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 Terraform service account.
@@ -207,7 +207,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    project_id=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
    echo ${project_id}
 
-   terraform_sa=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_account | jq '.[0]' | tr -d '"')
+   terraform_sa=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '.[0]' | tr -d '"')
    echo ${terraform_sa}
 
    gcloud iam service-accounts add-iam-policy-binding ${terraform_sa} --project ${project_id}} --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
@@ -230,7 +230,7 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
    echo ${INFRA_PIPELINE_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_account | jq '.[0]' | tr -d '"')
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '.[0]' | tr -d '"')
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 1. Run `init` and `plan` and review output for environment production.

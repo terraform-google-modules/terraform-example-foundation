@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-terraform_service_account = "terraform-net-sa@prj-b-seed-2334.iam.gserviceaccount.com"
-
 // The DNS name of peering managed zone. Must end with a period.
 domain = "example.com."
 
-backend_bucket = "<TERRAFORM-STATE-BUCKET>"
+terraform_service_account = "NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL"
+
+backend_bucket = "TERRAFORM_STATE_BUCKET"
 
 //enable_hub_and_spoke_transitivity = true

@@ -24,7 +24,7 @@ locals {
         sa   = sa
       }
     ]
-  ]) : {}
+  ]) : []
 }
 
 module "project" {

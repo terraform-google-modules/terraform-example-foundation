@@ -110,16 +110,3 @@ resource "google_organization_iam_member" "browser" {
   role   = "roles/browser"
   member = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
-
-//TODO apply only to the project we will deploy need to move to the simple project
-
-
-resource "google_organization_iam_member" "service_account_admin" {
-  for_each = toset(var.app_infra_repos)
-
-  org_id = var.org_id
-  role   = "roles/iam.serviceAccountAdmin"
-  member = "serviceAccount:${local.workspace_sa_email[each.key]}"
-}
-
-

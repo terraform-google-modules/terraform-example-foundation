@@ -21,6 +21,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
@@ -63,6 +64,12 @@ func TestProjects(t *testing.T) {
 	var restrictedApisEnabled = []string{
 		"accesscontextmanager.googleapis.com",
 		"billingbudgets.googleapis.com",
+	}
+
+	var project_sa_roles = []string{
+		"roles/compute.instanceAdmin.v1",
+		"roles/iam.serviceAccountAdmin",
+		"roles/iam.serviceAccountTokenCreator",
 	}
 
 	for _, tt := range []struct {
@@ -132,7 +139,7 @@ func TestProjects(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, "shared")),
 			)
-			sharedCloudBuildSA := shared.GetStringOutput("cloudbuild_sa")
+			sharedCloudBuildSA := terraform.OutputList(t, shared.GetTFOptions(), "terraform_service_account")[0]
 
 			vars := map[string]interface{}{
 				"backend_bucket": backend_bucket,
@@ -184,16 +191,11 @@ func TestProjects(t *testing.T) {
 
 						if projectOutput == "base_shared_vpc_project" {
 
-							saName := projects.GetStringOutput("base_shared_vpc_project_sa")
-							saPolicy := gcloud.Runf(t, "iam service-accounts get-iam-policy  %s", saName)
-							listSaMembers := utils.GetResultStrSlice(saPolicy.Get("bindings.0.members").Array())
-							assert.Contains(listSaMembers, fmt.Sprintf("serviceAccount:%s", sharedCloudBuildSA), "service account should be member of the binding")
-							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.0.role").String(), "service account should have role serviceAccountTokenCreator")
-
-							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", "bindings.role:roles/editor", "--format", "json"})
-							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()[0]
-							listMembers := utils.GetResultStrSlice(projectPolicy.Get("bindings.members").Array())
-							assert.Contains(listMembers, fmt.Sprintf("serviceAccount:%s", saName), "service account should have role/editor")
+							iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", sharedCloudBuildSA)
+							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
+							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()
+							listRoles := testutils.GetResultFieldStrSlice(projectPolicy, "bindings.role")
+							assert.Subset(listRoles, project_sa_roles, fmt.Sprintf("service account %s should have project level roles", sharedCloudBuildSA))
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())

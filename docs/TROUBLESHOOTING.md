@@ -277,13 +277,13 @@ Error: Error acquiring the state lock
 
 **Cause:**
 
-This message means you are trying to execute a Terraform command with the [Terraform State locked](https://www.terraform.io/language/state/locking).
+This message means that you are trying to apply a Terraform configuration with a remote backend that is in a [locked state](https://www.terraform.io/language/state/locking).
 
 If the Terraform process was unable to finish due to an unexpected event, i.e build timeout or terraform process killed. It will keep the Terraform State **locked**.
 
 **Solution:**
 
-Keep in mind that after removing the Terraform State lock you will need to [review and manipulate](https://www.terraform.io/cli/state#manipulating-terraform-state) your Terraform State and maybe [import](https://www.terraform.io/cli/import#import) some resources.
+Keep in mind that after removing the Terraform State lock you may need to [review and manipulate](https://www.terraform.io/cli/state#manipulating-terraform-state) your Terraform State and maybe [import](https://www.terraform.io/cli/import#import) some resources.
 
 Here are some sample commands on how to remove the Terraform State lock.
 

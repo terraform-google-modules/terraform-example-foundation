@@ -63,8 +63,7 @@ func TestProjectsShared(t *testing.T) {
 		t.Run(tts.name, func(t *testing.T) {
 
 			sharedVars := map[string]interface{}{
-				"backend_bucket":              backend_bucket,
-				"impersonate_service_account": terraformSA,
+				"backend_bucket": backend_bucket,
 			}
 
 			shared := tft.NewTFBlueprintTest(t,

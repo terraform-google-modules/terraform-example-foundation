@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-variable "networks_step_terraform_service_account_email" {
-  description = "Service account email of the account to impersonate to run Terraform in the network step."
-  type        = string
-  default     = ""
-}
-
 variable "enable_hub_and_spoke" {
   description = "Enable Hub-and-Spoke architecture."
   type        = bool
@@ -37,7 +31,7 @@ variable "audit_data_users" {
 }
 
 variable "domains_to_allow" {
-  description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the terraform service account used in the deploy."
+  description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the Terraform Service Account used in the deploy."
   type        = list(string)
 }
 
@@ -320,7 +314,7 @@ variable "essential_contacts_language" {
 }
 
 variable "backend_bucket" {
-  description = "Backend bucket to load remote state information from previous steps."
+  description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string
 }
 

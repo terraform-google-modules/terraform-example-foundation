@@ -5,10 +5,9 @@
 |------|-------------|------|---------|:--------:|
 | alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` | `string` | `null` | no |
 | alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
-| backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
+| backend\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | budget\_amount | The amount to use as the budget | `number` | `1000` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
-| impersonate\_service\_account | Service account email of the account to impersonate to run gcloud build submit | `string` | n/a | yes |
 
 ## Outputs
 

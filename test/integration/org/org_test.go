@@ -35,11 +35,9 @@ func TestOrg(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
-	networksTerraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
 	vars := map[string]interface{}{
-		"networks_step_terraform_service_account_email": networksTerraformSA,
 		"backend_bucket":                              backend_bucket,
 		"log_export_storage_force_destroy":            "true",
 		"audit_logs_table_delete_contents_on_destroy": "true",

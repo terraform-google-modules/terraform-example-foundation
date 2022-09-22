@@ -208,33 +208,84 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Run Terraform locally
 
-1. Change into 2-environments folder.
-1. Run `cp ../build/tf-wrapper.sh .`
-1. Run `chmod 755 ./tf-wrapper.sh`.
-1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
-1. Update `backend.tf` with your bucket from bootstrap.
+1. Change into `2-environments` folder, copy the Terraform wrapper script and ensure it can be executed.
    ```
-   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
+   cd 2-environments
+   cp ../build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
    ```
-You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
+1. Rename `terraform.example.tfvars` to `terraform.tfvars`.
+   ```
+   mv terraform.example.tfvars terraform.tfvars
+   ```
+1. Update the file with values from your environment and 0-bootstrap output.See any of the envs folder [README.md](./envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
+1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
+   ```
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
+   ```
+1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
+   ```
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   ```
 
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 2-environments step and only the corresponding environment is applied.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
-1. Export the projects (`terraform-env-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
-1. Run `./tf-wrapper.sh init development`.
-2. Run `./tf-wrapper.sh plan development` and review output.
-3. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
-4. Run `./tf-wrapper.sh apply development`.
-5. Run `./tf-wrapper.sh init non-production`.
-6. Run `./tf-wrapper.sh plan non-production` and review output.
-7. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
-8. Run `./tf-wrapper.sh apply non-production`.
-9. Run `./tf-wrapper.sh init production`.
-10. Run `./tf-wrapper.sh plan production` and review output.
-11. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
-12. Run `./tf-wrapper.sh apply production`.
+1. Use `terraform output` to get the Cloud Build project ID and the environment step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+   ```
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
+   echo ${CLOUD_BUILD_PROJECT_ID}
+
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw environment_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
+1. Run `init` and `plan` and review output for environment development.
+   ```
+   ./tf-wrapper.sh init development
+   ./tf-wrapper.sh plan development
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate development $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
+1. Run `apply` development.
+   ```
+   ./tf-wrapper.sh apply development
+   ```
+1. Run `init` and `plan` and review output for environment non-production.
+   ```
+   ./tf-wrapper.sh init non-production
+   ./tf-wrapper.sh plan non-production
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
+1. Run `apply` non-production.
+   ```
+   ./tf-wrapper.sh apply non-production
+   ```
+1. Run `init` and `plan` and review output for environment production.
+   ```
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
+1. Run `apply` production.
+   ```
+   ./tf-wrapper.sh apply production
+   ```
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.
+
+Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+```
+unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+```

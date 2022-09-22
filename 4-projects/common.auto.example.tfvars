@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-backend_bucket = "<TERRAFORM-STATE-BUCKET>"
+backend_bucket = "TERRAFORM_STATE_BUCKET"

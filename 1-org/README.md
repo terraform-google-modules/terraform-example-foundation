@@ -10,7 +10,7 @@ the example.com reference architecture described in
 <td><a href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
-step also configures a CI/CD pipeline for foundations code in subsequent
+step also configures a <a href="../docs/GLOSSARY.md#foundation-cicd-pipeline">CI/CD Pipeline</a> for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
@@ -186,7 +186,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    git push --set-upstream origin plan
    ```
 1. Review the plan output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to production branch.  Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
+1. Merge changes to production branch. Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
    ```
    git checkout -b production
@@ -200,7 +200,7 @@ If you received a `PERMISSION_DENIED` error running the `gcloud access-context-m
 ```
 --impersonate-service-account=terraform-org-sa@<SEED_PROJECT_ID>.iam.gserviceaccount.com
 ```
-to run the command as the Terraform service account.
+to run the command as the Terraform Service Account.
 
 ### Deploying with Jenkins
 
@@ -267,18 +267,31 @@ to run the command as the Terraform service account.
 
 ### Running Terraform locally
 
-1. Change into 1-org folder.
-1. Run `cp ../build/tf-wrapper.sh .`
-1. Run `chmod 755 ./tf-wrapper.sh`
-1. Change into 1-org/envs/shared/ folder.
-1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and bootstrap.
-1. Obtain your bucket name by running the following command in the 0-bootstrap folder.
+1. Change into `1-org` folder, copy the Terraform wrapper script and ensure it can be executed.
    ```
-   terraform output gcs_bucket_tfstate
+   cd 1-org
+   cp ../build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
    ```
-1. Update `backend.tf` with your bucket from bootstrap.
+1. Change into `envs/shared` folder and rename `terraform.example.tfvars` to `terraform.tfvars`.
    ```
-   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
+   cd envs/shared
+   mv terraform.example.tfvars terraform.tfvars
+   ```
+1. Update the file with values from your environment and 0-bootstrap output.
+1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
+   ```
+   export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
+   ```
+1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
+   ```
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   ```
+1. Return to `1-org` folder
+   ```
+   cd ../../../1-org
    ```
 
 We will now deploy our environment (production) using this script.
@@ -286,10 +299,31 @@ When using Cloud Build or Jenkins as your CI/CD tool each environment correspond
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
-1. Export the projects (`terraform-org-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
-1. Run `./tf-wrapper.sh init production`.
-2. Run `./tf-wrapper.sh plan production` and review output.
-3. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
-4. Run `./tf-wrapper.sh apply production`.
+1. Use `terraform output` to get the Cloud Build project ID and the organization step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+   ```
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
+   echo ${CLOUD_BUILD_PROJECT_ID}
+
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw organization_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
+1. Run `init` and `plan` and review output.
+   ```
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
+1. Run `apply` production.
+   ```
+   ./tf-wrapper.sh apply production
+   ```
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan production` before run `./tf-wrapper.sh apply production`.
+
+Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+```
+unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+```

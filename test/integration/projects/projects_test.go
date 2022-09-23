@@ -139,7 +139,7 @@ func TestProjects(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, "shared")),
 			)
-			sharedCloudBuildSA := terraform.OutputList(t, shared.GetTFOptions(), "terraform_service_account")[0]
+			sharedCloudBuildSA := terraform.OutputList(t, shared.GetTFOptions(), "terraform_service_accounts")[0]
 
 			vars := map[string]interface{}{
 				"backend_bucket": backend_bucket,

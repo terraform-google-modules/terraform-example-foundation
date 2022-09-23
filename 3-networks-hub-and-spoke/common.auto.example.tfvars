@@ -17,8 +17,8 @@
 // The DNS name of peering managed zone. Must end with a period.
 domain = "example.com."
 
-backend_bucket = "REMOTE_STATE_BUCKET"
-
 terraform_service_account = "NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL"
+
+backend_bucket = "REMOTE_STATE_BUCKET"
 
 //enable_hub_and_spoke_transitivity = true

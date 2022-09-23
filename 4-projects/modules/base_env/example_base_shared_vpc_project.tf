@@ -29,12 +29,14 @@ module "base_shared_vpc_project" {
   budget_amount              = var.budget_amount
   project_prefix             = local.project_prefix
   enable_cloudbuild_deploy   = true
+
   sa_roles = [
     "roles/compute.instanceAdmin.v1",
     "roles/iam.serviceAccountAdmin",
-    "roles/iam.serviceAccountTokenCreator",
+    "roles/iam.serviceAccountUser",
   ]
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
+
   activate_apis = [
     "iam.googleapis.com",
     "cloudresourcemanager.googleapis.com"
@@ -49,3 +51,22 @@ module "base_shared_vpc_project" {
   business_code     = var.business_code
 }
 
+resource "google_compute_subnetwork_iam_member" "service_account_role_to_vpc_subnets" {
+  provider = google-beta
+  count    = length(local.base_subnets_self_links)
+
+  subnetwork = element(
+    split("/", local.base_subnets_self_links[count.index]),
+    index(
+      split("/", local.base_subnets_self_links[count.index]),
+      "subnetworks",
+    ) + 1,
+  )
+  role = "roles/compute.networkUser"
+  region = element(
+    split("/", local.base_subnets_self_links[count.index]),
+    index(split("/", local.base_subnets_self_links[count.index]), "regions") + 1,
+  )
+  project = local.base_host_project_id
+  member  = "serviceAccount:${local.app_infra_pipeline_service_accounts[0]}"
+}

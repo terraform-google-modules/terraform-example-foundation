@@ -52,4 +52,4 @@ module "infra_pipelines" {
   billing_account             = local.billing_account
   default_region              = var.default_region
   app_infra_repos             = ["bu1-example-app"]
-} //TODO add the remote stare bucket and inside grant readr para a nova service account
+}

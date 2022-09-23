@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-backend_bucket = "REMOTE_STATE_BUCKET" // See 0-bootstrap output projects_gcs_bucket_tfstate
+backend_bucket = "REMOTE_STATE_BUCKET"

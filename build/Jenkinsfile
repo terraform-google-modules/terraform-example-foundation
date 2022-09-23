@@ -5,9 +5,9 @@ pipeline {
 
   environment {
     _POLICY_REPO="policy-library"
-    _TF_SA_EMAIL=""
-    _STATE_BUCKET_NAME=""
-    _PROJECT_ID=""
+    _TF_SA_EMAIL="TERRAFORM_SA_EMAIL"
+    _STATE_BUCKET_NAME="BACKEND_STATE_BUCKET_NAME"
+    _PROJECT_ID="CICD_PROJECT_ID"
   }
 
   stages {

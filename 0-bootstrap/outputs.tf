@@ -45,7 +45,7 @@ output "terraform_sa_name" {
 }
 
 output "gcs_bucket_tfstate" {
-  description = "Bucket used for storing terraform state for foundations pipelines in seed project."
+  description = "Bucket used for storing terraform state for Foundations Pipelines in Seed Project."
   value       = module.seed_bootstrap.gcs_bucket_tfstate
 }
 
@@ -107,7 +107,7 @@ output "group_billing_admins" {
    ---------------------------------------- */
 //// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 //output "cicd_project_id" {
-//  description = "Project where the cicd pipeline (Jenkins Agents and terraform builder container image) reside."
+//  description = "Project where the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) (Jenkins Agents and terraform builder container image) reside."
 //  value       = module.jenkins_bootstrap.cicd_project_id
 //}
 //

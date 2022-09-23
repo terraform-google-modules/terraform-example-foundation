@@ -19,10 +19,6 @@ domains_to_allow = ["example.com"]
 
 essential_contacts_domains_to_allow = ["@example.com"]
 
-group_org_admins = "gcp-organization-admins@example.com"
-
-group_billing_admins = "gcp-billing-admins@example.com"
-
 billing_data_users = "gcp-billing-data-users@example.com"
 
 audit_data_users = "gcp-security-admins@example.com"
@@ -36,7 +32,3 @@ backend_bucket = "REMOTE_STATE_BUCKET"
 //enable_hub_and_spoke = true
 
 //create_access_context_manager_access_policy = false
-
-// if you enable hub and spoke you need to provide
-// the service account that will be used in the network step
-//networks_step_terraform_service_account_email = "terraform-net-sa@example-project-2334.iam.gserviceaccount.com"

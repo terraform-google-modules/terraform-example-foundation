@@ -10,7 +10,7 @@ the example.com reference architecture described in
 <td><a href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
-step also configures a CI/CD pipeline for foundations code in subsequent
+step also configures a <a href="../docs/GLOSSARY.md#foundation-cicd-pipeline">CI/CD Pipeline</a> for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
@@ -58,7 +58,7 @@ file.
 The purpose of this step is to deploy a simple [Compute Engine](https://cloud.google.com/compute/) instance in one of the business unit projects using the infra pipeline set up in 4-projects.
 The infra pipeline is created in step `4-projects` within the shared env and has a [Cloud Build](https://cloud.google.com/build/docs) pipeline configured to manage infrastructure within projects.
 
-There is also a [Source Repository](https://cloud.google.com/source-repositories) configured with build triggers similar to the [foundation pipeline](https://github.com/terraform-google-modules/terraform-example-foundation#0-bootstrap) setup in `0-bootstrap`.
+There is also a [Source Repository](https://cloud.google.com/source-repositories) configured with build triggers similar to the [CI/CD Pipeline](https://github.com/terraform-google-modules/terraform-example-foundation#0-bootstrap) setup in `0-bootstrap`.
 This Compute Engine instance is created using the base network from step `3-networks` and is used to access private services.
 
 ## Prerequisites
@@ -197,7 +197,6 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    echo "backend_bucket = ${backend_bucket}"
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
-
 1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 Terraform service account.
 1. Provide the user permissions to run the terraform locally with the `serviceAccountTokenCreator` permission.
    ```

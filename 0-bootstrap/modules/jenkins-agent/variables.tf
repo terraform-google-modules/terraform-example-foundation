@@ -142,17 +142,17 @@ variable "tunnel1_bgp_session_range" {
     Specific to Seed Project
    ---------------------------------------- */
 variable "terraform_service_account" {
-  description = "Email for terraform service account. It must be supplied by the seed project"
+  description = "Email for Terraform Service Account. It must be supplied by the Seed Project"
   type        = string
 }
 
 variable "terraform_sa_name" {
-  description = "Fully-qualified name of the terraform service account. It must be supplied by the seed project"
+  description = "Fully-qualified name of the Terraform Service Account. It must be supplied by the Seed Project"
   type        = string
 }
 
 variable "terraform_state_bucket" {
-  description = "Default state bucket, used in Cloud Build substitutions. It must be supplied by the seed project"
+  description = "Default state bucket, used in Cloud Build substitutions. It must be supplied by the Seed Project"
   type        = string
 }
 

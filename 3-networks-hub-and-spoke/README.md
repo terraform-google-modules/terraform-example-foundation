@@ -10,7 +10,7 @@ the example.com reference architecture described in
 <td><a href="../0-bootstrap">0-bootstrap</a></td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
-step also configures a CI/CD pipeline for foundations code in subsequent
+step also configures a <a href="../docs/GLOSSARY.md#foundation-cicd-pipeline">CI/CD Pipeline</a> for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
@@ -73,7 +73,7 @@ The purpose of this step is to:
 
 1. For the manual step described in this document, you need [Terraform](https://www.terraform.io/downloads.html) version 1.0.0 or later to be installed.
 
-   **Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use version 1.0.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 ### Troubleshooting
 
@@ -86,7 +86,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Networking Architecture
 
-This step uses the **Hub and Spoke** architecture  mode.
+This step uses the **Hub and Spoke** architecture mode.
 More details can be found at the **Networking** section of the [Google cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke).
 To enabled **Hub and Spoke** [transitivity](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke_transitivity) set the variable `enable_hub_and_spoke_transitivity` to `true`.
 To see the version that makes use of the **Dual Shared VPC** architecture mode check the step [3-networks-dual-svpc](../3-networks-dual-svpc).
@@ -278,40 +278,111 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 
 ### Run Terraform locally
 
-1. Change into the 3-networks-hub-and-spoke folder.
-1. Run `cp ../build/tf-wrapper.sh .`
-1. Run `chmod 755 ./tf-wrapper.sh`.
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
-1. Rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and update the file with the `target_name_server_addresses`.
-1. Rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars` and update the file with the `access_context_manager_policy_id`.
-1. Update `backend.tf` with your bucket name from the bootstrap step.
+1. Change into `3-networks-hub-and-spoke` folder, copy the Terraform wrapper script and ensure it can be executed.
    ```
-   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-BUCKET-NAME>/' $i; done
+   cd 3-networks-hub-and-spoke
+   cp ../build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
    ```
-   You can run `terraform output gcs_bucket_tfstate` in the 0-bootstrap folder to obtain the bucket name.
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
+   ```
+   mv common.auto.example.tfvars common.auto.tfvars
+   mv shared.auto.example.tfvars shared.auto.tfvars
+   mv access_context.auto.example.tfvars access_context.auto.tfvars
+   ```
+1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
+1. Update `shared.auto.tfvars` file with the `target_name_server_addresses`.
+1. Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
+1. Use `terraform output` to get the backend bucket and networks step Terraform Service Account values from 0-bootstrap output.
+   ```
+   export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' | tr -d '"')
+   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+   sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
+
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+
+   export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
+   echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
+   sed -i "s/NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
+   ```
+1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
+   ```
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   ```
 
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks-hub-and-spoke step
 and only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/install.md) in the **Install Terraform Validator** section and install version `v0.4.0` in your system. You will also need to rename the binary from `terraform-validator-<your-platform>` to `terraform-validator` and the `terraform-validator` binary must be in your `PATH`.
+To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
-1. Export the network (`terraform-net-sa`) service account for impersonation `export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT="<IMPERSONATE_SERVICE_ACCOUNT>"`
-1. Run `./tf-wrapper.sh init shared`.
-1. Run `./tf-wrapper.sh plan shared` and review output.
-1. Run `./tf-wrapper.sh validate shared $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
-1. Run `./tf-wrapper.sh apply shared`.
-1. Run `./tf-wrapper.sh init production`.
-1. Run `./tf-wrapper.sh plan production` and review output.
-1. Run `./tf-wrapper.sh validate production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
-1. Run `./tf-wrapper.sh apply production`.
-1. Run `./tf-wrapper.sh init non-production`.
-1. Run `./tf-wrapper.sh plan non-production` and review output.
-1. Run `./tf-wrapper.sh validate non-production $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
-1. Run `./tf-wrapper.sh apply non-production`.
-1. Run `./tf-wrapper.sh init development`.
-1. Run `./tf-wrapper.sh plan development` and review output.
-1. Run `./tf-wrapper.sh validate development $(pwd)/../policy-library <YOUR_CLOUD_BUILD_PROJECT_ID>` and check for violations.
-1. Run `./tf-wrapper.sh apply development`.
+1. Use `terraform output` to get the Cloud Build project ID and the environment step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+   ```
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
+   echo ${CLOUD_BUILD_PROJECT_ID}
 
-If you received any errors or made any changes to the Terraform config or any `.tfvars`you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
+1. Run `init` and `plan` and review output for environment shared.
+   ```
+   ./tf-wrapper.sh init shared
+   ./tf-wrapper.sh plan shared
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate shared $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
+1. Run `apply` shared.
+   ```
+   ./tf-wrapper.sh apply shared
+   ```
+1. Run `init` and `plan` and review output for environment production.
+   ```
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
+1. Run `apply` production.
+   ```
+   ./tf-wrapper.sh apply production
+   ```
+1. Run `init` and `plan` and review output for environment non-production.
+   ```
+   ./tf-wrapper.sh init non-production
+   ./tf-wrapper.sh plan non-production
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
+1. Run `apply` non-production.
+   ```
+   ./tf-wrapper.sh apply non-production
+   ```
+1. Run `init` and `plan` and review output for environment development.
+   ```
+   ./tf-wrapper.sh init development
+   ./tf-wrapper.sh plan development
+   ```
+1. Run `validate` and check for violations.
+   ```
+   ./tf-wrapper.sh validate development $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
+1. Run `apply` development.
+   ```
+   ./tf-wrapper.sh apply development
+   ```
+
+If you received any errors or made any changes to the Terraform config or any `.tfvars`, you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.
+
+Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+```
+unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+```

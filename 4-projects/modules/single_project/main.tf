@@ -74,3 +74,23 @@ resource "google_folder_iam_member" "folder_network_viewer" {
   role   = "roles/compute.networkViewer"
   member = "serviceAccount:${each.value}"
 }
+
+resource "google_compute_subnetwork_iam_member" "service_account_role_to_vpc_subnets" {
+  provider = google-beta
+  count    = length(var.shared_vpc_subnets)
+
+  subnetwork = element(
+    split("/", var.shared_vpc_subnets[count.index]),
+    index(
+      split("/", var.shared_vpc_subnets[count.index]),
+      "subnetworks",
+    ) + 1,
+  )
+  role = "roles/compute.networkUser"
+  region = element(
+    split("/", var.shared_vpc_subnets[count.index]),
+    index(split("/", var.shared_vpc_subnets[count.index]), "regions") + 1,
+  )
+  project = var.shared_vpc_host_project_id
+  member  = "serviceAccount:${var.app_infra_pipeline_service_accounts[0]}"
+}

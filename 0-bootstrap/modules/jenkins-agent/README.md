@@ -79,8 +79,8 @@ module "jenkins_bootstrap" {
 | terraform\_sa\_name | Fully-qualified name of the Terraform Service Account. It must be supplied by the Seed Project | `string` | n/a | yes |
 | terraform\_service\_account | Email for Terraform Service Account. It must be supplied by the Seed Project | `string` | n/a | yes |
 | terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the Seed Project | `string` | n/a | yes |
-| terraform\_version | Default terraform version. | `string` | `"0.13.7"` | no |
-| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"` | no |
+| terraform\_version | Default terraform version. | `string` | `"1.0.0"` | no |
+| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"8be33cc3be8089019d95eb8f546f35d41926e7c1e5deff15792e969dde573eb5"` | no |
 | tunnel0\_bgp\_peer\_address | BGP peer address for tunnel 0 | `string` | n/a | yes |
 | tunnel0\_bgp\_session\_range | BGP session range for tunnel 0 | `string` | n/a | yes |
 | tunnel1\_bgp\_peer\_address | BGP peer address for tunnel 1 | `string` | n/a | yes |

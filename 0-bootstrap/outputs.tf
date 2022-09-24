@@ -63,6 +63,26 @@ output "common_config" {
   }
 }
 
+output "group_org_admins" {
+  description = "Google Group for GCP Organization Administrators."
+  value       = var.groups.create_groups == true ? module.required_group["group_org_admins"].id : var.group_org_admins
+}
+
+output "group_billing_admins" {
+  description = "Google Group for GCP Billing Administrators."
+  value       = var.groups.create_groups == true ? module.required_group["group_billing_admins"].id : var.group_billing_admins
+}
+
+output "required_groups" {
+  description = "List of Google Groups created that are required by the Example Foundation steps."
+  value       = var.groups.create_groups == true ? module.required_group : {}
+}
+
+output "optional_groups" {
+  description = "List of Google Groups created that are optional to the Example Foundation steps."
+  value       = var.groups.create_groups == true ? module.optional_group : {}
+}
+
 /* ----------------------------------------
     Specific to cloudbuild_module
    ---------------------------------------- */
@@ -80,16 +100,6 @@ output "gcs_bucket_cloudbuild_artifacts" {
 output "csr_repos" {
   description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
   value       = module.tf_source.csr_repos
-}
-
-output "group_org_admins" {
-  description = "Google Group for GCP Organization Administrators."
-  value       = var.groups.create_groups == true ? module.required_group["group_org_admins"].id : var.group_org_admins
-}
-
-output "group_billing_admins" {
-  description = "Google Group for GCP Billing Administrators."
-  value       = var.groups.create_groups == true ? module.required_group["group_billing_admins"].id : var.group_billing_admins
 }
 
 /* ----------------------------------------
@@ -125,18 +135,3 @@ output "group_billing_admins" {
 //  description = "Bucket used to store Jenkins artifacts in Jenkins project."
 //  value       = module.jenkins_bootstrap.gcs_bucket_jenkins_artifacts
 //}
-
-
-/* ----------------------------------------
-    Specific to Google Groups creation module
-   ---------------------------------------- */
-
-output "required_groups" {
-  description = "List of Google Groups created that are required by the Example Foundation steps."
-  value       = var.groups.create_groups == true ? module.required_group : {}
-}
-
-output "optional_groups" {
-  description = "List of Google Groups created that are optional to the Example Foundation steps."
-  value       = var.groups.create_groups == true ? module.optional_group : {}
-}

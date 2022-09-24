@@ -98,7 +98,7 @@ module "seed_bootstrap" {
   sa_org_iam_permissions = []
 }
 
-## Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
+# # Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 # module "jenkins_bootstrap" {
 #   source                                   = "./modules/jenkins-agent"
 #   org_id                                   = var.org_id

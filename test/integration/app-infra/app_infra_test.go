@@ -40,10 +40,9 @@ func TestAppInfra(t *testing.T) {
 	)
 
 	// Configure impersonation for test execution
-	terraformSA := terraform.OutputList(t, shared.GetTFOptions(), "terraform_service_account")[0]
+	terraformSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")["bu1-example-app"]
+	backend_bucket := terraform.OutputMap(t, shared.GetTFOptions(), "state_buckets")["bu1-example-app"]
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
-
-	backend_bucket := terraform.OutputList(t, shared.GetTFOptions(), "state_buckets")[0]
 	backendConfig := map[string]interface{}{
 		"bucket": backend_bucket,
 	}

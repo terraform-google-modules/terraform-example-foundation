@@ -17,11 +17,26 @@
 locals {
   env_code        = element(split("", var.environment), 0)
   shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
+  source_repos    = keys(var.app_infra_pipeline_service_accounts)
   pipeline_roles = var.enable_cloudbuild_deploy ? flatten([
-    for role in var.sa_roles : [
-      for sa in var.app_infra_pipeline_service_accounts : {
+    for repo in local.source_repos : [
+      for role in var.sa_roles[repo] :
+      {
+        repo = repo
         role = role
-        sa   = sa
+        sa   = var.app_infra_pipeline_service_accounts[repo]
+      }
+    ]
+  ]) : []
+
+  network_user_role = var.enable_cloudbuild_deploy ? flatten([
+    for repo in local.source_repos : [
+      for subnet in var.shared_vpc_subnets :
+      {
+        repo   = repo
+        subnet = element(split("/", subnet), index(split("/", subnet), "subnetworks", ) + 1, )
+        region = element(split("/", subnet), index(split("/", subnet), "regions") + 1, )
+        sa     = var.app_infra_pipeline_service_accounts[repo]
       }
     ]
   ]) : []
@@ -60,7 +75,7 @@ module "project" {
 
 # Additional roles to the App Infra Pipeline service account
 resource "google_project_iam_member" "app_infra_pipeline_sa_roles" {
-  for_each = { for pr in local.pipeline_roles : "${pr.sa}-${pr.role}" => pr }
+  for_each = { for pr in local.pipeline_roles : "${pr.repo}-${pr.sa}-${pr.role}" => pr }
 
   project = module.project.project_id
   role    = each.value.role
@@ -68,7 +83,7 @@ resource "google_project_iam_member" "app_infra_pipeline_sa_roles" {
 }
 
 resource "google_folder_iam_member" "folder_network_viewer" {
-  for_each = toset(var.app_infra_pipeline_service_accounts)
+  for_each = var.app_infra_pipeline_service_accounts
 
   folder = var.folder_id
   role   = "roles/compute.networkViewer"
@@ -77,20 +92,11 @@ resource "google_folder_iam_member" "folder_network_viewer" {
 
 resource "google_compute_subnetwork_iam_member" "service_account_role_to_vpc_subnets" {
   provider = google-beta
-  count    = length(var.shared_vpc_subnets)
+  for_each = { for nr in local.network_user_role : "${nr.repo}-${nr.subnet}-${nr.sa}" => nr }
 
-  subnetwork = element(
-    split("/", var.shared_vpc_subnets[count.index]),
-    index(
-      split("/", var.shared_vpc_subnets[count.index]),
-      "subnetworks",
-    ) + 1,
-  )
-  role = "roles/compute.networkUser"
-  region = element(
-    split("/", var.shared_vpc_subnets[count.index]),
-    index(split("/", var.shared_vpc_subnets[count.index]), "regions") + 1,
-  )
-  project = var.shared_vpc_host_project_id
-  member  = "serviceAccount:${var.app_infra_pipeline_service_accounts[0]}"
+  subnetwork = each.value.subnet
+  role       = "roles/compute.networkUser"
+  region     = each.value.region
+  project    = var.shared_vpc_host_project_id
+  member     = "serviceAccount:${each.value.sa}"
 }

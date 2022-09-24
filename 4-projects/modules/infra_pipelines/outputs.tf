@@ -21,7 +21,7 @@ output "default_region" {
 
 output "terraform_service_accounts" {
   description = "APP Infra Pipeline Terraform Accounts."
-  value       = values(local.workspace_sa_email)
+  value       = local.workspace_sa_email
 }
 
 output "gar_name" {
@@ -36,17 +36,17 @@ output "repos" {
 
 output "artifact_buckets" {
   description = "GCS Buckets to store Cloud Build Artifacts"
-  value       = [for ws in module.tf_workspace : split("/", ws.artifacts_bucket)[length(split("/", ws.artifacts_bucket)) - 1]]
+  value       = { for k, ws in module.tf_workspace : k => split("/", ws.artifacts_bucket)[length(split("/", ws.artifacts_bucket)) - 1] }
 }
 
 output "state_buckets" {
   description = "GCS Buckets to store TF state"
-  value       = [for ws in module.tf_workspace : split("/", ws.state_bucket)[length(split("/", ws.state_bucket)) - 1]]
+  value       = { for k, ws in module.tf_workspace : k => split("/", ws.state_bucket)[length(split("/", ws.state_bucket)) - 1] }
 }
 
 output "log_buckets" {
   description = "GCS Buckets to store Cloud Build logs"
-  value       = [for ws in module.tf_workspace : split("/", ws.logs_bucket)[length(split("/", ws.logs_bucket)) - 1]]
+  value       = { for k, ws in module.tf_workspace : k => split("/", ws.logs_bucket)[length(split("/", ws.logs_bucket)) - 1] }
 }
 
 output "plan_triggers_id" {

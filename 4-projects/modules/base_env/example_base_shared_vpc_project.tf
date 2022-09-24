@@ -30,11 +30,14 @@ module "base_shared_vpc_project" {
   project_prefix             = local.project_prefix
   enable_cloudbuild_deploy   = true
 
-  sa_roles = [
-    "roles/compute.instanceAdmin.v1",
-    "roles/iam.serviceAccountAdmin",
-    "roles/iam.serviceAccountUser",
-  ]
+  sa_roles = {
+    "bu1-example-app" = [
+      "roles/compute.instanceAdmin.v1",
+      "roles/iam.serviceAccountAdmin",
+      "roles/iam.serviceAccountUser",
+    ]
+  }
+
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
 
   activate_apis = [

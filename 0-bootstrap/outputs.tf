@@ -39,11 +39,6 @@ output "organization_step_terraform_service_account_email" {
   value       = google_service_account.terraform-env-sa["org"].email
 }
 
-output "terraform_sa_name" {
-  description = "Fully qualified name for privileged service account for Terraform."
-  value       = module.seed_bootstrap.terraform_sa_name
-}
-
 output "gcs_bucket_tfstate" {
   description = "Bucket used for storing terraform state for Foundations Pipelines in Seed Project."
   value       = module.seed_bootstrap.gcs_bucket_tfstate

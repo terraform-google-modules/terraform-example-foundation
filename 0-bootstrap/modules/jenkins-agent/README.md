@@ -23,9 +23,8 @@ module "jenkins_bootstrap" {
   billing_account                           = "<BILLING_ACCOUNT_ID>"
   group_org_admins                          = "gcp-organization-admins@example.com"
   default_region                            = "us-central1"
-  terraform_service_account                 = "<SERVICE_ACCOUNT_EMAIL>" # normally module.seed_bootstrap.terraform_sa_email
-  terraform_sa_name                         = "<SERVICE_ACCOUNT_NAME>" # normally module.seed_bootstrap.terraform_sa_name
-  terraform_state_bucket                    = "<GCS_STATE_BUCKET_NAME>" # normally module.seed_bootstrap.gcs_bucket_tfstate
+  terraform_sa_names                        = "<SERVICE_ACCOUNT_NAMES>"
+  terraform_state_bucket                    = "<GCS_STATE_BUCKET_NAME>"
   sa_enable_impersonation                   = true
   jenkins_controller_subnetwork_cidr_range  = ["10.1.0.6/32"]
   jenkins_agent_gce_subnetwork_cidr_range   = "172.16.1.0/24"
@@ -43,7 +42,7 @@ module "jenkins_bootstrap" {
 1. Creates a GCE Instance to run the Jenkins Agent with SSH access using the supplied public key
 1. Creates a Service Account (`jenkins_agent_sa_email`) to run the Jenkins Agent GCE instance
 1. Creates a GCS bucket for Jenkins Artifacts using `project_prefix`
-1. Allows `jenkins_agent_sa_email` service account permissions to impersonate terraform service account (which exists in the `seed` project) using `sa_enable_impersonation` and supplied value for `terraform_sa_name`
+1. Allows `jenkins_agent_sa_email` service account permissions to impersonate terraform service account (which exists in the `seed` project) using `sa_enable_impersonation` and supplied value for `terraform_sa_names`
 1. Adds Cloud NAT for the Agent to be able to download updates and necessary binaries.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -76,8 +75,7 @@ module "jenkins_bootstrap" {
 | service\_account\_prefix | Name prefix to use for service accounts. | `string` | `"sa"` | no |
 | storage\_bucket\_labels | Labels to apply to the storage bucket. | `map(string)` | `{}` | no |
 | storage\_bucket\_prefix | Name prefix to use for storage buckets. | `string` | `"bkt"` | no |
-| terraform\_sa\_name | Fully-qualified name of the Terraform Service Account. It must be supplied by the Seed Project | `string` | n/a | yes |
-| terraform\_service\_account | Email for Terraform Service Account. It must be supplied by the Seed Project | `string` | n/a | yes |
+| terraform\_sa\_names | Fully-qualified name of the Terraform Service Accounts. It must be supplied by the Seed Project | `map(string)` | n/a | yes |
 | terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the Seed Project | `string` | n/a | yes |
 | terraform\_version | Default terraform version. | `string` | `"1.0.0"` | no |
 | terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"8be33cc3be8089019d95eb8f546f35d41926e7c1e5deff15792e969dde573eb5"` | no |

@@ -81,7 +81,7 @@ variable "cloudbuild_apply_filename" {
 variable "terraform_version" {
   description = "Default terraform version."
   type        = string
-  default     = "1.0.0"
+  default     = "1.3.0"
 }
 
 variable "terraform_version_sha256sum" {

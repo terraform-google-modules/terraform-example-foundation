@@ -16,7 +16,7 @@
 | impersonate\_service\_account | Service account email of the account to impersonate to run gcloud build submit | `string` | n/a | yes |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | terraform\_apply\_branches | List of git branches configured to run terraform apply Cloud Build trigger. All other branches will run plan by default. | `list(string)` | <pre>[<br>  "development",<br>  "non-production",<br>  "production"<br>]</pre> | no |
-| terraform\_version | Default terraform version. | `string` | `"1.0.0"` | no |
+| terraform\_version | Default terraform version. | `string` | `"1.3.0"` | no |
 | terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"8be33cc3be8089019d95eb8f546f35d41926e7c1e5deff15792e969dde573eb5"` | no |
 
 ## Outputs

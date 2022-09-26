@@ -87,7 +87,7 @@ variable "terraform_version" {
 variable "terraform_version_sha256sum" {
   description = "sha256sum for default terraform version."
   type        = string
-  default     = "8be33cc3be8089019d95eb8f546f35d41926e7c1e5deff15792e969dde573eb5"
+  default     = "380ca822883176af928c80e5771d1c0ac9d69b13c6d746e6202482aedde7d457"
 }
 
 variable "gcloud_version" {

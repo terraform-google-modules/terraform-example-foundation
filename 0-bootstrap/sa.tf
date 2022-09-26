@@ -26,8 +26,12 @@ locals {
     "proj" = "Foundation Projects SA. Managed by Terraform.",
   }
 
+  common_roles = [
+    "roles/browser", // Required for gcloud beta terraform vet to be able to read the ancestry of folders
+  ]
+
   granular_sa_org_level_roles = {
-    "org" = [
+    "org" = distinct(concat([
       "roles/orgpolicy.policyAdmin",
       "roles/logging.configWriter",
       "roles/resourcemanager.organizationAdmin",
@@ -35,15 +39,17 @@ locals {
       "roles/resourcemanager.organizationViewer",
       "roles/accesscontextmanager.policyAdmin",
       "roles/essentialcontacts.admin",
-    ],
-    "net" = [
+    ], local.common_roles)),
+    "env" = distinct(concat([
+    ], local.common_roles)),
+    "net" = distinct(concat([
       "roles/accesscontextmanager.policyAdmin",
       "roles/compute.xpnAdmin",
-    ],
-    "proj" = [
+    ], local.common_roles)),
+    "proj" = distinct(concat([
       "roles/accesscontextmanager.policyAdmin",
-      "roles/serviceusage.serviceUsageConsumer"
-    ],
+      "roles/serviceusage.serviceUsageConsumer",
+    ], local.common_roles)),
   }
 
   granular_sa_parent_level_roles = {

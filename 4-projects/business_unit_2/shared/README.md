@@ -19,6 +19,7 @@
 | default\_region | Default region to create resources where applicable. |
 | plan\_triggers\_id | CB plan triggers |
 | repos | CSRs to store source code |
+| sa\_roles | A list of roles to give the Service Accounts from App Infra Pipeline by workspace repository. |
 | state\_buckets | GCS Buckets to store TF state |
 | terraform\_service\_accounts | APP Infra Pipeline Terraform Accounts. |
 

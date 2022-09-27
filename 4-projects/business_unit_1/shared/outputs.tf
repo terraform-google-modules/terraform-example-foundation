@@ -33,6 +33,11 @@ output "repos" {
   value       = module.infra_pipelines.repos
 }
 
+output "sa_roles" {
+  description = "A list of roles to give the Service Accounts from App Infra Pipeline by workspace repository."
+  value       = local.sa_roles
+}
+
 output "artifact_buckets" {
   description = "GCS Buckets to store Cloud Build Artifacts"
   value       = module.infra_pipelines.artifact_buckets

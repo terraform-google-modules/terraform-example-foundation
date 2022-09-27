@@ -74,42 +74,49 @@ func TestProjects(t *testing.T) {
 
 	for _, tt := range []struct {
 		name              string
+		repo              string
 		baseDir           string
 		baseNetwork       string
 		restrictedNetwork string
 	}{
 		{
 			name:              "bu1_development",
+			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
 			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu1_non-production",
+			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
 			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu1_production",
+			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
 			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu2_development",
+			repo:              "bu2-example-app",
 			baseDir:           "../../../4-projects/business_unit_2/%s",
 			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu2_non-production",
+			repo:              "bu2-example-app",
 			baseDir:           "../../../4-projects/business_unit_2/%s",
 			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu2_production",
+			repo:              "bu2-example-app",
 			baseDir:           "../../../4-projects/business_unit_2/%s",
 			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
@@ -139,7 +146,7 @@ func TestProjects(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, "shared")),
 			)
-			sharedCloudBuildSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")["bu1-example-app"]
+			sharedCloudBuildSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")[tt.repo]
 
 			vars := map[string]interface{}{
 				"backend_bucket": backend_bucket,

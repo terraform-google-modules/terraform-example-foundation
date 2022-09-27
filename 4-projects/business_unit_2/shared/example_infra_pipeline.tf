@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+locals {
+  sa_roles = {
+    "bu2-example-app" = [
+      "roles/compute.instanceAdmin.v1",
+      "roles/iam.serviceAccountAdmin",
+      "roles/iam.serviceAccountUser",
+    ]
+  }
+  repo_names = ["bu2-example-app"]
+}
+
 module "app_infra_cloudbuild_project" {
   source               = "../../modules/single_project"
   org_id               = local.org_id
@@ -51,6 +62,6 @@ module "infra_pipelines" {
   project_prefix              = local.project_prefix
   billing_account             = local.billing_account
   default_region              = var.default_region
-  app_infra_repos             = ["bu2-example-app"]
+  app_infra_repos             = local.repo_names
 }
 

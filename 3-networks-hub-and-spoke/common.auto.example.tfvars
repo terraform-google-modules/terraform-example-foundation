@@ -19,6 +19,6 @@ domain = "example.com."
 
 terraform_service_account = "NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL"
 
-backend_bucket = "REMOTE_STATE_BUCKET"
+remote_state_bucket = "REMOTE_STATE_BUCKET"
 
 //enable_hub_and_spoke_transitivity = true

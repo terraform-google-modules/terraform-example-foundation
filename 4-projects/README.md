@@ -268,9 +268,9 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
 1. Use `terraform output` to get the remote state bucket (the backend bucket used by previous steps) value from 0-bootstrap output.
    ```
-   export REMOTE_STATE_BUCKET=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "remote state bucket = ${REMOTE_STATE_BUCKET}"
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   export remote_state_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${REMOTE_STATE_BUCKET}"
+   sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 1. Also update `backend.tf` with your projects backend bucket from 0-bootstrap output. Step 4-projects uses a different bucket to store the remote state.
    ```

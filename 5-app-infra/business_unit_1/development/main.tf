@@ -22,10 +22,10 @@ locals {
 module "base_shared_gce_instance" {
   source = "../../modules/env_base"
 
-  environment    = local.environment
-  business_code  = "bu1"
-  business_unit  = local.business_unit
-  project_suffix = "sample-base"
-  region         = var.instance_region
-  backend_bucket = var.backend_bucket
+  environment         = local.environment
+  business_code       = "bu1"
+  business_unit       = local.business_unit
+  project_suffix      = "sample-base"
+  region              = var.instance_region
+  remote_state_bucket = var.remote_state_bucket
 }

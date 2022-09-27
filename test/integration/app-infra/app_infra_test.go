@@ -32,7 +32,7 @@ func TestAppInfra(t *testing.T) {
 	)
 	projects_backend_bucket := bootstrap.GetStringOutput("projects_gcs_bucket_tfstate")
 	vars := map[string]interface{}{
-		"backend_bucket": projects_backend_bucket,
+		"remote_state_bucket": projects_backend_bucket,
 	}
 
 	shared := tft.NewTFBlueprintTest(t,

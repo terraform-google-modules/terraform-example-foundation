@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-backend_bucket = "REMOTE_STATE_BUCKET"
+remote_state_bucket = "REMOTE_STATE_BUCKET"

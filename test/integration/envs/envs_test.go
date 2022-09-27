@@ -40,7 +40,7 @@ func TestEnvs(t *testing.T) {
 	monitoringWorkspaceUsers := bootstrap.GetTFSetupStringOutput("monitoring_workspace_users")
 
 	vars := map[string]interface{}{
-		"backend_bucket":             backend_bucket,
+		"remote_state_bucket":        backend_bucket,
 		"monitoring_workspace_users": monitoringWorkspaceUsers,
 	}
 

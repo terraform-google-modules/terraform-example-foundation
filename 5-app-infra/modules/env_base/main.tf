@@ -32,7 +32,7 @@ data "terraform_remote_state" "projects_env" {
   backend = "gcs"
 
   config = {
-    bucket = "${var.backend_bucket}"
+    bucket = var.remote_state_bucket
     prefix = "terraform/projects/${var.business_unit}/${var.environment}"
   }
 }

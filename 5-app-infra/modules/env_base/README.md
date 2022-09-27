@@ -3,7 +3,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| backend\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 | business\_code | The code that describes which business unit owns the project | `string` | `"abcd"` | no |
 | business\_unit | The business (ex. business\_unit\_1). | `string` | `"business_unit_1"` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
@@ -12,6 +11,7 @@
 | num\_instances | Number of instances to create | `number` | `1` | no |
 | project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
 | region | The GCP region to create and test resources in | `string` | `"us-central1"` | no |
+| remote\_state\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 
 ## Outputs
 

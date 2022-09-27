@@ -193,9 +193,9 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Update `common.auto.tfvars` file with values from your environment.
 1. Use `terraform output` to get the project backend bucket value from 0-bootstrap.
    ```
-   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   export remote_state_bucket=$(terraform -chdir="../0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${remote_state_bucket}"
+   sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 Terraform service account.
 1. Provide the user permissions to run the terraform locally with the `serviceAccountTokenCreator` permission.

@@ -69,7 +69,7 @@ func TestProjects(t *testing.T) {
 	var project_sa_roles = []string{
 		"roles/compute.instanceAdmin.v1",
 		"roles/iam.serviceAccountAdmin",
-		"roles/iam.serviceAccountTokenCreator",
+		"roles/iam.serviceAccountUser",
 	}
 
 	for _, tt := range []struct {

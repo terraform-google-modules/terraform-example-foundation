@@ -1,15 +1,16 @@
-## Overview
+# Overview
 
-The objective of this module is to deploy a Google Cloud Platform project `prj-b-cicd` to host a Jenkins Agent that can connect with your current Jenkins Controller on-prem. This module is a replica of the [cloudbuild module](https://github.com/terraform-google-modules/terraform-google-bootstrap/tree/master/modules/cloudbuild), but re-purposed to use Jenkins instead. This module creates:
+The objective of this module is to deploy a Google Cloud Platform project `prj-b-cicd` to host a Jenkins Agent that can connect with your current Jenkins Controller on-prem. This module is a replica of the deprecated [cloudbuild module](https://github.com/terraform-google-modules/terraform-google-bootstrap/tree/master/modules/cloudbuild), but re-purposed to use Jenkins instead. This module creates:
+
 - The `prj-b-cicd` project, which includes:
-    - GCE Instance for the Jenkins Agent, which you will configure to connect to your current Jenkins Controller using SSH.
-    - VPC to connect the Jenkins GCE Instance to
-    - FW rules to allow communication over port 22
-    - VPN connection with on-prem (or where ever your Jenkins Controller is located)
-    - Custom service account `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance. This service account is granted the access to generate tokens on the provided Terraform custom service account
+  - GCE Instance for the Jenkins Agent, which you will configure to connect to your current Jenkins Controller using SSH.
+  - VPC to connect the Jenkins GCE Instance to
+  - FW rules to allow communication over port 22
+  - VPN connection with on-prem (or where ever your Jenkins Controller is located)
+  - Custom service account `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance. This service account is granted the access to generate tokens on the provided Terraform custom service account
 Please note this module does not include an option to create a Jenkins Controller. To deploy a Jenkins Controller, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins).
 
-**If you don't have a Jenkins implementation and don't want one**, then we recommend you to [use the Cloud Build module](../../README.md) instead.
+**If you don't have a Jenkins implementation and don't want one**, then we recommend you to [use the Cloud Build module](../../README.md#deploying-with-cloud-build) instead.
 
 ## Usage
 
@@ -102,20 +103,20 @@ module "jenkins_bootstrap" {
 
 ### Software
 
-- [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
-- [Terraform](https://www.terraform.io/downloads.html) = 0.13.7
-    - The scripts in this codebase use Terraform v0.13.7. You should use the same version in the manual steps to avoid [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.
+- [gcloud sdk](https://cloud.google.com/sdk/install) >= 393.0.0
+- [Terraform](https://www.terraform.io/downloads.html) = 1.0.0
+  - The scripts in this codebase use Terraform v1.0.0. You should use the same version in the manual steps to avoid [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.
 
 ### Infrastructure
 
- - **Jenkins Controller:** You need a Jenkins Controller, since this module does not include an option to create one. To deploy a Jenkins Controller, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins). If you don't have a Jenkins implementation and don't want one, then we recommend you to [use the Cloud Build module](../../README.md) instead.
+- **Jenkins Controller:** You need a Jenkins Controller, since this module does not include an option to create one. To deploy a Jenkins Controller, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins). If you don't have a Jenkins implementation and don't want one, then we recommend you to [use the Cloud Build module](../../README.md#deploying-with-cloud-build) instead.
 
- - **VPN Connectivity with on-prem:** Once you run this module, a Jenkins Agent is created in the CICD project in GCP. Please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to). This VPN is necessary to allow communication between the Jenkins Controller (on prem or in a cloud environment) with the Jenkins Agent in the CICD project.
+- **VPN Connectivity with on-prem:** Once you run this module, a Jenkins Agent is created in the CI/CD project in GCP. Please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to/adding-a-tunnel). This VPN is necessary to allow communication between the Jenkins Controller (on prem or in a cloud environment) with the Jenkins Agent in the CI/CD project.
 
- - **Binaries and packages for the Jenkins Agent:** The Jenkins Agent is a new GCE instance created by this module. After creation, the startup script needs to fetch several binaries for later use, during pipelines execution. These binaries include `java`, `terraform` and any other binary you use in your own scripts. You have several options to make these binaries and libraries available to the Jenkins Agent:
-    - allow the Jenkins Agent Internet access (ideally through Cloud NAT, implemented by default).
-    - allow the Jenkins Agent access to local package repositories on your premises, ideally through the VPN connection.
-    - preparing a golden image for the Jenkins Agent (and assign the image to the `jenkins_agent_gce_instance.boot_disk.initialize_params.image` terraform variable). You can create the golden images with tools like Packer. Although, you might still need network access to download dependencies while running a pipeline.
+- **Binaries and packages for the Jenkins Agent:** The Jenkins Agent is a new GCE instance created by this module. After creation, the startup script needs to fetch several binaries for later use, during pipelines execution. These binaries include `java`, `terraform` and any other binary you use in your own scripts. You have several options to make these binaries and libraries available to the Jenkins Agent:
+  - allow the Jenkins Agent Internet access (ideally through Cloud NAT, implemented by default).
+  - allow the Jenkins Agent access to local package repositories on your premises, ideally through the VPN connection.
+  - preparing a golden image for the Jenkins Agent (and assign the image to the `jenkins_agent_gce_instance.boot_disk.initialize_params.image` terraform variable). You can create the golden images with tools like Packer. Although, you might still need network access to download dependencies while running a pipeline.
 
 ### Permissions
 
@@ -126,19 +127,20 @@ An account that has the following [permissions](https://github.com/terraform-goo
 - `roles/resourcemanager.projectCreator` on GCP Organization or folder
 
 This is especially important as you might face one of the errors below:
-```
+
+```text
 Error: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
    on <empty> line 0:
   (source code not available)
 ```
 
-```
+```text
 Error: Error setting billing account "aaaaaa-bbbbbb-cccccc" for project "projects/prj-jenkins-dc3a": googleapi: Error 400: Precondition check failed., failedPrecondition
       on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
       96: resource "google_project" "main" {
 ```
 
-```
+```text
 Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbbbb-cccccc": billing.resourceAssociations.create
   on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
   96: resource "google_project" "main" {

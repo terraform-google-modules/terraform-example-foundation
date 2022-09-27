@@ -92,13 +92,11 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
   member     = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
 
-// Remote state data source needs "storage.objects.create"
-// to be able to create a state lock while reading the data.
 resource "google_storage_bucket_iam_member" "tf_state" {
   for_each = toset(var.app_infra_repos)
 
   bucket = var.remote_tfstate_bucket
-  role   = "roles/storage.admin"
+  role   = "roles/storage.objectViewer"
   member = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
 

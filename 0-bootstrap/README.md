@@ -80,12 +80,11 @@ Also make sure that you've done the following:
 1. Added the user who will use Terraform to the `group_org_admins` group.
    They must be in this group, or they won't have
    `roles/resourcemanager.projectCreator` access.
-1. For the user who will run the procedures in this document, granted the
-   following roles:
-   -  The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
-   -  The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
-   -  The `roles/billing.admin` role on the billing account.
-   -  The `roles/resourcemanager.folderCreator` role.
+1. For the user who will run the procedures in this document, granted the following roles:
+   - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
+   - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
+   - The `roles/billing.admin` role on the billing account.
+   - The `roles/resourcemanager.folderCreator` role.
 
 If other users need to be able to run these procedures, add them to the group
 represented by the `org_project_creators` variable.
@@ -132,51 +131,82 @@ your current Jenkins manager (controller) environment.
 
 1. Go to the `0-bootstrap` folder.
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
-    ```
-    mv terraform.example.tfvars terraform.tfvars
-    ```
-1. Run `terraform init`.
-1. Run `terraform plan` and review the output.
+
+      ```bash
+      mv terraform.example.tfvars terraform.tfvars
+      ```
+
+1. Run `terraform init` and `terraform plan` and review the output.
+
+      ```bash
+      terraform init
+      terraform plan
+      ```
+
 1. To run `gcloud beta terraform vet` steps please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-    1. Run `terraform plan -input=false -out bootstrap.tfplan`
-    1. Run `terraform show -json bootstrap.tfplan > bootstrap.json`
-    1. Run `gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project <A-VALID-PROJECT-ID>` and check for violations (`<A-VALID-PROJECT-ID>` must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project).
+1. Run the following commands and check for violations:
+
+      ```bash
+      export VET_PROJECT_ID=A-VALID-PROJECT-ID
+      terraform plan -input=false -out bootstrap.tfplan
+      terraform show -json bootstrap.tfplan > bootstrap.json
+      gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project ${VET_PROJECT_ID}
+      ```
+
+   - *`A-VALID-PROJECT-ID`* must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
 1. Run `terraform apply`.
-1. Run `terraform output organization_step_terraform_service_account_email` to get the email address of the admin of step `1-org`. You need this address in a later procedure.
-1. Run `terraform output environment_step_terraform_service_account_email` to get the email address of the admin of step `2-environments`. You need this address in a later procedure.
-1. Run `terraform output networks_step_terraform_service_account_email` to get the email address of the admin of steps `3-networks-dual-svpc` and `3-networks-hub-and-spoke`. You need this address in a later procedure.
-1. Run `terraform output projects_step_terraform_service_account_email` to get the email address of the admin of step `4-projects`. You need this address in a later procedure.
-1. Run `terraform output cloudbuild_project_id` to get the ID of your Cloud Build project.
-1. Run `terraform output gcs_bucket_tfstate` to get your Google Cloud bucket name from Terraform's state.
-1. Copy the backend:
-   ```
-   cp backend.tf.example backend.tf
-   ```
-1. Update `backend.tf` with the name of your Cloud Storage bucket.
-1. Re-run `terraform init`. When you're prompted, agree to copy state to
-   Cloud Storage.
-1. (Optional) Run `terraform apply` to verify that state is configured
-   correctly. You should see no changes from the previous state.
+
+      ```bash
+      terraform apply
+      ```
+
+1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
+
+      ```bash
+      export network_step_sa=$(terraform output -raw networks_step_terraform_service_account_email)
+      export projects_step_sa=$(terraform output -raw projects_step_terraform_service_account_email)
+
+      echo "network step service account = ${network_step_sa}"
+      echo "projects step service account = ${projects_step_sa}"
+      ```
+
+1. Run `terraform output` to get the ID of your Cloud Build project:
+
+      ```bash
+      export cloudbuild_project_id=$(terraform output -raw cloudbuild_project_id)
+      echo "cloud build project ID = ${cloudbuild_project_id}"
+      ```
+
+1. Copy the backend and update `backend.tf` with the name of your Google Cloud bucket for Terraform's state.
+
+      ```bash
+      cp backend.tf.example backend.tf
+
+      export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
+      echo "backend_bucket = ${backend_bucket}"
+
+      for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+      ```
+
+1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Cloud Storage.
+
+      ```bash
+      terraform init
+      ```
+
+1. (Optional) Run `terraform apply` to verify that state is configured correctly. You should see no changes from the previous state.
 
 **Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage. They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
 
-**Note 2:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the four service accounts created in this step.
+**Note 2:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the **projects step service account** created in this step.
 
 ## Running Terraform locally
 
 If you deploy using Cloud Build, the bucket information is replaced in the state
-backends as a part of the build process when the build is executed by Cloud
-Build. If you want to execute Terraform locally, you need to add your Cloud
-Storage bucket to the `backend.tf` files. You can update all of these files with
-the following steps:
-
-1. Go to the `terraform-example-foundation` directory.
-1. Run the following command:
-   ```
-   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/GCS_BUCKET_NAME/' $i; done
-   ```
-   where `GCS_BUCKET_NAME` is the name of your bucket from the steps you ran
-   earlier.
+backends as a part of the build process when the build is executed by Cloud Build.
+If you want to execute Terraform locally, you need to add your Cloud
+Storage bucket to the `backend.tf` files.
+Each step has instructions for this change.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

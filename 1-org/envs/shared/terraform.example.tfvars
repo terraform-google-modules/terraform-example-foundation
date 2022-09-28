@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Must include the domain of the organization you are deploying the foundation.
+# Must include the domain of the organization you are deploying the foundation.
 domains_to_allow = ["example.com"]
 
 essential_contacts_domains_to_allow = ["@example.com"]
@@ -27,8 +27,8 @@ scc_notification_name = "scc-notify"
 
 backend_bucket = "TERRAFORM_STATE_BUCKET"
 
-//scc_notification_filter = "state=\\\"ACTIVE\\\""
+#scc_notification_filter = "state=\\\"ACTIVE\\\""
 
-//enable_hub_and_spoke = true
+#enable_hub_and_spoke = true
 
-//create_access_context_manager_access_policy = false
+#create_access_context_manager_access_policy = false

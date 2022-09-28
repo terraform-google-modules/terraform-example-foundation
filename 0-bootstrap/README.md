@@ -132,67 +132,67 @@ your current Jenkins manager (controller) environment.
 1. Go to the `0-bootstrap` folder.
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
 
-      ```bash
-      mv terraform.example.tfvars terraform.tfvars
-      ```
+   ```bash
+   mv terraform.example.tfvars terraform.tfvars
+   ```
 
 1. Run `terraform init` and `terraform plan` and review the output.
 
-      ```bash
-      terraform init
-      terraform plan
-      ```
+   ```bash
+   terraform init
+   terraform plan
+   ```
 
 1. To run `gcloud beta terraform vet` steps please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Run the following commands and check for violations:
 
-      ```bash
-      export VET_PROJECT_ID=A-VALID-PROJECT-ID
-      terraform plan -input=false -out bootstrap.tfplan
-      terraform show -json bootstrap.tfplan > bootstrap.json
-      gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project ${VET_PROJECT_ID}
-      ```
+   ```bash
+   export VET_PROJECT_ID=A-VALID-PROJECT-ID
+   terraform plan -input=false -out bootstrap.tfplan
+   terraform show -json bootstrap.tfplan > bootstrap.json
+   gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project ${VET_PROJECT_ID}
+   ```
 
    - *`A-VALID-PROJECT-ID`* must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
 1. Run `terraform apply`.
 
-      ```bash
-      terraform apply
-      ```
+   ```bash
+   terraform apply
+   ```
 
 1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
 
-      ```bash
-      export network_step_sa=$(terraform output -raw networks_step_terraform_service_account_email)
-      export projects_step_sa=$(terraform output -raw projects_step_terraform_service_account_email)
+   ```bash
+   export network_step_sa=$(terraform output -raw networks_step_terraform_service_account_email)
+   export projects_step_sa=$(terraform output -raw projects_step_terraform_service_account_email)
 
-      echo "network step service account = ${network_step_sa}"
-      echo "projects step service account = ${projects_step_sa}"
-      ```
+   echo "network step service account = ${network_step_sa}"
+   echo "projects step service account = ${projects_step_sa}"
+   ```
 
 1. Run `terraform output` to get the ID of your Cloud Build project:
 
-      ```bash
-      export cloudbuild_project_id=$(terraform output -raw cloudbuild_project_id)
-      echo "cloud build project ID = ${cloudbuild_project_id}"
-      ```
+   ```bash
+   export cloudbuild_project_id=$(terraform output -raw cloudbuild_project_id)
+   echo "cloud build project ID = ${cloudbuild_project_id}"
+   ```
 
 1. Copy the backend and update `backend.tf` with the name of your Google Cloud bucket for Terraform's state.
 
-      ```bash
-      cp backend.tf.example backend.tf
+   ```bash
+   cp backend.tf.example backend.tf
 
-      export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
-      echo "backend_bucket = ${backend_bucket}"
+   export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
 
-      for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-      ```
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   ```
 
 1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Cloud Storage.
 
-      ```bash
-      terraform init
-      ```
+   ```bash
+   terraform init
+   ```
 
 1. (Optional) Run `terraform apply` to verify that state is configured correctly. You should see no changes from the previous state.
 

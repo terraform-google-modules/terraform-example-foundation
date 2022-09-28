@@ -80,6 +80,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```bash
    export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
+
    gcloud source repos clone gcp-environments --project=${CLOUD_BUILD_PROJECT_ID}
    ```
 
@@ -108,6 +109,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```bash
    export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
+
    sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" terraform.tfvars
    ```
 
@@ -245,6 +247,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```bash
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
+
    sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
    ```
 

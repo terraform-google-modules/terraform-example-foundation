@@ -184,6 +184,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    ```bash
    export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
+
    sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
 
    if [ -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s/#create_access_context_manager_access_policy/create_access_context_manager_access_policy/" ./envs/shared/terraform.tfvars; fi
@@ -311,6 +312,7 @@ to run the command as the Terraform Service Account.
    ```bash
    export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
+
    sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
    ```
 

@@ -52,8 +52,8 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
   - Access to create five Git repositories, one for each directory in this [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation) (`0-bootstrap, 1-org, 2-environments, 3-networks, 4-projects`). These are usually private repositories that might be on-prem.
 
 1. Generate a SSH key pair. In the Jenkins Controller host, use the `ssh-keygen` command to generate a SSH key pair.
-    - You will need this key pair to enable authentication between the Controller and Agent. Although the key pair can be generated in any linux machine, it is recommended not to copy the secret private key from one host to another, so you probably want to do this in the Jenkins Controller host command line.
-    - Note the `ssh-keygen` command uses the `-N` option to protect the private key with a password. In this example, we are using `-N "my-password"`. This is important because you will need both, the private key and the password when configuring the SSH Agent in you Jenkins Controller Web UI.
+      - You will need this key pair to enable authentication between the Controller and Agent. Although the key pair can be generated in any linux machine, it is recommended not to copy the secret private key from one host to another, so you probably want to do this in the Jenkins Controller host command line.
+      - Note the `ssh-keygen` command uses the `-N` option to protect the private key with a password. In this example, we are using `-N "my-password"`. This is important because you will need both, the private key and the password when configuring the SSH Agent in you Jenkins Controller Web UI.
 
       ```bash
       SSH_LOCAL_CONFIG_DIR="$HOME/.ssh"
@@ -77,43 +77,43 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
       ```
 
 1. Configure a new SSH Jenkins Agent in the Jenkins Controller’s Web UI. You need the following information:
-    - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent/) installed in your Controller
-    - SSH private key you just generated in the previous step
-    - Passphrase that protects the private key (the one you used in the `-N` option)
-    - Jenkins Agent’s private IP address (usually assigned by your Network Administrator. In the provided examples this IP is "172.16.1.6"). This private IP will be reachable through the VPN connection that you will create later.
+      - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent/) installed in your Controller
+      - SSH private key you just generated in the previous step
+      - Passphrase that protects the private key (the one you used in the `-N` option)
+      - Jenkins Agent’s private IP address (usually assigned by your Network Administrator. In the provided examples this IP is "172.16.1.6"). This private IP will be reachable through the VPN connection that you will create later.
 
 1. Create five individual Git repositories in your Git server (This might be a task delegated to your infrastructure team)
-    - Note that although this infrastructure code is distributed to you as a [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation), you will store the code in five different repositories, one for each directory:
+      - Note that although this infrastructure code is distributed to you as a [monorepo](https://github.com/terraform-google-modules/terraform-example-foundation), you will store the code in five different repositories, one for each directory:
 
-        ```text
-        ./0-bootstrap
-        ./1-org
-        ./2-environments
-        ./3-networks
-        ./4-projects
-       ```
+      ```text
+      ./0-bootstrap
+      ./1-org
+      ./2-environments
+      ./3-networks
+      ./4-projects
+      ```
 
-    - For simplicity, let's name your five repositories as follows:
+      - For simplicity, let's name your five repositories as follows:
 
-        ```text
-        YOUR_NEW_REPO-0-bootstrap
-        YOUR_NEW_REPO-1-org
-        YOUR_NEW_REPO-2-environments
-        YOUR_NEW_REPO-3-networks
-        YOUR_NEW_REPO-4-projects
-        ```
+      ```text
+      YOUR_NEW_REPO-0-bootstrap
+      YOUR_NEW_REPO-1-org
+      YOUR_NEW_REPO-2-environments
+      YOUR_NEW_REPO-3-networks
+      YOUR_NEW_REPO-4-projects
+      ```
 
-    - **Note:** Towards the end of these instructions, you will configure your Jenkins Controller with **new automatic pipelines only for the following repositories:**
+      - **Note:** Towards the end of these instructions, you will configure your Jenkins Controller with **new automatic pipelines only for the following repositories:**
 
-         ```text
-         YOUR_NEW_REPO-1-org
-         YOUR_NEW_REPO-2-environments
-         YOUR_NEW_REPO-3-networks
-         YOUR_NEW_REPO-4-projects
-         ```
+      ```text
+      YOUR_NEW_REPO-1-org
+      YOUR_NEW_REPO-2-environments
+      YOUR_NEW_REPO-3-networks
+      YOUR_NEW_REPO-4-projects
+      ```
 
-        - **Note: there is no automatic pipeline needed for `YOUR_NEW_REPO-0-bootstrap`**
-    - In this 0-bootstrap section we only work with your new repository that is a copy of the directory `./0-bootstrap` (`YOUR_NEW_REPO-0-bootstrap`)
+      - **Note: there is no automatic pipeline needed for `YOUR_NEW_REPO-0-bootstrap`**
+      - In this 0-bootstrap section we only work with your new repository that is a copy of the directory `./0-bootstrap` (`YOUR_NEW_REPO-0-bootstrap`)
 
 1. Clone this mono-repository with:
 
@@ -198,12 +198,12 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
       gcloud auth application-default login
       ```
 
-    1. Open the link in your browser and accept.
+1. Open the link in your browser and accept.
 
 1. Run terraform commands.
-    - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-b-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
-    - **WARNING: Make sure you have commented-out the `cloudbuild_bootstrap` module and enabled the `jenkins_bootstrap` module in the `./main.tf` file**
-    - **Use Terraform 1.0.0** to run the terraform script with the commands below
+      - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-b-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
+      - **WARNING: Make sure you have commented-out the `cloudbuild_bootstrap` module and enabled the `jenkins_bootstrap` module in the `./main.tf` file**
+      - **Use Terraform 1.0.0** to run the terraform script with the commands below
 
       ```bash
       terraform init
@@ -211,7 +211,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
       terraform apply
       ```
 
-    - The Terraform script will take about 10 to 15 minutes. Once it finishes, note that communication between on-prem and the `prj-b-cicd` project won’t happen yet - you will configure the VPN network connectivity in step [III. Create VPN connection](#iii-configure-vpn-connection).
+      - The Terraform script will take about 10 to 15 minutes. Once it finishes, note that communication between on-prem and the `prj-b-cicd` project won’t happen yet - you will configure the VPN network connectivity in step [III. Create VPN connection](#iii-configure-vpn-connection).
 
 1. Move Terraform State to the GCS bucket created in the Seed Project
    1. Rename `backend.tf.example` to `backend.tf`
@@ -234,7 +234,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
       terraform init
       ```
 
-    - (Optional) Run `terraform apply` to verify state is configured correctly. You can confirm the terraform state is now in that bucket by visiting the bucket url in your Seed Project.
+      - (Optional) Run `terraform apply` to verify state is configured correctly. You can confirm the terraform state is now in that bucket by visiting the bucket url in your Seed Project.
 
 1. Commit changes
 
@@ -274,7 +274,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 - **Jenkinsfile:** A [Jenkinsfile](../build/Jenkinsfile) has been included which closely aligns with the Cloud Build pipeline. Additionally, the stage `TF wait for approval` which lets you confirm via Jenkins UI before proceeding with `terraform apply` has been disabled by default. It can be enabled by un-commenting that stage in the file.
 
 1. Create Multibranch pipelines for your new repos (`YOUR_NEW_REPO-1-org, YOUR_NEW_REPO-2-environments, YOUR_NEW_REPO-3-networks, YOUR_NEW_REPO-4-projects`).
-    - **DO NOT configure an automatic pipeline for your `YOUR_NEW_REPO-0-bootstrap` repository**
+      - **DO NOT configure an automatic pipeline for your `YOUR_NEW_REPO-0-bootstrap` repository**
 
 1. In your Jenkins Controller Web UI, **create Multibranch Pipelines only for the following repositories:**
 
@@ -372,7 +372,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
       ```
 
 1. Push your plan branch.
-    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
+      - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 
       ```bash
       git push --set-upstream origin plan
@@ -466,7 +466,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
       git push --set-upstream origin plan
       ```
 
-    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent/README.md)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
+      - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent/README.md)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 1. Review the plan output in your Controller's web UI.
 1. Merge changes to development.
 
@@ -623,7 +623,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
       git push --set-upstream origin plan
       ```
 
-    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
+      - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 1. Review the plan output in your Controller's web UI.
 1. Merge changes to production branch.
 
@@ -780,7 +780,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
       git push --set-upstream origin plan
       ```
 
-    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
+      - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 1. Review the plan output in your Controller's web UI.
 1. Merge changes to production branch.
 

@@ -77,11 +77,11 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 1. Clone repo.
 
-      ```bash
-      export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
-      echo ${CLOUD_BUILD_PROJECT_ID}
-      gcloud source repos clone gcp-environments --project=${CLOUD_BUILD_PROJECT_ID}
-      ```
+   ```bash
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
+   echo ${CLOUD_BUILD_PROJECT_ID}
+   gcloud source repos clone gcp-environments --project=${CLOUD_BUILD_PROJECT_ID}
+   ```
 
 1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.
    All subsequent steps assume you are running them from the gcp-environments directory.
@@ -99,59 +99,59 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 1. Rename `terraform.example.tfvars` to `terraform.tfvars`.
 
-      ```bash
-      mv terraform.example.tfvars terraform.tfvars
-      ```
+   ```bash
+   mv terraform.example.tfvars terraform.tfvars
+   ```
 
 1. Update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). See any of the envs folder [README.md](./envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
 
-      ```bash
-      export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
-      echo "backend_bucket = ${backend_bucket}"
-      sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" terraform.tfvars
-      ```
+   ```bash
+   export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" terraform.tfvars
+   ```
 
 1. Commit changes.
 
-      ```bash
-      git add .
-      git commit -m 'Your message'
-      ```
+   ```bash
+   git add .
+   git commit -m 'Your message'
+   ```
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
    branch triggers _terraform plan_ but not _terraform apply_.
 
-      ```bash
-      git push --set-upstream origin plan
-      ```
+   ```bash
+   git push --set-upstream origin plan
+   ```
 
 1. Review the plan output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to development branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
 
-      ```bash
-      git checkout -b development
-      git push origin development
-      ```
+   ```bash
+   git checkout -b development
+   git push origin development
+   ```
 
 1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
 
-      ```bash
-      git checkout -b non-production
-      git push origin non-production
-      ```
+   ```bash
+   git checkout -b non-production
+   git push origin non-production
+   ```
 
 1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to production branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
 
-      ```bash
-      git checkout -b production
-      git push origin production
-      ```
+   ```bash
+   git checkout -b production
+   git push origin production
+   ```
 
 1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. You can now move to the instructions in the step go to for the Dual Shared VPC mode [3-networks-dual-svpc](../3-networks-dual-svpc/README.md), or go to [3-networks-hub-and-spoke](../3-networks-hub-and-spoke/README.md) to use the Hub and Spoke network mode.
@@ -227,32 +227,32 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 1. Change into `2-environments` folder, copy the Terraform wrapper script and ensure it can be executed.
 
-      ```bash
-      cd 2-environments
-      cp ../build/tf-wrapper.sh .
-      chmod 755 ./tf-wrapper.sh
-      ```
+   ```bash
+   cd 2-environments
+   cp ../build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
 
 1. Rename `terraform.example.tfvars` to `terraform.tfvars`.
 
-      ```bash
-      mv terraform.example.tfvars terraform.tfvars
-      ```
+   ```bash
+   mv terraform.example.tfvars terraform.tfvars
+   ```
 
 1. Update the file with values from your environment and 0-bootstrap output.See any of the envs folder [README.md](./envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
 1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
 
-      ```bash
-      export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-      echo "backend_bucket = ${backend_bucket}"
-      sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
-      ```
+   ```bash
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
+   ```
 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
 
-      ```bash
-      for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-      ```
+   ```bash
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   ```
 
 We will now deploy each of our environments(development/production/non-production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 2-environments step and only the corresponding environment is applied.
@@ -261,70 +261,70 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 
 1. Use `terraform output` to get the Cloud Build project ID and the environment step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
-      ```bash
-      export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
-      echo ${CLOUD_BUILD_PROJECT_ID}
+   ```bash
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
+   echo ${CLOUD_BUILD_PROJECT_ID}
 
-      export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw environment_step_terraform_service_account_email)
-      echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
-      ```
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw environment_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
 
 1. Run `init` and `plan` and review output for environment development.
 
-      ```bash
-      ./tf-wrapper.sh init development
-      ./tf-wrapper.sh plan development
-      ```
+   ```bash
+   ./tf-wrapper.sh init development
+   ./tf-wrapper.sh plan development
+   ```
 
 1. Run `validate` and check for violations.
 
-      ```bash
-      ./tf-wrapper.sh validate development $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
-      ```
+   ```bash
+   ./tf-wrapper.sh validate development $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
 
 1. Run `apply` development.
 
-      ```bash
-      ./tf-wrapper.sh apply development
-      ```
+   ```bash
+   ./tf-wrapper.sh apply development
+   ```
 
 1. Run `init` and `plan` and review output for environment non-production.
 
-      ```bash
-      ./tf-wrapper.sh init non-production
-      ./tf-wrapper.sh plan non-production
-      ```
+   ```bash
+   ./tf-wrapper.sh init non-production
+   ./tf-wrapper.sh plan non-production
+   ```
 
 1. Run `validate` and check for violations.
 
-      ```bash
-      ./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
-      ```
+   ```bash
+   ./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
 
 1. Run `apply` non-production.
 
-      ```bash
-      ./tf-wrapper.sh apply non-production
-      ```
+   ```bash
+   ./tf-wrapper.sh apply non-production
+   ```
 
 1. Run `init` and `plan` and review output for environment production.
 
-      ```bash
-      ./tf-wrapper.sh init production
-      ./tf-wrapper.sh plan production
-      ```
+   ```bash
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
 
 1. Run `validate` and check for violations.
 
-      ```bash
-      ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
-      ```
+   ```bash
+   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
 
 1. Run `apply` production.
 
-      ```bash
-      ./tf-wrapper.sh apply production
-      ```
+   ```bash
+   ./tf-wrapper.sh apply production
+   ```
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.
 

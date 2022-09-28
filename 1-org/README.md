@@ -112,42 +112,42 @@ gcloud scc notifications describe "scc-notify" --organization=${org_id}
 Clone the repo at the same level of the `terraform-example-foundation` folder, the next instructions assume that layout.
 Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see the project again.
 
-      ```bash
-      export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
-      echo ${CLOUD_BUILD_PROJECT_ID}
-      gcloud source repos clone gcp-policies --project=${CLOUD_BUILD_PROJECT_ID}
-      ```
+   ```bash
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
+   echo ${CLOUD_BUILD_PROJECT_ID}
+   gcloud source repos clone gcp-policies --project=${CLOUD_BUILD_PROJECT_ID}
+   ```
 
 1. Navigate into the repo and copy contents of policy-library to new repo.
    All subsequent steps assume you are running them
    from the gcp-policies directory. If you run them from another directory,
    adjust your copy paths accordingly.
 
-      ```bash
-      cd gcp-policies
-      git checkout -b main
-      cp -RT ../terraform-example-foundation/policy-library/ .
-      ```
+   ```bash
+   cd gcp-policies
+   git checkout -b main
+   cp -RT ../terraform-example-foundation/policy-library/ .
+   ```
 
 1. Commit changes and push your main branch to the new repo.
 
-      ```bash
-      git add .
-      git commit -m 'Your message'
-      git push --set-upstream origin main
-      ```
+   ```bash
+   git add .
+   git commit -m 'Your message'
+   git push --set-upstream origin main
+   ```
 
 1. Navigate out of the repo.
 
-      ```bash
-      cd ..
-      ```
+   ```bash
+   cd ..
+   ```
 
 1. Clone the repo.
 
-      ```bash
-      gcloud source repos clone gcp-org --project=${CLOUD_BUILD_PROJECT_ID}
-      ```
+   ```bash
+   gcloud source repos clone gcp-org --project=${CLOUD_BUILD_PROJECT_ID}
+   ```
 
    - The message `warning: You appear to have cloned an empty repository.` is
    normal and can be ignored.
@@ -155,63 +155,63 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    All subsequent steps assume you are running them from the gcp-org directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
-      ```bash
-      cd gcp-org
-      git checkout -b plan
+   ```bash
+   cd gcp-org
+   git checkout -b plan
 
-      cp -RT ../terraform-example-foundation/1-org/ .
-      cp ../terraform-example-foundation/build/cloudbuild-tf-* .
-      cp ../terraform-example-foundation/build/tf-wrapper.sh .
-      chmod 755 ./tf-wrapper.sh
-      ```
+   cp -RT ../terraform-example-foundation/1-org/ .
+   cp ../terraform-example-foundation/build/cloudbuild-tf-* .
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
 
 1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
 
-      ```bash
-      mv ./envs/shared/terraform.example.tfvars ./envs/shared/terraform.tfvars
-      ```
+   ```bash
+   mv ./envs/shared/terraform.example.tfvars ./envs/shared/terraform.tfvars
+   ```
 
 1. Check if your organization already has an Access Context Manager Policy.
 
-      ```bash
-      export ORGANIZATION_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -json common_config | jq '.org_id' | tr -d '"')
-      export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
-      echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
-      ```
+   ```bash
+   export ORGANIZATION_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -json common_config | jq '.org_id' | tr -d '"')
+   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+   ```
 
 1. Update the file with values from your environment and 0-bootstrap step. If the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
 
-      ```bash
-      export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
-      echo "backend_bucket = ${backend_bucket}"
-      sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+   ```bash
+   export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
 
-      if [ -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s/#create_access_context_manager_access_policy/create_access_context_manager_access_policy/" ./envs/shared/terraform.tfvars; fi
-      ```
+   if [ -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s/#create_access_context_manager_access_policy/create_access_context_manager_access_policy/" ./envs/shared/terraform.tfvars; fi
+   ```
 
 1. Commit changes.
 
-      ```bash
-      git add .
-      git commit -m 'Your message'
-      ```
+   ```bash
+   git add .
+   git commit -m 'Your message'
+   ```
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
    branch triggers _terraform plan_ but not _terraform apply_.
 
-      ```bash
-      git push --set-upstream origin plan
-      ```
+   ```bash
+   git push --set-upstream origin plan
+   ```
 
 1. Review the plan output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to production branch. Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
 
-      ```bash
-      git checkout -b production
-      git push origin production
-      ```
+   ```bash
+   git checkout -b production
+   git push origin production
+   ```
 
 1. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. You can now move to the instructions in the [2-environments](../2-environments/README.md) step.
@@ -292,39 +292,39 @@ to run the command as the Terraform Service Account.
 
 1. Change into `1-org` folder, copy the Terraform wrapper script and ensure it can be executed.
 
-      ```bash
-      cd 1-org
-      cp ../build/tf-wrapper.sh .
-      chmod 755 ./tf-wrapper.sh
-      ```
+   ```bash
+   cd 1-org
+   cp ../build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
 
 1. Change into `envs/shared` folder and rename `terraform.example.tfvars` to `terraform.tfvars`.
 
-      ```bash
-      cd envs/shared
-      mv terraform.example.tfvars terraform.tfvars
-      ```
+   ```bash
+   cd envs/shared
+   mv terraform.example.tfvars terraform.tfvars
+   ```
 
 1. Update the file with values from your environment and 0-bootstrap output.
 1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
 
-      ```bash
-      export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output -raw gcs_bucket_tfstate)
-      echo "backend_bucket = ${backend_bucket}"
-      sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
-      ```
+   ```bash
+   export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
+   ```
 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
 
-      ```bash
-      for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-      ```
+   ```bash
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   ```
 
 1. Return to `1-org` folder
 
-      ```bash
-      cd ../../../1-org
-      ```
+   ```bash
+   cd ../../../1-org
+   ```
 
 We will now deploy our environment (production) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponding to a branch is the repository for 1-org step and only the corresponding environment is applied.
@@ -333,32 +333,32 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 
 1. Use `terraform output` to get the Cloud Build project ID and the organization step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
-      ```bash
-      export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
-      echo ${CLOUD_BUILD_PROJECT_ID}
+   ```bash
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
+   echo ${CLOUD_BUILD_PROJECT_ID}
 
-      export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw organization_step_terraform_service_account_email)
-      echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
-      ```
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw organization_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
 
 1. Run `init` and `plan` and review output.
 
-      ```bash
-      ./tf-wrapper.sh init production
-      ./tf-wrapper.sh plan production
-      ```
+   ```bash
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
 
 1. Run `validate` and check for violations.
 
-      ```bash
-      ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
-      ```
+   ```bash
+   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ```
 
 1. Run `apply` production.
 
-      ```bash
-      ./tf-wrapper.sh apply production
-      ```
+   ```bash
+   ./tf-wrapper.sh apply production
+   ```
 
 If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan production` before run `./tf-wrapper.sh apply production`.
 

@@ -22,6 +22,7 @@ locals {
   default_region  = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   project_prefix  = data.terraform_remote_state.bootstrap.outputs.common_config.project_prefix
   folder_prefix   = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
+  tags            = data.terraform_remote_state.org.outputs.tags
 }
 
 data "terraform_remote_state" "bootstrap" {
@@ -30,5 +31,14 @@ data "terraform_remote_state" "bootstrap" {
   config = {
     bucket = var.backend_bucket
     prefix = "terraform/bootstrap/state"
+  }
+}
+
+data "terraform_remote_state" "org" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.backend_bucket
+    prefix = "terraform/org/state"
   }
 }

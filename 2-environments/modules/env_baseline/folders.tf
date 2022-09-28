@@ -28,3 +28,8 @@ resource "time_sleep" "wait_30_seconds" {
 
   destroy_duration = "30s"
 }
+
+resource "google_tags_tag_binding" "bind_folder_env" {
+  parent    = "//cloudresourcemanager.googleapis.com/${google_folder.env.id}"
+  tag_value = local.tags["environment_${var.env}"]
+}

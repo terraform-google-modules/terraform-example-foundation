@@ -99,6 +99,23 @@ func TestOrg(t *testing.T) {
 			folder := gcloud.Runf(t, "resource-manager folders describe %s", commonFolder)
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 
+			// check tags applied to common and bootstrap folder
+			cmnFldrTags := gcloud.Runf(t, "resource-manager tags bindings list --parent=//cloudresourcemanager.googleapis.com/folders/%s", commonFolder).Array()
+
+			bootstrapFolder := testutils.GetLastSplitElement(bootstrap.GetStringOutput("common_config.bootstrap_folder_name"), "/")
+			bstFldrTags := gcloud.Runf(t, "resource-manager tags bindings list --parent=//cloudresourcemanager.googleapis.com/folders/%s", bootstrapFolder).Array()
+
+			var fldrsTagValuesId []string
+			fldrsTagValuesId = append(fldrsTagValuesId, testutils.GetResultFieldStrSlice(cmnFldrTags, "tagValue")...)
+			fldrsTagValuesId = append(fldrsTagValuesId, testutils.GetResultFieldStrSlice(bstFldrTags, "tagValue")...)
+
+			var fldrsTagValues []string
+			for _, tagValueId := range fldrsTagValuesId {
+				tagValueObj := gcloud.Runf(t, "resource-manager tags values describe %s", tagValueId)
+				fldrsTagValues = append(fldrsTagValues, tagValueObj.Get("shortName").String())
+			}
+			assert.Subset([]string{"production", "bootstrap"}, fldrsTagValues, "tag values should be bootstrap and production for bootstrap folder and common folder respectively")
+
 			// boolean organization policies
 			for _, booleanConstraint := range []string{
 				"constraints/compute.disableNestedVirtualization",

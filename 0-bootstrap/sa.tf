@@ -39,8 +39,11 @@ locals {
       "roles/resourcemanager.organizationViewer",
       "roles/accesscontextmanager.policyAdmin",
       "roles/essentialcontacts.admin",
+      "roles/resourcemanager.tagAdmin",
+      "roles/resourcemanager.tagUser",
     ], local.common_roles)),
     "env" = distinct(concat([
+      "roles/resourcemanager.tagUser",
     ], local.common_roles)),
     "net" = distinct(concat([
       "roles/accesscontextmanager.policyAdmin",

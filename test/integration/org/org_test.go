@@ -23,6 +23,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -102,7 +103,8 @@ func TestOrg(t *testing.T) {
 			// check tags applied to common and bootstrap folder
 			cmnFldrTags := gcloud.Runf(t, "resource-manager tags bindings list --parent=//cloudresourcemanager.googleapis.com/folders/%s", commonFolder).Array()
 
-			bootstrapFolder := testutils.GetLastSplitElement(bootstrap.GetStringOutput("common_config.bootstrap_folder_name"), "/")
+			bstCommonConfig := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
+			bootstrapFolder := testutils.GetLastSplitElement(bstCommonConfig["bootstrap_folder_name"], "/")
 			bstFldrTags := gcloud.Runf(t, "resource-manager tags bindings list --parent=//cloudresourcemanager.googleapis.com/folders/%s", bootstrapFolder).Array()
 
 			var fldrsTagValuesId []string

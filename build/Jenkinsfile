@@ -5,9 +5,9 @@ pipeline {
 
   environment {
     _POLICY_REPO="policy-library"
-    _TF_SA_EMAIL=""
-    _STATE_BUCKET_NAME=""
-    _PROJECT_ID=""
+    _TF_SA_EMAIL="TERRAFORM_SA_EMAIL"
+    _STATE_BUCKET_NAME="BACKEND_STATE_BUCKET_NAME"
+    _PROJECT_ID="CICD_PROJECT_ID"
   }
 
   stages {
@@ -33,6 +33,7 @@ pipeline {
       }
       steps {
           sh '''
+          export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TF_SA_EMAIL}
           ./tf-wrapper.sh plan_validate_all ${BRANCH_NAME} ${WORKSPACE}/${_POLICY_REPO} ${_PROJECT_ID}
           '''
         }
@@ -47,6 +48,7 @@ pipeline {
       }
       steps {
           sh '''
+          export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TF_SA_EMAIL}
           ./tf-wrapper.sh init $BRANCH_NAME
           '''
         }
@@ -61,6 +63,7 @@ pipeline {
       }
       steps {
           sh '''
+          export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TF_SA_EMAIL}
           ./tf-wrapper.sh plan $BRANCH_NAME
           '''
         }
@@ -75,6 +78,7 @@ pipeline {
       }
       steps {
           sh '''
+          export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TF_SA_EMAIL}
           ./tf-wrapper.sh validate ${BRANCH_NAME} ${WORKSPACE}/${_POLICY_REPO} ${_PROJECT_ID}
           '''
         }
@@ -103,6 +107,7 @@ pipeline {
       }
       steps {
           sh '''
+          export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=${_TF_SA_EMAIL}
           ./tf-wrapper.sh apply $BRANCH_NAME
           '''
         }

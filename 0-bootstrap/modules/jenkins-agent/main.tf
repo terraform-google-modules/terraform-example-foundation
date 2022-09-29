@@ -237,9 +237,9 @@ resource "google_storage_bucket_iam_member" "jenkins_artifacts_iam" {
 
 // Allow the Jenkins Agent (GCE Instance) custom Service Account to impersonate the Terraform Service Account
 resource "google_service_account_iam_member" "jenkins_terraform_sa_impersonate_permissions" {
-  count = local.impersonation_enabled_count
+  for_each = var.sa_enable_impersonation ? var.terraform_sa_names : {}
 
-  service_account_id = var.terraform_sa_name
+  service_account_id = each.value
   role               = "roles/iam.serviceAccountTokenCreator"
   member             = "serviceAccount:${google_service_account.jenkins_agent_gce_sa.email}"
 }

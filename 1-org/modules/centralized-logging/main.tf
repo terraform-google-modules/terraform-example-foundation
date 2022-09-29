@@ -81,7 +81,7 @@ resource "random_string" "suffix" {
 
 module "log_export" {
   source  = "terraform-google-modules/log-export/google"
-  version = "~> 7.3.0"
+  version = "~> 7.3"
 
   for_each = local.log_exports
 
@@ -100,7 +100,7 @@ module "log_export" {
 #-------------------------#
 module "destination_logbucket" {
   source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  version = "~> 7.4.2"
+  version = "~> 7.4"
 
   count = var.logbucket_options != null ? 1 : 0
 
@@ -132,7 +132,7 @@ resource "google_project_iam_member" "logbucket_sink_member" {
 #-----------------------#
 module "destination_bigquery" {
   source  = "terraform-google-modules/log-export/google//modules/bigquery"
-  version = "~> 7.3.0"
+  version = "~> 7.3"
 
   count = var.bigquery_options != null ? 1 : 0
 
@@ -160,7 +160,7 @@ resource "google_project_iam_member" "bigquery_sink_member" {
 #----------------------#
 module "destination_storage" {
   source  = "terraform-google-modules/log-export/google//modules/storage"
-  version = "~> 7.3.0"
+  version = "~> 7.3"
 
   count = var.storage_options != null ? 1 : 0
 
@@ -195,7 +195,7 @@ resource "google_storage_bucket_iam_member" "storage_sink_member" {
 #----------------------#
 module "destination_pubsub" {
   source  = "terraform-google-modules/log-export/google//modules/pubsub"
-  version = "~> 7.3.0"
+  version = "~> 7.3"
 
   count = var.pubsub_options != null ? 1 : 0
 

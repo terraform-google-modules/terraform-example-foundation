@@ -298,14 +298,18 @@ for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $
 terraform init
 ```
 
-- Run the command below to remove the Terraform State lock, it will ask for a confirmation and you will be able to run terraform commands again.
+- Run `terraform apply` to get all the details about the lock. The apply command output should be similar to the following:
 
-```bash
-terraform force-unlock $(terraform apply 2>&1 > /dev/null | grep "ID:" | sed -e 's/.*[^0-9]\([0-9]\+\)[^0-9]*$/\1/')
+```text
+Error: Error locking state: Error acquiring the state lock: state blob is already locked
+ Lock Info:
+   ID:        a77xxxxxx-cxxc-70f1-xxx-xxxxxxxx
+   Path:      terraform.tfstate
+   Operation: OperationTypeApply
+   Who:       domain\user@host
+   Version:   0.14.5
+   Created:   2022-09-26 15:51:13.5132763 +0000 UTC
+   Info:
 ```
 
-**Notes:**
-
-- The remove Terraform State lock command **does not** change anything in your state.
-- If you got a Terraform State locked error **most of the time** the Terraform State will be inconsistent.
-- It is a **strong recommendation** to review the Terraform State before trying to continue on the step you stopped.
+- With the lock `ID` you will be able to remove the Terraform State lock using `terraform force-unlock` command. It is a **strong recommendation** to review the official documentation regarding [terraform force-unlock](https://www.terraform.io/language/state/locking#force-unlock) command before executing it.

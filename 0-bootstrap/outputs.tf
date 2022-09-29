@@ -39,11 +39,6 @@ output "organization_step_terraform_service_account_email" {
   value       = google_service_account.terraform-env-sa["org"].email
 }
 
-output "terraform_sa_name" {
-  description = "Fully qualified name for privileged service account for Terraform."
-  value       = module.seed_bootstrap.terraform_sa_name
-}
-
 output "gcs_bucket_tfstate" {
   description = "Bucket used for storing terraform state for Foundations Pipelines in Seed Project."
   value       = module.seed_bootstrap.gcs_bucket_tfstate
@@ -63,10 +58,30 @@ output "common_config" {
   }
 }
 
+output "group_org_admins" {
+  description = "Google Group for GCP Organization Administrators."
+  value       = var.groups.create_groups == true ? module.required_group["group_org_admins"].id : var.group_org_admins
+}
+
+output "group_billing_admins" {
+  description = "Google Group for GCP Billing Administrators."
+  value       = var.groups.create_groups == true ? module.required_group["group_billing_admins"].id : var.group_billing_admins
+}
+
+output "required_groups" {
+  description = "List of Google Groups created that are required by the Example Foundation steps."
+  value       = var.groups.create_groups == true ? module.required_group : {}
+}
+
+output "optional_groups" {
+  description = "List of Google Groups created that are optional to the Example Foundation steps."
+  value       = var.groups.create_groups == true ? module.optional_group : {}
+}
+
 /* ----------------------------------------
     Specific to cloudbuild_module
    ---------------------------------------- */
-// Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
+# Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 output "cloudbuild_project_id" {
   description = "Project where CloudBuild configuration and terraform container image will reside."
   value       = module.tf_source.cloudbuild_project_id
@@ -82,61 +97,36 @@ output "csr_repos" {
   value       = module.tf_source.csr_repos
 }
 
-output "group_org_admins" {
-  description = "Google Group for GCP Organization Administrators."
-  value       = var.groups.create_groups == true ? module.required_group["group_org_admins"].id : var.group_org_admins
-}
-
-output "group_billing_admins" {
-  description = "Google Group for GCP Billing Administrators."
-  value       = var.groups.create_groups == true ? module.required_group["group_billing_admins"].id : var.group_billing_admins
-}
-
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */
-//// Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
-//output "cicd_project_id" {
-//  description = "Project where the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) (Jenkins Agents and terraform builder container image) reside."
-//  value       = module.jenkins_bootstrap.cicd_project_id
-//}
-//
-//output "jenkins_agent_gce_instance_id" {
-//  description = "Jenkins Agent GCE Instance id."
-//  value       = module.jenkins_bootstrap.jenkins_agent_gce_instance_id
-//}
-//
-//output "jenkins_agent_vpc_id" {
-//  description = "Jenkins Agent VPC name."
-//  value       = module.jenkins_bootstrap.jenkins_agent_vpc_id
-//}
-//
-//output "jenkins_agent_sa_email" {
-//  description = "Email for privileged custom service account for Jenkins Agent GCE instance."
-//  value       = module.jenkins_bootstrap.jenkins_agent_sa_email
-//}
-//
-//output "jenkins_agent_sa_name" {
-//  description = "Fully qualified name for privileged custom service account for Jenkins Agent GCE instance."
-//  value       = module.jenkins_bootstrap.jenkins_agent_sa_name
-//}
-//
-//output "gcs_bucket_jenkins_artifacts" {
-//  description = "Bucket used to store Jenkins artifacts in Jenkins project."
-//  value       = module.jenkins_bootstrap.gcs_bucket_jenkins_artifacts
-//}
+# # Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
+# output "cicd_project_id" {
+#   description = "Project where the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) (Jenkins Agents and terraform builder container image) reside."
+#   value       = module.jenkins_bootstrap.cicd_project_id
+# }
 
+# output "jenkins_agent_gce_instance_id" {
+#   description = "Jenkins Agent GCE Instance id."
+#   value       = module.jenkins_bootstrap.jenkins_agent_gce_instance_id
+# }
 
-/* ----------------------------------------
-    Specific to Google Groups creation module
-   ---------------------------------------- */
+# output "jenkins_agent_vpc_id" {
+#   description = "Jenkins Agent VPC name."
+#   value       = module.jenkins_bootstrap.jenkins_agent_vpc_id
+# }
 
-output "required_groups" {
-  description = "List of Google Groups created that are required by the Example Foundation steps."
-  value       = var.groups.create_groups == true ? module.required_group : {}
-}
+# output "jenkins_agent_sa_email" {
+#   description = "Email for privileged custom service account for Jenkins Agent GCE instance."
+#   value       = module.jenkins_bootstrap.jenkins_agent_sa_email
+# }
 
-output "optional_groups" {
-  description = "List of Google Groups created that are optional to the Example Foundation steps."
-  value       = var.groups.create_groups == true ? module.optional_group : {}
-}
+# output "jenkins_agent_sa_name" {
+#   description = "Fully qualified name for privileged custom service account for Jenkins Agent GCE instance."
+#   value       = module.jenkins_bootstrap.jenkins_agent_sa_name
+# }
+
+# output "gcs_bucket_jenkins_artifacts" {
+#   description = "Bucket used to store Jenkins artifacts in Jenkins project."
+#   value       = module.jenkins_bootstrap.gcs_bucket_jenkins_artifacts
+# }

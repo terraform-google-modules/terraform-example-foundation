@@ -217,6 +217,5 @@ the following steps:
 | projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
 | required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
-| terraform\_sa\_name | Fully qualified name for privileged service account for Terraform. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

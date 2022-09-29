@@ -1,15 +1,16 @@
-## Overview
+# Overview
 
-The objective of this module is to deploy a Google Cloud Platform project `prj-b-cicd` to host a Jenkins Agent that can connect with your current Jenkins Controller on-prem. This module is a replica of the [cloudbuild module](https://github.com/terraform-google-modules/terraform-google-bootstrap/tree/master/modules/cloudbuild), but re-purposed to use Jenkins instead. This module creates:
+The objective of this module is to deploy a Google Cloud Platform project `prj-b-cicd` to host a Jenkins Agent that can connect with your current Jenkins Controller on-prem. This module is a replica of the deprecated [cloudbuild module](https://github.com/terraform-google-modules/terraform-google-bootstrap/tree/master/modules/cloudbuild), but re-purposed to use Jenkins instead. This module creates:
+
 - The `prj-b-cicd` project, which includes:
-    - GCE Instance for the Jenkins Agent, which you will configure to connect to your current Jenkins Controller using SSH.
-    - VPC to connect the Jenkins GCE Instance to
-    - FW rules to allow communication over port 22
-    - VPN connection with on-prem (or where ever your Jenkins Controller is located)
-    - Custom service account `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance. This service account is granted the access to generate tokens on the provided Terraform custom service account
+  - GCE Instance for the Jenkins Agent, which you will configure to connect to your current Jenkins Controller using SSH.
+  - VPC to connect the Jenkins GCE Instance to
+  - FW rules to allow communication over port 22
+  - VPN connection with on-prem (or where ever your Jenkins Controller is located)
+  - Custom service account `sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com` for the GCE instance. This service account is granted the access to generate tokens on the provided Terraform custom service account
 Please note this module does not include an option to create a Jenkins Controller. To deploy a Jenkins Controller, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins).
 
-**If you don't have a Jenkins implementation and don't want one**, then we recommend you to [use the Cloud Build module](../../README.md) instead.
+**If you don't have a Jenkins implementation and don't want one**, then we recommend you to [use the Cloud Build module](../../README.md#deploying-with-cloud-build) instead.
 
 ## Usage
 
@@ -23,9 +24,8 @@ module "jenkins_bootstrap" {
   billing_account                           = "<BILLING_ACCOUNT_ID>"
   group_org_admins                          = "gcp-organization-admins@example.com"
   default_region                            = "us-central1"
-  terraform_service_account                 = "<SERVICE_ACCOUNT_EMAIL>" # normally module.seed_bootstrap.terraform_sa_email
-  terraform_sa_name                         = "<SERVICE_ACCOUNT_NAME>" # normally module.seed_bootstrap.terraform_sa_name
-  terraform_state_bucket                    = "<GCS_STATE_BUCKET_NAME>" # normally module.seed_bootstrap.gcs_bucket_tfstate
+  terraform_sa_names                        = "<SERVICE_ACCOUNT_NAMES>"
+  terraform_state_bucket                    = "<GCS_STATE_BUCKET_NAME>"
   sa_enable_impersonation                   = true
   jenkins_controller_subnetwork_cidr_range  = ["10.1.0.6/32"]
   jenkins_agent_gce_subnetwork_cidr_range   = "172.16.1.0/24"
@@ -43,7 +43,7 @@ module "jenkins_bootstrap" {
 1. Creates a GCE Instance to run the Jenkins Agent with SSH access using the supplied public key
 1. Creates a Service Account (`jenkins_agent_sa_email`) to run the Jenkins Agent GCE instance
 1. Creates a GCS bucket for Jenkins Artifacts using `project_prefix`
-1. Allows `jenkins_agent_sa_email` service account permissions to impersonate terraform service account (which exists in the `seed` project) using `sa_enable_impersonation` and supplied value for `terraform_sa_name`
+1. Allows `jenkins_agent_sa_email` service account permissions to impersonate terraform service account (which exists in the `seed` project) using `sa_enable_impersonation` and supplied value for `terraform_sa_names`
 1. Adds Cloud NAT for the Agent to be able to download updates and necessary binaries.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -76,11 +76,10 @@ module "jenkins_bootstrap" {
 | service\_account\_prefix | Name prefix to use for service accounts. | `string` | `"sa"` | no |
 | storage\_bucket\_labels | Labels to apply to the storage bucket. | `map(string)` | `{}` | no |
 | storage\_bucket\_prefix | Name prefix to use for storage buckets. | `string` | `"bkt"` | no |
-| terraform\_sa\_name | Fully-qualified name of the Terraform Service Account. It must be supplied by the Seed Project | `string` | n/a | yes |
-| terraform\_service\_account | Email for Terraform Service Account. It must be supplied by the Seed Project | `string` | n/a | yes |
+| terraform\_sa\_names | Fully-qualified name of the Terraform Service Accounts. It must be supplied by the Seed Project | `map(string)` | n/a | yes |
 | terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the Seed Project | `string` | n/a | yes |
-| terraform\_version | Default terraform version. | `string` | `"0.13.7"` | no |
-| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"` | no |
+| terraform\_version | Default terraform version. | `string` | `"1.0.0"` | no |
+| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"8be33cc3be8089019d95eb8f546f35d41926e7c1e5deff15792e969dde573eb5"` | no |
 | tunnel0\_bgp\_peer\_address | BGP peer address for tunnel 0 | `string` | n/a | yes |
 | tunnel0\_bgp\_session\_range | BGP session range for tunnel 0 | `string` | n/a | yes |
 | tunnel1\_bgp\_peer\_address | BGP peer address for tunnel 1 | `string` | n/a | yes |
@@ -104,20 +103,20 @@ module "jenkins_bootstrap" {
 
 ### Software
 
-- [gcloud sdk](https://cloud.google.com/sdk/install) >= 206.0.0
-- [Terraform](https://www.terraform.io/downloads.html) = 0.13.7
-    - The scripts in this codebase use Terraform v0.13.7. You should use the same version in the manual steps to avoid [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.
+- [gcloud sdk](https://cloud.google.com/sdk/install) >= 393.0.0
+- [Terraform](https://www.terraform.io/downloads.html) = 1.0.0
+  - The scripts in this codebase use Terraform v1.0.0. You should use the same version in the manual steps to avoid [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.
 
 ### Infrastructure
 
- - **Jenkins Controller:** You need a Jenkins Controller, since this module does not include an option to create one. To deploy a Jenkins Controller, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins). If you don't have a Jenkins implementation and don't want one, then we recommend you to [use the Cloud Build module](../../README.md) instead.
+- **Jenkins Controller:** You need a Jenkins Controller, since this module does not include an option to create one. To deploy a Jenkins Controller, you should follow one of the available user guides about [Jenkins in GCP](https://cloud.google.com/jenkins). If you don't have a Jenkins implementation and don't want one, then we recommend you to [use the Cloud Build module](../../README.md#deploying-with-cloud-build) instead.
 
- - **VPN Connectivity with on-prem:** Once you run this module, a Jenkins Agent is created in the CICD project in GCP. Please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to). This VPN is necessary to allow communication between the Jenkins Controller (on prem or in a cloud environment) with the Jenkins Agent in the CICD project.
+- **VPN Connectivity with on-prem:** Once you run this module, a Jenkins Agent is created in the CI/CD project in GCP. Please add VPN connectivity manually by following our user guide about [how to deploy a VPN tunnel in GCP](https://cloud.google.com/network-connectivity/docs/vpn/how-to/adding-a-tunnel). This VPN is necessary to allow communication between the Jenkins Controller (on prem or in a cloud environment) with the Jenkins Agent in the CI/CD project.
 
- - **Binaries and packages for the Jenkins Agent:** The Jenkins Agent is a new GCE instance created by this module. After creation, the startup script needs to fetch several binaries for later use, during pipelines execution. These binaries include `java`, `terraform` and any other binary you use in your own scripts. You have several options to make these binaries and libraries available to the Jenkins Agent:
-    - allow the Jenkins Agent Internet access (ideally through Cloud NAT, implemented by default).
-    - allow the Jenkins Agent access to local package repositories on your premises, ideally through the VPN connection.
-    - preparing a golden image for the Jenkins Agent (and assign the image to the `jenkins_agent_gce_instance.boot_disk.initialize_params.image` terraform variable). You can create the golden images with tools like Packer. Although, you might still need network access to download dependencies while running a pipeline.
+- **Binaries and packages for the Jenkins Agent:** The Jenkins Agent is a new GCE instance created by this module. After creation, the startup script needs to fetch several binaries for later use, during pipelines execution. These binaries include `java`, `terraform` and any other binary you use in your own scripts. You have several options to make these binaries and libraries available to the Jenkins Agent:
+  - allow the Jenkins Agent Internet access (ideally through Cloud NAT, implemented by default).
+  - allow the Jenkins Agent access to local package repositories on your premises, ideally through the VPN connection.
+  - preparing a golden image for the Jenkins Agent (and assign the image to the `jenkins_agent_gce_instance.boot_disk.initialize_params.image` terraform variable). You can create the golden images with tools like Packer. Although, you might still need network access to download dependencies while running a pipeline.
 
 ### Permissions
 
@@ -128,19 +127,20 @@ An account that has the following [permissions](https://github.com/terraform-goo
 - `roles/resourcemanager.projectCreator` on GCP Organization or folder
 
 This is especially important as you might face one of the errors below:
-```
+
+```text
 Error: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
    on <empty> line 0:
   (source code not available)
 ```
 
-```
+```text
 Error: Error setting billing account "aaaaaa-bbbbbb-cccccc" for project "projects/prj-jenkins-dc3a": googleapi: Error 400: Precondition check failed., failedPrecondition
       on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
       96: resource "google_project" "main" {
 ```
 
-```
+```text
 Error: failed pre-requisites: missing permission on "billingAccounts/aaaaaa-bbbbbb-cccccc": billing.resourceAssociations.create
   on .terraform/modules/jenkins/terraform-google-project-factory-7.1.0/modules/core_project_factory/main.tf line 96, in resource "google_project" "main":
   96: resource "google_project" "main" {

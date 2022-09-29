@@ -214,66 +214,7 @@ to run the command as the Terraform Service Account.
 
 ### Deploying with Jenkins
 
-1. Clone the repo you created manually in 0-bootstrap.
-   ```
-   git clone <YOUR_NEW_REPO-1-org>
-   ```
-1. Navigate into the repo and change to a non-production branch. All subsequent
-   steps assume you are running them from the <YOUR_NEW_REPO-1-org> directory. If
-   you run them from another directory, adjust your copy paths accordingly.
-   ```
-   cd YOUR_NEW_REPO_CLONE-1-org
-   git checkout -b plan
-   ```
-1. Copy contents of foundation to new repo.
-   ```
-   cp -RT ../terraform-example-foundation/1-org/ .
-   ```
-1. Copy contents of policy-library to new repo.
-   ```
-   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   ```
-1. Copy the Jenkinsfile script to the root of your new repository.\
-
-   ```
-   cp ../terraform-example-foundation/build/Jenkinsfile .
-   ```
-1. Update the variables located in the `environment {}` section of the `Jenkinsfile` with values from your environment:
-    ```
-    _TF_SA_EMAIL
-    _STATE_BUCKET_NAME
-    _PROJECT_ID (the CI/CD project ID)
-    ```
-1. Copy Terraform wrapper script to the root of your new repository.
-   ```
-   cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   ```
-1. Ensure wrapper script can be executed.
-   ```
-   chmod 755 ./tf-wrapper.sh
-   ```
-1. Check if your organization already has an Access Context Manager Policy.
-   ```
-   gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
-   ```
-1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars` and update the file with values from your environment and bootstrap. You can re-run `terraform output` in the 0-bootstrap directory to find these values. Make sure that `default_region` is set to a valid [BigQuery dataset region](https://cloud.google.com/bigquery/docs/locations). Also, if the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
-1. Commit changes.
-   ```
-   git add .
-   git commit -m 'Your message'
-   ```
-1. Push your plan branch.
-    - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
-   ```
-   git push --set-upstream origin plan
-   ```
-1. Review the plan output in your Controller's web UI.
-1. Merge changes to production branch.
-   ```
-   git checkout -b production
-   git push origin production
-   ```
-1. Review the apply output in your Controller's web UI. (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Controller UI).
+See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying-step-1-org)
 
 ### Running Terraform locally
 

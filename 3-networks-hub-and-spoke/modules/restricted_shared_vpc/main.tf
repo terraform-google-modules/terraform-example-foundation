@@ -117,6 +117,7 @@ module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 2.0.0"
   count   = var.mode != "spoke" ? 1 : 0
+
   name    = "cr-${local.vpc_name}-${var.default_region1}-cr5"
   project = var.project_id
   network = module.main.network_name
@@ -132,6 +133,7 @@ module "region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
   count   = var.mode != "spoke" ? 1 : 0
+
   name    = "cr-${local.vpc_name}-${var.default_region1}-cr6"
   project = var.project_id
   network = module.main.network_name
@@ -147,6 +149,7 @@ module "region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
   count   = var.mode != "spoke" ? 1 : 0
+
   name    = "cr-${local.vpc_name}-${var.default_region2}-cr7"
   project = var.project_id
   network = module.main.network_name
@@ -162,6 +165,7 @@ module "region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 0.4.0"
   count   = var.mode != "spoke" ? 1 : 0
+
   name    = "cr-${local.vpc_name}-${var.default_region2}-cr8"
   project = var.project_id
   network = module.main.network_name

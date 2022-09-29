@@ -187,6 +187,7 @@ the following steps:
 | bucket\_force\_destroy | When deleting a bucket, this boolean option will delete all contained objects. If false, Terraform will fail to delete buckets which contain objects. | `bool` | `false` | no |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
+| enable\_on\_prem\_connection\_roles | Enable roles required by Terraform in network step to access on-premises infrastructure. | `bool` | `false` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |

@@ -24,6 +24,6 @@ var (
 		".*FOLDER_TO_DELETE_NON_EMPTY_VIOLATION.*": "Failed to delete non empty folder.",
 
 		// Granting IAM Roles is eventually consistent.
-		".*Error 403.*Permission.*denied.*": "Permission denied on resource.",
+		".*Error 403.*Permission.*denied on resource.*": "Permission denied on resource.",
 	}
 )

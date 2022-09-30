@@ -21,6 +21,11 @@ locals {
   gar_region             = split("/", var.cloud_builder_artifact_repo)[3]
   gar_name               = split("/", var.cloud_builder_artifact_repo)[length(split("/", var.cloud_builder_artifact_repo)) - 1]
   created_csrs           = toset([for repo in google_sourcerepo_repository.app_infra_repo : repo.name])
+  artifact_buckets       = { for k, ws in module.tf_workspace : k => split("/", ws.artifacts_bucket)[length(split("/", ws.artifacts_bucket)) - 1] }
+  state_buckets          = { for k, ws in module.tf_workspace : k => split("/", ws.state_bucket)[length(split("/", ws.state_bucket)) - 1] }
+  log_buckets            = { for k, ws in module.tf_workspace : k => split("/", ws.logs_bucket)[length(split("/", ws.logs_bucket)) - 1] }
+  plan_triggers_id       = [for ws in module.tf_workspace : ws.cloudbuild_plan_trigger_id]
+  apply_triggers_id      = [for ws in module.tf_workspace : ws.cloudbuild_apply_trigger_id]
 }
 
 # Create CSRs

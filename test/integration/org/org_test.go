@@ -101,22 +101,36 @@ func TestOrg(t *testing.T) {
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 
 			// check tags applied to common and bootstrap folder
-			cmnFldrTags := gcloud.Runf(t, "resource-manager tags bindings list --parent=//cloudresourcemanager.googleapis.com/folders/%s", commonFolder).Array()
+			bootstrapOutput := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
+			bootstrapFolder := testutils.GetLastSplitElement(bootstrapOutput["bootstrap_folder_name"], "/")
 
-			bstCommonConfig := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
-			bootstrapFolder := testutils.GetLastSplitElement(bstCommonConfig["bootstrap_folder_name"], "/")
-			bstFldrTags := gcloud.Runf(t, "resource-manager tags bindings list --parent=//cloudresourcemanager.googleapis.com/folders/%s", bootstrapFolder).Array()
+			for _, tags := range []struct {
+				folderId   string
+				folderName string
+				value      string
+			}{
+				{
+					folderId:   commonFolder,
+					folderName: "common",
+					value:      "production",
+				},
+				{
+					folderId:   bootstrapFolder,
+					folderName: "bootstrap",
+					value:      "bootstrap",
+				},
+			} {
+				fldrTags := gcloud.Runf(t, "resource-manager tags bindings list --parent=//cloudresourcemanager.googleapis.com/folders/%s", tags.folderId).Array()
+				fldrsTagValuesId := testutils.GetResultFieldStrSlice(fldrTags, "tagValue")
 
-			var fldrsTagValuesId []string
-			fldrsTagValuesId = append(fldrsTagValuesId, testutils.GetResultFieldStrSlice(cmnFldrTags, "tagValue")...)
-			fldrsTagValuesId = append(fldrsTagValuesId, testutils.GetResultFieldStrSlice(bstFldrTags, "tagValue")...)
+				var fldrsTagValues []string
+				for _, tagValueId := range fldrsTagValuesId {
+					tagValueObj := gcloud.Runf(t, "resource-manager tags values describe %s", tagValueId)
+					fldrsTagValues = append(fldrsTagValues, tagValueObj.Get("shortName").String())
+				}
 
-			var fldrsTagValues []string
-			for _, tagValueId := range fldrsTagValuesId {
-				tagValueObj := gcloud.Runf(t, "resource-manager tags values describe %s", tagValueId)
-				fldrsTagValues = append(fldrsTagValues, tagValueObj.Get("shortName").String())
+				assert.Contains(fldrsTagValues, tags.value, fmt.Sprintf("folder %s (%s) should have tag %s", tags.folderName, tags.folderId, tags.value))
 			}
-			assert.Subset([]string{"production", "bootstrap"}, fldrsTagValues, "tag values should be bootstrap and production for bootstrap folder and common folder respectively")
 
 			// boolean organization policies
 			for _, booleanConstraint := range []string{

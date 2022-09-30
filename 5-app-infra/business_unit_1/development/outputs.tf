@@ -27,6 +27,7 @@ output "instances_names" {
 output "instances_zones" {
   description = "List of zone for compute instances"
   value       = [for u in module.base_shared_gce_instance.instances_details : u.zone]
+  sensitive   = true
 }
 
 output "instances_details" {

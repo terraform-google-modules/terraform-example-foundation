@@ -283,33 +283,76 @@ If the Terraform process was unable to finish due to an unexpected event, i.e bu
 
 **Solution:**
 
-Keep in mind that after removing the Terraform State lock you may need to [review and manipulate](https://www.terraform.io/cli/state#manipulating-terraform-state) your Terraform State and maybe [import](https://www.terraform.io/cli/import#import) some resources.
+The following commands are an example of how to unlock the **development environment** from step 2-environments that is one part of the Foundation Example.
+It can also be applied in the same way to the other parts.
 
-Here are some sample commands on how to remove the Terraform State lock.
+1. Clone the repository where you got the Terraform State lock. The following example assumes **development environment** from step 2-environments:
 
-- Update `<YOUR-REPO-DIR>` in the command below to navigate to repo directory of the step you got the error, it should be `gcp-org`, `gcp-environments`, `gcp-networks`, `gcp-projects`, or `bu*-example-app`.
-- Update `<YOUR-FOUNDATION-EXAMPLE-DIR>` in the command below to get the backend state bucket and update `backend.tf` file.
-- Run `terraform init` to initialize terraform with the terraform state from gcs bucket.
+   ```bash
+   gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID
+   ```
 
-```bash
-cd <YOUR-REPO-DIR>
-export backend_bucket=$(terraform -chdir="<YOUR-FOUNDATION-EXAMPLE-DIR>/0-bootstrap/" output -raw gcs_bucket_tfstate)
-for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-terraform init
-```
+1. Navigate into the repo and change to the development branch:
 
-- Run `terraform apply` to get all the details about the lock. The apply command output should be similar to the following:
+   ```bash
+   cd gcp-environments
+   git checkout development
+   ```
 
-```text
-Error: Error locking state: Error acquiring the state lock: state blob is already locked
- Lock Info:
-   ID:        a77xxxxxx-cxxc-70f1-xxx-xxxxxxxx
-   Path:      terraform.tfstate
-   Operation: OperationTypeApply
-   Who:       domain\user@host
-   Version:   0.14.5
-   Created:   2022-09-26 15:51:13.5132763 +0000 UTC
-   Info:
-```
+1. If your project does not have a remote backend you can jump skip the next 2 commands and jump to `terraform init` command.
+1. If your project has a remote backend you will have to update `backend.tf` with the remote state backend bucket.
+You can get this information from step `0-bootstrap` by running the following command:
 
-- With the lock `ID` you will be able to remove the Terraform State lock using `terraform force-unlock` command. It is a **strong recommendation** to review the official documentation regarding [terraform force-unlock](https://www.terraform.io/language/state/locking#force-unlock) command before executing it.
+   ```bash
+   terraform output gcs_bucket_tfstate
+   ```
+
+1. Update `backend.tf` with the remote state backend bucket you got on previously inside `<YOUR-REMOTE-STATE-BACKEND-BUCKET>`:
+
+   ```bash
+   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-REMOTE-STATE-BACKEND-BUCKET>/' $i; done
+   ```
+
+1. Navigate into `envs/development` where your terraform config files are in and run terraform init:
+
+   ```bash
+   cd envs/development
+   terraform init
+   ```
+
+1. At this point, you will be able to get Terraform State lock information and unlock your state.
+1. After running terraform apply you should get an error message like the following:
+
+   ```text
+   terraform apply
+   Acquiring state lock. This may take a few moments...
+   ╷
+   │ Error: Error acquiring the state lock
+   │
+   │ Error message: writing "gs://<YOUR-REMOTE-STATE-BACKEND-BUCKET>/<PATH-TO-TERRAFORM-STATE>/<tf state file name>.tflock" failed: googleapi: Error 412: At least one
+   │ of the pre-conditions you specified did not hold., conditionNotMet
+   │ Lock Info:
+   │   ID:        1664568683005669
+   │   Path:      gs://<YOUR-REMOTE-STATE-BACKEND-BUCKET>/<PATH-TO-TERRAFORM-STATE>/<tf state file name>.tflock
+   │   Operation: OperationTypeApply
+   │   Who:       user@domain
+   │   Version:   1.0.0
+   │   Created:   2022-09-30 20:11:22.90644727 +0000 UTC
+   │   Info:
+   │
+   │
+   │ Terraform acquires a state lock to protect the state from being written
+   │ by multiple users at the same time. Please resolve the issue above and try
+   │ again. For most commands, you can disable locking with the "-lock=false"
+   │ flag, but this is not recommended.
+   ```
+
+1. With the lock `ID` you will be able to remove the Terraform State lock using `terraform force-unlock` command. It is a **strong recommendation** to review the official documentation regarding [terraform force-unlock](https://www.terraform.io/language/state/locking#force-unlock) command before executing it.
+1. After unlocking the Terraform State you will be able to execute a `terraform plan` for review of the state. The following links can help you to recover the Terraform State for your configuration and move on:
+    1. [Manipulating Terraform State](https://developer.hashicorp.com/terraform/cli/state)
+    1. [Moving Resources](https://developer.hashicorp.com/terraform/cli/state/move)
+    1. [Importing Infrastructure](https://developer.hashicorp.com/terraform/cli/import)
+
+**Terraform State lock possible causes:**
+
+- If you realize that the Terraform State lock was due to a build timeout increase the build timeout on [build configuration](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/build/cloudbuild-tf-apply.yaml#L15).

@@ -324,7 +324,7 @@ variable "essential_contacts_domains_to_allow" {
 }
 
 variable "create_unique_tag_key" {
-  description = "Indicates the creation of organization-wide unique tag keys by adding a random suffix to each key."
+  description = "Creates unique organization-wide tag keys by adding a random suffix to each key."
   type        = bool
   default     = false
 }

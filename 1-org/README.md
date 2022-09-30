@@ -105,7 +105,7 @@ gcloud scc notifications describe <scc_notification_name> --organization=<org_id
 | gcp_scc_admin | Product Updates and Security | Org Admins |
 | gcp_security_reviewer | Security and Technical | Org Admins |
 
-**Note:** This module creates and applies [Tags](https://cloud.google.com/resource-manager/docs/tags/tags-overview) to common and bootstrap folders. These tags created are also applied to environment folders of step [2-environments](../2-environments/README.md). Users can create their own tags by editing [tags.tf](envs/shared/tags.tf#L25) `local.tags` map and following the commented template. Here is a list of tags applied to resources:
+**Note:** This module creates and applies [Tags](https://cloud.google.com/resource-manager/docs/tags/tags-overview) to common and bootstrap folders. These tags are also applied to environment folders of step [2-environments](../2-environments/README.md). You can create your own tags by editing [tags.tf](envs/shared/tags.tf#L25) `local.tags` map and following the commented template. The following table lists details about tags applied to resources:
 
 | Resource | Type | Step | Tag Key | Tag Value |
 |----------|------|------|---------|-----------|

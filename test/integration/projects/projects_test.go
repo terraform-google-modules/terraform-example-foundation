@@ -17,6 +17,7 @@ package projects
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
@@ -156,6 +157,7 @@ func TestProjects(t *testing.T) {
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, env)),
 				tft.WithVars(vars),
 				tft.WithBackendConfig(backendConfig),
+				tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),
 				tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 			)
 

@@ -57,6 +57,7 @@ func TestBootstrap(t *testing.T) {
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
 		tft.WithVars(vars),
+		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),
 		tft.WithPolicyLibraryPath("/workspace/policy-library", temp.GetTFSetupStringOutput("project_id")),
 	)
 

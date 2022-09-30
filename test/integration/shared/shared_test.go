@@ -17,11 +17,14 @@ package shared
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
 func getPolicyID(t *testing.T, orgID string) string {
@@ -30,12 +33,9 @@ func getPolicyID(t *testing.T, orgID string) string {
 	return op.String()
 }
 
-func getNetworkMode(t *testing.T) bool {
+func isHubAndSpokeMode(t *testing.T) bool {
 	mode := utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
-	if mode == "HubAndSpoke" {
-		return true
-	}
-	return false
+	return mode == "HubAndSpoke"
 }
 
 func TestShared(t *testing.T) {
@@ -63,7 +63,7 @@ func TestShared(t *testing.T) {
 	}
 
 	var tfdDir string
-	if getNetworkMode(t) {
+	if isHubAndSpokeMode(t) {
 		tfdDir = "../../../3-networks-hub-and-spoke/envs/shared"
 	} else {
 		tfdDir = "../../../3-networks-dual-svpc/envs/shared"
@@ -72,6 +72,7 @@ func TestShared(t *testing.T) {
 	shared := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir(tfdDir),
 		tft.WithVars(vars),
+		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),
 		tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 		tft.WithBackendConfig(backendConfig),
 	)

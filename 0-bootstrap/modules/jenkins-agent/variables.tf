@@ -141,14 +141,10 @@ variable "tunnel1_bgp_session_range" {
 /* ----------------------------------------
     Specific to Seed Project
    ---------------------------------------- */
-variable "terraform_service_account" {
-  description = "Email for Terraform Service Account. It must be supplied by the Seed Project"
-  type        = string
-}
 
-variable "terraform_sa_name" {
-  description = "Fully-qualified name of the Terraform Service Account. It must be supplied by the Seed Project"
-  type        = string
+variable "terraform_sa_names" {
+  description = "Fully-qualified name of the Terraform Service Accounts. It must be supplied by the Seed Project"
+  type        = map(string)
 }
 
 variable "terraform_state_bucket" {
@@ -224,11 +220,11 @@ variable "folder_id" {
 variable "terraform_version" {
   description = "Default terraform version."
   type        = string
-  default     = "0.13.7"
+  default     = "1.0.0"
 }
 
 variable "terraform_version_sha256sum" {
   description = "sha256sum for default terraform version."
   type        = string
-  default     = "4a52886e019b4fdad2439da5ff43388bbcc6cce9784fde32c53dcd0e28ca9957"
+  default     = "8be33cc3be8089019d95eb8f546f35d41926e7c1e5deff15792e969dde573eb5"
 }

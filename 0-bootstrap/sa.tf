@@ -154,22 +154,3 @@ resource "google_billing_account_iam_member" "billing_admin_user" {
     google_billing_account_iam_member.tf_billing_user
   ]
 }
-
-resource "google_artifact_registry_repository_iam_member" "terraform_sa_artifact_registry_reader" {
-  for_each = local.granular_sa
-
-  project    = module.tf_source.cloudbuild_project_id
-  location   = var.default_region
-  repository = local.gar_repository
-  role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
-}
-
-resource "google_sourcerepo_repository_iam_member" "member" {
-  for_each = local.granular_sa
-
-  project    = module.tf_source.cloudbuild_project_id
-  repository = module.tf_source.csr_repos["gcp-policies"].name
-  role       = "roles/viewer"
-  member     = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
-}

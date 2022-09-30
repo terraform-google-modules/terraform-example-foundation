@@ -41,6 +41,8 @@ locals {
     ]
   ])
 
+  tags_obj_map = { for v in local.tags_obj_list : v.key => v }
+
   tags_output = { for k, v in google_tags_tag_value.tag_values : k => v.id }
   key_suffix  = var.create_unique_tag_key ? "-${random_string.tag_key_suffix.result}" : ""
 }
@@ -60,18 +62,21 @@ resource "google_tags_tag_key" "tag_keys" {
 }
 
 resource "google_tags_tag_value" "tag_values" {
-  for_each = { for v in local.tags_obj_list : v.key => v }
+  for_each = local.tags_obj_map
 
   parent     = "tagKeys/${google_tags_tag_key.tag_keys[each.value.shortkey].name}"
   short_name = each.value.val
 }
 
-resource "google_tags_tag_binding" "bind_folder_common" {
+# The following code binds a tag to a resource.
+# For more details about binding tags to resources see: https://cloud.google.com/resource-manager/docs/tags/tags-creating-and-managing#attaching
+# For more details about how to use terraform binding resource see: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/tags_tag_binding
+resource "google_tags_tag_binding" "common_folder" {
   parent    = "//cloudresourcemanager.googleapis.com/${google_folder.common.id}"
   tag_value = google_tags_tag_value.tag_values["environment_production"].id
 }
 
-resource "google_tags_tag_binding" "bind_folder_bootstrap" {
+resource "google_tags_tag_binding" "bootstrap_folder" {
   parent    = "//cloudresourcemanager.googleapis.com/${local.bootstrap_folder_name}"
   tag_value = google_tags_tag_value.tag_values["environment_bootstrap"].id
 }

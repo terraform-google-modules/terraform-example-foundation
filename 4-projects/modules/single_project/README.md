@@ -4,12 +4,9 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | activate\_apis | The api to activate for the GCP project | `list(string)` | `[]` | no |
-| alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` | `string` | `null` | no |
-| alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
 | application\_name | The name of application where GCP resources relate | `string` | n/a | yes |
 | billing\_account | The ID of the billing account to associated this project with | `string` | n/a | yes |
 | billing\_code | The code that's used to provide chargeback information | `string` | n/a | yes |
-| budget\_amount | The amount to use as the budget | `number` | `1000` | no |
 | business\_code | The code that describes which business unit owns the project | `string` | `"abcd"` | no |
 | cloudbuild\_sa | The Cloud Build SA used for deploying infrastructure in this project. It will impersonate the new default SA created | `string` | `""` | no |
 | enable\_cloudbuild\_deploy | Enable infra deployment using Cloud Build | `bool` | `false` | no |
@@ -18,6 +15,7 @@
 | folder\_id | The folder id where project will be created | `string` | n/a | yes |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |
 | primary\_contact | The primary email contact for the project | `string` | n/a | yes |
+| project\_budget | Budget configuration .<br>  budget\_amount: The amount to use as the budget.<br>  alert\_spent\_percents: A list of percentages of the budget to alert on when threshold is exceeded.<br>  alert\_pubsub\_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`. | <pre>object({<br>    budget_amount        = optional(number, 1000)<br>    alert_spent_percents = optional(list(number), [0.5, 0.75, 0.9, 0.95])<br>    alert_pubsub_topic   = optional(string, null)<br>  })</pre> | `{}` | no |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
 | sa\_roles | A list of roles to give the Service Account for the project (defaults to none) | `list(string)` | `[]` | no |

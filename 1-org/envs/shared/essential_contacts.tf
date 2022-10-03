@@ -15,10 +15,10 @@
  */
 
 locals {
-  gcp_scc_admin         = var.gcp_scc_admin == null ? local.group_org_admins : var.gcp_scc_admin
-  gcp_platform_viewer   = var.gcp_platform_viewer == null ? local.group_org_admins : var.gcp_platform_viewer
-  gcp_security_reviewer = var.gcp_security_reviewer == null ? local.group_org_admins : var.gcp_security_reviewer
-  gcp_network_viewer    = var.gcp_network_viewer == null ? local.group_org_admins : var.gcp_network_viewer
+  gcp_scc_admin         = var.gcp_groups.scc_admin == null ? local.group_org_admins : var.gcp_groups.scc_admin
+  gcp_platform_viewer   = var.gcp_groups.platform_viewer == null ? local.group_org_admins : var.gcp_groups.platform_viewer
+  gcp_security_reviewer = var.gcp_groups.security_reviewer == null ? local.group_org_admins : var.gcp_groups.security_reviewer
+  gcp_network_viewer    = var.gcp_groups.network_viewer == null ? local.group_org_admins : var.gcp_groups.network_viewer
 
   # Notification categories details: https://cloud.google.com/resource-manager/docs/managing-notification-contacts#notification-categories
   categories_map = {

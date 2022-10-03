@@ -34,74 +34,26 @@ variable "monitoring_workspace_users" {
   type        = string
 }
 
-variable "base_network_project_alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded for the base networks project"
-  type        = list(number)
-  default     = [0.5, 0.75, 0.9, 0.95]
-}
-
-variable "base_network_project_alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the base networks project"
-  type        = string
-  default     = null
-}
-
-variable "base_network_project_budget_amount" {
-  description = "The amount to use as the budget for the base networks project"
-  type        = number
-  default     = 1000
-}
-
-variable "restricted_network_project_alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded for the restricted networks project."
-  type        = list(number)
-  default     = [0.5, 0.75, 0.9, 0.95]
-}
-
-variable "restricted_network_project_alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the restricted networks project"
-  type        = string
-  default     = null
-}
-
-variable "restricted_network_project_budget_amount" {
-  description = "The amount to use as the budget for the restricted networks project."
-  type        = number
-  default     = 1000
-}
-
-variable "monitoring_project_alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded for the monitoring project."
-  type        = list(number)
-  default     = [0.5, 0.75, 0.9, 0.95]
-}
-
-variable "monitoring_project_alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the monitoring project."
-  type        = string
-  default     = null
-}
-
-variable "monitoring_project_budget_amount" {
-  description = "The amount to use as the budget for the monitoring project."
-  type        = number
-  default     = 1000
-}
-
-variable "secret_project_alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded for the secrets project."
-  type        = list(number)
-  default     = [0.5, 0.75, 0.9, 0.95]
-}
-
-variable "secret_project_alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the secrets project."
-  type        = string
-  default     = null
-}
-
-variable "secret_project_budget_amount" {
-  description = "The amount to use as the budget for the secrets project."
-  type        = number
-  default     = 1000
+variable "project_budget" {
+  description = <<EOT
+  Budget configuration for projects.
+  budget_amount: The amount to use as the budget.
+  alert_spent_percents: A list of percentages of the budget to alert on when threshold is exceeded.
+  alert_pubsub_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`.
+  EOT
+  type = object({
+    base_network_budget_amount              = optional(number, 1000)
+    base_network_alert_spent_percents       = optional(list(number), [0.5, 0.75, 0.9, 0.95])
+    base_network_alert_pubsub_topic         = optional(string, null)
+    restricted_network_budget_amount        = optional(number, 1000)
+    restricted_network_alert_spent_percents = optional(list(number), [0.5, 0.75, 0.9, 0.95])
+    restricted_network_alert_pubsub_topic   = optional(string, null)
+    monitoring_budget_amount                = optional(number, 1000)
+    monitoring_alert_spent_percents         = optional(list(number), [0.5, 0.75, 0.9, 0.95])
+    monitoring_alert_pubsub_topic           = optional(string, null)
+    secret_budget_amount                    = optional(number, 1000)
+    secret_alert_spent_percents             = optional(list(number), [0.5, 0.75, 0.9, 0.95])
+    secret_alert_pubsub_topic               = optional(string, null)
+  })
+  default = {}
 }

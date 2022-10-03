@@ -15,15 +15,13 @@
  */
 
 module "app_infra_cloudbuild_project" {
-  source               = "../../modules/single_project"
-  org_id               = local.org_id
-  billing_account      = local.billing_account
-  folder_id            = local.common_folder_name
-  environment          = "common"
-  alert_spent_percents = var.alert_spent_percents
-  alert_pubsub_topic   = var.alert_pubsub_topic
-  budget_amount        = var.budget_amount
-  project_prefix       = local.project_prefix
+  source          = "../../modules/single_project"
+  org_id          = local.org_id
+  billing_account = local.billing_account
+  folder_id       = local.common_folder_name
+  environment     = "common"
+  project_budget  = var.project_budget
+  project_prefix  = local.project_prefix
   activate_apis = [
     "cloudbuild.googleapis.com",
     "sourcerepo.googleapis.com",

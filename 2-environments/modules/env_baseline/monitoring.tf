@@ -43,7 +43,7 @@ module "monitoring_project" {
     business_code     = "abcd"
     env_code          = var.environment_code
   }
-  budget_alert_pubsub_topic   = var.monitoring_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.monitoring_project_alert_spent_percents
-  budget_amount               = var.monitoring_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.monitoring_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.monitoring_alert_spent_percents
+  budget_amount               = var.project_budget.monitoring_budget_amount
 }

@@ -22,6 +22,7 @@ output "instances_self_links" {
 output "instances_names" {
   description = "List of names for compute instances"
   value       = [for u in module.base_shared_gce_instance.instances_details : u.name]
+  sensitive   = true
 }
 
 output "instances_zones" {

@@ -22,7 +22,7 @@ variable "default_region" {
 
 variable "project_budget" {
   description = <<EOT
-  Budget configuration .
+  Budget configuration.
   budget_amount: The amount to use as the budget.
   alert_spent_percents: A list of percentages of the budget to alert on when threshold is exceeded.
   alert_pubsub_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`.

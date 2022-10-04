@@ -22,11 +22,17 @@ Session.vim
 ### https://raw.github.com/github/gitignore/90f149de451a5433aebd94d02d11b0e28843a1af/Terraform.gitignore
 
 # Local .terraform directories
-**/.terraform/*
+**/.terraform*
 
 # .tfstate files
 *.tfstate
 *.tfstate.*
+
+# Local tfvars terraform.tfvars
+**/*.tfvars
+
+# tf lock file
+**/.terraform.lock.hcl
 
 # Crash log files
 crash.log

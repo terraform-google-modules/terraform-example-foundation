@@ -71,7 +71,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "dns-forwarding-zone" {
   source  = "terraform-google-modules/cloud-dns/google"
-  version = "3.0.2"
+  version = "3.1.0"
 
   project_id = local.dns_hub_project_id
   type       = "forwarding"

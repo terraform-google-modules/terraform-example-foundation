@@ -85,9 +85,9 @@ module "log_export" {
 
   for_each = local.log_exports
 
-  destination_uri        = lookup(each.value.options, "destination_uri", local.destination_uri_map[each.value.type])
-  filter                 = lookup(each.value.options, "logging_sink_filter", "")
-  log_sink_name          = lookup(each.value.options, "logging_sink_name", local.logging_sink_name_map[each.value.type])
+  destination_uri        = local.destination_uri_map[each.value.type]
+  filter                 = each.value.options.logging_sink_filter
+  log_sink_name          = coalesce(each.value.options.logging_sink_name, local.logging_sink_name_map[each.value.type])
   parent_resource_id     = each.value.res
   parent_resource_type   = var.resource_type
   unique_writer_identity = true
@@ -105,10 +105,10 @@ module "destination_logbucket" {
   count = var.logbucket_options != null ? 1 : 0
 
   project_id                    = var.logging_destination_project_id
-  name                          = lookup(var.logbucket_options, "name", local.logging_tgt_name.lbk)
+  name                          = coalesce(var.logbucket_options.name, local.logging_tgt_name.lbk)
   log_sink_writer_identity      = module.log_export["${local.value_first_resource}_lbk"].writer_identity
-  location                      = lookup(var.logbucket_options, "location", "global")
-  retention_days                = lookup(var.logbucket_options, "retention_days", 30)
+  location                      = var.logbucket_options.location
+  retention_days                = var.logbucket_options.retention_days
   grant_write_permission_on_bkt = false
 }
 
@@ -137,10 +137,10 @@ module "destination_bigquery" {
   count = var.bigquery_options != null ? 1 : 0
 
   project_id                 = var.logging_destination_project_id
-  dataset_name               = lookup(var.bigquery_options, "dataset_name", local.logging_tgt_name.bgq)
+  dataset_name               = coalesce(var.bigquery_options.dataset_name, local.logging_tgt_name.bgq)
   log_sink_writer_identity   = module.log_export["${local.value_first_resource}_bgq"].writer_identity
-  expiration_days            = lookup(var.bigquery_options, "expiration_days", null)
-  delete_contents_on_destroy = lookup(var.bigquery_options, "delete_contents_on_destroy", false)
+  expiration_days            = var.bigquery_options.expiration_days
+  delete_contents_on_destroy = var.bigquery_options.delete_contents_on_destroy
 }
 
 #-----------------------------------------#
@@ -165,16 +165,16 @@ module "destination_storage" {
   count = var.storage_options != null ? 1 : 0
 
   project_id                  = var.logging_destination_project_id
-  storage_bucket_name         = lookup(var.storage_options, "storage_bucket_name", local.logging_tgt_name.sto)
+  storage_bucket_name         = coalesce(var.storage_options.storage_bucket_name, local.logging_tgt_name.sto)
   log_sink_writer_identity    = module.log_export["${local.value_first_resource}_sto"].writer_identity
   uniform_bucket_level_access = true
-  location                    = lookup(var.storage_options, "location", "US")
-  force_destroy               = lookup(var.storage_options, "force_destroy", "false")
-  versioning                  = lookup(var.storage_options, "versioning", "false")
+  location                    = var.storage_options.location
+  force_destroy               = var.storage_options.force_destroy
+  versioning                  = var.storage_options.versioning
 
-  retention_policy = !contains(keys(var.storage_options), "retention_policy_is_locked") ? null : var.storage_options.retention_policy_is_locked == null ? null : {
-    is_locked             = tobool(lookup(var.storage_options, "retention_policy_is_locked", "false"))
-    retention_period_days = tonumber(lookup(var.storage_options, "retention_policy_period_days", "30"))
+  retention_policy = !var.storage_options.retention_policy_enabled ? null : {
+    is_locked             = var.storage_options.retention_policy_is_locked
+    retention_period_days = var.storage_options.retention_policy_period_days
   }
 }
 
@@ -200,9 +200,9 @@ module "destination_pubsub" {
   count = var.pubsub_options != null ? 1 : 0
 
   project_id               = var.logging_destination_project_id
-  topic_name               = lookup(var.pubsub_options, "topic_name", local.logging_tgt_name.pub)
+  topic_name               = coalesce(var.pubsub_options.topic_name, local.logging_tgt_name.pub)
   log_sink_writer_identity = module.log_export["${local.value_first_resource}_pub"].writer_identity
-  create_subscriber        = !contains(keys(var.pubsub_options), "create_subscriber") ? false : var.pubsub_options.create_subscriber
+  create_subscriber        = var.pubsub_options.create_subscriber
 }
 
 #---------------------------------------#

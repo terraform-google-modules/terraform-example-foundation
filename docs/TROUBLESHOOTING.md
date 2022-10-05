@@ -111,7 +111,7 @@ Replace `1.x.x` with the actual version of your local Terraform version in the f
 
 - Go to folder `0-bootstrap`.
 - Edit the local `terraform_version` in the Terraform [cb.tf](../0-bootstrap/cb.tf) file:
-  - Upgrade loca `terraform_version` from `"1.3.0"` to `"1.x.x"`
+  - Upgrade local `terraform_version` from `"1.3.0"` to `"1.x.x"`
 - Run `terraform init`.
 - Run `terraform plan` and review the output.
 - Run `terraform apply`.

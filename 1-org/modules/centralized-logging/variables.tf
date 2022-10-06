@@ -65,11 +65,6 @@ EOT
     retention_days      = optional(number, 30)
   })
   default = null
-
-  validation {
-    condition     = var.logbucket_options == null ? true : can(tonumber(var.logbucket_options.retention_days))
-    error_message = "Retention days must be a number. Default 30 days."
-  }
 }
 
 #----------------------------- #

@@ -30,7 +30,7 @@ resource "random_id" "suffix" {
 *******************************************/
 module "cicd_project" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 13.0"
+  version                     = "~> 14.0"
   name                        = local.cicd_project_name
   random_project_id           = true
   disable_services_on_destroy = false

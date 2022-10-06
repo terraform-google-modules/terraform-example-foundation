@@ -16,11 +16,6 @@
   },
   "packageRules": [
     {
-      "matchDepTypes": ["module"],
-      "groupName": "TF modules",
-      "separateMajorMinor":false
-    },
-    {
       "matchDepTypes": ["require"],
       "groupName": "GO modules",
       "postUpdateOptions": ["gomodTidy"],

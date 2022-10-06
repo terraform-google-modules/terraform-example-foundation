@@ -48,7 +48,7 @@ data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 
   config = {
-    bucket = var.backend_bucket
+    bucket = var.remote_state_bucket
     prefix = "terraform/bootstrap/state"
   }
 }
@@ -57,7 +57,7 @@ data "terraform_remote_state" "org" {
   backend = "gcs"
 
   config = {
-    bucket = var.backend_bucket
+    bucket = var.remote_state_bucket
     prefix = "terraform/org/state"
   }
 }
@@ -66,7 +66,7 @@ data "terraform_remote_state" "network_shared" {
   backend = "gcs"
 
   config = {
-    bucket = var.backend_bucket
+    bucket = var.remote_state_bucket
     prefix = "terraform/networks/envs/shared"
   }
 }
@@ -75,7 +75,7 @@ data "terraform_remote_state" "environments_env" {
   backend = "gcs"
 
   config = {
-    bucket = var.backend_bucket
+    bucket = var.remote_state_bucket
     prefix = "terraform/environments/${var.env}"
   }
 }

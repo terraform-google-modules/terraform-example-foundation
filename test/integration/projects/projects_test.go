@@ -22,6 +22,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
@@ -55,54 +56,68 @@ func TestProjects(t *testing.T) {
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
-	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
+	projects_backend_bucket := bootstrap.GetStringOutput("projects_gcs_bucket_tfstate")
 	backendConfig := map[string]interface{}{
-		"bucket": backend_bucket,
+		"bucket": projects_backend_bucket,
 	}
+	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
 	var restrictedApisEnabled = []string{
 		"accesscontextmanager.googleapis.com",
 		"billingbudgets.googleapis.com",
 	}
 
+	var project_sa_roles = []string{
+		"roles/compute.instanceAdmin.v1",
+		"roles/iam.serviceAccountAdmin",
+		"roles/iam.serviceAccountUser",
+	}
+
 	for _, tt := range []struct {
 		name              string
+		repo              string
 		baseDir           string
 		baseNetwork       string
 		restrictedNetwork string
 	}{
 		{
 			name:              "bu1_development",
+			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
 			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu1_non-production",
+			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
 			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu1_production",
+			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
 			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu2_development",
+			repo:              "bu2-example-app",
 			baseDir:           "../../../4-projects/business_unit_2/%s",
 			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu2_non-production",
+			repo:              "bu2-example-app",
 			baseDir:           "../../../4-projects/business_unit_2/%s",
 			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
 		},
 		{
 			name:              "bu2_production",
+			repo:              "bu2-example-app",
 			baseDir:           "../../../4-projects/business_unit_2/%s",
 			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
@@ -132,10 +147,10 @@ func TestProjects(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, "shared")),
 			)
-			sharedCloudBuildSA := shared.GetStringOutput("cloudbuild_sa")
+			sharedCloudBuildSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")[tt.repo]
 
 			vars := map[string]interface{}{
-				"backend_bucket": backend_bucket,
+				"remote_state_bucket": backend_bucket,
 			}
 
 			projects := tft.NewTFBlueprintTest(t,
@@ -185,16 +200,11 @@ func TestProjects(t *testing.T) {
 
 						if projectOutput == "base_shared_vpc_project" {
 
-							saName := projects.GetStringOutput("base_shared_vpc_project_sa")
-							saPolicy := gcloud.Runf(t, "iam service-accounts get-iam-policy  %s", saName)
-							listSaMembers := utils.GetResultStrSlice(saPolicy.Get("bindings.0.members").Array())
-							assert.Contains(listSaMembers, fmt.Sprintf("serviceAccount:%s", sharedCloudBuildSA), "service account should be member of the binding")
-							assert.Equal("roles/iam.serviceAccountTokenCreator", saPolicy.Get("bindings.0.role").String(), "service account should have role serviceAccountTokenCreator")
-
-							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", "bindings.role:roles/editor", "--format", "json"})
-							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()[0]
-							listMembers := utils.GetResultStrSlice(projectPolicy.Get("bindings.members").Array())
-							assert.Contains(listMembers, fmt.Sprintf("serviceAccount:%s", saName), "service account should have role/editor")
+							iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", sharedCloudBuildSA)
+							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
+							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()
+							listRoles := testutils.GetResultFieldStrSlice(projectPolicy, "bindings.role")
+							assert.Subset(listRoles, project_sa_roles, fmt.Sprintf("service account %s should have project level roles", sharedCloudBuildSA))
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
 							assert.NotEmpty(sharedVPC.Map())

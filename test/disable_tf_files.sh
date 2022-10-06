@@ -83,16 +83,6 @@ function projects(){
 }
 
 function appinfra(){
-    # disable backend configs in main module
-    mv 5-app-infra/business_unit_1/development/backend.tf 5-app-infra/business_unit_1/development/backend.tf.disabled
-    mv 5-app-infra/business_unit_1/non-production/backend.tf  5-app-infra/business_unit_1/non-production/backend.tf.disabled
-    mv 5-app-infra/business_unit_1/production/backend.tf  5-app-infra/business_unit_1/production/backend.tf.disabled
-
-    # disable ENVS.auto.tfvars in main module
-    mv 5-app-infra/business_unit_1/development/bu1-development.auto.tfvars 5-app-infra/business_unit_1/development/bu1-development.auto.tfvars.disabled
-    mv 5-app-infra/business_unit_1/non-production/bu1-non-production.auto.tfvars  5-app-infra/business_unit_1/non-production/bu1-non-production.auto.tfvars.disabled
-    mv 5-app-infra/business_unit_1/production/bu1-production.auto.tfvars  5-app-infra/business_unit_1/production/bu1-production.auto.tfvars.disabled
-
     # disable common.auto.tfvars in main module
     mv 5-app-infra/business_unit_1/development/common.auto.tfvars 5-app-infra/business_unit_1/development/common.auto.tfvars.disabled
     mv 5-app-infra/business_unit_1/non-production/common.auto.tfvars  5-app-infra/business_unit_1/non-production/common.auto.tfvars.disabled

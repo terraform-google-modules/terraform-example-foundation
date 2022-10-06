@@ -57,9 +57,6 @@ file.
 
 The purpose of this step is to deploy a simple [Compute Engine](https://cloud.google.com/compute/) instance in one of the business unit projects using the infra pipeline set up in 4-projects.
 The infra pipeline is created in step `4-projects` within the shared env and has a [Cloud Build](https://cloud.google.com/build/docs) pipeline configured to manage infrastructure within projects.
-To enable deployment via this pipeline, the projects deployed should [enable](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/business_unit_1/development/example_base_shared_vpc_project.tf#L31-L32) the `enable_cloudbuild_deploy` flag and provide the Cloud Build service account value via `cloudbuild_sa`.
-
-This enables the Cloud Build service account to impersonate the project service account and use it to deploy infrastructure. The roles required for the project SA can also be [managed](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/business_unit_1/development/example_base_shared_vpc_project.tf#L30) via `sa_roles`. (Note: This requires per project SA impersonation. If you would like to have a single SA managing an environment and all associated projects, that is also possible by [granting](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/modules/single_project/main.tf#L62-L68) `roles/iam.serviceAccountTokenCreator` to an SA with the right roles in `4-projects/env`.)
 
 There is also a [Source Repository](https://cloud.google.com/source-repositories) configured with build triggers similar to the [CI/CD Pipeline](https://github.com/terraform-google-modules/terraform-example-foundation#0-bootstrap) setup in `0-bootstrap`.
 This Compute Engine instance is created using the base network from step `3-networks` and is used to access private services.
@@ -83,151 +80,164 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Deploying with Cloud Build
 
-1. Get the Infra Pipeline project ID from the previous step. Run the following in the
-   `gcp-projects/business_unit_1/shared` folder.
-   ```
-   terraform output cloudbuild_project_id
-   ```
 1. Clone the policies repo. **Note:** This repo has the same name as the repo created in step 1-org, to prevent a collision the command below will clone it in folder gcp-policies-app-infra.
+
+   ```bash
+   export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
+   echo ${INFRA_PIPELINE_PROJECT_ID}
+
+   gcloud source repos clone gcp-policies gcp-policies-app-infra --project=${INFRA_PIPELINE_PROJECT_ID}
    ```
-   gcloud source repos clone gcp-policies gcp-policies-app-infra --project=YOUR_INFRA_PIPELINE_PROJECT_ID
-   ```
-1. Navigate into the repo. All subsequent steps assume you are running them
+
+1. Navigate into the repo and copy contents of policy-library to new repo. All subsequent steps assume you are running them
    from the gcp-policies-app-infra directory. If you run them from another directory,
    adjust your copy paths accordingly.
-   ```
+
+   ```bash
    cd gcp-policies-app-infra
    git checkout -b main
-   ```
-1. Copy contents of policy-library to new repo.
-   ```
+
    cp -RT ../terraform-example-foundation/policy-library/ .
    ```
-1. Commit changes.
-   ```
+
+1. Commit changes and push your main branch to the new repo.
+
+   ```bash
    git add .
    git commit -m 'Your message'
-   ```
-1. Push your main branch to the new repo.
-   ```
+
    git push --set-upstream origin main
    ```
+
 1. Navigate out of the repo.
-   ```
+
+   ```bash
    cd ..
    ```
+
 1. Clone the `bu1-example-app` repo.
+
+   ```bash
+   gcloud source repos clone bu1-example-app --project=${INFRA_PIPELINE_PROJECT_ID}
    ```
-   gcloud source repos clone bu1-example-app --project=YOUR_INFRA_PIPELINE_PROJECT_ID
-   ```
-1. Navigate into the repo. All subsequent steps assume you are running them
-   from the bu1-example-app directory. If you run them from another directory,
-   adjust your copy paths accordingly.
-   ```
+
+1. Navigate into the repo, change to non-main branch and copy contents of foundation to new repo.
+   All subsequent steps assume you are running them from the bu1-example-app directory.
+   If you run them from another directory, adjust your copy paths accordingly.
+
+   ```bash
    cd bu1-example-app
-   ```
-1. Change freshly cloned repo and change to non-main branch.
-   ```
    git checkout -b plan
-   ```
-1. Copy contents of foundation to new repo.
-   ```
+
    cp -RT ../terraform-example-foundation/5-app-infra/ .
-   ```
-1. Copy Cloud Build configuration files for Terraform.
-   ```
    cp ../terraform-example-foundation/build/cloudbuild-tf-* .
-   ```
-1. Copy the Terraform wrapper script to the root of your new repository.
-   ```
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   ```
-1. Ensure wrapper script can be executed.
-   ```
    chmod 755 ./tf-wrapper.sh
    ```
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars` and update the file with values from your environment and 0-bootstrap. See any of the business unit 1 envs folders [README.md](./business_unit_1/development/README.md) files for additional information on the values in the `common.auto.tfvars` file.
-1. Rename `bu1-development.auto.example.tfvars` to `bu1-development.auto.tfvars` and update the file with values from your environment.
-1. Rename `bu1-non-production.auto.example.tfvars` to `bu1-non-production.auto.tfvars` and update the file with values from your environment.
-1. Rename `bu1-production.auto.example.tfvars` to `bu1-production.auto.tfvars` and update the file with values from your environment.
-1. Commit changes.
+
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`.
+
+   ```bash
+   mv common.auto.example.tfvars common.auto.tfvars
    ```
+
+1. Update the file with values from your environment and 0-bootstrap. See any of the business unit 1 envs folders [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
+
+   ```bash
+   export remote_state_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${remote_state_bucket}"
+   sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
+   ```
+
+1. Commit changes.
+
+   ```bash
    git add .
    git commit -m 'Your message'
    ```
+
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
    branch triggers _terraform plan_ but not _terraform apply_.
-   ```
+
+   ```bash
    git push --set-upstream origin plan
    ```
+
 1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
-   ```
+
+   ```bash
    git checkout -b development
    git push origin development
    ```
+
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
-   ```
+
+   ```bash
    git checkout -b non-production
    git push origin non-production
    ```
+
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 1. Merge changes to production branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
       pushing to this branch triggers both _terraform plan_ and _terraform apply_.
-   ```
+
+   ```bash
    git checkout -b production
    git push origin production
    ```
+
 1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 
 ### Run Terraform locally
 
 1. Change into `5-app-infra` folder, copy the Terraform wrapper script and ensure it can be executed.
-   ```
+
+   ```bash
    cd 5-app-infra
    cp ../build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    ```
-1. Rename `auto.example.tfvars` files to `auto.tfvars`.
-   ```
-   mv common.auto.example.tfvars common.auto.tfvars
-   mv bu1-development.auto.example.tfvars bu1-development.auto.tfvars
-   mv bu1-non-production.auto.example.tfvars bu1-non-production.auto.tfvars
-   mv bu1-production.auto.example.tfvars bu1-production.auto.tfvars
-   ```
-1. Update `common.auto.tfvars` file with values from your environment.
-1. Update files `bu1-development.auto.tfvars`, `bu1-non-production.auto.tfvars`, and `bu1-production.auto.tfvars` with values from 4-projects output.
-1. Use `terraform output` to get the project service account values from 4-projects output.
-   ```
-   export dev_sa=$(terraform -chdir="../4-projects/business_unit_1/development/" output -raw base_shared_vpc_project_sa)
-   export non_prod_sa=$(terraform -chdir="../4-projects/business_unit_1/non-production/" output -raw base_shared_vpc_project_sa)
-   export prod_sa=$(terraform -chdir="../4-projects/business_unit_1/production/" output -raw base_shared_vpc_project_sa)
 
-   echo "development project_service_account = ${dev_sa}"
-   echo "non-production project_service_account = ${non_prod_sa}"
-   echo "production project_service_account = ${prod_sa}"
+1. Rename `common.auto.example.tfvars` files to `common.auto.tfvars`.
+
+   ```bash
+   mv common.auto.example.tfvars common.auto.tfvars
    ```
-1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 project service accounts
+
+1. Update `common.auto.tfvars` file with values from your environment.
+1. Use `terraform output` to get the project backend bucket value from 0-bootstrap.
+
+   ```bash
+   export remote_state_bucket=$(terraform -chdir="../0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${remote_state_bucket}"
+   sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
+   ```
+
+1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 Terraform service account.
 1. Provide the user permissions to run the terraform locally with the `serviceAccountTokenCreator` permission.
-   ```
+
+   ```bash
    member="user:$(gcloud auth list --filter="status=ACTIVE" --format="value(account)")"
    echo ${member}
 
-   dev_project=$(terraform -chdir="../4-projects/business_unit_1/development/" output -raw base_shared_vpc_project)
-   non_prod_project=$(terraform -chdir="../4-projects/business_unit_1/non-production/" output -raw base_shared_vpc_project)
-   prod_project=$(terraform -chdir="../4-projects/business_unit_1/production/" output -raw base_shared_vpc_project)
+   project_id=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
+   echo ${project_id}
 
-   gcloud iam service-accounts add-iam-policy-binding "${dev_sa}" --project "${dev_project}" --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
-   gcloud iam service-accounts add-iam-policy-binding "${non_prod_sa}" --project "${non_prod_project}" --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
-   gcloud iam service-accounts add-iam-policy-binding "${prod_sa}" --project "${prod_project}" --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
+   terraform_sa=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '."bu1-example-app"' | tr -d '"')
+   echo ${terraform_sa}
+
+   gcloud iam service-accounts add-iam-policy-binding ${terraform_sa} --project ${project_id}} --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
    ```
-1. Update `backend.tf` with your bucket from the infra pipeline example.
-   ```
-   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq '.[0]' | tr -d '"')
+
+1. Update `backend.tf` with your bucket from the infra pipeline output.
+
+   ```bash
+   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq '."bu1-example-app"' | tr -d '"')
    echo "backend_bucket = ${backend_bucket}"
 
    for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
@@ -239,48 +249,76 @@ When using Cloud Build or Jenkins as your CI/CD tool, each environment correspon
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
 1. Use `terraform output` to get the Infra Pipeline Project ID from 4-projects output.
-   ```
+
+   ```bash
    export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
    echo ${INFRA_PIPELINE_PROJECT_ID}
+
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '."bu1-example-app"' | tr -d '"')
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
+
 1. Run `init` and `plan` and review output for environment production.
-   ```
+
+   ```bash
    ./tf-wrapper.sh init production
    ./tf-wrapper.sh plan production
    ```
+
 1. Run `validate` and check for violations.
-   ```
+
+   ```bash
    ./tf-wrapper.sh validate production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
    ```
+
 1. Run `apply` production.
-   ```
+
+   ```bash
    ./tf-wrapper.sh apply production
    ```
+
 1. Run `init` and `plan` and review output for environment non-production.
-   ```
+
+   ```bash
    ./tf-wrapper.sh init non-production
    ./tf-wrapper.sh plan non-production
    ```
+
 1. Run `validate` and check for violations.
-   ```
+
+   ```bash
    ./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
    ```
+
 1. Run `apply` non-production.
-   ```
+
+   ```bash
    ./tf-wrapper.sh apply non-production
    ```
+
 1. Run `init` and `plan` and review output for environment development.
-   ```
+
+   ```bash
    ./tf-wrapper.sh init development
    ./tf-wrapper.sh plan development
    ```
+
 1. Run `validate` and check for violations.
-   ```
+
+   ```bash
    ./tf-wrapper.sh validate development $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
    ```
+
 1. Run `apply` development.
-   ```
+
+   ```bash
    ./tf-wrapper.sh apply development
    ```
 
-If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.
+If you received any errors or made any changes to the Terraform config or `common.auto.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.
+
+After executing this stage, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+```bash
+unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+```

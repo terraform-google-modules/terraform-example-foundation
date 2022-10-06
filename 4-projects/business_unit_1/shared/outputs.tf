@@ -19,23 +19,23 @@ output "default_region" {
   value       = module.infra_pipelines.default_region
 }
 
-output "tf_runner_artifact_repo" {
-  description = "GAR Repo created to store runner images"
-  value       = module.infra_pipelines.tf_runner_artifact_repo
-}
-
 output "cloudbuild_project_id" {
   value = module.app_infra_cloudbuild_project.project_id
 }
 
-output "cloudbuild_sa" {
-  description = "Cloud Build service account"
-  value       = module.infra_pipelines.cloudbuild_sa
+output "terraform_service_accounts" {
+  description = "APP Infra Pipeline Terraform Accounts."
+  value       = module.infra_pipelines.terraform_service_accounts
 }
 
 output "repos" {
   description = "CSRs to store source code"
   value       = module.infra_pipelines.repos
+}
+
+output "sa_roles" {
+  description = "A list of roles to give the Service Accounts from App Infra Pipeline by workspace repository."
+  value       = local.sa_roles
 }
 
 output "artifact_buckets" {
@@ -48,12 +48,12 @@ output "state_buckets" {
   value       = module.infra_pipelines.state_buckets
 }
 
-output "plan_triggers" {
+output "plan_triggers_id" {
   description = "CB plan triggers"
-  value       = module.infra_pipelines.plan_triggers
+  value       = module.infra_pipelines.plan_triggers_id
 }
 
-output "apply_triggers" {
+output "apply_triggers_id" {
   description = "CB apply triggers"
-  value       = module.infra_pipelines.apply_triggers
+  value       = module.infra_pipelines.apply_triggers_id
 }

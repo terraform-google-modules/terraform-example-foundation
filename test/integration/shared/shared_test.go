@@ -54,7 +54,7 @@ func TestShared(t *testing.T) {
 
 	vars := map[string]interface{}{
 		"access_context_manager_policy_id": policyID,
-		"backend_bucket":                   backend_bucket,
+		"remote_state_bucket":              backend_bucket,
 		"terraform_service_account":        terraformSA,
 	}
 

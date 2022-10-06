@@ -21,7 +21,7 @@
 
 module "env_secrets" {
   source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 13.0"
+  version                     = "~> 14.0"
   random_project_id           = true
   default_service_account     = "deprivilege"
   name                        = "${local.project_prefix}-${var.environment_code}-secrets"

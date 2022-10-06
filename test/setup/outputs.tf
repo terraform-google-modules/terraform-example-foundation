@@ -99,3 +99,8 @@ output "enable_hub_and_spoke_transitivity" {
 output "create_access_context_manager_access_policy" {
   value = false
 }
+
+output "create_unique_tag_key" {
+  description = "Set to true to avoid tag key name colision during integrated tests. Tag keys are organization-wide unique names."
+  value       = true
+}

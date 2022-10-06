@@ -43,7 +43,7 @@ data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 
   config = {
-    bucket = var.backend_bucket
+    bucket = var.remote_state_bucket
     prefix = "terraform/bootstrap/state"
   }
 }
@@ -52,7 +52,7 @@ data "terraform_remote_state" "org" {
   backend = "gcs"
 
   config = {
-    bucket = var.backend_bucket
+    bucket = var.remote_state_bucket
     prefix = "terraform/org/state"
   }
 }
@@ -61,7 +61,7 @@ data "terraform_remote_state" "env_development" {
   backend = "gcs"
 
   config = {
-    bucket = var.backend_bucket
+    bucket = var.remote_state_bucket
     prefix = "terraform/environments/development"
   }
 }
@@ -70,7 +70,7 @@ data "terraform_remote_state" "env_non_production" {
   backend = "gcs"
 
   config = {
-    bucket = var.backend_bucket
+    bucket = var.remote_state_bucket
     prefix = "terraform/environments/non-production"
   }
 }
@@ -79,7 +79,7 @@ data "terraform_remote_state" "env_production" {
   backend = "gcs"
 
   config = {
-    bucket = var.backend_bucket
+    bucket = var.remote_state_bucket
     prefix = "terraform/environments/production"
   }
 }

@@ -359,8 +359,8 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+   echo "remote_state_bucket = ${backend_bucket}"
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
    ```
 
 1. Commit changes.
@@ -448,8 +448,8 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
+   echo "remote_state_bucket = ${backend_bucket}"
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
    ```
 
 1. Commit changes.
@@ -564,8 +564,8 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
 
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   echo "remote_state_bucket = ${backend_bucket}"
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
 
    export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
@@ -721,8 +721,8 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
 
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   echo "remote_state_bucket = ${backend_bucket}"
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
 
    export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
@@ -874,8 +874,8 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   echo "remote_state_bucket = ${backend_bucket}"
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
 
 1. Commit changes.

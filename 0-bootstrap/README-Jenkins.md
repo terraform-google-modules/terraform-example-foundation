@@ -202,7 +202,6 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
 1. Run terraform commands.
    - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-b-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
-   - **WARNING: Make sure you have commented-out the `cloudbuild_bootstrap` module and enabled the `jenkins_bootstrap` module in the `./main.tf` file**
    - **Use Terraform 1.0.0** to run the terraform script with the commands below
 
    ```bash

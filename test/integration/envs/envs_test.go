@@ -72,6 +72,18 @@ func TestEnvs(t *testing.T) {
 					displayName := fmt.Sprintf("fldr-%s", envName)
 					assert.Equal(displayName, folder.Get("displayName").String(), fmt.Sprintf("folder %s should have been created", displayName))
 
+					// check tags applied to environment folder
+					envFldrTags := gcloud.Runf(t, "resource-manager tags bindings list --parent=//cloudresourcemanager.googleapis.com/folders/%s", envFolder).Array()
+
+					fldrTagValueId := testutils.GetResultFieldStrSlice(envFldrTags, "tagValue")
+
+					var fldrTagValue []string
+					for _, tagValueId := range fldrTagValueId {
+						tagValueObj := gcloud.Runf(t, "resource-manager tags values describe %s", tagValueId)
+						fldrTagValue = append(fldrTagValue, tagValueObj.Get("shortName").String())
+					}
+					assert.Subset([]string{envName}, fldrTagValue, fmt.Sprintf("tag value should be %s for %s env folder", envName, envName))
+
 					for _, projectEnvOutput := range []struct {
 						projectOutput string
 						role          string

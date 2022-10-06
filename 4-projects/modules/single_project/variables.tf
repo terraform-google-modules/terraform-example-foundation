@@ -129,20 +129,20 @@ variable "enable_hub_and_spoke" {
   default     = false
 }
 
+variable "app_infra_pipeline_service_accounts" {
+  description = "The Service Accounts from App Infra Pipeline."
+  type        = map(string)
+  default     = {}
+}
+
 variable "sa_roles" {
-  description = "A list of roles to give the Service Account for the project (defaults to none)"
-  type        = list(string)
-  default     = []
+  description = "A list of roles to give the Service Account from App Infra Pipeline."
+  type        = map(list(string))
+  default     = {}
 }
 
 variable "enable_cloudbuild_deploy" {
   description = "Enable infra deployment using Cloud Build"
   type        = bool
   default     = false
-}
-
-variable "cloudbuild_sa" {
-  description = "The Cloud Build SA used for deploying infrastructure in this project. It will impersonate the new default SA created"
-  type        = string
-  default     = ""
 }

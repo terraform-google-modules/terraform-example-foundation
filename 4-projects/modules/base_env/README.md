@@ -3,7 +3,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| backend\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | business\_code | The business code (ex. bu1). | `string` | n/a | yes |
 | business\_unit | The business (ex. business\_unit\_1). | `string` | n/a | yes |
 | env | The environment to prepare (ex. development). | `string` | n/a | yes |
@@ -17,6 +16,7 @@
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | peering\_module\_depends\_on | List of modules or resources peering module depends on. | `list(any)` | `[]` | no |
 | project\_budget | Budget configuration.<br>  budget\_amount: The amount to use as the budget.<br>  alert\_spent\_percents: A list of percentages of the budget to alert on when threshold is exceeded.<br>  alert\_pubsub\_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`. | <pre>object({<br>    budget_amount        = optional(number, 1000)<br>    alert_spent_percents = optional(list(number), [0.5, 0.75, 0.9, 0.95])<br>    alert_pubsub_topic   = optional(string, null)<br>  })</pre> | `{}` | no |
+| remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | secrets\_prj\_suffix | Name suffix to use for secrets project created. | `string` | `"env-secrets"` | no |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | `bool` | `false` | no |
 
@@ -27,6 +27,7 @@
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | base\_shared\_vpc\_project | Project sample base project. |
 | base\_shared\_vpc\_project\_sa | Project sample base project SA. |
+| base\_subnets\_self\_links | The self-links of subnets from base environment. |
 | bucket | The created storage bucket |
 | env\_secrets\_project | Project sample peering project id. |
 | floating\_project | Project sample floating project. |
@@ -38,6 +39,7 @@
 | restricted\_enabled\_apis | Activated APIs. |
 | restricted\_shared\_vpc\_project | Project sample restricted project id. |
 | restricted\_shared\_vpc\_project\_number | Project sample restricted project. |
+| restricted\_subnets\_self\_links | The self-links of subnets from restricted environment. |
 | vpc\_service\_control\_perimeter\_name | VPC Service Control name. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

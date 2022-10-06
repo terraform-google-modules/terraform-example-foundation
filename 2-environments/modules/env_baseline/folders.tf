@@ -28,3 +28,11 @@ resource "time_sleep" "wait_30_seconds" {
 
   destroy_duration = "30s"
 }
+
+# The following code binds a tag to a resource.
+# For more details about binding tags to resources see: https://cloud.google.com/resource-manager/docs/tags/tags-creating-and-managing#attaching
+# For more details on how to use terraform binding resource see: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/tags_tag_binding
+resource "google_tags_tag_binding" "folder_env" {
+  parent    = "//cloudresourcemanager.googleapis.com/${google_folder.env.id}"
+  tag_value = local.tags["environment_${var.env}"]
+}

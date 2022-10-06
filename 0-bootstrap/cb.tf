@@ -20,20 +20,33 @@ locals {
   // The version of the terraform docker image to be used in the workspace builds
   docker_tag_version_terraform = "v1"
 
-  cb_source = {
-    "org"  = "gcp-org",
-    "env"  = "gcp-environments",
-    "net"  = "gcp-networks",
-    "proj" = "gcp-projects",
+  cb_config = {
+    "org" = {
+      source        = "gcp-org",
+      create_bucket = false,
+    },
+    "env" = {
+      source        = "gcp-environments",
+      create_bucket = false,
+    },
+    "net" = {
+      source        = "gcp-networks",
+      create_bucket = false,
+    },
+    "proj" = {
+      source        = "gcp-projects",
+      create_bucket = true,
+    },
   }
-  cloud_source_repos = values(local.cb_source)
+  cloud_source_repos = [for v in local.cb_config : v.source]
   cloudbuilder_repo  = "tf-cloudbuilder"
   base_cloud_source_repos = [
     "gcp-policies",
     "gcp-bootstrap",
     local.cloudbuilder_repo,
   ]
-  gar_repository = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
+  gar_repository              = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
+  projects_gcs_bucket_tfstate = split("/", module.tf_workspace["proj"].state_bucket)[length(split("/", module.tf_workspace["proj"].state_bucket)) - 1]
 }
 
 resource "random_string" "suffix" {
@@ -145,17 +158,18 @@ module "tf_workspace" {
   state_bucket_self_link    = "${local.bucket_self_link_prefix}${module.seed_bootstrap.gcs_bucket_tfstate}"
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
-  tf_repo_uri               = module.tf_source.csr_repos[local.cb_source[each.key]].url
+  tf_repo_uri               = module.tf_source.csr_repos[local.cb_config[each.key].source].url
   cloudbuild_sa             = google_service_account.terraform-env-sa[each.key].id
   create_cloudbuild_sa      = false
   diff_sa_project           = true
-  create_state_bucket       = false
+  create_state_bucket       = local.cb_config[each.key].create_bucket
   buckets_force_destroy     = var.bucket_force_destroy
 
   substitutions = {
     "_ORG_ID"                       = var.org_id
     "_BILLING_ID"                   = var.billing_account
-    "_DEFAULT_REGION"               = var.default_region
+    "_GAR_REGION"                   = var.default_region
+    "_GAR_PROJECT_ID"               = module.tf_source.cloudbuild_project_id
     "_GAR_REPOSITORY"               = local.gar_repository
     "_DOCKER_TAG_VERSION_TERRAFORM" = local.docker_tag_version_terraform
   }

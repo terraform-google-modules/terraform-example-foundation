@@ -4,11 +4,11 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | activate\_apis | The api to activate for the GCP project | `list(string)` | `[]` | no |
+| app\_infra\_pipeline\_service\_accounts | The Service Accounts from App Infra Pipeline. | `map(string)` | `{}` | no |
 | application\_name | The name of application where GCP resources relate | `string` | n/a | yes |
 | billing\_account | The ID of the billing account to associated this project with | `string` | n/a | yes |
 | billing\_code | The code that's used to provide chargeback information | `string` | n/a | yes |
 | business\_code | The code that describes which business unit owns the project | `string` | `"abcd"` | no |
-| cloudbuild\_sa | The Cloud Build SA used for deploying infrastructure in this project. It will impersonate the new default SA created | `string` | `""` | no |
 | enable\_cloudbuild\_deploy | Enable infra deployment using Cloud Build | `bool` | `false` | no |
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
@@ -18,7 +18,7 @@
 | project\_budget | Budget configuration.<br>  budget\_amount: The amount to use as the budget.<br>  alert\_spent\_percents: A list of percentages of the budget to alert on when threshold is exceeded.<br>  alert\_pubsub\_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`. | <pre>object({<br>    budget_amount        = optional(number, 1000)<br>    alert_spent_percents = optional(list(number), [0.5, 0.75, 0.9, 0.95])<br>    alert_pubsub_topic   = optional(string, null)<br>  })</pre> | `{}` | no |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
-| sa\_roles | A list of roles to give the Service Account for the project (defaults to none) | `list(string)` | `[]` | no |
+| sa\_roles | A list of roles to give the Service Account from App Infra Pipeline. | `map(list(string))` | `{}` | no |
 | secondary\_contact | The secondary email contact for the project | `string` | `""` | no |
 | shared\_vpc\_host\_project\_id | Shared VPC host project ID | `string` | `""` | no |
 | shared\_vpc\_subnets | List of the shared vpc subnets self links. | `list(string)` | `[]` | no |

@@ -24,7 +24,7 @@ variable "environment_code" {
   description = "A short form of the folder level resources (environment) within the Google Cloud organization (ex. d)."
 }
 
-variable "backend_bucket" {
+variable "remote_state_bucket" {
   description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string
 }

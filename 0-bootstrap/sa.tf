@@ -30,11 +30,6 @@ locals {
     "roles/browser", // Required for gcloud beta terraform vet to be able to read the ancestry of folders
   ]
 
-  on_prem_connection_roles = var.enable_on_prem_connection_roles ? [
-    "roles/secretmanager.viewer", // Required roles for retrieving secrets for VPN connection to on-prem if VPN enabled in network step
-    "roles/secretmanager.secretAccessor",
-  ] : []
-
   granular_sa_org_level_roles = {
     "org" = distinct(concat([
       "roles/orgpolicy.policyAdmin",
@@ -68,14 +63,14 @@ locals {
     "env" = [
       "roles/resourcemanager.folderAdmin"
     ],
-    "net" = distinct(concat([
+    "net" = [
       "roles/resourcemanager.folderViewer",
       "roles/compute.networkAdmin",
       "roles/compute.securityAdmin",
       "roles/compute.orgSecurityPolicyAdmin",
       "roles/compute.orgSecurityResourceAdmin",
       "roles/dns.admin",
-    ], local.on_prem_connection_roles)),
+    ],
     "proj" = [
       "roles/resourcemanager.folderViewer",
       "roles/resourcemanager.folderIamAdmin",

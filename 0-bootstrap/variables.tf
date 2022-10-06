@@ -82,12 +82,6 @@ variable "bucket_force_destroy" {
   default     = false
 }
 
-variable "enable_on_prem_connection_roles" {
-  description = "Enable roles required by Terraform in network step to access on-premises infrastructure."
-  type        = bool
-  default     = false
-}
-
 /* ----------------------------------------
     Specific to Groups creation
    ---------------------------------------- */

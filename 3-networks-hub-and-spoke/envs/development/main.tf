@@ -81,5 +81,5 @@ module "base_env" {
   restricted_private_service_cidr    = local.restricted_private_service_cidr
   restricted_subnet_primary_ranges   = local.restricted_subnet_primary_ranges
   restricted_subnet_secondary_ranges = local.restricted_subnet_secondary_ranges
-  backend_bucket                     = var.backend_bucket
+  remote_state_bucket                = var.remote_state_bucket
 }

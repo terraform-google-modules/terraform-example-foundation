@@ -20,5 +20,5 @@ module "env" {
   env                        = "development"
   environment_code           = "d"
   monitoring_workspace_users = var.monitoring_workspace_users
-  backend_bucket             = var.backend_bucket
+  remote_state_bucket        = var.remote_state_bucket
 }

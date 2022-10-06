@@ -160,14 +160,16 @@ your current Jenkins manager (controller) environment.
    terraform apply
    ```
 
-1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
+1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects` and the state bucket that will be used by step 4-projects.
 
    ```bash
    export network_step_sa=$(terraform output -raw networks_step_terraform_service_account_email)
    export projects_step_sa=$(terraform output -raw projects_step_terraform_service_account_email)
+   export projects_gcs_bucket_tfstate=$(terraform output -raw projects_gcs_bucket_tfstate)
 
    echo "network step service account = ${network_step_sa}"
    echo "projects step service account = ${projects_step_sa}"
+   echo "projects gcs bucket tfstate = ${projects_gcs_bucket_tfstate}"
    ```
 
 1. Run `terraform output` to get the ID of your Cloud Build project:
@@ -232,6 +234,7 @@ Each step has instructions for this change.
 
 | Name | Description |
 |------|-------------|
+| cloud\_builder\_artifact\_repo | GAR Repo created to store TF Cloud Builder images. |
 | cloudbuild\_project\_id | Project where CloudBuild configuration and terraform container image will reside. |
 | common\_config | Common configuration data to be used in other steps. |
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
@@ -243,6 +246,7 @@ Each step has instructions for this change.
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
 | optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |
+| projects\_gcs\_bucket\_tfstate | Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project. |
 | projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
 | required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |

@@ -56,10 +56,14 @@ For an overview of the architecture and the parts, see the
 ## Purpose
 
 The purpose of this step is to set up the folder structure, projects, and infrastructure pipelines for applications that are connected as service projects to the shared VPC created in the previous stage.
+
 For each business unit, a shared `infra-pipeline` project is created along with Cloud Build triggers, CSRs for application infrastructure code and Google Cloud Storage buckets for state storage.
-This step follows the same [conventions](https://github.com/terraform-google-modules/terraform-example-foundation#branching-strategy) as the CI/CD Pipeline deployed in [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md).
-The Cloud Build SA used by this pipeline can impersonate the project SA by enabling the `enable_cloudbuild_deploy` flag and necessary roles can be granted to this SA via `sa_roles` as shown in this [example](business_unit_1/development/example_base_shared_vpc_project.tf).
-This pipeline can be utilized for deploying resources in projects across development/non-production/production with granular permissions.
+
+This step follows the same [conventions](https://github.com/terraform-google-modules/terraform-example-foundation#branching-strategy) as the Foundation pipeline deployed in [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md).
+A custom [workspace](https://github.com/terraform-google-modules/terraform-google-bootstrap/blob/master/modules/tf_cloudbuild_workspace/README.md) (`bu1-example-app`) is created by this pipeline and necessary roles are granted to the Terraform Service Account of this workspace by enabling the `enable_cloudbuild_deploy` flag and variable `sa_roles` as shown in this [example](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/modules/base_env/example_base_shared_vpc_project.tf).
+
+This pipeline is utilized to deploy resources in projects across development/non-production/production in step [5-app-infra](../5-app-infra/README.md).
+Other Workspaces can also be created to isolate deployments if needed.
 
 ## Prerequisites
 
@@ -236,18 +240,21 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
 
 1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
 1. See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
-1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
+1. Use `terraform output` to get the remote state bucket (the backend bucket used by previous steps) value from 0-bootstrap output.
 
    ```bash
-   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
+   export remote_state_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${REMOTE_STATE_BUCKET}"
 
-   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
-1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
+1. Also update `backend.tf` with your projects backend bucket from 0-bootstrap output. Step 4-projects uses a different bucket to store the remote state.
 
    ```bash
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+
    for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 

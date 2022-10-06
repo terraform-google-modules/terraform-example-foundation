@@ -313,7 +313,7 @@ variable "essential_contacts_language" {
   default     = "en"
 }
 
-variable "backend_bucket" {
+variable "remote_state_bucket" {
   description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string
 }
@@ -321,4 +321,10 @@ variable "backend_bucket" {
 variable "essential_contacts_domains_to_allow" {
   description = "The list of domains that email addresses added to Essential Contacts can have."
   type        = list(string)
+}
+
+variable "create_unique_tag_key" {
+  description = "Creates unique organization-wide tag keys by adding a random suffix to each key."
+  type        = bool
+  default     = false
 }

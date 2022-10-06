@@ -183,9 +183,9 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
 
    ```bash
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
+   echo "remote_state_bucket = ${backend_bucket}"
 
-   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
    ```
 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.

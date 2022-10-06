@@ -148,12 +148,12 @@ your current Jenkins manager (controller) environment.
 1. Run `terraform output projects_step_terraform_service_account_email` to get the email address of the admin of step `4-projects`. You need this address in a later procedure.
 1. Run `terraform output cloudbuild_project_id` to get the ID of your Cloud Build project.
 1. Run `terraform output gcs_bucket_tfstate` to get your Google Cloud bucket name from Terraform's state.
-1. Create a `backend.tf` file based on `backend.tf.example` template and update with the name of your Cloud Storage bucket:
-
-   ```bash
-   sed "s/UPDATE_ME/$(terraform output -raw gcs_bucket_tfstate)/" backend.tf.example > backend.tf
+1. Run `terraform output projects_gcs_bucket_tfstate` to get the Google Cloud bucket name from stage 4-projects Terraform's state.
+1. Copy the backend:
    ```
-
+   cp backend.tf.example backend.tf
+   ```
+1. Update `backend.tf` with the name of your Cloud Storage bucket.
 1. Re-run `terraform init`. When you're prompted, agree to copy state to
    Cloud Storage.
 1. (Optional) Run `terraform apply` to verify that state is configured
@@ -203,6 +203,7 @@ the following steps:
 
 | Name | Description |
 |------|-------------|
+| cloud\_builder\_artifact\_repo | GAR Repo created to store TF Cloud Builder images. |
 | cloudbuild\_project\_id | Project where CloudBuild configuration and terraform container image will reside. |
 | common\_config | Common configuration data to be used in other steps. |
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
@@ -214,6 +215,7 @@ the following steps:
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
 | optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |
+| projects\_gcs\_bucket\_tfstate | Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project. |
 | projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
 | required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |

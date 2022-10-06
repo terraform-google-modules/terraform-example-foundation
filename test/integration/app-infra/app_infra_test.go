@@ -20,11 +20,32 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
+	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAppInfra(t *testing.T) {
+
+	bootstrap := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../0-bootstrap"),
+	)
+	projects_backend_bucket := bootstrap.GetStringOutput("projects_gcs_bucket_tfstate")
+	vars := map[string]interface{}{
+		"remote_state_bucket": projects_backend_bucket,
+	}
+
+	shared := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../4-projects/business_unit_1/shared"),
+	)
+
+	// Configure impersonation for test execution
+	terraformSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")["bu1-example-app"]
+	backend_bucket := terraform.OutputMap(t, shared.GetTFOptions(), "state_buckets")["bu1-example-app"]
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
+	backendConfig := map[string]interface{}{
+		"bucket": backend_bucket,
+	}
 
 	for _, envName := range []string{
 		"development",
@@ -37,12 +58,9 @@ func TestAppInfra(t *testing.T) {
 				tft.WithTFDir(fmt.Sprintf("../../../4-projects/business_unit_1/%s", envName)),
 			)
 
-			vars := map[string]interface{}{
-				"project_service_account": projects.GetStringOutput("base_shared_vpc_project_sa"),
-			}
-
 			appInfra := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../5-app-infra/business_unit_1/%s", envName)),
+				tft.WithBackendConfig(backendConfig),
 				tft.WithPolicyLibraryPath("/workspace/policy-library", projects.GetStringOutput("base_shared_vpc_project")),
 				tft.WithVars(vars),
 			)

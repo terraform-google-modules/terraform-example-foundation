@@ -92,6 +92,16 @@ output "gcs_bucket_cloudbuild_artifacts" {
   value       = { for key, value in module.tf_workspace : key => replace(value.artifacts_bucket, local.bucket_self_link_prefix, "") }
 }
 
+output "projects_gcs_bucket_tfstate" {
+  description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
+  value       = local.projects_gcs_bucket_tfstate
+}
+
+output "cloud_builder_artifact_repo" {
+  description = "GAR Repo created to store TF Cloud Builder images."
+  value       = "projects/${module.tf_source.cloudbuild_project_id}/locations/${var.default_region}/repositories/${module.tf_cloud_builder.artifact_repo}"
+}
+
 output "csr_repos" {
   description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
   value       = module.tf_source.csr_repos
@@ -114,6 +124,11 @@ output "csr_repos" {
 # output "jenkins_agent_vpc_id" {
 #   description = "Jenkins Agent VPC name."
 #   value       = module.jenkins_bootstrap.jenkins_agent_vpc_id
+# }
+
+# output "projects_gcs_bucket_tfstate" {
+#   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
+#   value       = module.seed_bootstrap.gcs_bucket_tfstate
 # }
 
 # output "jenkins_agent_sa_email" {

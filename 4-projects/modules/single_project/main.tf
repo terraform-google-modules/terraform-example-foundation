@@ -17,6 +17,29 @@
 locals {
   env_code        = element(split("", var.environment), 0)
   shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
+  source_repos    = keys(var.app_infra_pipeline_service_accounts)
+  pipeline_roles = var.enable_cloudbuild_deploy ? flatten([
+    for repo in local.source_repos : [
+      for role in var.sa_roles[repo] :
+      {
+        repo = repo
+        role = role
+        sa   = var.app_infra_pipeline_service_accounts[repo]
+      }
+    ]
+  ]) : []
+
+  network_user_role = var.enable_cloudbuild_deploy ? flatten([
+    for repo in local.source_repos : [
+      for subnet in var.shared_vpc_subnets :
+      {
+        repo   = repo
+        subnet = element(split("/", subnet), index(split("/", subnet), "subnetworks", ) + 1, )
+        region = element(split("/", subnet), index(split("/", subnet), "regions") + 1, )
+        sa     = var.app_infra_pipeline_service_accounts[repo]
+      }
+    ]
+  ]) : []
 }
 
 module "project" {
@@ -50,32 +73,30 @@ module "project" {
   budget_amount               = var.budget_amount
 }
 
-# Additional roles to project deployment SA created by project factory
+# Additional roles to the App Infra Pipeline service account
 resource "google_project_iam_member" "app_infra_pipeline_sa_roles" {
-  for_each = toset(var.sa_roles)
-  project  = module.project.project_id
-  role     = each.value
-  member   = "serviceAccount:${module.project.service_account_email}"
-}
+  for_each = { for pr in local.pipeline_roles : "${pr.repo}-${pr.sa}-${pr.role}" => pr }
 
-resource "google_folder_iam_member" "folder_browser" {
-  count  = var.enable_cloudbuild_deploy ? 1 : 0
-  folder = var.folder_id
-  role   = "roles/browser"
-  member = "serviceAccount:${module.project.service_account_email}"
+  project = module.project.project_id
+  role    = each.value.role
+  member  = "serviceAccount:${each.value.sa}"
 }
 
 resource "google_folder_iam_member" "folder_network_viewer" {
-  count  = var.enable_cloudbuild_deploy ? 1 : 0
+  for_each = var.app_infra_pipeline_service_accounts
+
   folder = var.folder_id
   role   = "roles/compute.networkViewer"
-  member = "serviceAccount:${module.project.service_account_email}"
+  member = "serviceAccount:${each.value}"
 }
 
-# Allow Cloud Build SA to impersonate deployment SA
-resource "google_service_account_iam_member" "cloudbuild_terraform_sa_impersonate_permissions" {
-  count              = var.enable_cloudbuild_deploy ? 1 : 0
-  service_account_id = module.project.service_account_name
-  role               = "roles/iam.serviceAccountTokenCreator"
-  member             = "serviceAccount:${var.cloudbuild_sa}"
+resource "google_compute_subnetwork_iam_member" "service_account_role_to_vpc_subnets" {
+  provider = google-beta
+  for_each = { for nr in local.network_user_role : "${nr.repo}-${nr.subnet}-${nr.sa}" => nr }
+
+  subnetwork = each.value.subnet
+  role       = "roles/compute.networkUser"
+  region     = each.value.region
+  project    = var.shared_vpc_host_project_id
+  member     = "serviceAccount:${each.value.sa}"
 }

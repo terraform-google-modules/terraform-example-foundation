@@ -108,3 +108,8 @@ output "logs_export_bigquery_dataset_name" {
   value       = module.logs_export.bigquery_destination_name
   description = "The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets"
 }
+
+output "tags" {
+  value       = local.tags_output
+  description = "Tag Values to be applied on next steps"
+}

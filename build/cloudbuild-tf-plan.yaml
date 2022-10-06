@@ -18,7 +18,7 @@ substitutions:
   _DOCKER_TAG_VERSION_TERRAFORM: 'latest'
 steps:
 - id: 'setup'
-  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
+  name: $_GAR_REGION-docker.pkg.dev/$_GAR_PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
   entrypoint: /bin/bash
   args:
   - -c
@@ -33,7 +33,7 @@ steps:
 
 # [START tf-plan_validate_all]
 - id: 'tf plan validate all'
-  name: $_DEFAULT_REGION-docker.pkg.dev/$PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
+  name: $_GAR_REGION-docker.pkg.dev/$_GAR_PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
   entrypoint: /bin/bash
   args:
   - -c

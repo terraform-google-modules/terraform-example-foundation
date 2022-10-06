@@ -41,7 +41,7 @@ func TestEnvs(t *testing.T) {
 	monitoringWorkspaceUsers := bootstrap.GetTFSetupStringOutput("monitoring_workspace_users")
 
 	vars := map[string]interface{}{
-		"backend_bucket":             backend_bucket,
+		"remote_state_bucket":        backend_bucket,
 		"monitoring_workspace_users": monitoringWorkspaceUsers,
 	}
 
@@ -71,6 +71,18 @@ func TestEnvs(t *testing.T) {
 					folder := gcloud.Runf(t, "resource-manager folders describe %s", envFolder)
 					displayName := fmt.Sprintf("fldr-%s", envName)
 					assert.Equal(displayName, folder.Get("displayName").String(), fmt.Sprintf("folder %s should have been created", displayName))
+
+					// check tags applied to environment folder
+					envFldrTags := gcloud.Runf(t, "resource-manager tags bindings list --parent=//cloudresourcemanager.googleapis.com/folders/%s", envFolder).Array()
+
+					fldrTagValueId := testutils.GetResultFieldStrSlice(envFldrTags, "tagValue")
+
+					var fldrTagValue []string
+					for _, tagValueId := range fldrTagValueId {
+						tagValueObj := gcloud.Runf(t, "resource-manager tags values describe %s", tagValueId)
+						fldrTagValue = append(fldrTagValue, tagValueObj.Get("shortName").String())
+					}
+					assert.Subset([]string{envName}, fldrTagValue, fmt.Sprintf("tag value should be %s for %s env folder", envName, envName))
 
 					for _, projectEnvOutput := range []struct {
 						projectOutput string

@@ -9,8 +9,9 @@ See [GLOSSARY.md](./GLOSSARY.md).
 ## Problems
 
 - [Common issues](#common-issues)
-- [Caller does not have permission in the Organization](#Caller-does-not-have-permission-in-the-organization)
-- [Billing quota exceeded](#Billing-quota-exceeded)
+- [Caller does not have permission in the Organization](#caller-does-not-have-permission-in-the-organization)
+- [Billing quota exceeded](#billing-quota-exceeded)
+- [Terraform Error acquiring the state lock](#terraform-error-acquiring-the-state-lock)
 
 - - -
 
@@ -29,7 +30,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 
 **Error message:**
 
-```
+```text
 Error code 8, message: The project cannot be created because you have exceeded your allotted project quota
 ```
 
@@ -54,9 +55,10 @@ use the email address of `terraform_service_account` that is created by the Terr
 
 **Error message:**
 
-```
+```text
 error: src refspec master does not match any
 ```
+
 **Cause:**
 
 This could be due to init.defaultBranch being set to something other than
@@ -65,12 +67,15 @@ This could be due to init.defaultBranch being set to something other than
 **Solution:**
 
 1. Determine your default branch:
-   ```
+
+   ```bash
    git config init.defaultBranch
    ```
+
    Outputs `main` if you are in the main branch.
 1. If your default branch is not set to `main`, set it:
-   ```
+
+   ```bash
    git config --global init.defaultBranch main
    ```
 
@@ -122,19 +127,19 @@ Replace `1.x.x` with the actual version of your local Terraform version in the f
 
 When running `gcloud` commands in Cloud Shell like
 
-```
+```bash
 gcloud scc notifications describe <scc_notification_name> --organization YOUR_ORGANIZATION_ID
 ```
 
 or
 
-```
+```bash
 gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"
 ```
 
 you receive the error:
 
-```
+```text
 Error 403: Your application has authenticated using end user credentials from the Google Cloud SDK or Google Cloud Shell which are not supported by the X.googleapis.com.
 We recommend configuring the billing/quota_project setting in gcloud or using a service account through the auth/impersonate_service_account setting.
 For more information about service accounts and how to use them in your application, see https://cloud.google.com/docs/authentication/.
@@ -150,13 +155,13 @@ you can re-run the command using impersonation or providing a billing project:
 
 - Impersonate the Terraform Service Account
 
-```
+```bash
 --impersonate-service-account=terraform-org-sa@<SEED_PROJECT_ID>.iam.gserviceaccount.com
 ```
 
 - Provide a billing project
 
-```
+```bash
 --billing-project=<A-VALID-PROJECT-ID>
 ```
 
@@ -168,7 +173,7 @@ If you provide a billing project, you must have the `serviceusage.services.use` 
 
 When using [Google Cloud Shell](https://cloud.google.com/shell/docs) to deploy the code in ths repository, you may face an error like
 
-```
+```text
 dial tcp [2607:f8b0:400c:c15::5f]:443: connect: cannot assign requested address
 ```
 
@@ -191,7 +196,7 @@ If you use the workaround, the API list should include the ones that are [allowe
 
 **Error message:**
 
-```
+```text
 Error: Unsupported attribute
 
   on main.tf line 22, in locals:
@@ -217,7 +222,7 @@ Follow the instructions at the end of the [Deploying with Cloud Build](../0-boot
 
 **Error message:**
 
-```
+```text
 Error: Error when reading or editing Organization Not Found : <organization-id>: googleapi: Error 403: The caller does not have permission, forbidden
 ```
 
@@ -233,7 +238,7 @@ You will need to request the roles to be granted to your user by your organizati
 
 - If the user **does have the role Organization Administrator** try the following:
 
-```
+```bash
 gcloud auth application-default login
 gcloud auth list # <- confirm that correct account has a star next to it
 ```
@@ -244,7 +249,7 @@ Re-run `terraform` after.
 
 **Error message:**
 
-```
+```text
 Error: Error setting billing account "XXXXXX-XXXXXX-XXXXXX" for project "projects/some-project": googleapi: Error 400: Precondition check failed., failedPrecondition
 ```
 
@@ -256,8 +261,98 @@ Most likely this is related to a billing quota issue.
 
 try
 
-```
+```bash
 gcloud alpha billing projects link projects/some-project --billing-account XXXXXX-XXXXXX-XXXXXX
 ```
 
 If output states `Cloud billing quota exceeded`, you can use the [Request Billing Quota Increase](https://support.google.com/code/contact/billing_quota_increase) form to request a billing quota increase.
+
+### Terraform Error acquiring the state lock
+
+**Error message:**
+
+```text
+Error: Error acquiring the state lock
+```
+
+**Cause:**
+
+This message means that you are trying to apply a Terraform configuration with a remote backend that is in a [locked state](https://www.terraform.io/language/state/locking).
+
+If the Terraform process was unable to finish due to an unexpected event, i.e build timeout or terraform process killed. It will keep the Terraform State **locked**.
+
+**Solution:**
+
+The following commands are an example of how to unlock the **development environment** from step 2-environments that is one part of the Foundation Example.
+It can also be applied in the same way to the other parts.
+
+1. Clone the repository where you got the Terraform State lock. The following example assumes **development environment** from step 2-environments:
+
+   ```bash
+   gcloud source repos clone gcp-environments --project=YOUR_CLOUD_BUILD_PROJECT_ID
+   ```
+
+1. Navigate into the repo and change to the development branch:
+
+   ```bash
+   cd gcp-environments
+   git checkout development
+   ```
+
+1. If your project does not have a remote backend you can jump skip the next 2 commands and jump to `terraform init` command.
+1. If your project has a remote backend you will have to update `backend.tf` with the remote state backend bucket.
+You can get this information from step `0-bootstrap` by running the following command:
+
+   ```bash
+   terraform output gcs_bucket_tfstate
+   ```
+
+1. Update `backend.tf` with the remote state backend bucket you got on previously inside `<YOUR-REMOTE-STATE-BACKEND-BUCKET>`:
+
+   ```bash
+   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-REMOTE-STATE-BACKEND-BUCKET>/' $i; done
+   ```
+
+1. Navigate into `envs/development` where your terraform config files are in and run terraform init:
+
+   ```bash
+   cd envs/development
+   terraform init
+   ```
+
+1. At this point, you will be able to get Terraform State lock information and unlock your state.
+1. After running terraform apply you should get an error message like the following:
+
+   ```text
+   terraform apply
+   Acquiring state lock. This may take a few moments...
+   ╷
+   │ Error: Error acquiring the state lock
+   │
+   │ Error message: writing "gs://<YOUR-REMOTE-STATE-BACKEND-BUCKET>/<PATH-TO-TERRAFORM-STATE>/<tf state file name>.tflock" failed: googleapi: Error 412: At least one
+   │ of the pre-conditions you specified did not hold., conditionNotMet
+   │ Lock Info:
+   │   ID:        1664568683005669
+   │   Path:      gs://<YOUR-REMOTE-STATE-BACKEND-BUCKET>/<PATH-TO-TERRAFORM-STATE>/<tf state file name>.tflock
+   │   Operation: OperationTypeApply
+   │   Who:       user@domain
+   │   Version:   1.0.0
+   │   Created:   2022-09-30 20:11:22.90644727 +0000 UTC
+   │   Info:
+   │
+   │
+   │ Terraform acquires a state lock to protect the state from being written
+   │ by multiple users at the same time. Please resolve the issue above and try
+   │ again. For most commands, you can disable locking with the "-lock=false"
+   │ flag, but this is not recommended.
+   ```
+
+1. With the lock `ID` you will be able to remove the Terraform State lock using `terraform force-unlock` command. It is a **strong recommendation** to review the official documentation regarding [terraform force-unlock](https://www.terraform.io/language/state/locking#force-unlock) command before executing it.
+1. After unlocking the Terraform State you will be able to execute a `terraform plan` for review of the state. The following links can help you to recover the Terraform State for your configuration and move on:
+    1. [Manipulating Terraform State](https://developer.hashicorp.com/terraform/cli/state)
+    1. [Moving Resources](https://developer.hashicorp.com/terraform/cli/state/move)
+    1. [Importing Infrastructure](https://developer.hashicorp.com/terraform/cli/import)
+
+**Terraform State lock possible causes:**
+
+- If you realize that the Terraform State lock was due to a build timeout increase the build timeout on [build configuration](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/build/cloudbuild-tf-apply.yaml#L15).

@@ -26,7 +26,8 @@ locals {
 }
 
 module "app_infra_cloudbuild_project" {
-  source               = "../../modules/single_project"
+  source = "../../modules/single_project"
+
   org_id               = local.org_id
   billing_account      = local.billing_account
   folder_id            = local.common_folder_name
@@ -54,6 +55,7 @@ module "app_infra_cloudbuild_project" {
 
 module "infra_pipelines" {
   source = "../../modules/infra_pipelines"
+  count  = var.enable_cloudbuild_deploy ? 1 : 0
 
   org_id                      = local.org_id
   cloudbuild_project_id       = module.app_infra_cloudbuild_project.project_id

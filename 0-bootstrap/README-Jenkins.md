@@ -876,6 +876,9 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+
+   # Disabling Cloud Build deploy
+   sed -i "s/#enable_cloudbuild_deploy/enable_cloudbuild_deploy/" ./shared.auto.tfvars
    ```
 
 1. Commit changes.

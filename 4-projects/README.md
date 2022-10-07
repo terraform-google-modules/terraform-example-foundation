@@ -124,10 +124,10 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
 
    ```bash
-   export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
+   export remote_state_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${remote_state_bucket}"
 
-   sed -i "s/TERRAFORM_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
 1. Commit changes.
@@ -141,6 +141,9 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Update `backend.tf` with your backend bucket from 0-bootstrap output.
 
    ```bash
+   export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+
    for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 

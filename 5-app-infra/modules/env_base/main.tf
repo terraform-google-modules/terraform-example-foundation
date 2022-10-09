@@ -60,7 +60,7 @@ module "instance_template" {
 
 module "compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
-  version = "6.2.0"
+  version = "6.6.0"
 
   region            = var.region
   subnetwork        = local.subnetwork_self_link

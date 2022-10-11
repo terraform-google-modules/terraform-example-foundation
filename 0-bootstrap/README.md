@@ -197,6 +197,20 @@ your current Jenkins manager (controller) environment.
    ```
 
 1. (Optional) Run `terraform apply` to verify that state is configured correctly. You should see no changes from the previous state.
+1. Save `0-bootstrap` Terraform configuration to `gcp-bootstrap` source repository:
+
+   ```bash
+   cd ../..
+
+   gcloud source repos clone gcp-bootstrap --project=${cloudbuild_project_id}
+   cd gcp-bootstrap
+   git checkout -b production
+   cp -RT ../terraform-example-foundation/0-bootstrap/ .
+
+   git add .
+   git commit -m 'Your message'
+   git push --set-upstream origin production
+   ```
 
 **Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage. They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
 

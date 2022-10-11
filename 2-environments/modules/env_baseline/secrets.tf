@@ -40,7 +40,7 @@ module "env_secrets" {
     business_code     = "abcd"
     env_code          = var.environment_code
   }
-  budget_alert_pubsub_topic   = var.secret_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.secret_project_alert_spent_percents
-  budget_amount               = var.secret_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.secret_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.secret_alert_spent_percents
+  budget_amount               = var.project_budget.secret_budget_amount
 }

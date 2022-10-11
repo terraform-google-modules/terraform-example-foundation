@@ -47,9 +47,9 @@ module "org_audit_logs" {
     business_code     = "abcd"
     env_code          = "p"
   }
-  budget_alert_pubsub_topic   = var.org_audit_logs_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.org_audit_logs_project_alert_spent_percents
-  budget_amount               = var.org_audit_logs_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.org_audit_logs_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.org_audit_logs_alert_spent_percents
+  budget_amount               = var.project_budget.org_audit_logs_budget_amount
 }
 
 module "org_billing_logs" {
@@ -72,9 +72,9 @@ module "org_billing_logs" {
     business_code     = "abcd"
     env_code          = "p"
   }
-  budget_alert_pubsub_topic   = var.org_billing_logs_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.org_billing_logs_project_alert_spent_percents
-  budget_amount               = var.org_billing_logs_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.org_billing_logs_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.org_billing_logs_alert_spent_percents
+  budget_amount               = var.project_budget.org_billing_logs_budget_amount
 }
 
 /******************************************
@@ -101,9 +101,9 @@ module "org_secrets" {
     business_code     = "abcd"
     env_code          = "p"
   }
-  budget_alert_pubsub_topic   = var.org_secrets_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.org_secrets_project_alert_spent_percents
-  budget_amount               = var.org_secrets_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.org_secrets_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.org_secrets_alert_spent_percents
+  budget_amount               = var.project_budget.org_secrets_budget_amount
 }
 
 /******************************************
@@ -130,9 +130,9 @@ module "interconnect" {
     business_code     = "abcd"
     env_code          = "p"
   }
-  budget_alert_pubsub_topic   = var.interconnect_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.interconnect_project_alert_spent_percents
-  budget_amount               = var.interconnect_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.interconnect_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.interconnect_alert_spent_percents
+  budget_amount               = var.project_budget.interconnect_budget_amount
 }
 
 /******************************************
@@ -159,9 +159,9 @@ module "scc_notifications" {
     business_code     = "abcd"
     env_code          = "p"
   }
-  budget_alert_pubsub_topic   = var.scc_notifications_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.scc_notifications_project_alert_spent_percents
-  budget_amount               = var.scc_notifications_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.scc_notifications_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.scc_notifications_alert_spent_percents
+  budget_amount               = var.project_budget.scc_notifications_budget_amount
 }
 
 /******************************************
@@ -196,9 +196,9 @@ module "dns_hub" {
     business_code     = "abcd"
     env_code          = "p"
   }
-  budget_alert_pubsub_topic   = var.dns_hub_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.dns_hub_project_alert_spent_percents
-  budget_amount               = var.dns_hub_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.dns_hub_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.dns_hub_alert_spent_percents
+  budget_amount               = var.project_budget.dns_hub_budget_amount
 }
 
 /******************************************
@@ -234,9 +234,9 @@ module "base_network_hub" {
     business_code     = "abcd"
     env_code          = "p"
   }
-  budget_alert_pubsub_topic   = var.base_net_hub_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.base_net_hub_project_alert_spent_percents
-  budget_amount               = var.base_net_hub_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.base_net_hub_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.base_net_hub_alert_spent_percents
+  budget_amount               = var.project_budget.base_net_hub_budget_amount
 }
 
 resource "google_project_iam_member" "network_sa_base" {
@@ -280,9 +280,9 @@ module "restricted_network_hub" {
     business_code     = "abcd"
     env_code          = "p"
   }
-  budget_alert_pubsub_topic   = var.restricted_net_hub_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.restricted_net_hub_project_alert_spent_percents
-  budget_amount               = var.restricted_net_hub_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.restricted_net_hub_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.restricted_net_hub_alert_spent_percents
+  budget_amount               = var.project_budget.restricted_net_hub_budget_amount
 }
 
 resource "google_project_iam_member" "network_sa_restricted" {

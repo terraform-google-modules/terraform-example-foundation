@@ -50,22 +50,22 @@ output "subnets_secondary_ranges" {
 }
 
 output "region1_router1" {
-  value       = try(module.region1_router1[0], null)
+  value       = module.region1_router1
   description = "Router 1 for Region 1"
 }
 
 output "region1_router2" {
-  value       = try(module.region1_router2[0], null)
+  value       = module.region1_router2
   description = "Router 2 for Region 1"
 }
 
 output "region2_router1" {
-  value       = try(module.region2_router1[0], null)
+  value       = module.region2_router1
   description = "Router 1 for Region 2"
 }
 
 output "region2_router2" {
-  value       = try(module.region2_router2[0], null)
+  value       = module.region2_router2
   description = "Router 2 for Region 2"
 }
 

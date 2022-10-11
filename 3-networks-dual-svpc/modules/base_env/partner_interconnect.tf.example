@@ -40,6 +40,10 @@ module "shared_restricted_interconnect" {
     vlan_3 = "cr7",
     vlan_4 = "cr8"
   }
+
+  depends_on = [
+    module.restricted_shared_vpc
+  ]
 }
 
 module "shared_base_interconnect" {
@@ -69,4 +73,8 @@ module "shared_base_interconnect" {
     vlan_3 = "cr3",
     vlan_4 = "cr4"
   }
+
+  depends_on = [
+    module.base_shared_vpc
+  ]
 }

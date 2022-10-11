@@ -24,9 +24,7 @@ module "restricted_shared_vpc_project" {
   vpc_type                   = "restricted"
   shared_vpc_host_project_id = local.restricted_host_project_id
   shared_vpc_subnets         = local.restricted_subnets_self_links
-  alert_spent_percents       = var.alert_spent_percents
-  alert_pubsub_topic         = var.alert_pubsub_topic
-  budget_amount              = var.budget_amount
+  project_budget             = var.project_budget
   project_prefix             = local.project_prefix
 
 

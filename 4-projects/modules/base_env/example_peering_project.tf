@@ -37,6 +37,7 @@ module "peering_project" {
   billing_account = local.billing_account
   folder_id       = local.env_folder_name
   environment     = var.env
+  project_budget  = var.project_budget
   project_prefix  = local.project_prefix
 
   # Metadata

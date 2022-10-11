@@ -17,15 +17,13 @@
 module "env_secrets_project" {
   source = "../single_project"
 
-  org_id               = local.org_id
-  billing_account      = local.billing_account
-  folder_id            = local.env_folder_name
-  environment          = var.env
-  alert_spent_percents = var.alert_spent_percents
-  alert_pubsub_topic   = var.alert_pubsub_topic
-  budget_amount        = var.budget_amount
-  project_suffix       = var.secrets_prj_suffix
-  project_prefix       = local.project_prefix
+  org_id          = local.org_id
+  billing_account = local.billing_account
+  folder_id       = local.env_folder_name
+  environment     = var.env
+  project_budget  = var.project_budget
+  project_suffix  = var.secrets_prj_suffix
+  project_prefix  = local.project_prefix
 
   activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
 

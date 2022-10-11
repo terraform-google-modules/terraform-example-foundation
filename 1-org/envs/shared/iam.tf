@@ -107,80 +107,80 @@ resource "google_organization_iam_member" "billing_viewer" {
 *****************************************/
 
 resource "google_organization_iam_member" "organization_viewer" {
-  count  = var.gcp_platform_viewer != null && local.parent_folder == "" ? 1 : 0
+  count  = var.gcp_groups.platform_viewer != null && local.parent_folder == "" ? 1 : 0
   org_id = local.org_id
   role   = "roles/viewer"
-  member = "group:${var.gcp_platform_viewer}"
+  member = "group:${var.gcp_groups.platform_viewer}"
 }
 
 resource "google_folder_iam_member" "organization_viewer" {
-  count  = var.gcp_platform_viewer != null && local.parent_folder != "" ? 1 : 0
+  count  = var.gcp_groups.platform_viewer != null && local.parent_folder != "" ? 1 : 0
   folder = "folders/${local.parent_folder}"
   role   = "roles/viewer"
-  member = "group:${var.gcp_platform_viewer}"
+  member = "group:${var.gcp_groups.platform_viewer}"
 }
 
 resource "google_organization_iam_member" "security_reviewer" {
-  count  = var.gcp_security_reviewer != null && local.parent_folder == "" ? 1 : 0
+  count  = var.gcp_groups.security_reviewer != null && local.parent_folder == "" ? 1 : 0
   org_id = local.org_id
   role   = "roles/iam.securityReviewer"
-  member = "group:${var.gcp_security_reviewer}"
+  member = "group:${var.gcp_groups.security_reviewer}"
 }
 
 resource "google_folder_iam_member" "security_reviewer" {
-  count  = var.gcp_security_reviewer != null && local.parent_folder != "" ? 1 : 0
+  count  = var.gcp_groups.security_reviewer != null && local.parent_folder != "" ? 1 : 0
   folder = "folders/${local.parent_folder}"
   role   = "roles/iam.securityReviewer"
-  member = "group:${var.gcp_security_reviewer}"
+  member = "group:${var.gcp_groups.security_reviewer}"
 }
 
 resource "google_organization_iam_member" "network_viewer" {
-  count  = var.gcp_network_viewer != null && local.parent_folder == "" ? 1 : 0
+  count  = var.gcp_groups.network_viewer != null && local.parent_folder == "" ? 1 : 0
   org_id = local.org_id
   role   = "roles/compute.networkViewer"
-  member = "group:${var.gcp_network_viewer}"
+  member = "group:${var.gcp_groups.network_viewer}"
 }
 
 resource "google_folder_iam_member" "network_viewer" {
-  count  = var.gcp_network_viewer != null && local.parent_folder != "" ? 1 : 0
+  count  = var.gcp_groups.network_viewer != null && local.parent_folder != "" ? 1 : 0
   folder = "folders/${local.parent_folder}"
   role   = "roles/compute.networkViewer"
-  member = "group:${var.gcp_network_viewer}"
+  member = "group:${var.gcp_groups.network_viewer}"
 }
 
 resource "google_project_iam_member" "audit_log_viewer" {
-  count   = var.gcp_audit_viewer != null ? 1 : 0
+  count   = var.gcp_groups.audit_viewer != null ? 1 : 0
   project = module.org_audit_logs.project_id
   role    = "roles/logging.viewer"
-  member  = "group:${var.gcp_audit_viewer}"
+  member  = "group:${var.gcp_groups.audit_viewer}"
 }
 
 resource "google_project_iam_member" "audit_private_logviewer" {
-  count   = var.gcp_audit_viewer != null ? 1 : 0
+  count   = var.gcp_groups.audit_viewer != null ? 1 : 0
   project = module.org_audit_logs.project_id
   role    = "roles/logging.privateLogViewer"
-  member  = "group:${var.gcp_audit_viewer}"
+  member  = "group:${var.gcp_groups.audit_viewer}"
 }
 
 resource "google_project_iam_member" "audit_bq_data_viewer" {
-  count   = var.gcp_audit_viewer != null ? 1 : 0
+  count   = var.gcp_groups.audit_viewer != null ? 1 : 0
   project = module.org_audit_logs.project_id
   role    = "roles/bigquery.dataViewer"
-  member  = "group:${var.gcp_audit_viewer}"
+  member  = "group:${var.gcp_groups.audit_viewer}"
 }
 
 resource "google_project_iam_member" "scc_admin" {
-  count   = var.gcp_scc_admin != null ? 1 : 0
+  count   = var.gcp_groups.scc_admin != null ? 1 : 0
   project = module.scc_notifications.project_id
   role    = "roles/securitycenter.adminEditor"
-  member  = "group:${var.gcp_scc_admin}"
+  member  = "group:${var.gcp_groups.scc_admin}"
 }
 
 resource "google_project_iam_member" "global_secrets_admin" {
-  count   = var.gcp_global_secrets_admin != null ? 1 : 0
+  count   = var.gcp_groups.global_secrets_admin != null ? 1 : 0
   project = module.org_secrets.project_id
   role    = "roles/secretmanager.admin"
-  member  = "group:${var.gcp_global_secrets_admin}"
+  member  = "group:${var.gcp_groups.global_secrets_admin}"
 }
 
 /******************************************
@@ -188,29 +188,29 @@ resource "google_project_iam_member" "global_secrets_admin" {
 *****************************************/
 
 resource "google_organization_iam_member" "org_admin_user" {
-  count  = var.gcp_org_admin_user != null && local.parent_folder == "" ? 1 : 0
+  count  = var.gcp_user.org_admin != null && local.parent_folder == "" ? 1 : 0
   org_id = local.org_id
   role   = "roles/resourcemanager.organizationAdmin"
-  member = "user:${var.gcp_org_admin_user}"
+  member = "user:${var.gcp_user.org_admin}"
 }
 
 resource "google_folder_iam_member" "org_admin_user" {
-  count  = var.gcp_org_admin_user != null && local.parent_folder != "" ? 1 : 0
+  count  = var.gcp_user.org_admin != null && local.parent_folder != "" ? 1 : 0
   folder = "folders/${local.parent_folder}"
   role   = "roles/resourcemanager.folderAdmin"
-  member = "user:${var.gcp_org_admin_user}"
+  member = "user:${var.gcp_user.org_admin}"
 }
 
 resource "google_organization_iam_member" "billing_creator_user" {
-  count  = var.gcp_billing_creator_user != null && local.parent_folder == "" ? 1 : 0
+  count  = var.gcp_user.billing_creator != null && local.parent_folder == "" ? 1 : 0
   org_id = local.org_id
   role   = "roles/billing.creator"
-  member = "user:${var.gcp_billing_creator_user}"
+  member = "user:${var.gcp_user.billing_creator}"
 }
 
 resource "google_billing_account_iam_member" "billing_admin_user" {
-  count              = var.gcp_billing_admin_user != null ? 1 : 0
+  count              = var.gcp_user.billing_admin != null ? 1 : 0
   billing_account_id = local.billing_account
   role               = "roles/billing.admin"
-  member             = "user:${var.gcp_billing_admin_user}"
+  member             = "user:${var.gcp_user.billing_admin}"
 }

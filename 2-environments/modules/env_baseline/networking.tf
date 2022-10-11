@@ -46,9 +46,9 @@ module "base_shared_vpc_host_project" {
     business_code     = "abcd"
     env_code          = var.environment_code
   }
-  budget_alert_pubsub_topic   = var.base_network_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.base_network_project_alert_spent_percents
-  budget_amount               = var.base_network_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.base_network_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.base_network_alert_spent_percents
+  budget_amount               = var.project_budget.base_network_budget_amount
 }
 
 module "restricted_shared_vpc_host_project" {
@@ -81,7 +81,7 @@ module "restricted_shared_vpc_host_project" {
     business_code     = "abcd"
     env_code          = var.environment_code
   }
-  budget_alert_pubsub_topic   = var.restricted_network_project_alert_pubsub_topic
-  budget_alert_spent_percents = var.restricted_network_project_alert_spent_percents
-  budget_amount               = var.restricted_network_project_budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.restricted_network_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.restricted_network_alert_spent_percents
+  budget_amount               = var.project_budget.restricted_network_budget_amount
 }

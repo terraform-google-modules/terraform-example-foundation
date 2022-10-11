@@ -61,6 +61,7 @@ module "logs_export" {
     logging_sink_name            = "sk-c-logging-bkt"
     storage_bucket_name          = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
     location                     = var.log_export_storage_location
+    retention_policy_enabled     = var.log_export_storage_retention_policy != null
     retention_policy_is_locked   = var.log_export_storage_retention_policy == null ? null : var.log_export_storage_retention_policy.is_locked
     retention_policy_period_days = var.log_export_storage_retention_policy == null ? null : var.log_export_storage_retention_policy.retention_period_days
     force_destroy                = var.log_export_storage_force_destroy

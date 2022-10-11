@@ -68,9 +68,9 @@ module "project" {
     env_code          = local.env_code
     vpc_type          = var.vpc_type
   }
-  budget_alert_pubsub_topic   = var.alert_pubsub_topic
-  budget_alert_spent_percents = var.alert_spent_percents
-  budget_amount               = var.budget_amount
+  budget_alert_pubsub_topic   = var.project_budget.alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.alert_spent_percents
+  budget_amount               = var.project_budget.budget_amount
 }
 
 # Additional roles to the App Infra Pipeline service account

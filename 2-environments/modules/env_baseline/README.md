@@ -3,22 +3,11 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| base\_network\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the base networks project | `string` | `null` | no |
-| base\_network\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the base networks project | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
-| base\_network\_project\_budget\_amount | The amount to use as the budget for the base networks project | `number` | `1000` | no |
 | env | The environment to prepare (ex. development) | `string` | n/a | yes |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization (ex. d). | `string` | n/a | yes |
-| monitoring\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the monitoring project. | `string` | `null` | no |
-| monitoring\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the monitoring project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
-| monitoring\_project\_budget\_amount | The amount to use as the budget for the monitoring project. | `number` | `1000` | no |
 | monitoring\_workspace\_users | Google Workspace or Cloud Identity group that have access to Monitoring Workspaces. | `string` | n/a | yes |
+| project\_budget | Budget configuration for projects.<br>  budget\_amount: The amount to use as the budget.<br>  alert\_spent\_percents: A list of percentages of the budget to alert on when threshold is exceeded.<br>  alert\_pubsub\_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`. | <pre>object({<br>    base_network_budget_amount              = optional(number, 1000)<br>    base_network_alert_spent_percents       = optional(list(number), [0.5, 0.75, 0.9, 0.95])<br>    base_network_alert_pubsub_topic         = optional(string, null)<br>    restricted_network_budget_amount        = optional(number, 1000)<br>    restricted_network_alert_spent_percents = optional(list(number), [0.5, 0.75, 0.9, 0.95])<br>    restricted_network_alert_pubsub_topic   = optional(string, null)<br>    monitoring_budget_amount                = optional(number, 1000)<br>    monitoring_alert_spent_percents         = optional(list(number), [0.5, 0.75, 0.9, 0.95])<br>    monitoring_alert_pubsub_topic           = optional(string, null)<br>    secret_budget_amount                    = optional(number, 1000)<br>    secret_alert_spent_percents             = optional(list(number), [0.5, 0.75, 0.9, 0.95])<br>    secret_alert_pubsub_topic               = optional(string, null)<br>  })</pre> | `{}` | no |
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
-| restricted\_network\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the restricted networks project | `string` | `null` | no |
-| restricted\_network\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the restricted networks project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
-| restricted\_network\_project\_budget\_amount | The amount to use as the budget for the restricted networks project. | `number` | `1000` | no |
-| secret\_project\_alert\_pubsub\_topic | The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}` for the secrets project. | `string` | `null` | no |
-| secret\_project\_alert\_spent\_percents | A list of percentages of the budget to alert on when threshold is exceeded for the secrets project. | `list(number)` | <pre>[<br>  0.5,<br>  0.75,<br>  0.9,<br>  0.95<br>]</pre> | no |
-| secret\_project\_budget\_amount | The amount to use as the budget for the secrets project. | `number` | `1000` | no |
 
 ## Outputs
 

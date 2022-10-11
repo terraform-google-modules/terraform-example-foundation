@@ -24,9 +24,7 @@ module "base_shared_vpc_project" {
   vpc_type                            = "base"
   shared_vpc_host_project_id          = local.base_host_project_id
   shared_vpc_subnets                  = local.base_subnets_self_links
-  alert_spent_percents                = var.alert_spent_percents
-  alert_pubsub_topic                  = var.alert_pubsub_topic
-  budget_amount                       = var.budget_amount
+  project_budget                      = var.project_budget
   project_prefix                      = local.project_prefix
   enable_cloudbuild_deploy            = local.enable_cloudbuild_deploy
   sa_roles                            = local.sa_roles

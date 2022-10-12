@@ -39,9 +39,3 @@ variable "remote_state_bucket" {
   description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string
 }
-
-variable "enable_cloudbuild_deploy" {
-  description = "Enable infra deployment using Cloud Build."
-  type        = bool
-  default     = true
-}

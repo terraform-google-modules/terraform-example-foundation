@@ -25,6 +25,7 @@ locals {
   folder_prefix                  = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
   cloud_builder_artifact_repo    = try(data.terraform_remote_state.bootstrap.outputs.cloud_builder_artifact_repo, "")
   projects_remote_bucket_tfstate = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
+  enable_cloudbuild_deploy       = try(data.terraform_remote_state.bootstrap.outputs.jenkins_agent_gce_instance_id, "") == ""
 }
 
 data "terraform_remote_state" "bootstrap" {

@@ -20,7 +20,7 @@ output "default_region" {
 }
 
 output "cloudbuild_project_id" {
-  value = module.app_infra_cloudbuild_project.project_id
+  value = try(module.app_infra_cloudbuild_project[0].project_id, "")
 }
 
 output "terraform_service_accounts" {
@@ -35,7 +35,7 @@ output "repos" {
 
 output "sa_roles" {
   description = "A list of roles to give the Service Accounts from App Infra Pipeline by workspace repository."
-  value       = var.enable_cloudbuild_deploy ? local.sa_roles : {}
+  value       = local.enable_cloudbuild_deploy ? local.sa_roles : {}
 }
 
 output "artifact_buckets" {
@@ -60,5 +60,5 @@ output "apply_triggers_id" {
 
 output "enable_cloudbuild_deploy" {
   description = "Enable infra deployment using Cloud Build."
-  value       = var.enable_cloudbuild_deploy
+  value       = local.enable_cloudbuild_deploy
 }

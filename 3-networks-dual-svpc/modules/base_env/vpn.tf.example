@@ -55,6 +55,10 @@ module "shared_base_vpn" {
 
   region2_router2_tunnel1_bgp_peer_address = "169.254.14.1"
   region2_router2_tunnel1_bgp_peer_range   = "169.254.14.2/30"
+
+  depends_on = [
+    module.base_shared_vpc
+  ]
 }
 
 module "shared_restricted_vpn" {
@@ -98,4 +102,8 @@ module "shared_restricted_vpn" {
 
   region2_router2_tunnel1_bgp_peer_address = "169.254.14.1"
   region2_router2_tunnel1_bgp_peer_range   = "169.254.14.2/30"
+
+  depends_on = [
+    module.restricted_shared_vpc
+  ]
 }

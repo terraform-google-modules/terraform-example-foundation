@@ -92,14 +92,6 @@ For more information about the permissions that are required, and the resources
 that are created, see the organization bootstrap module
 [documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
-Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
-
-```shell
-./scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
-```
-
-**Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
-
 ### Optional - Automatic creation of Google Cloud Identity groups
 
 Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) in the foundation.
@@ -136,11 +128,19 @@ your current Jenkins manager (controller) environment.
    mv terraform.example.tfvars terraform.tfvars
    ```
 
+1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
+
+   ```bash
+   ../scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+   ```
+
+   **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
+
 1. Run `terraform init` and `terraform plan` and review the output.
 
    ```bash
    terraform init
-   terraform plan
+   terraform plan -input=false -out bootstrap.tfplan
    ```
 
 1. To run `gcloud beta terraform vet` steps please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
@@ -148,7 +148,6 @@ your current Jenkins manager (controller) environment.
 
    ```bash
    export VET_PROJECT_ID=A-VALID-PROJECT-ID
-   terraform plan -input=false -out bootstrap.tfplan
    terraform show -json bootstrap.tfplan > bootstrap.json
    gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project ${VET_PROJECT_ID}
    ```
@@ -157,7 +156,7 @@ your current Jenkins manager (controller) environment.
 1. Run `terraform apply`.
 
    ```bash
-   terraform apply
+   terraform apply bootstrap.tfplan
    ```
 
 1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects` and the state bucket that will be used by step 4-projects.
@@ -179,15 +178,22 @@ your current Jenkins manager (controller) environment.
    echo "cloud build project ID = ${cloudbuild_project_id}"
    ```
 
-1. Copy the backend and update `backend.tf` with the name of your Google Cloud bucket for Terraform's state.
+1. Copy the backend and update `backend.tf` with the name of your Google Cloud bucket for Terraform's state. Also update the `backend.tf` of all steps.
 
    ```bash
    export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
 
+   export backend_bucket_projects=$(terraform output -raw projects_gcs_bucket_tfstate)
+   echo "backend_bucket_projects = ${backend_bucket_projects}"
+
    cp backend.tf.example backend.tf
+   cd ..
 
    for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_PROJECTS_BACKEND/${backend_bucket_projects}/" $i; done
+
+   cd 0-bootstrap
    ```
 
 1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Cloud Storage.
@@ -196,7 +202,7 @@ your current Jenkins manager (controller) environment.
    terraform init
    ```
 
-1. (Optional) Run `terraform apply` to verify that state is configured correctly. You should see no changes from the previous state.
+1. (Optional) Run `terraform plan` to verify that state is configured correctly. You should see no changes from the previous state.
 1. Save `0-bootstrap` Terraform configuration to `gcp-bootstrap` source repository:
 
    ```bash
@@ -208,9 +214,11 @@ your current Jenkins manager (controller) environment.
    cp -RT ../terraform-example-foundation/0-bootstrap/ .
 
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize bootstrap'
    git push --set-upstream origin production
    ```
+
+1. You can now move to the instructions in the [1-org](../1-org/README.md) step.
 
 **Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage. They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
 

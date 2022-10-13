@@ -27,14 +27,14 @@ scc_notification_name = "scc-notify"
 
 remote_state_bucket = "REMOTE_STATE_BUCKET"
 
-#scc_notification_filter = "state=\\\"ACTIVE\\\""
+//scc_notification_filter = "state=\\\"ACTIVE\\\""
 
-#enable_hub_and_spoke = true
+//enable_hub_and_spoke = true
 
-#create_access_context_manager_access_policy = false
+//create_access_context_manager_access_policy = false
 
 // Optional - If you are deploying Foundation Example in a parent folder
 // consider using below create_unique_tag_key var because as Tag Keys are
 // unique organization-wide it will add a random suffix at each tag key
 
-#create_unique_tag_key = true
+//create_unique_tag_key = true

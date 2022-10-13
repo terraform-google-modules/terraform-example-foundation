@@ -138,15 +138,6 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```
 
 1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
-1. Update `backend.tf` with your backend bucket from 0-bootstrap output.
-
-   ```bash
-   export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-   ```
-
 1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Use `terraform output` to get the Cloud Build project ID and the projects step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
@@ -179,43 +170,39 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch)), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_.
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git push --set-upstream origin plan
    ```
 
-1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git checkout -b production
    git push origin production
    ```
 
-1. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. After production has been applied, apply development.
 1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git checkout -b development
    git push origin development
    ```
 
-1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. After development has been applied, apply non-production.
 1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git checkout -b non-production
    git push origin non-production
    ```
 
-1. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. You can now move to the instructions in the step [5-app-infra](../5-app-infra/README.md).
+1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
 
 ### Deploying with Jenkins
 
@@ -242,8 +229,8 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
    ```
 
 1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
-1. See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
-1. Use `terraform output` to get the remote state bucket (the backend bucket used by previous steps) value from 0-bootstrap output.
+   See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
+   Use `terraform output` to get the remote state bucket (the backend bucket used by previous steps) value from `0-bootstrap` output.
 
    ```bash
    export remote_state_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
@@ -252,16 +239,7 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
    sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
-1. Also update `backend.tf` with your projects backend bucket from 0-bootstrap output. Step 4-projects uses a different bucket to store the remote state.
-
-   ```bash
-   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-   ```
-
-We will now deploy each of our environments(development/production/non-production) using this script.
+We will now deploy each of our environments(development/production/non-production) using the `tf-wrapper.sh` script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied. Environment shared must be applied first because development, non-production, and production depend on it.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.

@@ -139,24 +139,22 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git checkout -b non-production
    git push origin non-production
    ```
 
-1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to production branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git checkout -b production
    git push origin production
    ```
 
-1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. You can now move to the instructions in the step go to for the Dual Shared VPC mode [3-networks-dual-svpc](../3-networks-dual-svpc/README.md), or go to [3-networks-hub-and-spoke](../3-networks-hub-and-spoke/README.md) to use the Hub and Spoke network mode.
+1. You can now move to the instructions in the network step. To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [3-networks-dual-svpc](../3-networks-dual-svpc/README.md), or go to [3-networks-hub-and-spoke](../3-networks-hub-and-spoke/README.md) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
 
 ### Deploying with Jenkins
 
@@ -186,12 +184,6 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
    echo "remote_state_bucket = ${backend_bucket}"
 
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
-   ```
-
-1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
-
-   ```bash
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 
 We will now deploy each of our environments(development/production/non-production) using this script.

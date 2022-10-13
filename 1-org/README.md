@@ -60,10 +60,7 @@ The purpose of this step is to set up top-level shared folders, monitoring and n
 ## Prerequisites
 
 1. 0-bootstrap executed successfully.
-1. Security Command Center notifications require that you choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as outlined in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center)
-1. Ensure that you have requested a sufficient project quota, as the Terraform scripts will create multiple projects from this point onwards. For more information, please [see the FAQ](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/FAQ.md#why-am-i-encountering-a-low-quota-with-projects-created-via-terraform-example-foundation).
-
-**Note:** Make sure that you use version 1.3.0 of Terraform throughout this series, otherwise you might experience Terraform state snapshot lock errors.
+1. Security Command Center notifications require that you choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as outlined in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center).
 
 ### Troubleshooting
 
@@ -86,16 +83,6 @@ You can change the filters & sinks by modifying the configuration in `envs/share
 
 **Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
-
-**Note:** This module creates a Security Command Center Notification.
-The notification name must be unique in the organization.
-The suggested name in the `terraform.tfvars` file is **scc-notify**.
-To check if it already exists run:
-
-```bash
-org_id=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -json common_config | jq '.org_id' | tr -d '"')
-gcloud scc notifications describe "scc-notify" --organization=${org_id}
-```
 
 **Note:** This module manages contacts for notifications using [Essential Contacts](https://cloud.google.com/resource-manager/docs/managing-notification-contacts) API. This is assigned at the Parent Level (Organization or Folder) you configured to be inherited by all child resources. There is also possible to assign Essential Contacts directly to projects using project-factory [essential_contacts submodule](https://registry.terraform.io/modules/terraform-google-modules/project-factory/google/13.1.0/submodules/essential_contacts#example-usage). Billing notifications are assigned to be sent to `group_billing_admins` mandatory group. Legal and Suspension notifications are assigned to `group_org_admins` mandatory group. If you provide all other groups notifications will be configured like the table below:
 
@@ -123,7 +110,7 @@ Clone the repo at the same level of the `terraform-example-foundation` folder, t
 Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see the project again.
 
    ```bash
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
    gcloud source repos clone gcp-policies --project=${CLOUD_BUILD_PROJECT_ID}
    ```
@@ -181,15 +168,21 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    mv ./envs/shared/terraform.example.tfvars ./envs/shared/terraform.tfvars
    ```
 
+1. Check if a Security Command Center Notification with the default name, **scc-notify**, already exists. If it exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
+
+   ```bash
+   export ORGANIZATION_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
+   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID}
+   ```
+
 1. Check if your organization already has an Access Context Manager Policy.
 
    ```bash
-   export ORGANIZATION_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -json common_config | jq '.org_id' | tr -d '"')
    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
    ```
 
-1. Update the file with values from your environment and 0-bootstrap step. If the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
+1. Update the `envs/shared/terraform.tfvars` file with values from your environment and 0-bootstrap step. If the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
 
    ```bash
    export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
@@ -197,7 +190,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
 
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
 
-   if [ -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s/#create_access_context_manager_access_policy/create_access_context_manager_access_policy/" ./envs/shared/terraform.tfvars; fi
+   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
 
 1. Commit changes.
@@ -209,22 +202,20 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_.
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git push --set-upstream origin plan
    ```
 
-1. Review the plan output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. Merge changes to production branch. Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git checkout -b production
    git push origin production
    ```
 
-1. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds?project=YOUR_CLOUD_BUILD_PROJECT_ID
 1. You can now move to the instructions in the [2-environments](../2-environments/README.md) step.
 
 **Troubleshooting:**
@@ -250,33 +241,20 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
    chmod 755 ./tf-wrapper.sh
    ```
 
-1. Change into `envs/shared` folder and rename `terraform.example.tfvars` to `terraform.tfvars`.
+1. Rename `envs/shared/terraform.example.tfvars` to `envs/shared/terraform.tfvars`.
 
    ```bash
-   cd envs/shared
-   mv terraform.example.tfvars terraform.tfvars
+   mv envs/shared/terraform.example.tfvars envs/shared/terraform.tfvars
    ```
 
 1. Update the file with values from your environment and 0-bootstrap output.
-1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
+   Use `terraform output` to get the backend bucket value from 0-bootstrap output.
 
    ```bash
-   export backend_bucket=$(terraform -chdir="../../../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
 
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
-   ```
-
-1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
-
-   ```bash
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-   ```
-
-1. Return to `1-org` folder
-
-   ```bash
-   cd ../../../1-org
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
    ```
 
 We will now deploy our environment (production) using this script.

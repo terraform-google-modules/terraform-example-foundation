@@ -7,7 +7,7 @@ require (
 	github.com/gruntwork-io/terratest v0.40.22
 	github.com/stretchr/testify v1.8.0
 	github.com/tidwall/gjson v1.14.3
-	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1
+	golang.org/x/oauth2 v0.0.0-20221006150949-b44042a4b9c1
 )
 
 require (

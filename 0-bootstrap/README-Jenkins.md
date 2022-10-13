@@ -4,6 +4,8 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 
 Another CI/CD option is to use Cloud Build & Cloud Source Repos. If you don't have a Jenkins implementation and don't want one, then we recommend you to [use the Cloud Build module](./README.md#deploying-with-cloud-build) instead.
 
+**Disclaimer:** Jenkins support will be deprecated in a future release. Consider [using the Cloud Build module](./README.md#deploying-with-cloud-build) instead.
+
 ## Overview
 
 The objective of the instructions below is to configure the infrastructure that allows you to run CI/CD deployments for the next stages (`1-org, 2-environments, 3-networks, 4-projects`) using Jenkins. The infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-b-cicd`) and VPN configuration to connect to your on-prem environment.
@@ -876,9 +878,6 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
-
-   # Disabling Cloud Build deploy
-   sed -i "s/#enable_cloudbuild_deploy/enable_cloudbuild_deploy/" ./shared.auto.tfvars
    ```
 
 1. Commit changes.

@@ -113,3 +113,12 @@ resource "google_organization_iam_member" "browser" {
   role   = "roles/browser"
   member = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
+
+resource "google_sourcerepo_repository_iam_member" "member" {
+  for_each = toset(var.app_infra_repos)
+
+  project    = google_sourcerepo_repository.gcp_policies.project
+  repository = google_sourcerepo_repository.gcp_policies.name
+  role       = "roles/viewer"
+  member     = "serviceAccount:${local.workspace_sa_email[each.key]}"
+}

@@ -66,7 +66,7 @@ resource "random_string" "bucket_name" {
 module "gcs_buckets" {
   depends_on         = [module.kms]
   source             = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version            = "~> 1.7"
+  version            = "~> 3.0"
   project_id         = module.base_shared_vpc_project.project_id
   location           = var.location_gcs
   name               = "${var.gcs_bucket_prefix}-${lower(var.location_gcs)}-${random_string.bucket_name.result}"

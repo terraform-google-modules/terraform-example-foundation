@@ -104,7 +104,13 @@ output "cloud_builder_artifact_repo" {
 
 output "csr_repos" {
   description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
-  value       = module.tf_source.csr_repos
+  value = { for k, v in module.tf_source.csr_repos : k => {
+    "id"      = v.id,
+    "name"    = v.name,
+    "project" = v.project,
+    "url"     = v.url,
+    }
+  }
 }
 
 /* ----------------------------------------

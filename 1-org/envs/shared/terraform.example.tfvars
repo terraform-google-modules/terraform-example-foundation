@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// Must include the domain of the organization you are deploying the foundation.
+# Must include the domain of the organization you are deploying the foundation.
 domains_to_allow = ["example.com"]
 
 essential_contacts_domains_to_allow = ["@example.com"]
@@ -36,4 +36,5 @@ remote_state_bucket = "REMOTE_STATE_BUCKET"
 // Optional - If you are deploying Foundation Example in a parent folder
 // consider using below create_unique_tag_key var because as Tag Keys are
 // unique organization-wide it will add a random suffix at each tag key
+
 //create_unique_tag_key = true

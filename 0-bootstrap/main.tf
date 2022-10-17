@@ -60,9 +60,6 @@ module "seed_bootstrap" {
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
   project_prefix                 = var.project_prefix
 
-  # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
-  depends_on = [google_folder.bootstrap, module.required_group, module.optional_group]
-
   project_labels = {
     environment       = "bootstrap"
     application_name  = "seed-bootstrap"

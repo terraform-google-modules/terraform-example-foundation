@@ -38,7 +38,7 @@ data "google_compute_network" "vpc_dns_hub" {
 
 module "peering_zone" {
   source      = "terraform-google-modules/cloud-dns/google"
-  version     = "~> 4.0"
+  version     = "~> 3.1"
   project_id  = var.project_id
   type        = "peering"
   name        = "dz-${var.environment_code}-shared-restricted-to-dns-hub"

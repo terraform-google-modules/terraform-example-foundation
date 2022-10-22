@@ -202,6 +202,12 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    git push origin non-production
    ```
 
+1. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
 1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
 
 ### Deploying with Jenkins

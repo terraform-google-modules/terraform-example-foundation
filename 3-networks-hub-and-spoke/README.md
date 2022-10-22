@@ -261,6 +261,12 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    git push origin non-production
    ```
 
+1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
 1. You can now move to the instructions in the [4-projects](../4-projects/README.md) step.
 
 ### Deploying with Jenkins

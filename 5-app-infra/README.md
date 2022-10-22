@@ -83,7 +83,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Clone the policies repo. **Note:** This repo has the same name as the repo created in step 1-org, to prevent a collision the command below will clone it in folder gcp-policies-app-infra.
 
    ```bash
-   export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
+   export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
    echo ${INFRA_PIPELINE_PROJECT_ID}
 
    gcloud source repos clone gcp-policies gcp-policies-app-infra --project=${INFRA_PIPELINE_PROJECT_ID}

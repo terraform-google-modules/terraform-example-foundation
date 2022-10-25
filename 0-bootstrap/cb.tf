@@ -47,6 +47,8 @@ locals {
   ]
   gar_repository              = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
   projects_gcs_bucket_tfstate = split("/", module.tf_workspace["proj"].state_bucket)[length(split("/", module.tf_workspace["proj"].state_bucket)) - 1]
+
+  cloud_builder_trigger_id = element(split("/", module.tf_cloud_builder.cloudbuild_trigger_id), index(split("/", module.tf_cloud_builder.cloudbuild_trigger_id), "triggers") + 1, )
 }
 
 resource "random_string" "suffix" {
@@ -102,9 +104,23 @@ module "tf_source" {
   depends_on = [module.seed_bootstrap]
 }
 
+module "tf_private_pool" {
+  source = "./modules/cb-private-pool"
+
+  project_id = module.tf_source.cloudbuild_project_id
+  private_worker_pool = {
+    region                 = var.default_region,
+    enable_network_peering = true,
+    create_peered_network  = true,
+    peering_address        = "192.168.0.0"
+    peering_prefix_length  = 16
+  }
+}
+
 module "tf_cloud_builder" {
-  source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
-  version = "~> 6.2"
+  #source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
+  #version = "~> 6.2"
+  source = "github.com/terraform-google-modules/terraform-google-bootstrap//modules/tf_cloudbuild_builder"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
@@ -112,6 +128,8 @@ module "tf_cloud_builder" {
   workflow_region              = var.default_region
   terraform_version            = local.terraform_version
   cb_logs_bucket_force_destroy = var.bucket_force_destroy
+  enable_worker_pool           = true
+  worker_pool_id               = module.tf_private_pool.private_worker_pool_id
 }
 
 module "bootstrap_csr_repo" {
@@ -141,7 +159,7 @@ module "build_terraform_image" {
     "terraform_version" = local.terraform_version
   }
 
-  create_cmd_body = "beta builds triggers run ${split("/", module.tf_cloud_builder.cloudbuild_trigger_id)[3]} --branch main --project ${module.tf_source.cloudbuild_project_id}"
+  create_cmd_body = "beta builds triggers run  ${local.cloud_builder_trigger_id} --branch main --region ${var.default_region} --project ${module.tf_source.cloudbuild_project_id}"
 
   module_depends_on = [
     time_sleep.cloud_builder,
@@ -149,12 +167,15 @@ module "build_terraform_image" {
 }
 
 module "tf_workspace" {
-  source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 6.2"
+  #source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
+  #version  = "~> 6.2"
+  source   = "github.com/terraform-google-modules/terraform-google-bootstrap//modules/tf_cloudbuild_workspace"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id
   location                  = var.default_region
+  enable_worker_pool        = true
+  worker_pool_id            = module.tf_private_pool.private_worker_pool_id
   state_bucket_self_link    = "${local.bucket_self_link_prefix}${module.seed_bootstrap.gcs_bucket_tfstate}"
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"

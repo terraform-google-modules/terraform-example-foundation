@@ -52,18 +52,17 @@ func TestShared(t *testing.T) {
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
-	vars := map[string]interface{}{
-		"access_context_manager_policy_id": policyID,
-		"remote_state_bucket":              backend_bucket,
-		"terraform_service_account":        terraformSA,
-	}
-
 	backendConfig := map[string]interface{}{
 		"bucket": backend_bucket,
 	}
 
+	vars := map[string]interface{}{
+		"remote_state_bucket": backend_bucket,
+	}
 	var tfdDir string
 	if isHubAndSpokeMode(t) {
+		vars["access_context_manager_policy_id"] = policyID
+		vars["terraform_service_account"] = terraformSA
 		tfdDir = "../../../3-networks-hub-and-spoke/envs/shared"
 	} else {
 		tfdDir = "../../../3-networks-dual-svpc/envs/shared"

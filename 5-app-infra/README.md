@@ -83,7 +83,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Clone the policies repo. **Note:** This repo has the same name as the repo created in step 1-org, to prevent a collision the command below will clone it in folder gcp-policies-app-infra.
 
    ```bash
-   export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
+   export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
    echo ${INFRA_PIPELINE_PROJECT_ID}
 
    gcloud source repos clone gcp-policies gcp-policies-app-infra --project=${INFRA_PIPELINE_PROJECT_ID}
@@ -158,40 +158,35 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_.
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 
    ```bash
    git push --set-upstream origin plan
    ```
 
-1. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 
    ```bash
    git checkout -b development
    git push origin development
    ```
 
-1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 
    ```bash
    git checkout -b non-production
    git push origin non-production
    ```
 
-1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 1. Merge changes to production branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-      pushing to this branch triggers both _terraform plan_ and _terraform apply_.
+      pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 
    ```bash
    git checkout -b production
    git push origin production
    ```
-
-1. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds?project=YOUR_INFRA_PIPELINE_PROJECT_ID
 
 ### Run Terraform locally
 
@@ -228,7 +223,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    project_id=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
    echo ${project_id}
 
-   terraform_sa=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '."bu1-example-app"' | tr -d '"')
+   terraform_sa=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '."bu1-example-app"' --raw-output)
    echo ${terraform_sa}
 
    gcloud iam service-accounts add-iam-policy-binding ${terraform_sa} --project ${project_id}} --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
@@ -237,10 +232,10 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Update `backend.tf` with your bucket from the infra pipeline output.
 
    ```bash
-   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq '."bu1-example-app"' | tr -d '"')
+   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq '."bu1-example-app"' --raw-output)
    echo "backend_bucket = ${backend_bucket}"
 
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_APP_INFRA_BUCKET/${backend_bucket}/" $i; done
    ```
 
 We will now deploy each of our environments (development/production/non-production) using this script.
@@ -254,7 +249,7 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
    echo ${INFRA_PIPELINE_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '."bu1-example-app"' | tr -d '"')
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '."bu1-example-app"' --raw-output)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 

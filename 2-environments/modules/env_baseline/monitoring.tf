@@ -27,7 +27,7 @@ module "monitoring_project" {
   billing_account             = local.billing_account
   folder_id                   = google_folder.env.id
   disable_services_on_destroy = false
-  depends_on                  = [time_sleep.wait_30_seconds]
+  depends_on                  = [time_sleep.wait_60_seconds]
   activate_apis = [
     "logging.googleapis.com",
     "monitoring.googleapis.com",

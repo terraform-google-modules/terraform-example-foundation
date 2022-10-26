@@ -45,6 +45,16 @@ variable "private_worker_pool" {
     peering_prefix_length  = optional(number, 24)
   })
   default = {}
+
+  validation {
+    condition = (
+      !var.private_worker_pool.enable_network_peering ||
+      (var.private_worker_pool.enable_network_peering && var.private_worker_pool.create_peered_network) ||
+      (var.private_worker_pool.enable_network_peering && !var.private_worker_pool.create_peered_network && var.private_worker_pool.peered_network_id != "")
+    )
+    error_message = "If network peering is enable, the peered network must be create by the module or a valid network ID is required"
+
+  }
 }
 
 variable "vpn_configuration" {
@@ -73,4 +83,20 @@ variable "vpn_configuration" {
     tunnel1_bgp_session_range  = optional(string, "")
   })
   default = {}
+
+  validation {
+    condition = !var.vpn_configuration.enable_vpn || (
+      var.vpn_configuration.enable_vpn &&
+      var.vpn_configuration.on_prem_public_ip_address0 != "" &&
+      var.vpn_configuration.on_prem_public_ip_address1 != "" &&
+      var.vpn_configuration.shared_secret != "" &&
+      var.vpn_configuration.tunnel0_bgp_peer_address != "" &&
+      var.vpn_configuration.tunnel0_bgp_session_range != "" &&
+      var.vpn_configuration.tunnel1_bgp_peer_address != "" &&
+      var.vpn_configuration.tunnel1_bgp_session_range != "" &&
+      var.vpn_configuration.router_asn != null &&
+      var.vpn_configuration.bgp_peer_asn != null
+    )
+    error_message = "If VPN configuration is enabled, all values are required."
+  }
 }

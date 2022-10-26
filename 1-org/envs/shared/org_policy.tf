@@ -35,7 +35,8 @@ locals {
     "iam.disableServiceAccountKeyCreation",
     "iam.automaticIamGrantsForDefaultServiceAccounts",
     "iam.disableServiceAccountKeyUpload",
-    "storage.uniformBucketLevelAccess"
+    "storage.uniformBucketLevelAccess",
+    "storage.publicAccessPrevention"
   ])
 }
 

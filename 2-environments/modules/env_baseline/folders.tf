@@ -23,10 +23,10 @@ resource "google_folder" "env" {
   parent       = local.parent
 }
 
-resource "time_sleep" "wait_30_seconds" {
+resource "time_sleep" "wait_60_seconds" {
   depends_on = [google_folder.env]
 
-  destroy_duration = "30s"
+  destroy_duration = "60s"
 }
 
 # The following code binds a tag to a resource.
@@ -35,4 +35,6 @@ resource "time_sleep" "wait_30_seconds" {
 resource "google_tags_tag_binding" "folder_env" {
   parent    = "//cloudresourcemanager.googleapis.com/${google_folder.env.id}"
   tag_value = local.tags["environment_${var.env}"]
+
+  depends_on = [time_sleep.wait_60_seconds]
 }

@@ -90,7 +90,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Clone repo.
 
    ```bash
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
 
    gcloud source repos clone gcp-projects --project=${CLOUD_BUILD_PROJECT_ID}
@@ -200,6 +200,12 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```bash
    git checkout -b non-production
    git push origin non-production
+   ```
+
+1. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
 1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.

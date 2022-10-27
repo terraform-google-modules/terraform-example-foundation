@@ -40,7 +40,7 @@ resource "google_cloudbuild_worker_pool" "private_pool" {
   dynamic "network_config" {
     for_each = var.private_worker_pool.enable_network_peering ? ["network_config"] : []
     content {
-      peered_network = var.private_worker_pool.peered_network_id
+      peered_network = local.peered_network_id
     }
   }
 

@@ -73,7 +73,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
   boot_disk {
     initialize_params {
       // It is better if user has a golden image with all necessary packages.
-      image = "debian-cloud/debian-9"
+      image = "debian-cloud/debian-11"
     }
   }
 

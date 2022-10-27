@@ -4,6 +4,8 @@ The purpose of this step is to bootstrap a GCP organization, creating all the re
 
 Another CI/CD option is to use Cloud Build & Cloud Source Repos. If you don't have a Jenkins implementation and don't want one, then we recommend you to [use the Cloud Build module](./README.md#deploying-with-cloud-build) instead.
 
+**Disclaimer:** Jenkins support will be deprecated in a future release. Consider [using the Cloud Build module](./README.md#deploying-with-cloud-build) instead.
+
 ## Overview
 
 The objective of the instructions below is to configure the infrastructure that allows you to run CI/CD deployments for the next stages (`1-org, 2-environments, 3-networks, 4-projects`) using Jenkins. The infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-b-cicd`) and VPN configuration to connect to your on-prem environment.
@@ -60,7 +62,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
    JENKINS_USER="jenkins"
    JENKINS_AGENT_NAME="AgentGCE1"
    SSH_KEY_FILE_PATH="$SSH_LOCAL_CONFIG_DIR/$JENKINS_USER-${JENKINS_AGENT_NAME}_rsa"
-   mkdir "$SSH_LOCAL_CONFIG_DIR"
+   mkdir -p "$SSH_LOCAL_CONFIG_DIR"
    ssh-keygen -t rsa -m PEM -N "my-password" -C $JENKINS_USER -f $SSH_KEY_FILE_PATH
    cat $SSH_KEY_FILE_PATH
    ```
@@ -202,7 +204,6 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
 1. Run terraform commands.
    - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-b-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
-   - **WARNING: Make sure you have commented-out the `cloudbuild_bootstrap` module and enabled the `jenkins_bootstrap` module in the `./main.tf` file**
    - **Use Terraform 1.0.0** to run the terraform script with the commands below
 
    ```bash
@@ -331,7 +332,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw organization_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
@@ -428,7 +429,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw environment_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
@@ -534,7 +535,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
@@ -608,7 +609,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Run `validate` and check for violations.
 
    ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/../policy-library ${CICD_PROJECT_ID}
+   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
    ```
 
 1. Run `apply` shared.
@@ -691,7 +692,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
@@ -765,7 +766,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Run `validate` and check for violations.
 
    ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/../policy-library ${CICD_PROJECT_ID}
+   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
    ```
 
 1. Run `apply` shared.
@@ -848,7 +849,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw projects_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
@@ -913,7 +914,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Run `validate` and check for violations.
 
    ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/../policy-library ${CICD_PROJECT_ID}
+   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
    ```
 
 1. Run `apply` shared.

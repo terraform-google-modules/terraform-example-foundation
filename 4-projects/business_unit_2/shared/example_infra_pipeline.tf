@@ -26,7 +26,9 @@ locals {
 }
 
 module "app_infra_cloudbuild_project" {
-  source          = "../../modules/single_project"
+  source = "../../modules/single_project"
+  count  = local.enable_cloudbuild_deploy ? 1 : 0
+
   org_id          = local.org_id
   billing_account = local.billing_account
   folder_id       = local.common_folder_name
@@ -52,9 +54,10 @@ module "app_infra_cloudbuild_project" {
 
 module "infra_pipelines" {
   source = "../../modules/infra_pipelines"
+  count  = local.enable_cloudbuild_deploy ? 1 : 0
 
   org_id                      = local.org_id
-  cloudbuild_project_id       = module.app_infra_cloudbuild_project.project_id
+  cloudbuild_project_id       = module.app_infra_cloudbuild_project[0].project_id
   cloud_builder_artifact_repo = local.cloud_builder_artifact_repo
   remote_tfstate_bucket       = local.projects_remote_bucket_tfstate
   project_prefix              = local.project_prefix
@@ -63,3 +66,13 @@ module "infra_pipelines" {
   app_infra_repos             = local.repo_names
 }
 
+/**
+ * When Jenkins CICD is used for deployment this resource
+ * is created to terraform validation works.
+ * Without this resource, this module creates zero resources
+ * and it breaks terraform validation throwing the error below:
+ * ERROR: [Terraform plan json does not contain resource_changes key]
+ */
+resource "null_resource" "jenkins_cicd" {
+  count = !local.enable_cloudbuild_deploy ? 1 : 0
+}

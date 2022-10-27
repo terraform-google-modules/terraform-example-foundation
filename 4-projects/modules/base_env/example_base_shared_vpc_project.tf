@@ -26,7 +26,7 @@ module "base_shared_vpc_project" {
   shared_vpc_subnets                  = local.base_subnets_self_links
   project_budget                      = var.project_budget
   project_prefix                      = local.project_prefix
-  enable_cloudbuild_deploy            = true
+  enable_cloudbuild_deploy            = local.enable_cloudbuild_deploy
   sa_roles                            = local.sa_roles
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
 

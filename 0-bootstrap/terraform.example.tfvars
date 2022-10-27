@@ -71,7 +71,7 @@ default_region = "us-central1"
 //
 //jenkins_agent_sa_email = "jenkins-agent-gce" # service_account_prefix will be added
 //
-//jenkins_master_subnetwork_cidr_range = ["10.1.0.6/32"]
+//jenkins_controller_subnetwork_cidr_range = ["10.1.0.6/32"]
 //
 //nat_bgp_asn = "64514"
 //

@@ -29,30 +29,32 @@ variable "private_worker_pool" {
   enable_network_peering: Set to true to enable configuration of networking peering for the private worker pool.
   create_peered_network: If true a network will be created to stablish the network peering.
   peered_network_id: The ID of the existing network to configure peering for the private worker pool if create_peered_network false. The project containing the network must have Service Networking API (`servicenetworking.googleapis.com`) enabled.
+  peered_network_subnet_ip: The IP range to be used for the subnet that a will created in the peered network if create_peered_network true.
   peering_address: The IP address or beginning of the peering address range. This can be supplied as an input to reserve a specific address or omitted to allow GCP to choose a valid one.
   peering_prefix_length: The prefix length of the IP peering range. If not present, it means the address field is a single IP address.
   EOT
   type = object({
-    name                   = optional(string, "")
-    region                 = optional(string, "us-central1")
-    disk_size_gb           = optional(number, 100)
-    machine_type           = optional(string, "e2-medium")
-    no_external_ip         = optional(bool, false)
-    enable_network_peering = optional(bool, false)
-    create_peered_network  = optional(bool, false)
-    peered_network_id      = optional(string, "")
-    peering_address        = optional(string, null)
-    peering_prefix_length  = optional(number, 24)
+    name                     = optional(string, "")
+    region                   = optional(string, "us-central1")
+    disk_size_gb             = optional(number, 100)
+    machine_type             = optional(string, "e2-medium")
+    no_external_ip           = optional(bool, false)
+    enable_network_peering   = optional(bool, false)
+    create_peered_network    = optional(bool, false)
+    peered_network_id        = optional(string, "")
+    peered_network_subnet_ip = optional(string, "")
+    peering_address          = optional(string, null)
+    peering_prefix_length    = optional(number, 24)
   })
   default = {}
 
   validation {
     condition = (
       !var.private_worker_pool.enable_network_peering ||
-      (var.private_worker_pool.enable_network_peering && var.private_worker_pool.create_peered_network) ||
+      (var.private_worker_pool.enable_network_peering && var.private_worker_pool.create_peered_network && var.private_worker_pool.peered_network_subnet_ip != "") ||
       (var.private_worker_pool.enable_network_peering && !var.private_worker_pool.create_peered_network && var.private_worker_pool.peered_network_id != "")
     )
-    error_message = "If network peering is enable, the peered network must be create by the module or a valid network ID is required"
+    error_message = "If network peering is enable, the peered network must be create by the module using the provided peered network subnet ip or a valid network ID is required"
 
   }
 }

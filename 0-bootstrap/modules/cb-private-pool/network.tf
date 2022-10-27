@@ -26,7 +26,7 @@ module "peered_network" {
   subnets = [
     {
       subnet_name           = "sb-peered"
-      subnet_ip             = "10.10.20.0/24"
+      subnet_ip             = var.private_worker_pool.peered_network_subnet_ip
       subnet_region         = var.private_worker_pool.region
       subnet_private_access = "true"
       subnet_flow_logs      = "true"

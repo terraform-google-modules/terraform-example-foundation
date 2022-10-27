@@ -109,18 +109,19 @@ module "tf_private_pool" {
 
   project_id = module.tf_source.cloudbuild_project_id
   private_worker_pool = {
-    region                 = var.default_region,
-    enable_network_peering = true,
-    create_peered_network  = true,
-    peering_address        = "192.168.0.0"
-    peering_prefix_length  = 16
+    region                   = var.default_region,
+    enable_network_peering   = true,
+    create_peered_network    = true,
+    peered_network_subnet_ip = "10.10.20.0/24"
+    peering_address          = "192.168.0.0"
+    peering_prefix_length    = 24
   }
 }
 
 module "tf_cloud_builder" {
   #source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
   #version = "~> 6.2"
-  source = "github.com/terraform-google-modules/terraform-google-bootstrap//modules/tf_cloudbuild_builder"
+  source = "github.com/daniel-cit/terraform-google-bootstrap//modules/tf_cloudbuild_builder?ref=explicit-location-in-module"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
@@ -128,6 +129,7 @@ module "tf_cloud_builder" {
   workflow_region              = var.default_region
   terraform_version            = local.terraform_version
   cb_logs_bucket_force_destroy = var.bucket_force_destroy
+  trigger_location             = var.default_region
   enable_worker_pool           = true
   worker_pool_id               = module.tf_private_pool.private_worker_pool_id
 }
@@ -169,11 +171,12 @@ module "build_terraform_image" {
 module "tf_workspace" {
   #source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
   #version  = "~> 6.2"
-  source   = "github.com/terraform-google-modules/terraform-google-bootstrap//modules/tf_cloudbuild_workspace"
+  source   = "github.com/daniel-cit/terraform-google-bootstrap//modules/tf_cloudbuild_workspace?ref=explicit-location-in-module"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id
   location                  = var.default_region
+  trigger_location          = var.default_region
   enable_worker_pool        = true
   worker_pool_id            = module.tf_private_pool.private_worker_pool_id
   state_bucket_self_link    = "${local.bucket_self_link_prefix}${module.seed_bootstrap.gcs_bucket_tfstate}"

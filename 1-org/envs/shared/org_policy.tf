@@ -32,6 +32,7 @@ locals {
     "compute.setNewProjectDefaultToZonalDNSOnly",
     "compute.requireOsLogin",
     "sql.restrictPublicIp",
+    "sql.restrictAuthorizedNetworks",
     "iam.disableServiceAccountKeyCreation",
     "iam.automaticIamGrantsForDefaultServiceAccounts",
     "iam.disableServiceAccountKeyUpload",

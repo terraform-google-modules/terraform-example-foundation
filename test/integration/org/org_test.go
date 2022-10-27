@@ -141,8 +141,10 @@ func TestOrg(t *testing.T) {
 				"constraints/compute.skipDefaultNetworkCreation",
 				"constraints/compute.restrictXpnProjectLienRemoval",
 				"constraints/sql.restrictPublicIp",
+				"constraints/sql.restrictAuthorizedNetworks",
 				"constraints/iam.disableServiceAccountKeyCreation",
 				"constraints/storage.uniformBucketLevelAccess",
+				"constraints/storage.publicAccessPrevention",
 				"constraints/iam.automaticIamGrantsForDefaultServiceAccounts",
 			} {
 				orgPolicy := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", booleanConstraint, parentFolder)

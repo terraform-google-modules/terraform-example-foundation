@@ -121,7 +121,7 @@ module "tf_private_pool" {
 module "tf_cloud_builder" {
   #source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
   #version = "~> 6.2"
-  source = "github.com/daniel-cit/terraform-google-bootstrap//modules/tf_cloudbuild_builder?ref=explicit-location-in-module"
+  source = "github.com/terraform-google-modules/terraform-google-bootstrap//modules/tf_cloudbuild_builder"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
@@ -171,7 +171,7 @@ module "build_terraform_image" {
 module "tf_workspace" {
   #source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
   #version  = "~> 6.2"
-  source   = "github.com/daniel-cit/terraform-google-bootstrap//modules/tf_cloudbuild_workspace?ref=explicit-location-in-module"
+  source   = "github.com/terraform-google-modules/terraform-google-bootstrap//modules/tf_cloudbuild_workspace"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id

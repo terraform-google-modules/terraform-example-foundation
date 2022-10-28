@@ -152,6 +152,23 @@ func TestBootstrap(t *testing.T) {
 			prj := gcloud.Runf(t, "projects describe %s", cbProjectID)
 			assert.True(prj.Exists(), "project %s should exist", cbProjectID)
 
+			// Private Pools
+			workerPoolName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_private_worker_pool_id"), "/")
+			defaultRegion := utils.ValFromEnv(t, "TF_VAR_default_region")
+			peeredNetworkName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_peered_network_id"), "/")
+			pool := gcloud.Runf(t, "builds worker-pools describe %s --region %s --project %s", workerPoolName, defaultRegion, cbProjectID)
+			assert.Equal(workerPoolName, pool.Get("name").String(), "pool %s should exist", workerPoolName)
+			assert.Equal("PUBLIC_EGRESS", pool.Get("privatePoolV1Config.networkConfig.egressOption").String(), "pool %s should have internet access", workerPoolName)
+			assert.Equal("e2-medium", pool.Get("privatePoolV1Config.workerConfig.machineType").String(), "pool %s should have the configured machineType", workerPoolName)
+			assert.Equal("100", pool.Get("privatePoolV1Config.workerConfig.diskSizeGb").String(), "pool %s should have the configured disk size", workerPoolName)
+			assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(pool.Get("privatePoolV1Config.networkConfig.peeredNetwork").String(), "/"), "pool %s should have peered network configured", workerPoolName)
+
+			globalAddressName := "ga-worker-pool-range-vpc-peering"
+			globalAddress := gcloud.Runf(t, "compute addresses describe %s --global --project %s", globalAddressName, cbProjectID)
+			assert.Equal(globalAddressName, globalAddress.Get("name").String(), fmt.Sprintf("global address %s should exist", globalAddressName))
+			assert.Equal("VPC_PEERING", globalAddress.Get("purpose").String(), fmt.Sprintf("global address %s purpose should be VPC peering", globalAddressName))
+			assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(globalAddress.Get("network").String(), "/"), fmt.Sprintf("global address %s should be in the peered network", globalAddressName))
+
 			for _, env := range []string{
 				"org",
 				"env",

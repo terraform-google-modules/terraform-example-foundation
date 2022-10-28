@@ -56,4 +56,37 @@ resource "google_service_networking_connection" "worker_pool_conn" {
   reserved_peering_ranges = [google_compute_global_address.worker_pool_range[0].name]
 }
 
-// TODO firewall rules
+module "firewall_rules" {
+  source  = "terraform-google-modules/network/google//modules/firewall-rules"
+  version = "~> 5.2"
+  count   = var.private_worker_pool.enable_network_peering ? 1 : 0
+
+  project_id   = var.project_id
+  network_name = local.peered_network_id
+
+  rules = [{
+    name                    = "allow-servicenetworking-ingress"
+    description             = "allow ingres from the IPs configured for service networking"
+    direction               = "INGRESS"
+    priority                = 100
+    source_tags             = null
+    source_service_accounts = null
+    target_tags             = null
+    target_service_accounts = null
+
+    ranges = [
+      "${google_compute_global_address.worker_pool_range[0].address}/${google_compute_global_address.worker_pool_range[0].prefix_length}"
+    ]
+
+    allow = [{
+      protocol = "all"
+      ports    = null
+    }]
+
+    deny = []
+
+    log_config = {
+      metadata = "INCLUDE_ALL_METADATA"
+    }
+  }]
+}

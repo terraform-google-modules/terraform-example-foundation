@@ -107,3 +107,9 @@ variable "members" {
   type        = list(string)
   description = "An allowed list of members (users, service accounts)to be include in the VPC-SC perimeter. The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid}"
 }
+
+variable "custom_restricted_services" {
+  description = "List of custom services to be protected by the VPC-SC perimeter. If empty, all supported services (https://cloud.google.com/vpc-service-controls/docs/supported-products) will be protected."
+  type        = list(string)
+  default     = []
+}

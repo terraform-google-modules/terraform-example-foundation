@@ -78,7 +78,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Clone repo.
 
    ```bash
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
 
    gcloud source repos clone gcp-environments --project=${CLOUD_BUILD_PROJECT_ID}

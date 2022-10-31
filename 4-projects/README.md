@@ -60,7 +60,7 @@ The purpose of this step is to set up the folder structure, projects, and infras
 For each business unit, a shared `infra-pipeline` project is created along with Cloud Build triggers, CSRs for application infrastructure code and Google Cloud Storage buckets for state storage.
 
 This step follows the same [conventions](https://github.com/terraform-google-modules/terraform-example-foundation#branching-strategy) as the Foundation pipeline deployed in [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md).
-A custom [workspace](https://github.com/terraform-google-modules/terraform-google-bootstrap/blob/master/modules/tf_cloudbuild_workspace/README.md) (`bu1-example-app`) is created by this pipeline and necessary roles are granted to the Terraform Service Account of this workspace by enabling the `enable_cloudbuild_deploy` flag and variable `sa_roles` as shown in this [example](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/modules/base_env/example_base_shared_vpc_project.tf).
+A custom [workspace](https://github.com/terraform-google-modules/terraform-google-bootstrap/blob/master/modules/tf_cloudbuild_workspace/README.md) (`bu1-example-app`) is created by this pipeline and necessary roles are granted to the Terraform Service Account of this workspace by enabling variable `sa_roles` as shown in this [example](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/modules/base_env/example_base_shared_vpc_project.tf).
 
 This pipeline is utilized to deploy resources in projects across development/non-production/production in step [5-app-infra](../5-app-infra/README.md).
 Other Workspaces can also be created to isolate deployments if needed.
@@ -90,7 +90,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 1. Clone repo.
 
    ```bash
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
 
    gcloud source repos clone gcp-projects --project=${CLOUD_BUILD_PROJECT_ID}
@@ -200,6 +200,12 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    ```bash
    git checkout -b non-production
    git push origin non-production
+   ```
+
+1. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
 1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.

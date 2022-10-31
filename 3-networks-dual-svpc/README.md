@@ -65,10 +65,10 @@ The purpose of this step is to:
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
 1. 2-environments executed successfully.
-1. Obtain the value for the access_context_manager_policy_id variable. Can be obtained by running
+1. Obtain the value for the access_context_manager_policy_id variable. It can be obtained by running the following commands. We assume you are at the same level as directory `terraform-example-foundation`, If you run them from another directory, adjust your paths accordingly.
 
    ```bash
-   export ORGANIZATION_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
+   export ORGANIZATION_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
    ```
@@ -137,7 +137,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 1. Clone repo.
 
    ```bash
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
+   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
 
    gcloud source repos clone gcp-networks --project=${CLOUD_BUILD_PROJECT_ID}
@@ -256,6 +256,12 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    ```bash
    git checkout -b non-production
    git push origin non-production
+   ```
+
+1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
 1. You can now move to the instructions in the [4-projects](../4-projects/README.md) step.

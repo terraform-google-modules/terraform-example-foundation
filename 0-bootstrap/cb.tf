@@ -108,6 +108,7 @@ module "tf_private_pool" {
   source = "./modules/cb-private-pool"
 
   project_id = module.tf_source.cloudbuild_project_id
+
   private_worker_pool = {
     region                   = var.default_region,
     enable_network_peering   = true,
@@ -115,6 +116,10 @@ module "tf_private_pool" {
     peered_network_subnet_ip = "10.10.20.0/24"
     peering_address          = "192.168.0.0"
     peering_prefix_length    = 24
+  }
+
+  vpn_configuration = {
+    enable_vpn = false
   }
 }
 

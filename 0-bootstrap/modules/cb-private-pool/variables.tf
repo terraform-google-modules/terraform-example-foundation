@@ -67,6 +67,8 @@ variable "vpn_configuration" {
   router_asn: Border Gateway Protocol (BGP) Autonomous System Number (ASN) for cloud routes.
   bgp_peer_asn: Border Gateway Protocol (BGP) Autonomous System Number (ASN) for peer cloud routes.
   shared_secret: The shared secret used in the VPN.
+  psk_secret_project_id: The ID of the project that contains the secret from secret manager that holds the VPN pre-shared key.
+  psk_secret_name: The name of the secret to retrieve from secret manager that holds the VPN pre-shared key.
   tunnel0_bgp_peer_address: BGP peer address for tunnel 0.
   tunnel0_bgp_session_range: BGP session range for tunnel 0.
   tunnel1_bgp_peer_address: BGP peer address for tunnel 1.
@@ -78,7 +80,8 @@ variable "vpn_configuration" {
     on_prem_public_ip_address1 = optional(string, "")
     router_asn                 = optional(number, 64515)
     bgp_peer_asn               = optional(number, 64513)
-    shared_secret              = optional(string, "")
+    psk_secret_project_id      = optional(string, "")
+    psk_secret_name            = optional(string, "")
     tunnel0_bgp_peer_address   = optional(string, "")
     tunnel0_bgp_session_range  = optional(string, "")
     tunnel1_bgp_peer_address   = optional(string, "")
@@ -91,7 +94,8 @@ variable "vpn_configuration" {
       var.vpn_configuration.enable_vpn &&
       var.vpn_configuration.on_prem_public_ip_address0 != "" &&
       var.vpn_configuration.on_prem_public_ip_address1 != "" &&
-      var.vpn_configuration.shared_secret != "" &&
+      var.vpn_configuration.psk_secret_project_id != "" &&
+      var.vpn_configuration.psk_secret_name != "" &&
       var.vpn_configuration.tunnel0_bgp_peer_address != "" &&
       var.vpn_configuration.tunnel0_bgp_session_range != "" &&
       var.vpn_configuration.tunnel1_bgp_peer_address != "" &&

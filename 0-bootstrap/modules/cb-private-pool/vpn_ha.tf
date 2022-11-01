@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+
+locals {
+  psk_secret_data = chomp(data.google_secret_manager_secret_version.psk.secret_data)
+}
+
+data "google_secret_manager_secret_version" "psk" {
+  project = var.vpn_configuration.psk_secret_project_id
+  secret  = var.vpn_configuration.psk_secret_name
+}
+
 module "vpn_ha_cb_to_onprem" {
   source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
   version = "~> 2.3"
@@ -47,7 +57,7 @@ module "vpn_ha_cb_to_onprem" {
       ike_version                     = 2
       vpn_gateway_interface           = 0
       peer_external_gateway_interface = 0
-      shared_secret                   = var.vpn_configuration.shared_secret
+      shared_secret                   = local.psk_secret_data
     }
     remote-1 = {
       bgp_peer = {
@@ -59,7 +69,7 @@ module "vpn_ha_cb_to_onprem" {
       ike_version                     = 2
       vpn_gateway_interface           = 1
       peer_external_gateway_interface = 1
-      shared_secret                   = var.vpn_configuration.shared_secret
+      shared_secret                   = local.psk_secret_data
     }
   }
 }

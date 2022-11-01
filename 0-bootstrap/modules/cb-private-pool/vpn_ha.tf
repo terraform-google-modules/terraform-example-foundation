@@ -16,10 +16,12 @@
 
 
 locals {
-  psk_secret_data = chomp(data.google_secret_manager_secret_version.psk.secret_data)
+  psk_secret_data = var.vpn_configuration.enable_vpn ? chomp(data.google_secret_manager_secret_version.psk[0].secret_data) : ""
 }
 
 data "google_secret_manager_secret_version" "psk" {
+  count = var.vpn_configuration.enable_vpn ? 1 : 0
+
   project = var.vpn_configuration.psk_secret_project_id
   secret  = var.vpn_configuration.psk_secret_name
 }

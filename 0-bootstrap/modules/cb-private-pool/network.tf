@@ -56,6 +56,17 @@ resource "google_service_networking_connection" "worker_pool_conn" {
   reserved_peering_ranges = [google_compute_global_address.worker_pool_range[0].name]
 }
 
+resource "google_compute_network_peering_routes_config" "peering_routes" {
+  count = var.private_worker_pool.enable_network_peering ? 1 : 0
+
+  project = var.project_id
+  peering = google_service_networking_connection.worker_pool_conn[0].peering
+  network = local.peered_network_name
+
+  import_custom_routes = true
+  export_custom_routes = true
+}
+
 module "firewall_rules" {
   source  = "terraform-google-modules/network/google//modules/firewall-rules"
   version = "~> 5.2"

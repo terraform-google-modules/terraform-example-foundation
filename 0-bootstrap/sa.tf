@@ -20,10 +20,11 @@ locals {
   parent_id   = var.parent_folder == "" ? var.org_id : var.parent_folder
 
   granular_sa = {
-    "org"  = "Foundation Organization SA. Managed by Terraform.",
-    "env"  = "Foundation Environment SA. Managed by Terraform.",
-    "net"  = "Foundation Network SA. Managed by Terraform.",
-    "proj" = "Foundation Projects SA. Managed by Terraform.",
+    "bootstrap" = "Foundation Bootstrap SA. Managed by Terraform.",
+    "org"       = "Foundation Organization SA. Managed by Terraform.",
+    "env"       = "Foundation Environment SA. Managed by Terraform.",
+    "net"       = "Foundation Network SA. Managed by Terraform.",
+    "proj"      = "Foundation Projects SA. Managed by Terraform.",
   }
 
   common_roles = [
@@ -31,6 +32,11 @@ locals {
   ]
 
   granular_sa_org_level_roles = {
+    "bootstrap" = distinct(concat([
+      "roles/resourcemanager.organizationAdmin",
+      "roles/accesscontextmanager.policyAdmin",
+      "roles/serviceusage.serviceUsageConsumer",
+    ], local.common_roles)),
     "org" = distinct(concat([
       "roles/orgpolicy.policyAdmin",
       "roles/logging.configWriter",
@@ -57,6 +63,9 @@ locals {
   }
 
   granular_sa_parent_level_roles = {
+    "bootstrap" = [
+      "roles/resourcemanager.folderAdmin",
+    ],
     "org" = [
       "roles/resourcemanager.folderAdmin",
     ],
@@ -81,6 +90,11 @@ locals {
   }
 
   granular_sa_seed_project = {
+    "bootstrap" = [
+      "roles/storage.admin",
+      "roles/iam.serviceAccountAdmin",
+      "roles/resourcemanager.projectDeleter",
+    ],
     "org" = [
       "roles/storage.objectAdmin",
     ],

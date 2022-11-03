@@ -2,18 +2,24 @@
 
 Before moving forward with adopting components of v3, please review the list of breaking changes below. You can find a list of all changes in the [Changelog]()
 
-**Note:** There is no in-place upgrade path from v2 to v3?
+**Note:** There is no in-place upgrade path from v2 to v3
 
-## Breaking Changes
+## Major Breaking Changes 
 
 - Upgrade minimum required Terraform version to 1.3.0
+- Creating Remote State
+- Diferent Service Accoutns
+- Configure bring your own Service Account
+- 3-Networks split into two
+- 4-projects, infra pipeline not longer creating Docker Image
+
 - Other Critical features
 
 ## Steps to upgrade codebase
 
-In order to upgrade foundation's codebase you will need to merge newer changes from v3 into your local repository and then you run `terraform apply`.
+In order to upgrade foundation's codebase you will need to merge newer changes from v3 into your local repository and then run `terraform apply`.
 
-It is up to you to decide whether you update the whole project or some parts of it. However, newer features might require hole code blocks to be upgraded simultaneously. This is why we highly recommend you review outputs from `terraform plan` before applying any changes.
+It is up to you to decide whether you update the whole project or some parts of it. However, newer features might require entire code blocks to be upgraded simultaneously. This is why we highly recommend you review outputs from `terraform plan` before applying any changes.
 
 For this migration you will encounter two scenarios which we describe as following:
 
@@ -82,20 +88,26 @@ You can save resources from being destroyed and instead make a copy of them as a
 
 The following blocks of code shows how to save KMS keys no longer being part of the foundation v3 configuration.
 
-    resource "google_kms_crypto_key" "backup_tf_key" {
-        destroy_scheduled_duration = "86400s"
-        import_only                   = false
-        key_ring                      = "projects/prj-b-cicd-9aee/locations/us-central1/keyRings/tf-keyring"
-        labels                        = {}
-        name                          = "tf-key"
-        purpose                       = "ENCRYPT_DECRYPT"
-        skip_initial_version_creation = false
+```hcl
+resource "google_kms_crypto_key" "backup_tf_key" {
+    destroy_scheduled_duration = "86400s"
+    import_only                   = false
+    key_ring                      = "projects/prj-b-cicd-9aee/locations/us-central1/keyRings/tf-keyring"
+    labels                        = {}
+    name                          = "tf-key"
+    purpose                       = "ENCRYPT_DECRYPT"
+    skip_initial_version_creation = false
 
-        version_template {
-            algorithm        = "GOOGLE_SYMMETRIC_ENCRYPTION"
-            protection_level = "SOFTWARE"
-        }
+    version_template {
+        algorithm        = "GOOGLE_SYMMETRIC_ENCRYPTION"
+        protection_level = "SOFTWARE"
     }
+}
+```
+
+asdf
+
+
 
     resource "google_kms_key_ring" "backup_tf_keyring" {
         location = "us-central1"
@@ -113,4 +125,7 @@ The following blocks of code shows how to save KMS keys no longer being part of 
         to   = google_kms_key_ring.backup_tf_keyring
     }
 
+Backup resources can be put inside the provided `backup.tf.example` file.
+
 ## Resource Changes
+

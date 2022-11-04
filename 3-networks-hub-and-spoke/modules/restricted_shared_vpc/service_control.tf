@@ -45,7 +45,8 @@ module "regular_service_perimeter" {
   resources      = [var.project_number]
   access_levels  = [module.access_level_members.name]
 
-  restricted_services = var.restricted_services
+  restricted_services     = var.restricted_services
+  vpc_accessible_services = ["RESTRICTED-SERVICES"]
 
   ingress_policies = var.ingress_policies
   egress_policies  = var.egress_policies

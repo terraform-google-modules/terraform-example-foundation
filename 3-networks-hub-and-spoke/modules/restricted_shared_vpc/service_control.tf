@@ -50,6 +50,24 @@ module "regular_service_perimeter" {
 
   ingress_policies = var.ingress_policies
   egress_policies  = var.egress_policies
+
+  depends_on = [
+    module.main,
+    module.private_service_connect,
+    module.peering_zone,
+    module.region1_router1,
+    module.region1_router2,
+    module.region2_router1,
+    module.region2_router2,
+    google_compute_firewall.deny_all_egress,
+    google_compute_firewall.allow_restricted_api_egress,
+    google_compute_firewall.allow_all_egress,
+    google_compute_firewall.allow_all_ingress,
+    google_dns_policy.default_policy,
+    google_service_networking_connection.private_vpc_connection,
+    google_compute_router_nat.nat_external_addresses_region1,
+    google_compute_router_nat.egress_nat_region2,
+  ]
 }
 
 resource "google_access_context_manager_service_perimeter" "bridge_to_network_hub_perimeter" {

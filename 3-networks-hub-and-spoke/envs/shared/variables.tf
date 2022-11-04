@@ -176,3 +176,9 @@ variable "enable_hub_and_spoke_transitivity" {
   type        = bool
   default     = false
 }
+
+variable "custom_restricted_services" {
+  description = "List of custom services to be protected by the VPC-SC perimeter. If empty, all supported services (https://cloud.google.com/vpc-service-controls/docs/supported-products) will be protected."
+  type        = list(string)
+  default     = []
+}

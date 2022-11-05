@@ -43,8 +43,10 @@ resource "google_folder" "bootstrap" {
 }
 
 module "seed_bootstrap" {
-  source                         = "terraform-google-modules/bootstrap/google"
-  version                        = "~> 6.2"
+  # source                         = "terraform-google-modules/bootstrap/google"
+  # version                        = "~> 6.2"
+  source = "github.com/daniel-cit/terraform-google-bootstrap"
+
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
   project_id                     = "${var.project_prefix}-b-seed"
@@ -56,6 +58,7 @@ module "seed_bootstrap" {
   default_region                 = var.default_region
   org_project_creators           = local.org_project_creators
   sa_enable_impersonation        = true
+  create_terraform_sa            = false
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
   project_prefix                 = var.project_prefix

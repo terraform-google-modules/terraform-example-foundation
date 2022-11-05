@@ -20,38 +20,34 @@ locals {
   // The version of the terraform docker image to be used in the workspace builds
   docker_tag_version_terraform = "v1"
 
-  default_state_bucket_self_link      = "${local.bucket_self_link_prefix}${module.seed_bootstrap.gcs_bucket_tfstate}"
-  gcp_projects_state_bucket_self_link = module.gcp_projects_state_bucket.bucket.self_link
-
   cb_config = {
-    "bootstrap" = {
-      source       = "gcp-bootstrap",
-      state_bucket = local.default_state_bucket_self_link,
-    },
     "org" = {
-      source       = "gcp-org",
-      state_bucket = local.default_state_bucket_self_link,
+      source        = "gcp-org",
+      create_bucket = false,
     },
     "env" = {
-      source       = "gcp-environments",
-      state_bucket = local.default_state_bucket_self_link,
+      source        = "gcp-environments",
+      create_bucket = false,
     },
     "net" = {
-      source       = "gcp-networks",
-      state_bucket = local.default_state_bucket_self_link,
+      source        = "gcp-networks",
+      create_bucket = false,
     },
     "proj" = {
-      source       = "gcp-projects",
-      state_bucket = local.gcp_projects_state_bucket_self_link,
+      source        = "gcp-projects",
+      create_bucket = true,
     },
   }
   cloud_source_repos = [for v in local.cb_config : v.source]
   cloudbuilder_repo  = "tf-cloudbuilder"
   base_cloud_source_repos = [
     "gcp-policies",
+    "gcp-bootstrap",
     local.cloudbuilder_repo,
   ]
-  gar_repository           = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
+  gar_repository              = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
+  projects_gcs_bucket_tfstate = split("/", module.tf_workspace["proj"].state_bucket)[length(split("/", module.tf_workspace["proj"].state_bucket)) - 1]
+
   cloud_builder_trigger_id = element(split("/", module.tf_cloud_builder.cloudbuild_trigger_id), index(split("/", module.tf_cloud_builder.cloudbuild_trigger_id), "triggers") + 1, )
 }
 
@@ -59,16 +55,6 @@ resource "random_string" "suffix" {
   length  = 8
   special = false
   upper   = false
-}
-
-module "gcp_projects_state_bucket" {
-  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 3.2"
-
-  name          = "bkt-b-gcp-projects-tfstate-${module.seed_bootstrap.seed_project_id}"
-  project_id    = module.seed_bootstrap.seed_project_id
-  location      = var.default_region
-  force_destroy = var.bucket_force_destroy
 }
 
 module "tf_source" {
@@ -198,14 +184,14 @@ module "tf_workspace" {
   trigger_location          = var.default_region
   enable_worker_pool        = true
   worker_pool_id            = module.tf_private_pool.private_worker_pool_id
-  state_bucket_self_link    = local.cb_config[each.key].state_bucket
+  state_bucket_self_link    = "${local.bucket_self_link_prefix}${module.seed_bootstrap.gcs_bucket_tfstate}"
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
   tf_repo_uri               = module.tf_source.csr_repos[local.cb_config[each.key].source].url
   cloudbuild_sa             = google_service_account.terraform-env-sa[each.key].id
   create_cloudbuild_sa      = false
   diff_sa_project           = true
-  create_state_bucket       = false
+  create_state_bucket       = local.cb_config[each.key].create_bucket
   buckets_force_destroy     = var.bucket_force_destroy
 
   substitutions = {

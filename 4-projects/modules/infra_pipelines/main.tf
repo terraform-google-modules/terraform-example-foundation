@@ -55,7 +55,7 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
 
 module "tf_workspace" {
   #source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  #version  = "~> 6.2"
+  #version  = "~> 6.3"
   source   = "github.com/terraform-google-modules/terraform-google-bootstrap//modules/tf_cloudbuild_workspace"
   for_each = toset(var.app_infra_repos)
 

@@ -258,6 +258,7 @@ Each step has instructions for this change.
 |------|-------------|
 | cloud\_build\_peered\_network\_id | The ID of the Cloud Build peered network. |
 | cloud\_build\_private\_worker\_pool\_id | ID of the Cloud Build private worker pool. |
+| cloud\_build\_worker\_peered\_ip\_range | The IP range of the peered service network. |
 | cloud\_build\_worker\_range\_id | The Cloud Build private worker IP range ID. |
 | cloud\_builder\_artifact\_repo | GAR Repo created to store TF Cloud Builder images. |
 | cloudbuild\_project\_id | Project where CloudBuild configuration and terraform container image will reside. |

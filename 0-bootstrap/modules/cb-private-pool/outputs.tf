@@ -24,6 +24,11 @@ output "worker_range_id" {
   value       = try(google_compute_global_address.worker_pool_range[0].id, "")
 }
 
+output "worker_peered_ip_range" {
+  description = "The IP range of the peered service network."
+  value       = local.peered_ip_range
+}
+
 output "peered_network_id" {
   description = "The ID of the peered network."
   value       = local.peered_network_id

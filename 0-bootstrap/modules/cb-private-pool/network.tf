@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+locals {
+  peered_ip_range = var.private_worker_pool.enable_network_peering ? "${google_compute_global_address.worker_pool_range[0].address}/${google_compute_global_address.worker_pool_range[0].prefix_length}" : ""
+}
+
 module "peered_network" {
   source  = "terraform-google-modules/network/google"
   version = "~> 5.2"
@@ -85,9 +89,7 @@ module "firewall_rules" {
     target_tags             = null
     target_service_accounts = null
 
-    ranges = [
-      "${google_compute_global_address.worker_pool_range[0].address}/${google_compute_global_address.worker_pool_range[0].prefix_length}"
-    ]
+    ranges = [local.peered_ip_range]
 
     allow = [{
       protocol = "all"

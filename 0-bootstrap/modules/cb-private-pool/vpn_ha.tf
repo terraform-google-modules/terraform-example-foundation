@@ -74,4 +74,17 @@ module "vpn_ha_cb_to_onprem" {
       shared_secret                   = local.psk_secret_data
     }
   }
+  router_advertise_config = {
+    mode = "CUSTOM"
+    ip_ranges = {
+      data.google_compute_global_address.worker_pool_range.address = "Peered private pool address."
+    }
+    groups = ["ALL_SUBNETS"]
+  }
+}
+
+data "google_compute_global_address" "worker_pool_range" {
+  count   = var.vpn_configuration.enable_vpn ? 1 : 0
+  project = var.project_id
+  name    = "ga-worker-pool-range-vpc-peering"
 }

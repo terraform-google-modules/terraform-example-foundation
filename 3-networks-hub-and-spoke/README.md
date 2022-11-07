@@ -187,6 +187,11 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
 
    sed -i "s/NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
+
+   export PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_step_terraform_service_account_email)
+   echo "projects_service_account = ${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
+
+   sed -i "s/PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
    ```
 
 1. Commit changes
@@ -312,6 +317,11 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
    echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
 
    sed -i "s/NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
+
+   export PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw projects_step_terraform_service_account_email)
+   echo "projects_service_account = ${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
+
+   sed -i "s/PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
    ```
 
 We will now deploy each of our environments(development/production/non-production) using this script.

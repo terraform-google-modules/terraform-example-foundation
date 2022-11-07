@@ -18,6 +18,7 @@
 domain = "example.com."
 
 terraform_service_account = "NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL"
+projects_service_account  = "PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL"
 
 remote_state_bucket = "REMOTE_STATE_BUCKET"
 

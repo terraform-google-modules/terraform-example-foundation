@@ -24,6 +24,11 @@ variable "terraform_service_account" {
   description = "Service account email of the account to be added to the VPC-SC perimeter."
 }
 
+variable "projects_service_account" {
+  type        = string
+  description = "Service account email of the projects step Terraform service account to be added to the VPC-SC perimeter."
+}
+
 variable "access_context_manager_policy_id" {
   type        = number
   description = "The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format=\"value(name)\"`."

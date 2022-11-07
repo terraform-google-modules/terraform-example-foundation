@@ -29,6 +29,11 @@ variable "terraform_service_account" {
   description = "Service account email of the account to be added to the VPC-SC perimeter."
 }
 
+variable "projects_service_account" {
+  type        = string
+  description = "Service account email of the projects step Terraform service account to be added to the VPC-SC perimeter."
+}
+
 variable "domain" {
   type        = string
   description = "The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period."

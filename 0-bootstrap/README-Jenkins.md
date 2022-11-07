@@ -572,6 +572,11 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
    sed -i "s/NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
+
+   export PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw projects_step_terraform_service_account_email)
+   echo "projects_service_account = ${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
+
+   sed -i "s/PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
    ```
 
 1. Commit changes.
@@ -729,6 +734,11 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
    sed -i "s/NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
+
+   export PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw projects_step_terraform_service_account_email)
+   echo "projects_service_account = ${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
+
+   sed -i "s/PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
    ```
 
 1. Commit changes.

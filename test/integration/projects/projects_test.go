@@ -176,7 +176,7 @@ func TestProjects(t *testing.T) {
 
 						if projectOutput == "restricted_shared_vpc_project" {
 
-							enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
+							enabledAPIS := gcloud.Runf(t, "services list --project %s --impersonate-service-account %s", projectID, terraformSA).Array()
 							listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
 
@@ -185,15 +185,15 @@ func TestProjects(t *testing.T) {
 							listResources := utils.GetResultStrSlice(perimeter.Get("status.resources").Array())
 							assert.Contains(listResources, fmt.Sprintf("projects/%s", restrictedProjectNumber), "restricted project should be in the perimeter")
 
-							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
+							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s --impersonate-service-account %s", projectID, terraformSA)
 							assert.NotEmpty(sharedVPC.Map())
 
 							hostProjectID := sharedVPC.Get("name").String()
-							hostProject := gcloud.Runf(t, "projects describe %s", hostProjectID)
+							hostProject := gcloud.Runf(t, "projects describe %s --impersonate-service-account %s", hostProjectID, terraformSA)
 							assert.Equal("restricted-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
 							assert.Equal(env, hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env))
 
-							hostNetwork := gcloud.Runf(t, "compute networks list --project %s", hostProjectID).Array()[0]
+							hostNetwork := gcloud.Runf(t, "compute networks list --project %s --impersonate-service-account %s", hostProjectID, terraformSA).Array()[0]
 							assert.Equal(tt.restrictedNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
 
 						}

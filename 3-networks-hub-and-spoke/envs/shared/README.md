@@ -29,6 +29,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | firewall\_policies\_enable\_logging | Toggle hierarchical firewall logging. | `bool` | `true` | no |
 | preactivate\_partner\_interconnect | Preactivate Partner Interconnect VLAN attachment in the environment. | `bool` | `false` | no |
+| projects\_service\_account | Service account email of the projects step Terraform service account to be added to the VPC-SC perimeter. | `string` | n/a | yes |
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | restricted\_hub\_dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for Restricted Hub VPC DNS. | `bool` | `true` | no |
 | restricted\_hub\_dns\_enable\_logging | Toggle DNS logging for Restricted Hub VPC DNS. | `bool` | `true` | no |

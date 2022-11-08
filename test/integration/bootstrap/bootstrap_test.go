@@ -191,7 +191,7 @@ func TestBootstrap(t *testing.T) {
 					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-apply'", branchesRegex, triggerRepo, triggerRepo),
 					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-plan' AND trigger_template.invert_regex=true", branchesRegex, triggerRepo, triggerRepo),
 				} {
-					cbOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--filter", filter, "--format", "json"})
+					cbOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--region", defaultRegion, "--filter", filter, "--format", "json"})
 					cbTriggers := gcloud.Run(t, "beta builds triggers list", cbOpts).Array()
 					assert.Equal(1, len(cbTriggers), fmt.Sprintf("cloud builds trigger with filter %s should exist", filter))
 				}

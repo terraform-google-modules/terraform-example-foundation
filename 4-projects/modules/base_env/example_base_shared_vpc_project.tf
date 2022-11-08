@@ -27,8 +27,15 @@ module "base_shared_vpc_project" {
   project_budget                      = var.project_budget
   project_prefix                      = local.project_prefix
   enable_cloudbuild_deploy            = local.enable_cloudbuild_deploy
-  sa_roles                            = local.sa_roles
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
+
+  sa_roles = {
+    "${var.business_code}-example-app" = [
+      "roles/compute.instanceAdmin.v1",
+      "roles/iam.serviceAccountAdmin",
+      "roles/iam.serviceAccountUser",
+    ]
+  }
 
   activate_apis = [
     "iam.googleapis.com",

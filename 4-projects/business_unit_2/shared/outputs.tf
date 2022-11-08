@@ -33,11 +33,6 @@ output "repos" {
   value       = try(module.infra_pipelines[0].repos, toset([]))
 }
 
-output "sa_roles" {
-  description = "A list of roles to give the Service Accounts from App Infra Pipeline by workspace repository."
-  value       = local.enable_cloudbuild_deploy ? local.sa_roles : {}
-}
-
 output "artifact_buckets" {
   description = "GCS Buckets to store Cloud Build Artifacts"
   value       = try(module.infra_pipelines[0].artifact_buckets, {})

@@ -34,10 +34,12 @@ locals {
     "compute.setNewProjectDefaultToZonalDNSOnly",
     "compute.requireOsLogin",
     "sql.restrictPublicIp",
+    "sql.restrictAuthorizedNetworks",
     "iam.disableServiceAccountKeyCreation",
     "iam.automaticIamGrantsForDefaultServiceAccounts",
     "iam.disableServiceAccountKeyUpload",
-    "storage.uniformBucketLevelAccess"
+    "storage.uniformBucketLevelAccess",
+    "storage.publicAccessPrevention"
   ])
 
   private_pools = [local.cloud_build_private_worker_pool_id]

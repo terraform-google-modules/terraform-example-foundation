@@ -19,6 +19,11 @@ output "seed_project_id" {
   value       = module.seed_bootstrap.seed_project_id
 }
 
+output "bootstrap_step_terraform_service_account_email" {
+  description = "Bootstrap Step Terraform Account"
+  value       = google_service_account.terraform-env-sa["bootstrap"].email
+}
+
 output "projects_step_terraform_service_account_email" {
   description = "Projects Step Terraform Account"
   value       = google_service_account.terraform-env-sa["proj"].email
@@ -94,7 +99,7 @@ output "gcs_bucket_cloudbuild_artifacts" {
 
 output "projects_gcs_bucket_tfstate" {
   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
-  value       = local.projects_gcs_bucket_tfstate
+  value       = module.gcp_projects_state_bucket.bucket.name
 }
 
 output "cloud_builder_artifact_repo" {

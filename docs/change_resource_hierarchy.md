@@ -72,8 +72,17 @@ Review tf-wrapper.sh.
 
 1. Create a new variable maxdepth to set how many source folder levels should be searched for terraform configurations.
 
-    ```text
-    aaaaaaaaaaa
+    ```bash
+    ...
+    tmp_plan="${base_dir}/tmp_plan" #if you change this, update build triggers
+    environments_regex="^(development|non-production|production|shared)$"
+
+    # Create maxdepth variable
+    maxdepth=2
+
+    ## Terraform apply for single environment.
+    tf_apply() {
+    ...
     ```
 
 1. Change find commands to use maxdepth variable on all terraform commands. Make sure you do the same changes in functions:

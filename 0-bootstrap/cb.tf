@@ -20,6 +20,8 @@ locals {
   // The version of the terraform docker image to be used in the workspace builds
   docker_tag_version_terraform = "v1"
 
+  cicd_project_id = module.tf_source.cloudbuild_project_id
+
   default_state_bucket_self_link      = "${local.bucket_self_link_prefix}${module.seed_bootstrap.gcs_bucket_tfstate}"
   gcp_projects_state_bucket_self_link = module.gcp_projects_state_bucket.bucket.self_link
 
@@ -44,21 +46,6 @@ locals {
       source       = "gcp-projects",
       state_bucket = local.gcp_projects_state_bucket_self_link,
     },
-  }
-
-  granular_sa_cicd_project = {
-    "bootstrap" = [
-      "roles/storage.admin",
-      "roles/compute.networkAdmin",
-      "roles/cloudbuild.builds.editor",
-      "roles/cloudbuild.workerPoolOwner",
-      "roles/artifactregistry.admin",
-      "roles/source.admin",
-      "roles/iam.serviceAccountAdmin",
-      "roles/workflows.admin",
-      "roles/cloudscheduler.admin",
-      "roles/resourcemanager.projectDeleter",
-    ],
   }
 
   cloud_source_repos = [for v in local.cb_config : v.source]
@@ -132,16 +119,6 @@ module "tf_source" {
 
   # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
   depends_on = [module.seed_bootstrap]
-}
-
-module "project_iam_member_cicd" {
-  source   = "./modules/parent-iam-member"
-  for_each = local.granular_sa_cicd_project
-
-  member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
-  parent_type = "project"
-  parent_id   = module.tf_source.cloudbuild_project_id
-  roles       = each.value
 }
 
 module "tf_cloud_builder" {

@@ -89,6 +89,7 @@ locals {
     ],
   }
 
+  // Roles required to manage resources in the Seed project
   granular_sa_seed_project = {
     "bootstrap" = [
       "roles/storage.admin",
@@ -106,6 +107,22 @@ locals {
     ],
     "proj" = [
       "roles/storage.objectAdmin",
+    ],
+  }
+
+  // Roles required to manage resources in the CI/CD project
+  granular_sa_cicd_project = {
+    "bootstrap" = [
+      "roles/storage.admin",
+      "roles/compute.networkAdmin",
+      "roles/cloudbuild.builds.editor",
+      "roles/cloudbuild.workerPoolOwner",
+      "roles/artifactregistry.admin",
+      "roles/source.admin",
+      "roles/iam.serviceAccountAdmin",
+      "roles/workflows.admin",
+      "roles/cloudscheduler.admin",
+      "roles/resourcemanager.projectDeleter",
     ],
   }
 }
@@ -138,13 +155,23 @@ module "parent_iam_member" {
   roles       = each.value
 }
 
-module "project_iam_member" {
+module "seed_project_iam_member" {
   source   = "./modules/parent-iam-member"
   for_each = local.granular_sa_seed_project
 
   member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
   parent_type = "project"
   parent_id   = module.seed_bootstrap.seed_project_id
+  roles       = each.value
+}
+
+module "cicd_project_iam_member" {
+  source   = "./modules/parent-iam-member"
+  for_each = local.granular_sa_cicd_project
+
+  member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  parent_type = "project"
+  parent_id   = local.cicd_project_id
   roles       = each.value
 }
 

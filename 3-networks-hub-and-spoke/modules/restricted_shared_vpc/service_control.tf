@@ -35,21 +35,9 @@ module "access_level_members" {
   members     = var.members
 }
 
-module "regular_service_perimeter" {
-  source  = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
-  version = "~> 4.0"
-
-  policy         = var.access_context_manager_policy_id
-  perimeter_name = local.perimeter_name
-  description    = "Default VPC Service Controls perimeter"
-  resources      = [var.project_number]
-  access_levels  = [module.access_level_members.name]
-
-  restricted_services     = var.restricted_services
-  vpc_accessible_services = ["RESTRICTED-SERVICES"]
-
-  ingress_policies = var.ingress_policies
-  egress_policies  = var.egress_policies
+resource "time_sleep" "wait_vpc_sc_propagation" {
+  create_duration  = "60s"
+  destroy_duration = "60s"
 
   depends_on = [
     module.main,
@@ -67,6 +55,27 @@ module "regular_service_perimeter" {
     google_service_networking_connection.private_vpc_connection,
     google_compute_router_nat.nat_external_addresses_region1,
     google_compute_router_nat.egress_nat_region2,
+  ]
+}
+
+module "regular_service_perimeter" {
+  source  = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
+  version = "~> 4.0"
+
+  policy         = var.access_context_manager_policy_id
+  perimeter_name = local.perimeter_name
+  description    = "Default VPC Service Controls perimeter"
+  resources      = [var.project_number]
+  access_levels  = [module.access_level_members.name]
+
+  restricted_services     = var.restricted_services
+  vpc_accessible_services = ["RESTRICTED-SERVICES"]
+
+  ingress_policies = var.ingress_policies
+  egress_policies  = var.egress_policies
+
+  depends_on = [
+    time_sleep.wait_vpc_sc_propagation
   ]
 }
 

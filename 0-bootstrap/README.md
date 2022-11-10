@@ -203,19 +203,49 @@ your current Jenkins manager (controller) environment.
    ```
 
 1. (Optional) Run `terraform plan` to verify that state is configured correctly. You should see no changes from the previous state.
-1. Save `0-bootstrap` Terraform configuration to `gcp-bootstrap` source repository:
+1. Clone the policy repo and copy contents of policy-library to new repo. Clone the repo at the same level of the `terraform-example-foundation` folder, the next instructions assume that layout.
 
    ```bash
    cd ../..
 
+   gcloud source repos clone gcp-policies --project=${cloudbuild_project_id}
+
+   cd gcp-policies
+   git checkout -b main
+   cp -RT ../terraform-example-foundation/policy-library/ .
+   ```
+
+1. Commit changes and push your main branch to the policy repo.
+
+   ```bash
+   git add .
+   git commit -m 'Initialize policy library'
+   git push --set-upstream origin main
+   ```
+
+1. Navigate out of the repo.
+
+   ```bash
+   cd ..
+   ```
+
+1. Save `0-bootstrap` Terraform configuration to `gcp-bootstrap` source repository:
+
+   ```bash
    gcloud source repos clone gcp-bootstrap --project=${cloudbuild_project_id}
+
    cd gcp-bootstrap
-   git checkout -b production
-   cp -RT ../terraform-example-foundation/0-bootstrap/ .
+   git checkout -b plan
+   mkdir -p envs/shared
+
+   cp -RT ../terraform-example-foundation/0-bootstrap/ ./envs/shared
+   cp ../terraform-example-foundation/build/cloudbuild-tf-* .
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
 
    git add .
    git commit -m 'Initialize bootstrap'
-   git push --set-upstream origin production
+   git push --set-upstream origin plan
    ```
 
 1. You can now move to the instructions in the [1-org](../1-org/README.md) step.
@@ -256,6 +286,7 @@ Each step has instructions for this change.
 
 | Name | Description |
 |------|-------------|
+| bootstrap\_step\_terraform\_service\_account\_email | Bootstrap Step Terraform Account |
 | cloud\_build\_peered\_network\_id | The ID of the Cloud Build peered network. |
 | cloud\_build\_private\_worker\_pool\_id | ID of the Cloud Build private worker pool. |
 | cloud\_build\_worker\_peered\_ip\_range | The IP range of the peered service network. |

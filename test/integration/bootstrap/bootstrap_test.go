@@ -72,6 +72,7 @@ func TestBootstrap(t *testing.T) {
 	}
 
 	triggerRepos := []string{
+		"gcp-bootstrap",
 		"gcp-org",
 		"gcp-environments",
 		"gcp-networks",
@@ -170,6 +171,7 @@ func TestBootstrap(t *testing.T) {
 			assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(globalAddress.Get("network").String(), "/"), fmt.Sprintf("global address %s should be in the peered network", globalAddressName))
 
 			for _, env := range []string{
+				"bootstrap",
 				"org",
 				"env",
 				"net",
@@ -248,6 +250,15 @@ func TestBootstrap(t *testing.T) {
 						"roles/securitycenter.notificationConfigEditor",
 						"roles/resourcemanager.organizationViewer",
 						"roles/accesscontextmanager.policyAdmin",
+						"roles/browser",
+					},
+				},
+				{
+					output: "bootstrap_step_terraform_service_account_email",
+					orgRoles: []string{
+						"roles/resourcemanager.organizationAdmin",
+						"roles/accesscontextmanager.policyAdmin",
+						"roles/serviceusage.serviceUsageConsumer",
 						"roles/browser",
 					},
 				},

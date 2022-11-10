@@ -15,13 +15,6 @@
  */
 
 locals {
-  sa_roles = {
-    "bu2-example-app" = [
-      "roles/compute.instanceAdmin.v1",
-      "roles/iam.serviceAccountAdmin",
-      "roles/iam.serviceAccountUser",
-    ]
-  }
   repo_names = ["bu2-example-app"]
 }
 

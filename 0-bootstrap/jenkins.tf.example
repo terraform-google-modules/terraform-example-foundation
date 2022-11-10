@@ -16,6 +16,8 @@
 
 locals {
   sa_names = { for k, v in google_service_account.terraform-env-sa : k => v.id }
+
+  cicd_project_id = module.jenkins_bootstrap.cicd_project_id
 }
 
 module "jenkins_bootstrap" {

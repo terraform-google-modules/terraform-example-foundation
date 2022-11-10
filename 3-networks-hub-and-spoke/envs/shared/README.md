@@ -28,6 +28,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | enable\_hub\_and\_spoke\_transitivity | Enable transitivity via gateway VMs on Hub-and-Spoke architecture. | `bool` | `false` | no |
 | enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | firewall\_policies\_enable\_logging | Toggle hierarchical firewall logging. | `bool` | `true` | no |
+| perimeter\_additional\_members | The list of additional members to be added to the perimeter access level members list. To be able to see the resources protected by the VPC Service Controls in the restricted perimeter, add your user in this list. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`. | `list(string)` | n/a | yes |
 | preactivate\_partner\_interconnect | Preactivate Partner Interconnect VLAN attachment in the environment. | `bool` | `false` | no |
 | projects\_service\_account | Service account email of the projects step Terraform service account to be added to the VPC-SC perimeter. | `string` | n/a | yes |
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |

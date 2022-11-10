@@ -20,6 +20,11 @@ domain = "example.com."
 terraform_service_account = "NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL"
 projects_service_account  = "PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL"
 
+// Uncommnet the following line and add you email in the perimeter_additional_members list.
+// You must be in this list to be able to view/access resources in the project protected by the VPC service controls.
+
+//perimeter_additional_members = ["user:YOUR-USER-EMAIL@example.com"]
+
 remote_state_bucket = "REMOTE_STATE_BUCKET"
 
 //enable_hub_and_spoke_transitivity = true

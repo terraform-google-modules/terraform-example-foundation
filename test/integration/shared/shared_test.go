@@ -66,6 +66,7 @@ func TestShared(t *testing.T) {
 		vars["access_context_manager_policy_id"] = policyID
 		vars["terraform_service_account"] = terraformSA
 		vars["projects_service_account"] = projectsTerraformSA
+		vars["perimeter_additional_members"] = []string{}
 		tfdDir = "../../../3-networks-hub-and-spoke/envs/shared"
 	} else {
 		tfdDir = "../../../3-networks-dual-svpc/envs/shared"

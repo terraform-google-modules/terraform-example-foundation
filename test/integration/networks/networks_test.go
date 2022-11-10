@@ -303,6 +303,7 @@ func TestNetworks(t *testing.T) {
 				"projects_service_account":         projectsTerraformSA,
 				"ingress_policies":                 ingressPolicies,
 				"egress_policies":                  egressPolicies,
+				"perimeter_additional_members":     []string{},
 			}
 
 			var tfdDir string

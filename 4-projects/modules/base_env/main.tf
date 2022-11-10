@@ -32,7 +32,6 @@ locals {
   access_context_manager_policy_id    = data.terraform_remote_state.network_env.outputs.access_context_manager_policy_id
   env_folder_name                     = data.terraform_remote_state.environments_env.outputs.env_folder
   app_infra_pipeline_service_accounts = data.terraform_remote_state.business_unit_shared.outputs.terraform_service_accounts
-  sa_roles                            = data.terraform_remote_state.business_unit_shared.outputs.sa_roles
   enable_cloudbuild_deploy            = data.terraform_remote_state.business_unit_shared.outputs.enable_cloudbuild_deploy
 }
 

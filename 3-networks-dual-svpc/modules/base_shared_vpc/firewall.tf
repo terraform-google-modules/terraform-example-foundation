@@ -19,11 +19,11 @@
  *****************************************/
 
 resource "google_compute_firewall" "deny_all_egress" {
-  name      = "fw-${var.environment_code}-shared-base-65535-e-d-all-all-all"
+  name      = "fw-${var.environment_code}-shared-base-65530-e-d-all-all-all"
   network   = module.main.network_name
   project   = var.project_id
   direction = "EGRESS"
-  priority  = 65535
+  priority  = 65530
 
   dynamic "log_config" {
     for_each = var.firewall_enable_logging == true ? [{
@@ -44,11 +44,11 @@ resource "google_compute_firewall" "deny_all_egress" {
 
 
 resource "google_compute_firewall" "allow_private_api_egress" {
-  name      = "fw-${var.environment_code}-shared-base-65534-e-a-allow-google-apis-all-tcp-443"
+  name      = "fw-${var.environment_code}-shared-base-65530-e-a-allow-google-apis-all-tcp-443"
   network   = module.main.network_name
   project   = var.project_id
   direction = "EGRESS"
-  priority  = 65534
+  priority  = 65530
 
   dynamic "log_config" {
     for_each = var.firewall_enable_logging == true ? [{

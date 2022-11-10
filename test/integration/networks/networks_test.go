@@ -57,8 +57,8 @@ func getNetworkResourceNames(envCode string, networkMode string) map[string]map[
 			"region1_router2":       fmt.Sprintf("cr-%s-shared-base%s-us-west1-cr2", envCode, networkMode),
 			"region2_router1":       fmt.Sprintf("cr-%s-shared-base%s-us-central1-cr3", envCode, networkMode),
 			"region2_router2":       fmt.Sprintf("cr-%s-shared-base%s-us-central1-cr4", envCode, networkMode),
-			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-base-65535-e-d-all-all-all", envCode),
-			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-base-65534-e-a-allow-google-apis-all-tcp-443", envCode),
+			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-base-65530-e-d-all-all-all", envCode),
+			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-base-65530-e-a-allow-google-apis-all-tcp-443", envCode),
 		},
 		"restricted": {
 			"network_name":          fmt.Sprintf("vpc-%s-shared-restricted%s", envCode, networkMode),
@@ -74,8 +74,8 @@ func getNetworkResourceNames(envCode string, networkMode string) map[string]map[
 			"region1_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-west1-cr6", envCode, networkMode),
 			"region2_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr7", envCode, networkMode),
 			"region2_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr8", envCode, networkMode),
-			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-restricted-65535-e-d-all-all-all", envCode),
-			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-restricted-65534-e-a-allow-google-apis-all-tcp-443", envCode),
+			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-restricted-65530-e-d-all-all-all", envCode),
+			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-restricted-65530-e-a-allow-google-apis-all-tcp-443", envCode),
 		},
 	}
 }

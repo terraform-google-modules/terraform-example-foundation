@@ -72,6 +72,7 @@ func TestBootstrap(t *testing.T) {
 	}
 
 	triggerRepos := []string{
+		"gcp-bootstrap",
 		"gcp-org",
 		"gcp-environments",
 		"gcp-networks",
@@ -153,6 +154,7 @@ func TestBootstrap(t *testing.T) {
 			assert.True(prj.Exists(), "project %s should exist", cbProjectID)
 
 			for _, env := range []string{
+				"bootstrap",
 				"org",
 				"env",
 				"net",
@@ -231,6 +233,15 @@ func TestBootstrap(t *testing.T) {
 						"roles/securitycenter.notificationConfigEditor",
 						"roles/resourcemanager.organizationViewer",
 						"roles/accesscontextmanager.policyAdmin",
+						"roles/browser",
+					},
+				},
+				{
+					output: "bootstrap_step_terraform_service_account_email",
+					orgRoles: []string{
+						"roles/resourcemanager.organizationAdmin",
+						"roles/accesscontextmanager.policyAdmin",
+						"roles/serviceusage.serviceUsageConsumer",
 						"roles/browser",
 					},
 				},

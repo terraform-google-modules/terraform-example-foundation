@@ -136,6 +136,13 @@ resource "google_compute_subnetwork" "jenkins_agents_subnet" {
   ip_cidr_range = var.jenkins_agent_gce_subnetwork_cidr_range
   region        = var.default_region
   network       = google_compute_network.jenkins_agents.self_link
+
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+    flow_sampling        = 0.5
+    metadata             = "INCLUDE_ALL_METADATA"
+    filter_expr          = true
+  }
 }
 
 resource "google_compute_address" "jenkins_agent_gce_static_ip" {

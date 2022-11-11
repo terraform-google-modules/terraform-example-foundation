@@ -105,51 +105,21 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Deploying with Cloud Build
 
-1. Clone the policy repo based on the Terraform output from the previous section.
+1. Clone the `gcp-org` repo based on the Terraform output from the previous step.
 Clone the repo at the same level of the `terraform-example-foundation` folder, the next instructions assume that layout.
 Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see the project again.
 
    ```bash
    export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
    echo ${CLOUD_BUILD_PROJECT_ID}
-   gcloud source repos clone gcp-policies --project=${CLOUD_BUILD_PROJECT_ID}
-   ```
 
-1. Navigate into the repo and copy contents of policy-library to new repo.
-   All subsequent steps assume you are running them
-   from the gcp-policies directory. If you run them from another directory,
-   adjust your copy paths accordingly.
-
-   ```bash
-   cd gcp-policies
-   git checkout -b main
-   cp -RT ../terraform-example-foundation/policy-library/ .
-   ```
-
-1. Commit changes and push your main branch to the new repo.
-
-   ```bash
-   git add .
-   git commit -m 'Your message'
-   git push --set-upstream origin main
-   ```
-
-1. Navigate out of the repo.
-
-   ```bash
-   cd ..
-   ```
-
-1. Clone the repo.
-
-   ```bash
    gcloud source repos clone gcp-org --project=${CLOUD_BUILD_PROJECT_ID}
    ```
 
    - The message `warning: You appear to have cloned an empty repository.` is
    normal and can be ignored.
 1. Navigate into the repo, change to a non-production branch and copy contents of foundation to new repo.
-   All subsequent steps assume you are running them from the gcp-org directory.
+   All subsequent steps assume you are running them from the `gcp-org` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash

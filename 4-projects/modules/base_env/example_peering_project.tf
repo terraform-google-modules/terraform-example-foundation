@@ -73,11 +73,11 @@ module "peering" {
  *****************************************/
 
 resource "google_compute_firewall" "deny_all_egress" {
-  name      = "fw-${local.env_code}-peering-base-65535-e-d-all-all-tcp-udp"
+  name      = "fw-${local.env_code}-peering-base-65530-e-d-all-all-tcp-udp"
   network   = module.peering_network.network_name
   project   = module.peering_project.project_id
   direction = "EGRESS"
-  priority  = 65535
+  priority  = 65530
 
   dynamic "log_config" {
     for_each = var.firewall_enable_logging == true ? [{
@@ -102,11 +102,11 @@ resource "google_compute_firewall" "deny_all_egress" {
 
 
 resource "google_compute_firewall" "allow_private_api_egress" {
-  name      = "fw-${local.env_code}-peering-base-65534-e-a-allow-google-apis-all-tcp-443"
+  name      = "fw-${local.env_code}-peering-base-65530-e-a-allow-google-apis-all-tcp-443"
   network   = module.peering_network.network_name
   project   = module.peering_project.project_id
   direction = "EGRESS"
-  priority  = 65534
+  priority  = 65530
 
   dynamic "log_config" {
     for_each = var.firewall_enable_logging == true ? [{

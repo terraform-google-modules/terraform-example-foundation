@@ -70,7 +70,8 @@ resource "google_compute_firewall" "allow_restricted_api_egress" {
 }
 
 resource "google_compute_firewall" "allow_all_egress" {
-  count     = var.allow_all_egress_ranges != null ? 1 : 0
+  count = var.allow_all_egress_ranges != null ? 1 : 0
+
   name      = "fw-${var.environment_code}-shared-base-1000-e-a-all"
   network   = module.main.network_name
   project   = var.project_id
@@ -95,7 +96,8 @@ resource "google_compute_firewall" "allow_all_egress" {
 }
 
 resource "google_compute_firewall" "allow_all_ingress" {
-  count     = var.allow_all_ingress_ranges != null ? 1 : 0
+  count = var.allow_all_ingress_ranges != null ? 1 : 0
+
   name      = "fw-${var.environment_code}-shared-base-1000-i-a-all"
   network   = module.main.network_name
   project   = var.project_id

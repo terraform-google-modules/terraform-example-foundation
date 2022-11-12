@@ -149,13 +149,13 @@ func TestBootstrap(t *testing.T) {
 			// cloud build project
 			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
 			bucketName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_artifacts")
+			defaultRegion := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["default_region"]
 
 			prj := gcloud.Runf(t, "projects describe %s", cbProjectID)
 			assert.True(prj.Exists(), "project %s should exist", cbProjectID)
 
 			// Private Pools
 			workerPoolName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_private_worker_pool_id"), "/")
-			defaultRegion := utils.ValFromEnv(t, "TF_VAR_default_region")
 			peeredNetworkName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_peered_network_id"), "/")
 			pool := gcloud.Runf(t, "builds worker-pools describe %s --region %s --project %s", workerPoolName, defaultRegion, cbProjectID)
 			assert.Equal(workerPoolName, pool.Get("name").String(), "pool %s should exist", workerPoolName)

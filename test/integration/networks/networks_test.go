@@ -22,6 +22,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
@@ -82,13 +83,13 @@ func getNetworkResourceNames(envCode string, networkMode string) map[string]map[
 
 func TestNetworks(t *testing.T) {
 
-	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
-	policyID := getPolicyID(t, orgID)
-	networkMode := getNetworkMode(t)
-
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
+
+	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
+	policyID := getPolicyID(t, orgID)
+	networkMode := getNetworkMode(t)
 
 	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")

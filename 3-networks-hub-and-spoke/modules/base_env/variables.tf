@@ -76,6 +76,11 @@ variable "base_subnet_secondary_ranges" {
   description = "The base subnet secondary IPTs ranges to the Base Shared Vpc."
 }
 
+variable "base_private_service_connect_ip" {
+  type        = string
+  description = "The base subnet internal IP to be used as the private service connect endpoint in the Base Shared VPC"
+}
+
 variable "restricted_private_service_cidr" {
   type        = string
   description = "CIDR range for private service networking. Used for Cloud SQL and other managed services in the Restricted Shared Vpc."
@@ -89,6 +94,11 @@ variable "restricted_subnet_primary_ranges" {
 variable "restricted_subnet_secondary_ranges" {
   type        = map(list(map(string)))
   description = "The base subnet secondary IPTs ranges to the Restricted Shared Vpc"
+}
+
+variable "restricted_private_service_connect_ip" {
+  type        = string
+  description = "The base subnet internal IP to be used as the private service connect endpoint in the Restricted Shared VPC"
 }
 
 variable "egress_policies" {

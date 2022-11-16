@@ -119,9 +119,19 @@ func TestNetworks(t *testing.T) {
 		},
 	}
 
-	googleapisCIDR := map[string]string{
-		"base":       "10.3.0.5",
-		"restricted": "10.3.0.5",
+	googleapisCIDR := map[string]map[string]string{
+		"development": {
+			"base":       "10.2.64.5",
+			"restricted": "10.10.64.5",
+		},
+		"non-production": {
+			"base":       "10.2.128.5",
+			"restricted": "10.10.128.5",
+		},
+		"production": {
+			"base":       "10.2.192.5",
+			"restricted": "10.10.192.5",
+		},
 	}
 
 	operationService := "storage.googleapis.com"
@@ -282,7 +292,7 @@ func TestNetworks(t *testing.T) {
 						assert.Equal(allowApiEgressName, allowApiEgressRule.Get("name").String(), fmt.Sprintf("firewall rule %s should exist", allowApiEgressName))
 						assert.Equal("EGRESS", allowApiEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", allowApiEgressName))
 						assert.True(allowApiEgressRule.Get("logConfig.enable").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", allowApiEgressName))
-						assert.Equal(googleapisCIDR[networkType], allowApiEgressRule.Get("destinationRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be %s", allowApiEgressName, googleapisCIDR[networkType]))
+						assert.Equal(googleapisCIDR[envName][networkType], allowApiEgressRule.Get("destinationRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be %s", allowApiEgressName, googleapisCIDR[envName][networkType]))
 						assert.Equal(1, len(allowApiEgressRule.Get("allowed").Array()), fmt.Sprintf("firewall rule %s should have only one allowed", allowApiEgressName))
 						assert.Equal(2, len(allowApiEgressRule.Get("allowed.0").Map()), fmt.Sprintf("firewall rule %s should have only one allowed only with protocol end ports", allowApiEgressName))
 						assert.Equal("tcp", allowApiEgressRule.Get("allowed.0.IPProtocol").String(), fmt.Sprintf("firewall rule %s should allow tcp protocol", allowApiEgressName))
@@ -318,7 +328,7 @@ func TestNetworks(t *testing.T) {
 								assert.Equal(routerName, computeRouter.Get("name").String(), fmt.Sprintf("router %s should exist", routerName))
 								assert.Equal("64514", computeRouter.Get("bgp.asn").String(), fmt.Sprintf("router %s should have bgp asm 64514", routerName))
 								assert.Equal(1, len(computeRouter.Get("bgp.advertisedIpRanges").Array()), fmt.Sprintf("router %s should have only one advertised IP range", routerName))
-								assert.Equal(googleapisCIDR[networkType], computeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have only range %s", routerName, googleapisCIDR[networkType]))
+								assert.Equal(googleapisCIDR[envName][networkType], computeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have only range %s", routerName, googleapisCIDR[envName][networkType]))
 								assert.Equal(networkSelfLink, computeRouter.Get("network").String(), fmt.Sprintf("router %s should have be from network %s", routerName, networkNames[networkType]["network_name"]))
 							}
 						}

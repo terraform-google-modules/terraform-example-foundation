@@ -126,7 +126,7 @@ variable "private_service_cidr" {
 
 variable "private_service_connect_ip" {
   type        = string
-  description = "internal IP to be used as the private service connect endpoint"
+  description = "Internal IP to be used as the private service connect endpoint."
 }
 
 variable "windows_activation_enabled" {

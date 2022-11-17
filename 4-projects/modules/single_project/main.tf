@@ -43,9 +43,8 @@ locals {
 }
 
 module "project" {
-  # source  = "terraform-google-modules/project-factory/google"
-  # version = "~> 14.0"
-  source = "github.com/daniel-cit/terraform-google-project-factory?ref=configure-vpc-sc-propagation-time"
+  source  = "terraform-google-modules/project-factory/google"
+  version = "~> 14.1"
 
   random_project_id = true
   activate_apis     = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))

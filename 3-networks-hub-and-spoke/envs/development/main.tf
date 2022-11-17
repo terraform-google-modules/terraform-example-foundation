@@ -64,22 +64,24 @@ locals {
 module "base_env" {
   source = "../../modules/base_env"
 
-  env                                = local.env
-  environment_code                   = local.environment_code
-  access_context_manager_policy_id   = var.access_context_manager_policy_id
-  members                            = distinct(concat(["serviceAccount:${var.terraform_service_account}", "serviceAccount:${var.projects_service_account}"], var.perimeter_additional_members))
-  default_region1                    = local.default_region1
-  default_region2                    = local.default_region2
-  domain                             = var.domain
-  ingress_policies                   = var.ingress_policies
-  egress_policies                    = var.egress_policies
-  enable_partner_interconnect        = false
-  enable_hub_and_spoke_transitivity  = var.enable_hub_and_spoke_transitivity
-  base_private_service_cidr          = local.base_private_service_cidr
-  base_subnet_primary_ranges         = local.base_subnet_primary_ranges
-  base_subnet_secondary_ranges       = local.base_subnet_secondary_ranges
-  restricted_private_service_cidr    = local.restricted_private_service_cidr
-  restricted_subnet_primary_ranges   = local.restricted_subnet_primary_ranges
-  restricted_subnet_secondary_ranges = local.restricted_subnet_secondary_ranges
-  remote_state_bucket                = var.remote_state_bucket
+  env                                   = local.env
+  environment_code                      = local.environment_code
+  access_context_manager_policy_id      = var.access_context_manager_policy_id
+  members                               = distinct(concat(["serviceAccount:${var.terraform_service_account}", "serviceAccount:${var.projects_service_account}"], var.perimeter_additional_members))
+  default_region1                       = local.default_region1
+  default_region2                       = local.default_region2
+  domain                                = var.domain
+  ingress_policies                      = var.ingress_policies
+  egress_policies                       = var.egress_policies
+  enable_partner_interconnect           = false
+  enable_hub_and_spoke_transitivity     = var.enable_hub_and_spoke_transitivity
+  base_private_service_cidr             = local.base_private_service_cidr
+  base_subnet_primary_ranges            = local.base_subnet_primary_ranges
+  base_subnet_secondary_ranges          = local.base_subnet_secondary_ranges
+  base_private_service_connect_ip       = "10.2.64.5"
+  restricted_private_service_cidr       = local.restricted_private_service_cidr
+  restricted_subnet_primary_ranges      = local.restricted_subnet_primary_ranges
+  restricted_subnet_secondary_ranges    = local.restricted_subnet_secondary_ranges
+  restricted_private_service_connect_ip = "10.10.64.5"
+  remote_state_bucket                   = var.remote_state_bucket
 }

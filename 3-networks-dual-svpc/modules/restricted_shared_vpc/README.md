@@ -26,6 +26,7 @@
 | org\_id | Organization ID | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | `string` | `null` | no |
+| private\_service\_connect\_ip | Internal IP to be used as the private service connect endpoint. | `string` | n/a | yes |
 | project\_id | Project ID for Restricted Shared VPC. | `string` | n/a | yes |
 | project\_number | Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter. | `number` | n/a | yes |
 | restricted\_services | List of services to restrict. | `list(string)` | n/a | yes |

@@ -23,6 +23,7 @@
 | org\_id | Organization ID | `string` | n/a | yes |
 | parent\_folder | Optional - if using a folder for testing. | `string` | `""` | no |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | `string` | `null` | no |
+| private\_service\_connect\_ip | Internal IP to be used as the private service connect endpoint | `string` | n/a | yes |
 | project\_id | Project ID for Private Shared VPC. | `string` | n/a | yes |
 | secondary\_ranges | Secondary ranges that will be used in some of the subnets | `map(list(object({ range_name = string, ip_cidr_range = string })))` | `{}` | no |
 | subnets | The list of subnets being created | `list(map(string))` | `[]` | no |

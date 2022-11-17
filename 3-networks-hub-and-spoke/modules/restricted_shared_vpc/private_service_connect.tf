@@ -22,6 +22,6 @@ module "private_service_connect" {
   project_id                 = var.project_id
   dns_code                   = "dz-${var.environment_code}-shared-restricted"
   network_self_link          = module.main.network_self_link
-  private_service_connect_ip = "10.3.0.5"
+  private_service_connect_ip = var.private_service_connect_ip
   forwarding_rule_target     = "vpc-sc"
 }

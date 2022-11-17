@@ -18,10 +18,12 @@ locals {
   organization_id = local.parent_folder != "" ? null : local.org_id
   folder_id       = local.parent_folder != "" ? local.parent_folder : null
   policy_for      = local.parent_folder != "" ? "folder" : "organization"
+
   essential_contacts_domains_to_allow = concat(
     [for domain in var.essential_contacts_domains_to_allow : "${domain}" if can(regex("^@.*$", domain)) == true],
     [for domain in var.essential_contacts_domains_to_allow : "@${domain}" if can(regex("^@.*$", domain)) == false]
   )
+
   boolean_type_organization_policies = toset([
     "compute.disableNestedVirtualization",
     "compute.disableSerialPortAccess",
@@ -39,6 +41,8 @@ locals {
     "storage.uniformBucketLevelAccess",
     "storage.publicAccessPrevention"
   ])
+
+  private_pools = [local.cloud_build_private_worker_pool_id]
 }
 
 module "organization_policies_type_boolean" {
@@ -107,6 +111,24 @@ module "domain_restricted_contacts" {
   allow_list_length = length(local.essential_contacts_domains_to_allow)
   allow             = local.essential_contacts_domains_to_allow
   constraint        = "constraints/essentialcontacts.allowedContactDomains"
+}
+
+/******************************************
+  Cloud build
+*******************************************/
+
+module "allowed_worker_pools" {
+  source  = "terraform-google-modules/org-policy/google"
+  version = "~> 5.1"
+  count   = var.enforce_allowed_worker_pools ? 1 : 0
+
+  organization_id   = local.organization_id
+  folder_id         = local.folder_id
+  policy_for        = local.policy_for
+  policy_type       = "list"
+  allow_list_length = length(local.private_pools)
+  allow             = local.private_pools
+  constraint        = "constraints/cloudbuild.allowedWorkerPools"
 }
 
 /******************************************

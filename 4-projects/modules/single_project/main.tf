@@ -43,8 +43,9 @@ locals {
 }
 
 module "project" {
-  source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.1"
+  # source  = "terraform-google-modules/project-factory/google"
+  # version = "~> 14.1"
+  source = "github.com/terraform-google-modules/terraform-google-project-factory?ref=c02c7db09cd92ddffeb586a9469d272081c46ff3"
 
   random_project_id = true
   activate_apis     = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))

@@ -21,7 +21,7 @@ variable "project_id" {
 
 variable "private_worker_pool" {
   description = <<EOT
-  name: Name of the worker pool.
+  name: Name of the worker pool. A name with a random suffix is generated if not set.
   region: The private worker pool region. See https://cloud.google.com/build/docs/locations for available locations.
   disk_size_gb: Size of the disk attached to the worker, in GB.
   machine_type: Machine type of a worker.

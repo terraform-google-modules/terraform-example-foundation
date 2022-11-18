@@ -30,6 +30,7 @@ locals {
   group_org_admins                              = data.terraform_remote_state.bootstrap.outputs.group_org_admins
   networks_step_terraform_service_account_email = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
   bootstrap_folder_name                         = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
+  cloud_build_private_worker_pool_id            = data.terraform_remote_state.bootstrap.outputs.cloud_build_private_worker_pool_id
 }
 
 data "terraform_remote_state" "bootstrap" {

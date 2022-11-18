@@ -55,13 +55,16 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
 
 module "tf_workspace" {
   source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 6.2"
+  version  = "~> 6.3"
   for_each = toset(var.app_infra_repos)
 
-  project_id                = var.cloudbuild_project_id
-  location                  = var.default_region
+  project_id = var.cloudbuild_project_id
+  location   = var.default_region
+
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
+  enable_worker_pool        = true
+  worker_pool_id            = var.private_worker_pool_id
   tf_repo_uri               = google_sourcerepo_repository.app_infra_repo[each.key].url
   diff_sa_project           = true
   buckets_force_destroy     = true

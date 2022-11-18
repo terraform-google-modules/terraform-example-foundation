@@ -44,13 +44,13 @@ func getNetworkMode(t *testing.T) string {
 
 func TestProjects(t *testing.T) {
 
-	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
-	policyID := getPolicyID(t, orgID)
-	networkMode := getNetworkMode(t)
-
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
+
+	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
+	policyID := getPolicyID(t, orgID)
+	networkMode := getNetworkMode(t)
 
 	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")

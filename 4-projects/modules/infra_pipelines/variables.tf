@@ -61,3 +61,8 @@ variable "cloud_builder_artifact_repo" {
   type        = string
 
 }
+
+variable "private_worker_pool_id" {
+  description = "ID of the Cloud Build private worker pool."
+  type        = string
+}

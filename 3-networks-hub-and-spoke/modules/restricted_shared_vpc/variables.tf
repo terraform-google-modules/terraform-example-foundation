@@ -142,6 +142,11 @@ variable "private_service_cidr" {
   default     = null
 }
 
+variable "private_service_connect_ip" {
+  type        = string
+  description = "Internal IP to be used as the private service connect endpoint."
+}
+
 variable "windows_activation_enabled" {
   type        = bool
   description = "Enable Windows license activation for Windows workloads."

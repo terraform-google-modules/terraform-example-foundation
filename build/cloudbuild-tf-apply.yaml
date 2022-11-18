@@ -74,3 +74,5 @@ artifacts:
     paths: ['cloudbuild-tf-apply.yaml', 'tmp_plan/*.tfplan']
 
 logsBucket: 'gs://${_LOG_BUCKET_NAME}'
+options:
+  worker_pool: '${_PRIVATE_POOL}'

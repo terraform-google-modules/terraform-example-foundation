@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
+output "private_worker_pool_id" {
+  description = "Private worker pool ID."
+  value       = google_cloudbuild_worker_pool.private_pool.id
+}
 
-module "private_service_connect" {
-  source                     = "terraform-google-modules/network/google//modules/private-service-connect"
-  version                    = "~> 5.2"
-  project_id                 = var.project_id
-  dns_code                   = "dz-${var.environment_code}-shared-base"
-  network_self_link          = module.main.network_self_link
-  private_service_connect_ip = var.private_service_connect_ip
-  forwarding_rule_target     = "all-apis"
+output "worker_range_id" {
+  description = "The worker IP range ID."
+  value       = try(google_compute_global_address.worker_pool_range[0].id, "")
+}
+
+output "worker_peered_ip_range" {
+  description = "The IP range of the peered service network."
+  value       = local.peered_ip_range
+}
+
+output "peered_network_id" {
+  description = "The ID of the peered network."
+  value       = local.peered_network_id
 }

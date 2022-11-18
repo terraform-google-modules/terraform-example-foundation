@@ -60,7 +60,7 @@ And
       + service                    = "admin.googleapis.com"
     }
 
-In this case, we can instruct terraform to safely move this resource if we provide following block of code. 
+In this case, we can instruct terraform to safely move this resource if we provide following block of code.
 
     # cloudbuild bootstrap
     moved {

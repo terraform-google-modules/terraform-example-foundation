@@ -1,35 +1,43 @@
 # Upgrade Guidance
-Before moving forward with adopting components of v3, please review the list of breaking changes below. You can find a complete list of features, bug fixes and other updates in the [Changelog](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/CHANGELOG.md).
+Before moving forward with adopting components of v3 review the list of breaking changes below. You can find a complete list of features, bug fixes and other updates in the [Changelog](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/CHANGELOG.md).
 
-**Important:** There is no in-place upgrade path from v2 to v3
+**Important:** There is no in-place upgrade path from v2 to v3.
 
 ## Breaking Changes
 
 - Upgrade minimum required Terraform version to 1.3.0, previously was 0.13.7.
-- Added Remote State. This feature centralizes frequently used terraform variables in a remote state bucket (Google Storage) so users will not have the need to re declare them while deploying the different steps of foundation. Now, each step does requires access (read/write) to this single remote state bucket in order to be properly deployed.
-- Added Granular Service Account (SA). In previous versions, only one SA was used to deployed all steps. This end up having an excess of permissions give to this SA. Now, each has its own SA with very limited permissions.
-- Bring your Service Account (BYOSA). It lets terraform commands be impersonated with a specified SA.
-- 3-networks split into two. Networks step supported both networks topologies, Dual-SVPC and Hub-and-Spoke. Currently, these have been  separated into two different implementations.
+- Added usage of Remote State data. This feature centralizes terraform variables that are input through all steps in a remote state in 0-bootstrap step. This uses a Google Storage bucket so that you will not have the need to re-declare them while deploying the foundation example. Note that each step requires `read/write` access to this bucket in order to be properly deployed.
+- Added Granular Service Account (SA). In previous versions, only one SAs were used to deploy all steps, this ended up having an excess of permissions given to them. Now, each step has its own SA with very limited permissions.
+- User-specified service accounts in Cloud Build (Bring your Service Account - BYOSA). Using user-specified service accounts in Cloud Build instead of the default Cloud Build service account enables you to grant different permissions to these service accounts depending on the tasks they perform. For more details, see following [link](https://cloud.google.com/build/docs/securing-builds/configure-user-specified-service-accounts).
+- 3-networks directory split into two different directories. The 3-Networks step supported both network modes, Dual Shared VPC and Hub and Spoke. In this release, these two modes have been separated into two different implementations.
 
-**Note:** You can use newer Terraform versions directly on top of already deployed  configurations with older version. However, you should take into account that doing so will prevent you from using older versions. Also, this action will update terraform state and dependencies (external modules and provider's resources). It is advisable to backup your terraform state before trying an upgrade.
+**Note:** You can use newer Terraform versions directly on top of already deployed configurations that use older versions. However, note that doing so will prevent you from using these older versions. Also, this will update terraform state and dependencies (external modules and provider's resources). Thus, we recommend to backup your current terraform state before trying to upgrade your codebase.
 
-## Adapting New Features
+## Integrating New Features
 
-In case you want to adapt newer features, you can update your terraform configuration following foundation's v3 practices and codebase and then applying given configuration with `terraform apply`. You should verify that you are using the required terraform version and gcloud version.
+As stated earlier, there is no direct path for upgrading example foundation codebase. Thus, we discourage trying this by solely applying foundation v3's code (i.e. running `terraform apply` on new code).
 
-Although new configurations should consider additions only, it might end up with some resources being moved from one module to another. In this scenario, we recommend users to review terraform official documentation for [moved blocks](https://developer.hashicorp.com/terraform/tutorials/configuration-language/move-config).
+In case you require to integrate some of the v3's features, we recommend to review the documentation regarding the feature you are interested in and use v3's code as a guidance for its implementation. We also recommend to deeply review the output from `terraform plan` before applying the updates.
 
-In the following subsections we give some examples on how these moved blocks can be implemented.
+**Note:** You must verify that you are using the correct version for `terraform` and `gcloud`. You can check these and other additional requirements using this [validate script](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/scripts/validate-requirements.sh).
 
-**Note:** As stated previously, there is not direct path for upgrading the foundation's codebase. So, we discourage users to try to leverage their terraform configuration directly applying foundation v3. Instead, we suggest users to deeply read and study `terraform plan` output before updating their configuration.
+### Move Blocks
+
+Integrating features to your codebase can end up with some resources being moved from a parent module to a child module, from a child module to a parent module or even taken out from an external module to your configuration.
+
+Given this variety of scenarios, we suggest you to consider `moved blocks` which enables you to update your resources and safely refactor your code. For more details, see [moved blocks](https://developer.hashicorp.com/terraform/tutorials/configuration-language/move-config).
+
+**Note:** `moved blocks` are supported by the required terraform version for example foundation v3 (v1.3.0).
+
+Next, we give some examples on how these moved blocks can be implemented.
 
 ### Module-to-Module
 
-Consider a 0-bootstrap foundation v2 deployment without no modifications. If we try to migrate to v3 we will observe the following as the summarize of the output of `terraform plan`.
+Consider a 0-bootstrap foundation v2 deployment without no modifications. If you try to migrate to v3 you will observe the following as the summarize for the output of `terraform plan`.
 
     Plan: 165 to add, 2 to change, 67 to destroy.
 
-You can review `module.cloudbuild_bootstrap.module.cloudbuild_project` module and observe that there are plenty of resources that are destroyed and created again in a similar module.
+You can review `module.cloudbuild_bootstrap.module.cloudbuild_project` module and observe that there are plenty of resources related to it that are destroyed and created again in a different module.
 
     # module.cloudbuild_bootstrap.module.cloudbuild_project.module.project-factory.module.project_services.google_project_service.project_services["admin.googleapis.com"] will be destroyed
     # (because google_project_service.project_services is not in configuration)
@@ -52,7 +60,7 @@ And
       + service                    = "admin.googleapis.com"
     }
 
-We can omit this behavior if we provide following block.
+In this case, we can instruct terraform to safely move this resource if we provide following block of code. 
 
     # cloudbuild bootstrap
     moved {
@@ -60,16 +68,31 @@ We can omit this behavior if we provide following block.
         to   = module.tf_source.module.cloudbuild_project
     }
 
-Now, on the majority of modules this should be enough. However, if part of a module's ID is composed of a autogenerated random string, you will need to hardcode this module's ID in the moved resource.
+**Note:** This code can be implemented in a separate *terraform file* (e.g. moved.tf).
 
-In this specific example you will need to you will need to hard-code CICD project's ID at `module.tf_source`.
+In most cases, this is enough to update your terraform configuration. However, in this particular example, the source module's ID is composed of an autogenerated random string, so you will need to hardcode this module's ID in the updated resource, as well.
 
-Now, we can verify that the number of resources to be destroyed have been reduced considerably.
+    module "tf_source" {
+        source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_source"
+        version = "~> 6.2"
+
+        org_id                = var.org_id
+        folder_id             = google_folder.bootstrap.id
+        project_id            = "${var.project_prefix}-b-cicd-${random_string.suffix.result}" # REPLACE_HERE
+        billing_account       = var.billing_account
+        group_org_admins      = local.group_org_admins
+        buckets_force_destroy = var.bucket_force_destroy
+    ...
+    }
+
+You can verify that the number of resources to be destroyed has been reduced.
 
     Plan: 146 to add, 4 to change, 48 to destroy.
 ### Backups
 
-You can save resources from being destroyed and instead make a copy of them as a backup. The following blocks of code shows how to save KMS keys no longer being part of the foundation v3 configuration.
+You can also use `moved blocks` to save resources from being destroyed and instead make a copy of them as a backup.
+
+The following blocks of code shows how to save KMS keys that  are no longer being part of the configuration for foundation v3.
 
 ```hcl
 terraform-example foundation/0-bootstrap/backup.tf.example
@@ -77,7 +100,7 @@ terraform-example foundation/0-bootstrap/backup.tf.example
 resource "google_kms_crypto_key" "backup_tf_key" {
     destroy_scheduled_duration = "86400s"
     import_only                   = false
-    key_ring                      = "projects/prj-b-cicd-9aee/locations/us-central1/keyRings/tf-keyring"
+    key_ring                      = "projects/<PROJECT_ID>/locations/us-central1/keyRings/tf-keyring"
     labels                        = {}
     name                          = "tf-key"
     purpose                       = "ENCRYPT_DECRYPT"
@@ -92,7 +115,7 @@ resource "google_kms_crypto_key" "backup_tf_key" {
 resource "google_kms_key_ring" "backup_tf_keyring" {
     location = "us-central1"
     name     = "tf-keyring"
-    project  = "prj-b-cicd-9aee"
+    project  = <PROJECT_ID>
 }
 ```
 

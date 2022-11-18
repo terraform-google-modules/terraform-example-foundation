@@ -81,6 +81,12 @@ func TestShared(t *testing.T) {
 	)
 	shared.DefineVerify(
 		func(assert *assert.Assertions) {
+
+			// do a time.Sleep to wait for propagation of VPC Service Controls configuration in the Hub and Spoke network mode
+			if isHubAndSpokeMode(t) {
+				time.Sleep(60 * time.Second)
+			}
+
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 			shared.DefaultVerify(assert)
 

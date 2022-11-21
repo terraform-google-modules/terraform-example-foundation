@@ -40,6 +40,7 @@ module "base_shared_vpc" {
   project_id                    = local.base_net_hub_project_id
   dns_hub_project_id            = local.dns_hub_project_id
   environment_code              = local.environment_code
+  private_service_connect_ip    = "10.2.0.5"
   org_id                        = local.org_id
   bgp_asn_subnet                = local.bgp_asn_number
   default_region1               = local.default_region1
@@ -88,6 +89,7 @@ module "restricted_shared_vpc" {
   project_number                   = local.restricted_net_hub_project_number
   dns_hub_project_id               = local.dns_hub_project_id
   environment_code                 = local.environment_code
+  private_service_connect_ip       = "10.10.0.5"
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = ["bigquery.googleapis.com", "storage.googleapis.com"]
   members                          = ["serviceAccount:${var.terraform_service_account}"]

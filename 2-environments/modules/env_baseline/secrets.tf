@@ -29,6 +29,7 @@ module "env_secrets" {
   billing_account             = local.billing_account
   folder_id                   = google_folder.env.id
   disable_services_on_destroy = false
+  depends_on                  = [time_sleep.wait_60_seconds]
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
 
   labels = {

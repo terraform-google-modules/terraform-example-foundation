@@ -29,7 +29,8 @@ steps:
       gcloud config set auth/impersonate_service_account $tf_sa_email
     fi
     echo "Adding bucket information to backends"
-    for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/${_STATE_BUCKET_NAME}/' $i; done
+    for i in `find -name 'backend.tf'`; do sed -r -i 's/UPDATE_ME|UPDATE_PROJECTS_BACKEND|UPDATE_APP_INFRA_BUCKET/${_STATE_BUCKET_NAME}/' $i; done
+
 
 # [START tf-plan_validate_all]
 - id: 'tf plan validate all'
@@ -46,3 +47,5 @@ artifacts:
     paths: ['cloudbuild-tf-plan.yaml', 'tmp_plan/*.tfplan']
 
 logsBucket: 'gs://${_LOG_BUCKET_NAME}'
+options:
+  worker_pool: '${_PRIVATE_POOL}'

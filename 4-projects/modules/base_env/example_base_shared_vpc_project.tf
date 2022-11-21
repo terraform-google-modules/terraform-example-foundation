@@ -26,9 +26,24 @@ module "base_shared_vpc_project" {
   shared_vpc_subnets                  = local.base_subnets_self_links
   project_budget                      = var.project_budget
   project_prefix                      = local.project_prefix
-  enable_cloudbuild_deploy            = true
-  sa_roles                            = local.sa_roles
+  enable_cloudbuild_deploy            = local.enable_cloudbuild_deploy
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
+
+  // The roles defined in "sa_roles" will be used to grant the necessary permissions
+  // to deploy the resources, a Compute Engine instance for each environment, defined
+  // in 5-app-infra step (5-app-infra/modules/env_base/main.tf).
+  // The roles are grouped by the repository name ("${var.business_code}-example-app") used to create the Cloud Build workspace
+  // (https://github.com/terraform-google-modules/terraform-google-bootstrap/tree/master/modules/tf_cloudbuild_workspace)
+  // in the 4-projects shared environment of each business unit.
+  // the repository name is the same key used for the app_infra_pipeline_service_accounts map and the
+  // roles will be granted to the service account with the same key.
+  sa_roles = {
+    "${var.business_code}-example-app" = [
+      "roles/compute.instanceAdmin.v1",
+      "roles/iam.serviceAccountAdmin",
+      "roles/iam.serviceAccountUser",
+    ]
+  }
 
   activate_apis = [
     "iam.googleapis.com",

@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-// List of IPv4 address of target name servers for the forwarding zone configuration.
-// See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones
-target_name_server_addresses = [
-  {
-    ipv4_address    = "192.168.0.1",
-    forwarding_path = "default"
-  },
-  {
-    ipv4_address    = "192.168.0.2",
-    forwarding_path = "default"
-  }
-]
+output "private_worker_pool_id" {
+  description = "Private worker pool ID."
+  value       = google_cloudbuild_worker_pool.private_pool.id
+}
+
+output "worker_range_id" {
+  description = "The worker IP range ID."
+  value       = try(google_compute_global_address.worker_pool_range[0].id, "")
+}
+
+output "worker_peered_ip_range" {
+  description = "The IP range of the peered service network."
+  value       = local.peered_ip_range
+}
+
+output "peered_network_id" {
+  description = "The ID of the peered network."
+  value       = local.peered_network_id
+}

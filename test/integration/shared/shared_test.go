@@ -22,6 +22,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
@@ -40,30 +41,29 @@ func isHubAndSpokeMode(t *testing.T) bool {
 
 func TestShared(t *testing.T) {
 
-	orgID := utils.ValFromEnv(t, "TF_VAR_org_id")
-	policyID := getPolicyID(t, orgID)
-
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
+
+	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
+	policyID := getPolicyID(t, orgID)
 
 	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
-	vars := map[string]interface{}{
-		"access_context_manager_policy_id": policyID,
-		"remote_state_bucket":              backend_bucket,
-		"terraform_service_account":        terraformSA,
-	}
-
 	backendConfig := map[string]interface{}{
 		"bucket": backend_bucket,
 	}
 
+	vars := map[string]interface{}{
+		"remote_state_bucket": backend_bucket,
+	}
 	var tfdDir string
 	if isHubAndSpokeMode(t) {
+		vars["access_context_manager_policy_id"] = policyID
+		vars["terraform_service_account"] = terraformSA
 		tfdDir = "../../../3-networks-hub-and-spoke/envs/shared"
 	} else {
 		tfdDir = "../../../3-networks-dual-svpc/envs/shared"

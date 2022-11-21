@@ -72,6 +72,7 @@ func TestBootstrap(t *testing.T) {
 	}
 
 	triggerRepos := []string{
+		"gcp-bootstrap",
 		"gcp-org",
 		"gcp-environments",
 		"gcp-networks",
@@ -148,11 +149,29 @@ func TestBootstrap(t *testing.T) {
 			// cloud build project
 			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
 			bucketName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_artifacts")
+			defaultRegion := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["default_region"]
 
 			prj := gcloud.Runf(t, "projects describe %s", cbProjectID)
 			assert.True(prj.Exists(), "project %s should exist", cbProjectID)
 
+			// Private Pools
+			workerPoolName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_private_worker_pool_id"), "/")
+			peeredNetworkName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_peered_network_id"), "/")
+			pool := gcloud.Runf(t, "builds worker-pools describe %s --region %s --project %s", workerPoolName, defaultRegion, cbProjectID)
+			assert.Equal(workerPoolName, pool.Get("name").String(), "pool %s should exist", workerPoolName)
+			assert.Equal("PUBLIC_EGRESS", pool.Get("privatePoolV1Config.networkConfig.egressOption").String(), "pool %s should have internet access", workerPoolName)
+			assert.Equal("e2-medium", pool.Get("privatePoolV1Config.workerConfig.machineType").String(), "pool %s should have the configured machineType", workerPoolName)
+			assert.Equal("100", pool.Get("privatePoolV1Config.workerConfig.diskSizeGb").String(), "pool %s should have the configured disk size", workerPoolName)
+			assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(pool.Get("privatePoolV1Config.networkConfig.peeredNetwork").String(), "/"), "pool %s should have peered network configured", workerPoolName)
+
+			globalAddressName := "ga-worker-pool-range-vpc-peering"
+			globalAddress := gcloud.Runf(t, "compute addresses describe %s --global --project %s", globalAddressName, cbProjectID)
+			assert.Equal(globalAddressName, globalAddress.Get("name").String(), fmt.Sprintf("global address %s should exist", globalAddressName))
+			assert.Equal("VPC_PEERING", globalAddress.Get("purpose").String(), fmt.Sprintf("global address %s purpose should be VPC peering", globalAddressName))
+			assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(globalAddress.Get("network").String(), "/"), fmt.Sprintf("global address %s should be in the peered network", globalAddressName))
+
 			for _, env := range []string{
+				"bootstrap",
 				"org",
 				"env",
 				"net",
@@ -174,7 +193,7 @@ func TestBootstrap(t *testing.T) {
 					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-apply'", branchesRegex, triggerRepo, triggerRepo),
 					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-plan' AND trigger_template.invert_regex=true", branchesRegex, triggerRepo, triggerRepo),
 				} {
-					cbOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--filter", filter, "--format", "json"})
+					cbOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--region", defaultRegion, "--filter", filter, "--format", "json"})
 					cbTriggers := gcloud.Run(t, "beta builds triggers list", cbOpts).Array()
 					assert.Equal(1, len(cbTriggers), fmt.Sprintf("cloud builds trigger with filter %s should exist", filter))
 				}
@@ -231,6 +250,15 @@ func TestBootstrap(t *testing.T) {
 						"roles/securitycenter.notificationConfigEditor",
 						"roles/resourcemanager.organizationViewer",
 						"roles/accesscontextmanager.policyAdmin",
+						"roles/browser",
+					},
+				},
+				{
+					output: "bootstrap_step_terraform_service_account_email",
+					orgRoles: []string{
+						"roles/resourcemanager.organizationAdmin",
+						"roles/accesscontextmanager.policyAdmin",
+						"roles/serviceusage.serviceUsageConsumer",
 						"roles/browser",
 					},
 				},

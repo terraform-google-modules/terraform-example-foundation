@@ -102,8 +102,8 @@ func TestOrg(t *testing.T) {
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 
 			// check tags applied to common and bootstrap folder
-			bootstrapOutput := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
-			bootstrapFolder := testutils.GetLastSplitElement(bootstrapOutput["bootstrap_folder_name"], "/")
+			commonConfig := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
+			bootstrapFolder := testutils.GetLastSplitElement(commonConfig["bootstrap_folder_name"], "/")
 
 			for _, tags := range []struct {
 				folderId   string
@@ -141,8 +141,10 @@ func TestOrg(t *testing.T) {
 				"constraints/compute.skipDefaultNetworkCreation",
 				"constraints/compute.restrictXpnProjectLienRemoval",
 				"constraints/sql.restrictPublicIp",
+				"constraints/sql.restrictAuthorizedNetworks",
 				"constraints/iam.disableServiceAccountKeyCreation",
 				"constraints/storage.uniformBucketLevelAccess",
+				"constraints/storage.publicAccessPrevention",
 				"constraints/iam.automaticIamGrantsForDefaultServiceAccounts",
 			} {
 				orgPolicy := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", booleanConstraint, parentFolder)
@@ -210,7 +212,7 @@ func TestOrg(t *testing.T) {
 			assert.Equal(logsExportStorageBucketName, bkt.Get("metadata.id").String(), fmt.Sprintf("Bucket %s should exist", logsExportStorageBucketName))
 
 			logsExportLogBktName := org.GetStringOutput("logs_export_logbucket_name")
-			defaultRegion := utils.ValFromEnv(t, "TF_VAR_default_region")
+			defaultRegion := commonConfig["default_region"]
 			logBktFullName := fmt.Sprintf("projects/%s/locations/%s/buckets/%s", auditLogsProjectID, defaultRegion, logsExportLogBktName)
 			logBktDetails := gcloud.Runf(t, fmt.Sprintf("logging buckets describe %s --location=%s --project=%s", logsExportLogBktName, defaultRegion, auditLogsProjectID))
 			assert.Equal(logBktFullName, logBktDetails.Get("name").String(), "log bucket name should match")

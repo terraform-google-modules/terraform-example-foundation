@@ -89,8 +89,8 @@ function validate_terraform(){
         ERRORS+=$'  Terraform not found\n'
     else
         TERRAFORM_CURRENT_VERSION=$(terraform version -json | jq -r .terraform_version)
-        if [ "$(compare_version "$TERRAFORM_CURRENT_VERSION" "$TF_VERSION")" -ne 0 ]; then
-            echo_wrong_version "Terraform" "exactly" "$TF_VERSION" "https://learn.hashicorp.com/tutorials/terraform/install-cli" "$TERRAFORM_CURRENT_VERSION"
+        if [ "$(compare_version "$TERRAFORM_CURRENT_VERSION" "$TF_VERSION")" -gt 1 ]; then
+            echo_wrong_version "Terraform" "greater than or equal to" "$TF_VERSION" "https://learn.hashicorp.com/tutorials/terraform/install-cli" "$TERRAFORM_CURRENT_VERSION"
             ERRORS+=$'  Terraform version is incompatible.\n'
         fi
     fi
@@ -216,16 +216,13 @@ function check_billing_account_roles(){
 # Checks if initial config was done for 0-bootstrap step
 function validate_bootstrap_step(){
     SCRIPTS_DIR="$( dirname -- "$0"; )"
-    BOOTSTRAP_DIR="$(readlink -f $SCRIPTS_DIR/../0-bootstrap)"
-    FILE=$(find "$BOOTSTRAP_DIR" -name "terraform.tfvars" -type f -exec readlink -f {} \;)
-
-    if [ ! -f "$FILE" ]
-    then
-        echo "  Please rename the file $BOOTSTRAP_DIR/terraform.example.tfvars to $BOOTSTRAP_DIR/terraform.tfvars"
+    FILE="$SCRIPTS_DIR/../0-bootstrap/terraform.tfvars"
+    if [ ! -f "$FILE" ]; then
+        echo "  Rename the file 0-bootstrap/terraform.example.tfvars to 0-bootstrap/terraform.tfvars"
         ERRORS+=$'  terraform.tfvars file must exist for 0-bootstrap step.\n'
     else
         if [ "$(grep -c REPLACE_ME $FILE)" != 0 ]; then
-            echo "  $FILE must have required values fulfilled."
+            echo "  0-bootstrap/terraform.tfvars must have required values fulfilled."
             ERRORS+=$'  terraform.tfvars file must be correctly fulfilled for 0-bootstrap step.\n'
         fi
     fi
@@ -256,7 +253,7 @@ function echo_wrong_version () {
     local current_version=$5
 
     echo "  An incompatible $binary_name version, $current_version, was found."
-    echo "  Version required is $constraint $target_version"
+    echo "  Version required should be $constraint $target_version"
     echo "  Visit $installer_url and follow the instructions to install $binary_name."
 }
 

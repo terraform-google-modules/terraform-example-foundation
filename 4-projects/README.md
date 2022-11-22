@@ -240,7 +240,7 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
 
    ```bash
    export remote_state_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "remote_state_bucket = ${REMOTE_STATE_BUCKET}"
+   echo "remote_state_bucket = ${remote_state_bucket}"
 
    sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```

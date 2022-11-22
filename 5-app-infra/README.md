@@ -226,7 +226,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    terraform_sa=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '."bu1-example-app"' --raw-output)
    echo ${terraform_sa}
 
-   gcloud iam service-accounts add-iam-policy-binding ${terraform_sa} --project ${project_id}} --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
+   gcloud iam service-accounts add-iam-policy-binding ${terraform_sa} --project ${project_id} --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
    ```
 
 1. Update `backend.tf` with your bucket from the infra pipeline output.

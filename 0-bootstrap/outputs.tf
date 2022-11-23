@@ -118,6 +118,27 @@ output "csr_repos" {
   }
 }
 
+output "cloud_build_private_worker_pool_id" {
+  description = "ID of the Cloud Build private worker pool."
+  value       = module.tf_private_pool.private_worker_pool_id
+
+}
+
+output "cloud_build_worker_range_id" {
+  description = "The Cloud Build private worker IP range ID."
+  value       = module.tf_private_pool.worker_range_id
+}
+
+output "cloud_build_worker_peered_ip_range" {
+  description = "The IP range of the peered service network."
+  value       = module.tf_private_pool.worker_peered_ip_range
+}
+
+output "cloud_build_peered_network_id" {
+  description = "The ID of the Cloud Build peered network."
+  value       = module.tf_private_pool.peered_network_id
+}
+
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */

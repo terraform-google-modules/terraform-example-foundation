@@ -95,6 +95,7 @@ module "restricted_shared_vpc" {
   restricted_services               = ["bigquery.googleapis.com", "storage.googleapis.com"]
   members                           = var.members
   private_service_cidr              = var.restricted_private_service_cidr
+  private_service_connect_ip        = var.restricted_private_service_connect_ip
   ingress_policies                  = var.ingress_policies
   egress_policies                   = var.egress_policies
   org_id                            = local.org_id
@@ -134,18 +135,19 @@ module "restricted_shared_vpc" {
 *****************************************/
 
 module "base_shared_vpc" {
-  source                  = "../base_shared_vpc"
-  project_id              = local.base_project_id
-  dns_hub_project_id      = local.dns_hub_project_id
-  base_net_hub_project_id = local.base_net_hub_project_id
-  environment_code        = var.environment_code
-  private_service_cidr    = var.base_private_service_cidr
-  org_id                  = local.org_id
-  default_region1         = var.default_region1
-  default_region2         = var.default_region2
-  domain                  = var.domain
-  bgp_asn_subnet          = local.bgp_asn_number
-  mode                    = "spoke"
+  source                     = "../base_shared_vpc"
+  project_id                 = local.base_project_id
+  dns_hub_project_id         = local.dns_hub_project_id
+  base_net_hub_project_id    = local.base_net_hub_project_id
+  environment_code           = var.environment_code
+  private_service_cidr       = var.base_private_service_cidr
+  private_service_connect_ip = var.base_private_service_connect_ip
+  org_id                     = local.org_id
+  default_region1            = var.default_region1
+  default_region2            = var.default_region2
+  domain                     = var.domain
+  bgp_asn_subnet             = local.bgp_asn_number
+  mode                       = "spoke"
 
   subnets = [
     {

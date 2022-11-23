@@ -57,10 +57,11 @@ module "infra_pipelines" {
   billing_account             = local.billing_account
   default_region              = var.default_region
   app_infra_repos             = local.repo_names
+  private_worker_pool_id      = local.cloud_build_private_worker_pool_id
 }
 
 /**
- * When Jenkins CICD is used for deployment this resource
+ * When Jenkins CI/CD is used for deployment this resource
  * is created to terraform validation works.
  * Without this resource, this module creates zero resources
  * and it breaks terraform validation throwing the error below:

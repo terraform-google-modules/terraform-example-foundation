@@ -57,6 +57,7 @@ module "infra_pipelines" {
   billing_account             = local.billing_account
   default_region              = var.default_region
   app_infra_repos             = local.repo_names
+  private_worker_pool_id      = local.cloud_build_private_worker_pool_id
 }
 
 /**

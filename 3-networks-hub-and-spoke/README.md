@@ -169,7 +169,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
    Update `shared.auto.tfvars` file with the `target_name_server_addresses`.
    Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
-   Use `terraform output` to get the backend bucket and networks step Terraform Service Account values from 0-bootstrap output.
+   Use `terraform output` to get the backend bucket value from 0-bootstrap output.
 
    ```bash
    export ORGANIZATION_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
@@ -182,16 +182,6 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    echo "remote_state_bucket = ${backend_bucket}"
 
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
-
-   export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw networks_step_terraform_service_account_email)
-   echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
-
-   sed -i "s/NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
-
-   export PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_step_terraform_service_account_email)
-   echo "projects_service_account = ${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
-
-   sed -i "s/PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
    ```
 
 1. Commit changes
@@ -299,7 +289,7 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
 1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
 1. Update `shared.auto.tfvars` file with the `target_name_server_addresses`.
 1. Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
-1. Use `terraform output` to get the backend bucket and networks step Terraform Service Account values from 0-bootstrap output.
+1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
 
    ```bash
    export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
@@ -312,16 +302,6 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
    echo "remote_state_bucket = ${backend_bucket}"
 
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
-
-   export NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
-   echo "terraform_service_account = ${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
-
-   sed -i "s/NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
-
-   export PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw projects_step_terraform_service_account_email)
-   echo "projects_service_account = ${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}"
-
-   sed -i "s/PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL/${PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL}/" ./common.auto.tfvars
    ```
 
 We will now deploy each of our environments(development/production/non-production) using this script.

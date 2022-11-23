@@ -220,7 +220,7 @@ module "restricted_shared_vpc" {
   private_service_connect_ip       = "10.10.0.5"
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services
-  members                          = distinct(concat(["serviceAccount:${var.terraform_service_account}", "serviceAccount:${var.projects_service_account}"], var.perimeter_additional_members))
+  members                          = distinct(concat(["serviceAccount:${local.networks_service_account}", "serviceAccount:${local.projects_service_account}"], var.perimeter_additional_members))
   org_id                           = local.org_id
   bgp_asn_subnet                   = local.bgp_asn_number
   default_region1                  = local.default_region1

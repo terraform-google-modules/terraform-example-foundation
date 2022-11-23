@@ -119,9 +119,9 @@ variable "ingress_policies" {
   default = []
 }
 
-variable "members" {
+variable "perimeter_additional_members" {
+  description = "The list of additional members to be added to the perimeter access level members list. To be able to see the resources protected by the VPC Service Controls in the restricted perimeter, add your user in this list. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`."
   type        = list(string)
-  description = "An allowed list of members (users, service accounts)to be include in the VPC-SC perimeter. The signed-in identity originating the request must be a part of one of the provided members. If not specified, a request may come from any user (logged in/not logged in, etc.). Formats: user:{emailid}, serviceAccount:{emailid}"
 }
 
 variable "custom_restricted_services" {

@@ -24,16 +24,6 @@ variable "access_context_manager_policy_id" {
   description = "The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format=\"value(name)\"`."
 }
 
-variable "terraform_service_account" {
-  type        = string
-  description = "Service account email of the account to be added to the VPC-SC perimeter."
-}
-
-variable "projects_service_account" {
-  type        = string
-  description = "Service account email of the projects step Terraform service account to be added to the VPC-SC perimeter."
-}
-
 variable "perimeter_additional_members" {
   description = "The list of additional members to be added to the perimeter access level members list. To be able to see the resources protected by the VPC Service Controls in the restricted perimeter, add your user in this list. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`."
   type        = list(string)

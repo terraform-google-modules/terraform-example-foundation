@@ -45,7 +45,6 @@ func TestShared(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
-	projectsTerraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
 	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
 	policyID := getPolicyID(t, orgID)
 
@@ -64,8 +63,6 @@ func TestShared(t *testing.T) {
 	var tfdDir string
 	if isHubAndSpokeMode(t) {
 		vars["access_context_manager_policy_id"] = policyID
-		vars["terraform_service_account"] = terraformSA
-		vars["projects_service_account"] = projectsTerraformSA
 		vars["perimeter_additional_members"] = []string{}
 		tfdDir = "../../../3-networks-hub-and-spoke/envs/shared"
 	} else {

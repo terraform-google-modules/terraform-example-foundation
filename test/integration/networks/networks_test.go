@@ -87,7 +87,6 @@ func TestNetworks(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
-	projectsTerraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
 	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
 	policyID := getPolicyID(t, orgID)
 	networkMode := getNetworkMode(t)
@@ -309,8 +308,6 @@ func TestNetworks(t *testing.T) {
 			vars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
 				"remote_state_bucket":              backend_bucket,
-				"terraform_service_account":        terraformSA,
-				"projects_service_account":         projectsTerraformSA,
 				"ingress_policies":                 ingressPolicies,
 				"egress_policies":                  egressPolicies,
 				"perimeter_additional_members":     []string{},

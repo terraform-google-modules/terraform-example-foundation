@@ -27,6 +27,8 @@ locals {
   env_secret_project_id     = data.terraform_remote_state.environments_env.outputs.env_secrets_project_id
   interconnect_project_id   = data.terraform_remote_state.org.outputs.interconnect_project_id
   dns_hub_project_id        = data.terraform_remote_state.org.outputs.dns_hub_project_id
+  networks_service_account  = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
+  projects_service_account  = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
 
 
   bgp_asn_number = var.enable_partner_interconnect ? "16550" : "64514"
@@ -216,7 +218,7 @@ module "restricted_shared_vpc" {
   environment_code                 = var.environment_code
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services
-  members                          = var.members
+  members                          = distinct(concat(["serviceAccount:${local.networks_service_account}", "serviceAccount:${local.projects_service_account}"], var.perimeter_additional_members))
   private_service_cidr             = var.restricted_private_service_cidr
   private_service_connect_ip       = var.restricted_private_service_connect_ip
   org_id                           = local.org_id

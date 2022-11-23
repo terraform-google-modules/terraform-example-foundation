@@ -32,6 +32,9 @@ locals {
   restricted_net_hub_project_number = data.terraform_remote_state.org.outputs.restricted_net_hub_project_number
   bgp_asn_number                    = var.enable_partner_interconnect ? "16550" : "64514"
   enable_transitivity               = var.enable_hub_and_spoke_transitivity
+  networks_service_account          = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
+  projects_service_account          = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+
   /*
    * Base network ranges
    */
@@ -220,7 +223,7 @@ module "restricted_shared_vpc" {
   environment_code                  = var.environment_code
   access_context_manager_policy_id  = var.access_context_manager_policy_id
   restricted_services               = local.restricted_services
-  members                           = var.members
+  members                           = distinct(concat(["serviceAccount:${local.networks_service_account}", "serviceAccount:${local.projects_service_account}"], var.perimeter_additional_members))
   private_service_cidr              = var.restricted_private_service_cidr
   private_service_connect_ip        = var.restricted_private_service_connect_ip
   ingress_policies                  = var.ingress_policies

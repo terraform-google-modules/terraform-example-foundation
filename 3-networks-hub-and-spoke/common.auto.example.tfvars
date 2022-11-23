@@ -17,10 +17,7 @@
 // The DNS name of peering managed zone. Must end with a period.
 domain = "example.com."
 
-terraform_service_account = "NETWORKS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL"
-projects_service_account  = "PROJECTS_STEP_TERRAFORM_SERVICE_ACCOUNT_EMAIL"
-
-// Uncommnet the following line and add you email in the perimeter_additional_members list.
+// Uncomment the following line and add you email in the perimeter_additional_members list.
 // You must be in this list to be able to view/access resources in the project protected by the VPC service controls.
 
 //perimeter_additional_members = ["user:YOUR-USER-EMAIL@example.com"]

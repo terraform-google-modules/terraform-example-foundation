@@ -129,7 +129,7 @@ resource "google_kms_key_ring" "backup_tf_keyring" {
 ```
 
 ```hcl
-terraform-example foundation/0-bootstrap/moved.tf.exmaple
+terraform-example foundation/0-bootstrap/moved.tf.example
 
 moved {
     from = module.cloudbuild_bootstrap.google_kms_crypto_key.tf_key

@@ -1,13 +1,13 @@
-# Guidance for modifications of the resource hierarchy
+# Resource hierarchy customizations
 
-This guide explains the instructions to change resource hierarchy during Terraform Foundation Example blueprint deployment.
+This document contains guidance for customizing resource hierarchy during Terraform Foundation Example blueprint deployment.
 
 The current deployment scenario of Terraform Foundation Example blueprint considers a flat resource hierarchy where all folders are at the same level and have one folder for each environment. Here is a detailed explanation of each folder:
 
 | Folder | Description |
 | --- | --- |
 | bootstrap | Contains the seed and CI/CD projects that are used to deploy foundation components. |
-| common | Contains projects with cloud resources used by the organization. |
+| common | Contains projects with common resources used by the organization like logging, SCC and hybrid connectivity. |
 | production | Environment folder that contains projects with cloud resources that have been promoted into production. |
 | non-production | Environment folder that contains a replica of the production environment to let you test workloads before you put them into production. |
 | development | Environment folder that is used as a development and sandbox environment. |

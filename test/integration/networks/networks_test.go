@@ -101,8 +101,128 @@ func TestNetworks(t *testing.T) {
 	}
 
 	restrictedServices := []string{
+		"accessapproval.googleapis.com",
+		"adsdatahub.googleapis.com",
+		"aiplatform.googleapis.com",
+		"alloydb.googleapis.com",
+		"alpha-documentai.googleapis.com",
+		"analyticshub.googleapis.com",
+		"apigee.googleapis.com",
+		"apigeeconnect.googleapis.com",
+		"artifactregistry.googleapis.com",
+		"assuredworkloads.googleapis.com",
+		"automl.googleapis.com",
+		"baremetalsolution.googleapis.com",
+		"batch.googleapis.com",
 		"bigquery.googleapis.com",
+		"bigquerydatapolicy.googleapis.com",
+		"bigquerydatatransfer.googleapis.com",
+		"bigquerymigration.googleapis.com",
+		"bigqueryreservation.googleapis.com",
+		"bigtable.googleapis.com",
+		"binaryauthorization.googleapis.com",
+		"cloud.googleapis.com",
+		"cloudasset.googleapis.com",
+		"cloudbuild.googleapis.com",
+		"clouddebugger.googleapis.com",
+		"clouddeploy.googleapis.com",
+		"clouderrorreporting.googleapis.com",
+		"cloudfunctions.googleapis.com",
+		"cloudkms.googleapis.com",
+		"cloudprofiler.googleapis.com",
+		"cloudresourcemanager.googleapis.com",
+		"cloudscheduler.googleapis.com",
+		"cloudsearch.googleapis.com",
+		"cloudtrace.googleapis.com",
+		"composer.googleapis.com",
+		"compute.googleapis.com",
+		"connectgateway.googleapis.com",
+		"contactcenterinsights.googleapis.com",
+		"container.googleapis.com",
+		"containeranalysis.googleapis.com",
+		"containerfilesystem.googleapis.com",
+		"containerregistry.googleapis.com",
+		"containerthreatdetection.googleapis.com",
+		"datacatalog.googleapis.com",
+		"dataflow.googleapis.com",
+		"datafusion.googleapis.com",
+		"datamigration.googleapis.com",
+		"dataplex.googleapis.com",
+		"dataproc.googleapis.com",
+		"datastream.googleapis.com",
+		"dialogflow.googleapis.com",
+		"dlp.googleapis.com",
+		"dns.googleapis.com",
+		"documentai.googleapis.com",
+		"domains.googleapis.com",
+		"eventarc.googleapis.com",
+		"file.googleapis.com",
+		"firebaseappcheck.googleapis.com",
+		"firebaserules.googleapis.com",
+		"firestore.googleapis.com",
+		"gameservices.googleapis.com",
+		"gkebackup.googleapis.com",
+		"gkeconnect.googleapis.com",
+		"gkehub.googleapis.com",
+		"healthcare.googleapis.com",
+		"iam.googleapis.com",
+		"iamcredentials.googleapis.com",
+		"iaptunnel.googleapis.com",
+		"ids.googleapis.com",
+		"integrations.googleapis.com",
+		"kmsinventory.googleapis.com",
+		"krmapihosting.googleapis.com",
+		"language.googleapis.com",
+		"lifesciences.googleapis.com",
+		"logging.googleapis.com",
+		"managedidentities.googleapis.com",
+		"memcache.googleapis.com",
+		"meshca.googleapis.com",
+		"meshconfig.googleapis.com",
+		"metastore.googleapis.com",
+		"ml.googleapis.com",
+		"monitoring.googleapis.com",
+		"networkconnectivity.googleapis.com",
+		"networkmanagement.googleapis.com",
+		"networksecurity.googleapis.com",
+		"networkservices.googleapis.com",
+		"notebooks.googleapis.com",
+		"opsconfigmonitoring.googleapis.com",
+		"orgpolicy.googleapis.com",
+		"osconfig.googleapis.com",
+		"oslogin.googleapis.com",
+		"privateca.googleapis.com",
+		"pubsub.googleapis.com",
+		"pubsublite.googleapis.com",
+		"recaptchaenterprise.googleapis.com",
+		"recommender.googleapis.com",
+		"redis.googleapis.com",
+		"retail.googleapis.com",
+		"run.googleapis.com",
+		"secretmanager.googleapis.com",
+		"servicecontrol.googleapis.com",
+		"servicedirectory.googleapis.com",
+		"spanner.googleapis.com",
+		"speakerid.googleapis.com",
+		"speech.googleapis.com",
+		"sqladmin.googleapis.com",
 		"storage.googleapis.com",
+		"storagetransfer.googleapis.com",
+		"sts.googleapis.com",
+		"texttospeech.googleapis.com",
+		"timeseriesinsights.googleapis.com",
+		"tpu.googleapis.com",
+		"trafficdirector.googleapis.com",
+		"transcoder.googleapis.com",
+		"translate.googleapis.com",
+		"videointelligence.googleapis.com",
+		"vision.googleapis.com",
+		"visionai.googleapis.com",
+		"vmmigration.googleapis.com",
+		"vpcaccess.googleapis.com",
+		"webrisk.googleapis.com",
+		"workflows.googleapis.com",
+		"workstations.googleapis.com",
 	}
 
 	cidrRanges := map[string]map[string][]string{
@@ -188,9 +308,9 @@ func TestNetworks(t *testing.T) {
 			vars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
 				"remote_state_bucket":              backend_bucket,
-				"terraform_service_account":        terraformSA,
 				"ingress_policies":                 ingressPolicies,
 				"egress_policies":                  egressPolicies,
+				"perimeter_additional_members":     []string{},
 			}
 
 			var tfdDir string
@@ -246,40 +366,40 @@ func TestNetworks(t *testing.T) {
 							"dns_zone_peering_zone",
 						} {
 							dnsName := networkNames[networkType][dnsType]
-							dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s", dnsName, projectID)
+							dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsName, projectID, terraformSA)
 							assert.Equal(dnsName, dnsZone.Get("name").String(), fmt.Sprintf("dnsZone %s should exist", dnsName))
 						}
 
 						networkName := networkNames[networkType]["network_name"]
 						networkUrl := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectID, networkName)
 						dnsPolicyName := networkNames[networkType]["dns_policy_name"]
-						dnsPolicy := gcloud.Runf(t, "dns policies describe %s --project %s", dnsPolicyName, projectID)
+						dnsPolicy := gcloud.Runf(t, "dns policies describe %s --project %s --impersonate-service-account %s", dnsPolicyName, projectID, terraformSA)
 						assert.True(dnsPolicy.Get("enableInboundForwarding").Bool(), fmt.Sprintf("dns policy %s should have inbound forwarding enabled", dnsPolicyName))
 						assert.Equal(networkUrl, dnsPolicy.Get("networks.0.networkUrl").String(), fmt.Sprintf("dns policy %s should be on network %s", dnsPolicyName, networkName))
 
 						//compute networks describe %s --project %s
-						projectNetwork := gcloud.Runf(t, "compute networks describe %s --project %s", networkName, projectID)
+						projectNetwork := gcloud.Runf(t, "compute networks describe %s --project %s --impersonate-service-account %s", networkName, projectID, terraformSA)
 						assert.Equal(networkName, projectNetwork.Get("name").String(), fmt.Sprintf("network %s should exist", networkName))
 
 						//gcloud compute addresses describe NAME --global
 						globalAddressName := networkNames[networkType]["global_address"]
-						globalAddress := gcloud.Runf(t, "compute addresses describe %s --global --project %s", globalAddressName, projectID)
+						globalAddress := gcloud.Runf(t, "compute addresses describe %s --global --project %s --impersonate-service-account %s", globalAddressName, projectID, terraformSA)
 						assert.Equal(globalAddressName, globalAddress.Get("name").String(), fmt.Sprintf("global address %s should exist", globalAddressName))
 
 						subnetName1 := networkNames[networkType]["subnet_name1"]
 						usWest1Range := cidrRanges[envName][networkType][0]
-						subnet1 := gcloud.Runf(t, "compute networks subnets describe %s --region us-west1 --project %s", subnetName1, projectID)
+						subnet1 := gcloud.Runf(t, "compute networks subnets describe %s --region us-west1 --project %s --impersonate-service-account %s", subnetName1, projectID, terraformSA)
 						assert.Equal(subnetName1, subnet1.Get("name").String(), fmt.Sprintf("subnet %s should exist", subnetName1))
 						assert.Equal(usWest1Range, subnet1.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usWest1Range))
 
 						subnetName2 := networkNames[networkType]["subnet_name2"]
 						usCentral1Range := cidrRanges[envName][networkType][1]
-						subnet2 := gcloud.Runf(t, "compute networks subnets describe %s --region us-central1 --project %s", subnetName2, projectID)
+						subnet2 := gcloud.Runf(t, "compute networks subnets describe %s --region us-central1 --project %s --impersonate-service-account %s", subnetName2, projectID, terraformSA)
 						assert.Equal(subnetName2, subnet2.Get("name").String(), fmt.Sprintf("subnet %s should exist", subnetName2))
 						assert.Equal(usCentral1Range, subnet2.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usCentral1Range))
 
 						denyAllEgressName := networkNames[networkType]["fw_deny_all_egress"]
-						denyAllEgressRule := gcloud.Runf(t, "compute firewall-rules describe %s --project %s", denyAllEgressName, projectID)
+						denyAllEgressRule := gcloud.Runf(t, "compute firewall-rules describe %s --project %s --impersonate-service-account %s", denyAllEgressName, projectID, terraformSA)
 						assert.Equal(denyAllEgressName, denyAllEgressRule.Get("name").String(), fmt.Sprintf("firewall rule %s should exist", denyAllEgressName))
 						assert.Equal("EGRESS", denyAllEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", denyAllEgressName))
 						assert.True(denyAllEgressRule.Get("logConfig.enable").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", denyAllEgressName))
@@ -289,7 +409,7 @@ func TestNetworks(t *testing.T) {
 						assert.Equal("all", denyAllEgressRule.Get("denied.0.IPProtocol").String(), fmt.Sprintf("firewall rule %s should deny all protocols", denyAllEgressName))
 
 						allowApiEgressName := networkNames[networkType]["fw_allow_api_egress"]
-						allowApiEgressRule := gcloud.Runf(t, "compute firewall-rules describe %s --project %s", allowApiEgressName, projectID)
+						allowApiEgressRule := gcloud.Runf(t, "compute firewall-rules describe %s --project %s --impersonate-service-account %s", allowApiEgressName, projectID, terraformSA)
 						assert.Equal(allowApiEgressName, allowApiEgressRule.Get("name").String(), fmt.Sprintf("firewall rule %s should exist", allowApiEgressName))
 						assert.Equal("EGRESS", allowApiEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", allowApiEgressName))
 						assert.True(allowApiEgressRule.Get("logConfig.enable").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", allowApiEgressName))
@@ -324,7 +444,7 @@ func TestNetworks(t *testing.T) {
 							} {
 
 								routerName := networkNames[networkType][router.router]
-								computeRouter := gcloud.Runf(t, "compute routers describe %s --region %s --project %s", routerName, router.region, projectID)
+								computeRouter := gcloud.Runf(t, "compute routers describe %s --region %s --project %s --impersonate-service-account %s", routerName, router.region, projectID, terraformSA)
 								networkSelfLink := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectID, networkNames[networkType]["network_name"])
 								assert.Equal(routerName, computeRouter.Get("name").String(), fmt.Sprintf("router %s should exist", routerName))
 								assert.Equal("64514", computeRouter.Get("bgp.asn").String(), fmt.Sprintf("router %s should have bgp asm 64514", routerName))

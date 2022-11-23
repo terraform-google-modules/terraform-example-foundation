@@ -67,15 +67,17 @@ module "main" {
   VPC Peering Configuration
  **************************************************************/
 data "google_compute_network" "vpc_restricted_net_hub" {
-  count   = var.mode == "spoke" ? 1 : 0
+  count = var.mode == "spoke" ? 1 : 0
+
   name    = "vpc-c-shared-restricted-hub"
   project = var.restricted_net_hub_project_id
 }
 
 module "peering" {
-  source                    = "terraform-google-modules/network/google//modules/network-peering"
-  version                   = "~> 5.1"
-  count                     = var.mode == "spoke" ? 1 : 0
+  source  = "terraform-google-modules/network/google//modules/network-peering"
+  version = "~> 5.1"
+  count   = var.mode == "spoke" ? 1 : 0
+
   prefix                    = "np"
   local_network             = module.main.network_self_link
   peer_network              = data.google_compute_network.vpc_restricted_net_hub[0].self_link
@@ -87,7 +89,8 @@ module "peering" {
  **************************************************************/
 
 resource "google_compute_global_address" "private_service_access_address" {
-  count         = var.private_service_cidr != null ? 1 : 0
+  count = var.private_service_cidr != null ? 1 : 0
+
   name          = "ga-${local.vpc_name}-vpc-peering-internal"
   project       = var.project_id
   purpose       = "VPC_PEERING"
@@ -100,7 +103,8 @@ resource "google_compute_global_address" "private_service_access_address" {
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
-  count                   = var.private_service_cidr != null ? 1 : 0
+  count = var.private_service_cidr != null ? 1 : 0
+
   network                 = module.main.network_self_link
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_service_access_address[0].name]

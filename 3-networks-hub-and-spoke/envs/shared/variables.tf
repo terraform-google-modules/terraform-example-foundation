@@ -19,9 +19,9 @@ variable "remote_state_bucket" {
   type        = string
 }
 
-variable "terraform_service_account" {
-  type        = string
-  description = "Service account email of the account to be added to the VPC-SC perimeter."
+variable "perimeter_additional_members" {
+  description = "The list of additional members to be added to the perimeter access level members list. To be able to see the resources protected by the VPC Service Controls in the restricted perimeter, add your user in this list. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`."
+  type        = list(string)
 }
 
 variable "access_context_manager_policy_id" {
@@ -175,4 +175,10 @@ variable "enable_hub_and_spoke_transitivity" {
   description = "Enable transitivity via gateway VMs on Hub-and-Spoke architecture."
   type        = bool
   default     = false
+}
+
+variable "custom_restricted_services" {
+  description = "List of custom services to be protected by the VPC-SC perimeter. If empty, all supported services (https://cloud.google.com/vpc-service-controls/docs/supported-products) will be protected."
+  type        = list(string)
+  default     = []
 }

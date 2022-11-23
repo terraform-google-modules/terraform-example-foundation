@@ -102,6 +102,12 @@ variable "vpc_service_control_perimeter_name" {
   default     = null
 }
 
+variable "vpc_service_control_sleep_duration" {
+  description = "The duration to sleep in seconds before adding the project to a shared VPC after the project is added to the VPC Service Control Perimeter"
+  type        = string
+  default     = "5s"
+}
+
 variable "project_budget" {
   description = <<EOT
   Budget configuration.

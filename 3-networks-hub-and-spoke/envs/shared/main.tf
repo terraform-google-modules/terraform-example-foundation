@@ -37,6 +37,8 @@ locals {
   base_net_hub_project_id           = data.terraform_remote_state.org.outputs.base_net_hub_project_id
   restricted_net_hub_project_id     = data.terraform_remote_state.org.outputs.restricted_net_hub_project_id
   restricted_net_hub_project_number = data.terraform_remote_state.org.outputs.restricted_net_hub_project_number
+  networks_service_account          = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
+  projects_service_account          = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
 }
 
 data "terraform_remote_state" "bootstrap" {

@@ -63,7 +63,7 @@ func TestShared(t *testing.T) {
 	var tfdDir string
 	if isHubAndSpokeMode(t) {
 		vars["access_context_manager_policy_id"] = policyID
-		vars["terraform_service_account"] = terraformSA
+		vars["perimeter_additional_members"] = []string{}
 		tfdDir = "../../../3-networks-hub-and-spoke/envs/shared"
 	} else {
 		tfdDir = "../../../3-networks-dual-svpc/envs/shared"
@@ -78,6 +78,12 @@ func TestShared(t *testing.T) {
 	)
 	shared.DefineVerify(
 		func(assert *assert.Assertions) {
+
+			// do a time.Sleep to wait for propagation of VPC Service Controls configuration in the Hub and Spoke network mode
+			if isHubAndSpokeMode(t) {
+				time.Sleep(60 * time.Second)
+			}
+
 			// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 			shared.DefaultVerify(assert)
 

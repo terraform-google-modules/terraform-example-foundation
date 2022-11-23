@@ -25,8 +25,9 @@ locals {
  *****************************************/
 
 module "main" {
-  source                                 = "terraform-google-modules/network/google"
-  version                                = "~> 5.1"
+  source  = "terraform-google-modules/network/google"
+  version = "~> 5.1"
+
   project_id                             = var.project_id
   network_name                           = local.network_name
   shared_vpc_host                        = "true"
@@ -67,7 +68,8 @@ module "main" {
  **************************************************************/
 
 resource "google_compute_global_address" "private_service_access_address" {
-  count         = var.private_service_cidr != null ? 1 : 0
+  count = var.private_service_cidr != null ? 1 : 0
+
   name          = "ga-${local.vpc_name}-vpc-peering-internal"
   project       = var.project_id
   purpose       = "VPC_PEERING"
@@ -79,7 +81,8 @@ resource "google_compute_global_address" "private_service_access_address" {
 }
 
 resource "google_service_networking_connection" "private_vpc_connection" {
-  count                   = var.private_service_cidr != null ? 1 : 0
+  count = var.private_service_cidr != null ? 1 : 0
+
   network                 = module.main.network_self_link
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_service_access_address[0].name]

@@ -35,6 +35,35 @@ module "access_level_members" {
   members     = var.members
 }
 
+resource "time_sleep" "wait_vpc_sc_propagation" {
+  create_duration  = "60s"
+  destroy_duration = "60s"
+
+  depends_on = [
+    module.main,
+    module.peering,
+    google_compute_global_address.private_service_access_address,
+    google_service_networking_connection.private_vpc_connection,
+    module.region1_router1,
+    module.region1_router2,
+    module.region2_router1,
+    module.region2_router2,
+    module.private_service_connect,
+    google_dns_policy.default_policy,
+    module.peering_zone,
+    google_compute_firewall.deny_all_egress,
+    google_compute_firewall.allow_restricted_api_egress,
+    google_compute_firewall.allow_all_egress,
+    google_compute_firewall.allow_all_ingress,
+    google_compute_router.nat_router_region1,
+    google_compute_address.nat_external_addresses1,
+    google_compute_router_nat.nat_external_addresses_region1,
+    google_compute_router.nat_router_region2,
+    google_compute_address.nat_external_addresses_region2,
+    google_compute_router_nat.egress_nat_region2,
+  ]
+}
+
 module "regular_service_perimeter" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
   version = "~> 4.0"
@@ -45,14 +74,20 @@ module "regular_service_perimeter" {
   resources      = [var.project_number]
   access_levels  = [module.access_level_members.name]
 
-  restricted_services = var.restricted_services
+  restricted_services     = var.restricted_services
+  vpc_accessible_services = ["RESTRICTED-SERVICES"]
 
   ingress_policies = var.ingress_policies
   egress_policies  = var.egress_policies
+
+  depends_on = [
+    time_sleep.wait_vpc_sc_propagation
+  ]
 }
 
 resource "google_access_context_manager_service_perimeter" "bridge_to_network_hub_perimeter" {
-  count          = var.mode == "spoke" ? 1 : 0
+  count = var.mode == "spoke" ? 1 : 0
+
   perimeter_type = "PERIMETER_TYPE_BRIDGE"
   parent         = "accessPolicies/${var.access_context_manager_policy_id}"
   name           = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${local.bridge_name}"

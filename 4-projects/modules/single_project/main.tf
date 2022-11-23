@@ -43,8 +43,9 @@ locals {
 }
 
 module "project" {
-  source            = "terraform-google-modules/project-factory/google"
-  version           = "~> 14.0"
+  source  = "terraform-google-modules/project-factory/google"
+  version = "~> 14.1"
+
   random_project_id = true
   activate_apis     = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
   name              = "${var.project_prefix}-${var.business_code}-${local.env_code}-${var.project_suffix}"
@@ -57,6 +58,7 @@ module "project" {
 
   vpc_service_control_attach_enabled = var.vpc_service_control_attach_enabled
   vpc_service_control_perimeter_name = var.vpc_service_control_perimeter_name
+  vpc_service_control_sleep_duration = var.vpc_service_control_sleep_duration
 
   labels = {
     environment       = var.environment

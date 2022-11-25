@@ -166,33 +166,37 @@ example-organization/
 
 ### Step 2-environments
 
-1. Create the folder hierarchy for the business units in each environment.
+1. Create the folder hierarchy for the business units in `env_baseline` module to it be equally replicated through all environments.
 
     Example:
 
-    2-environments/envs/development/main.tf
+    2-environments/modules/env_baseline/folders.tf
 
     ```text
-    module "env" {
-        source = "../../modules/env_baseline"
+    ...
+    /******************************************
+        Environment Folder
+    *****************************************/
 
-        env = "development"
-        ...
+    resource "google_folder" "env" {
+        display_name = "${local.folder_prefix}-${var.env}"
+        parent       = local.parent
     }
 
     /* 🟢 Folder hierarchy creation */
     resource "google_folder" "finance" {
         display_name = "finance"
-        parent       = module.env.env_folder
+        parent       = google_folder.env.name
     }
 
     resource "google_folder" "retail" {
         display_name = "retail"
-        parent       = module.env.env_folder
+        parent       = google_folder.env.name
     }
+    ...
     ```
 
-1. Create an output with a flat representation of the new hierarchy in each environment. It will be used in the next steps to host GCP projects.
+1. Create an output with a flat representation of the new hierarchy in `env_baseline` module.
 
     *Table 1 - Example output for Example 1 resource hierarchy*
 
@@ -216,19 +220,37 @@ example-organization/
 
     Example:
 
+    2-environments/modules/env_baseline/outputs.tf
+
+    ```text
+    ...
+    /* 🟢 Folder hierarchy output */
+    output "folder_hierarchy" {
+        description = "Map with a flat representation of the new folder hierarchy where projects should be created."
+        value       = {
+        "${google_folder.env.display_name}" = google_folder.env.name
+        "${google_folder.env.display_name}/finance" = google_folder.finance.name
+        "${google_folder.env.display_name}/retail" = google_folder.retail.name
+        }
+    }
+    ```
+
+1. Create an output with the flat representation of the new hierarchy from the `env_baseline` module in each environment. It will be used in the next steps to host GCP projects.
+
+    Example:
+
     2-environments/envs/development/outputs.tf
 
     ```text
     ...
     /* 🟢 Folder hierarchy output */
     output "folder_hierarchy" {
-        value = {
-        "development" = module.env.env_folder
-        "development/finance" = google_folder.finance.name
-        "development/retail" = google_folder.retail.name
-        }
+        description = "Map with a flat representation of the new folder hierarchy where projects should be created."
+        value       = module.env.folder_hierarchy
     }
     ```
+
+1. Proceed with deployment.
 
 ### Step 4-projects
 
@@ -263,7 +285,7 @@ example-organization/
     ...
     ```
 
-1. Create your folder hierarchy above environment folders (development, non-production, production). Remember to keep the environment folders as leaves (latest level) in the source code folder hierarchy because this is the way `tf-wrapper.sh` - that is the bash script helper - works to apply terraform configurations.
+1. Create your source code folder hierarchy above environment folders (development, non-production, production). Remember to keep the source code environment folders as leaves (latest level) in the source code folder hierarchy because this is the way `tf-wrapper.sh` - the bash script helper - works to apply terraform configurations.
 1. For this example, just rename folders business_unit_1 and business_unit_2 to your Business Units names, i.e: finance and retail, to match the example folder hierarchy.
 1. Manually duplicate your source folder hierarchy to match your needs.
 1. Change backend gcs prefix for each business unit shared resources.
@@ -283,7 +305,8 @@ example-organization/
     }
     ```
 
-1. Review locals and business code in Cloud Build project pipelines.
+1. Review local `repo_names` values in Cloud Build project pipelines. This name must match `sa_roles` key in base_shared_vpc_project module variable in `4-projects/modules/base_env/example_base_shared_vpc_project.tf`. The current pattern for this value is `"${var.business_code}-example-app"`.
+1. Review business code in Cloud Build project pipelines.
     Example:
 
     4-projects/finance/shared/example_infra_pipeline.tf
@@ -291,7 +314,7 @@ example-organization/
     ```text
     locals {
         /* 🟢 Review locals */
-        repo_names = ["finance-app"]
+        repo_names = ["fin-example-app"]
     }
     ...
 
@@ -308,7 +331,7 @@ example-organization/
     }
     ```
 
-1. Change backend gcs prefix for each business unit.
+1. Change backend gcs prefix for each business unit environment.
     Example:
 
     4-projects/finance/development/backend.tf
@@ -348,3 +371,5 @@ example-organization/
         ...
     }
     ```
+
+1. Proceed with deployment.

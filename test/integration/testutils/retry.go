@@ -25,5 +25,8 @@ var (
 
 		// Granting IAM Roles is eventually consistent.
 		".*Error 403.*Permission.*denied on resource.*": "Permission denied on resource.",
+
+		// Editing VPC Service Controls is eventually consistent.
+		".*Error 403.*Request is prohibited by organization's policy.*vpcServiceControlsUniqueIdentifier.*": "Request is prohibited by organization's policy.",
 	}
 )

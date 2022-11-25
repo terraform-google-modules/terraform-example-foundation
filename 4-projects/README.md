@@ -134,7 +134,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize projects repo'
    ```
 
 1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.

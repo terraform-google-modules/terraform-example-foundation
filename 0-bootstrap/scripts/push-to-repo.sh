@@ -38,5 +38,5 @@ git config user.email "terraform-robot@example.com"
 git config user.name "TF Robot"
 git checkout main || git checkout -b main
 git add Dockerfile
-git commit -m "init tf dockerfile"
+git commit -m "Initialize tf dockerfile repo"
 git push origin main -f

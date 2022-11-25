@@ -29,7 +29,7 @@ module "peered_network" {
 
   subnets = [
     {
-      subnet_name           = "sb-peered"
+      subnet_name           = "sb-b-peer-${var.private_worker_pool.region}"
       subnet_ip             = var.private_worker_pool.peered_network_subnet_ip
       subnet_region         = var.private_worker_pool.region
       subnet_private_access = "true"
@@ -43,7 +43,7 @@ module "peered_network" {
 resource "google_compute_global_address" "worker_pool_range" {
   count = var.private_worker_pool.enable_network_peering ? 1 : 0
 
-  name          = "ga-worker-pool-range-vpc-peering"
+  name          = "ga-b-peer-worker-pool-range"
   project       = var.project_id
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
@@ -80,7 +80,7 @@ module "firewall_rules" {
   network_name = local.peered_network_id
 
   rules = [{
-    name                    = "allow-servicenetworking-ingress"
+    name                    = "fw-b-peer-100-i-a-all-all-all-service-networking"
     description             = "allow ingres from the IPs configured for service networking"
     direction               = "INGRESS"
     priority                = 100

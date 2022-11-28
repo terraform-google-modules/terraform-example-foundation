@@ -167,7 +167,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize org repo'
    ```
 
 1. Push your plan branch to trigger a plan for all environments. Because the

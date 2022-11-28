@@ -188,7 +188,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize networks repo'
    ```
 
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.

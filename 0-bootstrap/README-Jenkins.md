@@ -179,7 +179,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
    ```bash
    git add .
-   git commit -m 'Your message - Bootstrap configuration using jenkins_module'
+   git commit -m 'Bootstrap configuration using jenkins_module'
    ```
 
 1. Push my-0-bootstrap branch to your repository YOUR_NEW_REPO-0-bootstrap with
@@ -241,7 +241,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
    ```bash
    git add backend.tf
-   git commit -m 'Your message - Terraform Backend configuration using GCS'
+   git commit -m 'Terraform Backend configuration using GCS'
    ```
 
 1. Push my-0-bootstrap branch to your repository YOUR_NEW_REPO-0-bootstrap with
@@ -369,7 +369,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize org repo'
    ```
 
 1. Push your plan branch.
@@ -458,7 +458,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize environments repo'
    ```
 
 1. Push your plan branch.
@@ -574,7 +574,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize networks repo'
    ```
 
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
@@ -727,7 +727,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize networks repo'
    ```
 
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
@@ -876,7 +876,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize projects repo'
    ```
 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.

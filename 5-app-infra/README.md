@@ -104,7 +104,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize policy library repo'
 
    git push --set-upstream origin main
    ```
@@ -153,7 +153,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize bu1 example app repo'
    ```
 
 1. Push your plan branch to trigger a plan for all environments. Because the

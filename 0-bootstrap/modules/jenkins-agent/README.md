@@ -104,8 +104,8 @@ module "jenkins_bootstrap" {
 ### Software
 
 - [gcloud sdk](https://cloud.google.com/sdk/install) >= 393.0.0
-- [Terraform](https://www.terraform.io/downloads.html) = 1.0.0
-  - The scripts in this codebase use Terraform v1.0.0. You should use the same version in the manual steps to avoid [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.
+- [Terraform](https://www.terraform.io/downloads.html) = 1.3.0
+  - The scripts in this codebase use Terraform v1.3.0. You should use the same version in the manual steps to avoid [Terraform State Snapshot Lock](https://github.com/hashicorp/terraform/issues/23290) errors caused by differences in terraform versions.
 
 ### Infrastructure
 

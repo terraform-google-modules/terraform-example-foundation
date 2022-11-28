@@ -120,7 +120,7 @@ module "domain_restricted_contacts" {
 module "allowed_worker_pools" {
   source  = "terraform-google-modules/org-policy/google"
   version = "~> 5.1"
-  count   = var.enforce_allowed_worker_pools ? 1 : 0
+  count   = var.enforce_allowed_worker_pools && local.cloud_build_private_worker_pool_id != "" ? 1 : 0
 
   organization_id   = local.organization_id
   folder_id         = local.folder_id

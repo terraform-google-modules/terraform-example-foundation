@@ -125,7 +125,14 @@ your current Jenkins manager (controller) environment.
 
 ## Deploying with Cloud Build
 
-1. Go to the `0-bootstrap` folder.
+1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and navigate to the `0-bootstrap` folder.
+
+   ```bash
+   git clone https://github.com/terraform-google-modules/terraform-example-foundation.git
+
+   cd terraform-example-foundation/0-bootstrap
+   ```
+
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
 
    ```bash

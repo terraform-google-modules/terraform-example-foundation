@@ -179,7 +179,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
    ```bash
    git add .
-   git commit -m 'Your message - Bootstrap configuration using jenkins_module'
+   git commit -m 'Bootstrap configuration using jenkins_module'
    ```
 
 1. Push my-0-bootstrap branch to your repository YOUR_NEW_REPO-0-bootstrap with
@@ -191,7 +191,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 ### II. Create the SEED and CI/CD projects using Terraform
 
 - Required information:
-  - Terraform version 1.0.0 - See [Requirements](#requirements) section for more details.
+  - Terraform version 1.3.0 - See [Requirements](#requirements) section for more details.
   - The `terraform.tfvars` file with all the necessary values.
 
 1. Get the appropriate credentials: run the following command with an account that has the [necessary permissions](./modules/jenkins-agent/README.md#permissions).
@@ -204,7 +204,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
 1. Run terraform commands.
    - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-b-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
-   - **Use Terraform 1.0.0** to run the terraform script with the commands below
+   - **Use Terraform 1.3.0** to run the terraform script with the commands below
 
    ```bash
    terraform init
@@ -215,17 +215,17 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
    - The Terraform script will take about 10 to 15 minutes. Once it finishes, note that communication between on-prem and the `prj-b-cicd` project won’t happen yet - you will configure the VPN network connectivity in step [III. Create VPN connection](#iii-configure-vpn-connection).
 
 1. Move Terraform State to the GCS bucket created in the Seed Project
-   1. Rename `backend.tf.example` to `backend.tf`
-
-   ```bash
-   mv backend.tf.example backend.tf
-   ```
-
-   1. Update `backend.tf` with your tfstate bucket name
+   1. Get tfstate bucket name
 
    ```bash
    export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
+   ```
+
+   1. Rename `backend.tf.example` to `backend.tf` and update with your tfstate bucket name
+
+   ```bash
+   mv backend.tf.example backend.tf
    for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 
@@ -241,7 +241,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
    ```bash
    git add backend.tf
-   git commit -m 'Your message - Terraform Backend configuration using GCS'
+   git commit -m 'Terraform Backend configuration using GCS'
    ```
 
 1. Push my-0-bootstrap branch to your repository YOUR_NEW_REPO-0-bootstrap with
@@ -369,11 +369,11 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize org repo'
    ```
 
 1. Push your plan branch.
-   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
+   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](./modules/jenkins-agent/README.md)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 
    ```bash
    git push --set-upstream origin plan
@@ -458,7 +458,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize environments repo'
    ```
 
 1. Push your plan branch.
@@ -467,7 +467,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    git push --set-upstream origin plan
    ```
 
-   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent/README.md)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
+   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](./modules/jenkins-agent/README.md)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 1. Review the plan output in your Controller's web UI.
 1. Merge changes to development.
 
@@ -574,7 +574,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize networks repo'
    ```
 
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
@@ -620,7 +620,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    git push --set-upstream origin plan
    ```
 
-   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
+   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](./modules/jenkins-agent/README.md)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 1. Review the plan output in your Controller's web UI.
 1. Merge changes to production branch.
 
@@ -727,7 +727,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize networks repo'
    ```
 
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
@@ -773,7 +773,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    git push --set-upstream origin plan
    ```
 
-   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
+   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](./modules/jenkins-agent/README.md)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 1. Review the plan output in your Controller's web UI.
 1. Merge changes to production branch.
 
@@ -876,13 +876,13 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    git add .
-   git commit -m 'Your message'
+   git commit -m 'Initialize projects repo'
    ```
 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
 
    ```bash
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find -name 'backend.tf'`; do sed -r -i "s/UPDATE_ME|UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
    ```
 
 1. You need to manually plan and apply only once the `shared` environments since `development`, `non-production`, and `production` depend on it.
@@ -921,7 +921,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    git push --set-upstream origin plan
    ```
 
-   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](../0-bootstrap/modules/jenkins-agent/)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
+   - Assuming you configured an automatic trigger in your Jenkins Controller (see [Jenkins sub-module README](./modules/jenkins-agent/README.md)), this will trigger a plan. You can also trigger a Jenkins job manually. Given the many options to do this in Jenkins, it is out of the scope of this document see [Jenkins website](https://www.jenkins.io) for more details.
 1. Review the plan output in your Controller's web UI.
 1. Merge changes to production branch.
 

@@ -23,6 +23,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Application authenticated using end user credentials](#application-authenticated-using-end-user-credentials)
 - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
 - [Error: Unsupported attribute](#error-unsupported-attribute)
+- [Error: Error adding network peering](#error-error-adding-network-peering)
 
 - - -
 
@@ -215,6 +216,37 @@ The error means that the Terraform state of the `0-bootstrap` stage was not copi
 **Solution:**
 
 Follow the instructions at the end of the [Deploying with Cloud Build](../0-bootstrap/README.md#deploying-with-cloud-build) section in the `0-bootstrap` README to copy the Terraform state to the Cloud Storage bucket created in stage `0-bootstrap` and retry planning/applying the stage you are deploying.
+
+### Error: Error adding network peering
+
+**Error message:**
+
+```text
+Error: Error adding network peering: googleapi: Error 403: Rate Limit Exceeded
+Details:
+[
+  {
+    "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+    "domain": "compute.googleapis.com",
+    "metadatas": {
+      "containerId": "76352966089",
+      "containerType": "PROJECT",
+      "location": "global"
+    },
+    "reason": "CONCURRENT_OPERATIONS_QUOTA_EXCEEDED"
+  }
+]
+, rateLimitExceeded
+
+```
+
+**Cause:**
+
+In a deploy using the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode, an error occurs when adding the network peering between the restricted Hub network and the restricted Spoke network or the base Hub network and the base Spoke network due to too many peering operations.
+
+**Solution:**
+
+This is a transient error and the deploy can be retried. Wait for at least a minute and retry the deploy.
 
 - - -
 

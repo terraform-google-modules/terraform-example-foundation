@@ -230,7 +230,7 @@ your current Jenkins manager (controller) environment.
 
    ```bash
    git add .
-   git commit -m 'Initialize policy library'
+   git commit -m 'Initialize policy library repo'
    git push --set-upstream origin main
    ```
 
@@ -255,7 +255,7 @@ your current Jenkins manager (controller) environment.
    chmod 755 ./tf-wrapper.sh
 
    git add .
-   git commit -m 'Initialize bootstrap'
+   git commit -m 'Initialize bootstrap repo'
    git push --set-upstream origin plan
    ```
 

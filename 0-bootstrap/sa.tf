@@ -175,6 +175,31 @@ module "cicd_project_iam_member" {
   roles       = each.value
 }
 
+module "seed_project_remove_editor" {
+  source = "./modules/parent-iam-remove-role"
+
+  parent_type = "project"
+  parent_id   = module.seed_bootstrap.seed_project_id
+  roles       = ["roles/editor"]
+
+  depends_on = [
+    module.seed_project_iam_member
+  ]
+}
+
+module "cicd_project_remove_editor" {
+  source = "./modules/parent-iam-remove-role"
+
+  parent_type = "project"
+  parent_id   = local.cicd_project_id
+  roles       = ["roles/editor"]
+
+  depends_on = [
+    module.cicd_project_iam_member
+  ]
+}
+
+
 resource "google_billing_account_iam_member" "tf_billing_user" {
   for_each = local.granular_sa
 

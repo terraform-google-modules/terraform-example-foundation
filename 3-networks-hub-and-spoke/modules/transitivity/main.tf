@@ -18,6 +18,10 @@
  * Hub & Spoke Peering Transitivity with Gateway VMs
  */
 
+locals {
+  stripped_vpc_name = replace(var.vpc_name, "vpc-", "")
+}
+
 module "service_account" {
   source     = "terraform-google-modules/service-accounts/google"
   version    = "~> 4.1"
@@ -131,7 +135,7 @@ resource "google_compute_route" "routes" {
 }
 
 resource "google_compute_firewall" "allow_transtivity_ingress" {
-  name      = "fw-allow-transitivity-ingress"
+  name      = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
   network   = var.vpc_name
   project   = var.project_id
   direction = "INGRESS"

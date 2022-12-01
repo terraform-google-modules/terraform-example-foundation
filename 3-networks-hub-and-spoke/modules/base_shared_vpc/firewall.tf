@@ -73,7 +73,7 @@ resource "google_compute_firewall" "allow_private_api_egress" {
 
 resource "google_compute_firewall" "allow_all_egress" {
   count     = var.allow_all_egress_ranges != null ? 1 : 0
-  name      = "fw-${var.environment_code}-shared-base-1000-e-a-all"
+  name      = "fw-${var.environment_code}-shared-base-1000-e-a-all-all-all"
   network   = module.main.network_name
   project   = var.project_id
   direction = "EGRESS"

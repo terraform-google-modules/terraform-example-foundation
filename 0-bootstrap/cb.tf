@@ -112,9 +112,9 @@ module "tf_source" {
     environment       = "bootstrap"
     application_name  = "cloudbuild-bootstrap"
     billing_code      = "1234"
-    primary_contact   = "example1"
+    primary_contact   = "nikolay.tonev@ivmanto.com"
     secondary_contact = "example2"
-    business_code     = "abcd"
+    business_code     = "ivmcom"
     env_code          = "b"
   }
 

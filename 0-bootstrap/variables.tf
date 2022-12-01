@@ -37,7 +37,7 @@ variable "group_billing_admins" {
 variable "default_region" {
   description = "Default region to create resources where applicable."
   type        = string
-  default     = "us-central1"
+  default     = "europe-west3"
 }
 
 variable "parent_folder" {

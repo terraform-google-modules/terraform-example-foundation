@@ -40,6 +40,18 @@ module "peered_network" {
 
 }
 
+resource "google_dns_policy" "default_policy" {
+  count = var.private_worker_pool.create_peered_network ? 1 : 0
+
+  project                   = var.project_id
+  name                      = "dp-b-peer-default-policy"
+  enable_inbound_forwarding = true
+  enable_logging            = true
+  networks {
+    network_url = module.peered_network[0].network_self_link
+  }
+}
+
 resource "google_compute_global_address" "worker_pool_range" {
   count = var.private_worker_pool.enable_network_peering ? 1 : 0
 

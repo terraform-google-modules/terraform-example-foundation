@@ -59,6 +59,16 @@ module "peering_network" {
   subnets                                = []
 }
 
+resource "google_dns_policy" "default_policy" {
+  project                   = module.peering_project.project_id
+  name                      = "dp-${local.env_code}-peering-base-default-policy"
+  enable_inbound_forwarding = true
+  enable_logging            = true
+  networks {
+    network_url = module.peering_network.network_self_link
+  }
+}
+
 module "peering" {
   source            = "terraform-google-modules/network/google//modules/network-peering"
   version           = "~> 5.0"

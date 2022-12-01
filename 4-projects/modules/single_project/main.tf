@@ -17,7 +17,10 @@
 locals {
   env_code        = element(split("", var.environment), 0)
   shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
-  source_repos    = keys(var.app_infra_pipeline_service_accounts)
+  source_repos = setintersection(
+    toset(keys(var.app_infra_pipeline_service_accounts)),
+    toset(keys(var.sa_roles))
+  )
   pipeline_roles = var.enable_cloudbuild_deploy ? flatten([
     for repo in local.source_repos : [
       for role in var.sa_roles[repo] :

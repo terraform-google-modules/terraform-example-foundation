@@ -131,7 +131,7 @@ resource "google_service_account" "terraform-env-sa" {
   for_each = local.granular_sa
 
   project      = module.seed_bootstrap.seed_project_id
-  account_id   = "terraform-${each.key}-sa"
+  account_id   = "sa-terraform-${each.key}"
   display_name = each.value
 }
 

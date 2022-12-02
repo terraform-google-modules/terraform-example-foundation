@@ -67,9 +67,9 @@ module "seed_bootstrap" {
     environment       = "bootstrap"
     application_name  = "seed-bootstrap"
     billing_code      = "1234"
-    primary_contact   = "example1"
+    primary_contact   = "nikolay-tonev-at-ivmanto-com"
     secondary_contact = "example2"
-    business_code     = "abcd"
+    business_code     = "ivmcom"
     env_code          = "b"
   }
 
@@ -97,4 +97,3 @@ module "seed_bootstrap" {
 
   sa_org_iam_permissions = []
 }
-

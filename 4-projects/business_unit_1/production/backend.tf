@@ -16,7 +16,7 @@
 
 terraform {
   backend "gcs" {
-    bucket = "UPDATE_PROJECTS_BACKEND"
+    bucket = "ivm-org-bucket"
     prefix = "terraform/projects/business_unit_1/production"
   }
 }

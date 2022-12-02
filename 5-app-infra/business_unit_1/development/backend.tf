@@ -16,7 +16,7 @@
 
 terraform {
   backend "gcs" {
-    bucket = "UPDATE_APP_INFRA_BUCKET"
+    bucket = "ivm-org-bucket"
     prefix = "terraform/app-infra/business_unit_1/development"
   }
 }

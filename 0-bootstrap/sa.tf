@@ -86,7 +86,6 @@ locals {
       "roles/artifactregistry.admin",
       "roles/compute.networkAdmin",
       "roles/compute.xpnAdmin",
-      "roles/dns.admin",
     ],
   }
 

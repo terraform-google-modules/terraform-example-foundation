@@ -86,6 +86,7 @@ locals {
       "roles/artifactregistry.admin",
       "roles/compute.networkAdmin",
       "roles/compute.xpnAdmin",
+      "roles/dns.admin",
     ],
   }
 
@@ -123,6 +124,7 @@ locals {
       "roles/workflows.admin",
       "roles/cloudscheduler.admin",
       "roles/resourcemanager.projectDeleter",
+      "roles/dns.admin",
     ],
   }
 }

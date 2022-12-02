@@ -40,6 +40,10 @@ module "peering_project" {
   project_budget  = var.project_budget
   project_prefix  = local.project_prefix
 
+  activate_apis = [
+    "dns.googleapis.com"
+  ]
+
   # Metadata
   project_suffix    = "sample-peering"
   application_name  = "${var.business_code}-sample-peering"

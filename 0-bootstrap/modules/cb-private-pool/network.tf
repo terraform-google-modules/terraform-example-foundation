@@ -29,7 +29,7 @@ module "peered_network" {
 
   subnets = [
     {
-      subnet_name           = "sb-b-peer-${var.private_worker_pool.region}"
+      subnet_name           = "sb-b-cbpools-${var.private_worker_pool.region}"
       subnet_ip             = var.private_worker_pool.peered_network_subnet_ip
       subnet_region         = var.private_worker_pool.region
       subnet_private_access = "true"
@@ -44,7 +44,7 @@ resource "google_dns_policy" "default_policy" {
   count = var.private_worker_pool.create_peered_network ? 1 : 0
 
   project                   = var.project_id
-  name                      = "dp-b-peer-default-policy"
+  name                      = "dp-b-cbpools-default-policy"
   enable_inbound_forwarding = true
   enable_logging            = true
   networks {
@@ -55,7 +55,7 @@ resource "google_dns_policy" "default_policy" {
 resource "google_compute_global_address" "worker_pool_range" {
   count = var.private_worker_pool.enable_network_peering ? 1 : 0
 
-  name          = "ga-b-peer-worker-pool-range"
+  name          = "ga-b-cbpools-worker-pool-range"
   project       = var.project_id
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
@@ -92,7 +92,7 @@ module "firewall_rules" {
   network_name = local.peered_network_id
 
   rules = [{
-    name                    = "fw-b-peer-100-i-a-all-all-all-service-networking"
+    name                    = "fw-b-cbpools-100-i-a-all-all-all-service-networking"
     description             = "allow ingres from the IPs configured for service networking"
     direction               = "INGRESS"
     priority                = 100

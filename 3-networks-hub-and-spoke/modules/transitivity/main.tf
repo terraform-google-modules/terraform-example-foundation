@@ -91,6 +91,7 @@ module "ilbs" {
   global_access           = true
   network                 = var.vpc_name
   subnetwork              = var.gw_subnets[each.key]
+  firewall_enable_logging = true
   source_ip_ranges        = flatten(values(var.regional_aggregates))
   target_service_accounts = [module.service_account.email]
   source_tags             = null

@@ -22,6 +22,7 @@ module "monitoring_project" {
   source                      = "terraform-google-modules/project-factory/google"
   version                     = "~> 14.0"
   random_project_id           = true
+  random_project_id_length    = 4
   name                        = "${local.project_prefix}-${var.environment_code}-monitoring"
   org_id                      = local.org_id
   billing_account             = local.billing_account

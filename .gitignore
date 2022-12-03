@@ -71,3 +71,5 @@ credentials.json
 
 # File to populate env vars used by Docker test runs
 .envrc
+
+/_my_files

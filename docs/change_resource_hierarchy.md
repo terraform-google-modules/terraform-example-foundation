@@ -36,6 +36,38 @@ Review the `tf-wrapper.sh`. It is a bash script helper responsible for applying 
     current_component=""
     old_component=""
 
+    ...
+    ```
+
+1. Create the new function `check_env_path_folder` between new variables and already existing `tf_apply` function.
+
+    ```text
+    ...
+    current_component=""
+    old_component=""
+
+    #🟢 New check_env_path_folder function
+
+    ## Fix component name to be different for each environment. It is used as tf-plan file name
+    check_env_path_folder() {
+    local lenv_path=$1
+    local lbase_dir=$2
+    local lcomponent=$3
+    local lenv=$4
+
+    if [[ "$lenv_path" =~ ^($lbase_dir)/(.+)/$lenv ]] ; then
+        # The ${BASH_REMATCH[2]} means the second group in regex expression
+        # This group is the folders between base dir and env
+        # This value guarantees that tf-plan file name will be unique for each environment
+        current_component=$(echo ${BASH_REMATCH[2]} | sed -r 's/\//-/g')
+    else
+        current_component=$lcomponent
+    fi
+    }
+
+    #🟢 End of New check_env_path_folder function
+
+
     ## Terraform apply for single environment.
     tf_apply() {
     ...
@@ -130,36 +162,6 @@ Review the `tf-wrapper.sh`. It is a bash script helper responsible for applying 
       #🟢 Assign old component value before next while-loop iteration
       component=$old_component
     done
-    ```
-
-1. Create the new function `check_env_path_folder`.
-
-    ```text
-    ...
-    #🟢 New check_env_path_folder function
-
-    ## Fix component name to be different for each environment. It is used as tf-plan file name
-    check_env_path_folder() {
-    local lenv_path=$1
-    local lbase_dir=$2
-    local lcomponent=$3
-    local lenv=$4
-
-    if [[ "$lenv_path" =~ ^($lbase_dir)/(.+)/$lenv ]] ; then
-        # The ${BASH_REMATCH[2]} means the second group in regex expression
-        # This group is the folders between base dir and env
-        # This value guarantees that tf-plan file name will be unique for each environment
-        current_component=$(echo ${BASH_REMATCH[2]} | sed -r 's/\//-/g')
-    else
-        current_component=$lcomponent
-    fi
-    }
-
-    #🟢 End of New check_env_path_folder function
-
-    case "$action" in
-    init|plan|apply|show|validate )
-    ...
     ```
 
 ## Code Changes - Terraform Files

@@ -133,6 +133,7 @@ your current Jenkins manager (controller) environment.
    ```
 
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
+   1. The helper script requires `jq` installed. Visit [https://stedolan.github.io/jq/download/](https://stedolan.github.io/jq/download/) for more information on how to install it.
 
    ```bash
    ../scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>

@@ -33,6 +33,7 @@ module "cicd_project" {
   version                     = "~> 14.0"
   name                        = local.cicd_project_name
   random_project_id           = true
+  random_project_id_length    = 4
   disable_services_on_destroy = false
   folder_id                   = var.folder_id
   org_id                      = var.org_id

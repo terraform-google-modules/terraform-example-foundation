@@ -19,7 +19,7 @@ variable "parent_type" {
   type        = string
 
   validation {
-    condition     = var.parent_type == "organization" || var.parent_type == "folder" || var.parent_type == "project"
+    condition     = contains(["organization", "folder", "project"], var.parent_type)
     error_message = "For parent_type only `organization`, `folder`, and `project` are valid."
   }
 }

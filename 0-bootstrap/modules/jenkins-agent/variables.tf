@@ -184,6 +184,7 @@ variable "activate_apis" {
     "admin.googleapis.com",
     "appengine.googleapis.com",
     "storage-api.googleapis.com",
+    "dns.googleapis.com",
   ]
 }
 

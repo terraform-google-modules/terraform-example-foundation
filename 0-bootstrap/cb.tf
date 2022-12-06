@@ -104,6 +104,7 @@ module "tf_source" {
     "appengine.googleapis.com",
     "storage-api.googleapis.com",
     "billingbudgets.googleapis.com",
+    "dns.googleapis.com",
   ]
 
   cloud_source_repos = distinct(concat(local.base_cloud_source_repos, local.cloud_source_repos))

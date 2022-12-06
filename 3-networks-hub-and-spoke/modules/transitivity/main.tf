@@ -43,13 +43,17 @@ module "templates" {
   network        = var.vpc_name
   project_id     = var.project_id
   region         = each.key
+
   service_account = {
     email  = module.service_account.email
     scopes = ["cloud-platform"]
   }
+
   metadata = {
-    user-data = templatefile("${path.module}/assets/gw.yaml", { commands = var.commands })
+    user-data              = templatefile("${path.module}/assets/gw.yaml", { commands = var.commands })
+    block-project-ssh-keys = "true"
   }
+
   source_image         = "cos-stable-93-16623-102-23"
   source_image_project = "cos-cloud"
   subnetwork           = var.gw_subnets[each.key]

@@ -15,7 +15,7 @@
  */
 
 locals {
-  network_name        = "vpc-b-peer"
+  network_name        = "vpc-b-cbpools"
   private_pool_name   = var.private_worker_pool.name != "" ? var.private_worker_pool.name : "private-pool-${random_string.suffix.result}"
   peered_network_id   = !var.private_worker_pool.enable_network_peering ? "" : var.private_worker_pool.peered_network_id != "" ? var.private_worker_pool.peered_network_id : module.peered_network[0].network_id
   peered_network_name = element(split("/", local.peered_network_id), index(split("/", local.peered_network_id), "networks") + 1, )

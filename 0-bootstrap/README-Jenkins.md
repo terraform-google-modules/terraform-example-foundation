@@ -383,15 +383,6 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
 
-1. **(Optional)** If you are deploying The Terraform Example Foundation in a Folder instead of an Organization, you maybe want to add a suffix in tag keys to avoid collision. The script below enables a terraform variable to achieve this:
-
-   ```bash
-   export PARENT_FOLDER=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.parent_folder' --raw-output)
-   echo "PARENT_FOLDER = $PARENT_FOLDER"
-
-   if [ ! -z "${PARENT_FOLDER}" ]; then sed -i "s=//create_unique_tag_key=create_unique_tag_key=" ./envs/shared/terraform.tfvars; fi
-   ```
-
 1. Commit changes.
 
    ```bash

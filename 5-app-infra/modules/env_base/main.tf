@@ -52,6 +52,10 @@ module "instance_template" {
   project_id   = local.env_project_id
   subnetwork   = local.subnetwork_self_link
 
+  metadata = {
+    block-project-ssh-keys = "true"
+  }
+
   service_account = {
     email  = google_service_account.compute_engine_service_account.email
     scopes = ["compute-rw"]

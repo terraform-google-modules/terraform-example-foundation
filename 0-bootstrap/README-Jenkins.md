@@ -176,7 +176,6 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 1. Provide the rest of the values needed in `terraform.tfvars`
 
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
-   1. The helper script requires `jq` installed. Visit [https://stedolan.github.io/jq/download/](https://stedolan.github.io/jq/download/) for more information on how to install it.
 
    ```bash
    ../scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>

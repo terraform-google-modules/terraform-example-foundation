@@ -77,7 +77,11 @@ You can choose not to enable the Data Access logs by setting variable `data_acce
 to Bigquery and Pub/Sub. This will result in additional charges for those copies of logs. For Log Bucket destination, logs retained for the default retention period (30 days) [don't incur a storage cost](https://cloud.google.com/stackdriver/pricing#:~:text=Logs%20retained%20for%20the%20default%20retention%20period%20don%27t%20incur%20a%20storage%20cost.).
 You can change the filters & sinks by modifying the configuration in `envs/shared/log_sinks.tf`.
 
-**Note:** Currently, this module does not enable [bucket policy retention](https://cloud.google.com/storage/docs/bucket-lock) for organization logs, please, enable it if needed.
+**Note:** This module implements but does not enable by default [bucket policy retention](https://cloud.google.com/storage/docs/bucket-lock) for organization logs. Please, enable it if needed by configuring variable `log_export_storage_retention_policy`.
+
+**Note:** This module implements but does not enable by default [object versioning](https://cloud.google.com/storage/docs/object-versioning) for organization logs. Please, enable it if needed by setting variable `audit_logs_table_delete_contents_on_destroy` to true.
+
+**Note:** Bucket policy retention and object versioning are **mutually exclusive**.
 
 **Note:** You need to set variable `enable_hub_and_spoke` to `true` to be able to use the **Hub-and-Spoke** architecture detailed in the **Networking** section of the [Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke).
 

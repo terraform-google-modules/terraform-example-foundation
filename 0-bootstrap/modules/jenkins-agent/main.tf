@@ -146,6 +146,16 @@ resource "google_compute_subnetwork" "jenkins_agents_subnet" {
   }
 }
 
+resource "google_dns_policy" "default_policy" {
+  project                   = module.cicd_project.project_id
+  name                      = "dp-b-jenkinsagents-default-policy"
+  enable_inbound_forwarding = true
+  enable_logging            = true
+  networks {
+    network_url = google_compute_network.jenkins_agents.self_link
+  }
+}
+
 resource "google_compute_address" "jenkins_agent_gce_static_ip" {
   // This internal IP address needs to be accessible via the VPN tunnel
   project      = module.cicd_project.project_id

@@ -164,7 +164,7 @@ func TestBootstrap(t *testing.T) {
 			assert.Equal("100", pool.Get("privatePoolV1Config.workerConfig.diskSizeGb").String(), "pool %s should have the configured disk size", workerPoolName)
 			assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(pool.Get("privatePoolV1Config.networkConfig.peeredNetwork").String(), "/"), "pool %s should have peered network configured", workerPoolName)
 
-			globalAddressName := "ga-b-peer-worker-pool-range"
+			globalAddressName := "ga-b-cbpools-worker-pool-range"
 			globalAddress := gcloud.Runf(t, "compute addresses describe %s --global --project %s", globalAddressName, cbProjectID)
 			assert.Equal(globalAddressName, globalAddress.Get("name").String(), fmt.Sprintf("global address %s should exist", globalAddressName))
 			assert.Equal("VPC_PEERING", globalAddress.Get("purpose").String(), fmt.Sprintf("global address %s purpose should be VPC peering", globalAddressName))

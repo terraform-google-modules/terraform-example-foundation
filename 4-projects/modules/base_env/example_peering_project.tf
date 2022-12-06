@@ -40,6 +40,10 @@ module "peering_project" {
   project_budget  = var.project_budget
   project_prefix  = local.project_prefix
 
+  activate_apis = [
+    "dns.googleapis.com"
+  ]
+
   # Metadata
   project_suffix    = "sample-peering"
   application_name  = "${var.business_code}-sample-peering"
@@ -57,6 +61,16 @@ module "peering_network" {
   shared_vpc_host                        = "false"
   delete_default_internet_gateway_routes = "true"
   subnets                                = []
+}
+
+resource "google_dns_policy" "default_policy" {
+  project                   = module.peering_project.project_id
+  name                      = "dp-${local.env_code}-peering-base-default-policy"
+  enable_inbound_forwarding = true
+  enable_logging            = true
+  networks {
+    network_url = module.peering_network.network_self_link
+  }
 }
 
 module "peering" {

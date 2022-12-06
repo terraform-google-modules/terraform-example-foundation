@@ -51,7 +51,7 @@ module "jenkins_bootstrap" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| activate\_apis | List of APIs to enable in the CICD project. | `list(string)` | <pre>[<br>  "serviceusage.googleapis.com",<br>  "servicenetworking.googleapis.com",<br>  "compute.googleapis.com",<br>  "logging.googleapis.com",<br>  "bigquery.googleapis.com",<br>  "cloudresourcemanager.googleapis.com",<br>  "cloudbilling.googleapis.com",<br>  "iam.googleapis.com",<br>  "admin.googleapis.com",<br>  "appengine.googleapis.com",<br>  "storage-api.googleapis.com"<br>]</pre> | no |
+| activate\_apis | List of APIs to enable in the CICD project. | `list(string)` | <pre>[<br>  "serviceusage.googleapis.com",<br>  "servicenetworking.googleapis.com",<br>  "compute.googleapis.com",<br>  "logging.googleapis.com",<br>  "bigquery.googleapis.com",<br>  "cloudresourcemanager.googleapis.com",<br>  "cloudbilling.googleapis.com",<br>  "iam.googleapis.com",<br>  "admin.googleapis.com",<br>  "appengine.googleapis.com",<br>  "storage-api.googleapis.com",<br>  "dns.googleapis.com"<br>]</pre> | no |
 | bgp\_peer\_asn | BGP ASN for peer cloud routes. | `number` | `"64513"` | no |
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |

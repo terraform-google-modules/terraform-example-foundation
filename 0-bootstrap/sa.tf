@@ -123,6 +123,7 @@ locals {
       "roles/workflows.admin",
       "roles/cloudscheduler.admin",
       "roles/resourcemanager.projectDeleter",
+      "roles/dns.admin",
     ],
   }
 }

@@ -181,10 +181,10 @@ module "cicd_project_iam_member" {
   roles       = each.value
 }
 
-// In the bootstrap projects is created, the Compute Engine
+// When the bootstrap projects are created, the Compute Engine
 // default service account is disabled but it still has the Editor
-// role associated with the service account. When the projects are created
-// the Compute Engine default service account is the only Editor.
+// role associated with the service account. This default SA is the
+// only member with the editor role.
 // This module will remove all editors from both projects.
 module "bootstrap_projects_remove_editor" {
   source   = "./modules/parent-iam-remove-role"

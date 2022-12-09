@@ -29,96 +29,23 @@ Review the `tf-wrapper.sh`. It is a bash script helper responsible for applying 
     tmp_plan="${base_dir}/tmp_plan"
     environments_regex="^(development|non-production|production|shared)$"
 
-    # Create maxdepth variable
+    #🟢 Create maxdepth variable
     maxdepth=2  #🟢 Must be configured based in your directory design
 
     #🟢 Create component temp variables
     current_component=""
     old_component=""
 
-    ## Terraform apply for single environment.
-    tf_apply() {
     ...
     ```
 
-1. Change find commands to use maxdepth variable on all terraform commands. Make sure you do the same changes in functions: `tf_plan_validate_all` and `single_action_runner`.
-
-    ```text
-    tf_plan_validate_all() {
-    local env
-    ...
-    #🟢 Set maxdepth in find command -------------- 🟢
-    find "$component_path" -mindepth 1 -maxdepth $maxdepth -type d | while read -r env_path ; do
-        env="$(basename "$env_path")"
-    ```
-
-1. Add handling component variable and call to new function `check_env_path_folder`.
+1. Create the new function `check_env_path_folder` between new variables and already existing `tf_apply` function.
 
     ```text
     ...
-    env="$(basename "$env_path")"
+    current_component=""
+    old_component=""
 
-    old_component=$component #🟢 Holds component value before call check_env_path_folder
-
-    #🟢 Calls check_env_path_folder to get fixed component value
-    check_env_path_folder "$env_path" "$base_dir" "$component" "$env"
-
-    component=$current_component #🟢 Get fixed component value
-    ...
-    if [[ "$env" =~ $environments_regex ]] ; then
-    ```
-
-1. Fix warning message for doesn't match directories.
-
-    ```text
-        ...
-        tf_plan "$env_path" "$env" "$component"
-        tf_validate "$env_path" "$env" "$policysource" "$component"
-      else
-        #🟢 Replace dash (-) for slash (/) in component to fix warning message
-        echo "$(echo ${component} | sed -r 's/-/\//g' )/$env doesn't match $environments_regex; skipping"
-      fi
-
-      component=$old_component #🟢 Assign old component value before next while-loop iteration
-    done
-    ```
-
-1. Do the same changes in `single_action_runner` function.
-
-    ```text
-    single_action_runner() {
-    local env
-    ...
-    #🟢 Set maxdepth in find command -------------- 🟢
-    find "$component_path" -mindepth 1 -maxdepth $maxdepth -type d | sort -r | while read -r env_path ; do
-        env="$(basename "$env_path")"
-
-        old_component=$component #🟢 Holds component value before call check_env_path_folder
-
-        #🟢 Calls check_env_path_folder to get fixed component value
-        check_env_path_folder "$env_path" "$base_dir" "$component" "$env"
-
-        component=$current_component #🟢 Get fixed component value
-    ...
-    ```
-
-1. Fix warning message for doesn't match directories.
-
-    ```text
-        esac
-      else
-        #🟢 Replace dash (-) for slash (/) in component to fix warning message
-        echo "$(echo ${component} | sed -r 's/-/\//g' )/${env} doesn't match ${branch}; skipping"
-      fi
-
-      component=$old_component #🟢 Assign old component value before next while-loop iteration
-    done
-    ```
-
-1. Create a new function `check_env_path_folder`.
-
-    ```text
-    ...
     #🟢 New check_env_path_folder function
 
     ## Fix component name to be different for each environment. It is used as tf-plan file name
@@ -140,9 +67,101 @@ Review the `tf-wrapper.sh`. It is a bash script helper responsible for applying 
 
     #🟢 End of New check_env_path_folder function
 
-    case "$action" in
-    init|plan|apply|show|validate )
+
+    ## Terraform apply for single environment.
+    tf_apply() {
     ...
+    ```
+
+1. Change `find "$component_path"` command in `tf_plan_validate_all` function to set the new maxdepth variable.
+
+    ```text
+    tf_plan_validate_all() {
+    local env
+    local component
+    find "$base_dir" -mindepth 1 -maxdepth 1 -type d \
+    -not -path "$base_dir/modules" \
+    -not -path "$base_dir/.terraform" | while read -r component_path ; do
+        component="$(basename "$component_path")"
+
+        #🟢 Set maxdepth in find command -------------- 🟢
+        find "$component_path" -mindepth 1 -maxdepth $maxdepth -type d | while read -r env_path ; do
+            env="$(basename "$env_path")"
+    ```
+
+1. Add handling component variable and call to new function `check_env_path_folder`.
+
+    ```text
+            env="$(basename "$env_path")"
+
+            old_component=$component #🟢 Holds component value before call check_env_path_folder
+
+            #🟢 Calls check_env_path_folder to get fixed component value
+            check_env_path_folder "$env_path" "$base_dir" "$component" "$env"
+
+            component=$current_component #🟢 Get fixed component value
+            ...
+            if [[ "$env" =~ $environments_regex ]] ; then
+    ```
+
+1. Fix warning message for not matching directories.
+
+    ```text
+        ...
+        tf_plan "$env_path" "$env" "$component"
+        tf_validate "$env_path" "$env" "$policysource" "$component"
+      else
+        #🟢 Replace dash (-) for slash (/) in component to fix warning message
+        echo "$(echo ${component} | sed -r 's/-/\//g' )/$env doesn't match $environments_regex; skipping"
+      fi
+
+      component=$old_component #🟢 Assign old component value before next while-loop iteration
+    done
+    ```
+
+1. Change `find "$component_path"` command in `single_action_runner` function to set the new maxdepth variable.
+
+    ```text
+    single_action_runner() {
+    local env
+    local component
+    find "$base_dir" -mindepth 1 -maxdepth 1 -type d \
+    -not -path "$base_dir/modules" \
+    -not -path "$base_dir/.terraform" | while read -r component_path ; do
+        component="$(basename "$component_path")"
+        # sort -r is added to ensure shared is first if it exists.
+
+        #🟢 Set maxdepth in find command -------------- 🟢
+        find "$component_path" -mindepth 1 -maxdepth $maxdepth -type d | sort -r | while read -r env_path ; do
+            env="$(basename "$env_path")"
+    ```
+
+1. Add handling component variable and call to new function `check_env_path_folder`.
+
+    ```text
+            env="$(basename "$env_path")"
+
+            old_component=$component #🟢 Holds component value before call check_env_path_folder
+
+            #🟢 Calls check_env_path_folder to get fixed component value
+            check_env_path_folder "$env_path" "$base_dir" "$component" "$env"
+
+            component=$current_component #🟢 Get fixed component value
+    ...
+    ```
+
+1. Fix warning message for doesn't match directories.
+
+    ```text
+        esac
+      else
+        #🟢 Replace dash (-) for slash (/) in component to fix warning message
+        echo "$(echo ${component} | sed -r 's/-/\//g' )/${env} doesn't match ${branch}; skipping"
+      fi
+
+      #🟢 Assign old component value before next while-loop iteration
+      component=$old_component
+    done
     ```
 
 ## Code Changes - Terraform Files
@@ -286,8 +305,29 @@ example-organization/
     ```
 
 1. Create your source code folder hierarchy above environment folders (development, non-production, production). Remember to keep the source code environment folders as leaves (latest level) in the source code folder hierarchy because this is the way `tf-wrapper.sh` - the bash script helper - works to apply terraform configurations.
-1. For this example, just rename folders business_unit_1 and business_unit_2 to your Business Units names, i.e: finance and retail, to match the example folder hierarchy.
 1. Manually duplicate your source folder hierarchy to match your needs.
+1. **(Optional)** To simplify the below changes renaming business_units here is helper script. **Remember to review the changes**. The below script assumes you are in `gcp-projects` folder:
+
+    ```bash
+    for i in `find "./business_unit_1" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/bu1/<YOUR BUSINESS UNIT CODE>/" $i; done
+
+    for i in `find "./business_unit_1" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/business_unit_1/<YOUR BUSINESS UNIT NAME>/" $i; done
+
+    for i in `find "./business_unit_2" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/bu2/<YOUR BUSINESS UNIT CODE>/" $i; done
+
+    for i in `find "./business_unit_2" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/business_unit_2/<YOUR BUSINESS UNIT NAME>/" $i; done
+
+    for i in `find "./business_unit_<NEW BUSINESS UNIT NUMBER>" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/bu<NEW BUSINESS UNIT NUMBER>/<YOUR BUSINESS UNIT CODE>/" $i; done
+
+    for i in `find "./business_unit_<NEW BUSINESS UNIT NUMBER>" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/business_unit_<NEW BUSINESS UNIT NUMBER>/<YOUR BUSINESS UNIT NAME>/" $i; done
+    ```
+
+1. For this example, just rename folders business_unit_1 and business_unit_2 to your Business Units names, i.e: finance and retail, to match the example folder hierarchy.
+
+
+
+
+
 1. Change backend gcs prefix for each business unit shared resources.
     Example:
 
@@ -367,7 +407,7 @@ example-organization/
         business_unit        = "finance"
 
         /* 🟢 Set folder key parameter */
-        folder_hierarchy_key = "development/finance"
+        folder_hierarchy_key = "fldr-development/finance"
         ...
     }
     ```

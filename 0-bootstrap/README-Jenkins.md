@@ -172,8 +172,16 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
    cat "${SSH_KEY_FILE_PATH}.pub"
    ```
 
-1. you will copy / paste it in the `terraform.tfvars` file (variable `jenkins_agent_gce_ssh_pub_key`).
+1. You will copy / paste it in the `terraform.tfvars` file (variable `jenkins_agent_gce_ssh_pub_key`).
 1. Provide the rest of the values needed in `terraform.tfvars`
+
+1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
+
+   ```bash
+   ../scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+   ```
+
+   **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
 
 1. Commit changes:
 
@@ -343,26 +351,35 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    sed -i "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
    ```
 
-1. Check if your organization already has an Access Context Manager Policy.
-
-   ```bash
-   export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
-   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
-   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
-   ```
-
-1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars` and update the file with values from your environment and 0-bootstrap.
+1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
 
    ```bash
    mv ./envs/shared/terraform.example.tfvars ./envs/shared/terraform.tfvars
    ```
 
-1. You can re-run `terraform output` in the 0-bootstrap directory to find these values. If the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](../1-org/envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
+1. Check if a Security Command Center Notification with the default name, **scc-notify**, already exists. If it exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
+
+   ```bash
+   export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
+   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID}
+   ```
+
+1. Check if your organization already has an Access Context Manager Policy.
+
+   ```bash
+   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+   ```
+
+1. Update the `envs/shared/terraform.tfvars` file with values from your environment and 0-bootstrap step. If the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](../1-org/envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
 
    ```bash
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
+
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+
+   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
 
 1. Commit changes.

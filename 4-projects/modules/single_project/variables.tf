@@ -129,12 +129,6 @@ variable "project_prefix" {
   default     = "prj"
 }
 
-variable "enable_hub_and_spoke" {
-  description = "Enable Hub-and-Spoke architecture."
-  type        = bool
-  default     = false
-}
-
 variable "app_infra_pipeline_service_accounts" {
   description = "The Service Accounts from App Infra Pipeline."
   type        = map(string)

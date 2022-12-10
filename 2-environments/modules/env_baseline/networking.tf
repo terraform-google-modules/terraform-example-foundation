@@ -19,8 +19,9 @@
 *****************************************/
 
 module "base_shared_vpc_host_project" {
-  source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 14.0"
+  source  = "terraform-google-modules/project-factory/google"
+  version = "~> 14.0"
+
   random_project_id           = true
   random_project_id_length    = 4
   name                        = format("%s-%s-shared-base", local.project_prefix, var.environment_code)
@@ -53,8 +54,9 @@ module "base_shared_vpc_host_project" {
 }
 
 module "restricted_shared_vpc_host_project" {
-  source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 14.0"
+  source  = "terraform-google-modules/project-factory/google"
+  version = "~> 14.0"
+
   random_project_id           = true
   random_project_id_length    = 4
   name                        = format("%s-%s-shared-restricted", local.project_prefix, var.environment_code)

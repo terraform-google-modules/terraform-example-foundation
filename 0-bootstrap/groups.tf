@@ -33,9 +33,9 @@ data "google_organization" "org" {
 }
 
 module "required_group" {
-  for_each = local.required_groups_to_create
   source   = "terraform-google-modules/group/google"
   version  = "~> 0.4"
+  for_each = local.required_groups_to_create
 
   id                   = each.value
   display_name         = each.key
@@ -45,9 +45,9 @@ module "required_group" {
 }
 
 module "optional_group" {
-  for_each = local.optional_groups_to_create
   source   = "terraform-google-modules/group/google"
   version  = "~> 0.4"
+  for_each = local.optional_groups_to_create
 
   id                   = each.value
   display_name         = each.key

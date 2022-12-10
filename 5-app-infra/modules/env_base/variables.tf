@@ -47,12 +47,6 @@ variable "hostname" {
   default     = "example-app"
 }
 
-variable "business_code" {
-  description = "The code that describes which business unit owns the project"
-  type        = string
-  default     = "abcd"
-}
-
 variable "project_suffix" {
   description = "The name of the GCP project. Max 16 characters with 3 character business unit code."
   type        = string

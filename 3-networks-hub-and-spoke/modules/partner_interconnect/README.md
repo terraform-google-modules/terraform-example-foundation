@@ -33,7 +33,6 @@ Without Hub and Spoke enabled VLAN attachments will be created in `prj-{p|n|d}-s
 | region2\_router1\_name | Name of the Router 1 for Region 2 where the attachment resides. | `string` | n/a | yes |
 | region2\_router2\_name | Name of the Router 2 for Region 2 where the attachment resides | `string` | n/a | yes |
 | vpc\_name | Label to identify the VPC associated with shared VPC that will use the Interconnect. | `string` | n/a | yes |
-| vpc\_type | To which Shared VPC Host attach the Partner Interconnect - base/restricted | `string` | `null` | no |
 
 ## Outputs
 

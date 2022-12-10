@@ -15,17 +15,9 @@
  */
 
 locals {
-  org_id                            = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
-  parent_folder                     = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
-  parent_id                         = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
-  billing_account                   = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
-  default_region                    = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  folder_prefix                     = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
   restricted_project_id             = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_id
   restricted_project_number         = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_number
   base_project_id                   = data.terraform_remote_state.environments_env.outputs.base_shared_vpc_project_id
-  env_secret_project_id             = data.terraform_remote_state.environments_env.outputs.env_secrets_project_id
-  interconnect_project_id           = data.terraform_remote_state.org.outputs.interconnect_project_id
   dns_hub_project_id                = data.terraform_remote_state.org.outputs.dns_hub_project_id
   base_net_hub_project_id           = data.terraform_remote_state.org.outputs.base_net_hub_project_id
   restricted_net_hub_project_id     = data.terraform_remote_state.org.outputs.restricted_net_hub_project_id
@@ -192,15 +184,6 @@ data "terraform_remote_state" "org" {
   }
 }
 
-data "terraform_remote_state" "network_shared" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/networks/envs/shared"
-  }
-}
-
 data "terraform_remote_state" "environments_env" {
   backend = "gcs"
 
@@ -214,7 +197,8 @@ data "terraform_remote_state" "environments_env" {
  Restricted shared VPC
 *****************************************/
 module "restricted_shared_vpc" {
-  source                            = "../restricted_shared_vpc"
+  source = "../restricted_shared_vpc"
+
   project_id                        = local.restricted_project_id
   project_number                    = local.restricted_project_number
   dns_hub_project_id                = local.dns_hub_project_id
@@ -228,7 +212,6 @@ module "restricted_shared_vpc" {
   private_service_connect_ip        = var.restricted_private_service_connect_ip
   ingress_policies                  = var.ingress_policies
   egress_policies                   = var.egress_policies
-  org_id                            = local.org_id
   bgp_asn_subnet                    = local.bgp_asn_number
   default_region1                   = var.default_region1
   default_region2                   = var.default_region2
@@ -265,14 +248,14 @@ module "restricted_shared_vpc" {
 *****************************************/
 
 module "base_shared_vpc" {
-  source                     = "../base_shared_vpc"
+  source = "../base_shared_vpc"
+
   project_id                 = local.base_project_id
   dns_hub_project_id         = local.dns_hub_project_id
   base_net_hub_project_id    = local.base_net_hub_project_id
   environment_code           = var.environment_code
   private_service_cidr       = var.base_private_service_cidr
   private_service_connect_ip = var.base_private_service_connect_ip
-  org_id                     = local.org_id
   default_region1            = var.default_region1
   default_region2            = var.default_region2
   domain                     = var.domain

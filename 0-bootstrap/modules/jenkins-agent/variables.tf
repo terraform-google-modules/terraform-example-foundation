@@ -64,12 +64,6 @@ variable "jenkins_agent_gce_private_ip_address" {
   type        = string
 }
 
-variable "jenkins_agent_gce_ssh_user" {
-  description = "Jenkins Agent GCE Instance SSH username."
-  type        = string
-  default     = "jenkins"
-}
-
 variable "jenkins_agent_gce_ssh_pub_key" {
   description = "SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Controller holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'`"
   type        = string

@@ -10,7 +10,6 @@
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | private\_worker\_pool\_id | ID of the Cloud Build private worker pool. | `string` | n/a | yes |
-| project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | remote\_tfstate\_bucket | Bucket with remote state data to be used by the pipeline. | `string` | n/a | yes |
 | terraform\_docker\_tag\_version | TAG version of the terraform docker image. | `string` | `"v1"` | no |
 

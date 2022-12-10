@@ -15,8 +15,7 @@
  */
 
 locals {
-  env_code        = element(split("", var.environment), 0)
-  shared_vpc_mode = var.enable_hub_and_spoke ? "-spoke" : ""
+  env_code = element(split("", var.environment), 0)
   source_repos = setintersection(
     toset(keys(var.app_infra_pipeline_service_accounts)),
     toset(keys(var.sa_roles))

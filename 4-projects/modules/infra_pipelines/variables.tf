@@ -24,12 +24,6 @@ variable "default_region" {
   type        = string
 }
 
-variable "project_prefix" {
-  description = "Name prefix to use for projects created."
-  type        = string
-  default     = "prj"
-}
-
 variable "cloudbuild_project_id" {
   description = "The project id where the pipelines and repos should be created."
   type        = string

@@ -10,7 +10,6 @@
 | billing\_code | The code that's used to provide chargeback information | `string` | n/a | yes |
 | business\_code | The code that describes which business unit owns the project | `string` | `"abcd"` | no |
 | enable\_cloudbuild\_deploy | Enable infra deployment using Cloud Build | `bool` | `false` | no |
-| enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | folder\_id | The folder id where project will be created | `string` | n/a | yes |
 | org\_id | The organization id for the associated services | `string` | n/a | yes |

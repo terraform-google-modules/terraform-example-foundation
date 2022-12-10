@@ -53,7 +53,6 @@ module "infra_pipelines" {
   cloudbuild_project_id       = module.app_infra_cloudbuild_project[0].project_id
   cloud_builder_artifact_repo = local.cloud_builder_artifact_repo
   remote_tfstate_bucket       = local.projects_remote_bucket_tfstate
-  project_prefix              = local.project_prefix
   billing_account             = local.billing_account
   default_region              = var.default_region
   app_infra_repos             = local.repo_names

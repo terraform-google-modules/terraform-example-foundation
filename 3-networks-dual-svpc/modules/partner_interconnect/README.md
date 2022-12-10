@@ -21,7 +21,6 @@ Without Hub and Spoke enabled VLAN attachments will be created in `prj-{p|n|d}-s
 |------|-------------|------|---------|:--------:|
 | attachment\_project\_id | the Interconnect project ID. | `string` | n/a | yes |
 | cloud\_router\_labels | A map of suffixes for labelling vlans with four entries like "vlan\_1" => "suffix1" with keys from `vlan_1` to `vlan_4`. | `map(string)` | `{}` | no |
-| folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | preactivate | Preactivate Partner Interconnect attachments, works only for level3 Partner Interconnect | `string` | `false` | no |
 | region1 | First subnet region. The Partner Interconnect module only configures two regions. | `string` | n/a | yes |
 | region1\_interconnect1\_location | Name of the interconnect location used in the creation of the Interconnect for the first location of region1 | `string` | n/a | yes |
@@ -34,7 +33,6 @@ Without Hub and Spoke enabled VLAN attachments will be created in `prj-{p|n|d}-s
 | region2\_router1\_name | Name of the Router 1 for Region 2 where the attachment resides. | `string` | n/a | yes |
 | region2\_router2\_name | Name of the Router 2 for Region 2 where the attachment resides | `string` | n/a | yes |
 | vpc\_name | Label to identify the VPC associated with shared VPC that will use the Interconnect. | `string` | n/a | yes |
-| vpc\_type | To which Shared VPC Host attach the Partner Interconnect - base/restricted | `string` | `null` | no |
 
 ## Outputs
 

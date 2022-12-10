@@ -80,20 +80,8 @@ variable "cloud_router_labels" {
   default     = {}
 }
 
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
-  type        = string
-  default     = "fldr"
-}
-
 variable "preactivate" {
   description = "Preactivate Partner Interconnect attachments, works only for level3 Partner Interconnect"
   type        = string
   default     = false
-}
-
-variable "vpc_type" {
-  description = "To which Shared VPC Host attach the Partner Interconnect - base/restricted"
-  type        = string
-  default     = null
 }

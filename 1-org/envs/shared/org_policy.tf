@@ -20,7 +20,7 @@ locals {
   policy_for      = local.parent_folder != "" ? "folder" : "organization"
 
   essential_contacts_domains_to_allow = concat(
-    [for domain in var.essential_contacts_domains_to_allow : "${domain}" if can(regex("^@.*$", domain)) == true],
+    [for domain in var.essential_contacts_domains_to_allow : domain if can(regex("^@.*$", domain)) == true],
     [for domain in var.essential_contacts_domains_to_allow : "@${domain}" if can(regex("^@.*$", domain)) == false]
   )
 
@@ -46,9 +46,10 @@ locals {
 }
 
 module "organization_policies_type_boolean" {
-  for_each        = local.boolean_type_organization_policies
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 5.1"
+  source   = "terraform-google-modules/org-policy/google"
+  version  = "~> 5.1"
+  for_each = local.boolean_type_organization_policies
+
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -62,8 +63,9 @@ module "organization_policies_type_boolean" {
 *******************************************/
 
 module "org_vm_external_ip_access" {
-  source          = "terraform-google-modules/org-policy/google"
-  version         = "~> 5.1"
+  source  = "terraform-google-modules/org-policy/google"
+  version = "~> 5.1"
+
   organization_id = local.organization_id
   folder_id       = local.folder_id
   policy_for      = local.policy_for
@@ -73,8 +75,9 @@ module "org_vm_external_ip_access" {
 }
 
 module "restrict_protocol_fowarding" {
-  source            = "terraform-google-modules/org-policy/google"
-  version           = "~> 5.1"
+  source  = "terraform-google-modules/org-policy/google"
+  version = "~> 5.1"
+
   organization_id   = local.organization_id
   folder_id         = local.folder_id
   policy_for        = local.policy_for
@@ -89,8 +92,9 @@ module "restrict_protocol_fowarding" {
 *******************************************/
 
 module "org_domain_restricted_sharing" {
-  source           = "terraform-google-modules/org-policy/google//modules/domain_restricted_sharing"
-  version          = "~> 5.1"
+  source  = "terraform-google-modules/org-policy/google//modules/domain_restricted_sharing"
+  version = "~> 5.1"
+
   organization_id  = local.organization_id
   folder_id        = local.folder_id
   policy_for       = local.policy_for
@@ -102,8 +106,9 @@ module "org_domain_restricted_sharing" {
 *******************************************/
 
 module "domain_restricted_contacts" {
-  source            = "terraform-google-modules/org-policy/google"
-  version           = "~> 5.1"
+  source  = "terraform-google-modules/org-policy/google"
+  version = "~> 5.1"
+
   organization_id   = local.organization_id
   folder_id         = local.folder_id
   policy_for        = local.policy_for

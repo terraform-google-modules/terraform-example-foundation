@@ -42,7 +42,7 @@ resource "google_compute_router_nat" "egress_nat_region1" {
   count                              = var.nat_enabled ? 1 : 0
   name                               = "rn-${local.vpc_name}-${var.default_region1}-egress"
   project                            = var.project_id
-  router                             = google_compute_router.nat_router_region1.0.name
+  router                             = google_compute_router.nat_router_region1[0].name
   region                             = var.default_region1
   nat_ip_allocate_option             = "MANUAL_ONLY"
   nat_ips                            = google_compute_address.nat_external_addresses_region1.*.self_link
@@ -77,7 +77,7 @@ resource "google_compute_router_nat" "egress_nat2" {
   count                              = var.nat_enabled ? 1 : 0
   name                               = "rn-${local.vpc_name}-${var.default_region2}-egress"
   project                            = var.project_id
-  router                             = google_compute_router.nat_router_region2.0.name
+  router                             = google_compute_router.nat_router_region2[0].name
   region                             = var.default_region2
   nat_ip_allocate_option             = "MANUAL_ONLY"
   nat_ips                            = google_compute_address.nat_external_addresses_region2.*.self_link

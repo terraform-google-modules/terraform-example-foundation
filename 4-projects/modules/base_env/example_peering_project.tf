@@ -54,8 +54,9 @@ module "peering_project" {
 }
 
 module "peering_network" {
-  source                                 = "terraform-google-modules/network/google"
-  version                                = "~> 5.0"
+  source  = "terraform-google-modules/network/google"
+  version = "~> 5.0"
+
   project_id                             = module.peering_project.project_id
   network_name                           = "vpc-${local.env_code}-peering-base"
   shared_vpc_host                        = "false"
@@ -74,8 +75,9 @@ resource "google_dns_policy" "default_policy" {
 }
 
 module "peering" {
-  source            = "terraform-google-modules/network/google//modules/network-peering"
-  version           = "~> 5.0"
+  source  = "terraform-google-modules/network/google//modules/network-peering"
+  version = "~> 5.0"
+
   prefix            = "${var.business_code}-${local.env_code}"
   local_network     = module.peering_network.network_self_link
   peer_network      = local.base_network_self_link

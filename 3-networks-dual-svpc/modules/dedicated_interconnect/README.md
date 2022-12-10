@@ -18,7 +18,6 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | cloud\_router\_labels | A map of suffixes for labelling vlans with four entries like "vlan\_1" => "suffix1" with keys from `vlan_1` to `vlan_4`. | `map(string)` | `{}` | no |
-| folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | interconnect\_project\_id | Interconnect project ID. | `string` | n/a | yes |
 | peer\_asn | Peer BGP Autonomous System Number (ASN). | `number` | n/a | yes |
 | peer\_name | Name of this BGP peer. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]\*[a-z0-9])? | `string` | n/a | yes |

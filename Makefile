@@ -18,7 +18,7 @@
 # Make will use bash instead of sh
 SHELL := /usr/bin/env bash
 
-DOCKER_TAG_VERSION_DEVELOPER_TOOLS := 1.7
+DOCKER_TAG_VERSION_DEVELOPER_TOOLS := 1.9
 DOCKER_IMAGE_DEVELOPER_TOOLS := cft/developer-tools
 REGISTRY_URL := gcr.io/cloud-foundation-cicd
 
@@ -27,6 +27,7 @@ REGISTRY_URL := gcr.io/cloud-foundation-cicd
 docker_test_lint:
 	docker run --rm -it \
 		-e ENABLE_PARALLEL=1 \
+		-e DISABLE_TFLINT=1 \
 		-e EXCLUDE_LINT_DIRS \
 		-v $(CURDIR):/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \

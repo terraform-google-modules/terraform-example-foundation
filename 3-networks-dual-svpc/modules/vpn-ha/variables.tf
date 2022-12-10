@@ -158,15 +158,3 @@ variable "region2_router2_tunnel1_bgp_peer_range" {
   type        = string
   description = "BGP session range for router 2 in region 1 tunnel 1"
 }
-
-variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
-  type        = string
-  default     = ""
-}
-
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
-  type        = string
-  default     = "fldr"
-}

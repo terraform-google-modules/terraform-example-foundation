@@ -85,9 +85,3 @@ variable "preactivate" {
   type        = string
   default     = false
 }
-
-variable "vpc_type" {
-  description = "To which Shared VPC Host attach the Partner Interconnect - base/restricted"
-  type        = string
-  default     = null
-}

@@ -90,7 +90,13 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 This step uses the **Hub and Spoke** architecture mode.
 More details can be found at the **Networking** section of the [Google cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke).
-To enabled **Hub and Spoke** [transitivity](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke_transitivity) set the variable `enable_hub_and_spoke_transitivity` to `true`.
+
+**Hub and Spoke** [transitivity](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke_transitivity) can be used to deploy network virtual appliances (NVAs) on the hub Shared VPC that act as gateways for the spoke-to-spoke traffic to allow connectivity across environments.
+To enable **Hub and Spoke** transitivity set the variable `enable_hub_and_spoke_transitivity` to `true`.
+
+**Note:** The default `allow-transitivity-ingress` firewall rule will create Security Command Center (SCC) findings because it allows ingress for all ports and protocols in the [Shared Address Space CIDR Block](https://en.wikipedia.org/wiki/IPv4_shared_address_space) set in this rule.
+Because of this, you should update the implemented network access controls between spokes with valid values for your environment through the [firewall functionality](./modules/transitivity/main.tf#L142) of the corresponding NVAs to make them more restrictive.
+
 To see the version that makes use of the **Dual Shared VPC** architecture mode check the step [3-networks-dual-svpc](../3-networks-dual-svpc).
 
 ### Using Dedicated Interconnect

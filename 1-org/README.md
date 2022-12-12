@@ -109,9 +109,9 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Deploying with Cloud Build
 
-1. Clone the `gcp-org` repo based on the Terraform output from the previous step.
-Clone the repo at the same level of the `terraform-example-foundation` folder, the next instructions assume that layout.
-Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see the project again.
+1. Clone the `gcp-org` repo based on the Terraform output from the `0-bootstrap` step.
+Clone the repo at the same level of the `terraform-example-foundation` folder, the following instructions assume this layout.
+Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get the Cloud Build Project ID.
 
    ```bash
    export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
@@ -120,8 +120,9 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to see 
    gcloud source repos clone gcp-org --project=${CLOUD_BUILD_PROJECT_ID}
    ```
 
-   - The message `warning: You appear to have cloned an empty repository.` is
+   **Note:** The message `warning: You appear to have cloned an empty repository.` is
    normal and can be ignored.
+
 1. Navigate into the repo, change to a non-production branch and copy contents of foundation to new repo.
    All subsequent steps assume you are running them from the `gcp-org` directory.
    If you run them from another directory, adjust your copy paths accordingly.
@@ -207,10 +208,11 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
 
 ### Running Terraform locally
 
-1. Change into `1-org` folder, copy the Terraform wrapper script and ensure it can be executed.
+1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder.
+Change into `1-org` folder, copy the Terraform wrapper script and ensure it can be executed.
 
    ```bash
-   cd 1-org
+   cd terraform-example-foundation/1-org
    cp ../build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    ```

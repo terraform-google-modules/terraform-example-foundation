@@ -80,7 +80,9 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Deploying with Cloud Build
 
-1. Clone the policies repo. **Note:** This repo has the same name as the repo created in step 1-org, to prevent a collision the command below will clone it in folder gcp-policies-app-infra.
+1. Clone the `gcp-policies` repo based on the Terraform output from the `0-bootstrap` step.
+Clone the repo at the same level of the `terraform-example-foundation` folder, the following instructions assume this layout.
+Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get the Cloud Build Project ID.
 
    ```bash
    export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
@@ -88,6 +90,8 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
    gcloud source repos clone gcp-policies gcp-policies-app-infra --project=${INFRA_PIPELINE_PROJECT_ID}
    ```
+
+   **Note:** `gcp-policies` repo has the same name as the repo created in step `1-org`. In order to prevent a collision, the previous command will clone this repo in the folder `gcp-policies-app-infra`.
 
 1. Navigate into the repo and copy contents of policy-library to new repo. All subsequent steps assume you are running them
    from the gcp-policies-app-infra directory. If you run them from another directory,
@@ -190,10 +194,10 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Run Terraform locally
 
-1. Change into `5-app-infra` folder, copy the Terraform wrapper script and ensure it can be executed.
+1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder. Change into `5-app-infra` folder, copy the Terraform wrapper script and ensure it can be executed.
 
    ```bash
-   cd 5-app-infra
+   cd terraform-example-foundation/5-app-infra
    cp ../build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    ```

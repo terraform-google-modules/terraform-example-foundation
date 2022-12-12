@@ -218,7 +218,7 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
 
 ### Run Terraform locally
 
-1. The next instructions assume that you are	at the same level of the `terraform-example-foundation` folder. Change into `4-projects` folder, copy the Terraform wrapper script and ensure it can be executed.
+1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder. Change into `4-projects` folder, copy the Terraform wrapper script and ensure it can be executed.
 
    ```bash
    cd terraform-example-foundation/4-projects

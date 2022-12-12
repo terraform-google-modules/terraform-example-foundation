@@ -75,7 +75,9 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Deploying with Cloud Build
 
-1. Clone repo.
+1. Clone the `gcp-environments` repo based on the Terraform output from the `0-bootstrap` step.
+Clone the repo at the same level of the `terraform-example-foundation` folder, the following instructions assume this layout.
+Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get the Cloud Build Project ID.
 
    ```bash
    export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
@@ -162,10 +164,10 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
 
 ### Run Terraform locally
 
-1. Change into `2-environments` folder, copy the Terraform wrapper script and ensure it can be executed.
+1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder. Change into `2-environments` folder, copy the Terraform wrapper script and ensure it can be executed.
 
    ```bash
-   cd 2-environments
+   cd terraform-example-foundation/2-environments
    cp ../build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    ```

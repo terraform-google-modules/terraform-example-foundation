@@ -132,7 +132,7 @@ module "tf_private_pool" {
     region                   = var.default_region,
     enable_network_peering   = true,
     create_peered_network    = true,
-    peered_network_subnet_ip = "10.10.20.0/24"
+    peered_network_subnet_ip = "10.3.0.0/24"
     peering_address          = "192.168.0.0"
     peering_prefix_length    = 24
   }

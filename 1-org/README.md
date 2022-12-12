@@ -215,20 +215,35 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
    chmod 755 ./tf-wrapper.sh
    ```
 
-1. Rename `envs/shared/terraform.example.tfvars` to `envs/shared/terraform.tfvars`.
+1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
 
    ```bash
-   mv envs/shared/terraform.example.tfvars envs/shared/terraform.tfvars
+   mv ./envs/shared/terraform.example.tfvars ./envs/shared/terraform.tfvars
    ```
 
-1. Update the file with values from your environment and 0-bootstrap output.
-   Use `terraform output` to get the backend bucket value from 0-bootstrap output.
+1. Check if a Security Command Center Notification with the default name, **scc-notify**, already exists. If it exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
+
+   ```bash
+   export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
+   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID}
+   ```
+
+1. Check if your organization already has an Access Context Manager Policy.
+
+   ```bash
+   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+   ```
+
+1. Update the `envs/shared/terraform.tfvars` file with values from your environment and 0-bootstrap step. If the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
 
    ```bash
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
 
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+
+   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
 
 We will now deploy our environment (production) using this script.

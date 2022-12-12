@@ -62,9 +62,9 @@ module "tf_workspace" {
   location   = var.default_region
 
   create_state_bucket       = true
-  create_state_bucket_name  = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-build-state"
-  log_bucket_name           = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-build-logs"
-  artifacts_bucket_name     = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-build-artifacts"
+  create_state_bucket_name  = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-state"
+  log_bucket_name           = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-logs"
+  artifacts_bucket_name     = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-artifacts"
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
   enable_worker_pool        = true

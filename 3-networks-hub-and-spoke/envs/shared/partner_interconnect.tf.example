@@ -19,20 +19,23 @@ module "shared_restricted_interconnect" {
 
   attachment_project_id = local.restricted_net_hub_project_id
   vpc_name              = "${local.environment_code}-shared-restricted"
-  vpc_type              = "restricted"
   preactivate           = var.preactivate_partner_interconnect
 
-  region1                        = local.default_region1
-  region1_router1_name           = module.restricted_shared_vpc[0].region1_router1.router.name
-  region1_interconnect1_location = "las-zone1-770"
-  region1_router2_name           = module.restricted_shared_vpc[0].region1_router2.router.name
-  region1_interconnect2_location = "las-zone1-770"
+  region1                         = local.default_region1
+  region1_router1_name            = module.restricted_shared_vpc[0].region1_router1.router.name
+  region1_interconnect1_location  = "las-zone1-770"
+  region1_interconnect1_onprem_dc = "onprem-dc-1"
+  region1_router2_name            = module.restricted_shared_vpc[0].region1_router2.router.name
+  region1_interconnect2_location  = "las-zone1-770"
+  region1_interconnect2_onprem_dc = "onprem-dc-2"
 
-  region2                        = local.default_region2
-  region2_router1_name           = module.restricted_shared_vpc[0].region2_router1.router.name
-  region2_interconnect1_location = "lax-zone2-19"
-  region2_router2_name           = module.restricted_shared_vpc[0].region2_router2.router.name
-  region2_interconnect2_location = "lax-zone1-403"
+  region2                         = local.default_region2
+  region2_router1_name            = module.restricted_shared_vpc[0].region2_router1.router.name
+  region2_interconnect1_location  = "lax-zone2-19"
+  region2_interconnect1_onprem_dc = "onprem-dc-3"
+  region2_router2_name            = module.restricted_shared_vpc[0].region2_router2.router.name
+  region2_interconnect2_location  = "lax-zone1-403"
+  region2_interconnect2_onprem_dc = "onprem-dc-4"
 
   cloud_router_labels = {
     vlan_1 = "cr5",
@@ -47,20 +50,23 @@ module "shared_base_interconnect" {
 
   attachment_project_id = local.base_net_hub_project_id
   vpc_name              = "${local.environment_code}-shared-base"
-  vpc_type              = "base"
   preactivate           = var.preactivate_partner_interconnect
 
-  region1                        = local.default_region1
-  region1_router1_name           = module.base_shared_vpc[0].region1_router1.router.name
-  region1_interconnect1_location = "las-zone1-770"
-  region1_router2_name           = module.base_shared_vpc[0].region1_router2.router.name
-  region1_interconnect2_location = "las-zone1-770"
+  region1                         = local.default_region1
+  region1_router1_name            = module.base_shared_vpc[0].region1_router1.router.name
+  region1_interconnect1_location  = "las-zone1-770"
+  region1_interconnect1_onprem_dc = "onprem-dc-1"
+  region1_router2_name            = module.base_shared_vpc[0].region1_router2.router.name
+  region1_interconnect2_location  = "las-zone1-770"
+  region1_interconnect2_onprem_dc = "onprem-dc-2"
 
-  region2                        = local.default_region2
-  region2_router1_name           = module.base_shared_vpc[0].region2_router1.router.name
-  region2_interconnect1_location = "lax-zone2-19"
-  region2_router2_name           = module.base_shared_vpc[0].region2_router2.router.name
-  region2_interconnect2_location = "lax-zone1-403"
+  region2                         = local.default_region2
+  region2_router1_name            = module.base_shared_vpc[0].region2_router1.router.name
+  region2_interconnect1_location  = "lax-zone2-19"
+  region2_interconnect1_onprem_dc = "onprem-dc-3"
+  region2_router2_name            = module.base_shared_vpc[0].region2_router2.router.name
+  region2_interconnect2_location  = "lax-zone1-403"
+  region2_interconnect2_onprem_dc = "onprem-dc-4"
 
   cloud_router_labels = {
     vlan_1 = "cr1",

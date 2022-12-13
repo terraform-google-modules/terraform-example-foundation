@@ -19,7 +19,6 @@ module "shared_restricted_interconnect" {
 
   attachment_project_id = local.restricted_project_id
   vpc_name              = "${var.environment_code}-shared-restricted"
-  vpc_type              = "restricted"
   preactivate           = true
 
   region1                        = var.default_region1
@@ -51,7 +50,6 @@ module "shared_base_interconnect" {
 
   attachment_project_id = local.base_project_id
   vpc_name              = "${var.environment_code}-shared-base"
-  vpc_type              = "base"
   preactivate           = true
 
   region1                        = var.default_region1

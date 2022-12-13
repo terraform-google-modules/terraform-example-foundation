@@ -148,7 +148,8 @@ func TestBootstrap(t *testing.T) {
 
 			// cloud build project
 			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
-			bucketName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_artifacts")
+			artifactsBktName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_artifacts")
+			logsBktName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_logs")
 			defaultRegion := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["default_region"]
 
 			prj := gcloud.Runf(t, "projects describe %s", cbProjectID)
@@ -170,16 +171,39 @@ func TestBootstrap(t *testing.T) {
 			assert.Equal("VPC_PEERING", globalAddress.Get("purpose").String(), fmt.Sprintf("global address %s purpose should be VPC peering", globalAddressName))
 			assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(globalAddress.Get("network").String(), "/"), fmt.Sprintf("global address %s should be in the peered network", globalAddressName))
 
-			for _, env := range []string{
-				"bootstrap",
-				"org",
-				"env",
-				"net",
-				"proj",
+			for _, bkts := range []struct {
+				env  string
+				repo string
+			}{
+				{
+					env:  "bootstrap",
+					repo: "gcp-bootstrap",
+				},
+				{
+					env:  "org",
+					repo: "gcp-org",
+				},
+				{
+					env:  "env",
+					repo: "gcp-environments",
+				},
+				{
+					env:  "net",
+					repo: "gcp-networks",
+				},
+				{
+					env:  "proj",
+					repo: "gcp-projects",
+				},
 			} {
 				gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--json"})
-				bkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", bucketName[env]), gcAlphaOpts).Array()[0]
-				assert.True(bkt.Exists(), "bucket %s should exist", bucketName[env])
+				artifactsBkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", artifactsBktName[bkts.env]), gcAlphaOpts).Array()[0]
+				assert.True(artifactsBkt.Exists(), "bucket %s should exist", artifactsBktName[bkts.env])
+				assert.Equal(artifactsBktName[bkts.env], fmt.Sprintf("bkt-%s-%s-build-artifacts", cbProjectID, bkts.repo))
+
+				logsBkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", logsBktName[bkts.env]), gcAlphaOpts).Array()[0]
+				assert.True(logsBkt.Exists(), "bucket %s should exist", logsBktName[bkts.env])
+				assert.Equal(logsBktName[bkts.env], fmt.Sprintf("bkt-%s-%s-build-logs", cbProjectID, bkts.repo))
 			}
 
 			for _, repo := range cloudSourceRepos {

@@ -97,6 +97,11 @@ output "gcs_bucket_cloudbuild_artifacts" {
   value       = { for key, value in module.tf_workspace : key => replace(value.artifacts_bucket, local.bucket_self_link_prefix, "") }
 }
 
+output "gcs_bucket_cloudbuild_logs" {
+  description = "Bucket used to store Cloud/Build logs in CloudBuild project."
+  value       = { for key, value in module.tf_workspace : key => replace(value.logs_bucket, local.bucket_self_link_prefix, "") }
+}
+
 output "projects_gcs_bucket_tfstate" {
   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
   value       = module.gcp_projects_state_bucket.bucket.name

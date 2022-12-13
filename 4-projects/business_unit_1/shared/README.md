@@ -16,6 +16,7 @@
 | cloudbuild\_project\_id | n/a |
 | default\_region | Default region to create resources where applicable. |
 | enable\_cloudbuild\_deploy | Enable infra deployment using Cloud Build. |
+| log\_buckets | GCS Buckets to store Cloud Build logs |
 | plan\_triggers\_id | CB plan triggers |
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |

@@ -33,9 +33,8 @@ locals {
   org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
     "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
   ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
-  bucket_self_link_prefix = "https://www.googleapis.com/storage/v1/b/"
-  group_org_admins        = var.groups.create_groups ? var.groups.required_groups.group_org_admins : var.group_org_admins
-  group_billing_admins    = var.groups.create_groups ? var.groups.required_groups.group_billing_admins : var.group_billing_admins
+  group_org_admins     = var.groups.create_groups ? var.groups.required_groups.group_org_admins : var.group_org_admins
+  group_billing_admins = var.groups.create_groups ? var.groups.required_groups.group_billing_admins : var.group_billing_admins
 }
 
 resource "google_folder" "bootstrap" {

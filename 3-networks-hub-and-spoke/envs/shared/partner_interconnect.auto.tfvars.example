@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
-enable_dedicated_interconnect = true
+enable_partner_interconnect = true
+preactivate_partner_interconnect = true
+

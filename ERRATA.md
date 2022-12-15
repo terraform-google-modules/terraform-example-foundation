@@ -1,6 +1,20 @@
 # Errata Summary
 This is an overview of the delta between the example foundation repository and the [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf), including code discrepancies and notes on future automation. This document will be updated as new code is merged.
 
+## 3.x [WIP]
+
+### Code Discrepancies
+
+#### Networking
+
+- The “allow-windows-activation” rule that exists in the code is not explicitly called out in the guide.
+- [Tags](https://cloud.google.com/resource-manager/docs/tags/tags-overview) at Project level will be integrated in a future release.
+- [Global network firewall policies](https://cloud.google.com/vpc/docs/network-firewall-policies) will be integrated in a future release.
+
+#### Naming
+
+- Firewall rules created for healthcheck in the transitivity infrastructure for the hub and spoke network model, do not follow the naming convention as recommended in the guide.
+
 ## 2.x [WIP]
 ### Code Discrepancies
 

@@ -8,7 +8,9 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 
 ## Usage
 
-1. Rename `interconnect.tf.example` to `interconnect.tf` in the environment folder in `3-networks-dual-svpc/envs/<environment>`
+1. Rename `interconnect.tf.example` to `interconnect.tf` in the shared envs folder in `3-networks-dual-svpc/envs/shared`
+1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
+1. Rename `interconnect.tf.example` to `interconnect.tf` in base_env folder in `3-networks-dual-svpc/modules/base_env`.
 1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
 1. The candidate subnetworks and vlan_tag8021q variables can be set to `null` to allow the interconnect module to auto generate these values.
 

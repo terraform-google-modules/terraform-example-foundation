@@ -107,7 +107,7 @@ variable "key_rotation_period" {
 variable "gcs_bucket_prefix" {
   description = "Name prefix to be used for GCS Bucket"
   type        = string
-  default     = "cmek-encrypted-bucket"
+  default     = "bkt"
 }
 
 variable "remote_state_bucket" {

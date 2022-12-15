@@ -17,6 +17,7 @@
 locals {
   env                        = "common"
   environment_code           = "c"
+  dns_bgp_asn_number         = var.enable_partner_interconnect ? "16550" : var.bgp_asn_dns
   default_region1            = "us-west1"
   default_region2            = "us-central1"
   folder_prefix              = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix

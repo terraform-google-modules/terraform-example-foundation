@@ -61,6 +61,7 @@ module "tf_workspace" {
   project_id = var.cloudbuild_project_id
   location   = var.default_region
 
+  # using bucket custom names for compliance with bucket naming conventions
   create_state_bucket       = true
   create_state_bucket_name  = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-state"
   log_bucket_name           = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-logs"

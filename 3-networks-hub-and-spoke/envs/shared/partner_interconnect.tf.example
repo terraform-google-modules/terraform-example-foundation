@@ -24,18 +24,18 @@ module "shared_restricted_interconnect" {
   region1                         = local.default_region1
   region1_router1_name            = module.restricted_shared_vpc.region1_router1.router.name
   region1_interconnect1_location  = "las-zone1-770"
-  region1_interconnect1_onprem_dc = "onprem-dc-1"
+  region1_interconnect1_onprem_dc = "onprem-dc1"
   region1_router2_name            = module.restricted_shared_vpc.region1_router2.router.name
   region1_interconnect2_location  = "las-zone1-770"
-  region1_interconnect2_onprem_dc = "onprem-dc-2"
+  region1_interconnect2_onprem_dc = "onprem-dc2"
 
   region2                         = local.default_region2
   region2_router1_name            = module.restricted_shared_vpc.region2_router1.router.name
   region2_interconnect1_location  = "lax-zone2-19"
-  region2_interconnect1_onprem_dc = "onprem-dc-3"
+  region2_interconnect1_onprem_dc = "onprem-dc3"
   region2_router2_name            = module.restricted_shared_vpc.region2_router2.router.name
   region2_interconnect2_location  = "lax-zone1-403"
-  region2_interconnect2_onprem_dc = "onprem-dc-4"
+  region2_interconnect2_onprem_dc = "onprem-dc4"
 
   cloud_router_labels = {
     vlan_1 = "cr5",
@@ -55,18 +55,18 @@ module "shared_base_interconnect" {
   region1                         = local.default_region1
   region1_router1_name            = module.base_shared_vpc.region1_router1.router.name
   region1_interconnect1_location  = "las-zone1-770"
-  region1_interconnect1_onprem_dc = "onprem-dc-1"
+  region1_interconnect1_onprem_dc = "onprem-dc1"
   region1_router2_name            = module.base_shared_vpc.region1_router2.router.name
   region1_interconnect2_location  = "las-zone1-770"
-  region1_interconnect2_onprem_dc = "onprem-dc-2"
+  region1_interconnect2_onprem_dc = "onprem-dc2"
 
   region2                         = local.default_region2
   region2_router1_name            = module.base_shared_vpc.region2_router1.router.name
   region2_interconnect1_location  = "lax-zone2-19"
-  region2_interconnect1_onprem_dc = "onprem-dc-3"
+  region2_interconnect1_onprem_dc = "onprem-dc3"
   region2_router2_name            = module.base_shared_vpc.region2_router2.router.name
   region2_interconnect2_location  = "lax-zone1-403"
-  region2_interconnect2_onprem_dc = "onprem-dc-4"
+  region2_interconnect2_onprem_dc = "onprem-dc4"
 
   cloud_router_labels = {
     vlan_1 = "cr1",

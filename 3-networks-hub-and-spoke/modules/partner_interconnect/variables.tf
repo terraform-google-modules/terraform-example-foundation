@@ -34,6 +34,26 @@ variable "region2" {
   description = "Second subnet region. The Partner Interconnect module only configures two regions."
 }
 
+variable "region1_interconnect1_onprem_dc" {
+  type        = string
+  description = "Name of the on premisses data center used in the creation of the Interconnect for the first location of region1."
+}
+
+variable "region1_interconnect2_onprem_dc" {
+  type        = string
+  description = "Name of the on premisses data center used in the creation of the Interconnect for the second location of region1."
+}
+
+variable "region2_interconnect1_onprem_dc" {
+  type        = string
+  description = "Name of the on premisses data center used in the creation of the Interconnect for the first location of region2."
+}
+
+variable "region2_interconnect2_onprem_dc" {
+  type        = string
+  description = "Name of the on premisses data center used in the creation of the Interconnect for the second location of region2."
+}
+
 variable "region1_interconnect1_location" {
   type        = string
   description = "Name of the interconnect location used in the creation of the Interconnect for the first location of region1"
@@ -84,10 +104,4 @@ variable "preactivate" {
   description = "Preactivate Partner Interconnect attachments, works only for level3 Partner Interconnect"
   type        = string
   default     = false
-}
-
-variable "vpc_type" {
-  description = "To which Shared VPC Host attach the Partner Interconnect - base/restricted"
-  type        = string
-  default     = null
 }

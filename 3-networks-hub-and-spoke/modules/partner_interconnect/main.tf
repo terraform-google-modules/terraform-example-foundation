@@ -45,7 +45,7 @@ resource "google_compute_interconnect_attachment" "interconnect_attachment2_regi
 }
 
 resource "google_compute_interconnect_attachment" "interconnect_attachment1_region2" {
-  name    = "vl-${var.region2_interconnect1_onprem_dc}-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-${local.suffix1}"
+  name    = "vl-${var.region2_interconnect1_onprem_dc}-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-${local.suffix3}"
   project = var.attachment_project_id
   region  = var.region2
   router  = var.region2_router1_name
@@ -56,7 +56,7 @@ resource "google_compute_interconnect_attachment" "interconnect_attachment1_regi
 }
 
 resource "google_compute_interconnect_attachment" "interconnect_attachment2_region2" {
-  name    = "vl-${var.region2_interconnect2_onprem_dc}-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-${local.suffix2}"
+  name    = "vl-${var.region2_interconnect2_onprem_dc}-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-${local.suffix4}"
   project = var.attachment_project_id
   region  = var.region2
   router  = var.region2_router2_name

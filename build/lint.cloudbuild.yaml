@@ -24,8 +24,9 @@ tags:
 - 'lint'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.7'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.10'
 options:
   machineType: 'N1_HIGHCPU_8'
   env:
   - ENABLE_PARALLEL=0
+  - DISABLE_TFLINT=1

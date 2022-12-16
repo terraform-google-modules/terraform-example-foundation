@@ -22,7 +22,6 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 |------|-------------|------|---------|:--------:|
 | attachment\_project\_id | the Interconnect project ID. | `string` | n/a | yes |
 | cloud\_router\_labels | A map of suffixes for labelling vlans with four entries like "vlan\_1" => "suffix1" with keys from `vlan_1` to `vlan_4`. | `map(string)` | `{}` | no |
-| folder\_prefix | Name prefix to use for folders created. | `string` | `"fldr"` | no |
 | preactivate | Preactivate Partner Interconnect attachments, works only for level3 Partner Interconnect | `string` | `false` | no |
 | region1 | First subnet region. The Partner Interconnect module only configures two regions. | `string` | n/a | yes |
 | region1\_interconnect1\_location | Name of the interconnect location used in the creation of the Interconnect for the first location of region1 | `string` | n/a | yes |

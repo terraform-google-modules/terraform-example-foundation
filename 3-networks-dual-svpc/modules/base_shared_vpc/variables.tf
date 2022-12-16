@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-variable "org_id" {
-  type        = string
-  description = "Organization ID"
-}
-
 variable "project_id" {
   type        = string
   description = "Project ID for Private Shared VPC."
@@ -123,24 +118,6 @@ variable "windows_activation_enabled" {
   type        = bool
   description = "Enable Windows license activation for Windows workloads."
   default     = false
-}
-
-variable "nat_num_addresses" {
-  type        = number
-  description = "Number of external IPs to reserve for Cloud NAT."
-  default     = 2
-}
-
-variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
-  type        = string
-  default     = ""
-}
-
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
-  type        = string
-  default     = "fldr"
 }
 
 variable "allow_all_egress_ranges" {

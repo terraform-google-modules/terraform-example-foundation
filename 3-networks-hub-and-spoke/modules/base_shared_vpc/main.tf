@@ -26,8 +26,9 @@ locals {
  *****************************************/
 
 module "main" {
-  source                                 = "terraform-google-modules/network/google"
-  version                                = "~> 5.1"
+  source  = "terraform-google-modules/network/google"
+  version = "~> 5.1"
+
   project_id                             = var.project_id
   network_name                           = local.network_name
   shared_vpc_host                        = "true"
@@ -72,9 +73,10 @@ data "google_compute_network" "vpc_base_net_hub" {
 }
 
 module "peering" {
-  source                    = "terraform-google-modules/network/google//modules/network-peering"
-  version                   = "~> 5.1"
-  count                     = var.mode == "spoke" ? 1 : 0
+  source  = "terraform-google-modules/network/google//modules/network-peering"
+  version = "~> 5.1"
+  count   = var.mode == "spoke" ? 1 : 0
+
   prefix                    = "np"
   local_network             = module.main.network_self_link
   peer_network              = data.google_compute_network.vpc_base_net_hub[0].self_link

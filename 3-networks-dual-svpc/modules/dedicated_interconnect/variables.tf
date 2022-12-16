@@ -175,9 +175,3 @@ variable "region2_interconnect2_vlan_tag8021q" {
   description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
   default     = null
 }
-
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
-  type        = string
-  default     = "fldr"
-}

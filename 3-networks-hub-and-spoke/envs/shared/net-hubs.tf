@@ -164,12 +164,12 @@ locals {
 *****************************************/
 
 module "base_shared_vpc" {
-  source                        = "../../modules/base_shared_vpc"
+  source = "../../modules/base_shared_vpc"
+
   project_id                    = local.base_net_hub_project_id
   dns_hub_project_id            = local.dns_hub_project_id
   environment_code              = local.environment_code
   private_service_connect_ip    = "10.2.0.5"
-  org_id                        = local.org_id
   bgp_asn_subnet                = local.bgp_asn_number
   default_region1               = local.default_region1
   default_region2               = local.default_region2
@@ -212,7 +212,8 @@ module "base_shared_vpc" {
 *****************************************/
 
 module "restricted_shared_vpc" {
-  source                           = "../../modules/restricted_shared_vpc"
+  source = "../../modules/restricted_shared_vpc"
+
   project_id                       = local.restricted_net_hub_project_id
   project_number                   = local.restricted_net_hub_project_number
   dns_hub_project_id               = local.dns_hub_project_id
@@ -225,7 +226,6 @@ module "restricted_shared_vpc" {
     "serviceAccount:${local.projects_service_account}",
     "serviceAccount:${local.organization_service_account}",
   ], var.perimeter_additional_members))
-  org_id                        = local.org_id
   bgp_asn_subnet                = local.bgp_asn_number
   default_region1               = local.default_region1
   default_region2               = local.default_region2

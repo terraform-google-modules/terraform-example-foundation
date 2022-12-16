@@ -61,7 +61,6 @@ module "jenkins_bootstrap" {
 | jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name. | `string` | `"jenkins-agent-01"` | no |
 | jenkins\_agent\_gce\_private\_ip\_address | The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Controller) and GCP (CICD Project, where the Jenkins Agent is located). | `string` | n/a | yes |
 | jenkins\_agent\_gce\_ssh\_pub\_key | SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Controller holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'` | `string` | n/a | yes |
-| jenkins\_agent\_gce\_ssh\_user | Jenkins Agent GCE Instance SSH username. | `string` | `"jenkins"` | no |
 | jenkins\_agent\_gce\_subnetwork\_cidr\_range | The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0) | `string` | n/a | yes |
 | jenkins\_agent\_sa\_email | Email for Jenkins Agent service account. | `string` | `"jenkins-agent-gce"` | no |
 | jenkins\_controller\_subnetwork\_cidr\_range | A list of CIDR IP ranges of the Jenkins Controller in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | `list(string)` | n/a | yes |

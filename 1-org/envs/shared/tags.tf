@@ -34,9 +34,9 @@ locals {
   tags_obj_list = flatten([
     for tag_key, tag_obj in local.tags : [
       for value in tag_obj.values : {
-        shortkey = "${tag_key}"
+        shortkey = tag_key
         key      = "${tag_key}_${value}"
-        val      = "${value}"
+        val      = value
       }
     ]
   ])

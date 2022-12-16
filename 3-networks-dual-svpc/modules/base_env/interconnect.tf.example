@@ -15,6 +15,7 @@
  */
 
 locals {
+  interconnect_project_id = data.terraform_remote_state.org.outputs.interconnect_project_id
   base_config = {
     "development" = {
       region1_interconnect1_candidate_subnets = ["169.254.0.192/29"]

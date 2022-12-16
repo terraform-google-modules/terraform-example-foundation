@@ -15,7 +15,6 @@
  */
 
 locals {
-  environment_code = element(split("", var.environment), 0)
   env_project_ids = {
     "sample-base"     = data.terraform_remote_state.projects_env.outputs.base_shared_vpc_project,
     "sample-floating" = data.terraform_remote_state.projects_env.outputs.floating_project,

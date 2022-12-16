@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-variable "org_id" {
-  type        = string
-  description = "Organization ID"
-}
-
 variable "access_context_manager_policy_id" {
   type        = number
   description = "The id of the default Access Context Manager policy. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format=\"value(name)\"`."
@@ -143,18 +138,6 @@ variable "members" {
 variable "restricted_services" {
   type        = list(string)
   description = "List of services to restrict."
-}
-
-variable "parent_folder" {
-  description = "Optional - if using a folder for testing."
-  type        = string
-  default     = ""
-}
-
-variable "folder_prefix" {
-  description = "Name prefix to use for folders created."
-  type        = string
-  default     = "fldr"
 }
 
 variable "allow_all_egress_ranges" {

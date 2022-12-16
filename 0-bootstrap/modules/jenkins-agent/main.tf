@@ -29,8 +29,9 @@ resource "random_id" "suffix" {
   CICD project
 *******************************************/
 module "cicd_project" {
-  source                      = "terraform-google-modules/project-factory/google"
-  version                     = "~> 14.0"
+  source  = "terraform-google-modules/project-factory/google"
+  version = "~> 14.0"
+
   name                        = local.cicd_project_name
   random_project_id           = true
   random_project_id_length    = 4

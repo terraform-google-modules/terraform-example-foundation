@@ -3,7 +3,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| business\_code | The code that describes which business unit owns the project | `string` | `"abcd"` | no |
 | business\_unit | The business (ex. business\_unit\_1). | `string` | `"business_unit_1"` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | hostname | Hostname of instances | `string` | `"example-app"` | no |

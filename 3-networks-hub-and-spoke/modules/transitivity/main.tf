@@ -23,8 +23,9 @@ locals {
 }
 
 module "service_account" {
-  source     = "terraform-google-modules/service-accounts/google"
-  version    = "~> 4.1"
+  source  = "terraform-google-modules/service-accounts/google"
+  version = "~> 4.1"
+
   project_id = var.project_id
   names      = ["transitivity-gw"]
   project_roles = [
@@ -34,9 +35,10 @@ module "service_account" {
 }
 
 module "templates" {
-  source         = "terraform-google-modules/vm/google//modules/instance_template"
-  version        = "~> 7.9"
-  for_each       = toset(var.regions)
+  source   = "terraform-google-modules/vm/google//modules/instance_template"
+  version  = "~> 7.9"
+  for_each = toset(var.regions)
+
   can_ip_forward = true
   disk_size_gb   = 10
   name_prefix    = "transitivity-gw-${each.key}"
@@ -61,9 +63,10 @@ module "templates" {
 }
 
 module "migs" {
-  source            = "terraform-google-modules/vm/google//modules/mig"
-  version           = "~> 7.7"
-  for_each          = toset(var.regions)
+  source   = "terraform-google-modules/vm/google//modules/mig"
+  version  = "~> 7.7"
+  for_each = toset(var.regions)
+
   project_id        = var.project_id
   region            = each.key
   target_size       = 3
@@ -85,9 +88,10 @@ module "migs" {
 }
 
 module "ilbs" {
-  source                  = "GoogleCloudPlatform/lb-internal/google"
-  version                 = "~> 5.0"
-  for_each                = toset(var.regions)
+  source   = "GoogleCloudPlatform/lb-internal/google"
+  version  = "~> 5.0"
+  for_each = toset(var.regions)
+
   region                  = each.key
   name                    = each.key
   ports                   = null

@@ -31,7 +31,6 @@ module "vpn_ha_cb_to_onprem" {
   version = "~> 2.3"
   count   = var.vpn_configuration.enable_vpn ? 1 : 0
 
-
   project_id = var.project_id
   region     = var.private_worker_pool.region
   network    = local.peered_network_id

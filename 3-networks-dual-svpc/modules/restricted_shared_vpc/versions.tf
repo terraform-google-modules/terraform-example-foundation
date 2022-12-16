@@ -31,10 +31,10 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:restricted_shared_vpc/v2.3.1"
+    module_name = "blueprints/terraform/terraform-example-foundation:restricted_shared_vpc/v3.0.0"
   }
 
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:restricted_shared_vpc/v2.3.1"
+    module_name = "blueprints/terraform/terraform-example-foundation:restricted_shared_vpc/v3.0.0"
   }
 }

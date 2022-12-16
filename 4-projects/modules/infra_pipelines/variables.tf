@@ -66,3 +66,9 @@ variable "private_worker_pool_id" {
   description = "ID of the Cloud Build private worker pool."
   type        = string
 }
+
+variable "bucket_prefix" {
+  description = "Name prefix to use for state bucket created."
+  type        = string
+  default     = "bkt"
+}

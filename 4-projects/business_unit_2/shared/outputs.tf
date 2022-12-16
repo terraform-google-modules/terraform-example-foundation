@@ -43,6 +43,11 @@ output "state_buckets" {
   value       = try(module.infra_pipelines[0].state_buckets, {})
 }
 
+output "log_buckets" {
+  description = "GCS Buckets to store Cloud Build logs"
+  value       = try(module.infra_pipelines[0].log_buckets, {})
+}
+
 output "plan_triggers_id" {
   description = "CB plan triggers"
   value       = try(module.infra_pipelines[0].plan_triggers_id, [])

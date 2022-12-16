@@ -59,6 +59,11 @@ output "interconnect_project_id" {
   description = "The Dedicated Interconnect project ID"
 }
 
+output "interconnect_project_number" {
+  value       = module.interconnect.project_number
+  description = "The Dedicated Interconnect project number"
+}
+
 output "scc_notifications_project_id" {
   value       = module.scc_notifications.project_id
   description = "The SCC notifications project ID"

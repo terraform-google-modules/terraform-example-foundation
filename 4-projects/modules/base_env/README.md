@@ -7,7 +7,7 @@
 | business\_unit | The business (ex. business\_unit\_1). | `string` | n/a | yes |
 | env | The environment to prepare (ex. development). | `string` | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
-| gcs\_bucket\_prefix | Name prefix to be used for GCS Bucket | `string` | `"cmek-encrypted-bucket"` | no |
+| gcs\_bucket\_prefix | Name prefix to be used for GCS Bucket | `string` | `"bkt"` | no |
 | key\_name | Name to be used for KMS Key | `string` | `"crypto-key-example"` | no |
 | key\_rotation\_period | Rotation period in seconds to be used for KMS Key | `string` | `"7776000s"` | no |
 | keyring\_name | Name to be used for KMS Keyring | `string` | `"sample-keyring"` | no |

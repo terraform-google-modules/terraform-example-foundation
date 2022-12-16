@@ -220,21 +220,25 @@ module "restricted_shared_vpc" {
   private_service_connect_ip       = "10.10.0.5"
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services
-  members                          = distinct(concat(["serviceAccount:${local.networks_service_account}", "serviceAccount:${local.projects_service_account}"], var.perimeter_additional_members))
-  org_id                           = local.org_id
-  bgp_asn_subnet                   = local.bgp_asn_number
-  default_region1                  = local.default_region1
-  default_region2                  = local.default_region2
-  domain                           = var.domain
-  dns_enable_inbound_forwarding    = var.restricted_hub_dns_enable_inbound_forwarding
-  dns_enable_logging               = var.restricted_hub_dns_enable_logging
-  firewall_enable_logging          = var.restricted_hub_firewall_enable_logging
-  nat_enabled                      = var.restricted_hub_nat_enabled
-  nat_bgp_asn                      = var.restricted_hub_nat_bgp_asn
-  nat_num_addresses_region1        = var.restricted_hub_nat_num_addresses_region1
-  nat_num_addresses_region2        = var.restricted_hub_nat_num_addresses_region2
-  windows_activation_enabled       = var.restricted_hub_windows_activation_enabled
-  mode                             = "hub"
+  members = distinct(concat([
+    "serviceAccount:${local.networks_service_account}",
+    "serviceAccount:${local.projects_service_account}",
+    "serviceAccount:${local.organization_service_account}",
+  ], var.perimeter_additional_members))
+  org_id                        = local.org_id
+  bgp_asn_subnet                = local.bgp_asn_number
+  default_region1               = local.default_region1
+  default_region2               = local.default_region2
+  domain                        = var.domain
+  dns_enable_inbound_forwarding = var.restricted_hub_dns_enable_inbound_forwarding
+  dns_enable_logging            = var.restricted_hub_dns_enable_logging
+  firewall_enable_logging       = var.restricted_hub_firewall_enable_logging
+  nat_enabled                   = var.restricted_hub_nat_enabled
+  nat_bgp_asn                   = var.restricted_hub_nat_bgp_asn
+  nat_num_addresses_region1     = var.restricted_hub_nat_num_addresses_region1
+  nat_num_addresses_region2     = var.restricted_hub_nat_num_addresses_region2
+  windows_activation_enabled    = var.restricted_hub_windows_activation_enabled
+  mode                          = "hub"
 
   subnets = [
     {
@@ -255,6 +259,13 @@ module "restricted_shared_vpc" {
     }
   ]
   secondary_ranges = {}
+
+  egress_policies = distinct(concat(
+    local.dedicated_interconnect_egress_policy,
+    var.egress_policies
+  ))
+
+  ingress_policies = var.ingress_policies
 
   depends_on = [module.dns_hub_vpc]
 }

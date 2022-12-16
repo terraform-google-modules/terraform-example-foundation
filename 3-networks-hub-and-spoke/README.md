@@ -103,7 +103,8 @@ To see the version that makes use of the **Dual Shared VPC** architecture mode c
 
 If you provisioned the prerequisites listed in the [Dedicated Interconnect README](./modules/dedicated_interconnect/README.md), follow these steps to enable Dedicated Interconnect to access on-premises resources.
 
-1. Rename `interconnect.tf.example` to `interconnect.tf` in base_env folder in `3-networks-hub-and-spoke/modules/base_env`.
+1. Rename `interconnect.tf.example` to `interconnect.tf` in the shared envs folder in `3-networks-hub-and-spoke/envs/shared`
+1. Rename `interconnect.auto.tfvars.example` to `interconnect.auto.tfvars` in the shared envs folder in `3-networks-hub-and-spoke/envs/shared`
 1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
 1. The candidate subnetworks and vlan_tag8021q variables can be set to `null` to allow the interconnect module to auto generate these values.
 

@@ -15,21 +15,39 @@
  */
 
 locals {
-  org_id                    = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
-  parent_folder             = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
-  parent_id                 = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
-  billing_account           = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
-  default_region            = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  folder_prefix             = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  restricted_project_id     = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_id
-  restricted_project_number = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_number
-  base_project_id           = data.terraform_remote_state.environments_env.outputs.base_shared_vpc_project_id
-  env_secret_project_id     = data.terraform_remote_state.environments_env.outputs.env_secrets_project_id
-  interconnect_project_id   = data.terraform_remote_state.org.outputs.interconnect_project_id
-  dns_hub_project_id        = data.terraform_remote_state.org.outputs.dns_hub_project_id
-  networks_service_account  = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
-  projects_service_account  = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+  org_id                       = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
+  parent_folder                = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
+  parent_id                    = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
+  billing_account              = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
+  default_region               = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  folder_prefix                = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
+  restricted_project_id        = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_id
+  restricted_project_number    = data.terraform_remote_state.environments_env.outputs.restricted_shared_vpc_project_number
+  base_project_id              = data.terraform_remote_state.environments_env.outputs.base_shared_vpc_project_id
+  env_secret_project_id        = data.terraform_remote_state.environments_env.outputs.env_secrets_project_id
+  interconnect_project_id      = data.terraform_remote_state.org.outputs.interconnect_project_id
+  interconnect_project_number  = data.terraform_remote_state.org.outputs.interconnect_project_number
+  dns_hub_project_id           = data.terraform_remote_state.org.outputs.dns_hub_project_id
+  organization_service_account = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
+  networks_service_account     = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
+  projects_service_account     = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
 
+  dedicated_interconnect_egress_policy = var.enable_dedicated_interconnect ? [
+    {
+      "from" = {
+        "identity_type" = ""
+        "identities"    = ["serviceAccount:${local.networks_service_account}"]
+      },
+      "to" = {
+        "resources" = ["projects/${local.interconnect_project_number}"]
+        "operations" = {
+          "compute.googleapis.com" = {
+            "methods" = ["*"]
+          }
+        }
+      }
+    },
+  ] : []
 
   bgp_asn_number = var.enable_partner_interconnect ? "16550" : "64514"
 
@@ -208,17 +226,25 @@ module "restricted_shared_vpc" {
   environment_code                 = var.environment_code
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services
-  members                          = distinct(concat(["serviceAccount:${local.networks_service_account}", "serviceAccount:${local.projects_service_account}"], var.perimeter_additional_members))
-  private_service_cidr             = var.restricted_private_service_cidr
-  private_service_connect_ip       = var.restricted_private_service_connect_ip
-  org_id                           = local.org_id
-  parent_folder                    = local.parent_folder
-  bgp_asn_subnet                   = local.bgp_asn_number
-  default_region1                  = var.default_region1
-  default_region2                  = var.default_region2
-  domain                           = var.domain
-  ingress_policies                 = var.ingress_policies
-  egress_policies                  = var.egress_policies
+  members = distinct(concat([
+    "serviceAccount:${local.networks_service_account}",
+    "serviceAccount:${local.projects_service_account}",
+    "serviceAccount:${local.organization_service_account}",
+  ], var.perimeter_additional_members))
+  private_service_cidr       = var.restricted_private_service_cidr
+  private_service_connect_ip = var.restricted_private_service_connect_ip
+  org_id                     = local.org_id
+  parent_folder              = local.parent_folder
+  bgp_asn_subnet             = local.bgp_asn_number
+  default_region1            = var.default_region1
+  default_region2            = var.default_region2
+  domain                     = var.domain
+  ingress_policies           = var.ingress_policies
+
+  egress_policies = distinct(concat(
+    local.dedicated_interconnect_egress_policy,
+    var.egress_policies
+  ))
 
   subnets = [
     {

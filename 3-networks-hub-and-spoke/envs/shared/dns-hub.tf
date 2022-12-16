@@ -96,7 +96,7 @@ module "dns_hub_region1_router1" {
   network = module.dns_hub_vpc.network_name
   region  = local.default_region1
   bgp = {
-    asn                  = var.bgp_asn_dns
+    asn                  = local.dns_bgp_asn_number
     advertised_ip_ranges = [{ range = "35.199.192.0/19" }]
   }
 }
@@ -109,7 +109,7 @@ module "dns_hub_region1_router2" {
   network = module.dns_hub_vpc.network_name
   region  = local.default_region1
   bgp = {
-    asn                  = var.bgp_asn_dns
+    asn                  = local.dns_bgp_asn_number
     advertised_ip_ranges = [{ range = "35.199.192.0/19" }]
   }
 }
@@ -122,7 +122,7 @@ module "dns_hub_region2_router1" {
   network = module.dns_hub_vpc.network_name
   region  = local.default_region2
   bgp = {
-    asn                  = var.bgp_asn_dns
+    asn                  = local.dns_bgp_asn_number
     advertised_ip_ranges = [{ range = "35.199.192.0/19" }]
   }
 }
@@ -135,7 +135,7 @@ module "dns_hub_region2_router2" {
   network = module.dns_hub_vpc.network_name
   region  = local.default_region2
   bgp = {
-    asn                  = var.bgp_asn_dns
+    asn                  = local.dns_bgp_asn_number
     advertised_ip_ranges = [{ range = "35.199.192.0/19" }]
   }
 }

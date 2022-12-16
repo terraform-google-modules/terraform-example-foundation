@@ -4,13 +4,14 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 
 ## Prerequisites
 
-1. Provisioning of four [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/partner-overview) in the Hub project in the specified environment. That would be the `prj-c-{base|restricted}-net-hub` under the folder `fldr-common` in case of Hub and Spoke architecture.
-
-Without Hub and Spoke enabled VLAN attachments will be created in `prj-{p|n|d}-shared-{base|restricted}` under corresponding environment's folder.
+1. Provisioning of four [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/partner-overview) in the Hub project in the specified environment. That would be the `prj-{p|n|d}-shared-{base|restricted}` under corresponding environment's folder and `prj-c-dns-hub` under the folder `fldr-common`.
 
 ## Usage
 
-1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` in the environment folder in `3-networks-dual-svpc/modules/base_env` .
+1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` in the shared envs folder in `3-networks-dual-svpc/envs/shared`
+1. Rename `partner_interconnect.auto.tfvars.example` to `partner_interconnect.auto.tfvars` in the shared envs folder in `3-networks-dual-svpc/envs/shared`
+1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
+1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` in the base-env folder in `3-networks-dual-svpc/modules/base_env` .
 1. Update the `enable_partner_interconnect` to `true` in each `main.tf` file in the environment folder in `3-networks-dual-svpc/envs/<environment>` .
 1. Update the file `partner_interconnect.tf` with values that are valid for your environment for the VLAN attachments, locations.
 

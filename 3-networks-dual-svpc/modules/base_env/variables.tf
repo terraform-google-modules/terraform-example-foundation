@@ -49,6 +49,12 @@ variable "domain" {
   description = "The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period."
 }
 
+variable "enable_dedicated_interconnect" {
+  description = "Enable Dedicated Interconnect in the environment."
+  type        = bool
+  default     = false
+}
+
 variable "enable_partner_interconnect" {
   description = "Enable Partner Interconnect in the environment."
   type        = bool

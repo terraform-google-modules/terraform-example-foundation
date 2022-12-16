@@ -5,6 +5,7 @@
 |------|-------------|------|---------|:--------:|
 | app\_infra\_repos | A list of Cloud Source Repos to be created to hold app infra Terraform configs. | `list(string)` | n/a | yes |
 | billing\_account | The ID of the billing account to associated this project with. | `string` | n/a | yes |
+| bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | cloud\_builder\_artifact\_repo | GAR Repo that stores TF Cloud Builder images. | `string` | n/a | yes |
 | cloudbuild\_project\_id | The project id where the pipelines and repos should be created. | `string` | n/a | yes |
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |

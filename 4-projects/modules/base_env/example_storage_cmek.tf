@@ -69,7 +69,7 @@ module "gcs_buckets" {
 
   project_id         = module.base_shared_vpc_project.project_id
   location           = var.location_gcs
-  name               = "${var.gcs_bucket_prefix}-${lower(var.location_gcs)}-${random_string.bucket_name.result}"
+  name               = "${var.gcs_bucket_prefix}-${module.base_shared_vpc_project.project_id}-${lower(var.location_gcs)}-cmek-encrypted-${random_string.bucket_name.result}"
   bucket_policy_only = true
 
   encryption = {

@@ -308,6 +308,7 @@ Each step has instructions for this change.
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
 | environment\_step\_terraform\_service\_account\_email | Environment Step Terraform Account |
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud/Build artifacts in CloudBuild project. |
+| gcs\_bucket\_cloudbuild\_logs | Bucket used to store Cloud/Build logs in CloudBuild project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for Foundations Pipelines in Seed Project. |
 | group\_billing\_admins | Google Group for GCP Billing Administrators. |
 | group\_org\_admins | Google Group for GCP Organization Administrators. |

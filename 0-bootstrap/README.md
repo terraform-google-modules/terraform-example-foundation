@@ -2,7 +2,7 @@
 
 This repo is part of a multi-part guide that shows how to configure and deploy
 the example.com reference architecture described in
-[Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations). The following table lists the parts of the guide.
+[Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations). The following table lists the stages of this deployment.
 
 <table>
 <tbody>
@@ -10,12 +10,12 @@ the example.com reference architecture described in
 <td>0-bootstrap (this file)</td>
 <td>Bootstraps a Google Cloud organization, creating all the required resources
 and permissions to start using the Cloud Foundation Toolkit (CFT). This
-step also configures a <a href="../docs/GLOSSARY.md#foundation-cicd-pipeline">CI/CD Pipeline</a> for foundations code in subsequent
+step also configures a <a href="../docs/GLOSSARY.md#foundation-cicd-pipeline">CI/CD pipeline</a> for foundations code in subsequent
 stages.</td>
 </tr>
 <tr>
 <td><a href="../1-org">1-org</a></td>
-<td>Sets up top level shared folders, monitoring and networking projects, and
+<td>Sets up top-level shared folders, monitoring and networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
@@ -35,7 +35,7 @@ up the global DNS hub.</td>
 <td><a href="../3-networks-hub-and-spoke">3-networks-hub-and-spoke</a></td>
 <td>Sets up base and restricted shared VPCs with all the default configuration
 found on step 3-networks-dual-svpc, but here the architecture will be based on the
-Hub and Spoke network model. It also sets up the global DNS hub</td>
+Hub and Spoke network model. It also sets up the global DNS hub.</td>
 </tr>
 </tr>
 <tr>
@@ -45,7 +45,7 @@ Hub and Spoke network model. It also sets up the global DNS hub</td>
 </tr>
 <tr>
 <td><a href="../5-app-infra">5-app-infra</a></td>
-<td>Deploy a simple <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline set up in 4-projects.</td>
+<td>Deploy a <a href="https://cloud.google.com/compute/">Compute Engine</a> instance in one of the business unit projects using the infra pipeline setup in 4-projects.</td>
 </tr>
 </tbody>
 </table>
@@ -56,14 +56,13 @@ file.
 
 ## Purpose
 
-The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources & permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages. The [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
+The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources and permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages. The [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
 
 ## Prerequisites
 
-To run the commands described in this document, you need to have the following
-installed:
+To run the commands described in this document, install the following:
 
-- The [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
+- [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 1.3.0
 
@@ -75,12 +74,12 @@ Also make sure that you've done the following:
    [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 1. Set up a Google Cloud
    [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
-1. Created Cloud Identity or Google Workspace (formerly G Suite) groups for
+1. Create Cloud Identity or Google Workspace groups for
    organization and billing admins.
-1. Added the user who will use Terraform to the `group_org_admins` group.
+1. Add the user who will use Terraform to the `group_org_admins` group.
    They must be in this group, or they won't have
    `roles/resourcemanager.projectCreator` access.
-1. For the user who will run the procedures in this document, granted the following roles:
+1. For the user who will run the procedures in this document, grant the following roles:
    - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
    - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
    - The `roles/billing.admin` role on the billing account.
@@ -94,12 +93,12 @@ that are created, see the organization bootstrap module
 
 ### Optional - Automatic creation of Google Cloud Identity groups
 
-Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) in the foundation.
+In the foundation, Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) .
 
-To enable automatic creation of the [required groups](https://cloud.google.com/architecture/security-foundations/authentication-authorization#users_and_groups) you need to:
+To enable automatic creation of the [required groups](https://cloud.google.com/architecture/security-foundations/authentication-authorization#users_and_groups), complete the following actions:
 
 - Have an existing project for Cloud Identity API billing.
-- Enable the Cloud Identity API(`cloudidentity.googleapis.com`) on the billing project.
+- Enable the Cloud Identity API (`cloudidentity.googleapis.com`) on the billing project.
 - Grant role `roles/serviceusage.serviceUsageConsumer` to the user running Terraform on the billing project.
 - Provide values for the groups and billing project in the variable `groups`.
 
@@ -109,11 +108,11 @@ All groups in the `groups.optional_groups` are optional.
 
 ### Optional - Cloud Build access to on-prem
 
-Please refer to [onprem](./onprem.md) for instructions on how to configure Cloud Build access to on-prem.
+See [onprem](./onprem.md) for instructions on how to configure Cloud Build access to your on-premises environment.
 
 ### Troubleshooting
 
-Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
+See [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Deploying with Jenkins
 
@@ -154,7 +153,8 @@ your current Jenkins manager (controller) environment.
    terraform plan -input=false -out bootstrap.tfplan
    ```
 
-1. To run `gcloud beta terraform vet` steps please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
+1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Install Google Cloud CLI](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install).
+
 1. Run the following commands and check for violations:
 
    ```bash
@@ -163,7 +163,8 @@ your current Jenkins manager (controller) environment.
    gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project ${VET_PROJECT_ID}
    ```
 
-   - *`A-VALID-PROJECT-ID`* must be an existing project you have access to, this is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
+   *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
+   
 1. Run `terraform apply`.
 
    ```bash
@@ -214,7 +215,7 @@ your current Jenkins manager (controller) environment.
    ```
 
 1. (Optional) Run `terraform plan` to verify that state is configured correctly. You should see no changes from the previous state.
-1. Clone the policy repo and copy contents of policy-library to new repo. Clone the repo at the same level of the `terraform-example-foundation` folder, the next instructions assume that layout.
+1. Clone the policy repo and copy contents of policy-library to new repo. Clone the repo at the same level of the `terraform-example-foundation` folder.
 
    ```bash
    cd ../..
@@ -259,7 +260,7 @@ your current Jenkins manager (controller) environment.
    git push --set-upstream origin plan
    ```
 
-1. You can now move to the instructions in the [1-org](../1-org/README.md) step.
+1. Continue with the instructions in the [1-org](../1-org/README.md) step.
 
 **Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage. They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
 

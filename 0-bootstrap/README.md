@@ -164,7 +164,7 @@ your current Jenkins manager (controller) environment.
    ```
 
    *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
-   
+
 1. Run `terraform apply`.
 
    ```bash

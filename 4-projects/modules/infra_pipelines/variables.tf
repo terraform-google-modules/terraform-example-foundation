@@ -51,7 +51,7 @@ variable "terraform_docker_tag_version" {
 }
 
 variable "cloud_builder_artifact_repo" {
-  description = "GAR Repo that stores TF Cloud Builder images."
+  description = "Artifact Registry (AR) repository that stores TF Cloud Builder images."
   type        = string
 
 }

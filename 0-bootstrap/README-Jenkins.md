@@ -899,7 +899,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
 
    ```bash
-   for i in `find -name 'backend.tf'`; do sed -r -i "s/UPDATE_ME|UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
+   for i in `find -name 'backend.tf'`; do sed -r -i "s/UPDATE_ME|UPDATE_ME_BACKEND_BUCKET_PROJECTS/${backend_bucket}/" $i; done
    ```
 
 1. You need to manually plan and apply only once the `shared` environments since `development`, `non-production`, and `production` depend on it.

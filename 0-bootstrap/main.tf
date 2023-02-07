@@ -22,11 +22,11 @@ locals {
   // in the list "org_project_creators" will have the Project Creator role,
   // so the granular service accounts for each step need to be added to the list.
   step_terraform_sa = [
-    "serviceAccount:${google_service_account.terraform-env-sa["bootstrap"].email}",
-    "serviceAccount:${google_service_account.terraform-env-sa["org"].email}",
-    "serviceAccount:${google_service_account.terraform-env-sa["env"].email}",
-    "serviceAccount:${google_service_account.terraform-env-sa["net"].email}",
-    "serviceAccount:${google_service_account.terraform-env-sa["proj"].email}",
+    "serviceAccount:${google_service_account.terraform_env_sa["bootstrap"].email}",
+    "serviceAccount:${google_service_account.terraform_env_sa["org"].email}",
+    "serviceAccount:${google_service_account.terraform_env_sa["env"].email}",
+    "serviceAccount:${google_service_account.terraform_env_sa["net"].email}",
+    "serviceAccount:${google_service_account.terraform_env_sa["proj"].email}",
   ]
   org_project_creators = distinct(concat(var.org_project_creators, local.step_terraform_sa))
   parent               = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"

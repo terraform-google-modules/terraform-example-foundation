@@ -21,27 +21,27 @@ output "seed_project_id" {
 
 output "bootstrap_step_terraform_service_account_email" {
   description = "Bootstrap Step Terraform Account"
-  value       = google_service_account.terraform-env-sa["bootstrap"].email
+  value       = google_service_account.terraform_env_sa["bootstrap"].email
 }
 
 output "projects_step_terraform_service_account_email" {
   description = "Projects Step Terraform Account"
-  value       = google_service_account.terraform-env-sa["proj"].email
+  value       = google_service_account.terraform_env_sa["proj"].email
 }
 
 output "networks_step_terraform_service_account_email" {
   description = "Networks Step Terraform Account"
-  value       = google_service_account.terraform-env-sa["net"].email
+  value       = google_service_account.terraform_env_sa["net"].email
 }
 
 output "environment_step_terraform_service_account_email" {
   description = "Environment Step Terraform Account"
-  value       = google_service_account.terraform-env-sa["env"].email
+  value       = google_service_account.terraform_env_sa["env"].email
 }
 
 output "organization_step_terraform_service_account_email" {
   description = "Organization Step Terraform Account"
-  value       = google_service_account.terraform-env-sa["org"].email
+  value       = google_service_account.terraform_env_sa["org"].email
 }
 
 output "gcs_bucket_tfstate" {

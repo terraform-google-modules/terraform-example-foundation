@@ -209,7 +209,7 @@ module "tf_workspace" {
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
   tf_repo_uri               = module.tf_source.csr_repos[local.cb_config[each.key].source].url
-  cloudbuild_sa             = google_service_account.terraform-env-sa[each.key].id
+  cloudbuild_sa             = google_service_account.terraform_env_sa[each.key].id
   create_cloudbuild_sa      = false
   diff_sa_project           = true
   create_state_bucket       = false
@@ -240,7 +240,7 @@ resource "google_artifact_registry_repository_iam_member" "terraform_sa_artifact
   location   = var.default_region
   repository = local.gar_repository
   role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  member     = "serviceAccount:${google_service_account.terraform_env_sa[each.key].email}"
 }
 
 resource "google_sourcerepo_repository_iam_member" "member" {
@@ -249,5 +249,5 @@ resource "google_sourcerepo_repository_iam_member" "member" {
   project    = module.tf_source.cloudbuild_project_id
   repository = module.tf_source.csr_repos["gcp-policies"].name
   role       = "roles/viewer"
-  member     = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  member     = "serviceAccount:${google_service_account.terraform_env_sa[each.key].email}"
 }

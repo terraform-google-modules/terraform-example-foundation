@@ -96,7 +96,7 @@ module "tf_workspace" {
   Cloud Build - IAM
  ***********************************************/
 
-resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" {
+resource "google_artifact_registry_repository_iam_member" "terraform_image_iam" {
   provider = google-beta
   for_each = toset(var.app_infra_repos)
 

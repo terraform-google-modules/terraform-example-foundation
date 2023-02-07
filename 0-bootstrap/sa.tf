@@ -133,7 +133,7 @@ locals {
   }
 }
 
-resource "google_service_account" "terraform-env-sa" {
+resource "google_service_account" "terraform_env_sa" {
   for_each = local.granular_sa
 
   project      = module.seed_bootstrap.seed_project_id
@@ -145,7 +145,7 @@ module "org_iam_member" {
   source   = "./modules/parent-iam-member"
   for_each = local.granular_sa_org_level_roles
 
-  member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  member      = "serviceAccount:${google_service_account.terraform_env_sa[each.key].email}"
   parent_type = "organization"
   parent_id   = var.org_id
   roles       = each.value
@@ -155,7 +155,7 @@ module "parent_iam_member" {
   source   = "./modules/parent-iam-member"
   for_each = local.granular_sa_parent_level_roles
 
-  member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  member      = "serviceAccount:${google_service_account.terraform_env_sa[each.key].email}"
   parent_type = local.parent_type
   parent_id   = local.parent_id
   roles       = each.value
@@ -165,7 +165,7 @@ module "seed_project_iam_member" {
   source   = "./modules/parent-iam-member"
   for_each = local.granular_sa_seed_project
 
-  member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  member      = "serviceAccount:${google_service_account.terraform_env_sa[each.key].email}"
   parent_type = "project"
   parent_id   = module.seed_bootstrap.seed_project_id
   roles       = each.value
@@ -175,7 +175,7 @@ module "cicd_project_iam_member" {
   source   = "./modules/parent-iam-member"
   for_each = local.granular_sa_cicd_project
 
-  member      = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  member      = "serviceAccount:${google_service_account.terraform_env_sa[each.key].email}"
   parent_type = "project"
   parent_id   = local.cicd_project_id
   roles       = each.value
@@ -205,10 +205,10 @@ resource "google_billing_account_iam_member" "tf_billing_user" {
 
   billing_account_id = var.billing_account
   role               = "roles/billing.user"
-  member             = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  member             = "serviceAccount:${google_service_account.terraform_env_sa[each.key].email}"
 
   depends_on = [
-    google_service_account.terraform-env-sa
+    google_service_account.terraform_env_sa
   ]
 }
 
@@ -217,7 +217,7 @@ resource "google_billing_account_iam_member" "billing_admin_user" {
 
   billing_account_id = var.billing_account
   role               = "roles/billing.admin"
-  member             = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+  member             = "serviceAccount:${google_service_account.terraform_env_sa[each.key].email}"
 
   depends_on = [
     google_billing_account_iam_member.tf_billing_user

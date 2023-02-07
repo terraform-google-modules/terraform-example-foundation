@@ -15,8 +15,8 @@ Seed Project created in the 0-bootstrap step. It is the project where the Terraf
 ## Foundation CI/CD Pipeline
 
 A project created in step 0-bootstrap to manage infrastructure **within the organization**.
-The pipeline can use **Cloud Build** or **Jenkins** depending or your context and Terraform is executed using the seed project service account.
-Also know as the CI/CD project.
+The pipeline can use either **Cloud Build** or **Jenkins** depending or your context and Terraform is executed using the seed project service account.
+Also known as the CI/CD project.
 It is located under folder `bootstrap`.
 
 ## App Infra Pipeline

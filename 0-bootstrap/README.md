@@ -189,7 +189,7 @@ your current Jenkins manager (controller) environment.
    echo "cloud build project ID = ${cloudbuild_project_id}"
    ```
 
-1. Copy the backend and update `backend.tf` with the name of your Google Cloud bucket for Terraform's state. Also update the `backend.tf` of all steps.
+1. Copy the backend and update `backend.tf` with the name of your Google Cloud Storage bucket for Terraform's state. Also update the `backend.tf` of all steps.
 
    ```bash
    export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
@@ -268,7 +268,7 @@ your current Jenkins manager (controller) environment.
 ## Running Terraform locally
 
 If you deploy using Cloud Build, the bucket information is replaced in the state
-backends as a part of the build process when the build is executed by Cloud Build.
+backends as part of the build process when the build is executed by Cloud Build.
 If you want to execute Terraform locally, you need to add your Cloud
 Storage bucket to the `backend.tf` files.
 Each step has instructions for this change.

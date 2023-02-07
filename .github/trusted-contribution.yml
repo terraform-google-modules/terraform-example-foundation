@@ -3,4 +3,5 @@ annotations:
     text: "/gcbrun"
 trustedContributors:
   - release-please[bot]
-  - renovate-bot
+  - renovate[bot]
+  - forking-renovate[bot]

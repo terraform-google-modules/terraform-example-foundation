@@ -57,3 +57,22 @@ variable "project_budget" {
   })
   default = {}
 }
+
+variable "assured_workload_configuration" {
+  description = <<EOT
+  Assured Workload configuration. See https://cloud.google.com/assured-workloads ."
+  enabled: If the assured workload should be created.
+  location: The location where the workload will be created.
+  display_name: User-assigned resource display name.
+  compliance_regime: Supported Compliance Regimes. See https://cloud.google.com/assured-workloads/docs/reference/rest/Shared.Types/ComplianceRegime .
+  resource_type: The type of resource. One of CONSUMER_FOLDER, KEYRING, or ENCRYPTION_KEYS_PROJECT.
+  EOT
+  type = object({
+    enabled           = optional(bool, false)
+    location          = optional(string, "us-central1")
+    display_name      = optional(string, "FEDRAMP-MODERATE")
+    compliance_regime = optional(string, "FEDRAMP_MODERATE")
+    resource_type     = optional(string, "CONSUMER_FOLDER")
+  })
+  default = {}
+}

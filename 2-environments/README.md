@@ -68,7 +68,21 @@ The purpose of this step is to setup development, non-production, and production
 
 Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
+## Assured Workloads
+
+To enable [Assured Workloads](https://cloud.google.com/assured-workloads) in the production folder, edit the [main.tf](./envs/production/main.tf#L26) file and update `assured_workload_configuration.enable` to `true`.
+
+See the `env_baseline` module [README.md](./modules/env_baseline/README.md) file for additional information on the values that can be configured for the Workload.
+
+**Assured Workload is a paid service.**
+FedRAMP Moderate workloads can be deployed at no additional charge to Google Cloud products and service usage.
+For other compliance regimes, see [Assured Workloads pricing](https://cloud.google.com/assured-workloads/pricing).
+
+If you enable Assured Workloads, to delete the Assured workload, you will need to manually delete the resources under it.
+Use the [GCP console](https://console.cloud.google.com/compliance/assuredworkloads) to identify the resources to be deleted.
+
 ## Usage
+
 
 **Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.

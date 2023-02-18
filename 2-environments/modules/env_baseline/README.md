@@ -15,7 +15,7 @@
 | Name | Description |
 |------|-------------|
 | assured\_workload\_id | Assured Workload ID. |
-| assured\_workload\_resources | The resources associated with the Assured Workload. |
+| assured\_workload\_resources | Resources associated with the Assured Workload. |
 | base\_shared\_vpc\_project\_id | Project for base shared VPC network. |
 | env\_folder | Environment folder created under parent. |
 | env\_secrets\_project\_id | Project for environment secrets. |

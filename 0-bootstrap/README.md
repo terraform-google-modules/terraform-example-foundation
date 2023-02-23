@@ -154,6 +154,7 @@ your current Jenkins manager (controller) environment.
    ```
 
 1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Install Google Cloud CLI](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install).
+
 1. Run the following commands and check for violations:
 
    ```bash

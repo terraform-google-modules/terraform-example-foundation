@@ -154,7 +154,7 @@ your current Jenkins manager (controller) environment.
    terraform plan -input=false -out bootstrap.tfplan
    ```
 
-1. install the terraform-tools component for gcloud by following these [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install). This will allow to run `gcloud beta terraform vet` steps.
+1. Install the terraform-tools component for gcloud by following these [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install). This will allow to run `gcloud beta terraform vet` steps.
 1. Run the following commands and check for violations:
 
    ```bash

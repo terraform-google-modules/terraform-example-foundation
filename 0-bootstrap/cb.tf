@@ -83,6 +83,7 @@ module "tf_source" {
   org_id                = var.org_id
   folder_id             = google_folder.bootstrap.id
   project_id            = "${var.project_prefix}-b-cicd-${random_string.suffix.result}"
+  location              = var.default_region
   billing_account       = var.billing_account
   group_org_admins      = local.group_org_admins
   buckets_force_destroy = var.bucket_force_destroy

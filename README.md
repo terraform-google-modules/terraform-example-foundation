@@ -30,16 +30,16 @@ The bootstrap step includes:
     - Custom service account to run Compute Engine instances for Jenkins Agents
     - VPN connection with on-prem (or wherever your Jenkins Controller is located)
 
-It is a best practice to separate concerns by having two projects here: one for the CFT resources and one for the CI/CD tool.
-The `prj-b-seed` project stores Terraform state and has the service accounts that can create or modify infrastructure.
-On the other hand, the deployment of that infrastructure is coordinated by a CI/CD tool of your choice allocated in a second project named `prj-b-cicd`.
+It is a best practice to separate concerns by having two projects here: one for the Terraform state and one for the CI/CD tool.
+  - The `prj-b-seed` project stores Terraform state and has the service accounts that can create or modify infrastructure.
+  - The `prj-b-cicd` project holds the CI/CD tool (either Cloud Build or Jenkins) that coordinates the infrastructure deployment.
 
-To further separate the concerns at the IAM level as well, a distinct service account is created for each stage.
-If using Cloud Build, these service accounts are used directly in the pipeline to execute the pipeline steps (`plan` or `apply`).
-In this configuration, the baseline permissions of the CI/CD tool are unchanged, and the Terraform custom service accounts are granted the IAM permissions required to build the foundation.
+To further separate the concerns at the IAM level as well, a distinct service account is created for each stage. The Terraform custom service accounts are granted the IAM permissions required to build the foundation.
+If using Cloud Build as the CI/CD tool, these service accounts are used directly in the pipeline to execute the pipeline steps (`plan` or `apply`).
+In this configuration, the baseline permissions of the CI/CD tool are unchanged.
 
-If using Jenkins, the CI/CD tool account (`sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com`) is granted access to generate tokens over the Terraform custom Service Accounts.
-In this configuration, the baseline permissions of the CI/CD tool are limited, and the Terraform custom service accounts are granted the IAM permissions required to build the foundation.
+If using Jenkins as the CI/CD tool, the service account of the Jenkins Agent (`sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com`) is granted [impersonation](https://cloud.google.com/iam/docs/create-short-lived-credentials-direct) access so it can generate tokens over the Terraform custom Service Accounts.
+In this configuration, the baseline permissions of the CI/CD tool are limited.
 
 After executing this step, you will have the following structure:
 
@@ -50,7 +50,7 @@ example-organization/
     └── prj-b-seed
 ```
 
-When this step uses the Cloud Build submodule, it sets up Cloud Build and Cloud Source Repositories for each of the stages below.
+When this step uses the Cloud Build submodule, it sets up the cicd project (`prj-b-cicd`) with Cloud Build and Cloud Source Repositories for each of the stages below.
 Triggers are configured to run a `terraform plan` for any non-environment branch and `terraform apply` when changes are merged to an environment branch (`development`, `non-production` or `production`).
 Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/README.md).
 

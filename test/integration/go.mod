@@ -4,10 +4,10 @@ go 1.18
 
 require (
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.4.1
-	github.com/gruntwork-io/terratest v0.41.9
+	github.com/gruntwork-io/terratest v0.41.11
 	github.com/stretchr/testify v1.8.1
 	github.com/tidwall/gjson v1.14.4
-	golang.org/x/oauth2 v0.4.0
+	golang.org/x/oauth2 v0.5.0
 )
 
 require (
@@ -56,9 +56,9 @@ require (
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.5.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	google.golang.org/api v0.47.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect

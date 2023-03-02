@@ -25,7 +25,7 @@ output "terraform_service_accounts" {
 }
 
 output "gar_name" {
-  description = "GAR Repo name created to store runner images"
+  description = "Artifact Registry (AR) repository name created to store runner images"
   value       = local.gar_name
 }
 

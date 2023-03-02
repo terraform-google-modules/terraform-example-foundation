@@ -1,6 +1,6 @@
 # Cloud Build access to on-prem
 
-The infrastructure create for the Cloud Build deploy allows access to on-prem resources by setting up [Private Pools](https://cloud.google.com/build/docs/private-pools/private-pools-overview), [VPC Network Peering](https://cloud.google.com/vpc/docs/vpc-peering) between Google's [service producer network](https://cloud.google.com/build/docs/private-pools/set-up-private-pool-to-use-in-vpc-network#setup-private-connection) and a VPC network in the CI/CD project, and on-prem connection with one of three options:
+The infrastructure created for Cloud Build allows access to on-prem resources by setting up [Private Pools](https://cloud.google.com/build/docs/private-pools/private-pools-overview), [VPC Network Peering](https://cloud.google.com/vpc/docs/vpc-peering) between Google's [service producer network](https://cloud.google.com/build/docs/private-pools/set-up-private-pool-to-use-in-vpc-network#setup-private-connection) and a VPC network in the CI/CD project, and on-prem connection with one of three options:
 
 - [High Availability VPN](https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies#overview)
 - [Dedicated Interconnect](https://cloud.google.com/network-connectivity/docs/interconnect/tutorials/dedicated-creating-9999-availability)

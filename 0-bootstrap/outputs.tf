@@ -88,17 +88,17 @@ output "optional_groups" {
    ---------------------------------------- */
 # Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
 output "cloudbuild_project_id" {
-  description = "Project where CloudBuild configuration and terraform container image will reside."
+  description = "Project where Cloud Build configuration and terraform container image will reside."
   value       = module.tf_source.cloudbuild_project_id
 }
 
 output "gcs_bucket_cloudbuild_artifacts" {
-  description = "Bucket used to store Cloud/Build artifacts in CloudBuild project."
+  description = "Bucket used to store Cloud Build artifacts in cicd project."
   value       = { for key, value in module.tf_workspace : key => replace(value.artifacts_bucket, local.bucket_self_link_prefix, "") }
 }
 
 output "gcs_bucket_cloudbuild_logs" {
-  description = "Bucket used to store Cloud/Build logs in CloudBuild project."
+  description = "Bucket used to store Cloud Build logs in cicd project."
   value       = { for key, value in module.tf_workspace : key => replace(value.logs_bucket, local.bucket_self_link_prefix, "") }
 }
 
@@ -108,7 +108,7 @@ output "projects_gcs_bucket_tfstate" {
 }
 
 output "cloud_builder_artifact_repo" {
-  description = "GAR Repo created to store TF Cloud Builder images."
+  description = "Artifact Registry (AR) Repository created to store TF Cloud Builder images."
   value       = "projects/${module.tf_source.cloudbuild_project_id}/locations/${var.default_region}/repositories/${module.tf_cloud_builder.artifact_repo}"
 }
 

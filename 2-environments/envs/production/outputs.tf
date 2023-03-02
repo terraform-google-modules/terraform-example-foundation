@@ -43,3 +43,13 @@ output "env_secrets_project_id" {
   description = "Project for environment related secrets."
   value       = module.env.env_secrets_project_id
 }
+
+output "assured_workload_id" {
+  description = "Assured Workload ID."
+  value       = module.env.assured_workload_id
+}
+
+output "assured_workload_resources" {
+  description = "Resources associated with the Assured Workload."
+  value       = module.env.assured_workload_resources
+}

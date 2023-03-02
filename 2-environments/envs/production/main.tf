@@ -21,4 +21,12 @@ module "env" {
   environment_code           = "p"
   monitoring_workspace_users = var.monitoring_workspace_users
   remote_state_bucket        = var.remote_state_bucket
+
+  assured_workload_configuration = {
+    enabled           = false
+    location          = "us-central1"
+    display_name      = "FEDRAMP-MODERATE"
+    compliance_regime = "FEDRAMP_MODERATE"
+    resource_type     = "CONSUMER_FOLDER"
+  }
 }

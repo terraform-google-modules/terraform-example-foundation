@@ -91,7 +91,8 @@ module "seed_bootstrap" {
     "securitycenter.googleapis.com",
     "accesscontextmanager.googleapis.com",
     "billingbudgets.googleapis.com",
-    "essentialcontacts.googleapis.com"
+    "essentialcontacts.googleapis.com",
+    "assuredworkloads.googleapis.com",
   ]
 
   sa_org_iam_permissions = []

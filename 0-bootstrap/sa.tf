@@ -50,6 +50,7 @@ locals {
     ], local.common_roles)),
     "env" = distinct(concat([
       "roles/resourcemanager.tagUser",
+      "roles/assuredworkloads.admin",
     ], local.common_roles)),
     "net" = distinct(concat([
       "roles/accesscontextmanager.policyAdmin",

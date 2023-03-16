@@ -37,3 +37,7 @@ variable "example_foundations_mode" {
 variable "domain_to_allow" {
   description = "The test domain_to_allow allow users from in IAM."
 }
+
+variable "billing_iam_test_account" {
+  description = "The billing iam test account id is for the billing-iam-module, only for testing, e.g. XXXXXX-YYYYYY-ZZZZZZ"
+}

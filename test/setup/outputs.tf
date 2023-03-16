@@ -41,7 +41,7 @@ output "org_id" {
 }
 
 output "billing_account" {
-  value = var.billing_account
+  value = var.billing_iam_test_account
 }
 
 output "group_email" {

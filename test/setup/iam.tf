@@ -45,7 +45,7 @@ resource "google_organization_iam_member" "org_admins_group" {
 
 resource "google_billing_account_iam_member" "tf_billing_user" {
   billing_account_id = var.billing_account
-  role               = "roles/billing.admin"
+  role               = "roles/billing.user"
   member             = "serviceAccount:${google_service_account.int_test.email}"
 }
 

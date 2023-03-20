@@ -1,0 +1,119 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# This template is for policies auditing Persistent Disk resource
+# policies (eg. snapshot schedules). It supports allowlist or denylist
+# modes, as well as exempting selected assets from the list.
+
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-compute-disk-resource-policies-v1
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPComputeDiskResourcePoliciesConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties:
+            mode:
+              type: string
+              enum: [denylist, allowlist]
+              description: "String identifying the operational mode, allowlist or
+                denylist. In allowlist mode, disk resource policies are only allowed
+                in the policies specified in the 'resource_policies' parameter. In
+                denylist mode, all disk resources policies are allowed except those
+                listed in the 'resource_policies' parameter."
+            exemptions:
+              type: array
+              items:
+                type: string
+              description: "Array of disk assets to exempt from resource policies
+                restriction. String values in the array should correspond to the full
+                name values of exempted policies."
+            resourcePolicies:
+              type: array
+              items:
+                type: string
+              description: "Array of resource policies to be allowed or denied. Should
+                be the full URL syntax, e.g. https://www.googleapis.com/compute/v1/projects/my-project/regions/europe-north1/resourcePolicies/snapshot-schedule."
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: |
+        #
+        # Copyright 2021 Google LLC
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #     https://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+        #
+
+        package templates.gcp.GCPComputeDiskResourcePoliciesConstraintV1
+
+        import data.validator.gcp.lib as lib
+
+        #####################################
+        # Find Compute Persistent Disk Resource Policy Violations
+        #####################################
+        deny[{
+        	"msg": message,
+        	"details": metadata,
+        }] {
+        	constraint := input.constraint
+        	lib.get_constraint_params(constraint, params)
+
+        	# Verify that resource is Disk or RegionDisk
+        	asset := input.asset
+        	{asset.asset_type} == {asset.asset_type} & {"compute.googleapis.com/Disk", "compute.googleapis.com/RegionDisk"}
+
+        	# Check if resource is in exempt list
+        	exempt_list := params.exemptions
+        	matches := {asset.name} & cast_set(exempt_list)
+        	count(matches) == 0
+
+        	# Check that resource policy is in allowlist/denylist
+        	asset_resource_policies := lib.get_default(asset.resource.data, "resourcePolicies", [""])
+        	target_resource_policies := params.resourcePolicies
+        	resource_policies_matches := cast_set(asset_resource_policies) & cast_set(target_resource_policies)
+        	target_resource_policies_match_count(params.mode, desired_count)
+        	count(resource_policies_matches) == desired_count
+
+        	message := sprintf("%v has an empty or disallowed resource policy.", [asset.name])
+        	metadata := {"resource": asset.name, "resource_policies": asset_resource_policies}
+        }
+
+        #################
+        # Rule Utilities
+        #################
+
+        # Determine the overlap between resource policies under test and constraint
+        # By default (allowlist), we violate if there isn't overlap
+        target_resource_policies_match_count(mode) = 0 {
+        	mode != "denylist"
+        }
+
+        target_resource_policies_match_count(mode) = 1 {
+        	mode == "denylist"
+        }
+        #ENDINLINE

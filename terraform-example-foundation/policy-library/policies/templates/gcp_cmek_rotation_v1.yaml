@@ -1,0 +1,77 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-cmek-rotation-v1
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPCMEKRotationConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties: {}
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: | #INLINE("validator/cmek_rotation.rego")
+           #
+           # Copyright 2021 Google LLC
+           #
+           # Licensed under the Apache License, Version 2.0 (the "License");
+           # you may not use this file except in compliance with the License.
+           # You may obtain a copy of the License at
+           #
+           #      http://www.apache.org/licenses/LICENSE-2.0
+           #
+           # Unless required by applicable law or agreed to in writing, software
+           # distributed under the License is distributed on an "AS IS" BASIS,
+           # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           # See the License for the specific language governing permissions and
+           # limitations under the License.
+           #
+           package templates.gcp.GCPCMEKRotationConstraintV1
+
+           import data.validator.gcp.lib as lib
+
+           deny[{
+           	"msg": message,
+           	"details": metadata,
+           }] {
+           	constraint := input.constraint
+           	lib.get_constraint_params(constraint, params)
+           	exempt_list := lib.get_default(params, "exemptions", [])
+           	asset := input.asset
+           	asset.asset_type == "cloudkms.googleapis.com/CryptoKey"
+
+           	# Check if resource is in exempt list
+           	matches := {asset.name} & cast_set(exempt_list)
+           	count(matches) == 0
+
+           	# The rotation period for a key may be "never".  This results
+           	# in the rotationPeriod attribute to be omitted from response
+           	# from the CAI.  The default is 99999999s.  This is
+           	# sufficiently high enough to cause fail
+           	rotation_period_string := lib.get_default(asset.resource.data, "rotationPeriod", "99999999s")
+           	rotation_period := time.parse_duration_ns(rotation_period_string)
+
+           	period_string := lib.get_default(params, "period", "31536000s")
+           	period_to_test := time.parse_duration_ns(period_string)
+
+           	rotation_period > period_to_test
+           	message := sprintf("%v: CMEK Rotation Period must be at most %v.", [asset.name, period_string])
+           	metadata := {"resource": asset.name}
+           }
+           #ENDINLINE

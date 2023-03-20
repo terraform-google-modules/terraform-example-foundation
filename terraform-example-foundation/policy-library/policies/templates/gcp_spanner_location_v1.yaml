@@ -1,0 +1,104 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# This template is for policies restricting the locations of
+# Spanner instances in GCP. You can specify a list of regions in the
+# "locations" parameter. An instance in the wrong region will raise a violation.
+
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-spanner-location-v1
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPSpannerLocationConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties:
+            locations:
+              type: array
+              items:
+                type: string
+              description: "List of GCP regions (or region patterns) for
+              Spanner instance locations (i.e 'asia*', 'nam3', etc.)."
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: | #INLINE("validator/spanner_location.rego")
+        #
+        # Copyright 2021 Google LLC
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #      http://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+        #
+
+        package templates.gcp.GCPSpannerLocationConstraintV1
+
+        import data.validator.gcp.lib as lib
+
+        deny[{
+        	"msg": message,
+        	"details": metadata,
+        }] {
+        	constraint := input.constraint
+        	lib.get_constraint_params(constraint, params)
+
+        	asset := input.asset
+
+        	# Applies to spanner instances only
+        	asset.asset_type == "spanner.googleapis.com/Instance"
+
+        	# Retrieve the list of allowed locations
+        	locations := params.locations
+
+        	# The asset raises a violation if location_is_valid is evaluated to false
+        	not location_is_valid(asset, locations)
+
+        	message := sprintf("%v is in violation.", [asset.name])
+        	metadata := {
+        		"resource": asset.name,
+        		"valid-locations": locations,
+        	}
+        }
+
+        ###########################
+        # Rule Utilities
+        ###########################
+
+        location_is_valid(asset, locations) {
+        	# ensure we have a data object
+        	resource := asset.resource.data
+
+        	# Retrieve the location
+        	instance_config_parts := split(resource.config, "/")
+        	resouce_location := instance_config_parts[3]
+
+        	# iterate through the locations
+        	location := locations[_]
+
+        	# the resource location is valid if it matches one of the passed locations
+        	re_match(location, resouce_location)
+        }
+        #ENDINLINE

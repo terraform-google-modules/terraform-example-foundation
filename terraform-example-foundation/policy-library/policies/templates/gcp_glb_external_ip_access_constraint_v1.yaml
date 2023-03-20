@@ -1,0 +1,98 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-glb-external-ip-access-constraint-v1
+  annotations:
+    description: "Constraint to restrict the creation of external load balancers."
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPGLBExternalIpAccessConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties:
+            mode:
+              type: string
+              enum: [denylist, allowlist]
+            instances:
+              type: array
+              items:
+                type: string
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: |
+        #
+        # Copyright 2021 Google LLC
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #     https://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+        #
+
+        package templates.gcp.GCPGLBExternalIpAccessConstraintV1
+
+        import data.validator.gcp.lib as lib
+
+        ###########################
+        # Find allowlist Violations
+        ###########################
+        deny[{
+        	"msg": message,
+        	"details": metadata,
+        }] {
+        	constraint := input.constraint
+        	lib.get_constraint_params(constraint, params)
+        	asset := input.asset
+        	asset.asset_type == "compute.googleapis.com/GlobalForwardingRule"
+
+        	# Find GLBs config block w/ external IP
+        	instance := asset.resource.data
+        	external_ip := instance.ipAddress
+
+        	# Check if instance is in denylist/allowlist
+        	target_instances := params.instances
+        	matches := {asset.name} & cast_set(target_instances)
+        	target_instance_match_count(params.mode, desired_count)
+        	count(matches) == desired_count
+
+        	message := sprintf("%v is not allowed, policy prohibits all GLBs due to public IP.", [asset.name])
+        	metadata := {"external_ip": external_ip}
+        }
+
+        ###########################
+        # Rule Utilities
+        ###########################
+
+        # Determine the overlap between instances under test and constraint
+        # By default (allowlist), we violate if there isn't overlap
+        target_instance_match_count(mode) = 0 {
+        	mode != "denylist"
+        }
+
+        target_instance_match_count(mode) = 1 {
+        	mode == "denylist"
+        }
+        #ENDINLINE

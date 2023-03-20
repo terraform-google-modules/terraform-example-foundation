@@ -1,0 +1,142 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-gke-cluster-version-v1
+spec:
+  crd:
+    spec:
+      names:
+        kind: GKEClusterVersionConstraintV1
+      validation:
+        openAPIV3Schema:
+          properties:
+            mode:
+              type: string
+              enum: [denylist, allowlist]
+              description: "String identifying the operational mode, allowlist or
+                denylist. In allowlist mode, GKE clusters are only allowed to have
+                a master/node version specified in the 'version_type' parameter. In
+                denylist mode, resources are allowed any master/node versions except
+                those listed in the 'version_type' parameter. Default is allowlist."
+            version_type:
+              type: string
+              enum: [master, node]
+              description: "String identifying the GKE cluster version type to look
+                for, master or node. master refers to the Kubernetes version for GKE
+                cluster masters. node refers to the Kubernetes version for GKE cluster
+                nodes. Default is master."
+            exemptions:
+              type: array
+              items:
+                type: string
+              description: "Array of GKE clusters in the form of glob expressions
+                to exempt from version restriction. Delimiter is '/'. E.g. `//container.googleapis.com/projects/project-abc/zones/*/clusters/*`
+                will exempt any clusters whose asset name has the format '//container.googleapis.com/projects/project-abc/zones/{ANY
+                ZONE}/clusters/{ANY NAME}'. such as: '//container.googleapis.com/projects/project-abc/zones/us-central1-c/clusters/my-cluster'
+                but NOT '//container.googleapis.com/projects/wrong-project/zones/us-central1-c/clusters/wrong-cluster'"
+            versions:
+              type: array
+              items:
+                type: string
+              description: "Array of versions that GKE clusters are allowed to have,
+                e.g. 1.12.10-gke.17 for master version_type or 1.4.4 for node version_type."
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: |
+        #
+        # Copyright 2021 Google LLC
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #     https://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+        #
+
+        package templates.gcp.GKEClusterVersionConstraintV1
+
+        import data.validator.gcp.lib as lib
+
+        deny[{
+        	"msg": message,
+        	"details": metadata,
+        }] {
+        	constraint := input.constraint
+        	lib.get_constraint_params(constraint, params)
+        	asset := input.asset
+        	asset.asset_type == "container.googleapis.com/Cluster"
+
+        	mode := lib.get_default(params, "mode", "allowlist")
+
+        	# Check if resource is in exempt list
+        	exempt_list := lib.get_default(params, "exemptions", [])
+        	not is_exempt(exempt_list, asset.name)
+
+        	# Get the version value in the asset
+        	params_version_type := lib.get_default(params, "version_type", "master")
+        	target_version_type := get_version_type(params_version_type)
+        	target_version := get_target_value(asset.resource.data, target_version_type)
+
+        	# Check that version is in allowlist/denylist
+        	asset_version := params.versions
+        	version_matches := {target_version} & cast_set(asset_version)
+        	desired_count := target_version_match_count(params.mode)
+        	count(version_matches) == desired_count
+
+        	message := sprintf("Cluster %v has a disallowed %v field", [asset.name, target_version_type])
+        	metadata := {"resource": asset.name}
+        }
+
+        ###########################
+        # Rule Utilities
+        ###########################
+
+        get_version_type(version_type) = target_version {
+        	version_type == "master"
+        	target_version := "currentMasterVersion"
+        }
+
+        get_version_type(version_type) = target_version {
+        	version_type == "node"
+        	target_version := "currentNodeVersion"
+        }
+
+        is_exempt(exempt_list, asset_name) {
+        	exempt_list != []
+        	glob.match(exempt_list[_], ["/"], asset_name)
+        }
+
+        get_target_value(data_resource, field_name) = output {
+        	output := lib.get_default(data_resource, field_name, "")
+        }
+
+        # Determine the overlap between versions under test and constraint
+        # By default (allowlist), we violate if there isn't overlap.
+        target_version_match_count(mode) = 0 {
+        	mode != "denylist"
+        }
+
+        target_version_match_count(mode) = 1 {
+        	mode == "denylist"
+        }
+        #ENDINLINE

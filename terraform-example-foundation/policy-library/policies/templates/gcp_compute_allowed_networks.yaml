@@ -1,0 +1,88 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Checks network interfaces on a compute instance against a provided allowlist of networks
+
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-compute-allowed-networks-v2
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPComputeAllowedNetworksConstraintV2
+      validation:
+        openAPIV3Schema:
+          properties:
+            allowed:
+              description: "A list of full object URIs of the networks allowed, for
+                example: ['https://www.googleapis.com/compute/v1/projects/vpc-sc-pub-sub-billing-alerts/global/networks/default1']"
+              type: array
+              items:
+                type: string
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: |
+        #
+        # Copyright 2021 Google LLC
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #     https://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+        #
+
+        package templates.gcp.GCPComputeAllowedNetworksConstraintV2
+
+        import data.validator.gcp.lib as lib
+
+        deny[{
+        	"msg": message,
+        	"details": metadata,
+        }] {
+        	constraint := input.constraint
+        	asset := input.asset
+        	asset.asset_type == "compute.googleapis.com/Instance"
+
+        	lib.get_constraint_params(input.constraint, params)
+
+        	instance := asset.resource.data
+
+        	interfaces := lib.get_default(instance, "networkInterfaces", [])
+        	interface := interfaces[_]
+        	full_network_uri := interface.network
+
+        	allowlist := lib.get_default(params, "allowed", [])
+        	allowed_networks := {n | n = allowlist[_]}
+
+        	access_configs := lib.get_default(interface, "accessConfigs", [])
+
+        	is_external_network := count(access_configs) > 0
+        	is_network_allowed := count({full_network_uri} - allowed_networks) == 0
+
+        	is_external_network == true
+        	is_network_allowed == false
+
+        	message := sprintf("Compute instance %v has interface %v with invalid access configuration.", [asset.name, interface.name])
+        	metadata := {"resource": asset.name}
+        }
+        #ENDINLINE

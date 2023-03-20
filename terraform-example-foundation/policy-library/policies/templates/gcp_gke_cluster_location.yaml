@@ -1,0 +1,114 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-gke-cluster-location-v2
+spec:
+  crd:
+    spec:
+      names:
+        kind: GKEClusterLocationConstraintV3
+      validation:
+        openAPIV3Schema:
+          properties:
+            mode:
+              type: string
+              enum: [denylist, allowlist]
+              description: "String identifying the operational mode, allowlist or
+                denylist. In allowlist mode, GKE clusters are only allowed in the
+                locations specified in the 'locations' parameter. In denylist mode,
+                resources are allowed in all locations except those listed in the
+                'locations' parameter."
+            exemptions:
+              type: array
+              items:
+                type: string
+              description: "Array of GKE clusters to exempt from location restriction.
+                String values in the array should correspond to the full name values
+                of exempted GKE clusters, e.g. //container.googleapis.com/projects/project-abc/zones/us-central1-c/clusters/my-cluster."
+            locations:
+              type: array
+              items:
+                type: string
+              description: "Array of regions and/or zones in which GKE clusters can
+                be created, e.g. us-central1-a, us-east1. Multiple locations can be
+                specified. Regions and zones need to be specified separately, as this
+                allows for restricting clusters to be zonal or regional, e.g. allowlisting
+                us-central1 will allow regional clusters to be created, but will not
+                implicitly allow zonal clusters in any us-central1 zone."
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: |-
+        #
+        # Copyright 2021 Google LLC
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #     https://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+        #
+
+        package templates.gcp.GKEClusterLocationConstraintV3
+
+        import data.validator.gcp.lib as lib
+
+        deny[{
+        	"msg": message,
+        	"details": metadata,
+        }] {
+        	constraint := input.constraint
+        	lib.get_constraint_params(constraint, params)
+        	asset := input.asset
+        	asset.asset_type == "container.googleapis.com/Cluster"
+
+        	# Check if resource is in exempt list
+        	exempt_list := params.exemptions
+        	matches := {asset.name} & cast_set(exempt_list)
+        	count(matches) == 0
+
+        	# Check that location is in allowlist/denylist
+        	target_location := asset.resource.data.location
+        	asset_location := params.locations
+        	location_matches := {target_location} & cast_set(asset_location)
+        	target_location_match_count(params.mode, desired_count)
+        	count(location_matches) == desired_count
+
+        	message := sprintf("Cluster %v is in a disallowed location", [asset.name])
+        	metadata := {"resource": asset.name}
+        }
+
+        ###########################
+        # Rule Utilities
+        ###########################
+
+        # Determine the overlap between locations under test and constraint
+        # By default (allowlist), we violate if there isn't overlap.
+
+        target_location_match_count(mode) = 0 {
+        	mode != "denylist"
+        }
+
+        target_location_match_count(mode) = 1 {
+        	mode == "denylist"
+        }
+        #ENDINLINE

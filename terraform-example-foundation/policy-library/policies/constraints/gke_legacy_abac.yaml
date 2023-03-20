@@ -1,0 +1,31 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: constraints.gatekeeper.sh/v1alpha1 # Copyright 2019 Google LLC
+kind: GCPGKELegacyAbacConstraintV1
+metadata:
+  name: disable_gke_legacy_abac
+  annotations:
+    description: "Ensure Legacy Authorization is set to Disabled on Kubernetes Engine
+      Clusters"
+    # This constraint has not been validated by the formal CIS certification process.
+    bundles.validator.forsetisecurity.org/cis-v1.1: 7.03
+    bundles.validator.forsetisecurity.org/gke-hardening-v2019.11.11: DISABLED_LEGACY_AUTHORIZATION
+    bundles.validator.forsetisecurity.org/scorecard-v1: security
+spec:
+  severity: high
+  match:
+    target: # {"$ref":"#/definitions/io.k8s.cli.setters.target"}
+    - organizations/**
+  parameters: {}

@@ -1,0 +1,123 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: templates.gatekeeper.sh/v1alpha1
+kind: ConstraintTemplate
+metadata:
+  name: gcp-compute-ip-forward-v2
+spec:
+  crd:
+    spec:
+      names:
+        kind: GCPComputeIpForwardConstraintV2
+      validation:
+        openAPIV3Schema:
+          properties:
+            mode:
+              type: string
+              enum: [denylist, allowlist]
+              description: "If allowlist, IP forwarding will only be allowed on specified
+                instances. If denylist, IP forwarding will be allowed except on specified
+                instances."
+            match_mode:
+              type: string
+              enum: [exact, regex]
+              description: "Whether to use exact string matching or regular expressions
+                against instance names"
+            instances:
+              type: array
+              items:
+                type: string
+              description: "The list of instances in your allowlist or denylist"
+  targets:
+    validation.gcp.forsetisecurity.org:
+      rego: |-
+        #
+        # Copyright 2021 Google LLC
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #     https://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+        #
+
+        package templates.gcp.GCPComputeIpForwardConstraintV2
+
+        import data.validator.gcp.lib as lib
+
+        ###########################
+        # Find allowlist/denylist Violations
+        ###########################
+        deny[{
+        	"msg": message,
+        	"details": metadata,
+        }] {
+        	constraint := input.constraint
+        	lib.get_constraint_params(constraint, params)
+        	asset := input.asset
+        	asset.asset_type == "compute.googleapis.com/Instance"
+
+        	instance := asset.resource.data
+        	lib.get_default(instance, "canIpForward", false) == true
+
+        	# Check if instance is in denylist/allowlist
+        	match_mode := lib.get_default(params, "match_mode", "exact")
+        	mode := lib.get_default(params, "mode", "allowlist")
+        	target_instances := lib.get_default(params, "instances", [])
+        	trace(sprintf("asset name:%v, target_instances: %v, mode: %v, match_mode: %v", [asset.name, target_instances, mode, match_mode]))
+        	instance_name_targeted(asset.name, target_instances, mode, match_mode)
+        	message := sprintf("%v is not allowed to have IP forwarding enabled.", [asset.name])
+        	metadata := {"resource": asset.name}
+        }
+
+        ###########################
+        # Rule Utilities
+        ###########################
+        instance_name_targeted(asset_name, instance_filters, mode, match_mode) {
+        	mode == "allowlist"
+        	match_mode == "exact"
+        	matches := {asset_name} & cast_set(instance_filters)
+        	count(matches) == 0
+        }
+
+        instance_name_targeted(asset_name, instance_filters, mode, match_mode) {
+        	mode == "denylist"
+        	match_mode == "exact"
+        	matches := {asset_name} & cast_set(instance_filters)
+        	count(matches) > 0
+        }
+
+        instance_name_targeted(asset_name, instance_filters, mode, match_mode) {
+        	mode == "allowlist"
+        	match_mode == "regex"
+        	not re_match_name(asset_name, instance_filters)
+        }
+
+        instance_name_targeted(asset_name, instance_filters, mode, match_mode) {
+        	mode == "denylist"
+        	match_mode == "regex"
+        	re_match_name(asset_name, instance_filters)
+        }
+
+        re_match_name(name, filters) {
+        	re_match(filters[_], name)
+        }
+        #ENDINLINE

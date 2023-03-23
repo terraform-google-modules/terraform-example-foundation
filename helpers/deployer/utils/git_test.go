@@ -19,9 +19,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/git"
+	"github.com/gruntwork-io/terratest/modules/logger"
+	"github.com/stretchr/testify/assert"
 )
 
 func createLocalRepo(t *testing.T, repo string) string {
@@ -40,40 +40,41 @@ func createLocalRepo(t *testing.T, repo string) string {
 }
 
 func TestGit(t *testing.T) {
+	remote := "origin"
 	repo := createLocalRepo(t, "my-git-repo")
 	originPath := filepath.Join(t.TempDir(), "my-git-repo-origin")
 	err := CopyDirectory(repo, originPath)
 	assert.NoError(t, err)
 
-	local := CloneRepo(t, "my-git-repo", repo, "")
-	_, err = local.RunCmdE("remote", "add", "origin", originPath)
+	local := CloneCSR(t, "my-git-repo", repo, "", logger.Discard)
+	err = local.AddRemote(remote, originPath)
 	assert.NoError(t, err)
 
-	err = CheckoutBranch(local, "unit-test")
+	err = local.CheckoutBranch("unit-test")
 	assert.NoError(t, err)
 
-	localBranch, err := GetCurrentBranch(local)
+	localBranch, err := local.GetCurrentBranch()
 	assert.Equal(t, localBranch, "unit-test", "current branch should be 'unit-test'")
 
 	err = os.WriteFile(filepath.Join(repo, "go.mod"), []byte("module example.com/test\n"), 0644)
 	assert.NoError(t, err)
 
-	err = CommitFiles(local, "add go mod file")
+	err = local.CommitFiles("add go mod file")
 	assert.NoError(t, err)
 
-	err = PushBranch(local, "unit-test")
+	err = local.PushBranch("unit-test", remote)
 	assert.NoError(t, err)
 
-	hasRemote, err := HasRemoteTRacking(local, "unit-test")
+	hasUpstream, err := local.HasUpstream("unit-test", remote)
 	assert.NoError(t, err)
-	assert.True(t, hasRemote, "branch 'unit-test' should have a remote")
+	assert.True(t, hasUpstream, "branch 'unit-test' should have a remote")
 
-	origin := CloneRepo(t, "my-git-repo", originPath, "")
+	origin := CloneCSR(t, "my-git-repo", originPath, "", logger.Discard)
 	files, err := FindFiles(originPath, "go.mod")
 	assert.NoError(t, err)
 	assert.Len(t, files, 0, "'go.mod' file should not exist on main branch")
 
-	err = CheckoutBranch(origin, "unit-test")
+	err = origin.CheckoutBranch("unit-test")
 	assert.NoError(t, err)
 	files, err = FindFiles(originPath, "go.mod")
 	assert.NoError(t, err)

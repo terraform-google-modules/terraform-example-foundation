@@ -25,93 +25,80 @@ import (
 	"github.com/mitchellh/go-testing-interface"
 )
 
-// CloneRepo clones a Google cloud source repository and returns a CmdConfig pointing to the repository.
-func CloneRepo(t testing.TB, name, path, project string) *git.CmdCfg {
+type GitRepo struct {
+	conf *git.CmdCfg
+}
+
+// CloneCSR clones a Google Cloud Source repository and returns a CmdConfig pointing to the repository.
+func CloneCSR(t testing.TB, name, path, project string, logger *logger.Logger) GitRepo {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		gcloud.Runf(t, "source repos clone %s %s --project %s", name, path, project)
 	}
-	return git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger.Default))
-}
-
-// GetCurrentBranch getes the current branch in the repository.
-func GetCurrentBranch(conf *git.CmdCfg) (string, error) {
-	b, err := conf.RunCmdE("branch", "-q", "--show-current")
-	if err != nil {
-		return "", err
+	return GitRepo{
+		conf: git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger)),
 	}
-	return b, nil
 }
 
-// HasRemoteTRacking check it a branch has a remote upstream configured.
-func HasRemoteTRacking(conf *git.CmdCfg, branch string) (bool, error) {
-	s, err := conf.RunCmdE("status", "-sb")
+// GetCurrentBranch gets the current branch in the repository.
+func (g GitRepo) GetCurrentBranch() (string, error) {
+	return g.conf.RunCmdE("branch", "-q", "--show-current")
+}
+
+// HasUpstream check it a branch has an upstream branch configured.
+func (g GitRepo) HasUpstream(branch, remote string) (bool, error) {
+	s, err := g.conf.RunCmdE("status", "-sb")
 	if err != nil {
 		return false, err
 	}
-	if strings.Contains(s, fmt.Sprintf("## %s...origin/%s", branch, branch)) {
+	if strings.Contains(s, fmt.Sprintf("## %s...%s/%s", branch, remote, branch)) {
 		return true, nil
 	}
 	return false, nil
 }
 
-// PushBranch pushes a branch to remote origin.
-// If the branch does not have a upstream it will be set.
-func PushBranch(conf *git.CmdCfg, branch string) error {
-	exits, err := HasRemoteTRacking(conf, branch)
-	if err != nil {
-		return err
-	}
-	if !exits {
-		_, err := conf.RunCmdE("push", "--set-upstream", "origin", branch)
-		if err != nil {
-			return err
-		}
-	} else {
-		_, err := conf.RunCmdE("push")
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+// PushBranch pushes a branch to 'remote' repository .
+func (g GitRepo) PushBranch(branch, remote string) error {
+	_, err := g.conf.RunCmdE("push", "--set-upstream", remote, branch)
+	return err
 }
 
 // CheckoutBranch checkouts a branch.
 // If the branch does not exist it will be created.
-func CheckoutBranch(conf *git.CmdCfg, branch string) error {
-	c, err := GetCurrentBranch(conf)
+func (g GitRepo) CheckoutBranch(branch string) error {
+	c, err := g.GetCurrentBranch()
 	if err != nil {
 		return err
 	}
-	if c != branch {
-		_, err := conf.RunCmdE("checkout", "-b", branch)
-		if err != nil {
-			if strings.Contains(err.Error(), "already exists") {
-				_, err := conf.RunCmdE("checkout", branch)
-				if err != nil {
-					return err
-				}
-			} else {
-				return err
-			}
-		}
+	if c == branch {
+		return nil
 	}
-	return nil
+	_, err = g.conf.RunCmdE("checkout", "-b", branch)
+	if err != nil && strings.Contains(err.Error(), "already exists") {
+		_, err = g.conf.RunCmdE("checkout", branch)
+	}
+	return err
 }
 
 // CommitFiles commit files it there are pending changes.
-func CommitFiles(conf *git.CmdCfg, msg string) error {
-	s, err := conf.RunCmdE("status", "-s")
+func (g GitRepo) CommitFiles(msg string) error {
+	s, err := g.conf.RunCmdE("status", "-s")
 	if err != nil {
 		return err
 	}
-	if s != "" {
-		_, err = conf.RunCmdE("add", ".")
-		if err != nil {
-			return err
-		}
-		_, err = conf.RunCmdE("commit", "-m", fmt.Sprintf("'%s'", msg))
+	if s == "" {
+		return nil
+	}
+	_, err = g.conf.RunCmdE("add", ".")
+	if err != nil {
 		return err
 	}
-	return nil
+	_, err = g.conf.RunCmdE("commit", "-m", fmt.Sprintf("'%s'", msg))
+	return err
+}
+
+//AddRemote adds a remote to the repository
+func (g GitRepo) AddRemote(name, url string) error {
+	_, err := g.conf.RunCmdE("remote", "add", name, url)
+	return err
 }

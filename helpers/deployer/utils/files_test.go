@@ -22,35 +22,54 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func writeTempFile(dir, name, content string) (string, error) {
+	f := filepath.Join(dir, name)
+	err := os.WriteFile(f, []byte(content), 0644)
+	return f, err
+}
+
 func TestCopyFile(t *testing.T) {
-	d, err := os.Getwd()
+	filename := "copy_file_test.txt"
+	src, err := writeTempFile(t.TempDir(), filename, "test of copy file func")
 	assert.NoError(t, err)
-	src := filepath.Join(d, "files_test.go")
-	dest := filepath.Join(t.TempDir(), "files_test.go")
+	dest := filepath.Join(t.TempDir(), filename)
+
 	err = CopyFile(src, dest)
 	assert.NoError(t, err)
 
 	s, err := os.Stat(dest)
 	assert.NoError(t, err)
-	assert.Equal(t, "files_test.go", s.Name())
+	assert.Equal(t, filename, s.Name())
 }
 
 func TestCopyDirectory(t *testing.T) {
-	src, err := os.Getwd()
+	// create src dir
+	src := filepath.Join(t.TempDir(), "base")
+	inner := filepath.Join(src, "one", "two", "three", "four")
+	err := os.MkdirAll(inner, 0755)
+	assert.NoError(t, err)
+	// create a sample file
+	filename := "copy_dir_test.txt"
+	fileContent := "test of copy dir func"
+	_, err = writeTempFile(inner, filename, fileContent)
 	assert.NoError(t, err)
 
-	dest := filepath.Join(t.TempDir(), "utils")
+	dest := filepath.Join(t.TempDir(), "base")
 	err = CopyDirectory(src, dest)
 	assert.NoError(t, err)
 
-	s, err := os.Stat(filepath.Join(dest, "files_test.go"))
+	destFile := filepath.Join(dest, "one", "two", "three", "four", filename)
+	s, err := os.Stat(destFile)
 	assert.NoError(t, err)
-	assert.Equal(t, "files_test.go", s.Name())
+	assert.Equal(t, filename, s.Name())
+
+	r, err := os.ReadFile(destFile)
+	assert.NoError(t, err)
+	assert.Equal(t, r, []byte(fileContent), "file content should be the same")
 }
 
 func TestReplaceStringInFile(t *testing.T) {
-	f := filepath.Join(t.TempDir(), "to_replace.txt")
-	err := os.WriteFile(f, []byte("OLD"), 0644)
+	f, err := writeTempFile(t.TempDir(), "to_replace.txt", "OLD")
 	assert.NoError(t, err)
 
 	err = ReplaceStringInFile(f, "OLD", "new")
@@ -62,16 +81,17 @@ func TestReplaceStringInFile(t *testing.T) {
 }
 
 func TestFindFiles(t *testing.T) {
-	src, err := os.Getwd()
-	assert.NoError(t, err)
 	base := t.TempDir()
 	dest := filepath.Join(base, "one", "two", "three", "four")
-
-	err = CopyDirectory(src, dest)
+	err := os.MkdirAll(dest, 0755)
 	assert.NoError(t, err)
-	files, err := FindFiles(base, "files_test.go")
+	filename := "find_file_test.txt"
+	_, err = writeTempFile(dest, filename, "test of find file func")
+	assert.NoError(t, err)
+
+	files, err := FindFiles(base, filename)
 	assert.NoError(t, err)
 
 	assert.Len(t, files, 1, "must have found only one file")
-	assert.Equal(t, filepath.Join(base, "one", "two", "three", "four", "files_test.go"), files[0])
+	assert.Equal(t, filepath.Join(base, "one", "two", "three", "four", filename), files[0])
 }

@@ -19,7 +19,11 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"strings"
+)
+
+const (
+	TerraformTempDir  = ".terraform"
+	TerraformLockFile = ".terraform.lock.hcl"
 )
 
 // CopyFile copies a single file from the src path to the dest path
@@ -46,19 +50,18 @@ func CopyDirectory(src string, dest string) error {
 		return err
 	}
 	for _, f := range files {
+		if f.Name() == TerraformTempDir || f.Name() == TerraformLockFile {
+			continue
+		}
 		if f.IsDir() {
-			if f.Name() != ".terraform" {
-				err := CopyDirectory(filepath.Join(src, f.Name()), filepath.Join(dest, f.Name()))
-				if err != nil {
-					return err
-				}
+			err = CopyDirectory(filepath.Join(src, f.Name()), filepath.Join(dest, f.Name()))
+			if err != nil {
+				return err
 			}
 		} else {
-			if f.Name() != ".terraform.lock.hcl" {
-				err := CopyFile(filepath.Join(src, f.Name()), filepath.Join(dest, f.Name()))
-				if err != nil {
-					return err
-				}
+			err = CopyFile(filepath.Join(src, f.Name()), filepath.Join(dest, f.Name()))
+			if err != nil {
+				return err
 			}
 		}
 	}
@@ -74,11 +77,14 @@ func ReplaceStringInFile(filename, old, new string) error {
 	return os.WriteFile(filename, bytes.Replace(f, []byte(old), []byte(new), -1), 0644)
 }
 
-// FindFiles find files with the given filename under the directory.
+// FindFiles find files with the given filename under the directory skipping terraform temp dir.
 func FindFiles(dir, filename string) ([]string, error) {
 	found := []string{}
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
-		if d.Name() == filename && !strings.Contains(path, ".terraform") {
+		if d.IsDir() && d.Name() == TerraformTempDir {
+			return filepath.SkipDir
+		}
+		if d.Name() == filename {
 			found = append(found, path)
 		}
 		return nil

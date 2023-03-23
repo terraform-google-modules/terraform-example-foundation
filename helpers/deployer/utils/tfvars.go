@@ -15,7 +15,6 @@
 package utils
 
 import (
-	"errors"
 	"os"
 
 	"github.com/hashicorp/hcl/v2/gohcl"
@@ -27,11 +26,11 @@ import (
 func ReadTfvars(filename string, val interface{}) error {
 	f, d := hclparse.NewParser().ParseHCLFile(filename)
 	if d.HasErrors() {
-		return errors.New(d.Error())
+		return d
 	}
 	d = gohcl.DecodeBody(f.Body, nil, val)
 	if d.HasErrors() {
-		return errors.New(d.Error())
+		return d
 	}
 	return nil
 }

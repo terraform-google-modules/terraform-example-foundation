@@ -66,14 +66,19 @@ func TestProcessSteps(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, s.IsStepComplete("good"), "check if 'good' is 'COMPLETED' should be true")
 
-	assert.True(t, s.IsStepComplete("good"), "check if 'good' is 'COMPLETED' should be true")
-	s.ResetStep("good")
+	s.CompleteStep("good.day")
+	assert.True(t, s.IsStepComplete("good.day"), "check if 'good.day' is 'COMPLETED' should be true")
+
+	s.ResetStep("good.day")
+
+	assert.False(t, s.IsStepComplete("good.day"), "check if 'good.day' is 'COMPLETED' should be false")
 	assert.False(t, s.IsStepComplete("good"), "check if 'good' is 'COMPLETED' should be false")
 
 	expectedSteps := []string{
 		"bad FAILED error:bad step",
 		"fail FAILED error:step failed",
 		"good PENDING",
+		"good.day PENDING",
 		"test COMPLETED",
 		"unit COMPLETED",
 	}

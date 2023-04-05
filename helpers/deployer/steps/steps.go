@@ -24,6 +24,7 @@ import (
 
 const (
 	completedStatus = "COMPLETED"
+	destroyedStatus = "DESTROYED"
 	failedStatus    = "FAILED"
 	pendingStatus   = "PENDING"
 )
@@ -51,8 +52,11 @@ func (s Step) String() string {
 func LoadSteps(file string) (Steps, error) {
 	var s Steps
 	_, err := os.Stat(file)
+	if err != nil && !os.IsNotExist(err) {
+		return s, err
+	}
 	if os.IsNotExist(err) {
-		fmt.Printf("# creating new steps file '%s'\n.", file)
+		fmt.Printf("# creating new steps file '%s'.\n", file)
 		s = Steps{
 			File: file,
 		}
@@ -74,23 +78,29 @@ func LoadSteps(file string) (Steps, error) {
 }
 
 // SaveSteps saves the current execution state of the steps in the file that was loaded.
-func (s Steps) SaveSteps() {
-	f, _ := json.MarshalIndent(s, "", "    ")
-	os.WriteFile(s.File, f, 0644)
+func (s Steps) SaveSteps() error {
+	f, err := json.MarshalIndent(s, "", "    ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(s.File, f, 0644)
 }
 
 // CompleteStep marks a given step as completed.
-func (s Steps) CompleteStep(name string) {
+func (s Steps) CompleteStep(name string) error {
 	s.Steps[name] = Step{
 		Name:   name,
 		Status: completedStatus,
-		Error:  "",
 	}
-	s.SaveSteps()
+	err := s.SaveSteps()
+	if err != nil {
+		return err
+	}
 	fmt.Printf("# completing step '%s' execution\n", name)
+	return nil
 }
 
-// IsStepComplete checks it the given step is completed.
+// IsStepComplete checks if the given step is completed.
 func (s Steps) IsStepComplete(name string) bool {
 	v, ok := s.Steps[name]
 	if ok {
@@ -99,15 +109,25 @@ func (s Steps) IsStepComplete(name string) bool {
 	return false
 }
 
+// StepExists checks if the given step exists
+func (s Steps) StepExists(name string) bool {
+	_, ok := s.Steps[name]
+	return ok
+}
+
 // FailStep marks a given step as failed and saves the error message.
-func (s Steps) FailStep(name string, err string) {
+func (s Steps) FailStep(name string, err string) error {
 	s.Steps[name] = Step{
 		Name:   name,
 		Status: failedStatus,
 		Error:  err,
 	}
-	s.SaveSteps()
+	e := s.SaveSteps()
+	if e != nil {
+		return e
+	}
 	fmt.Printf("# failing step '%s'. Failed with error: %s\n", name, err)
+	return nil
 }
 
 func isNested(name string) bool {
@@ -119,17 +139,20 @@ func parent(name string) string {
 }
 
 // ResetStep resets the execution status of a given step and its parent.
-func (s Steps) ResetStep(name string) {
+func (s Steps) ResetStep(name string) error {
 	s.Steps[name] = Step{
 		Name:   name,
 		Status: pendingStatus,
-		Error:  "",
 	}
-	s.SaveSteps()
+	err := s.SaveSteps()
+	if err != nil {
+		return err
+	}
 	fmt.Printf("# resetting step '%s' execution\n", name)
 	if isNested(name) {
-		s.ResetStep(parent(name))
+		return s.ResetStep(parent(name))
 	}
+	return nil
 }
 
 // GetStepError gets the error message save in an step.
@@ -151,7 +174,7 @@ func (s Steps) ListSteps() []string {
 	return l
 }
 
-// RunStepE executes a step and marks it as completed or failed.
+// RunStep executes a step and marks it as completed or failed.
 // Completed steps are not executed again.
 func (s Steps) RunStep(step string, f func() error) error {
 	if s.IsStepComplete(step) {
@@ -161,9 +184,52 @@ func (s Steps) RunStep(step string, f func() error) error {
 	fmt.Printf("# starting step '%s' execution\n", step)
 	err := f()
 	if err != nil {
-		s.FailStep(step, err.Error())
+		e := s.FailStep(step, err.Error())
+		if e != nil {
+			return fmt.Errorf("error on FailStep %v, original error %w", e, err)
+		}
 		return err
 	}
-	s.CompleteStep(step)
+	return s.CompleteStep(step)
+}
+
+// IsStepDestroyed checks is the step was destroyed
+func (s Steps) IsStepDestroyed(name string) bool {
+	v, ok := s.Steps[name]
+	if ok {
+		return v.Status == destroyedStatus
+	}
+	return false
+}
+
+// DestroyStep destroys the given step
+func (s Steps) DestroyStep(name string) error {
+	s.Steps[name] = Step{
+		Name:   name,
+		Status: destroyedStatus,
+	}
+	err := s.SaveSteps()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("# destroying step '%s'\n", name)
 	return nil
+}
+
+// RunDestroyStep destroys a step and marks it as destroyed or failed.
+func (s Steps) RunDestroyStep(step string, f func() error) error {
+	if s.IsStepDestroyed(step) || !s.StepExists(step) {
+		fmt.Printf("# skipping step '%s' destruction\n", step)
+		return nil
+	}
+	fmt.Printf("# starting step '%s' destruction\n", step)
+	err := f()
+	if err != nil {
+		e := s.FailStep(step, err.Error())
+		if e != nil {
+			return fmt.Errorf("error on FailStep %v, original error %w", e, err)
+		}
+		return err
+	}
+	return s.DestroyStep(step)
 }

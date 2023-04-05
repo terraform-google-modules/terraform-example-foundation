@@ -16,7 +16,6 @@ package steps
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -24,24 +23,43 @@ import (
 )
 
 func TestProcessSteps(t *testing.T) {
-	jsonFile := filepath.Join(t.TempDir(), "steps.json")
-	content := fmt.Sprintf("{\"file\": \"%s\", \"steps\": { \"test\": { \"name\": \"test\", \"status\": \"COMPLETED\", \"error\": \"\" }}}", jsonFile)
-	err := os.WriteFile(jsonFile, []byte(content), 0644)
+	// Loading an existing file
+	e, err := LoadSteps("./testdata/existing.json")
 	assert.NoError(t, err)
+	assert.True(t, e.IsStepComplete("test"), "check if 'test' is 'COMPLETED' should be true")
+	assert.False(t, e.IsStepComplete("unit"), "check if 'unit' is 'COMPLETED' should be false")
 
-	s, err := LoadSteps(jsonFile)
-	assert.NoError(t, err)
-	assert.True(t, s.IsStepComplete("test"), "check if 'test' is 'COMPLETED' should be true")
+	// Loading a new file
+	s, err := LoadSteps(filepath.Join(t.TempDir(), "new.json"))
+
+	// CompleteStep
 	assert.False(t, s.IsStepComplete("unit"), "check if 'unit' is 'COMPLETED' should be false")
-
 	s.CompleteStep("unit")
 	assert.True(t, s.IsStepComplete("unit"), "check if 'unit' is 'COMPLETED' should be true")
 
+	// FailStep
 	msg := "step failed"
 	s.FailStep("fail", msg)
 	assert.False(t, s.IsStepComplete("fail"), "check if 'fail' is 'COMPLETED' should be false")
 	assert.Equal(t, s.GetStepError("fail"), msg, "step should have failed")
 
+	// DestroyStep
+	assert.False(t, s.IsStepDestroyed("old"), "check if 'old' is 'DESTROYED' should be false")
+	s.DestroyStep("old")
+	assert.True(t, s.IsStepDestroyed("old"), "check if 'old' is 'DESTROYED' should be true")
+
+	// ResetStep
+	s.CompleteStep("reset")
+	s.CompleteStep("reset.one")
+	assert.True(t, s.IsStepComplete("reset"), "check if 'reset is 'COMPLETED' should be true")
+	assert.True(t, s.IsStepComplete("reset.one"), "check if 'reset.one' is 'COMPLETED' should be true")
+
+	s.ResetStep("reset.one")
+
+	assert.False(t, s.IsStepComplete("reset.one"), "check if 'reset.one' is 'COMPLETED' should be false")
+	assert.False(t, s.IsStepComplete("reset"), "check if 'reset' is 'COMPLETED' should be false")
+
+	// RunStep
 	assert.False(t, s.IsStepComplete("good"), "check if 'good' is 'COMPLETED' should be false")
 	err = s.RunStep("good", func() error {
 		return nil
@@ -66,21 +84,42 @@ func TestProcessSteps(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, s.IsStepComplete("good"), "check if 'good' is 'COMPLETED' should be true")
 
-	s.CompleteStep("good.day")
-	assert.True(t, s.IsStepComplete("good.day"), "check if 'good.day' is 'COMPLETED' should be true")
+	// RunDestroyStep
+	assert.False(t, s.IsStepDestroyed("unit"), "check if 'unit' is 'DESTROYED' should be false")
+	err = s.RunDestroyStep("unit", func() error {
+		return nil
+	})
+	assert.NoError(t, err)
+	assert.True(t, s.IsStepDestroyed("unit"), "check if 'unit' is 'DESTROYED' should be true")
 
-	s.ResetStep("good.day")
+	s.CompleteStep("destroy")
+	assert.False(t, s.IsStepDestroyed("destroy"), "check if 'destroy' is 'DESTROYED' should be false")
+	err = s.RunDestroyStep("destroy", func() error {
+		return fmt.Errorf(badStepMsg)
+	})
+	assert.Error(t, err)
+	assert.False(t, s.IsStepDestroyed("destroy"), "check if 'destroy' is 'DESTROYED' should be false")
+	assert.Equal(t, s.GetStepError("destroy"), badStepMsg, "step 'destroy' should have failed")
 
-	assert.False(t, s.IsStepComplete("good.day"), "check if 'good.day' is 'COMPLETED' should be false")
-	assert.False(t, s.IsStepComplete("good"), "check if 'good' is 'COMPLETED' should be false")
+	s.DestroyStep("gone")
+	assert.True(t, s.IsStepDestroyed("gone"), "check if 'gone' is 'DESTROYED' should be true")
+	err = s.RunDestroyStep("gone", func() error {
+		return fmt.Errorf("will fail if executed")
+	})
+	assert.NoError(t, err)
+	assert.True(t, s.IsStepDestroyed("gone"), "check if 'gone' is 'DESTROYED' should be true")
 
+	// ListSteps
 	expectedSteps := []string{
 		"bad FAILED error:bad step",
+		"destroy FAILED error:bad step",
 		"fail FAILED error:step failed",
-		"good PENDING",
-		"good.day PENDING",
-		"test COMPLETED",
-		"unit COMPLETED",
+		"gone DESTROYED",
+		"good COMPLETED",
+		"old DESTROYED",
+		"reset PENDING",
+		"reset.one PENDING",
+		"unit DESTROYED",
 	}
 	assert.ElementsMatch(t, expectedSteps, s.ListSteps())
 }

@@ -16,6 +16,8 @@ package gcp
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	gotest "testing"
 
 	"github.com/mitchellh/go-testing-interface"
@@ -24,34 +26,40 @@ import (
 )
 
 func TestGetLastBuildStatus(t *gotest.T) {
-	currentStatus := "SUCCESS"
-	basicGCP := GCP{
+	current, err := os.ReadFile(filepath.Join(".", "testdata", "success_build.json"))
+	assert.NoError(t, err)
+	gcp := GCP{
 		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
 			return gjson.Result{
 				Type: gjson.JSON,
-				Raw:  fmt.Sprintf("[{\"status\": \"%s\"}]", currentStatus),
+				Raw:  fmt.Sprintf("[%s]", string(current[:])),
 			}
 		},
 		sleepTime: 1,
 	}
-	status := basicGCP.GetLastBuildStatus(t, "project", "region", "filter")
-	assert.Equal(t, "SUCCESS", status)
+	status := gcp.GetLastBuildStatus(t, "prj-b-cicd-0123", "us-central1", "filter")
+	assert.Equal(t, StatusSuccess, status)
 
-	currentStatus = "FAILURE"
-	status = basicGCP.GetLastBuildStatus(t, "project", "region", "filter")
-	assert.Equal(t, "FAILURE", status)
+	current, err = os.ReadFile(filepath.Join(".", "testdata", "failure_build.json"))
+	assert.NoError(t, err)
+	status = gcp.GetLastBuildStatus(t, "prj-b-cicd-0123", "us-central1", "filter")
+	assert.Equal(t, StatusFailure, status)
 }
 
 func TestGetFinalBuildState(t *gotest.T) {
 
+	queued, err := os.ReadFile(filepath.Join(".", "testdata", "queued_build.json"))
+	assert.NoError(t, err)
+	failure, err := os.ReadFile(filepath.Join(".", "testdata", "failure_build.json"))
+	assert.NoError(t, err)
 	runfCalls := []gjson.Result{
 		{Type: gjson.JSON,
-			Raw: "{\"status\": \"QUEUED\"}"},
+			Raw: string(queued[:])},
 		{Type: gjson.JSON,
-			Raw: "{\"status\": \"FAILURE\"}"},
+			Raw: string(failure[:])},
 	}
 	callCount := 0
-	seqGCP := GCP{
+	gcp := GCP{
 		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
 			resp := runfCalls[callCount]
 			callCount = callCount + 1
@@ -60,24 +68,31 @@ func TestGetFinalBuildState(t *gotest.T) {
 		sleepTime: 1,
 	}
 
-	status2 := seqGCP.GetFinalBuildState(t, "project", "region", "buildID")
-	assert.Equal(t, "FAILURE", status2)
+	status2, err := gcp.GetFinalBuildState(t, "prj-b-cicd-0123", "us-central1", "buildID", 40)
+	assert.NoError(t, err)
+	assert.Equal(t, StatusFailure, status2)
 	assert.Equal(t, callCount, 2, "Runf must be called twice")
 }
 
 func TestWaitBuildSuccess(t *gotest.T) {
 
+	working, err := os.ReadFile(filepath.Join(".", "testdata", "working_build.json"))
+	assert.NoError(t, err)
+
+	failure, err := os.ReadFile(filepath.Join(".", "testdata", "failure_build.json"))
+	assert.NoError(t, err)
+
 	callCount := 0
 	runfCalls := []gjson.Result{
 		{Type: gjson.JSON,
-			Raw: "[{\"id\": \"test_build_id\",\"status\": \"WORKING\"}]"},
+			Raw: fmt.Sprintf("[%s]", string(working[:]))},
 		{Type: gjson.JSON,
-			Raw: "{\"status\": \"WORKING\"}"},
+			Raw: string(working[:])},
 		{Type: gjson.JSON,
-			Raw: "{\"status\": \"FAILURE\"}"},
+			Raw: string(failure[:])},
 	}
 
-	seqGCP := GCP{
+	gcp := GCP{
 		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
 			resp := runfCalls[callCount]
 			callCount = callCount + 1
@@ -86,8 +101,40 @@ func TestWaitBuildSuccess(t *gotest.T) {
 		sleepTime: 1,
 	}
 
-	err := seqGCP.WaitBuildSuccess(t, "project", "region", "repo", "failed_test_for_WaitBuildSuccess")
+	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo","", "failed_test_for_WaitBuildSuccess", 40)
 	assert.Error(t, err, "should have failed")
 	assert.Contains(t, err.Error(), "failed_test_for_WaitBuildSuccess", "should have failed with custom info")
+	assert.Equal(t, callCount, 3, "Runf must be called three times")
+}
+
+func TestWaitBuildTimeout(t *gotest.T) {
+
+	working, err := os.ReadFile(filepath.Join(".", "testdata", "working_build.json"))
+	assert.NoError(t, err)
+
+	callCount := 0
+	runfCalls := []gjson.Result{
+		{Type: gjson.JSON,
+			Raw: fmt.Sprintf("[%s]", string(working[:]))},
+		{Type: gjson.JSON,
+			Raw: string(working[:])},
+		{Type: gjson.JSON,
+			Raw: string(working[:])},
+		{Type: gjson.JSON,
+			Raw: string(working[:])},
+	}
+
+	gcp := GCP{
+		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
+			resp := runfCalls[callCount]
+			callCount = callCount + 1
+			return resp
+		},
+		sleepTime: 1,
+	}
+
+	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo","", "failed_test_for_WaitBuildSuccess", 1)
+	assert.Error(t, err, "should have failed")
+	assert.Contains(t, err.Error(), "timeout waiting for build '736f4689-2497-4382-afd0-b5f0f50eea5b' execution", "should have failed with timeout error")
 	assert.Equal(t, callCount, 3, "Runf must be called three times")
 }

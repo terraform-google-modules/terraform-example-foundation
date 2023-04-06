@@ -1,0 +1,139 @@
+{
+    "artifacts": {
+        "objects": {
+            "location": "gs://bkt-prj-b-cicd-0123-gcp-org-build-artifacts/terraform/cloudbuild/plan/736f4689-2497-4382-afd0-b5f0f50eea5b/",
+            "paths": [
+                "cloudbuild-tf-plan.yaml",
+                "tmp_plan/*.tfplan"
+            ],
+            "timing": {
+                "endTime": "2023-03-07T19:11:16.702709280Z",
+                "startTime": "2023-03-07T19:10:48.763437832Z"
+            }
+        }
+    },
+    "buildTriggerId": "fc1de58c-1362-4568-9cd6-cf9d514ab559",
+    "createTime": "2023-03-07T19:08:08.946367Z",
+    "finishTime": "2023-03-07T19:11:25.910842Z",
+    "id": "736f4689-2497-4382-afd0-b5f0f50eea5b",
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds;region=us-central1/736f4689-2497-4382-afd0-b5f0f50eea5b?project=123456789012",
+    "logsBucket": "gs://bkt-prj-b-cicd-0123-gcp-org-build-logs",
+    "name": "projects/123456789012/locations/us-central1/builds/736f4689-2497-4382-afd0-b5f0f50eea5b",
+    "options": {
+        "dynamicSubstitutions": true,
+        "logging": "LEGACY",
+        "pool": {
+            "name": "projects/prj-b-cicd-0123/locations/us-central1/workerPools/private-pool-ufz7"
+        },
+        "substitutionOption": "ALLOW_LOOSE"
+    },
+    "projectId": "prj-b-cicd-0123",
+    "queueTtl": "3600s",
+    "results": {
+        "artifactManifest": "gs://bkt-prj-b-cicd-0123-gcp-org-build-artifacts/terraform/cloudbuild/plan/736f4689-2497-4382-afd0-b5f0f50eea5b/artifacts-736f4689-2497-4382-afd0-b5f0f50eea5b.json",
+        "buildStepImages": [
+            "sha256:91d39e3aa3b1a3153a5debad39b893829c87215ae9496cb03beca132c8ecc4cb",
+            "sha256:91d39e3aa3b1a3153a5debad39b893829c87215ae9496cb03beca132c8ecc4cb"
+        ],
+        "buildStepOutputs": [
+            "",
+            ""
+        ],
+        "numArtifacts": "2"
+    },
+    "serviceAccount": "projects/prj-b-seed-0123/serviceAccounts/sa-terraform-org@prj-b-seed-0123.iam.gserviceaccount.com",
+    "source": {
+        "repoSource": {
+            "commitSha": "3dca5f9abb0f3050f505724e9e8976f53c58af4c",
+            "projectId": "prj-b-cicd-0123",
+            "repoName": "gcp-org"
+        }
+    },
+    "sourceProvenance": {
+        "resolvedRepoSource": {
+            "commitSha": "3dca5f9abb0f3050f505724e9e8976f53c58af4c",
+            "projectId": "prj-b-cicd-0123",
+            "repoName": "gcp-org"
+        }
+    },
+    "startTime": "2023-03-07T19:08:52.044670424Z",
+    "status": "FAILURE",
+    "steps": [
+        {
+            "args": [
+                "-c",
+                "tf_sa_email=sa-terraform-org@prj-b-seed-0123.iam.gserviceaccount.com\nif [[ -n ${tf_sa_email} ]]; then\n  echo \"Setting up gcloud for impersonation\"\n  gcloud config set auth/impersonate_service_account $tf_sa_email\nfi\necho \"Adding bucket information to backends\"\nfor i in `find -name 'backend.tf'`; do sed -r -i 's/UPDATE_ME|UPDATE_PROJECTS_BACKEND|UPDATE_APP_INFRA_BUCKET/bkt-prj-b-seed-0123-tfstate-84b7/' $i; done\n"
+            ],
+            "entrypoint": "/bin/bash",
+            "id": "setup",
+            "name": "us-central1-docker.pkg.dev/prj-b-cicd-0123/tf-runners/terraform:v1",
+            "pullTiming": {
+                "endTime": "2023-03-07T19:10:07.484924807Z",
+                "startTime": "2023-03-07T19:09:02.028486423Z"
+            },
+            "status": "SUCCESS",
+            "timing": {
+                "endTime": "2023-03-07T19:10:09.705436972Z",
+                "startTime": "2023-03-07T19:09:02.028486423Z"
+            }
+        },
+        {
+            "args": [
+                "-c",
+                "./tf-wrapper.sh plan_validate_all plan /workspace/policy-library prj-b-cicd-0123 CLOUDSOURCE\n"
+            ],
+            "entrypoint": "/bin/bash",
+            "id": "tf plan validate all",
+            "name": "us-central1-docker.pkg.dev/prj-b-cicd-0123/tf-runners/terraform:v1",
+            "pullTiming": {
+                "endTime": "2023-03-07T19:10:09.707340067Z",
+                "startTime": "2023-03-07T19:10:09.705565485Z"
+            },
+            "status": "FAILURE",
+            "timing": {
+                "endTime": "2023-03-07T19:10:42.040751997Z",
+                "startTime": "2023-03-07T19:10:09.705565485Z"
+            }
+        }
+    ],
+    "substitutions": {
+        "BRANCH_NAME": "plan",
+        "COMMIT_SHA": "3dca5f9abb0f3050f505724e9e8976f53c58af4c",
+        "REF_NAME": "plan",
+        "REPO_NAME": "gcp-org",
+        "REVISION_ID": "3dca5f9abb0f3050f505724e9e8976f53c58af4c",
+        "SHORT_SHA": "3dca5f9",
+        "TRIGGER_BUILD_CONFIG_PATH": "cloudbuild-tf-plan.yaml",
+        "TRIGGER_NAME": "gcp-org-plan",
+        "_ARTIFACT_BUCKET_NAME": "bkt-prj-b-cicd-0123-gcp-org-build-artifacts",
+        "_BILLING_ID": "XXXXXX-XXXXXX-XXXXXX",
+        "_DOCKER_TAG_VERSION_TERRAFORM": "v1",
+        "_GAR_PROJECT_ID": "prj-b-cicd-0123",
+        "_GAR_REGION": "us-central1",
+        "_GAR_REPOSITORY": "tf-runners",
+        "_LOG_BUCKET_NAME": "bkt-prj-b-cicd-0123-gcp-org-build-logs",
+        "_ORG_ID": "0000000000000",
+        "_POLICY_REPO": "/workspace/policy-library",
+        "_PRIVATE_POOL": "projects/prj-b-cicd-0123/locations/us-central1/workerPools/private-pool-ufz7",
+        "_STATE_BUCKET_NAME": "bkt-prj-b-seed-0123-tfstate-84b7",
+        "_TF_SA_EMAIL": "sa-terraform-org@prj-b-seed-0123.iam.gserviceaccount.com"
+    },
+    "tags": [
+        "trigger-fc1de58c-1362-4568-9cd6-cf9d514ab559"
+    ],
+    "timeout": "1200s",
+    "timing": {
+        "BUILD": {
+            "endTime": "2023-03-07T19:10:42.040849274Z",
+            "startTime": "2023-03-07T19:09:01.390234872Z"
+        },
+        "FETCHSOURCE": {
+            "endTime": "2023-03-07T19:09:01.390138166Z",
+            "startTime": "2023-03-07T19:08:52.556100198Z"
+        },
+        "PUSH": {
+            "endTime": "2023-03-07T19:11:25.560408964Z",
+            "startTime": "2023-03-07T19:10:42.040881168Z"
+        }
+    }
+}

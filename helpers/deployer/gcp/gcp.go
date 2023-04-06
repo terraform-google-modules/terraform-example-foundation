@@ -16,6 +16,7 @@ package gcp
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
@@ -23,6 +24,14 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
+)
+
+const (
+	StatusQueued    = "QUEUED"
+	StatusWorking   = "WORKING"
+	StatusSuccess   = "SUCCESS"
+	StatusFailure   = "FAILURE"
+	StatusCancelled = "CANCELLED"
 )
 
 type GCP struct {
@@ -39,8 +48,15 @@ func NewGCP() GCP {
 }
 
 // GetBuilds gets all Cloud Build builds form a project and region that satisfy the given filter.
-func (g GCP) GetBuilds(t testing.TB, projectID, region, filter string) []gjson.Result {
-	return g.Runf(t, "builds list --project %s --region %s --filter %s", projectID, region, filter).Array()
+func (g GCP) GetBuilds(t testing.TB, projectID, region, filter string) map[string]string {
+	var result = map[string]string{}
+	builds := g.Runf(t, "builds list --project %s --region %s --filter %s", projectID, region, filter).Array()
+	if len(builds) > 0 {
+		for _, b := range builds {
+			result[b.Get("id").String()] = b.Get("status").String()
+		}
+	}
+	return result
 }
 
 // GetLastBuildStatus gets the status of the last build form a project and region that satisfy the given filter.
@@ -53,46 +69,58 @@ func (g GCP) GetBuildStatus(t testing.TB, projectID, region, buildID string) str
 	return g.Runf(t, "builds describe %s  --project %s --region %s", buildID, projectID, region).Get("status").String()
 }
 
-// GetRunningBuildID gets the current build running for the given prohec, region, and filter
+// GetRunningBuildID gets the current build running for the given project, region, and filter
 func (g GCP) GetRunningBuildID(t testing.TB, projectID, region, filter string) string {
 	time.Sleep(g.sleepTime * time.Second)
 	builds := g.GetBuilds(t, projectID, region, filter)
-	for _, build := range builds {
-		status := build.Get("status").String()
-		if status == "QUEUED" || status == "WORKING" {
-			return build.Get("id").String()
+	for id, status := range builds {
+		if status == StatusQueued || status == StatusWorking {
+			return id
 		}
 	}
 	return ""
 }
 
 // GetFinalBuildState gets the terminal status of the given build. It will wait if build is not finished.
-func (g GCP) GetFinalBuildState(t testing.TB, projectID, region, buildID string) string {
+func (g GCP) GetFinalBuildState(t testing.TB, projectID, region, buildID string, maxRetry int) (string, error) {
 	var status string
+	count := 0
 	fmt.Printf("waiting for build %s execution.\n", buildID)
 	status = g.GetBuildStatus(t, projectID, region, buildID)
 	fmt.Printf("build status is %s\n", status)
-	for status != "SUCCESS" && status != "FAILURE" && status != "CANCELLED" {
+	for status != StatusSuccess && status != StatusFailure && status != StatusCancelled {
 		fmt.Printf("build status is %s\n", status)
+		if count >= maxRetry {
+			return "", fmt.Errorf("timeout waiting for build '%s' execution", buildID)
+		}
+		count = count + 1
 		time.Sleep(g.sleepTime * time.Second)
 		status = g.GetBuildStatus(t, projectID, region, buildID)
 	}
 	fmt.Printf("final build status is %s\n", status)
-	return status
+	return status, nil
 }
 
-// WaitBuildSuccess waits for teh current build in a repo to finish.
-func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, failureMsg string) error {
-	filter := fmt.Sprintf("source.repoSource.repoName:%s", repo)
+// WaitBuildSuccess waits for the current build in a repo to finish.
+func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, failureMsg string, maxRetry int) error {
+	var filter string
+	if commitSha == "" {
+		filter = fmt.Sprintf("source.repoSource.repoName:%s", repo)
+	} else {
+		filter = fmt.Sprintf("source.repoSource.commitSha:%s", commitSha)
+	}
 	build := g.GetRunningBuildID(t, project, region, filter)
 	if build != "" {
-		status := g.GetFinalBuildState(t, project, region, build)
-		if status != "SUCCESS" {
+		status, err := g.GetFinalBuildState(t, project, region, build, maxRetry)
+		if err != nil {
+			return err
+		}
+		if status != StatusSuccess {
 			return fmt.Errorf("%s\nSee:\nhttps://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s\nfor details.\n", failureMsg, region, build, project)
 		}
 	} else {
 		status := g.GetLastBuildStatus(t, project, region, filter)
-		if status != "SUCCESS" {
+		if status != StatusSuccess {
 			return fmt.Errorf("%s\nSee:\nhttps://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s\nfor details.\n", failureMsg, region, build, project)
 		}
 	}
@@ -102,7 +130,7 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, failureMsg st
 //GetAccessContextManagerPolicyID gets the access context manager policy ID of the organization
 func (g GCP) GetAccessContextManagerPolicyID(t testing.TB, orgID string) string {
 	filter := fmt.Sprintf("parent:organizations/%s", orgID)
-	acmpID := g.Runf(t, "access-context-manager policies list --organization %s --filter %s ", orgID, filter).Array()
+	acmpID := g.Runf(t, "access-context-manager policies list --organization %s --filter %s --quiet", orgID, filter).Array()
 	if len(acmpID) == 0 {
 		return ""
 	}
@@ -112,7 +140,7 @@ func (g GCP) GetAccessContextManagerPolicyID(t testing.TB, orgID string) string 
 // HasSccNotification checks if a Security Command Center notification exists
 func (g GCP) HasSccNotification(t testing.TB, orgID, sccName string) bool {
 	filter := fmt.Sprintf("name=organizations/%s/notificationConfigs/%s", orgID, sccName)
-	scc := g.Runf(t, "scc notifications list organizations/%s --filter %s ", orgID, filter).Array()
+	scc := g.Runf(t, "scc notifications list organizations/%s --filter %s --quiet", orgID, filter).Array()
 	if len(scc) == 0 {
 		return false
 	}
@@ -127,4 +155,15 @@ func (g GCP) HasTagKey(t testing.TB, orgID, tag string) bool {
 		return false
 	}
 	return tags[0].Get("shortName").String() == tag
+}
+
+// EnableApis enables the apis in the given project
+func (g GCP) EnableApis(t testing.TB, project string, apis []string) {
+	g.Runf(t, "services enable %s --project %s", strings.Join(apis, " "), project)
+}
+
+// ApiIsEnabled checks if the api is enabled in the given project
+func (g GCP) ApiIsEnabled(t testing.TB, project, api string) bool {
+	filter := fmt.Sprintf("config.name=%s", api)
+	return len(g.Runf(t, "services list --enabled --project %s --filter %s", project, filter).Array()) > 0
 }

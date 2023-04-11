@@ -20,7 +20,8 @@ action=$1
 branch=$2
 policysource=$3
 project_id=$4
-policy_type=$5 # FILESYSTEM or CLOUDSOURCE
+policy_type=$5 # FILESYSTEM | CLOUDSOURCE
+runner_env=$6 # GITHUB | CLOUDBUILD | JENKINS | LOCAL
 base_dir=$(pwd)
 tmp_plan="${base_dir}/tmp_plan" #if you change this, update build triggers
 environments_regex="^(development|non-production|production|shared)$"
@@ -133,7 +134,11 @@ tf_validate() {
   else
     if [ -d "$path" ]; then
       cd "$path" || exit
-      terraform show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
+      if [[ "$runner_env" == "GITHUB" ]]; then
+        terraform-bin show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
+      else
+        terraform show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
+      fi
       if [[ "$policy_type" == "CLOUDSOURCE" ]]; then
         # Check if $policy_file_path is empty so we clone the policies repo only once
         if [ -z "$(ls -A "${policy_file_path}" 2> /dev/null)" ]; then

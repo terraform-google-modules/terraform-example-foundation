@@ -60,6 +60,20 @@ default_region = "us-central1"
 
 
 /* ----------------------------------------
+    Specific to github_bootstrap
+   ---------------------------------------- */
+// Un-comment github_bootstrap and its outputs if you want to use GitHub Actions instead of Cloud Build
+//gh_token = "YOUR-FINE-GRAINED-ACCESS-TOKEN"
+//gh_repos = {
+//    owner        = "YOUR-GITHUB-USER-OR-ORGANIZATION",
+//    bootstrap    = "YOUR-BOOTSTRAP-REPOSITORY",
+//    organization = "YOUR-ORGANIZATION-REPOSITORY",
+//    environments = "YOUR-ENVIRONMENTS-REPOSITORY",
+//    networks     = "YOUR-NETWORKS-REPOSITORY",
+//    projects     = "YOUR-PROJECTS-REPOSITORY",
+//}
+
+/* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */
 // Un-comment the jenkins_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build

@@ -1,0 +1,10 @@
+{
+    "file": "./testdata/existing.json",
+    "steps": {
+        "test": {
+            "name": "test",
+            "status": "COMPLETED",
+            "error": ""
+        }
+    }
+}

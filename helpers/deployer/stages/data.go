@@ -18,25 +18,16 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gruntwork-io/terratest/modules/logger"
-
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer/utils"
 )
 
-
-type CommonConf struct {
-	FoundationPath    string
-	CheckoutPath      string
-	EnableHubAndSpoke bool
-	DisablePrompt     bool
-	Logger            *logger.Logger
-}
-
+// ServerAddress is the element for TargetNameServerAddresses
 type ServerAddress struct {
 	Ipv4Address    string `cty:"ipv4_address"`
 	ForwardingPath string `cty:"forwarding_path"`
 }
 
+// GlobalTfvars contains all the configuration for the deploy
 type GlobalTfvars struct {
 	OrgID                                 string          `hcl:"org_id"`
 	BillingAccount                        string          `hcl:"billing_account"`
@@ -73,6 +64,7 @@ func (g GlobalTfvars) HasValidatorProj() bool {
 	return g.ValidatorProjectId != nil && *g.ValidatorProjectId != ""  && *g.ValidatorProjectId != "EXISTING_PROJECT_ID"
 }
 
+// ReadGlobalTfvars reads the tfvars file that has all the configuration for the deploy
 func ReadGlobalTfvars(file string) (GlobalTfvars, error) {
 	var globalTfvars GlobalTfvars
 	if file == "" {

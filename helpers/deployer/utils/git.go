@@ -97,8 +97,13 @@ func (g GitRepo) CommitFiles(msg string) error {
 	return err
 }
 
-//AddRemote adds a remote to the repository
+// AddRemote adds a remote to the repository
 func (g GitRepo) AddRemote(name, url string) error {
 	_, err := g.conf.RunCmdE("remote", "add", name, url)
 	return err
+}
+
+// GetCommitSha gets the commit SHA of the last commit of the current branch
+func (g GitRepo) GetCommitSha() (string, error) {
+	return g.conf.RunCmdE("rev-parse", "HEAD")
 }

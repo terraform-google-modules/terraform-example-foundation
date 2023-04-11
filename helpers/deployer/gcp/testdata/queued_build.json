@@ -1,0 +1,90 @@
+{
+    "artifacts": {
+        "objects": {
+            "location": "gs://bkt-prj-b-cicd-0123-gcp-org-build-artifacts/terraform/cloudbuild/plan/736f4689-2497-4382-afd0-b5f0f50eea5b/",
+            "paths": [
+                "cloudbuild-tf-plan.yaml",
+                "tmp_plan/*.tfplan"
+            ]
+        }
+    },
+    "buildTriggerId": "fc1de58c-1362-4568-9cd6-cf9d514ab559",
+    "createTime": "2023-03-07T19:08:08.946367Z",
+    "id": "736f4689-2497-4382-afd0-b5f0f50eea5b",
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds;region=us-central1/736f4689-2497-4382-afd0-b5f0f50eea5b?project=123456789012",
+    "logsBucket": "gs://bkt-prj-b-cicd-0123-gcp-org-build-logs",
+    "name": "projects/123456789012/locations/us-central1/builds/736f4689-2497-4382-afd0-b5f0f50eea5b",
+    "options": {
+        "dynamicSubstitutions": true,
+        "logging": "LEGACY",
+        "pool": {
+            "name": "projects/prj-b-cicd-0123/locations/us-central1/workerPools/private-pool-ufz7"
+        },
+        "substitutionOption": "ALLOW_LOOSE"
+    },
+    "projectId": "prj-b-cicd-0123",
+    "queueTtl": "3600s",
+    "serviceAccount": "projects/prj-b-seed-0123/serviceAccounts/sa-terraform-org@prj-b-seed-0123.iam.gserviceaccount.com",
+    "source": {
+        "repoSource": {
+            "commitSha": "3dca5f9abb0f3050f505724e9e8976f53c58af4c",
+            "projectId": "prj-b-cicd-0123",
+            "repoName": "gcp-org"
+        }
+    },
+    "sourceProvenance": {
+        "resolvedRepoSource": {
+            "commitSha": "3dca5f9abb0f3050f505724e9e8976f53c58af4c",
+            "projectId": "prj-b-cicd-0123",
+            "repoName": "gcp-org"
+        }
+    },
+    "startTime": "2023-03-07T19:08:52.044670424Z",
+    "status": "QUEUED",
+    "steps": [
+        {
+            "args": [
+                "-c",
+                "tf_sa_email=sa-terraform-org@prj-b-seed-0123.iam.gserviceaccount.com\nif [[ -n ${tf_sa_email} ]]; then\n  echo \"Setting up gcloud for impersonation\"\n  gcloud config set auth/impersonate_service_account $tf_sa_email\nfi\necho \"Adding bucket information to backends\"\nfor i in `find -name 'backend.tf'`; do sed -r -i 's/UPDATE_ME|UPDATE_PROJECTS_BACKEND|UPDATE_APP_INFRA_BUCKET/bkt-prj-b-seed-0123-tfstate-84b7/' $i; done\n"
+            ],
+            "entrypoint": "/bin/bash",
+            "id": "setup",
+            "name": "us-central1-docker.pkg.dev/prj-b-cicd-0123/tf-runners/terraform:v1"
+        },
+        {
+            "args": [
+                "-c",
+                "./tf-wrapper.sh plan_validate_all plan /workspace/policy-library prj-b-cicd-0123 CLOUDSOURCE\n"
+            ],
+            "entrypoint": "/bin/bash",
+            "id": "tf plan validate all",
+            "name": "us-central1-docker.pkg.dev/prj-b-cicd-0123/tf-runners/terraform:v1"
+        }
+    ],
+    "substitutions": {
+        "BRANCH_NAME": "plan",
+        "COMMIT_SHA": "3dca5f9abb0f3050f505724e9e8976f53c58af4c",
+        "REF_NAME": "plan",
+        "REPO_NAME": "gcp-org",
+        "REVISION_ID": "3dca5f9abb0f3050f505724e9e8976f53c58af4c",
+        "SHORT_SHA": "3dca5f9",
+        "TRIGGER_BUILD_CONFIG_PATH": "cloudbuild-tf-plan.yaml",
+        "TRIGGER_NAME": "gcp-org-plan",
+        "_ARTIFACT_BUCKET_NAME": "bkt-prj-b-cicd-0123-gcp-org-build-artifacts",
+        "_BILLING_ID": "XXXXXX-XXXXXX-XXXXXX",
+        "_DOCKER_TAG_VERSION_TERRAFORM": "v1",
+        "_GAR_PROJECT_ID": "prj-b-cicd-0123",
+        "_GAR_REGION": "us-central1",
+        "_GAR_REPOSITORY": "tf-runners",
+        "_LOG_BUCKET_NAME": "bkt-prj-b-cicd-0123-gcp-org-build-logs",
+        "_ORG_ID": "0000000000000",
+        "_POLICY_REPO": "/workspace/policy-library",
+        "_PRIVATE_POOL": "projects/prj-b-cicd-0123/locations/us-central1/workerPools/private-pool-ufz7",
+        "_STATE_BUCKET_NAME": "bkt-prj-b-seed-0123-tfstate-84b7",
+        "_TF_SA_EMAIL": "sa-terraform-org@prj-b-seed-0123.iam.gserviceaccount.com"
+    },
+    "tags": [
+        "trigger-fc1de58c-1362-4568-9cd6-cf9d514ab559"
+    ],
+    "timeout": "1200s"
+}

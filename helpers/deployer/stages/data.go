@@ -70,7 +70,7 @@ type GlobalTfvars struct {
 
 // HasValidatorProj checks if a Validator Project was provided
 func (g GlobalTfvars) HasValidatorProj() bool {
-	return g.ValidatorProjectId != nil && *g.ValidatorProjectId != ""
+	return g.ValidatorProjectId != nil && *g.ValidatorProjectId != ""  && *g.ValidatorProjectId != "EXISTING_PROJECT_ID"
 }
 
 func ReadGlobalTfvars(file string) (GlobalTfvars, error) {

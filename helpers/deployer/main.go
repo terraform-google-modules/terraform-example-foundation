@@ -74,30 +74,6 @@ func main() {
 		return
 	}
 
-	s, err := steps.LoadSteps(cfg.stepsFile)
-	if err != nil {
-		fmt.Printf("# failed to load state file %s. Error: %s\n", cfg.stepsFile, err.Error())
-		os.Exit(2)
-	}
-
-	if cfg.listSteps {
-		fmt.Println("# Executed steps:")
-		e := s.ListSteps()
-		if len(e) == 0 {
-			fmt.Println("# No steps executed")
-			return
-		}
-		for _, step := range e {
-			fmt.Println(step)
-		}
-		return
-	}
-
-	if cfg.resetStep != "" {
-		s.ResetStep(cfg.resetStep)
-		return
-	}
-
 	// load tfvars
 	globalTfvars, err := stages.ReadGlobalTfvars(cfg.tfvarsFile)
 	if err != nil {
@@ -140,6 +116,30 @@ func main() {
 	if cfg.validate {
 		stages.ValidateBasicFields(t, globalTfvars)
 		stages.ValidateDestroyFlags(t, globalTfvars)
+		return
+	}
+
+	s, err := steps.LoadSteps(cfg.stepsFile)
+	if err != nil {
+		fmt.Printf("# failed to load state file %s. Error: %s\n", cfg.stepsFile, err.Error())
+		os.Exit(2)
+	}
+
+	if cfg.listSteps {
+		fmt.Println("# Executed steps:")
+		e := s.ListSteps()
+		if len(e) == 0 {
+			fmt.Println("# No steps executed")
+			return
+		}
+		for _, step := range e {
+			fmt.Println(step)
+		}
+		return
+	}
+
+	if cfg.resetStep != "" {
+		s.ResetStep(cfg.resetStep)
 		return
 	}
 }

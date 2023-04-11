@@ -25,7 +25,7 @@ foundation_code_path = "FULL_PATH_TO_FOLDER_WHERE_THE_EXAMPLE_FOUNDATION_CODE_WA
 
 // An existing project configured as the default project in the local Cloud SDK configuration
 // See https://cloud.google.com/sdk/gcloud/reference/config/set#EXAMPLES
-validator_project_id = "EXISTING_PROJECT_ID_TO_USE_IN_API_CALLS_FOR_VALIDATION"
+validator_project_id = "EXISTING_PROJECT_ID"
 
 
 // 0-bootstrap inputs

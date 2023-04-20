@@ -1,6 +1,6 @@
 # Terraform Example Foundation deploy helper
 
-Helper tool to deploy the Terraform example foundation .
+Helper tool to deploy the Terraform example foundation.
 
 ## Usage
 
@@ -33,7 +33,7 @@ Helper tool to deploy the Terraform example foundation .
     ```
 
 - Update `global.tfvars` with values from your environment.
-See the READMEs for the stages for adicional information:
+See the READMEs for the stages for additional information:
   - [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md)
   - [1-org](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/1-org/README.md)
   - [2-environments](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/2-environments/README.md)

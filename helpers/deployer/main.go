@@ -25,11 +25,18 @@ import (
 	"github.com/mitchellh/go-testing-interface"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer/gcp"
-	"github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer/steps"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer/stages"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer/steps"
 )
 
-type Cfg struct {
+var (
+	validatorApis = []string{
+		"securitycenter.googleapis.com",
+		"accesscontextmanager.googleapis.com",
+	}
+)
+
+type cfg struct {
 	tfvarsFile    string
 	stepsFile     string
 	resetStep     string
@@ -41,15 +48,8 @@ type Cfg struct {
 	destroy       bool
 }
 
-func validatorApis() []string {
-	return []string{
-		"securitycenter.googleapis.com",
-		"accesscontextmanager.googleapis.com",
-	}
-}
-
-func parseFlags() Cfg {
-	var c Cfg
+func parseFlags() cfg {
+	var c cfg
 
 	flag.StringVar(&c.tfvarsFile, "tfvars_file", "", "Full path to the Terraform .tfvars `file` with the configuration to be used.")
 	flag.StringVar(&c.stepsFile, "steps_file", ".steps.json", "Path to the steps `file` to be used to save progress.")
@@ -75,14 +75,14 @@ func main() {
 	}
 
 	// load tfvars
-	globalTfvars, err := stages.ReadGlobalTfvars(cfg.tfvarsFile)
+	globalTFVars, err := stages.ReadGlobalTFVars(cfg.tfvarsFile)
 	if err != nil {
-		fmt.Printf("# Failed to read GlobalTfvars file. Error: %s\n", err.Error())
+		fmt.Printf("# Failed to read GlobalTFVars file. Error: %s\n", err.Error())
 		os.Exit(1)
 	}
 
 	// validate Directories
-	err = stages.ValidateDirectories(globalTfvars)
+	err = stages.ValidateDirectories(globalTFVars)
 	if err != nil {
 		fmt.Printf("# Failed validating directories. Error: %s\n", err.Error())
 		os.Exit(1)
@@ -92,18 +92,18 @@ func main() {
 	gotest.Init()
 	t := &testing.RuntimeT{}
 
-	// only enable serivices if they are not already enabled
-	if globalTfvars.HasValidatorProj() {
+	//  only enable serivices if they are not already enabled
+	if globalTFVars.HasValidatorProj() {
 		var apis []string
 		gcpConf := gcp.NewGCP()
-		for _, a := range validatorApis() {
-			if !gcpConf.ApiIsEnabled(t, *globalTfvars.ValidatorProjectId, a) {
+		for _, a := range validatorApis {
+			if !gcpConf.IsApiEnabled(t, *globalTFVars.ValidatorProjectId, a) {
 				apis = append(apis, a)
 			}
 		}
 		if len(apis) > 0 {
-			fmt.Printf("# Enabling APIs: %s in validator project '%s'\n", strings.Join(apis, ", "), *globalTfvars.ValidatorProjectId)
-			gcpConf.EnableApis(t, *globalTfvars.ValidatorProjectId, apis)
+			fmt.Printf("# Enabling APIs: %s in validator project '%s'\n", strings.Join(apis, ", "), *globalTFVars.ValidatorProjectId)
+			gcpConf.EnableApis(t, *globalTFVars.ValidatorProjectId, apis)
 			fmt.Println("# waiting for API propagation")
 			for i := 0; i < 20; i++ {
 				time.Sleep(10 * time.Second)
@@ -114,8 +114,8 @@ func main() {
 
 	// validate inputs
 	if cfg.validate {
-		stages.ValidateBasicFields(t, globalTfvars)
-		stages.ValidateDestroyFlags(t, globalTfvars)
+		stages.ValidateBasicFields(t, globalTFVars)
+		stages.ValidateDestroyFlags(t, globalTFVars)
 		return
 	}
 

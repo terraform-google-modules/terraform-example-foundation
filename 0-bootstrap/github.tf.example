@@ -32,7 +32,7 @@ locals {
   }
 
   sa_mapping = {
-    for k, v in local.gh_config : (google_service_account.terraform-env-sa[k].id) => {
+    for k, v in local.gh_config : k => {
       sa_name   = google_service_account.terraform-env-sa[k].name
       attribute = "attribute.repository/${var.gh_repos.owner}/${v}"
     }

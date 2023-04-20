@@ -63,7 +63,7 @@ that are created, see the organization bootstrap module
 1. Clone the repository you created to host the `0-bootstrap` terraform configuration at the same level of the `terraform-example-foundation` folder.
 
    ```bash
-   git clone <GITHUB-BOOTSTRAP-REPO> gcp-bootstrap
+   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-BOOTSTRAP-REPO>.git gcp-bootstrap
    ```
 
 1. The layout should be:
@@ -118,10 +118,10 @@ that are created, see the organization bootstrap module
    mv ./terraform.example.tfvars ./terraform.tfvars
    ```
 
-1. Use the helper script [validate-requirements.sh](../../../scripts/validate-requirements.sh) to validate your environment:
+1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
    ```bash
-   ../../../scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+   ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
    ```
 
    **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
@@ -141,7 +141,7 @@ that are created, see the organization bootstrap module
    export VET_PROJECT_ID=A-VALID-PROJECT-ID
 
    terraform show -json bootstrap.tfplan > bootstrap.json
-   gcloud beta terraform vet bootstrap.json --policy-library="../../../policy-library" --project ${VET_PROJECT_ID}
+   gcloud beta terraform vet bootstrap.json --policy-library="../../policy-library" --project ${VET_PROJECT_ID}
    ```
 
    *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
@@ -176,9 +176,10 @@ that are created, see the organization bootstrap module
    echo "backend_bucket = ${backend_bucket}"
 
    cp backend.tf.example backend.tf
-   cd ../../../..
+   cd ../../../
 
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME|UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
 
    cd gcp-bootstrap/envs/shared
    ```
@@ -201,6 +202,8 @@ that are created, see the organization bootstrap module
    git push --set-upstream origin plan
    ```
 
+1. View the plan output in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/actions .
+
 **Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage.
 They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
 
@@ -212,7 +215,7 @@ we recommend that you request 50 additional projects for the **projects step ser
 1. Clone the repository you created to host the `1-org` terraform configuration at the same level of the `terraform-example-foundation` folder.
 
    ```bash
-   git clone <GITHUB-ORGANIZATION-REPO> gcp-org
+   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-ORGANIZATION-REPO>.git gcp-org
    ```
 
 1. Navigate into the repo and change to a non-production branch. All subsequent
@@ -280,7 +283,7 @@ we recommend that you request 50 additional projects for the **projects step ser
    git push --set-upstream origin plan
    ```
 
-1. Review the plan output in GitHub.
+1. Review the plan output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions .
 1. Merge changes to production branch.
 
    ```bash
@@ -288,12 +291,14 @@ we recommend that you request 50 additional projects for the **projects step ser
    git push --set-upstream origin production
    ```
 
+1. View the apply output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions .
+
 ## Deploying step 2-environments
 
 1. Clone the repository you created to host the `2-environments` terraform configuration at the same level of the `terraform-example-foundation` folder.
 
    ```bash
-   git clone <GITHUB-ENVIRONMENTS-REPO> gcp-environments
+   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-ENVIRONMENTS-REPO>.git gcp-environments
    ```
 
 1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.
@@ -342,7 +347,7 @@ we recommend that you request 50 additional projects for the **projects step ser
    git push --set-upstream origin plan
    ```
 
-1. Review the plan output in GitHub.
+1. Review the plan output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions .
 1. Merge changes to development branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_.
 
@@ -351,7 +356,7 @@ we recommend that you request 50 additional projects for the **projects step ser
    git push --set-upstream origin development
    ```
 
-1. Review the apply output in GitHub.
+1. Review the apply output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions .
 1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in GitHub.
 
@@ -361,7 +366,7 @@ we recommend that you request 50 additional projects for the **projects step ser
    ```
 
 1. Merge changes to production branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output GitHub.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in GitHub.
 
    ```bash
    git checkout -b production
@@ -377,7 +382,7 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 1. Clone the repository you created to host the `3-networks-dual-svpc` terraform configuration at the same level of the `terraform-example-foundation` folder.
 
    ```bash
-   git clone <GITHUB-NETWORKS-REPO> gcp-networks
+   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-NETWORKS-REPO>.git gcp-networks
    ```
 
 1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.
@@ -464,14 +469,15 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in Github.
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in Github https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions .
+.
 
    ```bash
    git push --set-upstream origin plan
    ```
 
 1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions .
 
    ```bash
    git checkout -b production
@@ -489,7 +495,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
 
 1. After development has been applied, apply non-production.
 1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in GitHub.
 
    ```bash
    git checkout -b non-production
@@ -509,7 +515,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
 1. Clone the repository you created to host the `3-networks-hub-and-spoke` terraform configuration at the same level of the `terraform-example-foundation` folder.
 
    ```bash
-   git clone <GITHUB-NETWORKS-REPO> gcp-networks
+   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-NETWORKS-REPO>.git gcp-networks
    ```
 
 1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.
@@ -596,14 +602,14 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in Github.
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in Github https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions .
 
    ```bash
    git push --set-upstream origin plan
    ```
 
 1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github.
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github  https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions .
 
    ```bash
    git checkout -b production
@@ -621,7 +627,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
 
 1. After development has been applied, apply non-production.
 1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in GitHub.
 
    ```bash
    git checkout -b non-production
@@ -641,7 +647,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
 1. Clone the repository you created to host the `4-projects` terraform configuration at the same level of the `terraform-example-foundation` folder.
 
    ```bash
-   git clone <GITHUB-NETWORKS-REPO> gcp-projects
+   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-PROJECTS-REPO>.git gcp-projects
    ```
 
 1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.
@@ -723,7 +729,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in Github.
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in Github https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions .
 
    ```bash
    git push --set-upstream origin plan

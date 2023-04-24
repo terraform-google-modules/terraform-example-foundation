@@ -37,13 +37,11 @@ func TestOrg(t *testing.T) {
 	)
 
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
-	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
 
 	vars := map[string]interface{}{
 		"remote_state_bucket":                         backend_bucket,
 		"log_export_storage_force_destroy":            "true",
 		"audit_logs_table_delete_contents_on_destroy": "true",
-		"create_access_context_manager_access_policy": testutils.GetOrgACMPolicyID(t, orgID) == "",
 	}
 
 	backendConfig := map[string]interface{}{
@@ -176,6 +174,7 @@ func TestOrg(t *testing.T) {
 			subscription := gcloud.Runf(t, "pubsub subscriptions describe %s --project %s", subscriptionName, sccProjectID)
 			assert.Equal(subscriptionFullName, subscription.Get("name").String(), fmt.Sprintf("subscription %s should have been created", subscriptionName))
 
+			orgID := bootstrap.GetTFSetupStringOutput("org_id")
 			notificationName := org.GetStringOutput("scc_notification_name")
 			notification := gcloud.Runf(t, "scc notifications describe %s --organization %s", notificationName, orgID)
 			assert.Equal(topicFullName, notification.Get("pubsubTopic").String(), fmt.Sprintf("notification %s should use topic %s", notificationName, topicName))

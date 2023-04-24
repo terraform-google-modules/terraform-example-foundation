@@ -28,12 +28,6 @@ import (
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
-func getPolicyID(t *testing.T, orgID string) string {
-	gcOpts := gcloud.WithCommonArgs([]string{"--format", "value(name)"})
-	op := gcloud.Run(t, fmt.Sprintf("access-context-manager policies list --organization=%s ", orgID), gcOpts)
-	return op.String()
-}
-
 func getNetworkMode(t *testing.T) string {
 	mode := utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
 	if mode == "HubAndSpoke" {
@@ -49,7 +43,7 @@ func TestProjects(t *testing.T) {
 	)
 
 	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
-	policyID := getPolicyID(t, orgID)
+	policyID := testutils.GetOrgACMPolicyID(t, orgID)
 	networkMode := getNetworkMode(t)
 
 	// Configure impersonation for test execution

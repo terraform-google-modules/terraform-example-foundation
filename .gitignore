@@ -69,5 +69,7 @@ test/integration/tmp
 
 credentials.json
 
+helpers/deployer/deployer
+
 # File to populate env vars used by Docker test runs
 .envrc

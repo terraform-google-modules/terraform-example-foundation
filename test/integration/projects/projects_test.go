@@ -24,6 +24,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
@@ -43,8 +44,9 @@ func TestProjects(t *testing.T) {
 	)
 
 	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
-	policyID := testutils.GetOrgACMPolicyID(t, orgID)
 	networkMode := getNetworkMode(t)
+	policyID := testutils.GetOrgACMPolicyID(t, orgID)
+	require.NotEmpty(t, policyID, "Access Context Manager Policy ID must be configured in the organization for the test to proceed.")
 
 	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")

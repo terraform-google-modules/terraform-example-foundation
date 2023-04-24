@@ -162,8 +162,8 @@ func (g GCP) EnableApis(t testing.TB, project string, apis []string) {
 	g.Runf(t, "services enable %s --project %s", strings.Join(apis, " "), project)
 }
 
-// ApiIsEnabled checks if the api is enabled in the given project
-func (g GCP) ApiIsEnabled(t testing.TB, project, api string) bool {
+// IsApiEnabled checks if the api is enabled in the given project
+func (g GCP) IsApiEnabled(t testing.TB, project, api string) bool {
 	filter := fmt.Sprintf("config.name=%s", api)
 	return len(g.Runf(t, "services list --enabled --project %s --filter %s", project, filter).Array()) > 0
 }

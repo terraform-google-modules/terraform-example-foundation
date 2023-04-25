@@ -24,9 +24,11 @@ import (
 
 	"github.com/mitchellh/go-testing-interface"
 
-	"github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer/gcp"
-	"github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer/stages"
-	"github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer/steps"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gcp"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/msg"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/stages"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/steps"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 )
 
 var (
@@ -91,6 +93,13 @@ func main() {
 	// init infra
 	gotest.Init()
 	t := &testing.RuntimeT{}
+	conf := stages.CommonConf{
+		FoundationPath:    globalTFVars.FoundationCodePath,
+		CheckoutPath:      globalTFVars.CodeCheckoutPath,
+		EnableHubAndSpoke: globalTFVars.EnableHubAndSpoke,
+		DisablePrompt:     cfg.disablePrompt,
+		Logger:            utils.GetLogger(cfg.quiet),
+	}
 
 	//  only enable serivices if they are not already enabled
 	if globalTFVars.HasValidatorProj() {
@@ -142,4 +151,40 @@ func main() {
 		s.ResetStep(cfg.resetStep)
 		return
 	}
+
+	// destroy stages
+	if cfg.destroy {
+		// Note: destroy is only terraform destroy, local directories are not deleted.
+		// 0-bootstrap
+		msg.PrintStageMsg("Destroying 0-bootstrap stage")
+		err = s.RunDestroyStep("gcp-bootstrap", func() error {
+			return stages.DestroyBootstrapStage(t, s, conf)
+		})
+		if err != nil {
+			fmt.Printf("# Bootstrap step destroy failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
+		return
+	}
+
+		// deploy stages
+
+	// 0-bootstrap
+	msg.PrintStageMsg("Deploying 0-bootstrap stage")
+	skipInnerBuildMsg := s.IsStepComplete("gcp-bootstrap")
+	err = s.RunStep("gcp-bootstrap", func() error {
+		return stages.DeployBootstrapStage(t, s, globalTFVars, conf)
+	})
+	if err != nil {
+		fmt.Printf("# Bootstrap step failed. Error: %s\n", err.Error())
+		os.Exit(3)
+	}
+
+	bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+
+	if skipInnerBuildMsg {
+		msg.PrintBuildMsg(bo.CICDProject, bo.DefaultRegion, conf.DisablePrompt)
+	}
+	msg.PrintQuotaMsg(bo.ProjectsSA, conf.DisablePrompt)
+
 }

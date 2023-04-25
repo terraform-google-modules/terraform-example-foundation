@@ -1,4 +1,4 @@
-module github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer
+module github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer
 
 go 1.18
 

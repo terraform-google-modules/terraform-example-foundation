@@ -18,9 +18,33 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"path/filepath"
 
-	"github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer/utils"
+	"github.com/gruntwork-io/terratest/modules/logger"
+	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/mitchellh/go-testing-interface"
+
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 )
+
+type CommonConf struct {
+	FoundationPath    string
+	CheckoutPath      string
+	EnableHubAndSpoke bool
+	DisablePrompt     bool
+	Logger            *logger.Logger
+}
+
+type BootstrapOutputs struct {
+	RemoteStateBucket         string
+	RemoteStateBucketProjects string
+	CICDProject               string
+	DefaultRegion             string
+	NetworkSA                 string
+	ProjectsSA                string
+	EnvsSA                    string
+	OrgSA                     string
+}
 
 // ServerAddress is the element for TargetNameServerAddresses
 type ServerAddress struct {
@@ -75,6 +99,37 @@ func (g GlobalTFVars) CheckString(s string) {
 	}
 }
 
+type BootstrapTfvars struct {
+	OrgID              string  `hcl:"org_id"`
+	BillingAccount     string  `hcl:"billing_account"`
+	GroupOrgAdmins     string  `hcl:"group_org_admins"`
+	GroupBillingAdmins string  `hcl:"group_billing_admins"`
+	DefaultRegion      string  `hcl:"default_region"`
+	ParentFolder       *string `hcl:"parent_folder"`
+	ProjectPrefix      *string `hcl:"project_prefix"`
+	FolderPrefix       *string `hcl:"folder_prefix"`
+	BucketForceDestroy *bool   `hcl:"bucket_force_destroy"`
+}
+
+
+func GetBootstrapStepOutputs(t testing.TB, foundationPath string) BootstrapOutputs {
+	options := &terraform.Options{
+		TerraformDir: filepath.Join(foundationPath, "0-bootstrap"),
+		Logger:       logger.Discard,
+		NoColor:      true,
+	}
+	return BootstrapOutputs{
+		CICDProject:               terraform.Output(t, options, "cloudbuild_project_id"),
+		RemoteStateBucket:         terraform.Output(t, options, "gcs_bucket_tfstate"),
+		RemoteStateBucketProjects: terraform.Output(t, options, "projects_gcs_bucket_tfstate"),
+		DefaultRegion:             terraform.OutputMap(t, options, "common_config")["default_region"],
+		NetworkSA:                 terraform.Output(t, options, "networks_step_terraform_service_account_email"),
+		ProjectsSA:                terraform.Output(t, options, "projects_step_terraform_service_account_email"),
+		EnvsSA:                    terraform.Output(t, options, "environment_step_terraform_service_account_email"),
+		OrgSA:                     terraform.Output(t, options, "organization_step_terraform_service_account_email"),
+	}
+}
+
 // ReadGlobalTFVars reads the tfvars file that has all the configuration for the deploy
 func ReadGlobalTFVars(file string) (GlobalTFVars, error) {
 	var globalTfvars GlobalTFVars
@@ -91,3 +146,4 @@ func ReadGlobalTFVars(file string) (GlobalTFVars, error) {
 	}
 	return globalTfvars, nil
 }
+

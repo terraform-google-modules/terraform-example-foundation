@@ -52,6 +52,10 @@ that are created, see the organization bootstrap module
 
 ## Instructions
 
+Due to issue [First commit pushed triggers 2 workflow runs](https://github.com/orgs/community/discussions/50356),
+The repositories created should have been initialized with an initial commit,
+so that the initial push for the `plan` branch does not trigger two workflow runs.
+
 ### Deploying step 0-bootstrap
 
 1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment.

@@ -16,7 +16,8 @@ package testutils
 
 import (
 	"fmt"
-	"testing"
+
+	"github.com/mitchellh/go-testing-interface"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 )

@@ -16,6 +16,7 @@ package stages
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -27,11 +28,7 @@ import (
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 )
 
-
 func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c CommonConf) error {
-	repo := "gcp-bootstrap"
-	step := "0-bootstrap"
-
 	bootstrapTfvars := BootstrapTfvars{
 		OrgID:              tfvars.OrgID,
 		DefaultRegion:      tfvars.DefaultRegion,
@@ -44,39 +41,19 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		BucketForceDestroy: tfvars.BucketForceDestroy,
 	}
 
-	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "terraform.tfvars"), bootstrapTfvars)
+	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, BootstrapStep, "terraform.tfvars"), bootstrapTfvars)
 	if err != nil {
 		return err
 	}
 
-	terraformDir := filepath.Join(c.FoundationPath, step)
+	terraformDir := filepath.Join(c.FoundationPath, BootstrapStep)
 	options := &terraform.Options{
 		TerraformDir: terraformDir,
 		Logger:       c.Logger,
 		NoColor:      true,
 	}
 	// terraform deploy
-	_, err = terraform.InitE(t, options)
-	if err != nil {
-		return err
-	}
-	_, err = terraform.PlanE(t, options)
-	if err != nil {
-		return err
-	}
-
-	// Runs gcloud terraform vet on the
-	if tfvars.HasValidatorProj() {
-		fmt.Println("")
-		fmt.Println("# Running gcloud terraform vet for validation of bootstrap stage")
-		fmt.Println("")
-		err = TerraformVet(t, terraformDir, filepath.Join(c.FoundationPath, "policy-library"), *tfvars.ValidatorProjectId, c)
-		if err != nil {
-			return err
-		}
-	}
-
-	_, err = terraform.ApplyE(t, options)
+	err = applyLocal(t, options, "", c.PolicyPath, c.ValidatorProject)
 	if err != nil {
 		return err
 	}
@@ -99,10 +76,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 			return err
 		}
 		_, err := terraform.InitE(t, options)
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	})
 	if err != nil {
 		return err
@@ -139,8 +113,8 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 	}
 
 	//prepare policies repo
-	gcpPoliciesPath := filepath.Join(c.CheckoutPath, "gcp-policies")
-	policiesConf := utils.CloneCSR(t, "gcp-policies", gcpPoliciesPath, cbProjectID, c.Logger)
+	gcpPoliciesPath := filepath.Join(c.CheckoutPath, PoliciesRepo)
+	policiesConf := utils.CloneCSR(t, PoliciesRepo, gcpPoliciesPath, cbProjectID, c.Logger)
 	policiesBranch := "main"
 
 	err = s.RunStep("gcp-bootstrap.gcp-policies", func() error {
@@ -156,40 +130,36 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		if err != nil {
 			return err
 		}
-		err = policiesConf.PushBranch(policiesBranch, "origin")
-		if err != nil {
-			return err
-		}
-		return nil
+		return policiesConf.PushBranch(policiesBranch, "origin")
 	})
 	if err != nil {
 		return err
 	}
 
 	//prepare bootstrap repo
-	gcpBootstrapPath := filepath.Join(c.CheckoutPath, "gcp-bootstrap")
-	bootstrapConf := utils.CloneCSR(t, "gcp-bootstrap", gcpBootstrapPath, cbProjectID, c.Logger)
+	gcpBootstrapPath := filepath.Join(c.CheckoutPath, BootstrapRepo)
+	bootstrapConf := utils.CloneCSR(t, BootstrapRepo, gcpBootstrapPath, cbProjectID, c.Logger)
 	err = bootstrapConf.CheckoutBranch("plan")
 	if err != nil {
 		return err
 	}
 
 	err = s.RunStep("gcp-bootstrap.copy-code", func() error {
-		return copyStepCode(t, bootstrapConf, c.FoundationPath, c.CheckoutPath, repo, step, "envs/shared")
+		return copyStepCode(t, bootstrapConf, c.FoundationPath, c.CheckoutPath, BootstrapRepo, BootstrapStep, "envs/shared")
 	})
 	if err != nil {
 		return err
 	}
 
 	err = s.RunStep("gcp-bootstrap.plan", func() error {
-		return planStage(t, bootstrapConf, cbProjectID, defaultRegion, repo)
+		return planStage(t, bootstrapConf, cbProjectID, defaultRegion, BootstrapRepo)
 	})
 	if err != nil {
 		return err
 	}
 
 	err = s.RunStep("gcp-bootstrap.production", func() error {
-		return applyEnv(t, bootstrapConf, cbProjectID, defaultRegion, repo, "production")
+		return applyEnv(t, bootstrapConf, cbProjectID, defaultRegion, BootstrapRepo, "production")
 	})
 	if err != nil {
 		return err
@@ -202,10 +172,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 			NoColor:      true,
 		}
 		_, err := terraform.InitE(t, options)
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	})
 	if err != nil {
 		return err
@@ -233,11 +200,8 @@ func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath
 	if err != nil {
 		return err
 	}
-	err = utils.CopyFile(filepath.Join(foundationPath, "build/tf-wrapper.sh"), filepath.Join(gcpPath, "tf-wrapper.sh"))
-	if err != nil {
-		return err
-	}
-	return nil
+
+	return utils.CopyFile(filepath.Join(foundationPath, "build/tf-wrapper.sh"), filepath.Join(gcpPath, "tf-wrapper.sh"))
 }
 
 func planStage(t testing.TB, conf utils.GitRepo, project, region, repo string) error {
@@ -255,11 +219,7 @@ func planStage(t testing.TB, conf utils.GitRepo, project, region, repo string) e
 		return err
 	}
 
-	err = gcp.NewGCP().WaitBuildSuccess(t, project, region, repo, commitSha, fmt.Sprintf("Terraform %s plan build Failed.", repo), MaxBuildRetries)
-	if err != nil {
-		return err
-	}
-	return nil
+	return gcp.NewGCP().WaitBuildSuccess(t, project, region, repo, commitSha, fmt.Sprintf("Terraform %s plan build Failed.", repo), MaxBuildRetries)
 }
 
 func applyEnv(t testing.TB, conf utils.GitRepo, project, region, repo, environment string) error {
@@ -276,9 +236,46 @@ func applyEnv(t testing.TB, conf utils.GitRepo, project, region, repo, environme
 		return err
 	}
 
-	err = gcp.NewGCP().WaitBuildSuccess(t, project, region, repo, commitSha, fmt.Sprintf("Terraform %s apply %s build Failed.", repo, environment), MaxBuildRetries)
+	return gcp.NewGCP().WaitBuildSuccess(t, project, region, repo, commitSha, fmt.Sprintf("Terraform %s apply %s build Failed.", repo, environment), MaxBuildRetries)
+}
+
+func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policyPath, validatorProjectId string) error {
+	var err error
+
+	if serviceAccount != "" {
+		err = os.Setenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", serviceAccount)
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err = terraform.InitE(t, options)
 	if err != nil {
 		return err
+	}
+	_, err = terraform.PlanE(t, options)
+	if err != nil {
+		return err
+	}
+
+	// Runs gcloud terraform vet
+	if validatorProjectId != "" {
+		err = TerraformVet(t, options.TerraformDir, policyPath, validatorProjectId)
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err = terraform.ApplyE(t, options)
+	if err != nil {
+		return err
+	}
+
+	if serviceAccount != "" {
+		err = os.Unsetenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT")
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

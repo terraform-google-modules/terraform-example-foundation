@@ -18,6 +18,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	gotest "testing"
 	"time"
@@ -96,13 +97,15 @@ func main() {
 	conf := stages.CommonConf{
 		FoundationPath:    globalTFVars.FoundationCodePath,
 		CheckoutPath:      globalTFVars.CodeCheckoutPath,
+		PolicyPath:        filepath.Join(globalTFVars.FoundationCodePath, "policy-library"),
 		EnableHubAndSpoke: globalTFVars.EnableHubAndSpoke,
 		DisablePrompt:     cfg.disablePrompt,
 		Logger:            utils.GetLogger(cfg.quiet),
 	}
 
-	//  only enable serivices if they are not already enabled
+	//  only enable services if they are not already enabled
 	if globalTFVars.HasValidatorProj() {
+		conf.ValidatorProject = *globalTFVars.ValidatorProjectId
 		var apis []string
 		gcpConf := gcp.NewGCP()
 		for _, a := range validatorApis {
@@ -167,7 +170,7 @@ func main() {
 		return
 	}
 
-		// deploy stages
+	// deploy stages
 
 	// 0-bootstrap
 	msg.PrintStageMsg("Deploying 0-bootstrap stage")

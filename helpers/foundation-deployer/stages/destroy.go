@@ -31,11 +31,11 @@ const (
 )
 
 func DestroyBootstrapStage(t testing.TB, s steps.Steps, c CommonConf) error {
-	repo := "gcp-bootstrap"
-	step := "0-bootstrap"
-	gcpPath := filepath.Join(c.CheckoutPath, repo)
+	gcpPath := filepath.Join(c.CheckoutPath, BootstrapRepo)
 
-	// remove backend.tf file
+	// remove backend.tf file to force migration of the
+	// terraform state from GCS to the local directory.
+	// Before changing the backend we ensure it is has been initialized.
 	tfDir := filepath.Join(gcpPath, "envs", "shared")
 	backendF := filepath.Join(tfDir, "backend.tf")
 	exist, err := utils.FileExists(backendF)
@@ -69,7 +69,7 @@ func DestroyBootstrapStage(t testing.TB, s steps.Steps, c CommonConf) error {
 			NoColor:      true,
 			MigrateState: true,
 		}
-		conf := utils.CloneCSR(t, repo, gcpPath, "", c.Logger)
+		conf := utils.CloneCSR(t, BootstrapRepo, gcpPath, "", c.Logger)
 		err := conf.CheckoutBranch("production")
 		if err != nil {
 			return err
@@ -79,7 +79,7 @@ func DestroyBootstrapStage(t testing.TB, s steps.Steps, c CommonConf) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("end of", step, "destroy")
+	fmt.Println("end of", BootstrapStep, "destroy")
 	return nil
 }
 

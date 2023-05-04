@@ -30,7 +30,12 @@ import (
 )
 
 // TerraformVet runs gcloud terraform vet on the plan of the provided terraform directory
-func TerraformVet(t testing.TB, terraformDir, policyPath, project string, c CommonConf) error {
+func TerraformVet(t testing.TB, terraformDir, policyPath, project string) error {
+
+	fmt.Println("")
+	fmt.Println("# Running gcloud terraform vet")
+	fmt.Println("")
+
 	options := &terraform.Options{
 		TerraformDir: terraformDir,
 		Logger:       logger.Discard,
@@ -64,7 +69,7 @@ func TerraformVet(t testing.TB, terraformDir, policyPath, project string, c Comm
 		return fmt.Errorf("Policy violations found: %s", result)
 	}
 	fmt.Println("")
-	fmt.Println("# The configuration is valid.")
+	fmt.Println("# The configuration passed tf vet.")
 	fmt.Println("")
-	return  nil
+	return nil
 }

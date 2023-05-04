@@ -100,7 +100,7 @@ module "log_export" {
 #-------------------------#
 module "destination_logbucket" {
   source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  version = "~> 7.4.2"
+  version = "~> 7.5.0"
 
   count = var.logbucket_options != null ? 1 : 0
 

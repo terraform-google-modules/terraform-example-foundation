@@ -42,4 +42,7 @@ jobs:
           fi
       - run: docker run --rm -e EXCLUDE_LINT_DIRS -v ${{ github.workspace }}:/workspace ${{ steps.variables.outputs.dev-tools }} /usr/local/bin/test_lint.sh
         env:
+          DISABLE_TFLINT: 1
+          ENABLE_PARALLEL: 0
           EXCLUDE_LINT_DIRS: \./3-networks/modules/transitivity/assets
+

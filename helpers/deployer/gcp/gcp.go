@@ -127,16 +127,6 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, fa
 	return nil
 }
 
-//GetAccessContextManagerPolicyID gets the access context manager policy ID of the organization
-func (g GCP) GetAccessContextManagerPolicyID(t testing.TB, orgID string) string {
-	filter := fmt.Sprintf("parent:organizations/%s", orgID)
-	acmpID := g.Runf(t, "access-context-manager policies list --organization %s --filter %s --quiet", orgID, filter).Array()
-	if len(acmpID) == 0 {
-		return ""
-	}
-	return testutils.GetLastSplitElement(acmpID[0].Get("name").String(), "/")
-}
-
 // HasSccNotification checks if a Security Command Center notification exists
 func (g GCP) HasSccNotification(t testing.TB, orgID, sccName string) bool {
 	filter := fmt.Sprintf("name=organizations/%s/notificationConfigs/%s", orgID, sccName)

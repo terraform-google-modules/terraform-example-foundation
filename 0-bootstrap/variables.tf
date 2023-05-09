@@ -173,11 +173,11 @@ variable "initial_group_config" {
 #   description = <<EOT
 #   Configuration for the GitHub Repositories to be used to deploy the Terraform Example Foundation stages.
 #   owner: The owner of the repositories. An user or an organization.
-#   bootstrap: The repository to host the code os the bootstrap stage.
-#   organization: The repository to host the code os the organization stage.
-#   environments: The repository to host the code os the environments stage.
-#   networks: The repository to host the code os the networks stage.
-#   projects: The repository to host the code os the projects stage.
+#   bootstrap: The repository to host the code of the bootstrap stage.
+#   organization: The repository to host the code of the organization stage.
+#   environments: The repository to host the code of the environments stage.
+#   networks: The repository to host the code of the networks stage.
+#   projects: The repository to host the code of the projects stage.
 #   EOT
 #   type = object({
 #     owner        = string,

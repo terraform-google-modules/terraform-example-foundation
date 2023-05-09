@@ -23,6 +23,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
   TF_BACKEND: ${{ secrets.TF_BACKEND }}
+  TF_VAR_gh_token: ${{ secrets.TF_VAR_gh_token }}
 
 jobs:
   run:
@@ -55,29 +56,26 @@ jobs:
           echo "Adding bucket information to backends"
           for i in `find -name 'backend.tf'`
           do
-            sed -r -i "s/UPDATE_ME|UPDATE_PROJECTS_BACKEND/${TF_BACKEND}/" $i
+            sed -i "s/UPDATE_ME/${TF_BACKEND}/" $i
+            sed -i "s/UPDATE_PROJECTS_BACKEND/${TF_BACKEND}/" $i
           done
 
       - id: init
         run: |
           echo "terraform init"
-          export BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
-          ${GITHUB_WORKSPACE}/tf-wrapper.sh init "${BRANCH_NAME}"
+          ${GITHUB_WORKSPACE}/tf-wrapper.sh init "${GITHUB_REF_NAME}"
 
       - id: plan
         run: |
           echo "terraform plan"
-          export BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
-          ${GITHUB_WORKSPACE}/tf-wrapper.sh plan "${BRANCH_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"
+          ${GITHUB_WORKSPACE}/tf-wrapper.sh plan "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"
 
       - id: validate
         run: |
           echo "validate"
-          export BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
-          ${GITHUB_WORKSPACE}/tf-wrapper.sh validate "${BRANCH_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"
+          ${GITHUB_WORKSPACE}/tf-wrapper.sh validate "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"
 
       - id: apply
         run: |
           echo "terraform apply"
-          export BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
-          ${GITHUB_WORKSPACE}/tf-wrapper.sh apply "${BRANCH_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"
+          ${GITHUB_WORKSPACE}/tf-wrapper.sh apply "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"

@@ -77,12 +77,27 @@ so that the initial push for the `plan` branch does not trigger two workflow run
    terraform-example-foundation/
    ```
 
-1. Navigate into the repo and change to a non-production branch. All subsequent
+1. Navigate into the repo. All subsequent
    steps assume you are running them from the `gcp-bootstrap` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-bootstrap
+   ```
+
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
    git checkout -b plan
    ```
 
@@ -195,8 +210,6 @@ so that the initial push for the `plan` branch does not trigger two workflow run
    ```
 
 1. (Optional) Run `terraform plan` to verify that state is configured correctly. You should see no changes from the previous state.
-
-
 1. Save the Terraform configuration to `gcp-bootstrap` github repository:
 
    ```bash
@@ -206,7 +219,9 @@ so that the initial push for the `plan` branch does not trigger two workflow run
    git push --set-upstream origin plan
    ```
 
-1. View the plan output in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/actions .
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/pull/new/plan from the `plan` branch to the `production` branch and review the output.
+1. Merge the pull request in to `production` branch
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/actions under `tf-apply`.
 
 **Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage.
 They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
@@ -222,12 +237,26 @@ we recommend that you request 50 additional projects for the **projects step ser
    git clone git@github.com:<GITHUB-OWNER>/<GITHUB-ORGANIZATION-REPO>.git gcp-org
    ```
 
-1. Navigate into the repo and change to a non-production branch. All subsequent
-   steps assume you are running them from the `gcp-org` directory.
+1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-org` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-org
+   ```
+
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
    git checkout -b plan
    ```
 
@@ -241,7 +270,6 @@ we recommend that you request 50 additional projects for the **projects step ser
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    ```
-
 
 1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
 
@@ -287,15 +315,10 @@ we recommend that you request 50 additional projects for the **projects step ser
    git push --set-upstream origin plan
    ```
 
-1. Review the plan output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions .
-1. Merge changes to production branch.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/pull/new/plan from the `plan` branch to the `production` branch and review the output.
+1. Merge the pull request in to `production` branch
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions under `tf-apply`.
 
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-   ```
-
-1. View the apply output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions .
 
 ## Deploying step 2-environments
 
@@ -305,14 +328,39 @@ we recommend that you request 50 additional projects for the **projects step ser
    git clone git@github.com:<GITHUB-OWNER>/<GITHUB-ENVIRONMENTS-REPO>.git gcp-environments
    ```
 
-1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.
-   All subsequent steps assume you are running them from the `gcp-environments` directory.
+1. Navigate into the repo. All subsequent
+   steps assume you are running them from the `gcp-environments` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-environments
-   git checkout -b plan
+   ```
 
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b non-production
+   git push --set-upstream origin non-production
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
+   git checkout -b plan
+   ```
+
+1. Copy contents of foundation to new repo.
+
+   ```bash
    cp -RT ../terraform-example-foundation/2-environments/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    mkdir -p .github/workflows
@@ -343,40 +391,21 @@ we recommend that you request 50 additional projects for the **projects step ser
    git commit -m 'Initialize environments repo'
    ```
 
-1. Push your plan branch to trigger a plan for all environments. Because the
-   _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_.
+1. Push your plan branch.
 
    ```bash
    git push --set-upstream origin plan
    ```
 
-1. Review the plan output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions .
-1. Merge changes to development branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_.
-
-   ```bash
-   git checkout -b development
-   git push --set-upstream origin development
-   ```
-
-1. Review the apply output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions .
-1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in GitHub.
-
-   ```bash
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-   ```
-
-1. Merge changes to production branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in GitHub.
-
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-   ```
-
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
+1. Merge the pull request in to the `development` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
+1. Merge the pull request in to the `non-production` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
+1. Merge the pull request in to the `production` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
 1. You can now move to the instructions in the network stage.
 To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc),
 or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
@@ -389,14 +418,32 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    git clone git@github.com:<GITHUB-OWNER>/<GITHUB-NETWORKS-REPO>.git gcp-networks
    ```
 
-1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.
-   All subsequent steps assume you are running them from the `gcp-networks` directory.
+1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-networks
-   git checkout -b plan
+   ```
 
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b non-production
+   git push --set-upstream origin non-production
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. Copy contents of foundation to new repo.
+
+   ```bash
    cp -RT ../terraform-example-foundation/3-networks-dual-svpc/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    mkdir -p .github/workflows
@@ -471,41 +518,21 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    ./tf-wrapper.sh apply shared
    ```
 
-1. Push your plan branch to trigger a plan for all environments. Because the
-   _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in Github https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions .
-.
+1. Push your plan branch.
 
    ```bash
    git push --set-upstream origin plan
    ```
 
-1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions .
-
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-   ```
-
-1. After production has been applied, apply development.
-1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github.
-
-   ```bash
-   git checkout -b development
-   git push --set-upstream origin development
-   ```
-
-1. After development has been applied, apply non-production.
-1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in GitHub.
-
-   ```bash
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-   ```
-
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
+1. Merge the pull request in to the `development` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
+1. Merge the pull request in to the `non-production` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
+1. Merge the pull request in to the `production` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
 1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash
@@ -522,14 +549,38 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    git clone git@github.com:<GITHUB-OWNER>/<GITHUB-NETWORKS-REPO>.git gcp-networks
    ```
 
-1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.
-   All subsequent steps assume you are running them from the `gcp-networks` directory.
+1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-networks
-   git checkout -b plan
+   ```
 
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b non-production
+   git push --set-upstream origin non-production
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
+   git checkout -b plan
+   ```
+
+1. Copy contents of foundation to new repo.
+
+   ```bash
    cp -RT ../terraform-example-foundation/3-networks-hub-and-spoke/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    mkdir -p .github/workflows
@@ -604,40 +655,21 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    ./tf-wrapper.sh apply shared
    ```
 
-1. Push your plan branch to trigger a plan for all environments. Because the
-   _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in Github https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions .
+1. Push your plan branch.
 
    ```bash
    git push --set-upstream origin plan
    ```
 
-1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github  https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions .
-
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-   ```
-
-1. After production has been applied, apply development.
-1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github.
-
-   ```bash
-   git checkout -b development
-   git push --set-upstream origin development
-   ```
-
-1. After development has been applied, apply non-production.
-1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in GitHub.
-
-   ```bash
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-   ```
-
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
+1. Merge the pull request in to the `development` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
+1. Merge the pull request in to the `non-production` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
+1. Merge the pull request in to the `production` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
 1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash
@@ -654,14 +686,39 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    git clone git@github.com:<GITHUB-OWNER>/<GITHUB-PROJECTS-REPO>.git gcp-projects
    ```
 
-1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.
-   All subsequent steps assume you are running them from the `gcp-projects` directory.
+1. Navigate into the repo. All subsequent
+   steps assume you are running them from the `gcp-projects` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-projects
-   git checkout -b plan
+   ```
 
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b non-production
+   git push --set-upstream origin non-production
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
+   git checkout -b plan
+   ```
+
+1. Copy contents of foundation to new repo.
+
+   ```bash
    cp -RT ../terraform-example-foundation/4-projects/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    mkdir -p .github/workflows
@@ -731,40 +788,21 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    ./tf-wrapper.sh apply shared
    ```
 
-1. Push your plan branch to trigger a plan for all environments. Because the
-   _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in Github https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions .
+1. Push your plan branch.
 
    ```bash
    git push --set-upstream origin plan
    ```
 
-1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github.
-
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-   ```
-
-1. After production has been applied, apply development.
-1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github.
-
-   ```bash
-   git checkout -b development
-   git push --set-upstream origin development
-   ```
-
-1. After development has been applied, apply non-production.
-1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in Github.
-
-   ```bash
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-   ```
-
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
+1. Merge the pull request in to the `development` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
+1. Merge the pull request in to the `non-production` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
+1. Merge the pull request in to the `production` branch.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.`
 1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash

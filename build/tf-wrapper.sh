@@ -18,7 +18,7 @@ set -e
 
 action=$1
 branch=$2
-policysource=$3
+policy_source=$3
 project_id=$4
 policy_type=$5 # FILESYSTEM | CLOUDSOURCE
 runner_env=$6 # GITHUB | CLOUDBUILD | JENKINS | LOCAL
@@ -36,7 +36,7 @@ tf_apply() {
   echo "***************************************************"
   if [ -d "$path" ]; then
     cd "$path" || exit
-    terraform apply -input=false -auto-approve "${tmp_plan}/${tf_component}-${tf_env}.tfplan" || exit 1
+    terraform apply -no-color -input=false -auto-approve "${tmp_plan}/${tf_component}-${tf_env}.tfplan" || exit 1
     cd "$base_dir" || exit
   else
     echo "ERROR:  ${path} does not exist"
@@ -53,7 +53,7 @@ tf_init() {
   echo "**************************************************"
   if [ -d "$path" ]; then
     cd "$path" || exit
-    terraform init || exit 11
+    terraform init -no-color || exit 11
     cd "$base_dir" || exit
   else
     echo "ERROR:  ${path} does not exist"
@@ -73,7 +73,7 @@ tf_plan() {
   fi
   if [ -d "$path" ]; then
     cd "$path" || exit
-    terraform plan -input=false -out "${tmp_plan}/${tf_component}-${tf_env}.tfplan" || exit 21
+    terraform plan -no-color -input=false -out "${tmp_plan}/${tf_component}-${tf_env}.tfplan" || exit 21
     cd "$base_dir" || exit
   else
     echo "ERROR:  ${tf_env} does not exist"
@@ -93,7 +93,7 @@ tf_plan_validate_all() {
       if [[ "$env" =~ $environments_regex ]] ; then
         tf_init "$env_path" "$env" "$component"
         tf_plan "$env_path" "$env" "$component"
-        tf_validate "$env_path" "$env" "$policysource" "$component"
+        tf_validate "$env_path" "$env" "$policy_source" "$component"
       else
         echo "$component/$env doesn't match $environments_regex; skipping"
       fi
@@ -111,7 +111,7 @@ tf_show() {
   echo "**************************************************"
   if [ -d "$path" ]; then
     cd "$path" || exit
-    terraform show "${tmp_plan}/${tf_component}-${tf_env}.tfplan" || exit 41
+    terraform show -no-color "${tmp_plan}/${tf_component}-${tf_env}.tfplan" || exit 41
     cd "$base_dir" || exit
   else
     echo "ERROR:  ${path} does not exist"
@@ -129,15 +129,18 @@ tf_validate() {
   echo "      Using policy from: ${policy_file_path} "
   echo "*****************************************************"
   if [ -z "$policy_file_path" ]; then
-    echo "no policy repo found! Check the argument provided for policysource to this script."
+    echo "no policy repo found! Check the argument provided for policy_source to this script."
     echo "https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/policy_library.md"
   else
     if [ -d "$path" ]; then
       cd "$path" || exit
+      # In GitHub actions environment 'terraform' is not the terraform binary but a wrapper around it
+      # that prints the command 'terraform show' itself in the redirection to the json file, making
+      # the json file to have an invalid format. 'terraform-bin' is the actual terraform binary.
       if [[ "$runner_env" == "GITHUB" ]]; then
-        terraform-bin show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
+        terraform-bin show -no-color -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
       else
-        terraform show -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
+        terraform show -no-color -json "${tmp_plan}/${tf_component}-${tf_env}.tfplan" > "${tf_env}.json" || exit 32
       fi
       if [[ "$policy_type" == "CLOUDSOURCE" ]]; then
         # Check if $policy_file_path is empty so we clone the policies repo only once
@@ -196,7 +199,7 @@ single_action_runner() {
             ;;
 
           validate )
-            tf_validate "$env_path" "$env" "$policysource" "$component"
+            tf_validate "$env_path" "$env" "$policy_source" "$component"
             ;;
           * )
             echo "unknown option: ${action}"

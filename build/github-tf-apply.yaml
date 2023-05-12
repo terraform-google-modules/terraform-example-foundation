@@ -24,6 +24,7 @@ env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
   TF_BACKEND: ${{ secrets.TF_BACKEND }}
   TF_VAR_gh_token: ${{ secrets.TF_VAR_gh_token }}
+  TF_IN_AUTOMATION: "true"
 
 jobs:
   run:

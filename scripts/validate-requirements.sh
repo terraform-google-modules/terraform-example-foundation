@@ -298,6 +298,7 @@ function main(){
         echo "Validation failed!"
         echo "Errors found:"
         echo "$ERRORS"
+        exit 1
     fi
 }
 

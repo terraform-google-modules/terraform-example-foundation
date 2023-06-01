@@ -35,7 +35,7 @@ jobs:
       - id: variables
         run: |
           MAKEFILE=$(find . -name Makefile -print -quit)
-          if [ ! -z "$MAKEFILE" ]; then
+          if [ -z "$MAKEFILE" ]; then
             echo dev-tools=gcr.io/cloud-foundation-cicd/cft/developer-tools:1 >> "$GITHUB_OUTPUT"
           else
             VERSION=$(grep "DOCKER_TAG_VERSION_DEVELOPER_TOOLS := " $MAKEFILE | cut -d\  -f3)

@@ -26,4 +26,12 @@ terraform {
       version = ">= 3.50"
     }
   }
+
+  provider_meta "google" {
+    module_name = "blueprints/terraform/terraform-example-foundation:networks-dual-svpc/v3.0.0"
+  }
+
+  provider_meta "google-beta" {
+    module_name = "blueprints/terraform/terraform-example-foundation:networks-dual-svpc/v3.0.0"
+  }
 }

@@ -1,4 +1,4 @@
-module github.com/terraform-google-modules/terraform-example-foundation/helpers/deployer
+module github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer
 
 go 1.18
 
@@ -8,7 +8,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.16.1
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210217184823-a52172cd2f64
 	github.com/stretchr/testify v1.8.2
-	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20230329165204-e5db58ea752a
+	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20230503230051-e9e2618ef515
 	github.com/tidwall/gjson v1.14.4
 )
 

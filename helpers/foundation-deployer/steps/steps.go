@@ -126,7 +126,6 @@ func (s Steps) FailStep(name string, err string) error {
 	if e != nil {
 		return e
 	}
-	fmt.Printf("# failing step '%s'. Failed with error: %s\n", name, err)
 	return nil
 }
 

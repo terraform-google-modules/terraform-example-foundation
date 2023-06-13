@@ -118,11 +118,11 @@ resource "google_compute_firewall" "deny_all_egress" {
 
 
 resource "google_compute_firewall" "allow_private_api_egress" {
-  name      = "fw-${local.env_code}-peering-base-65530-e-a-allow-google-apis-all-tcp-443"
+  name      = "fw-${local.env_code}-peering-base-65430-e-a-allow-google-apis-all-tcp-443"
   network   = module.peering_network.network_name
   project   = module.peering_project.project_id
   direction = "EGRESS"
-  priority  = 65530
+  priority  = 65430
 
   dynamic "log_config" {
     for_each = var.firewall_enable_logging == true ? [{

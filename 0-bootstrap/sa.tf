@@ -93,6 +93,7 @@ locals {
   // Roles required to manage resources in the Seed project
   granular_sa_seed_project = {
     "bootstrap" = [
+      "roles/owner",
       "roles/storage.admin",
       "roles/iam.serviceAccountAdmin",
       "roles/resourcemanager.projectDeleter",
@@ -114,6 +115,7 @@ locals {
   // Roles required to manage resources in the CI/CD project
   granular_sa_cicd_project = {
     "bootstrap" = [
+      "roles/owner",
       "roles/storage.admin",
       "roles/compute.networkAdmin",
       "roles/cloudbuild.builds.editor",

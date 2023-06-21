@@ -1,4 +1,4 @@
-# Terraform Example Foundation deploy helper
+# [WIP] Terraform Example Foundation deploy helper
 
 Helper tool to deploy the Terraform example foundation.
 
@@ -44,16 +44,50 @@ See the READMEs for the stages for additional information:
 
 - Variable `code_checkout_path` is the full path to `deploy-directory` directory.
 - Variable `foundation_code_path` is the full path to `terraform-example-foundation` directory.
-- Build the helper:
+- Install the helper:
 
     ```bash
-    go build
+    go install
     ```
 
 - Validate the tfvars file:
 
     ```bash
-    ./deployer -tfvars_file <PATH TO 'global.tfvars' FILE> -validate
+    $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE> -validate
+    ```
+
+- Run the helper:
+
+    ```bash
+    $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE>
+    ```
+
+- To Suppress additional output use:
+
+    ```bash
+    $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE> -quiet
+    ```
+
+- To destroy the deployment run:
+
+    ```bash
+    $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE> -destroy
+    ```
+
+- After deployment:
+
+    ```text
+    deploy-directory/
+    └── bu1-example-app
+    └── gcp-bootstrap
+    └── gcp-environments
+    └── gcp-networks
+    └── gcp-org
+    └── gcp-policies
+    └── gcp-policies-app-infra
+    └── gcp-projects
+    └── global.tfvars
+    └── terraform-example-foundation
     ```
 
 ### Supported flags

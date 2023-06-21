@@ -43,11 +43,11 @@ resource "google_compute_firewall" "deny_all_egress" {
 }
 
 resource "google_compute_firewall" "allow_restricted_api_egress" {
-  name      = "fw-${var.environment_code}-shared-restricted-65530-e-a-allow-google-apis-all-tcp-443"
+  name      = "fw-${var.environment_code}-shared-restricted-65430-e-a-allow-google-apis-all-tcp-443"
   network   = module.main.network_name
   project   = var.project_id
   direction = "EGRESS"
-  priority  = 65530
+  priority  = 65430
 
   dynamic "log_config" {
     for_each = var.firewall_enable_logging == true ? [{

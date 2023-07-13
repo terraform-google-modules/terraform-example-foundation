@@ -103,7 +103,7 @@ func main() {
 		Logger:            utils.GetLogger(cfg.quiet),
 	}
 
-	//  only enable services if they are not already enabled
+	// only enable services if they are not already enabled
 	if globalTFVars.HasValidatorProj() {
 		conf.ValidatorProject = *globalTFVars.ValidatorProjectId
 		var apis []string
@@ -158,6 +158,61 @@ func main() {
 	// destroy stages
 	if cfg.destroy {
 		// Note: destroy is only terraform destroy, local directories are not deleted.
+		// 5-app-infra
+		msg.PrintStageMsg("Destroying 5-app-infra stage")
+		err = s.RunDestroyStep("bu1-example-app", func() error {
+			io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
+			return stages.DestroyExampleAppStage(t, s, io, conf)
+		})
+		if err != nil {
+			fmt.Printf("# Example app step destroy failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
+
+		// 4-projects
+		msg.PrintStageMsg("Destroying 4-projects stage")
+		err = s.RunDestroyStep("gcp-projects", func() error {
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			return stages.DestroyProjectsStage(t, s, bo, conf)
+		})
+		if err != nil {
+			fmt.Printf("# Projects step destroy failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
+
+		// 3-networks
+		msg.PrintStageMsg("Destroying 3-networks stage")
+		err = s.RunDestroyStep("gcp-networks", func() error {
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			return stages.DestroyNetworksStage(t, s, bo, conf)
+		})
+		if err != nil {
+			fmt.Printf("# Networks step destroy failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
+
+		// 2-environments
+		msg.PrintStageMsg("Destroying 2-environments stage")
+		err = s.RunDestroyStep("gcp-environments", func() error {
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			return stages.DestroyEnvStage(t, s, bo, conf)
+		})
+		if err != nil {
+			fmt.Printf("# Environments step destroy failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
+
+		// 1-org
+		msg.PrintStageMsg("Destroying 1-org stage")
+		err = s.RunDestroyStep("gcp-org", func() error {
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			return stages.DestroyOrgStage(t, s, bo, conf)
+		})
+		if err != nil {
+			fmt.Printf("# Org step destroy failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
+
 		// 0-bootstrap
 		msg.PrintStageMsg("Destroying 0-bootstrap stage")
 		err = s.RunDestroyStep("gcp-bootstrap", func() error {
@@ -165,6 +220,13 @@ func main() {
 		})
 		if err != nil {
 			fmt.Printf("# Bootstrap step destroy failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
+
+		// clean up the steps file
+		err = steps.DeleteStepsFile(cfg.stepsFile)
+		if err != nil {
+			fmt.Printf("# failed to delete state file %s. Error: %s\n", cfg.stepsFile, err.Error())
 			os.Exit(3)
 		}
 		return
@@ -189,5 +251,64 @@ func main() {
 		msg.PrintBuildMsg(bo.CICDProject, bo.DefaultRegion, conf.DisablePrompt)
 	}
 	msg.PrintQuotaMsg(bo.ProjectsSA, conf.DisablePrompt)
+	if globalTFVars.HasGroupsCreation() {
+		msg.PrintAdminGroupPermissionMsg(bo.BootstrapSA, conf.DisablePrompt)
+	}
 
+	// 1-org
+	msg.PrintStageMsg("Deploying 1-org stage")
+	err = s.RunStep("gcp-org", func() error {
+		return stages.DeployOrgStage(t, s, globalTFVars, bo, conf)
+	})
+	if err != nil {
+		fmt.Printf("# Org step failed. Error: %s\n", err.Error())
+		os.Exit(3)
+	}
+
+	// 2-environments
+	msg.PrintStageMsg("Deploying 2-environments stage")
+	err = s.RunStep("gcp-environments", func() error {
+		return stages.DeployEnvStage(t, s, globalTFVars, bo, conf)
+	})
+	if err != nil {
+		fmt.Printf("# Environments step failed. Error: %s\n", err.Error())
+		os.Exit(3)
+	}
+
+	// 3-networks
+	msg.PrintStageMsg("Deploying 3-networks stage")
+	err = s.RunStep("gcp-networks", func() error {
+		return stages.DeployNetworksStage(t, s, globalTFVars, bo, conf)
+	})
+	if err != nil {
+		fmt.Printf("# Networks step failed. Error: %s\n", err.Error())
+		os.Exit(3)
+	}
+
+	// 4-projects
+	msg.PrintStageMsg("Deploying 4-projects stage")
+	msg.ConfirmQuota(bo.ProjectsSA, conf.DisablePrompt)
+
+	err = s.RunStep("gcp-projects", func() error {
+		return stages.DeployProjectsStage(t, s, globalTFVars, bo, conf)
+	})
+	if err != nil {
+		fmt.Printf("# Projects step failed. Error: %s\n", err.Error())
+		os.Exit(3)
+	}
+
+	// 5-app-infra
+	msg.PrintStageMsg("Deploying 5-app-infra stage")
+	io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
+	io.RemoteStateBucket = bo.RemoteStateBucketProjects
+
+	msg.PrintBuildMsg(io.InfraPipeProj, io.DefaultRegion, conf.DisablePrompt)
+
+	err = s.RunStep("bu1-example-app", func() error {
+		return stages.DeployExampleAppStage(t, s, globalTFVars, io, conf)
+	})
+	if err != nil {
+		fmt.Printf("# Example app step failed. Error: %s\n", err.Error())
+		os.Exit(3)
+	}
 }

@@ -124,7 +124,7 @@ your current Jenkins manager (controller) environment.
 
 ## Deploying with GitHub Actions
 
-If you are deploying using [GitHub Actions](https://docs.github.com/en/actions), see [README-GitHub](./README-GitHub.md)
+If you are deploying using [GitHub Actions](https://docs.github.com/en/actions), see [README-GitHub.md](./README-GitHub.md)
 for requirements and instructions on how to run the 0-bootstrap step.
 Using GitHub Actions requires manual creation of the GitHub repositories used in each stage.
 

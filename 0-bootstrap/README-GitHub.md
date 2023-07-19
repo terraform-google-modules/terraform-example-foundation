@@ -14,12 +14,12 @@ To run the instructions described in this document, install the following:
 
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.3.0
+- [Terraform](https://www.terraform.io/downloads.html) version 1.3.0  or later
 
 Also make sure that you have the following:
 
 - A [GitHub account](https://docs.github.com/en/get-started/onboarding/getting-started-with-your-github-account) for your User or [Organization](https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch).
-- A [GitHub repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) for each one of the stages of Foundation:
+- A **private** [GitHub repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) for each one of the stages of Foundation:
     - Bootstrap
     - Organization
     - Environments
@@ -121,17 +121,16 @@ so that the initial push for the `plan` branch does not trigger two workflow run
    mv ./cb.tf ./cb.tf.example
    ```
 
-1. Comment-out the `cloudbuild_bootstrap` outputs in `./outputs.tf`
-1. Comment-out the `cloudbuild_bootstrap` outputs in `./variables.tf`
+1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
 1. Rename file `./github.tf.example` to `./github.tf`
 
    ```bash
    mv ./github.tf.example ./github.tf
    ```
 
-1. Un-comment the `github_bootstrap` variables in `./variables.tf`
-1. Un-comment the `github_bootstrap` outputs in `./outputs.tf`
-1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
+1. In the variables file `./variables.tf` un-comment variables in the section `Specific to github_bootstrap`
+1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to github_bootstrap`
+1. Rename file `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
 
    ```bash
    mv ./terraform.example.tfvars ./terraform.tfvars
@@ -140,7 +139,7 @@ so that the initial push for the `plan` branch does not trigger two workflow run
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
    ```bash
-   ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+   ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL> -t GitHub
    ```
 
    **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
@@ -441,6 +440,12 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    git push --set-upstream origin development
    ```
 
+1. change to a non-production branch.
+
+   ```bash
+   git checkout -b plan
+   ```
+
 1. Copy contents of foundation to new repo.
 
    ```bash
@@ -486,10 +491,9 @@ Use `terraform output` to get the backend bucket value from gcp-bootstrap output
    git commit -m 'Initialize networks repo'
    ```
 
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
-1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
-An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration and the networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
+An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
 
    ```bash
    export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
@@ -499,6 +503,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
 1. Run `init` and `plan` and review output for environment shared.
 
    ```bash
@@ -506,6 +511,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    ./tf-wrapper.sh plan shared
    ```
 
+1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Run `validate` and check for violations.
 
    ```bash
@@ -623,9 +629,8 @@ Use `terraform output` to get the backend bucket value from gcp-bootstrap output
    git commit -m 'Initialize networks repo'
    ```
 
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
-1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
+The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration and the networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
 An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
@@ -636,6 +641,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
 1. Run `init` and `plan` and review output for environment shared.
 
    ```bash
@@ -643,6 +649,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    ./tf-wrapper.sh plan shared
    ```
 
+1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Run `validate` and check for violations.
 
    ```bash
@@ -756,10 +763,9 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    git commit -m 'Initialize projects repo'
    ```
 
-1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
-1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Use `terraform output` to get the CI/CD project ID and the projects step Terraform Service Account from gcp-bootstrap output.
-An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration and the projects step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
+An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
 
    ```bash
    export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
@@ -769,6 +775,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
+1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
 1. Run `init` and `plan` and review output for environment shared.
 
    ```bash
@@ -776,6 +783,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    ./tf-wrapper.sh plan shared
    ```
 
+1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Run `validate` and check for violations.
 
    ```bash

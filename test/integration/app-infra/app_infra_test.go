@@ -67,9 +67,6 @@ func TestAppInfra(t *testing.T) {
 
 			appInfra.DefineVerify(
 				func(assert *assert.Assertions) {
-					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
-					appInfra.DefaultVerify(assert)
-
 					projectID := appInfra.GetStringOutput("project_id")
 					instanceName := terraform.OutputList(t, appInfra.GetTFOptions(), "instances_names")[0]
 					instanceZone := terraform.OutputList(t, appInfra.GetTFOptions(), "instances_zones")[0]

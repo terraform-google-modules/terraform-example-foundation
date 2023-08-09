@@ -126,7 +126,7 @@ module "interconnect" {
   name                     = "${local.project_prefix}-c-interconnect"
   org_id                   = local.org_id
   billing_account          = local.billing_account
-  folder_id                = google_folder.common.id
+  folder_id                = google_folder.network.id
   activate_apis            = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
 
   labels = {
@@ -228,7 +228,7 @@ module "base_network_hub" {
   name                     = "${local.project_prefix}-c-base-net-hub"
   org_id                   = local.org_id
   billing_account          = local.billing_account
-  folder_id                = google_folder.common.id
+  folder_id                = google_folder.network.id
 
   activate_apis = [
     "compute.googleapis.com",
@@ -276,7 +276,7 @@ module "restricted_network_hub" {
   name                     = "${local.project_prefix}-c-restricted-net-hub"
   org_id                   = local.org_id
   billing_account          = local.billing_account
-  folder_id                = google_folder.common.id
+  folder_id                = google_folder.network.id
 
   activate_apis = [
     "compute.googleapis.com",

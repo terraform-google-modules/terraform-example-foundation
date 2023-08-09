@@ -101,6 +101,11 @@ func TestOrg(t *testing.T) {
 			folder := gcloud.Runf(t, "resource-manager folders describe %s", commonFolder)
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 
+			// creation of network folder
+			networkFolder := testutils.GetLastSplitElement(org.GetStringOutput("network_folder_name"), "/")
+			folderOP := gcloud.Runf(t, "resource-manager folders describe %s", networkFolder)
+			assert.Equal("fldr-network", folderOP.Get("displayName").String(), "folder fldr-network should have been created")
+
 			// check tags applied to common and bootstrap folder
 			commonConfig := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
 			bootstrapFolder := testutils.GetLastSplitElement(commonConfig["bootstrap_folder_name"], "/")
@@ -113,6 +118,11 @@ func TestOrg(t *testing.T) {
 				{
 					folderId:   commonFolder,
 					folderName: "common",
+					value:      "production",
+				},
+				{
+					folderId:   networkFolder,
+					folderName: "network",
 					value:      "production",
 				},
 				{

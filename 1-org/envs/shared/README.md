@@ -41,6 +41,7 @@
 | logs\_export\_logbucket\_name | The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets |
 | logs\_export\_pubsub\_topic | The Pub/Sub topic for destination of log exports |
 | logs\_export\_storage\_bucket\_name | The storage bucket for destination of log exports |
+| network\_folder\_name | The network folder name |
 | org\_audit\_logs\_project\_id | The org audit logs project ID |
 | org\_billing\_logs\_project\_id | The org billing logs project ID |
 | org\_id | The organization id |

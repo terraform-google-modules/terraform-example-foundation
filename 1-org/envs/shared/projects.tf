@@ -188,7 +188,7 @@ module "dns_hub" {
   name                     = "${local.project_prefix}-c-dns-hub"
   org_id                   = local.org_id
   billing_account          = local.billing_account
-  folder_id                = google_folder.common.id
+  folder_id                = google_folder.network.id
 
   activate_apis = [
     "compute.googleapis.com",

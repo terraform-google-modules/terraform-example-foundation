@@ -39,6 +39,11 @@ output "common_folder_name" {
   description = "The common folder name"
 }
 
+output "network_folder_name" {
+  value       = google_folder.network.name
+  description = "The network folder name"
+}
+
 output "org_audit_logs_project_id" {
   value       = module.org_audit_logs.project_id
   description = "The org audit logs project ID"

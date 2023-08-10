@@ -99,12 +99,13 @@ commands. The `-T` flag is required for Linux, but causes problems for MacOS.
 | gcp_scc_admin | Product updates and security | Org Admins |
 | gcp_security_reviewer | Security and technical | Org Admins |
 
-This module creates and applies [tags](https://cloud.google.com/resource-manager/docs/tags/tags-overview) to common and bootstrap folders. These tags are also applied to environment folders of step [2-environments](../2-environments/README.md). You can create your own tags by editing the `local.tags` map in `tags.tf` and following the commented template. The following table describes details about the tags that are applied to resources:
+This module creates and applies [tags](https://cloud.google.com/resource-manager/docs/tags/tags-overview) to common, network, and bootstrap folders. These tags are also applied to environment folders of step [2-environments](../2-environments/README.md). You can create your own tags by editing the `local.tags` map in `tags.tf` and following the commented template. The following table describes details about the tags that are applied to resources:
 
 | Resource | Type | Step | Tag Key | Tag Value |
 |----------|------|------|---------|-----------|
 | bootstrap | folder | 1-org | environment | bootstrap |
 | common | folder | 1-org | environment | production |
+| network | folder | 1-org | environment | production |
 | enviroment development | folder | [2-environments](../2-environments/README.md) | environment | development |
 | enviroment non-production | folder | [2-environments](../2-environments/README.md) | environment | non-production |
 | enviroment production | folder | [2-environments](../2-environments/README.md) | environment | production |

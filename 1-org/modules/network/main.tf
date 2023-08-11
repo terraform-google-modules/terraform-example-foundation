@@ -27,7 +27,7 @@ module "base_shared_vpc_host_project" {
   name                        = format("%s-%s-shared-base", var.project_prefix, var.environment_code)
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = var.network_folder_name
+  folder_id                   = var.folder_name
   disable_services_on_destroy = false
   #   depends_on                  = [time_sleep.wait_60_seconds]
   activate_apis = [
@@ -62,7 +62,7 @@ module "restricted_shared_vpc_host_project" {
   name                        = format("%s-%s-shared-restricted", var.project_prefix, var.environment_code)
   org_id                      = var.org_id
   billing_account             = var.billing_account
-  folder_id                   = var.network_folder_name
+  folder_id                   = var.folder_name
   disable_services_on_destroy = false
   #   depends_on                  = [time_sleep.wait_60_seconds]
   activate_apis = [

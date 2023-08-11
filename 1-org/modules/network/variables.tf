@@ -44,3 +44,26 @@ variable "environment_code" {
   type        = string
   description = "A short form of the environment to prepare within the Google Cloud organization (ex. d)."
 }
+
+variable "remote_state_bucket" {
+  description = "Backend bucket to load Terraform Remote State Data from previous steps."
+  type        = string
+}
+
+variable "project_budget" {
+  description = <<EOT
+  Budget configuration for projects.
+  budget_amount: The amount to use as the budget.
+  alert_spent_percents: A list of percentages of the budget to alert on when threshold is exceeded.
+  alert_pubsub_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`.
+  EOT
+  type = object({
+    base_network_budget_amount              = optional(number, 1000)
+    base_network_alert_spent_percents       = optional(list(number), [0.5, 0.75, 0.9, 0.95])
+    base_network_alert_pubsub_topic         = optional(string, null)
+    restricted_network_budget_amount        = optional(number, 1000)
+    restricted_network_alert_spent_percents = optional(list(number), [0.5, 0.75, 0.9, 0.95])
+    restricted_network_alert_pubsub_topic   = optional(string, null)
+  })
+  default = {}
+}

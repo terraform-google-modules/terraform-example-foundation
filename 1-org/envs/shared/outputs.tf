@@ -123,3 +123,8 @@ output "tags" {
   value       = local.tags_output
   description = "Tag Values to be applied on next steps"
 }
+
+output "network_projects" {
+  value       = { for n in module.base_restricted_environment_network : n.env => n }
+  description = "Network Projects base and restricted with ID and number attributes, grouped by environments (keys)[development, non-production, production]"
+}

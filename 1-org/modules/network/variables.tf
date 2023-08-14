@@ -30,7 +30,7 @@ variable "project_prefix" {
   default     = "prj"
 }
 
-variable "folder_name" {
+variable "folder_id" {
   description = "The folder where the projects will be deployed."
   type        = string
 }
@@ -40,7 +40,7 @@ variable "env" {
   type        = string
 }
 
-variable "environment_code" {
+variable "env_code" {
   type        = string
   description = "A short form of the environment to prepare within the Google Cloud organization (ex. d)."
 }

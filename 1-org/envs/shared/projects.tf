@@ -324,7 +324,7 @@ resource "google_project_iam_member" "network_sa_restricted" {
 }
 
 module "base_restricted_environment_network" {
-  for_each = { for e in locals.environments : e.env => e }
+  for_each = { for e in local.environments : e.env => e }
   source   = "../../modules/network"
 
   org_id          = local.org_id

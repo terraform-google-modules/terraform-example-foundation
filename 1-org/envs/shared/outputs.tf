@@ -125,6 +125,6 @@ output "tags" {
 }
 
 output "network_projects" {
-  value       = { for n in module.base_restricted_environment_network : n.env => n }
+  value       = { for k, v in module.base_restricted_environment_network : k => v }
   description = "Network Projects base and restricted with ID and number attributes, grouped by environments (keys)[development, non-production, production]"
 }

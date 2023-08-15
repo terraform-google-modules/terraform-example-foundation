@@ -68,10 +68,10 @@ func PrintStageMsg(msg string) {
 
 func PrintBuildMsg(project, region string, disablePrompt bool) {
 	fmt.Println("")
-	fmt.Println("# Check build results in the Google console:")
+	fmt.Println("# Follow build execution and check build results in the Google console:")
 	fmt.Printf("# %s\n", CloudBuildURL(project, region))
 	if !disablePrompt {
-		PressEnter("")
+		PressEnter("# Press Enter to continue at any time")
 		fmt.Println("")
 	}
 }

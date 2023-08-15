@@ -45,11 +45,6 @@ variable "env_code" {
   description = "A short form of the environment to prepare within the Google Cloud organization (ex. d)."
 }
 
-variable "remote_state_bucket" {
-  description = "Backend bucket to load Terraform Remote State Data from previous steps."
-  type        = string
-}
-
 variable "project_budget" {
   description = <<EOT
   Budget configuration for projects.

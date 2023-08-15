@@ -29,7 +29,7 @@ module "base_shared_vpc_host_project" {
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
   disable_services_on_destroy = false
-  #   depends_on                  = [time_sleep.wait_60_seconds]
+
   activate_apis = [
     "compute.googleapis.com",
     "dns.googleapis.com",
@@ -64,7 +64,7 @@ module "restricted_shared_vpc_host_project" {
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
   disable_services_on_destroy = false
-  #   depends_on                  = [time_sleep.wait_60_seconds]
+
   activate_apis = [
     "compute.googleapis.com",
     "dns.googleapis.com",

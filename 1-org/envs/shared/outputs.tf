@@ -124,7 +124,12 @@ output "tags" {
   description = "Tag Values to be applied on next steps"
 }
 
-output "network_projects" {
-  value       = { for n in module.base_restricted_environment_network : n.env => n }
-  description = "Network Projects base and restricted with ID and number attributes, grouped by environments (keys)[development, non-production, production]"
+output "shared_vpc_projects" {
+  value = { for k, v in module.base_restricted_environment_network : k => {
+    base_shared_vpc_project_id           = v.base_shared_vpc_project_id,
+    base_shared_vpc_project_number       = v.base_shared_vpc_project_number,
+    restricted_shared_vpc_project_id     = v.restricted_shared_vpc_project_id,
+    restricted_shared_vpc_project_number = v.restricted_shared_vpc_project_number
+  } }
+  description = "Base and restricted shared VPC Projects info grouped by environment (development, non-production, production)"
 }

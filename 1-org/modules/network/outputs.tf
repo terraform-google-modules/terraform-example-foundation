@@ -21,7 +21,7 @@ output "base_shared_vpc_project_id" {
 
 output "base_shared_vpc_project_number" {
   description = "Project number for base shared VPC network."
-  value       = module.base_shared_vpc_host_project.project_id
+  value       = module.base_shared_vpc_host_project.project_number
 }
 
 output "restricted_shared_vpc_project_id" {

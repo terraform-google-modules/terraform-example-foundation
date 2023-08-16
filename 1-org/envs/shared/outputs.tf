@@ -125,11 +125,6 @@ output "tags" {
 }
 
 output "shared_vpc_projects" {
-  value = { for k, v in module.base_restricted_environment_network : k => {
-    base_shared_vpc_project_id           = v.base_shared_vpc_project_id,
-    base_shared_vpc_project_number       = v.base_shared_vpc_project_number,
-    restricted_shared_vpc_project_id     = v.restricted_shared_vpc_project_id,
-    restricted_shared_vpc_project_number = v.restricted_shared_vpc_project_number
-  } }
+  value       = { for k, v in module.base_restricted_environment_network : k => v }
   description = "Base and restricted shared VPC Projects info grouped by environment (development, non-production, production)"
 }

@@ -42,12 +42,6 @@ variable "project_budget" {
   alert_pubsub_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`.
   EOT
   type = object({
-    base_network_budget_amount              = optional(number, 1000)
-    base_network_alert_spent_percents       = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    base_network_alert_pubsub_topic         = optional(string, null)
-    restricted_network_budget_amount        = optional(number, 1000)
-    restricted_network_alert_spent_percents = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    restricted_network_alert_pubsub_topic   = optional(string, null)
     monitoring_budget_amount                = optional(number, 1000)
     monitoring_alert_spent_percents         = optional(list(number), [0.5, 0.75, 0.9, 0.95])
     monitoring_alert_pubsub_topic           = optional(string, null)

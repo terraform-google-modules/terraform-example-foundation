@@ -22,6 +22,7 @@ on:
 
 jobs:
   stale:
+    if: github.repository_owner == 'GoogleCloudPlatform' || github.repository_owner == 'terraform-google-modules'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/stale@v8

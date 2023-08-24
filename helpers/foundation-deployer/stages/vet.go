@@ -56,7 +56,7 @@ func TerraformVet(t testing.TB, terraformDir, policyPath, project string) error 
 	if err != nil {
 		return err
 	}
-	command := fmt.Sprintf("beta terraform vet %s --policy-library=%s --project=%s", jsonFile, policyPath, project)
+	command := fmt.Sprintf("beta terraform vet %s --policy-library=%s --project=%s --quiet", jsonFile, policyPath, project)
 	result, err := gcloud.RunCmdE(t, command)
 	if err != nil && !(strings.Contains(err.Error(), "Validating resources") && strings.Contains(err.Error(), "done")) {
 		return err

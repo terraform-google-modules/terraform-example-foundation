@@ -63,6 +63,9 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 
 	g.CheckString(replaceME)
 
+	if strings.Contains(g.Domain, exampleDotCom) {
+		fmt.Println("# Replace value 'example.com' for input 'domain'")
+	}
 	if g.Domain != "" && g.Domain[len(g.Domain)-1:] != "." {
 		fmt.Println("# Value for input 'domain' must end with '.'")
 	}

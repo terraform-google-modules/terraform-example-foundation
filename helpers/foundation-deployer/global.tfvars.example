@@ -37,6 +37,7 @@ default_region  = "us-central1"
 
 group_org_admins     = "REPLACE_ME" # "gcp-organization-admins@example.com"
 group_billing_admins = "REPLACE_ME" # "gcp-billing-admins@example.com"
+org_project_creators = []
 
 bucket_force_destroy = false
 project_prefix       = "prj"
@@ -49,6 +50,36 @@ folder_prefix        = "fldr"
 // The folder must already exist.
 
 //parent_folder = "01234567890"
+
+// Optional - for enabling the automatic groups creation, uncomment the groups
+// variable and update the values with the desired group names
+// https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md#optional---automatic-creation-of-google-cloud-identity-groups
+
+// After deploy, the Bootstrap service account will need to be granted "Group Admin" role in the
+// Google Workspace by a Super Admin before Cloud Build builds can be executed by the Bootstrap workspace.
+// https://github.com/terraform-google-modules/terraform-google-group/blob/main/README.md#google-workspace-formerly-known-as-g-suite-roles
+
+//initial_group_config = "WITH_INITIAL_OWNER"
+//groups = {
+//  create_groups   = true,
+//  billing_project = "BILLING-PROJECT",
+//  required_groups = {
+//    group_org_admins           = "group_org_admins_local_test@example.com"
+//    group_billing_admins       = "group_billing_admins_local_test@example.com"
+//    billing_data_users         = "billing_data_users_local_test@example.com"
+//    audit_data_users           = "audit_data_users_local_test@example.com"
+//    monitoring_workspace_users = "monitoring_workspace_users_local_test@example.com"
+//  },
+//  optional_groups = { # fill in only the groups to be created
+//    gcp_platform_viewer      = ""
+//    gcp_security_reviewer    = ""
+//    gcp_network_viewer       = ""
+//    gcp_scc_admin            = ""
+//    gcp_global_secrets_admin = ""
+//    gcp_audit_viewer         = ""
+//  }
+//}
+//
 
 
 // 1-org inputs
@@ -63,6 +94,8 @@ essential_contacts_domains_to_allow = ["@example.com"]
 scc_notification_name                       = "scc-notify"
 audit_logs_table_delete_contents_on_destroy = false
 log_export_storage_force_destroy            = false
+log_export_storage_location                 = "US"
+billing_export_dataset_location             = "US"
 
 // Choose witch network architecture to use:
 // Dual Shared VPC: https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/3-networks-dual-svpc/README.md

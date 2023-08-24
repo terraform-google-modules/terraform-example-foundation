@@ -48,6 +48,18 @@ func (s Step) String() string {
 	return fmt.Sprintf("%s %s error:%s", s.Name, s.Status, s.Error)
 }
 
+// DeleteStepsFile deletes the whole steps file
+func DeleteStepsFile(file string) error {
+	_, err := os.Stat(file)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	if !os.IsNotExist(err) {
+		return os.Remove(file)
+	}
+	return nil
+}
+
 // LoadSteps loads a previous execution steps from the given file.
 func LoadSteps(file string) (Steps, error) {
 	var s Steps

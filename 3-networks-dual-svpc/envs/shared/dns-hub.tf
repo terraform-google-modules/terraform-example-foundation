@@ -91,7 +91,7 @@ module "dns-forwarding-zone" {
 
 module "dns_hub_region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name    = "cr-c-dns-hub-${local.default_region1}-cr1"
   project = local.dns_hub_project_id
@@ -105,7 +105,7 @@ module "dns_hub_region1_router1" {
 
 module "dns_hub_region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name    = "cr-c-dns-hub-${local.default_region1}-cr2"
   project = local.dns_hub_project_id
@@ -119,7 +119,7 @@ module "dns_hub_region1_router2" {
 
 module "dns_hub_region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name    = "cr-c-dns-hub-${local.default_region2}-cr3"
   project = local.dns_hub_project_id
@@ -133,7 +133,7 @@ module "dns_hub_region2_router1" {
 
 module "dns_hub_region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name    = "cr-c-dns-hub-${local.default_region2}-cr4"
   project = local.dns_hub_project_id

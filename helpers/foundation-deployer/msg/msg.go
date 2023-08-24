@@ -28,6 +28,7 @@ const (
 	buildErrorURL   = "https://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s"
 	quotaURL        = "https://support.google.com/code/contact/billing_quota_increase"
 	troubleQuotaURL = "https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/TROUBLESHOOTING.md#billing-quota-exceeded"
+	groupAdminURL   = "https://cloud.google.com/identity/docs/how-to/setup#assigning_an_admin_role_to_the_service_account"
 )
 
 var (
@@ -67,10 +68,10 @@ func PrintStageMsg(msg string) {
 
 func PrintBuildMsg(project, region string, disablePrompt bool) {
 	fmt.Println("")
-	fmt.Println("# Check build results in the Google console:")
+	fmt.Println("# Follow build execution and check build results in the Google console:")
 	fmt.Printf("# %s\n", CloudBuildURL(project, region))
 	if !disablePrompt {
-		PressEnter("")
+		PressEnter("# Press Enter to continue at any time")
 		fmt.Println("")
 	}
 }
@@ -82,6 +83,21 @@ func PrintQuotaMsg(sa string, disablePrompt bool) {
 	fmt.Printf("# Link: %s\n", quotaURL)
 	fmt.Println("")
 	fmt.Printf("# See: %s\n", troubleQuotaURL)
+	fmt.Println("# for additional information")
+	fmt.Println("")
+	if !disablePrompt {
+		PressEnter("")
+		fmt.Println("")
+	}
+}
+
+func PrintAdminGroupPermissionMsg(sa string, disablePrompt bool) {
+	fmt.Println("")
+	fmt.Println("# Request a Super Admin to Grant 'Group Admin' role in the")
+	fmt.Println("# Admin Console of the Google Workspace to the Bootstrap service account:")
+	fmt.Printf("# %s \n", sa)
+	fmt.Println("")
+	fmt.Printf("# See: %s\n", groupAdminURL)
 	fmt.Println("# for additional information")
 	fmt.Println("")
 	if !disablePrompt {

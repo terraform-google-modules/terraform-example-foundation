@@ -410,8 +410,8 @@ github.com/mitchellh/copystructure v1.2.0/go.mod h1:qLl+cE2AmVv+CoeAwDPye/v+N2HK
 github.com/mitchellh/go-homedir v1.1.0 h1:lukF9ziXFxDFPkA1vsr5zpc1XuPDn/wFntq5mG+4E0Y=
 github.com/mitchellh/go-homedir v1.1.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrkLzIz1N1q0pr0=
 github.com/mitchellh/go-testing-interface v1.14.1/go.mod h1:gfgS7OtZj6MA4U1UrDRp04twqAjfvlZyCfX3sDjEym8=
-github.com/mitchellh/go-testing-interface v1.14.2-0.20210217184823-a52172cd2f64 h1:+9bM6qWXndPx7+czi9+Jj6zHPioFpfdhwVGOYOgujMY=
-github.com/mitchellh/go-testing-interface v1.14.2-0.20210217184823-a52172cd2f64/go.mod h1:gfgS7OtZj6MA4U1UrDRp04twqAjfvlZyCfX3sDjEym8=
+github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770 h1:drhDO54gdT/a15GBcMRmunZiNcLgPiFIJa23KzmcvcU=
+github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770/go.mod h1:SO/iHr6q2EzbqRApt+8/E9wqebTwQn5y+UlB04bxzo0=
 github.com/mitchellh/go-wordwrap v1.0.1 h1:TLuKupo69TCn6TQSyGxwI1EblZZEsQ0vMlAFQflz0v0=
 github.com/mitchellh/go-wordwrap v1.0.1/go.mod h1:R62XHJLzvMFRBbcrT7m7WgmE1eOyTSsCt+hzestvNj0=
 github.com/mitchellh/reflectwalk v1.0.2/go.mod h1:mSTlrgnPZtwu0c4WaC2kGObEpuNDbx0jmZXqmk4esnw=
@@ -447,8 +447,6 @@ github.com/stretchr/testify v1.8.2 h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ
 github.com/stretchr/testify v1.8.2 h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ8=
 github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20230329165204-e5db58ea752a h1:TYICMneChDJfEEOOmQzYUFwIh4GvoRKXjiJD9fii2EM=
-github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20230329165204-e5db58ea752a/go.mod h1:4EkFeYb9/Cjbqc4uynVvcmV8MCK7VK5dGuR2yD4r8EU=
 github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20230503230051-e9e2618ef515 h1:9WpwfiGRUEX5e3qeC93M/TWxmVeSD8vz1B8c5FumdAE=
 github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20230503230051-e9e2618ef515/go.mod h1:4EkFeYb9/Cjbqc4uynVvcmV8MCK7VK5dGuR2yD4r8EU=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=

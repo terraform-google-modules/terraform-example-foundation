@@ -1,0 +1,45 @@
+stages:
+  - build
+  - deploy
+
+build-image:
+  stage: build
+  tags:
+    - linuxrjr_ubuntu
+  image: 
+    name: docker:stable
+  services:
+   - name: docker:dind
+     alias: dockerhost
+  
+  variables:
+    DOCKER_HOST: tcp://dockerhost:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+
+  script:
+    - env # Shows env variables
+    - docker info   # Optional: Display Docker info for debugging
+    - docker build -t $CI_REGISTRY_IMAGE .
+    - echo $CI_REGISTRY_PASSWORD | docker login -u  $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    - docker push $CI_REGISTRY_IMAGE
+    - docker logout
+
+image:
+  name: $CI_REGISTRY_IMAGE
+  entrypoint: [""]
+
+terraform-apply:
+  stage: deploy
+  script:
+    - bash run_gcp_sts.sh
+    - echo ${CI_JOB_JWT_V2} > .ci_job_jwt_file
+    - gcloud iam workload-identity-pools create-cred-config ${GCP_WORKLOAD_IDENTITY_PROVIDER}
+      --service-account="${GCP_SERVICE_ACCOUNT}"
+      --output-file=.gcp_temp_cred.json
+      --credential-source-file=.ci_job_jwt_file
+    - gcloud auth login --cred-file=`pwd`/.gcp_temp_cred.json
+    - gcloud auth list
+    - terraform init
+    - terraform apply -auto-approve
+

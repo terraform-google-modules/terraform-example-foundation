@@ -30,7 +30,7 @@ ACCESS_TOKEN=$(curl -X POST "https://iamcredentials.googleapis.com/v1/projects/-
 echo "${ACCESS_TOKEN}"
 
 echo "${CI_JOB_JWT_V2}" > .ci_job_jwt_file
-gcloud iam workload-identity-pools create-cred-config ${GCP_WORKLOAD_IDENTITY_PROVIDER} \
+gcloud iam workload-identity-pools create-cred-config "${GCP_WORKLOAD_IDENTITY_PROVIDER}" \
 --service-account="${GCP_SERVICE_ACCOUNT}" \
 --output-file=.gcp_temp_cred.json \
 --credential-source-file=.ci_job_jwt_file

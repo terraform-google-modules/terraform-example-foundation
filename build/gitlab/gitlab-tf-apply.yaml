@@ -2,6 +2,7 @@ stages:
   - build
   - deploy
 
+
 build-image:
   stage: build
   tags:
@@ -25,6 +26,11 @@ build-image:
     - docker push $CI_REGISTRY_IMAGE
     - docker logout
 
+  only:
+    - development
+    - production
+    - non-production
+
 image:
   name: $CI_REGISTRY_IMAGE
   entrypoint: [""]
@@ -33,13 +39,11 @@ terraform-apply:
   stage: deploy
   script:
     - bash run_gcp_sts.sh
-    - echo ${CI_JOB_JWT_V2} > .ci_job_jwt_file
-    - gcloud iam workload-identity-pools create-cred-config ${GCP_WORKLOAD_IDENTITY_PROVIDER}
-      --service-account="${GCP_SERVICE_ACCOUNT}"
-      --output-file=.gcp_temp_cred.json
-      --credential-source-file=.ci_job_jwt_file
-    - gcloud auth login --cred-file=`pwd`/.gcp_temp_cred.json
     - gcloud auth list
     - terraform init
     - terraform apply -auto-approve
-
+    
+  only:
+    - development
+    - production
+    - non-production

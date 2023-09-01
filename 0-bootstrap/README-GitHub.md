@@ -13,6 +13,7 @@ On the other hand, the authentication infrastructure using [Workload identity fe
 To run the instructions described in this document, install the following:
 
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
+    - [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 1.3.0  or later
 
@@ -36,9 +37,9 @@ Also make sure that you have the following:
 - A Google Cloud [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 - A Google Cloud [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
 - Cloud Identity or Google Workspace groups for organization and billing admins.
-- Add the user who will use Terraform to the `group_org_admins` group.
+- Add the Identity (user or Service Account) who will run Terraform to the `group_org_admins` group.
 They must be in this group, or they won't have `roles/resourcemanager.projectCreator` access.
-- For the user who will run the procedures in this document, grant the following roles:
+- For the Identity who will run the procedures in this document, grant the following roles:
     - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
     - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
     - The `roles/billing.admin` role on the billing account.
@@ -53,8 +54,10 @@ that are created, see the organization bootstrap module
 ## Instructions
 
 Due to issue [First commit pushed triggers 2 workflow runs](https://github.com/orgs/community/discussions/50356),
-The repositories created should have been initialized with an initial commit,
+The repositories created must be initialized with an initial commit,
 so that the initial push for the `plan` branch does not trigger two workflow runs.
+The instructions in the following steps will ensure the creation of an initial commit
+for each one of the repositories.
 
 ### Deploying step 0-bootstrap
 
@@ -64,7 +67,8 @@ so that the initial push for the `plan` branch does not trigger two workflow run
    git clone https://github.com/terraform-google-modules/terraform-example-foundation.git
    ```
 
-1. Clone the repository you created to host the `0-bootstrap` terraform configuration at the same level of the `terraform-example-foundation` folder.
+1. Clone the private repository you created to host the `0-bootstrap` terraform configuration at the same level of the `terraform-example-foundation` folder.
+You must be [authenticated to GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github).
 
    ```bash
    git clone git@github.com:<GITHUB-OWNER>/<GITHUB-BOOTSTRAP-REPO>.git gcp-bootstrap
@@ -115,25 +119,34 @@ so that the initial push for the `plan` branch does not trigger two workflow run
    cd ./envs/shared
    ```
 
+1. In the variables file `./variables.tf` un-comment variables in the section `Specific to github_bootstrap`
+1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
+1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to github_bootstrap`
 1. Rename file `./cb.tf` to `./cb.tf.example`
 
    ```bash
    mv ./cb.tf ./cb.tf.example
    ```
 
-1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
 1. Rename file `./github.tf.example` to `./github.tf`
 
    ```bash
    mv ./github.tf.example ./github.tf
    ```
 
-1. In the variables file `./variables.tf` un-comment variables in the section `Specific to github_bootstrap`
-1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to github_bootstrap`
-1. Rename file `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
+1. Rename file `terraform.example.tfvars` to `terraform.tfvars`
 
    ```bash
    mv ./terraform.example.tfvars ./terraform.tfvars
+   ```
+
+1. Update the file `terraform.tfvars` with values from your Google Cloud environment
+1. Update the file `terraform.tfvars` with values from your GitHub repositories
+1. To prevent saving the `gh_token` in plain text in the `terraform.tfvars` file,
+export the GitHub fine grained access token as an environment variable:
+
+   ```bash
+   export TF_VAR_gh_token="YOUR-FINE-GRAINED-ACCESS-TOKEN"
    ```
 
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
@@ -163,6 +176,8 @@ so that the initial push for the `plan` branch does not trigger two workflow run
    ```
 
    *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
+
+1. No violations and an output with `done` means the validation was successful.
 
 1. Run `terraform apply`.
 
@@ -219,7 +234,10 @@ so that the initial push for the `plan` branch does not trigger two workflow run
    ```
 
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/pull/new/plan from the `plan` branch to the `production` branch and review the output.
-1. Merge the pull request in to `production` branch
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/actions under `tf-apply`.
 
 **Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage.
@@ -276,30 +294,52 @@ we recommend that you request 50 additional projects for the **projects step ser
    mv ./envs/shared/terraform.example.tfvars ./envs/shared/terraform.tfvars
    ```
 
-1. Check if a Security Command Center Notification with the default name, **scc-notify**, already exists. If it exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
+1. Update the file `envs/shared/terraform.tfvars` with values from your GCP environment.
+See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for additional information on the values in the `terraform.tfvars` file.
 
-   ```bash
-   export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -json common_config | jq '.org_id' --raw-output)
-   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID}
-   ```
+1. Un-comment the variable `create_access_context_manager_access_policy = false` if your organization already has an Access Context Manager Policy.
 
-1. Check if your organization already has an Access Context Manager Policy.
+    ```bash
+    export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -json common_config | jq '.org_id' --raw-output)
 
-   ```bash
-   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
-   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
-   ```
+    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
 
-1. Update the `envs/shared/terraform.tfvars` file with values from your environment and 0-bootstrap step. If the previous step showed a numeric value, make sure to un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for additional information on the values in the `terraform.tfvars` file.
+    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+
+    if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
+    ```
+
+1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap.
 
    ```bash
    export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw gcs_bucket_tfstate)
+
    echo "remote_state_bucket = ${backend_bucket}"
 
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
-
-   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
+
+1. Check if a Security Command Center Notification with the default name, **scc-notify**, already exists in your organization.
+
+   ```bash
+   export ORG_STEP_SA=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw organization_step_terraform_service_account_email)
+
+   gcloud scc notifications describe "scc-notify" --format="value(name)" --organization=${ORGANIZATION_ID} --impersonate-service-account=${ORG_STEP_SA}
+   ```
+
+1. If the notification exists the output will be:
+
+    ```text
+    organizations/ORGANIZATION_ID/notificationConfigs/scc-notify
+    ```
+
+1. If the notification does not exist the output will be:
+
+    ```text
+    ERROR: (gcloud.scc.notifications.describe) NOT_FOUND: Requested entity was not found.
+    ```
+
+1. If the notification exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
 
 1. Commit changes.
 
@@ -315,7 +355,10 @@ we recommend that you request 50 additional projects for the **projects step ser
    ```
 
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/pull/new/plan from the `plan` branch to the `production` branch and review the output.
-1. Merge the pull request in to `production` branch
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions under `tf-apply`.
 
 
@@ -374,7 +417,10 @@ we recommend that you request 50 additional projects for the **projects step ser
    mv terraform.example.tfvars terraform.tfvars
    ```
 
-1. Update the file with values from your environment and bootstrap (you can re-run `terraform output` in the 0-bootstrap directory to find these values). See any of the envs folder [README.md](../2-environments/envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
+1. Update the file with values from your GCP environment.
+See any of the envs folder [README.md](../2-environments/envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
+
+1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap.
 
    ```bash
    export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw gcs_bucket_tfstate)
@@ -397,14 +443,28 @@ we recommend that you request 50 additional projects for the **projects step ser
    ```
 
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
-1. Merge the pull request in to the `development` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `development` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `development` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
+1. If the GitHub action is successful, apply the next environment.
+
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
-1. Merge the pull request in to the `non-production` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `non-production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `non-production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
+1. If the GitHub action is successful, apply the next environment.
+
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
-1. Merge the pull request in to the `production` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
+
 1. You can now move to the instructions in the network stage.
 To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc),
 or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
@@ -465,20 +525,27 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    mv access_context.auto.example.tfvars access_context.auto.tfvars
    ```
 
-1. Update `common.auto.tfvars` file with values from your environment and bootstrap.
-See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
-Update `shared.auto.tfvars` file with the `target_name_server_addresses`.
-Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
-Use `terraform output` to get the backend bucket value from gcp-bootstrap output.
+1. Update the file `shared.auto.tfvars` with the values for the `target_name_server_addresses`.
+1. Update the file `access_context.auto.tfvars` with the organization's `access_context_manager_policy_id`.
 
    ```bash
    export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -json common_config | jq '.org_id' --raw-output)
+
    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+
    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
 
    sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
+   ```
 
+1. Update `common.auto.tfvars` file with values from your GCP environment.
+See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
+
+   ```bash
    export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
+
    echo "remote_state_bucket = ${backend_bucket}"
 
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
@@ -491,19 +558,23 @@ Use `terraform output` to get the backend bucket value from gcp-bootstrap output
    git commit -m 'Initialize networks repo'
    ```
 
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
-The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration and the networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
-An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
 
    ```bash
    export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
    echo ${CICD_PROJECT_ID}
+   ```
 
+1. The networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
+An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+
+   ```bash
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw networks_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
 1. Run `init` and `plan` and review output for environment shared.
 
    ```bash
@@ -531,14 +602,28 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```
 
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
-1. Merge the pull request in to the `development` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `development` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `development` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. If the GitHub action is successful, apply the next environment.
+
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
-1. Merge the pull request in to the `non-production` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `non-production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `non-production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. If the GitHub action is successful, apply the next environment.
+
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
-1. Merge the pull request in to the `production` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+
 1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash
@@ -603,20 +688,14 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    mv access_context.auto.example.tfvars access_context.auto.tfvars
    ```
 
-1. Update `common.auto.tfvars` file with values from your environment and bootstrap.
-See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
-Update `shared.auto.tfvars` file with the `target_name_server_addresses`.
-Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
-Use `terraform output` to get the backend bucket value from gcp-bootstrap output.
+1. Update `common.auto.tfvars` file with values from your GCP environment.
+See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
 
    ```bash
-   export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -json common_config | jq '.org_id' --raw-output)
-   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
-   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
-
-   sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
-
    export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
+
    echo "remote_state_bucket = ${backend_bucket}"
 
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
@@ -629,19 +708,23 @@ Use `terraform output` to get the backend bucket value from gcp-bootstrap output
    git commit -m 'Initialize networks repo'
    ```
 
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
-The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration and the networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
-An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
 
    ```bash
    export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
    echo ${CICD_PROJECT_ID}
+   ```
 
+1. The networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
+An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+
+   ```bash
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw networks_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
 1. Run `init` and `plan` and review output for environment shared.
 
    ```bash
@@ -669,14 +752,29 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    ```
 
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
-1. Merge the pull request in to the `development` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `development` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `development` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. If the GitHub action is successful, apply the next environment.
+
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
-1. Merge the pull request in to the `non-production` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `non-production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `non-production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. If the GitHub action is successful, apply the next environment.
+
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
-1. Merge the pull request in to the `production` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+
+
 1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash
@@ -747,7 +845,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
 1. See any of the envs folder [README.md](../4-projects/business_unit_1/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
 1. See any of the shared folder [README.md](../4-projects/business_unit_1/shared/README.md#inputs) files for additional information on the values in the `shared.auto.tfvars` file.
 
-1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
+1. Use `terraform output` to get the backend bucket value from bootstrap output.
 
    ```bash
    export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
@@ -763,19 +861,24 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using t
    git commit -m 'Initialize projects repo'
    ```
 
+1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
+
 1. Use `terraform output` to get the CI/CD project ID and the projects step Terraform Service Account from gcp-bootstrap output.
-The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration and the projects step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
-An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
 
    ```bash
    export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
    echo ${CICD_PROJECT_ID}
+   ```
 
+1. The projects step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
+An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+
+   ```bash
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
-1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
 1. Run `init` and `plan` and review output for environment shared.
 
    ```bash
@@ -803,14 +906,28 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```
 
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
-1. Merge the pull request in to the `development` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `development` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `development` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.
+1. If the GitHub action is successful, apply the next environment.
+
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
-1. Merge the pull request in to the `non-production` branch.
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `non-production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `non-production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.
+1. If the GitHub action is successful, apply the next environment.
+
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
-1. Merge the pull request in to the `production` branch.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.`
+1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-pull-request`.
+1. If the GitHub action is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
+1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.
+
 1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash

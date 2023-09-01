@@ -86,7 +86,7 @@ output "optional_groups" {
 /* ----------------------------------------
     Specific to cloudbuild_module
    ---------------------------------------- */
-# Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
+# Comment-out the cloudbuild_bootstrap module and its outputs if you want to use GitHub Actions or Jenkins instead of Cloud Build
 output "cloudbuild_project_id" {
   description = "Project where Cloud Build configuration and terraform container image will reside."
   value       = module.tf_source.cloudbuild_project_id

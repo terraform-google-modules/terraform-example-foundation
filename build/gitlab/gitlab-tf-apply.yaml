@@ -45,19 +45,25 @@ build-image:
     - production
     - non-production
 
+# All branches need to be protected, otherwise the value of environment variables won't be read.
+
 image:
   name: $CI_REGISTRY_IMAGE
   entrypoint: [""]
 
 terraform-apply:
   stage: deploy
+  tags:
+    - runner2
   script:
     - bash run_gcp_sts.sh
     - gcloud auth list
-    - terraform init
-    - terraform apply -auto-approve
-
+    - bash tf-wrapper.sh init $CI_COMMIT_REF_NAME
+    - bash tf-wrapper.sh plan $CI_COMMIT_REF_NAME
+    - bash tf-wrapper.sh apply $CI_COMMIT_REF_NAME
+    
   only:
+    #- main
     - development
     - production
     - non-production

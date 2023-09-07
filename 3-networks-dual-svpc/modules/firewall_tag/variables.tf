@@ -15,25 +15,25 @@
  */
 
 variable "project_id" {
-  type = string
+  type        = string
   description = "The project ID where the resources will be created."
 }
 
 variable "network_name" {
-  type = string
+  type        = string
   description = "The network name that will be the purpose of the security tag."
 }
 
 variable "network_id" {
-  type = string
+  type        = string
   description = "The network ID which the Firewall Policy will be associated."
 }
 
 variable "environment_code" {
-  type = string
+  type        = string
   description = "A short form of the folder level resources (environment) within the Google Cloud organization (ex. d)."
 }
 
-# variable "business_unit" {
-#   type = string
-# }
+variable "business_unit" {
+  type = list(string)
+}

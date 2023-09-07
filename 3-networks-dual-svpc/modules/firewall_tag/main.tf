@@ -42,8 +42,11 @@ resource "google_compute_network_firewall_policy_rule" "firewall_tag_policy_rule
     src_threat_intelligences = ["iplist-known-malicious-ips"] #TODO: To be defined
     # src_address_groups = [google_network_security_address_group.basic_global_networksecurity_address_group.id]
 
-    src_secure_tags {
-      name = "tagValues/${google_tags_tag_value.firewall_tag_value.name}"
+    dynamic "src_secure_tags" {
+      for_each = google_tags_tag_value.firewall_tag_value
+      content {
+        name = "tagValues/${src_secure_tags.value.name}"
+      }
     }
 
     layer4_configs {
@@ -61,7 +64,7 @@ resource "google_compute_network_firewall_policy_association" "firewall_tag_poli
 
 resource "google_tags_tag_key" "firewall_tag_key" {
   short_name  = "${local.name_prefix}-key"
-  description = "For keyname resources."
+  description = "Secure firewall tag key for environment ${var.environment_code}."
   parent      = "projects/${var.project_id}"
   purpose     = "GCE_FIREWALL"
 
@@ -71,7 +74,9 @@ resource "google_tags_tag_key" "firewall_tag_key" {
 }
 
 resource "google_tags_tag_value" "firewall_tag_value" {
-  short_name  = "${local.name_prefix}-value"
-  description = "For valuename resources."
+  for_each = toset(var.business_unit)
+
+  short_name  = "${local.name_prefix}-${each.value}"
+  description = "Secure firewall tag value for BU ${each.value} and environment ${var.environment_code}."
   parent      = "tagKeys/${google_tags_tag_key.firewall_tag_key.name}"
 }

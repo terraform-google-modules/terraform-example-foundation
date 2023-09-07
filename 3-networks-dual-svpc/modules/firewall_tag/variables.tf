@@ -35,5 +35,7 @@ variable "environment_code" {
 }
 
 variable "business_unit" {
-  type = list(string)
+  type        = list(string)
+  description = "A list of business unit to create the tag values. Default value is a list with one element (value)."
+  default     = ["value"]
 }

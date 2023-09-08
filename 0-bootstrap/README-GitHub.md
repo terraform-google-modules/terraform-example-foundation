@@ -2,11 +2,11 @@
 
 The objective of the instructions below is to configure the infrastructure that allows you to run CI/CD deployments using
 GitHub Actions for the Terraform Example Foundation stages (`0-bootstrap`, `1-org`, `2-environments`, `3-networks`, `4-projects`).
-The infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-b-cicd-gh`).
+The infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-b-cicd-wif-gh`).
 
-It is a best practice to have two separate projects here (`prj-b-seed` and `prj-b-cicd-gh`) for separation of concerns.
+It is a best practice to have two separate projects here (`prj-b-seed` and `prj-b-cicd-wif-gh`) for separation of concerns.
 On one hand, `prj-b-seed` stores terraform state and has the Service Accounts able to create / modify infrastructure.
-On the other hand, the authentication infrastructure using [Workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation) is implemented in `prj-b-cicd-gh`.
+On the other hand, the authentication infrastructure using [Workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation) is implemented in `prj-b-cicd-wif-gh`.
 
 ## Requirements
 
@@ -119,6 +119,7 @@ You must be [authenticated to GitHub](https://docs.github.com/en/authentication/
    cd ./envs/shared
    ```
 
+1. In the versions file `./versions.tf` un-comment the `github` required provider
 1. In the variables file `./variables.tf` un-comment variables in the section `Specific to github_bootstrap`
 1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
 1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to github_bootstrap`
@@ -164,7 +165,7 @@ export the GitHub fine grained access token as an environment variable:
    terraform plan -input=false -out bootstrap.tfplan
    ```
 
-1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Validate policies](https://cloud.google.com/docs/terraform/policy-validation/validate-policies) instructions for the Gogle Cloud CLI.
+1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Validate policies](https://cloud.google.com/docs/terraform/policy-validation/validate-policies) instructions for the Google Cloud CLI.
 
 1. Run the following commands and check for violations:
 

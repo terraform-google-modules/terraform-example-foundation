@@ -15,7 +15,7 @@
  */
 
 locals {
-  name_prefix = "firewall-tag-${var.environment_code}"
+  name_prefix = "fw-${var.environment_code}-tag"
 }
 
 resource "google_compute_network_firewall_policy" "firewall_tag_policy" {
@@ -24,23 +24,19 @@ resource "google_compute_network_firewall_policy" "firewall_tag_policy" {
   project     = var.project_id
 }
 
-resource "google_compute_network_firewall_policy_rule" "firewall_tag_policy_rule" {
-  rule_name       = "${local.name_prefix}-policy-rule"
-  description     = "This is a simple rule description"
+resource "google_compute_network_firewall_policy_rule" "allow_all_ingress" {
+  rule_name       = "${local.name_prefix}-allow-all-ingress"
+  description     = "This rule enables all ingress."
   project         = var.project_id
-  action          = "allow"   #TODO: To be defined
-  direction       = "INGRESS" #TODO: To be defined
+  action          = "allow"
+  direction       = "INGRESS"
   disabled        = false
   enable_logging  = true
   firewall_policy = google_compute_network_firewall_policy.firewall_tag_policy.name
   priority        = 1000
 
   match {
-    src_ip_ranges            = ["10.100.0.1/32"]              #TODO: To be defined
-    src_fqdns                = ["google.com"]                 #TODO: To be defined
-    src_region_codes         = ["US"]                         #TODO: To be defined
-    src_threat_intelligences = ["iplist-known-malicious-ips"] #TODO: To be defined
-    # src_address_groups = [google_network_security_address_group.basic_global_networksecurity_address_group.id]
+    src_ip_ranges = ["0.0.0.0/0"]
 
     dynamic "src_secure_tags" {
       for_each = google_tags_tag_value.firewall_tag_value
@@ -51,6 +47,33 @@ resource "google_compute_network_firewall_policy_rule" "firewall_tag_policy_rule
 
     layer4_configs {
       ip_protocol = "all"
+    }
+  }
+}
+
+resource "google_compute_network_firewall_policy_rule" "allow_all_egress" {
+  rule_name       = "${local.name_prefix}-allow-all-egress"
+  description     = "This rule enables all egress."
+  project         = var.project_id
+  action          = "allow"
+  direction       = "EGRESS"
+  disabled        = false
+  enable_logging  = true
+  firewall_policy = google_compute_network_firewall_policy.firewall_tag_policy.name
+  priority        = 1000
+
+  match {
+    dest_ip_ranges = ["0.0.0.0/0"]
+
+    layer4_configs {
+      ip_protocol = "all"
+
+      dynamic "target_secure_tags" {
+        for_each = google_tags_tag_value.firewall_tag_value
+        content {
+          name = "tagValues/${target_secure_tags.value.name}"
+        }
+      }
     }
   }
 }

@@ -16,11 +16,10 @@ stages:
   - build
   - deploy
 
-
 build-image:
   stage: build
   tags:
-    - linuxrjr_ubuntu
+    - runner2
   image:
     name: docker:stable
   services:
@@ -41,15 +40,28 @@ build-image:
     - docker logout
 
   only:
-    - development
-    - production
-    - non-production
+    - main
 
 # All branches need to be protected, otherwise the value of environment variables won't be read.
 
 image:
   name: $CI_REGISTRY_IMAGE
   entrypoint: [""]
+
+terraform-plan:
+  stage: deploy
+  tags:
+    - runner2
+  script:
+    - bash run_gcp_sts.sh
+    - gcloud auth list
+    - bash tf-wrapper.sh plan_validate_all $CI_COMMIT_REF_NAME "$CI_PROJECT_DIR/policy-library" $CI_PROJECT_NAME
+    - git status
+    - git clean -ffdx
+    - git status
+
+  only:
+    - plan
 
 terraform-apply:
   stage: deploy
@@ -58,12 +70,22 @@ terraform-apply:
   script:
     - bash run_gcp_sts.sh
     - gcloud auth list
+    - pwd
+    - ls -la
+    - echo "ci-commit-ref-name ${CI_COMMIT_REF_NAME}"
+    - echo "ci-builds-dir ${CI_BUILDS_DIR}"
+    - echo "ci project dir ${CI_PROJECT_DIR}"
+    - echo "ci-project-name ${CI_PROJECT_NAME}"
+    - ls -la
     - bash tf-wrapper.sh init $CI_COMMIT_REF_NAME
-    - bash tf-wrapper.sh plan $CI_COMMIT_REF_NAME
-    - bash tf-wrapper.sh apply $CI_COMMIT_REF_NAME
-    
+    - bash tf-wrapper.sh plan $CI_COMMIT_REF_NAME "$CI_PROJECT_DIR/policy-library" $CI_PROJECT_NAME
+    - bash tf-wrapper.sh validate $CI_COMMIT_REF_NAME "$CI_PROJECT_DIR/policy-library" $CI_PROJECT_NAME
+    - bash tf-wrapper.sh apply $CI_COMMIT_REF_NAME "$CI_PROJECT_DIR/policy-library" $CI_PROJECT_NAME
+    # - git status
+    # - git clean -ffdx
+    # - git status
+
   only:
-    #- main
     - development
     - production
     - non-production

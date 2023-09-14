@@ -76,6 +76,8 @@ Other Workspaces can also be created to isolate deployments if needed.
 
    **Note:** Make sure that you use version 1.3.0 or later of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
+   **Note 2:** As already mentioned in [0-bootstrap note 2](../0-bootstrap/README.md#deploying-with-cloud-build), make sure that you have requested at least 50 additional projects for the **projects step service account**, otherwise you should face a project quota exceeded during the following steps and will need to apply a [this troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded) in order to solve it.
+
 ### Troubleshooting
 
 Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.

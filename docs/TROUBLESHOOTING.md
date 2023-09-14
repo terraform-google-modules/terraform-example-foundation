@@ -24,6 +24,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
 - [Error: Unsupported attribute](#error-unsupported-attribute)
 - [Error: Error adding network peering](#error-error-adding-network-peering)
+- [Attempt to run a 4-project step without enough project quota](#attempt-to-run-4-projects-step-without-enough-project-quota)
 
 - - -
 
@@ -247,6 +248,64 @@ In a deploy using the [Hub and Spoke](https://cloud.google.com/architecture/secu
 **Solution:**
 
 This is a transient error and the deploy can be retried. Wait for at least a minute and retry the deploy.
+
+### Attempt to run 4 projects step without enough project quota
+
+**Error message:**
+
+In the first error message, you should see:
+```text
+Error code 8, message: The project cannot be created because you have exceeded your allotted project quota
+```
+And in the following ones, if you retry, will look like that:
+```text
+Error: Error when reading or editing GCS service account not found: googleapi: Error 400: Unknown project id: 'prj-bu1-p-sample-base-<random-postfix>', invalid
+```
+
+**Cause:**
+
+If you tried to run 4-projects step without requesting additional quota for **project SA created in 0-bootstrap step**, you should face the error above when you retry the cloud build job that first reported insufficient project quota. Even after you receive your additional quota, you should be stuck with this error message.
+
+**Solution:**
+
+- In this case, the first thing you will need to do is to [request the additional project quota](#project-quota-exceeded) for the **project SA e-mail**, if you didn't already.
+
+After that, you will need to mark some resources as tainted in order to trigger the proper missing project's recreation, following the steps below:
+
+1. In your local, go to the path that the error is being reported.
+
+   For example, if the unknown project ID is 'prj-bu1-p-sample-base-random_postfix', you should go to /gcp-projects/business_unit_1/production
+   (business_unit_1 due to 'bu1' and production due to 'p')
+
+   ```bash
+   cd ./gcp-projects/<business_unit>/<environment>
+   ```
+1. Run terraform init command so you can pull the remote state to your local:
+
+   ```bash
+   terraform init
+   ```
+1. Run terraform state list command, filtering by random_project_id_suffix. This will give you all the expected projects that should be created for this BU and environment.
+
+   ```bash
+   terraform state list | grep random_project_id_suffix
+   ```
+1. Then you need to figure it out if these resources need to be tainted by running the command below. This will give you all the projects that were actually created.
+
+   ```bash
+   gcloud projects list --filter="parent=<id_of_the_environment_folder>"
+   ```
+1. For each resource listed in terraform state that's not created in GCP (returned by gcloud projects list), we should mark as tainted. It will look like that:
+
+   ```bash
+   terraform taint module.env.module.env_secrets_project.module.project.module.project-factory.random_string.random_project_id_suffix[0]
+   ```
+   In this example, we are marking as tainted the env secrets project. You might need to run that multiple times, one per missing project.
+1. Finally, after run the taint command for all the non-matching items, you can go to CB and trigger the retry action for the job. You should have a success build or some similar error for another BU/environment that will require the very same solution, just changing the proper paths.
+
+**Notes:**
+
+   - Make sure you run the taint command just for the resources that contain the [number] at the end of the line. You don't need to run for the groups (the resources that doesn't have the [] at the end)
 
 - - -
 

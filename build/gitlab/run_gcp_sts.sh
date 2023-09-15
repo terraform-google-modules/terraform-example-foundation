@@ -16,7 +16,7 @@
 
 PAYLOAD=$(cat <<EOF
 {
-"audience": "//iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${POOL_ID}/providers/${PROVIDER_ID}",
+"audience": "//iam.googleapis.com/${WIF_PROVIDER_NAME}",
 "grantType": "urn:ietf:params:oauth:grant-type:token-exchange",
 "requestedTokenType": "urn:ietf:params:oauth:token-type:access_token",
 "scope": "https://www.googleapis.com/auth/cloud-platform",
@@ -44,8 +44,8 @@ ACCESS_TOKEN=$(curl -X POST "https://iamcredentials.googleapis.com/v1/projects/-
 echo "${ACCESS_TOKEN}"
 
 echo "${CI_JOB_JWT_V2}" > .ci_job_jwt_file
-gcloud iam workload-identity-pools create-cred-config "${GCP_WORKLOAD_IDENTITY_PROVIDER}" \
---service-account="${GCP_SERVICE_ACCOUNT}" \
+gcloud iam workload-identity-pools create-cred-config "${WIF_PROVIDER_NAME}" \
+--service-account="${SERVICE_ACCOUNT_EMAIL}" \
 --output-file=.gcp_temp_cred.json \
---credential-source-file=.ci_job_jwt_file
+--credential-source-file=.ci_job_jwt_fgcloud conf listile
 gcloud auth login --cred-file=.gcp_temp_cred.json

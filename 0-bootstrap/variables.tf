@@ -245,3 +245,39 @@ variable "initial_group_config" {
 #   type        = string
 #   description = "BGP session range for tunnel 1"
 # }
+
+/* ----------------------------------------
+    Specific to github_bootstrap
+   ---------------------------------------- */
+
+# Un-comment github_bootstrap and its outputs if you want to use GitHub Actions instead of Cloud Build
+variable "gl_repos" {
+  description = <<EOT
+  Configuration for the GitLab Repositories to be used to deploy the Terraform Example Foundation stages.
+  owner: The owner of the repositories. An user or a group.
+  bootstrap: The repository to host the code of the bootstrap stage.
+  organization: The repository to host the code of the organization stage.
+  environments: The repository to host the code of the environments stage.
+  networks: The repository to host the code of the networks stage.
+  projects: The repository to host the code of the projects stage.
+  EOT
+  type = object({
+    owner        = string,
+    bootstrap    = string,
+    organization = string,
+    environments = string,
+    networks     = string,
+    projects     = string,
+  })
+}
+
+variable "gitlab_token" {
+  description = <<EOT
+  A GitLab personal access token or group access token.
+  See:
+      https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html
+      https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
+  EOT
+  type        = string
+  sensitive   = true
+}

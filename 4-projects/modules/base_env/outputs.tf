@@ -98,3 +98,13 @@ output "bucket" {
   description = "The created storage bucket"
   value       = module.gcs_buckets.bucket
 }
+
+output "allow_ssh_tag" {
+  description = "Security tag to allow IAP throu SSH"
+  value       = { "tagKeys/${google_tags_tag_key.firewall_tag_key[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}" }
+}
+
+output "allow_rdp_tag" {
+  description = "Security tag to allow IAP throu RDP"
+  value       = { "tagKeys/${google_tags_tag_key.firewall_tag_key[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}" }
+}

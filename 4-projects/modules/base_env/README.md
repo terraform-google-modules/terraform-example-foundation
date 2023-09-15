@@ -25,6 +25,8 @@
 | Name | Description |
 |------|-------------|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
+| allow\_rdp\_tag | Security tag to allow IAP throu RDP |
+| allow\_ssh\_tag | Security tag to allow IAP throu SSH |
 | base\_shared\_vpc\_project | Project sample base project. |
 | base\_shared\_vpc\_project\_sa | Project sample base project SA. |
 | base\_subnets\_self\_links | The self-links of subnets from base environment. |

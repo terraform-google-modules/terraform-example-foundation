@@ -331,10 +331,10 @@ resource "google_compute_network_firewall_policy_association" "allow_iap_firewal
   firewall_policy   = google_compute_network_firewall_policy.allow_iap_firewall_policy[0].name
 }
 
-resource "google_tags_tag_key" "firewall_tag_key" {
+resource "google_tags_tag_key" "firewall_tag_key_ssh" {
   count = var.optional_fw_rules_enabled ? 1 : 0
 
-  short_name = "iap-access"
+  short_name = "ssh-iap-access"
   parent     = "projects/${module.peering_project.project_id}"
   purpose    = "GCE_FIREWALL"
 
@@ -346,13 +346,25 @@ resource "google_tags_tag_key" "firewall_tag_key" {
 resource "google_tags_tag_value" "firewall_tag_value_ssh" {
   count = var.optional_fw_rules_enabled ? 1 : 0
 
-  short_name = "allow-iap-ssh"
-  parent     = "tagKeys/${google_tags_tag_key.firewall_tag_key[0].name}"
+  short_name = "allow"
+  parent     = "tagKeys/${google_tags_tag_key.firewall_tag_key_ssh[0].name}"
+}
+
+resource "google_tags_tag_key" "firewall_tag_key_rdp" {
+  count = var.optional_fw_rules_enabled ? 1 : 0
+
+  short_name = "rdp-iap-access"
+  parent     = "projects/${module.peering_project.project_id}"
+  purpose    = "GCE_FIREWALL"
+
+  purpose_data = {
+    network = "${module.peering_project.project_id}/${module.peering_network.network_name}"
+  }
 }
 
 resource "google_tags_tag_value" "firewall_tag_value_rdp" {
   count = var.optional_fw_rules_enabled ? 1 : 0
 
-  short_name = "allow-iap-rdp"
-  parent     = "tagKeys/${google_tags_tag_key.firewall_tag_key[0].name}"
+  short_name = "allow"
+  parent     = "tagKeys/${google_tags_tag_key.firewall_tag_key_rdp[0].name}"
 }

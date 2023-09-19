@@ -17,6 +17,33 @@ stages:
   - validate
   - apply
 
+build-image:
+  stage: build
+  tags:
+    - runner2
+  image:
+    name: docker:stable
+  services:
+   - name: docker:dind
+     alias: dockerhost
+
+  variables:
+    DOCKER_HOST: tcp://dockerhost:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+
+  script:
+    # - docker build -t $CI_REGISTRY_IMAGE .
+    # - echo $CI_REGISTRY_PASSWORD | docker login -u  $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    # - docker push $CI_REGISTRY_IMAGE
+    - docker build -t $CI_REGISTRY/terraform-gcloud:latest .
+    - echo $CI_REGISTRY_PASSWORD | docker login -u  $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    - docker push $CI_REGISTRY/terraform-gcloud:latest
+    - docker logout
+
+  only:
+    - image
+
 # All branches need to be protected, otherwise the value of environment variables won't be read.
 
 image:
@@ -26,6 +53,8 @@ image:
 
 terraform-plan:
   stage: validate
+  tags:
+    - runner2
   id_tokens:
     GITLAB_OIDC_TOKEN:
       aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
@@ -41,6 +70,8 @@ terraform-plan:
 
 terraform-apply:
   stage: apply
+  tags:
+    - runner2
   id_tokens:
     GITLAB_OIDC_TOKEN:
       aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
@@ -58,3 +89,4 @@ terraform-apply:
     - development
     - production
     - non-production
+  when: manual

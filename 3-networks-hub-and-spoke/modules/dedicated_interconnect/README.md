@@ -21,7 +21,7 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 | cloud\_router\_labels | A map of suffixes for labelling vlans with four entries like "vlan\_1" => "suffix1" with keys from `vlan_1` to `vlan_4`. | `map(string)` | `{}` | no |
 | interconnect\_project\_id | Interconnect project ID. | `string` | n/a | yes |
 | peer\_asn | Peer BGP Autonomous System Number (ASN). | `number` | n/a | yes |
-| peer\_name | Name of this BGP peer. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]\*[a-z0-9])? | `string` | n/a | yes |
+| peer\_name | Name of this BGP peer. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])? | `string` | n/a | yes |
 | region1 | First subnet region. The Dedicated Interconnect module only configures two regions. | `string` | n/a | yes |
 | region1\_interconnect1 | URL of the underlying Interconnect object that this attachment's traffic will traverse through. | `string` | n/a | yes |
 | region1\_interconnect1\_candidate\_subnets | Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc). | `list(string)` | `null` | no |

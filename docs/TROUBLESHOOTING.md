@@ -24,8 +24,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
 - [Error: Unsupported attribute](#error-unsupported-attribute)
 - [Error: Error adding network peering](#error-error-adding-network-peering)
-- [Attempt to run a 4-project step without enough project quota](#attempt-to-run-4-projects-step-without-enough-project-quota)
-
+- [Error: Unknown project id on 4-project step context](#error-unknown-project-id-on-4-project-step-context)
 - - -
 
 ### Project quota exceeded
@@ -249,63 +248,64 @@ In a deploy using the [Hub and Spoke](https://cloud.google.com/architecture/secu
 
 This is a transient error and the deploy can be retried. Wait for at least a minute and retry the deploy.
 
-### Attempt to run 4 projects step without enough project quota
+
+### Error: Unknown project id on 4-project step context
 
 **Error message:**
 
-In the first error message, you should see:
 ```text
-Error code 8, message: The project cannot be created because you have exceeded your allotted project quota
-```
-And in the following ones, if you retry, will look like that:
-```text
-Error: Error when reading or editing GCS service account not found: googleapi: Error 400: Unknown project id: 'prj-bu1-p-sample-base-<random-postfix>', invalid
+Error 400: Unknown project id: 'prj-<business-unity>-<environment>-sample-base-<random-suffix>', invalid
 ```
 
 **Cause:**
 
-If you tried to run 4-projects step without requesting additional quota for **project SA created in 0-bootstrap step**, you should face the error above when you retry the cloud build job that first reported insufficient project quota. Even after you receive your additional quota, you should be stuck with this error message.
+When you try to run 4-projects step without requesting additional project quota for **project service account created in 0-bootstrap step** you may face the error above, even after the project quota issue is resolved, due to an inconsistency in terraform state.
 
 **Solution:**
 
-- In this case, the first thing you will need to do is to [request the additional project quota](#project-quota-exceeded) for the **project SA e-mail**, if you didn't already.
+- Make sure you [have requested the additional project quota](#project-quota-exceeded) for the **project SA e-mail** before the following steps.
 
-After that, you will need to mark some resources as tainted in order to trigger the proper missing project's recreation, following the steps below:
+You will need to mark some resources as tainted in order to trigger the proper missing project's recreation to fix the inconsistent terraform state by following the next steps.
 
 1. In your local, go to the path that the error is being reported.
 
-   For example, if the unknown project ID is 'prj-bu1-p-sample-base-random_postfix', you should go to /gcp-projects/business_unit_1/production
-   (business_unit_1 due to 'bu1' and production due to 'p')
+   For example, if the unknown project ID is `prj-bu1-p-sample-base-abcd`, you should go to ./gcp-projects/business_unit_1/production (business_unit_1 due to `bu1` and production due to `p`).
 
    ```bash
    cd ./gcp-projects/<business_unit>/<environment>
    ```
-1. Run terraform init command so you can pull the remote state to your local:
+1. Run terraform init command so you can pull the remote state to your local.
 
    ```bash
    terraform init
    ```
-1. Run terraform state list command, filtering by random_project_id_suffix. This will give you all the expected projects that should be created for this BU and environment.
+1. Run terraform state list command, filtering by `random_project_id_suffix`. This command will give you all the expected projects that should be created for this BU and environment that uses a random suffix.
 
    ```bash
    terraform state list | grep random_project_id_suffix
    ```
-1. Then you need to figure it out if these resources need to be tainted by running the command below. This will give you all the projects that were actually created.
+1. Run gcloud projects list command. You should replace `id_of_the_environment_folder` with the proper ID of the folder. This command will give you all the projects that were actually created.
 
    ```bash
    gcloud projects list --filter="parent=<id_of_the_environment_folder>"
    ```
-1. For each resource listed in terraform state that's not created in GCP (returned by gcloud projects list), we should mark as tainted. It will look like that:
+1. For each resource listed in terraform state step that's **not** returned by gcloud projects list step, we should mark as tainted to be recreated in order to fix the inconsistency in terraform state.
+
+   ```bash
+   terraform taint <resource>[index]
+   ```
+
+   For example, in the following command we are marking as tainted the env secrets project. You may need to run the taint command multiple times, depending on how many missing projects you do have.
 
    ```bash
    terraform taint module.env.module.env_secrets_project.module.project.module.project-factory.random_string.random_project_id_suffix[0]
    ```
-   In this example, we are marking as tainted the env secrets project. You might need to run that multiple times, one per missing project.
-1. Finally, after run the taint command for all the non-matching items, you can go to CB and trigger the retry action for the job. You should have a success build or some similar error for another BU/environment that will require the very same solution, just changing the proper paths.
+
+1. Finally, after run the taint command for all the non-matching items, you can go to Cloud Build and trigger the retry action for the failed job. You may have a success build or some similar error for another BU/environment that will require the same solution, but changing the proper paths according to the BU/environment reported in the error log.
 
 **Notes:**
 
-   - Make sure you run the taint command just for the resources that contain the [number] at the end of the line. You don't need to run for the groups (the resources that doesn't have the [] at the end)
+   - Make sure you run the taint command just for the resources that contain the [number] at the end of the line returned by terraform state list step. You don't need to run for the groups (the resources that don't have the [] at the end).
 
 - - -
 

@@ -281,3 +281,42 @@ variable "gitlab_token" {
   type        = string
   sensitive   = true
 }
+
+/* ----------------------------------------
+    Specific to gitlab_bootstrap
+   ---------------------------------------- */
+
+variable "network_name" {
+  type        = string
+  description = "Name for the VPC network"
+  default     = "gl-runner-network"
+}
+
+variable "create_network" {
+  type        = bool
+  description = "When set to true, VPC,router and NAT will be auto created"
+  default     = true
+}
+
+variable "subnetwork_project" {
+  type        = string
+  description = "The ID of the project in which the subnetwork belongs. If it is not provided, the project_id is used."
+  #default     = ""
+}
+
+variable "subnet_ip" {
+  type        = string
+  description = "IP range for the subnet"
+  default     = "10.10.10.0/24"
+}
+variable "subnet_name" {
+  type        = string
+  description = "Name for the subnet"
+  default     = "gl-runner-subnet"
+}
+
+# variable "service_account" {
+#   description = "Service account email address"
+#   type        = string
+#   #default     = "xxxx"
+# }

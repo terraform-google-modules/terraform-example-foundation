@@ -196,3 +196,24 @@ output "projects_gcs_bucket_tfstate" {
   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
   value       = module.seed_bootstrap.gcs_bucket_tfstate
 }
+
+###
+output "gitlab_instance_network_name" {
+  description = "Network name used by GitLab runner."
+  value       = module.gitlab_cicd.gitlab_instance_network_name
+}
+
+output "gitlab_instance_subnet_name" {
+  description = "Subnet name used by GitLab runner."
+  value       = module.gitlab_cicd.gitlab_instance_subnet_name
+}
+
+output "gitlab_router" {
+  description = "Router used by GitLab runner network."
+  value       = module.gitlab_cicd.gitlab_router
+}
+
+output "gce_service_account" {
+  description = "Service account used by GitLab runner."
+  value       = module.gitlab_cicd.gce_service_account
+}

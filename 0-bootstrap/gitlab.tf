@@ -66,6 +66,10 @@ locals {
 
   gl_vars = { for v in concat(local.sa_vars, local.vars_list) : "${v.config}.${v.name}" => v }
 
+  network_name    = var.create_network ? google_compute_network.gl-network[0].self_link : var.network_name
+  subnet_name     = var.create_network ? google_compute_subnetwork.gl-subnetwork[0].self_link : var.subnet_name
+  service_account = var.service_account == "" ? google_service_account.runner_service_account[0].email : var.service_account
+
 }
 
 provider "gitlab" {
@@ -121,4 +125,94 @@ module "cicd_project_wif_iam_member" {
   parent_type = "project"
   parent_id   = local.cicd_project_id
   roles       = each.value
+}
+
+####
+/*****************************************
+  Optional Runner Networking
+ *****************************************/
+resource "google_compute_network" "gl-network" {
+  count                   = var.create_network ? 1 : 0
+  name                    = var.network_name
+  project                 = var.project_id
+  auto_create_subnetworks = false
+}
+resource "google_compute_subnetwork" "gl-subnetwork" {
+  count         = var.create_network ? 1 : 0
+  project       = var.project_id
+  name          = var.subnet_name
+  ip_cidr_range = var.subnet_ip
+  region        = var.region
+  network       = google_compute_network.gl-network[0].name
+}
+
+resource "google_compute_router" "default" {
+  count   = var.create_network ? 1 : 0
+  name    = "${var.network_name}-router"
+  network = google_compute_network.gl-network[0].self_link
+  region  = var.region
+  project = var.project_id
+}
+
+resource "google_compute_router_nat" "nat" {
+  count                              = var.create_network ? 1 : 0
+  project                            = var.project_id
+  name                               = "${var.network_name}-nat"
+  router                             = google_compute_router.default[0].name
+  region                             = google_compute_router.default[0].region
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+}
+
+/*****************************************
+  IAM Bindings GCE SVC
+ *****************************************/
+
+resource "google_service_account" "runner_service_account" {
+  count        = var.service_account == "" ? 1 : 0
+  project      = var.project_id
+  account_id   = "runner-service-account"
+  display_name = "GitLab Runner GCE Service Account"
+}
+
+# allow GCE to pull images from GCR
+resource "google_project_iam_binding" "gce" {
+  count   = var.service_account == "" ? 1 : 0
+  project = var.project_id
+  role    = "roles/storage.objectViewer"
+  members = [
+    "serviceAccount:${local.service_account}",
+  ]
+}
+
+resource "google_compute_instance" "gitlab_runner" {
+  name           = "gl-runner-instance"
+  project        = var.project_id
+  zone           = "us-central1-a"
+  machine_type   = "e2-medium"
+  can_ip_forward = true
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+  tags                    = ["http-server", "https-server"]
+  metadata_startup_script = file("${abspath(path.module)}/scripts/gl_runner.sh")
+
+  network_interface {
+    subnetwork         = google_compute_subnetwork.gl-subnetwork[0].name
+    network_ip         = "10.10.10.8"
+    subnetwork_project = var.project_id
+  }
+
+  service_account {
+    email  = local.service_account
+    scopes = ["cloud-platform"]
+  }
+
+  depends_on = [
+    google_compute_network.gl-network,
+    google_compute_subnetwork.gl-subnetwork
+  ]
 }

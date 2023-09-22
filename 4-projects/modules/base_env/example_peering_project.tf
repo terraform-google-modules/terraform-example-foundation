@@ -206,63 +206,7 @@ resource "google_compute_firewall" "allow_lb" {
   target_tags = ["allow-lb"]
 }
 
-#// Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
-#resource "google_compute_firewall" "allow_iap_ssh" {
-#  count   = var.optional_fw_rules_enabled ? 1 : 0
-#  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
-#  network = module.peering_network.network_name
-#  project = module.peering_project.project_id
-#
-#  dynamic "log_config" {
-#    for_each = var.firewall_enable_logging == true ? [{
-#      metadata = "INCLUDE_ALL_METADATA"
-#    }] : []
-#
-#    content {
-#      metadata = log_config.value.metadata
-#    }
-#  }
-#
-#  // Cloud IAP's TCP forwarding netblock
-#  source_ranges = concat(data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4)
-#
-#  allow {
-#    protocol = "tcp"
-#    ports    = ["22"]
-#  }
-#
-#  target_tags = ["allow-iap-ssh"]
-#}
-#
-#// Allow RDP via IAP when using the allow-iap-rdp tag for Windows workloads.
-#resource "google_compute_firewall" "allow_iap_rdp" {
-#  count   = var.optional_fw_rules_enabled ? 1 : 0
-#  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-rdp-tcp-3389"
-#  network = module.peering_network.network_name
-#  project = module.peering_project.project_id
-#
-#  dynamic "log_config" {
-#    for_each = var.firewall_enable_logging == true ? [{
-#      metadata = "INCLUDE_ALL_METADATA"
-#    }] : []
-#
-#    content {
-#      metadata = log_config.value.metadata
-#    }
-#  }
-#
-#  // Cloud IAP's TCP forwarding netblock
-#  source_ranges = concat(data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4)
-#
-#  allow {
-#    protocol = "tcp"
-#    ports    = ["3389"]
-#  }
-#
-#  target_tags = ["allow-iap-rdp"]
-#}
-
-// Firewall policy using tags
+// Allow SSH via IAP when using the Firewall Secure Tags.
 resource "google_compute_network_firewall_policy" "allow_iap_firewall_policy" {
   count = var.optional_iap_fw_rules_enabled ? 1 : 0
 

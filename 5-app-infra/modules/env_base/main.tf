@@ -70,5 +70,5 @@ module "compute_instance" {
   num_instances         = var.num_instances
   hostname              = var.hostname
   instance_template     = module.instance_template.self_link
-  resource_manager_tags = data.terraform_remote_state.projects_env.outputs.firewall_tags
+  resource_manager_tags = var.project_suffix == "sample-peering" ? data.terraform_remote_state.projects_env.outputs.firewall_tags : null
 }

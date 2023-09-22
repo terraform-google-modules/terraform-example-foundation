@@ -17,11 +17,12 @@
 module "env" {
   source = "../../modules/base_env"
 
-  env                       = "development"
-  business_code             = "bu1"
-  business_unit             = "business_unit_1"
-  remote_state_bucket       = var.remote_state_bucket
-  location_kms              = var.location_kms
-  location_gcs              = var.location_gcs
-  peering_module_depends_on = var.peering_module_depends_on
+  env                           = "development"
+  business_code                 = "bu1"
+  business_unit                 = "business_unit_1"
+  remote_state_bucket           = var.remote_state_bucket
+  location_kms                  = var.location_kms
+  location_gcs                  = var.location_gcs
+  optional_iap_fw_rules_enabled = true
+  peering_module_depends_on     = var.peering_module_depends_on
 }

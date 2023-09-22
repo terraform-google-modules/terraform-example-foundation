@@ -43,7 +43,7 @@ variable "firewall_enable_logging" {
 
 variable "optional_fw_rules_enabled" {
   type        = bool
-  description = "Toggle creation of optional firewall rules: IAP SSH, IAP RDP and Internal & Global load balancing health check and load balancing IP ranges."
+  description = "Toggle creation of optional firewall rules: Internal & Global load balancing health check and load balancing IP ranges."
   default     = false
 }
 
@@ -113,4 +113,10 @@ variable "gcs_bucket_prefix" {
 variable "remote_state_bucket" {
   description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string
+}
+
+variable "optional_iap_fw_rules_enabled" {
+  type        = bool
+  description = "Toggle creation of optional IAP firewall rules: SSH, RDP."
+  default     = false
 }

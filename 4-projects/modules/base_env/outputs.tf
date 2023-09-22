@@ -101,7 +101,7 @@ output "bucket" {
 
 output "firewall_tags" {
   description = "The security tags created for firewall."
-  value = var.optional_fw_rules_enabled ? {
+  value = var.optional_iap_fw_rules_enabled ? {
     "tagKeys/${google_tags_tag_key.firewall_tag_key_ssh[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"
     "tagKeys/${google_tags_tag_key.firewall_tag_key_rdp[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"
   } : null

@@ -178,34 +178,34 @@ resource "google_compute_firewall" "allow_windows_activation" {
   target_tags = ["allow-win-activation"]
 }
 
-#// Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
-#resource "google_compute_firewall" "allow_lb" {
-#  count   = var.optional_fw_rules_enabled ? 1 : 0
-#  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
-#  network = module.peering_network.network_name
-#  project = module.peering_project.project_id
-#
-#  dynamic "log_config" {
-#    for_each = var.firewall_enable_logging == true ? [{
-#      metadata = "INCLUDE_ALL_METADATA"
-#    }] : []
-#
-#    content {
-#      metadata = log_config.value.metadata
-#    }
-#  }
-#
-#  source_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
-#
-#  // Allow common app ports by default.
-#  allow {
-#    protocol = "tcp"
-#    ports    = ["80", "8080", "443"]
-#  }
-#
-#  target_tags = ["allow-lb"]
-#}
-#
+// Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
+resource "google_compute_firewall" "allow_lb" {
+  count   = var.optional_fw_rules_enabled ? 1 : 0
+  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
+  network = module.peering_network.network_name
+  project = module.peering_project.project_id
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
+
+  source_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
+
+  // Allow common app ports by default.
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "8080", "443"]
+  }
+
+  target_tags = ["allow-lb"]
+}
+
 #// Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
 #resource "google_compute_firewall" "allow_iap_ssh" {
 #  count   = var.optional_fw_rules_enabled ? 1 : 0
@@ -264,14 +264,14 @@ resource "google_compute_firewall" "allow_windows_activation" {
 
 // Firewall policy using tags
 resource "google_compute_network_firewall_policy" "allow_iap_firewall_policy" {
-  count = var.optional_fw_rules_enabled ? 1 : 0
+  count = var.optional_iap_fw_rules_enabled ? 1 : 0
 
   name    = "fp-${local.env_code}-allow-iap-policy"
   project = module.peering_project.project_id
 }
 
 resource "google_compute_network_firewall_policy_rule" "allow_iap_ssh" {
-  count = var.optional_fw_rules_enabled ? 1 : 0
+  count = var.optional_iap_fw_rules_enabled ? 1 : 0
 
   rule_name       = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
   project         = module.peering_project.project_id
@@ -297,7 +297,7 @@ resource "google_compute_network_firewall_policy_rule" "allow_iap_ssh" {
 }
 
 resource "google_compute_network_firewall_policy_rule" "allow_iap_rdp" {
-  count = var.optional_fw_rules_enabled ? 1 : 0
+  count = var.optional_iap_fw_rules_enabled ? 1 : 0
 
   rule_name       = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
   project         = module.peering_project.project_id
@@ -323,7 +323,7 @@ resource "google_compute_network_firewall_policy_rule" "allow_iap_rdp" {
 }
 
 resource "google_compute_network_firewall_policy_association" "allow_iap_firewall_policy_association" {
-  count = var.optional_fw_rules_enabled ? 1 : 0
+  count = var.optional_iap_fw_rules_enabled ? 1 : 0
 
   name              = "allow-iap-policy-association"
   project           = module.peering_project.project_id
@@ -332,7 +332,7 @@ resource "google_compute_network_firewall_policy_association" "allow_iap_firewal
 }
 
 resource "google_tags_tag_key" "firewall_tag_key_ssh" {
-  count = var.optional_fw_rules_enabled ? 1 : 0
+  count = var.optional_iap_fw_rules_enabled ? 1 : 0
 
   short_name = "ssh-iap-access"
   parent     = "projects/${module.peering_project.project_id}"
@@ -344,14 +344,14 @@ resource "google_tags_tag_key" "firewall_tag_key_ssh" {
 }
 
 resource "google_tags_tag_value" "firewall_tag_value_ssh" {
-  count = var.optional_fw_rules_enabled ? 1 : 0
+  count = var.optional_iap_fw_rules_enabled ? 1 : 0
 
   short_name = "allow"
   parent     = "tagKeys/${google_tags_tag_key.firewall_tag_key_ssh[0].name}"
 }
 
 resource "google_tags_tag_key" "firewall_tag_key_rdp" {
-  count = var.optional_fw_rules_enabled ? 1 : 0
+  count = var.optional_iap_fw_rules_enabled ? 1 : 0
 
   short_name = "rdp-iap-access"
   parent     = "projects/${module.peering_project.project_id}"
@@ -363,7 +363,7 @@ resource "google_tags_tag_key" "firewall_tag_key_rdp" {
 }
 
 resource "google_tags_tag_value" "firewall_tag_value_rdp" {
-  count = var.optional_fw_rules_enabled ? 1 : 0
+  count = var.optional_iap_fw_rules_enabled ? 1 : 0
 
   short_name = "allow"
   parent     = "tagKeys/${google_tags_tag_key.firewall_tag_key_rdp[0].name}"

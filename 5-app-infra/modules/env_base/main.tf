@@ -63,11 +63,12 @@ module "instance_template" {
 
 module "compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
-  version = "~> 8.0"
+  version = "~> 10.0"
 
-  region            = var.region
-  subnetwork        = local.subnetwork_self_link
-  num_instances     = var.num_instances
-  hostname          = var.hostname
-  instance_template = module.instance_template.self_link
+  region                = var.region
+  subnetwork            = local.subnetwork_self_link
+  num_instances         = var.num_instances
+  hostname              = var.hostname
+  instance_template     = module.instance_template.self_link
+  resource_manager_tags = data.terraform_remote_state.projects_env.outputs.firewall_tags
 }

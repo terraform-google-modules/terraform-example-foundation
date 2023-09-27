@@ -22,8 +22,10 @@ locals {
     "sample-restrict" = data.terraform_remote_state.projects_env.outputs.restricted_shared_vpc_project,
   }
   env_project_id        = local.env_project_ids[var.project_suffix]
-  subnetwork_self_links = data.terraform_remote_state.projects_env.outputs.base_subnets_self_links
-  subnetwork_self_link  = [for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
+  base_subnetworks      = data.terraform_remote_state.projects_env.outputs.base_subnets_self_links
+  subnetwork            = [for subnet in local.base_subnetworks : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
+  subnetwork_self_link  = var.project_suffix == "sample-peering" ? data.terraform_remote_state.projects_env.outputs.peering_subnetwork_self_link : local.subnetwork
+  resource_manager_tags = var.project_suffix == "sample-peering" ? data.terraform_remote_state.projects_env.outputs.firewall_tags : null
 }
 
 
@@ -70,5 +72,5 @@ module "compute_instance" {
   num_instances         = var.num_instances
   hostname              = var.hostname
   instance_template     = module.instance_template.self_link
-  resource_manager_tags = var.project_suffix == "sample-peering" ? data.terraform_remote_state.projects_env.outputs.firewall_tags : null
+  resource_manager_tags = local.resource_manager_tags
 }

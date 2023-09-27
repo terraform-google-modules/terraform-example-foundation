@@ -99,10 +99,15 @@ output "bucket" {
   value       = module.gcs_buckets.bucket
 }
 
+output "peering_subnetwork_self_link" {
+  description = "The subnetwork self link of the peering network."
+  value       = var.optional_iap_fw_rules_enabled ? module.peering_network.subnets_self_links[0] : ""
+}
+
 output "firewall_tags" {
   description = "The security tags created for firewall."
   value = var.optional_iap_fw_rules_enabled ? {
     "tagKeys/${google_tags_tag_key.firewall_tag_key_ssh[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"
     "tagKeys/${google_tags_tag_key.firewall_tag_key_rdp[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"
-  } : null
+  } : {}
 }

@@ -18,12 +18,14 @@
 | base\_subnets\_self\_links | The self-links of subnets from base environment. |
 | bucket | The created storage bucket |
 | env\_secrets\_project | Project sample peering project id. |
+| firewall\_tags | The security tags created for firewall. |
 | floating\_project | Project sample floating project. |
 | keyring | The name of the keyring. |
 | keys | List of created key names. |
 | peering\_complete | Output to be used as a module dependency. |
 | peering\_network | Peer network peering resource. |
 | peering\_project | Project sample peering project id. |
+| peering\_subnetwork\_self\_link | The subnetwork self link of the peering network. |
 | restricted\_enabled\_apis | Activated APIs. |
 | restricted\_shared\_vpc\_project | Project sample restricted project id. |
 | restricted\_shared\_vpc\_project\_number | Project sample restricted project. |

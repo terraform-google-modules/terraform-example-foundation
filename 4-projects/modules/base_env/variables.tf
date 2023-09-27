@@ -120,3 +120,9 @@ variable "optional_iap_fw_rules_enabled" {
   description = "Toggle creation of optional IAP firewall rules: SSH, RDP."
   default     = false
 }
+
+variable "subnet_region" {
+  description = "Region which the peered subnet will be created."
+  type        = string
+  default     = "us-central1"
+}

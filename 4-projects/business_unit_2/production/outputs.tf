@@ -98,3 +98,13 @@ output "bucket" {
   description = "The created storage bucket"
   value       = module.env.bucket
 }
+
+output "peering_subnetwork_self_link" {
+  description = "The subnetwork self link of the peering network."
+  value       = module.env.peering_subnetwork_self_link
+}
+
+output "firewall_tags" {
+  description = "The security tags created for firewall."
+  value       = module.env.firewall_tags
+}

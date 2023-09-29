@@ -138,12 +138,13 @@ resource "google_compute_network" "gl-network" {
   auto_create_subnetworks = false
 }
 resource "google_compute_subnetwork" "gl-subnetwork" {
-  count         = var.create_network ? 1 : 0
+  count         = var.create_subnetwork ? 1 : 0
   project       = var.project_id
   name          = var.subnet_name
   ip_cidr_range = var.subnet_ip
   region        = var.region
-  network       = google_compute_network.gl-network[0].name
+  network       = local.network_name
+  #network       = google_compute_network.gl-network[0].name
 }
 
 resource "google_compute_router" "default" {
@@ -175,44 +176,132 @@ resource "google_service_account" "runner_service_account" {
   display_name = "GitLab Runner GCE Service Account"
 }
 
-# allow GCE to pull images from GCR
-resource "google_project_iam_binding" "gce" {
-  count   = var.service_account == "" ? 1 : 0
-  project = var.project_id
-  role    = "roles/storage.objectViewer"
-  members = [
-    "serviceAccount:${local.service_account}",
-  ]
+/*****************************************
+  Runner Secrets
+ *****************************************/
+# resource "google_secret_manager_secret" "gl-secret" {
+#   provider  = google-beta
+#   project   = var.project_id
+#   secret_id = "gl-token"
+
+#   labels = {
+#     label = "gl-token"
+#   }
+
+#   replication {
+#     user_managed {
+#       replicas {
+#         location = var.region
+#       }
+#     }
+#   }
+# }
+# resource "google_secret_manager_secret_version" "gl-secret-version" {
+#   provider = google-beta
+#   secret   = google_secret_manager_secret.gl-secret.id
+#   secret_data = jsonencode({
+#     "REPO_NAME"    = var.repo_name
+#     "REPO_OWNER"   = var.repo_owner
+#     "GITLAB_TOKEN" = var.gl_token
+#     "LABELS"       = join(",", var.gl_runner_labels)
+#   })
+# }
+
+
+# resource "google_secret_manager_secret_iam_member" "gl-secret-member" {
+#   provider  = google-beta
+#   project   = var.project_id
+#   secret_id = google_secret_manager_secret.gl-secret.id
+#   role      = "roles/secretmanager.secretAccessor"
+#   member    = "serviceAccount:${local.service_account}"
+# }
+
+/*****************************************
+  Runner GCE Instance Template
+ *****************************************/
+locals {
+  instance_name = "gl-runner-vm"
 }
 
-resource "google_compute_instance" "gitlab_runner" {
-  name           = "gl-runner-instance"
-  project        = var.project_id
-  zone           = "us-central1-a"
-  machine_type   = "e2-medium"
-  can_ip_forward = true
-
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
-    }
+module "mig_template" {
+  source             = "terraform-google-modules/vm/google//modules/instance_template"
+  version            = "~> 7.0"
+  project_id         = var.project_id
+  machine_type       = var.machine_type
+  network            = local.network_name
+  subnetwork         = local.subnet_name
+  region             = var.region
+  subnetwork_project = var.subnetwork_project != "" ? var.subnetwork_project : var.project_id
+  service_account = {
+    email = local.service_account
+    scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
   }
-  tags                    = ["http-server", "https-server"]
-  metadata_startup_script = file("${abspath(path.module)}/scripts/gl_runner.sh")
-
-  network_interface {
-    subnetwork         = google_compute_subnetwork.gl-subnetwork[0].name
-    network_ip         = "10.10.10.8"
-    subnetwork_project = var.project_id
-  }
-
-  service_account {
-    email  = local.service_account
-    scopes = ["cloud-platform"]
-  }
-
-  depends_on = [
-    google_compute_network.gl-network,
-    google_compute_subnetwork.gl-subnetwork
+  disk_size_gb         = 100
+  disk_type            = "pd-ssd"
+  auto_delete          = true
+  name_prefix          = "gl-runner"
+  source_image_family  = var.source_image_family
+  source_image_project = var.source_image_project
+  startup_script       = local.startup_script
+  source_image         = var.source_image
+  metadata = merge({
+    "secret-id" = google_secret_manager_secret_version.gl-secret-version.name
+    }, {
+    "shutdown-script" = local.shutdown_script
+  }, var.custom_metadata)
+  tags = [
+    "gl-runner-vm"
   ]
 }
+/*****************************************
+  Runner MIG
+ *****************************************/
+module "mig" {
+  source             = "terraform-google-modules/vm/google//modules/mig"
+  version            = "~> 7.0"
+  project_id         = var.project_id
+  subnetwork_project = var.project_id
+  hostname           = local.instance_name
+  region             = var.region
+  instance_template  = module.mig_template.self_link
+
+  /* autoscaler */
+  autoscaling_enabled = true
+  min_replicas        = var.min_replicas
+  max_replicas        = var.max_replicas
+  cooldown_period     = var.cooldown_period
+}
+
+# resource "google_compute_instance" "gitlab_runner" {
+#   name           = "gl-runner-instance"
+#   project        = var.project_id
+#   zone           = "us-central1-a"
+#   machine_type   = "e2-medium"
+#   can_ip_forward = true
+
+#   boot_disk {
+#     initialize_params {
+#       image = "debian-cloud/debian-11"
+#     }
+#   }
+#   tags                    = ["http-server", "https-server"]
+#   metadata_startup_script = file("${abspath(path.module)}/scripts/gl_runner.sh")
+
+#   network_interface {
+#     subnetwork         = google_compute_subnetwork.gl-subnetwork[0].name
+#     network_ip         = "10.10.10.8"
+#     subnetwork_project = var.project_id
+#   }
+
+#   service_account {
+#     email  = local.service_account
+#     scopes = ["cloud-platform"]
+#   }
+
+#   depends_on = [
+#     google_compute_network.gl-network,
+#     google_compute_subnetwork.gl-subnetwork
+#   ]
+# }

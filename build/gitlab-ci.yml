@@ -42,9 +42,10 @@ build-image:
     - image
 
 # All branches need to be protected, otherwise the value of environment variables won't be read.
+# Needs to disable -> projeto -> settings -> cicd -> token access -> limit access to this project
 
 image:
-  name: $CI_REGISTRY/terraform-gcloud:latest
+  name: registry.gitlab.com/renatojr_ciandt_group2/project_group2/terraform-gcloud:latest
   entrypoint: [""]
 
 terraform-plan:

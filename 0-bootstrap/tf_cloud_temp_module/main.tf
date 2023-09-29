@@ -8,112 +8,121 @@ terraform {
 }
 
 provider "tfe" {
-  token = var.tfe_token
+  token = var.tfc_token
 }
 
 locals {
-    tfe_project_names = ["0-bootstrap", "1-org", "2-environments", "3-networks", "4-projects", "5-app-infra"]
+  tfc_org_name = var.tfc_org_name
 
-    tfc_org_structure = {
-    name = "TODO",
-    projects = {
-        "0-bootstrap" = {
-            vcs_repo = "",
-            workspaces = [
-                {name="0-shared", vcs_branch="production", directory="/envs/shared"}
-            ],
-        },
-        "1-org" = {
-            vcs_repo = "",
-            workspaces = [
-                {name="1-shared", vcs_branch="production", directory="/envs/shared"}
-            ],
-        
-        },
-        "2-environments" = {
-            vcs_repo = "",
-            workspaces = [
-                {name="2-production", vcs_branch="production", directory="/envs/production"},
-                {name="2-non-production", vcs_branch="non-production", directory="/envs/non-production"},
-                {name="2-development", vcs_branch="development", directory="/envs/development"},
-            ],
-        
-        },
-        "3-networks" = {
-            vcs_repo = "",
-            workspaces = [
-                {name="3-production", vcs_branch="production", directory="/envs/production"},
-                {name="3-non-production", vcs_branch="non-production", directory="/envs/non-production"},
-                {name="3-development", vcs_branch="development", directory="/envs/development"},
-                {name="3-shared", vcs_branch="production", directory="/envs/production"},
-            ],
-        
-        },
-        "4-projects" = {
-            vcs_repo = "",
-            workspaces = [
-                {name="4-bu1-production", vcs_branch="production", directory="/business_unit_1/production"},
-                {name="4-bu1-non-production", vcs_branch="non-production", directory="/business_unit_1/non-production"},
-                {name="4-bu1-development", vcs_branch="development", directory="/business_unit_1/development"},
-                {name="4-bu1-shared", vcs_branch="production", directory="/business_unit_1/production"},
-                {name="4-bu2-production", vcs_branch="production", directory="/business_unit_2/production"},
-                {name="4-bu2-non-production", vcs_branch="non-production", directory="/business_unit_2/non-production"},
-                {name="4-bu2-development", vcs_branch="development", directory="/business_unit_2/development"},
-                {name="4-bu2-shared", vcs_branch="production", directory="/business_unit_2/production"},
-            ],
-        
-        },
-        "5-app-infra" = {
-            vcs_repo = "",
-            workspaces = [
-                {name="5-bu1-production", vcs_branch="production", directory="/business_unit_1/production"},
-                {name="5-bu1-non-production", vcs_branch="non-production", directory="/business_unit_1/non-production"},
-                {name="5-bu1-development", vcs_branch="development", directory="/business_unit_1/development"},
-            ],
-        
-        },
-    }
+  tfc_projects = {
+    "bootstrap" = {
+      vcs_repo = var.vcs_repos.bootstrap,
+    },
+    "org" = {
+      vcs_repo = var.vcs_repos.organization,
+    },
+    "envs" = {
+      vcs_repo = var.vcs_repos.environments,
+    },
+    "networks" = {
+      vcs_repo = var.vcs_repos.networks,
+    },
+    "projects" = {
+      vcs_repo = var.vcs_repos.projects,
+    },
+    # TODO: Move this to step 4
+    "app-infra" = {
+      vcs_repo = var.vcs_repos.app-infra,
+    },
   }
 
-    tfc_workspaces = flatten([
-        for project, config in local.tfc_org_structure.projects:[
-            for workspace in config.workspaces: {
-                name = workspace.name,
-                working_directory = workspace.directory,
-                vcs_repo = {
-                    identifier = config.vcs_repo,
-                    branch = workspace.vcs_branch,
-                }
-                organization = local.tfc_org_structure.name,
-            }
+  tfc_workspaces = {
+    "bootstrap" = {
+      "0-shared" = { vcs_branch = "production", directory = "/envs/shared" }
+    },
+    "org" = {
+      "1-shared" = { vcs_branch = "production", directory = "/envs/shared" }
+    },
+    "envs" = {
+      "2-production"     = { vcs_branch = "production", directory = "/envs/production" },
+      "2-non-production" = { vcs_branch = "non-production", directory = "/envs/non-production" },
+      "2-development"    = { vcs_branch = "development", directory = "/envs/development" },
+    },
+    "networks" = {
+      "3-production"     = { vcs_branch = "production", directory = "/envs/production" },
+      "3-non-production" = { vcs_branch = "non-production", directory = "/envs/non-production" },
+      "3-development"    = { vcs_branch = "development", directory = "/envs/development" },
+      "3-shared"         = { vcs_branch = "production", directory = "/envs/production" },
+    },
+    "projects" = {
+      "4-bu1-production"     = { vcs_branch = "production", directory = "/business_unit_1/production" },
+      "4-bu1-non-production" = { vcs_branch = "non-production", directory = "/business_unit_1/non-production" },
+      "4-bu1-development"    = { vcs_branch = "development", directory = "/business_unit_1/development" },
+      "4-bu1-shared"         = { vcs_branch = "production", directory = "/business_unit_1/production" },
+      "4-bu2-production"     = { vcs_branch = "production", directory = "/business_unit_2/production" },
+      "4-bu2-non-production" = { vcs_branch = "non-production", directory = "/business_unit_2/non-production" },
+      "4-bu2-development"    = { vcs_branch = "development", directory = "/business_unit_2/development" },
+      "4-bu2-shared"         = { vcs_branch = "production", directory = "/business_unit_2/production" },
+
+    },
+    # TODO: Move this to step 4
+    "app-infra" = {
+      "5-bu1-production"     = { vcs_branch = "production", directory = "/business_unit_1/production" },
+      "5-bu1-non-production" = { vcs_branch = "non-production", directory = "/business_unit_1/non-production" },
+      "5-bu1-development"    = { vcs_branch = "development", directory = "/business_unit_1/development" },
+    },
+  }
+
+    tfc_workspaces_flat = flatten([
+        for project, workspaces in local.tfc_workspaces : [
+          for name, config in workspaces : {
+            name = name
+            project   = project
+            working_directory = config["directory"]
+            branch = config["vcs_branch"]
+          }
         ]
-    ])
-    
+      ])
 
-}
-
-resource "tfe_organization" "foundation" {
-  name  = local.tfc_org_structure.name
-  email = "leonardo.romanini@ciandt.com"
 }
 
 resource "tfe_project" "project" {
-  for_each = toset([for key, value in local.tfc_org_structure.projects : key])
+  for_each = local.tfc_projects
 
-  organization = tfe_organization.foundation.name
-  name         = each.value
+  organization = local.tfc_org_name
+  name         = each.key
+}
+
+data "tfe_project" "project_lookup" {
+  for_each = local.tfc_projects
+
+  organization = local.tfc_org_name
+  name         = each.key
+
+  depends_on = [tfe_project.project]
 }
 
 resource "tfe_workspace" "test" {
-    for_each = {for k, v in local.tfc_workspaces : k => v}
-  
-    name     = each.value.name
-    working_directory = each.value.working_directory
-    vcs_repo {
-        identifier = each.value.vcs_repo.identifier
-        branch = each.value.vcs_repo.branch
-        oauth_token_id = "TODO"
-    }
-    organization = each.value.organization
+  for_each = {for k, v in local.tfc_workspaces_flat: k => v}
+
+  organization      = local.tfc_org_name
+  name              = each.value.name
+  working_directory = each.value.working_directory
+  project_id        = data.tfe_project.project_lookup[each.value.project].id
+  vcs_repo {
+    identifier     = local.tfc_projects[each.value.project].vcs_repo
+    branch         = each.value.branch
+    oauth_token_id = "ot-8GzsPyXGK5GPjnuC"
+  }
 }
 
+# TBD - Do we need OAUTH creation via Terraform?
+# It wil require manual steps anyway if we don't use github/gitlab providers
+# in order to grant the proper access
+# resource "tfe_oauth_client" "oauth" {
+#   organization     = local.tfc_org_structure.name
+#   api_url          = var.vcs_api_url
+#   http_url         = var.vcs_http_url
+#   oauth_token      = var.vcs_oauth_token
+#   service_provider = var.vcs_service_provider
+# }

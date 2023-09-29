@@ -126,3 +126,9 @@ variable "subnet_region" {
   type        = string
   default     = "us-central1"
 }
+
+variable "subnet_ip_range" {
+  description = "IP range for the peered subnetwork. If \"optional_iap_fw_rules_enabled\" is true, this field should not be null."
+  type        = string
+  default     = null
+}

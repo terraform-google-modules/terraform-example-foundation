@@ -18,11 +18,11 @@ locals {
   env_code = substr(var.env, 0, 1)
   sb_peered = {
     subnet_name           = "sb-${local.env_code}-${var.business_code}-peered-${var.subnet_region}"
-    subnet_ip             = "10.0.0.0/24"
+    subnet_ip             = var.subnet_ip_range
     subnet_region         = var.subnet_region
     subnet_private_access = "true"
     subnet_flow_logs      = "true"
-    description           = "Peered subnetwork for VMs with Firewall Secure Tags"
+    description           = "Peered subnetwork on region ${var.subnet_region} to deploy the VM with the new Resource Manager Tags."
   }
 }
 

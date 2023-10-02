@@ -86,63 +86,63 @@ output "optional_groups" {
 /* ----------------------------------------
     Specific to cloudbuild_module
    ---------------------------------------- */
-# Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
-output "cloudbuild_project_id" {
-  description = "Project where Cloud Build configuration and terraform container image will reside."
-  value       = module.tf_source.cloudbuild_project_id
-}
+# Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build or Terraform Cloud
+# output "cloudbuild_project_id" {
+#   description = "Project where Cloud Build configuration and terraform container image will reside."
+#   value       = module.tf_source.cloudbuild_project_id
+# }
 
-output "gcs_bucket_cloudbuild_artifacts" {
-  description = "Bucket used to store Cloud Build artifacts in cicd project."
-  value       = { for key, value in module.tf_workspace : key => replace(value.artifacts_bucket, local.bucket_self_link_prefix, "") }
-}
+# output "gcs_bucket_cloudbuild_artifacts" {
+#   description = "Bucket used to store Cloud Build artifacts in cicd project."
+#   value       = { for key, value in module.tf_workspace : key => replace(value.artifacts_bucket, local.bucket_self_link_prefix, "") }
+# }
 
-output "gcs_bucket_cloudbuild_logs" {
-  description = "Bucket used to store Cloud Build logs in cicd project."
-  value       = { for key, value in module.tf_workspace : key => replace(value.logs_bucket, local.bucket_self_link_prefix, "") }
-}
+# output "gcs_bucket_cloudbuild_logs" {
+#   description = "Bucket used to store Cloud Build logs in cicd project."
+#   value       = { for key, value in module.tf_workspace : key => replace(value.logs_bucket, local.bucket_self_link_prefix, "") }
+# }
 
-output "projects_gcs_bucket_tfstate" {
-  description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
-  value       = module.gcp_projects_state_bucket.bucket.name
-}
+# output "projects_gcs_bucket_tfstate" {
+#   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
+#   value       = module.gcp_projects_state_bucket.bucket.name
+# }
 
-output "cloud_builder_artifact_repo" {
-  description = "Artifact Registry (AR) Repository created to store TF Cloud Builder images."
-  value       = "projects/${module.tf_source.cloudbuild_project_id}/locations/${var.default_region}/repositories/${module.tf_cloud_builder.artifact_repo}"
-}
+# output "cloud_builder_artifact_repo" {
+#   description = "Artifact Registry (AR) Repository created to store TF Cloud Builder images."
+#   value       = "projects/${module.tf_source.cloudbuild_project_id}/locations/${var.default_region}/repositories/${module.tf_cloud_builder.artifact_repo}"
+# }
 
-output "csr_repos" {
-  description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
-  value = { for k, v in module.tf_source.csr_repos : k => {
-    "id"      = v.id,
-    "name"    = v.name,
-    "project" = v.project,
-    "url"     = v.url,
-    }
-  }
-}
+# output "csr_repos" {
+#   description = "List of Cloud Source Repos created by the module, linked to Cloud Build triggers."
+#   value = { for k, v in module.tf_source.csr_repos : k => {
+#     "id"      = v.id,
+#     "name"    = v.name,
+#     "project" = v.project,
+#     "url"     = v.url,
+#     }
+#   }
+# }
 
-output "cloud_build_private_worker_pool_id" {
-  description = "ID of the Cloud Build private worker pool."
-  value       = module.tf_private_pool.private_worker_pool_id
+# output "cloud_build_private_worker_pool_id" {
+#   description = "ID of the Cloud Build private worker pool."
+#   value       = module.tf_private_pool.private_worker_pool_id
 
-}
+# }
 
-output "cloud_build_worker_range_id" {
-  description = "The Cloud Build private worker IP range ID."
-  value       = module.tf_private_pool.worker_range_id
-}
+# output "cloud_build_worker_range_id" {
+#   description = "The Cloud Build private worker IP range ID."
+#   value       = module.tf_private_pool.worker_range_id
+# }
 
-output "cloud_build_worker_peered_ip_range" {
-  description = "The IP range of the peered service network."
-  value       = module.tf_private_pool.worker_peered_ip_range
-}
+# output "cloud_build_worker_peered_ip_range" {
+#   description = "The IP range of the peered service network."
+#   value       = module.tf_private_pool.worker_peered_ip_range
+# }
 
-output "cloud_build_peered_network_id" {
-  description = "The ID of the Cloud Build peered network."
-  value       = module.tf_private_pool.peered_network_id
-}
+# output "cloud_build_peered_network_id" {
+#   description = "The ID of the Cloud Build peered network."
+#   value       = module.tf_private_pool.peered_network_id
+# }
 
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
@@ -182,3 +182,12 @@ output "cloud_build_peered_network_id" {
 #   description = "Bucket used to store Jenkins artifacts in Jenkins project."
 #   value       = module.jenkins_bootstrap.gcs_bucket_jenkins_artifacts
 # }
+
+/* ----------------------------------------
+    Specific to tfc_bootstrap
+   ---------------------------------------- */
+# Un-comment tfc_bootstrap and its outputs if you want to use Terraform Cloud instead of Cloud Build
+output "cicd_project_id" {
+  description = "Project where the CI/CD infrastructure for Terraform Cloud resides."
+  value       = module.tfc_cicd.project_id
+}

@@ -22,6 +22,12 @@ terraform {
       source  = "hashicorp/google"
       version = ">= 3.50, != 4.31.0"
     }
+    
+    // Un-comment tfe required_providers when using Terraform Cloud
+    tfe = {
+      source  = "hashicorp/tfe"
+      version = "0.48.0"
+    }
   }
 
   provider_meta "google" {

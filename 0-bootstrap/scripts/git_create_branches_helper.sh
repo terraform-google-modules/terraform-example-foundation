@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the base path where your repositories are located
-BASE_PATH="/home/leonardo.romanini/alpha/workspace/repos_poc"
+BASE_PATH="../../"
 
 # Function to create branches and push to remote
 create_branches_and_push() {

@@ -169,7 +169,7 @@ resource "tfe_workspace" "test" {
   vcs_repo {
     identifier     = local.tfc_projects[each.value.project].vcs_repo
     branch         = each.value.branch
-    oauth_token_id = "ot-8GzsPyXGK5GPjnuC" # TODO: Make a var here
+    oauth_token_id = "" # TODO: Make a var here
   }
 }
 

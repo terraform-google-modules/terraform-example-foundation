@@ -20,7 +20,7 @@
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | secrets\_prj\_suffix | Name suffix to use for secrets project created. | `string` | `"env-secrets"` | no |
 | subnet\_ip\_range | IP range for the peered subnetwork. If "optional\_iap\_fw\_rules\_enabled" is true, this field should not be null. | `string` | `null` | no |
-| subnet\_region | Region which the peered subnet will be created. | `string` | `"us-central1"` | no |
+| subnet\_region | Region which the peered subnet will be created. If "optional\_iap\_fw\_rules\_enabled" is true, this field should not be null. | `string` | `null` | no |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | `bool` | `false` | no |
 
 ## Outputs

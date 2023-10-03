@@ -24,6 +24,7 @@ module "env" {
   location_kms                  = var.location_kms
   location_gcs                  = var.location_gcs
   optional_iap_fw_rules_enabled = true
+  subnet_region                 = "us-central1"
   subnet_ip_range               = "10.3.192.0/21"
   peering_module_depends_on     = var.peering_module_depends_on
 }

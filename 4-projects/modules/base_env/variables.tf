@@ -122,9 +122,9 @@ variable "optional_iap_fw_rules_enabled" {
 }
 
 variable "subnet_region" {
-  description = "Region which the peered subnet will be created."
+  description = "Region which the peered subnet will be created. If \"optional_iap_fw_rules_enabled\" is true, this field should not be null."
   type        = string
-  default     = "us-central1"
+  default     = null
 }
 
 variable "subnet_ip_range" {

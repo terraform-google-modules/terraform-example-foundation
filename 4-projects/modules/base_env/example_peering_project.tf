@@ -47,6 +47,7 @@ module "peering_project" {
   environment                         = var.env
   project_budget                      = var.project_budget
   project_prefix                      = local.project_prefix
+  enable_cloudbuild_deploy            = local.enable_cloudbuild_deploy
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
 
   // The roles defined in "sa_roles" will be used to grant the necessary permissions

@@ -31,30 +31,37 @@ func TestProcessSteps(t *testing.T) {
 
 	// Loading a new file
 	s, err := LoadSteps(filepath.Join(t.TempDir(), "new.json"))
+	assert.NoError(t, err)
 
 	// CompleteStep
 	assert.False(t, s.IsStepComplete("unit"), "check if 'unit' is 'COMPLETED' should be false")
-	s.CompleteStep("unit")
+	err = s.CompleteStep("unit")
+	assert.NoError(t, err)
 	assert.True(t, s.IsStepComplete("unit"), "check if 'unit' is 'COMPLETED' should be true")
 
 	// FailStep
 	msg := "step failed"
-	s.FailStep("fail", msg)
+	err = s.FailStep("fail", msg)
+	assert.NoError(t, err)
 	assert.False(t, s.IsStepComplete("fail"), "check if 'fail' is 'COMPLETED' should be false")
 	assert.Equal(t, s.GetStepError("fail"), msg, "step should have failed")
 
 	// DestroyStep
 	assert.False(t, s.IsStepDestroyed("old"), "check if 'old' is 'DESTROYED' should be false")
-	s.DestroyStep("old")
+	err = s.DestroyStep("old")
+	assert.NoError(t, err)
 	assert.True(t, s.IsStepDestroyed("old"), "check if 'old' is 'DESTROYED' should be true")
 
 	// ResetStep
-	s.CompleteStep("reset")
-	s.CompleteStep("reset.one")
+	err = s.CompleteStep("reset")
+	assert.NoError(t, err)
+	err = s.CompleteStep("reset.one")
+	assert.NoError(t, err)
 	assert.True(t, s.IsStepComplete("reset"), "check if 'reset is 'COMPLETED' should be true")
 	assert.True(t, s.IsStepComplete("reset.one"), "check if 'reset.one' is 'COMPLETED' should be true")
 
-	s.ResetStep("reset.one")
+	err = s.ResetStep("reset.one")
+	assert.NoError(t, err)
 
 	assert.False(t, s.IsStepComplete("reset.one"), "check if 'reset.one' is 'COMPLETED' should be false")
 	assert.False(t, s.IsStepComplete("reset"), "check if 'reset' is 'COMPLETED' should be false")
@@ -92,7 +99,8 @@ func TestProcessSteps(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, s.IsStepDestroyed("unit"), "check if 'unit' is 'DESTROYED' should be true")
 
-	s.CompleteStep("destroy")
+	err = s.CompleteStep("destroy")
+	assert.NoError(t, err)
 	assert.False(t, s.IsStepDestroyed("destroy"), "check if 'destroy' is 'DESTROYED' should be false")
 	err = s.RunDestroyStep("destroy", func() error {
 		return fmt.Errorf(badStepMsg)
@@ -101,7 +109,8 @@ func TestProcessSteps(t *testing.T) {
 	assert.False(t, s.IsStepDestroyed("destroy"), "check if 'destroy' is 'DESTROYED' should be false")
 	assert.Equal(t, s.GetStepError("destroy"), badStepMsg, "step 'destroy' should have failed")
 
-	s.DestroyStep("gone")
+	err = s.DestroyStep("gone")
+	assert.NoError(t, err)
 	assert.True(t, s.IsStepDestroyed("gone"), "check if 'gone' is 'DESTROYED' should be true")
 	err = s.RunDestroyStep("gone", func() error {
 		return fmt.Errorf("will fail if executed")

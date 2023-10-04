@@ -151,7 +151,10 @@ func main() {
 	}
 
 	if cfg.resetStep != "" {
-		s.ResetStep(cfg.resetStep)
+		if err := s.ResetStep(cfg.resetStep); err != nil {
+			fmt.Printf("# Reset step failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
 		return
 	}
 

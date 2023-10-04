@@ -23,6 +23,6 @@ For example usage, please check the the [net-hubs-transitivity.tf](../../envs/sh
 
 ## Outputs
 
-No output.
+No outputs.
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

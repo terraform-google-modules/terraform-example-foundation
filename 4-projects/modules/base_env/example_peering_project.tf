@@ -16,14 +16,6 @@
 
 locals {
   env_code = substr(var.env, 0, 1)
-  sb_peered = {
-    subnet_name           = "sb-${local.env_code}-${var.business_code}-peered-${var.subnet_region}"
-    subnet_ip             = var.subnet_ip_range
-    subnet_region         = var.subnet_region
-    subnet_private_access = "true"
-    subnet_flow_logs      = "true"
-    description           = "Peered subnetwork on region ${var.subnet_region} to deploy the VM with the new Resource Manager Tags."
-  }
 }
 
 data "google_netblock_ip_ranges" "legacy_health_checkers" {
@@ -89,7 +81,16 @@ module "peering_network" {
   shared_vpc_host                        = "false"
   delete_default_internet_gateway_routes = "true"
 
-  subnets = var.optional_iap_fw_rules_enabled ? [local.sb_peered] : []
+  subnets = [
+    {
+      subnet_name           = "sb-${local.env_code}-${var.business_code}-peered-${var.subnet_region}"
+      subnet_ip             = var.subnet_ip_range
+      subnet_region         = var.subnet_region
+      subnet_private_access = "true"
+      subnet_flow_logs      = "true"
+      description           = "Peered subnetwork on region ${var.subnet_region}."
+    }
+  ]
 }
 
 resource "google_dns_policy" "default_policy" {

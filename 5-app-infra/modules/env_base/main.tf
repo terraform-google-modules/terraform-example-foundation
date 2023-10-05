@@ -25,7 +25,7 @@ locals {
   base_subnetworks      = data.terraform_remote_state.projects_env.outputs.base_subnets_self_links
   subnetwork            = [for subnet in local.base_subnetworks : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
   subnetwork_self_link  = var.project_suffix == "sample-peering" ? data.terraform_remote_state.projects_env.outputs.peering_subnetwork_self_link : local.subnetwork
-  resource_manager_tags = var.project_suffix == "sample-peering" ? data.terraform_remote_state.projects_env.outputs.firewall_tags : null
+  resource_manager_tags = var.project_suffix == "sample-peering" ? data.terraform_remote_state.projects_env.outputs.iap_firewall_tags : null
 }
 
 

@@ -104,8 +104,8 @@ output "peering_subnetwork_self_link" {
   value       = var.optional_iap_fw_rules_enabled ? module.peering_network.subnets_self_links[0] : ""
 }
 
-output "firewall_tags" {
-  description = "The security tags created for firewall."
+output "iap_firewall_tags" {
+  description = "The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project."
   value = var.optional_iap_fw_rules_enabled ? {
     "tagKeys/${google_tags_tag_key.firewall_tag_key_ssh[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"
     "tagKeys/${google_tags_tag_key.firewall_tag_key_rdp[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"

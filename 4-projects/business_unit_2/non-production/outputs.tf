@@ -104,7 +104,7 @@ output "peering_subnetwork_self_link" {
   value       = module.env.peering_subnetwork_self_link
 }
 
-output "firewall_tags" {
-  description = "The security tags created for firewall."
-  value       = module.env.firewall_tags
+output "iap_firewall_tags" {
+  description = "The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project."
+  value       = module.env.iap_firewall_tags
 }

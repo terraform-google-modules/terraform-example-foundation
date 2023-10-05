@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
-location_kms = "us"
-location_gcs = "US"
+location_kms          = "us"
+location_gcs          = "US"
+peering_subnet_region = "us-central1"

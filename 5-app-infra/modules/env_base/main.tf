@@ -21,11 +21,25 @@ locals {
     "sample-peering"  = data.terraform_remote_state.projects_env.outputs.peering_project,
     "sample-restrict" = data.terraform_remote_state.projects_env.outputs.restricted_shared_vpc_project,
   }
+  env_project_subnets = {
+    "sample-base"     = local.base_subnetwork_self_link,
+    "sample-floating" = local.base_subnetwork_self_link,
+    "sample-peering"  = data.terraform_remote_state.projects_env.outputs.peering_subnetwork_self_link,
+    "sample-restrict" = local.base_subnetwork_self_link,
+  }
+  env_project_resource_manager_tags = {
+    "sample-base"     = null,
+    "sample-floating" = null,
+    "sample-peering"  = data.terraform_remote_state.projects_env.outputs.iap_firewall_tags,
+    "sample-restrict" = null,
+  }
+
+  subnetwork_self_links     = data.terraform_remote_state.projects_env.outputs.base_subnets_self_links
+  base_subnetwork_self_link = [for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
+
   env_project_id        = local.env_project_ids[var.project_suffix]
-  base_subnetworks      = data.terraform_remote_state.projects_env.outputs.base_subnets_self_links
-  subnetwork            = [for subnet in local.base_subnetworks : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
-  subnetwork_self_link  = var.project_suffix == "sample-peering" ? data.terraform_remote_state.projects_env.outputs.peering_subnetwork_self_link : local.subnetwork
-  resource_manager_tags = var.project_suffix == "sample-peering" ? data.terraform_remote_state.projects_env.outputs.iap_firewall_tags : null
+  subnetwork_self_link  = local.env_project_subnets[var.project_suffix]
+  resource_manager_tags = local.env_project_resource_manager_tags[var.project_suffix]
 }
 
 

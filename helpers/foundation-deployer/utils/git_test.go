@@ -55,6 +55,7 @@ func TestGit(t *testing.T) {
 
 	localBranch, err := local.GetCurrentBranch()
 	assert.Equal(t, localBranch, "unit-test", "current branch should be 'unit-test'")
+	assert.NoError(t, err)
 
 	err = os.WriteFile(filepath.Join(repo, "go.mod"), []byte("module example.com/test\n"), 0644)
 	assert.NoError(t, err)

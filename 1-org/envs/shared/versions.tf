@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2021-2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 1.3"
   required_providers {
     google = {
       source  = "hashicorp/google"

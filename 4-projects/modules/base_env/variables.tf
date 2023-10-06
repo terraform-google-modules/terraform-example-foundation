@@ -115,20 +115,20 @@ variable "remote_state_bucket" {
   type        = string
 }
 
-variable "optional_iap_fw_rules_enabled" {
+variable "peering_iap_fw_rules_enabled" {
   type        = bool
   description = "Toggle creation of optional IAP firewall rules: SSH, RDP."
   default     = false
 }
 
 variable "subnet_region" {
-  description = "Region which the peered subnet will be created. If \"optional_iap_fw_rules_enabled\" is true, this field should not be null."
+  description = "Region which the peered subnet will be created. If \"peering_iap_fw_rules_enabled\" is true, this field should not be null."
   type        = string
   default     = null
 }
 
 variable "subnet_ip_range" {
-  description = "IP range for the peered subnetwork. If \"optional_iap_fw_rules_enabled\" is true, this field should not be null."
+  description = "IP range for the peered subnetwork. If \"peering_iap_fw_rules_enabled\" is true, this field should not be null."
   type        = string
   default     = null
 }

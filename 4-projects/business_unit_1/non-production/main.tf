@@ -17,14 +17,14 @@
 module "env" {
   source = "../../modules/base_env"
 
-  env                           = "non-production"
-  business_code                 = "bu1"
-  business_unit                 = "business_unit_1"
-  remote_state_bucket           = var.remote_state_bucket
-  location_kms                  = var.location_kms
-  location_gcs                  = var.location_gcs
-  optional_iap_fw_rules_enabled = true
-  subnet_region                 = var.peering_subnet_region
-  subnet_ip_range               = "10.3.128.0/21"
-  peering_module_depends_on     = var.peering_module_depends_on
+  env                          = "non-production"
+  business_code                = "bu1"
+  business_unit                = "business_unit_1"
+  remote_state_bucket          = var.remote_state_bucket
+  location_kms                 = var.location_kms
+  location_gcs                 = var.location_gcs
+  peering_iap_fw_rules_enabled = true
+  subnet_region                = var.peering_subnet_region
+  subnet_ip_range              = "10.3.128.0/21"
+  peering_module_depends_on    = var.peering_module_depends_on
 }

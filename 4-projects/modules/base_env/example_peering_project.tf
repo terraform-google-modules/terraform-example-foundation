@@ -243,7 +243,7 @@ resource "google_compute_network_firewall_policy" "allow_iap_firewall_policy" {
   project = module.peering_project.project_id
 }
 
-// Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
+// Allow SSH via IAP when using the ssh-iap-access/allow resource manager tag for Linux workloads.
 resource "google_compute_network_firewall_policy_rule" "allow_iap_ssh" {
   count = var.peering_iap_fw_rules_enabled ? 1 : 0
 
@@ -271,7 +271,7 @@ resource "google_compute_network_firewall_policy_rule" "allow_iap_ssh" {
   }
 }
 
-// Allow RDP via IAP when using the allow-iap-rdp tag for Windows workloads.
+// Allow RDP via IAP when using the rdp-iap-access/allow resource manager tag for Windows workloads.
 resource "google_compute_network_firewall_policy_rule" "allow_iap_rdp" {
   count = var.peering_iap_fw_rules_enabled ? 1 : 0
 

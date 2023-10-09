@@ -33,12 +33,12 @@ data "google_netblock_ip_ranges" "iap_forwarders" {
 module "peering_project" {
   source = "../single_project"
 
-  org_id                              = local.org_id
-  billing_account                     = local.billing_account
-  folder_id                           = local.env_folder_name
-  environment                         = var.env
-  project_budget                      = var.project_budget
-  project_prefix                      = local.project_prefix
+  org_id          = local.org_id
+  billing_account = local.billing_account
+  folder_id       = local.env_folder_name
+  environment     = var.env
+  project_budget  = var.project_budget
+  project_prefix  = local.project_prefix
 
   // Enabling cloud build deploy to use Service Accounts during the build and give permissions to this SA.
   // The permissions are necessary for the deployment of the step 5-app-infra

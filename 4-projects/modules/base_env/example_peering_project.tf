@@ -40,11 +40,11 @@ module "peering_project" {
   project_budget  = var.project_budget
   project_prefix  = local.project_prefix
 
-  // Enabling cloud build deploy to use Service Accounts during the build and give permissions to this SA.
-  // The permissions are necessary for the deployment of the step 5-app-infra
+  // Enabling Cloud Build Deploy to use Service Accounts during the build and give permissions to the SA.
+  // The permissions will be the ones necessary for the deployment of the step 5-app-infra
   enable_cloudbuild_deploy = local.enable_cloudbuild_deploy
 
-  // A of Service Accounts to use on the infra pipeline (Cloud Build)
+  // A map of Service Accounts to use on the infra pipeline (Cloud Build)
   // Where the key is the repository name ("${var.business_code}-example-app")
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
 

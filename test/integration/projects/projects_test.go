@@ -16,6 +16,7 @@ package projects
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -221,8 +222,21 @@ func TestProjects(t *testing.T) {
 						}
 
 						if projectOutput == "peering_project" {
+							peering_project_sa_roles := append(project_sa_roles, "roles/resourcemanager.tagUser")
+							iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", sharedCloudBuildSA)
+							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
+							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()
+							listRoles := testutils.GetResultFieldStrSlice(projectPolicy, "bindings.role")
+							assert.Subset(listRoles, peering_project_sa_roles, fmt.Sprintf("service account %s should have project level roles", sharedCloudBuildSA))
+
 							peering := gcloud.Runf(t, "compute networks peerings list --project %s", projectID).Array()[0]
 							assert.Contains(peering.Get("peerings.0.network").String(), tt.baseNetwork, "should have a peering network")
+
+							peering_subnetwork_self_link := projects.GetStringOutput("peering_subnetwork_self_link")
+							peering_subnetwork_self_link_splitted := strings.Split(peering_subnetwork_self_link, "/")
+							peering_subnetwork_name := peering_subnetwork_self_link_splitted[len(peering_subnetwork_self_link_splitted)-1]
+							subnet := gcloud.Run(t, fmt.Sprintf("compute networks subnets describe %s --project %s --region us-central1", peering_subnetwork_name, projectID))
+							assert.Equal("PRIVATE", len(subnet.Get("purpose").String()), "Should have one subnets")
 						}
 					}
 				})

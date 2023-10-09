@@ -235,7 +235,7 @@ resource "google_compute_firewall" "allow_lb" {
   target_tags = ["allow-lb"]
 }
 
-// Allow SSH via IAP when using the Firewall Secure Tags.
+// Allow SSH and RDP via IAP when using the Firewall Secure Tags.
 resource "google_compute_network_firewall_policy" "allow_iap_firewall_policy" {
   count = var.peering_iap_fw_rules_enabled ? 1 : 0
 
@@ -243,6 +243,7 @@ resource "google_compute_network_firewall_policy" "allow_iap_firewall_policy" {
   project = module.peering_project.project_id
 }
 
+// Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
 resource "google_compute_network_firewall_policy_rule" "allow_iap_ssh" {
   count = var.peering_iap_fw_rules_enabled ? 1 : 0
 
@@ -260,6 +261,7 @@ resource "google_compute_network_firewall_policy_rule" "allow_iap_ssh" {
   }
 
   match {
+    // Cloud IAP's TCP forwarding netblock
     src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
 
     layer4_configs {
@@ -269,6 +271,7 @@ resource "google_compute_network_firewall_policy_rule" "allow_iap_ssh" {
   }
 }
 
+// Allow RDP via IAP when using the allow-iap-rdp tag for Windows workloads.
 resource "google_compute_network_firewall_policy_rule" "allow_iap_rdp" {
   count = var.peering_iap_fw_rules_enabled ? 1 : 0
 
@@ -286,6 +289,7 @@ resource "google_compute_network_firewall_policy_rule" "allow_iap_rdp" {
   }
 
   match {
+    // Cloud IAP's TCP forwarding netblock
     src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
 
     layer4_configs {

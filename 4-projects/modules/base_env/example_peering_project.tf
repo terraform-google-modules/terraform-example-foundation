@@ -39,17 +39,17 @@ module "peering_project" {
   environment                         = var.env
   project_budget                      = var.project_budget
   project_prefix                      = local.project_prefix
-  enable_cloudbuild_deploy            = local.enable_cloudbuild_deploy
+
+  // Enabling cloud build deploy to use Service Accounts during the build and give permissions to this SA.
+  // The permissions are necessary for the deployment of the step 5-app-infra
+  enable_cloudbuild_deploy = local.enable_cloudbuild_deploy
+
+  // A of Service Accounts to use on the infra pipeline (Cloud Build)
+  // Where the key is the repository name ("${var.business_code}-example-app")
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
 
-  // The roles defined in "sa_roles" will be used to grant the necessary permissions
-  // to deploy the resources, a Compute Engine instance for each environment, defined
-  // in 5-app-infra step (5-app-infra/modules/env_base/main.tf).
-  // The roles are grouped by the repository name ("${var.business_code}-example-app") used to create the Cloud Build workspace
-  // (https://github.com/terraform-google-modules/terraform-google-bootstrap/tree/master/modules/tf_cloudbuild_workspace)
-  // in the 4-projects shared environment of each business unit.
-  // the repository name is the same key used for the app_infra_pipeline_service_accounts map and the
-  // roles will be granted to the service account with the same key.
+  // Map for the roles where the key is the repository name ("${var.business_code}-example-app")
+  // and the value is the list of roles that this SA need to deploy step 5-app-infra
   sa_roles = {
     "${var.business_code}-example-app" = [
       "roles/compute.instanceAdmin.v1",

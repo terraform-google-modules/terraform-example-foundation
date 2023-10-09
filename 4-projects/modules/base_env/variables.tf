@@ -116,8 +116,8 @@ variable "remote_state_bucket" {
 }
 
 variable "peering_iap_fw_rules_enabled" {
-  type        = bool
   description = "Toggle creation of optional IAP firewall rules: SSH, RDP."
+  type        = bool
   default     = false
 }
 

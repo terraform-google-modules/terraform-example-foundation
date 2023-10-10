@@ -269,7 +269,6 @@ variable "vcs_repos" {
     environments = string,
     networks     = string,
     projects     = string,
-    app-infra    = string,
   })
 }
 
@@ -285,8 +284,9 @@ variable "tfc_org_name" {
 }
 
 # Make clear this description
-# variable "vcs_oauth_token" {
-#   description = "The token string of your VCS provider for the user or organization. See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/oauth-clients#create-an-oauth-client"
-#   type        = string
-#   sensitive   = true
-# }
+variable "vcs_oauth_token_id" {
+  description = "The VCS Connection OAuth Connection Token ID. See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/oauth-clients#create-an-oauth-client"
+  type        = string
+  sensitive   = true
+}
+

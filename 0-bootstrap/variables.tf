@@ -282,6 +282,11 @@ variable "gitlab_token" {
   sensitive   = true
 }
 
+variable "repo_owner" {
+  description = "The owner of Gitlab repository."
+  type        = string
+}
+
 /* ----------------------------------------
     Specific to gitlab_bootstrap
    ---------------------------------------- */

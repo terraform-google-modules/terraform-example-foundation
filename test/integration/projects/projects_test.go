@@ -232,10 +232,11 @@ func TestProjects(t *testing.T) {
 							peering := gcloud.Runf(t, "compute networks peerings list --project %s", projectID).Array()[0]
 							assert.Contains(peering.Get("peerings.0.network").String(), tt.baseNetwork, "should have a peering network")
 
+							instanceRegion := utils.ValFromEnv(t, "TF_VAR_instance_region")
 							peering_subnetwork_self_link := projects.GetStringOutput("peering_subnetwork_self_link")
 							peering_subnetwork_self_link_splitted := strings.Split(peering_subnetwork_self_link, "/")
 							peering_subnetwork_name := peering_subnetwork_self_link_splitted[len(peering_subnetwork_self_link_splitted)-1]
-							subnet := gcloud.Run(t, fmt.Sprintf("compute networks subnets describe %s --project %s --region us-central1", peering_subnetwork_name, projectID))
+							subnet := gcloud.Run(t, fmt.Sprintf("compute networks subnets describe %s --project %s --region %s", peering_subnetwork_name, projectID, instanceRegion))
 							assert.Equal("PRIVATE", subnet.Get("purpose").String(), "Purpose should be PRIVATE")
 						}
 					}

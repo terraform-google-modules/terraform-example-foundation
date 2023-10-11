@@ -95,7 +95,7 @@ output "keys" {
 }
 
 output "bucket" {
-  description = "The created storage bucket"
+  description = "The created storage bucket."
   value       = module.env.bucket
 }
 

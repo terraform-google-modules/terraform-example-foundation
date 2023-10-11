@@ -191,8 +191,3 @@ output "cicd_project_id" {
   description = "Project where the CI/CD infrastructure for Terraform Cloud resides."
   value       = module.tfc_cicd.project_id
 }
-
-output "sa_mapping"{
-  description = "SA Mapping"
-  value = local.sa_mapping
-}

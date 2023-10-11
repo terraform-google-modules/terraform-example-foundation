@@ -283,9 +283,9 @@ variable "tfc_org_name" {
   type        = string
 }
 
-# Make clear this description
 variable "vcs_oauth_token_id" {
-  description = "The VCS Connection OAuth Connection Token ID. See https://developer.hashicorp.com/terraform/cloud-docs/api-docs/oauth-clients#create-an-oauth-client"
+  description = "The VCS Connection OAuth Connection Token ID. This is the ID of the connection between TFC and VCS.
+  See https://developer.hashicorp.com/terraform/cloud-docs/vcs#supported-vcs-providers"
   type        = string
   sensitive   = true
 }

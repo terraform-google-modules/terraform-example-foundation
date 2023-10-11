@@ -33,6 +33,7 @@ BILLING_LEVEL_ROLES=("roles/billing.admin")
 END_USER_CREDENTIAL=""
 ORGANIZATION_ID=""
 BILLING_ACCOUNT=""
+TARGET_DEPLOY=""
 
 # Collect the errors
 ERRORS=""
@@ -228,6 +229,21 @@ function validate_bootstrap_step(){
     fi
 }
 
+# Checks if initial config was done for 0-bootstrap step in Terraform Cloud deploy
+function validate_bootstrap_step_terraform_cloud(){
+    SCRIPTS_DIR="$( dirname -- "$0"; )"
+    FILE="$SCRIPTS_DIR/../../gcp-bootstrap/envs/shared/terraform.tfvars"
+    if [ ! -f "$FILE" ]; then
+        echo "  Rename the file gcp-bootstrap/envs/shared/terraform.example.tfvars to gcp-bootstrap/envs/shared/terraform.tfvars"
+        ERRORS+=$'  terraform.tfvars file must exist for gcp-bootstrap step.\n'
+    else
+        if [ "$(grep -c REPLACE_ME "$FILE")" != 0 ]; then
+            echo "  gcp-bootstrap/envs/shared/terraform.tfvars must have required values fulfilled."
+            ERRORS+=$'  terraform.tfvars file must be correctly fulfilled for gcp-bootstrap step.\n'
+        fi
+    fi
+}
+
 # Echoes messages for cases where an installation is missing
 # $1 = name of the missing binary
 # $2 = web site to find the installation details of the missing binary
@@ -288,7 +304,11 @@ function main(){
     fi
 
     echo "Validating 0-bootstrap configuration..."
-    validate_bootstrap_step
+    if [[ "$TARGET_DEPLOY" == "TerraformCloud" ]]; then
+        validate_bootstrap_step_terraform_cloud
+    else
+        validate_bootstrap_step
+    fi
 
     echo "......................................."
     if [ -z "$ERRORS" ]; then
@@ -313,7 +333,7 @@ usage() {
 }
 
 # Check for input variables
-while getopts ":o:b:u:" OPT; do
+while getopts ":o:b:u:t:" OPT; do
   case ${OPT} in
     o )
       ORGANIZATION_ID=$OPTARG
@@ -323,6 +343,9 @@ while getopts ":o:b:u:" OPT; do
       ;;
     u )
       END_USER_CREDENTIAL=$OPTARG
+      ;;
+    t )
+      TARGET_DEPLOY=$OPTARG
       ;;
     : )
       echo

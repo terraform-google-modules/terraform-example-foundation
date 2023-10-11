@@ -5,8 +5,8 @@ Terraform Cloud for the Terraform Example Foundation stages (`0-bootstrap`, `1-o
 The infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-b-cicd-wif-tfc`).
 
 It is a best practice to have two separate projects here (`prj-b-seed` and `prj-b-cicd-wif-tfc`) for separation of concerns.
-On one hand, `prj-b-seed` stores terraform state and has the Service Accounts able to create / modify infrastructure.
-On the other hand, the authentication infrastructure using [Workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation) is implemented in `prj-b-cicd-wif-tfc`.
+On one hand, `prj-b-seed` has the Service Accounts able to create / modify infrastructure.
+On the other hand, the authentication infrastructure using [Workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation) is implemented in `prj-b-cicd-wif-tfc`. Unlike other deployment methods, Terraform state will be stored in Terraform Cloud instead of in a bucket in GCP.
 
 ## Requirements
 
@@ -24,7 +24,12 @@ Also make sure that you have the following:
 - A Terraform Cloud [User token](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/api-tokens#user-api-tokens) or [Organization token](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/api-tokens#organization-api-tokens).
    - Organization token is prefered since the permissions are limited to a single TFC organization.
 - A [supported](https://developer.hashicorp.com/terraform/cloud-docs/vcs#supported-vcs-providers) version control system (VCS) provider [connected](https://developer.hashicorp.com/terraform/cloud-docs/vcs) with your Terraform Cloud account.
-   - See [GitHub VCS connection](https://developer.hashicorp.com/terraform/cloud-docs/vcs/github) or [GitLab VCS connection](https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-com) for more details.
+   - There are different ways to connect TFC to your VCS provider:
+      - [GitHub (OAuth)](https://developer.hashicorp.com/terraform/cloud-docs/vcs/github)
+      - [GitHub Enterprise](https://developer.hashicorp.com/terraform/cloud-docs/vcs/github-enterprise)
+      - [GitLab.com](https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-com)
+      - [GitLab EE/CE](https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-eece)
+   - Once you have any VCS provider configured you should be able to copy `OAuth Token ID` available in TFC console (https://app.terraform.io/app/YOUR-TFC-ORGANIZATION/settings/version-control).
 - A **private** repository (or project) in your VCS provider for each one of the stages of Foundation:
    - Bootstrap
    - Organization
@@ -87,13 +92,20 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
    terraform-example-foundation/
    ```
 
-1. In your VCS repositories (or projects) it is expected to have the following branches created. You can either create manually, or run `scripts/git_create_branches_helper.sh` script to automate the process.
+1. In your VCS repositories (or projects) it is expected to have the following branches created. Run `scripts/git_create_branches_helper.sh` script to create these branch for each repository.
    - Bootstrap: `production`
    - Organization: `production`
    - Environments: `development`, `non-production` and `production`
    - Networks: `development`, `non-production` and `production`
    - Projects: `development`, `non-production` and `production`
-   - Note: `scripts/git_create_branches_helper.sh` script assume you are running it from the directory that has all the repos cloned (layout described in the previous step). If you run from another directory, adjust the `BASE_PATH` variable at the `scripts/git_create_branches_helper.sh` file.
+   - Note: `scripts/git_create_branches_helper.sh` script and the following commands assume you are running it from the directory that has all the repos cloned (layout described in the previous step). If you run from another directory, adjust the `BASE_PATH` variable at the `scripts/git_create_branches_helper.sh` and adjust in the following commands.
+
+   ```bash
+   chmod 755 ./terraform-example-foundation/0-bootstrap/scripts/git_create_branches_helper.sh
+   ./terraform-example-foundation/0-bootstrap/scripts/git_create_branches_helper
+   ```
+   
+   You will see some GIT logs related to the branches creation in the console and the message  `"Branch creation and push completed for all repositories"` at the end of the script execution.
 
 ### Deploying step 0-bootstrap
 
@@ -103,16 +115,6 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
 
    ```bash
    cd gcp-bootstrap
-   ```
-
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-
-   git checkout -b production
-   git push --set-upstream origin production
    ```
 
 1. change to a non-production branch.
@@ -125,30 +127,25 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
 
    ```bash
    mkdir -p envs/shared
-
    cp -RT ../terraform-example-foundation/0-bootstrap/ ./envs/shared
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   mkdir -p .github/workflows
-   cp ../terraform-example-foundation/build/github-tf-* ./.github/workflows/
-   cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
    cd ./envs/shared
    ```
 
-1. In the versions file `./versions.tf` un-comment the `github` required provider
-1. In the variables file `./variables.tf` un-comment variables in the section `Specific to github_bootstrap`
+1. In the versions file `./versions.tf` un-comment the `tfe` required provider
+1. In the variables file `./variables.tf` un-comment variables in the section `Specific to tfc_bootstrap`
 1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
-1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to github_bootstrap`
+1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to tfc_bootstrap`
 1. Rename file `./cb.tf` to `./cb.tf.example`
 
    ```bash
    mv ./cb.tf ./cb.tf.example
    ```
 
-1. Rename file `./github.tf.example` to `./github.tf`
+1. Rename file `.terraform_cloud.tf.example` to `./terraform_cloud.tf`
 
    ```bash
-   mv ./github.tf.example ./github.tf
+   mv ./terraform_cloud.tf.example ./terraform_cloud.tf
    ```
 
 1. Rename file `terraform.example.tfvars` to `terraform.tfvars`
@@ -158,18 +155,25 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
    ```
 
 1. Update the file `terraform.tfvars` with values from your Google Cloud environment
-1. Update the file `terraform.tfvars` with values from your GitHub repositories
-1. To prevent saving the `gh_token` in plain text in the `terraform.tfvars` file,
-export the GitHub fine grained access token as an environment variable:
+1. Update the file `terraform.tfvars` with values from your VCS repositories
+1. Update the file `terraform.tfvars` with values from your Terraform Cloud organization
+1. To prevent saving the `tfc_token` in plain text in the `terraform.tfvars` file,
+export the Terraform Cloud token as an environment variable:
 
    ```bash
-   export TF_VAR_gh_token="YOUR-FINE-GRAINED-ACCESS-TOKEN"
+   export TF_VAR_tfc_token="YOUR-TFC-TOKEN"
+   ```
+1. To prevent saving the `vcs_oauth_token_id` in plain text in the `terraform.tfvars` file,
+export the OAuth Token ID as an environment variable:
+
+   ```bash
+   export TF_VAR_vcs_oauth_token_id="YOUR-VCS-OAUTH-TOKEN-ID"
    ```
 
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
    ```bash
-   ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL> -t GitHub
+   ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL> -t TerraformCloud
    ```
 
    **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
@@ -219,12 +223,9 @@ export the GitHub fine grained access token as an environment variable:
    echo "CI/CD Project ID = ${cicd_project_id}"
    ```
 
-1. Copy the backend and update `backend.tf` with the name of your Google Cloud Storage bucket for Terraform's state. Also update the `backend.tf` of all steps.
+1. You need to change `backend.tf` filename to `backend.tf.gcs.example` and `backend.tf.cloud.example` to `backend.tf` in order to define TFC configuration and store Terraform's state in TFC. Also, you need to do this for all steps.
 
    ```bash
-   export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-
    cp backend.tf.example backend.tf
    cd ../../../
 
@@ -232,6 +233,15 @@ export the GitHub fine grained access token as an environment variable:
    for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
 
    cd gcp-bootstrap/envs/shared
+   ```
+
+1. You need to change `backend.tf` filename to `backend.tf.gcs.example` and `backend.tf.cloud.example` to `backend.tf` in order to define TFC configuration and store Terraform's state in TFC. Also, you need to do this for all steps. You can run `scripts/set-backend-for-terraform-cloud.sh` script to do the renaming for all the steps automatically.
+
+   ```bash
+   cd ../../../
+   chmod 775 ./terraform-example-foundation/scripts/set-backend-for-terraform-cloud.sh
+   ./terraform-example-foundation/scripts/set-backend-for-terraform-cloud.sh
+   cd ./terraform-example-foundation/gcp-bootstrap/envs/shared
    ```
 
 1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Cloud Storage.

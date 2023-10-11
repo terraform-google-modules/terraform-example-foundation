@@ -236,7 +236,7 @@ func TestProjects(t *testing.T) {
 							peering_subnetwork_self_link_splitted := strings.Split(peering_subnetwork_self_link, "/")
 							peering_subnetwork_name := peering_subnetwork_self_link_splitted[len(peering_subnetwork_self_link_splitted)-1]
 							subnet := gcloud.Run(t, fmt.Sprintf("compute networks subnets describe %s --project %s --region us-central1", peering_subnetwork_name, projectID))
-							assert.Equal("PRIVATE", len(subnet.Get("purpose").String()), "Should have one subnets")
+							assert.Equal("PRIVATE", subnet.Get("purpose").String(), "Purpose should be PRIVATE")
 						}
 					}
 				})

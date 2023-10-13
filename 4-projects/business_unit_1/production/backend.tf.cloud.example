@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 terraform {
   cloud {
-    organization = "ciandt-alpha-team"
     workspaces {
-      name="0-shared"
+      name="4-bu1-production"
     }
   }
 }

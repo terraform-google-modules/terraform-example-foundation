@@ -243,13 +243,13 @@ func TestProjects(t *testing.T) {
 							iapFirewallPolicy := gcloud.Run(t, fmt.Sprintf("compute network-firewall-policies list --project=%s --global", projectID)).Array()[0]
 							iapFirewallPolicyName := iapFirewallPolicy.Get("name")
 
-							iapSshRule := gcloud.Run(t, fmt.Sprintf("compute network-firewall-policies rules describe 1000 --firewall-policy=%s --global-firewall-policy --project=%s", iapFirewallPolicyName, projectID))
+							iapSshRule := gcloud.Run(t, fmt.Sprintf("compute network-firewall-policies rules describe 1000 --firewall-policy=%s --global-firewall-policy --project=%s", iapFirewallPolicyName, projectID)).Array()[0]
 							assert.Equal("INGRESS", iapSshRule.Get("direction").String(), "Direction should be INGRESS")
 							assert.Equal("allow", iapSshRule.Get("action").String(), "Action should be ALLOW")
 							assert.Equal("EFFECTIVE", iapSshRule.Get("targetSecureTags.0.state").String(), "Should be bound to an effective terget secure tag")
 							assert.Equal("22", iapSshRule.Get("match.layer4Configs.0.ports.0").String(), "Protocol port should be 22")
 
-							iapRdpRule := gcloud.Run(t, fmt.Sprintf("compute network-firewall-policies rules describe 1001 --firewall-policy=%s --global-firewall-policy --project=%s", iapFirewallPolicyName, projectID))
+							iapRdpRule := gcloud.Run(t, fmt.Sprintf("compute network-firewall-policies rules describe 1001 --firewall-policy=%s --global-firewall-policy --project=%s", iapFirewallPolicyName, projectID)).Array()[0]
 							assert.Equal("INGRESS", iapRdpRule.Get("direction").String(), "Direction should be INGRESS")
 							assert.Equal("allow", iapRdpRule.Get("action").String(), "Action should be ALLOW")
 							assert.Equal("EFFECTIVE", iapRdpRule.Get("targetSecureTags.0.state").String(), "Should be bound to an effective terget secure tag")

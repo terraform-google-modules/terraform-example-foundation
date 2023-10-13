@@ -191,3 +191,8 @@ output "cicd_project_id" {
   description = "Project where the CI/CD infrastructure for Terraform Cloud resides."
   value       = module.tfc_cicd.project_id
 }
+
+output "tfc_org_name" {
+  description = "Name of the TFC organization."
+  value       = var.tfc_org_name
+}

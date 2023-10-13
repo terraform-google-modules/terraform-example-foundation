@@ -223,16 +223,11 @@ export the OAuth Token ID as an environment variable:
    echo "CI/CD Project ID = ${cicd_project_id}"
    ```
 
-1. You need to change `backend.tf` filename to `backend.tf.gcs.example` and `backend.tf.cloud.example` to `backend.tf` in order to define TFC configuration and store Terraform's state in TFC. Also, you need to do this for all steps.
+1. Run `terraform output` to get the name of the TFC organization and export it as environment variables. `TF_CLOUD_ORGANIZATION` variable will be used by the `cloud` block in order to move the local Terraform's state to TFC.
 
    ```bash
-   cp backend.tf.example backend.tf
-   cd ../../../
-
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
-
-   cd gcp-bootstrap/envs/shared
+   export TF_CLOUD_ORGANIZATION=$(terraform output -raw tfc_org_name)
+   echo "TFC Organization = ${TF_CLOUD_ORGANIZATION}"
    ```
 
 1. You need to change `backend.tf` filename to `backend.tf.gcs.example` and `backend.tf.cloud.example` to `backend.tf` in order to define TFC configuration and store Terraform's state in TFC. Also, you need to do this for all steps. You can run `scripts/set-backend-for-terraform-cloud.sh` script to do the renaming for all the steps automatically.

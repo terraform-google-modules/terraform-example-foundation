@@ -16,6 +16,7 @@
 
 terraform {
   cloud {
+    organization = "ciandt-alpha-team"
     workspaces {
       name="0-shared"
     }

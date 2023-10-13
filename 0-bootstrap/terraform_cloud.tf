@@ -173,6 +173,14 @@ resource "tfe_variable" "tfc_variable_token" {
   sensitive       = true
 }
 
+resource "tfe_variable" "tfc_organization_name" {
+  key             = "tfc_org_name"
+  value           = var.tfc_org_name
+  category        = "terraform"
+  description     = "Name of the TFC organization"
+  variable_set_id = tfe_variable_set.tfc_variable_set.id
+}
+
 resource "tfe_variable" "gcp_provider_auth" {
   key             = "TFC_GCP_PROVIDER_AUTH"
   value           = "true"

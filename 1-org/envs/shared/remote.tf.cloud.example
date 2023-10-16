@@ -37,5 +37,3 @@ data "tfe_outputs" "bootstrap" {
   organization = var.tfc_org_name
   workspace = "0-shared"
 }
-
-

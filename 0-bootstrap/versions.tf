@@ -24,10 +24,10 @@ terraform {
     }
 
     // Un-comment tfe required_providers when using Terraform Cloud
-    tfe = {
-      source  = "hashicorp/tfe"
-      version = "0.48.0"
-    }
+    # tfe = {
+    #   source  = "hashicorp/tfe"
+    #   version = "0.48.0"
+    # }
   }
 
   provider_meta "google" {

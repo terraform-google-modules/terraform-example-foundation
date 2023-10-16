@@ -28,35 +28,36 @@ group_billing_admins = "REPLACE_ME"
 
 default_region = "us-central1"
 
-# Optional - for an organization with existing projects or for development/validation.
-# Uncomment this variable to place all the example foundation resources under
-# the provided folder instead of the root organization.
-# The variable value is the numeric folder ID
-# The folder must already exist.
-# parent_folder = "01234567890"
+// Optional - for an organization with existing projects or for development/validation.
+// Uncomment this variable to place all the example foundation resources under
+// the provided folder instead of the root organization.
+// The variable value is the numeric folder ID
+// The folder must already exist.
+//parent_folder = "01234567890"
 
-#  Optional - for enabling the automatic groups creation, uncoment the groups
-#  variable and update the values with the desired group names
-# groups = {
-#   create_groups = true,
-#   billing_project = "billing-project",
-#   required_groups = {
-    # group_org_admins           = "group_org_admins_local_test@example.com"
-    # group_billing_admins       = "group_billing_admins_local_test@example.com"
-    # billing_data_users         = "billing_data_users_local_test@example.com"
-    # audit_data_users           = "audit_data_users_local_test@example.com"
-    # monitoring_workspace_users = "monitoring_workspace_users_local_test@example.com"
-#   },
-#   optional_groups = {
-    # gcp_platform_viewer      = "gcp_platform_viewer_local_test@example.com"
-    # gcp_security_reviewer    = "gcp_security_reviewer_local_test@example.com"
-    # gcp_network_viewer       = "gcp_network_viewer_local_test@example.com"
-    # gcp_scc_admin            = "gcp_scc_admin_local_test@example.com"
-    # gcp_global_secrets_admin = "gcp_global_secrets_admin_local_test@example.com"
-    # gcp_audit_viewer         = "gcp_audit_viewer_local_test@example.com"
-#   }
-# }
-#
+// Optional - for enabling the automatic groups creation, uncoment the groups
+// variable and update the values with the desired group names
+//groups = {
+//  create_groups = true,
+//  billing_project = "billing-project",
+//  required_groups = {
+//    group_org_admins           = "group_org_admins_local_test@example.com"
+//    group_billing_admins       = "group_billing_admins_local_test@example.com"
+//    billing_data_users         = "billing_data_users_local_test@example.com"
+//    audit_data_users           = "audit_data_users_local_test@example.com"
+//    monitoring_workspace_users = "monitoring_workspace_users_local_test@example.com"
+//  },
+//  optional_groups = {
+//    gcp_platform_viewer      = "gcp_platform_viewer_local_test@example.com"
+//    gcp_security_reviewer    = "gcp_security_reviewer_local_test@example.com"
+//    gcp_network_viewer       = "gcp_network_viewer_local_test@example.com"
+//    gcp_scc_admin            = "gcp_scc_admin_local_test@example.com"
+//    gcp_global_secrets_admin = "gcp_global_secrets_admin_local_test@example.com"
+//    gcp_audit_viewer         = "gcp_audit_viewer_local_test@example.com"
+//  }
+//}
+//
+
 
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
@@ -96,41 +97,36 @@ default_region = "us-central1"
 /* ----------------------------------------
     Specific to tfc_bootstrap
    ---------------------------------------- */
-#  Un-comment tfc_bootstrap and its outputs if you want to use Terraform Cloud instead of Cloud Build
-# vcs_repos = {
-#   owner        = "REPLACE_ME",
-#   bootstrap    = "REPLACE_ME",
-#   organization = "REPLACE_ME",
-#   environments = "REPLACE_ME",
-#   networks     = "REPLACE_ME",
-#   projects     = "REPLACE_ME",
-# }
+//  Un-comment tfc_bootstrap and its outputs if you want to use Terraform Cloud instead of Cloud Build
+// vcs_repos = {
+//   owner        = "REPLACE_ME",
+//   bootstrap    = "REPLACE_ME",
+//   organization = "REPLACE_ME",
+//   environments = "REPLACE_ME",
+//   networks     = "REPLACE_ME",
+//   projects     = "REPLACE_ME",
+// }
 
-# tfc_org_name = "REPLACE_ME"
+// tfc_org_name = "REPLACE_ME"
 
-#  to prevent saving the `tfc_token` in plain text in this file,
-#  export the Terraform Cloud token in the command line
-#  as an environment variable before running terraform.
-#  Run the following commnad in your shell:
-#   export TF_VAR_tfc_token="YOUR-TFC-TOKEN"
+//  to prevent saving the `tfc_token` in plain text in this file,
+//  export the Terraform Cloud token in the command line
+//  as an environment variable before running terraform.
+//  Run the following commnad in your shell:
+//   export TF_VAR_tfc_token="YOUR-TFC-TOKEN"
 
-#  For VCS connection based in OAuth: (GitHub OAuth/GitHub Enterprise/Gitlab.com/GitLab Enterprise or Community Edition)
-#  to prevent saving the `vcs_oauth_token_id` in plain text in this file,
-#  export the Terraform Cloud VCS Connection OAuth token ID in the command line
-#  as an environment variable before running terraform.
+//  For VCS connection based in OAuth: (GitHub OAuth/GitHub Enterprise/Gitlab.com/GitLab Enterprise or Community Edition)
+//  to prevent saving the `vcs_oauth_token_id` in plain text in this file,
+//  export the Terraform Cloud VCS Connection OAuth token ID in the command line
+//  as an environment variable before running terraform.
 
-# Note: you should be able to copy `OAuth Token ID` (vcs_oauth_token_id) in TFC console:
-# https://app.terraform.io/app/YOUR-TFC-ORGANIZATION/settings/version-control
+// Note: you should be able to copy `OAuth Token ID` (vcs_oauth_token_id) in TFC console:
+// https://app.terraform.io/app/YOUR-TFC-ORGANIZATION/settings/version-control
 
-#  Run the following commnad in your shell:
-#   export TF_VAR_vcs_oauth_token_id="YOUR-VCS-OAUTH-TOKEN-ID"
+//  Run the following commnad in your shell:
+//   export TF_VAR_vcs_oauth_token_id="YOUR-VCS-OAUTH-TOKEN-ID"
 
-#  For GitHub OAuth see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/github
-#  For GitHub Enterprise see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/github-enterprise
-#  For GitLab.com see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-com
-#  For GitLab EE/CE see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-eece
-
-
-
-
-
+//  For GitHub OAuth see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/github
+//  For GitHub Enterprise see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/github-enterprise
+//  For GitLab.com see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-com
+//  For GitLab EE/CE see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-eece

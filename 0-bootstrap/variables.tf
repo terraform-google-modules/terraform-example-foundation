@@ -284,8 +284,7 @@ variable "tfc_org_name" {
 }
 
 variable "vcs_oauth_token_id" {
-  description = "The VCS Connection OAuth Connection Token ID. This is the ID of the connection between TFC and VCS.
-  See https://developer.hashicorp.com/terraform/cloud-docs/vcs#supported-vcs-providers"
+  description = "The VCS Connection OAuth Connection Token ID. This is the ID of the connection between TFC and VCS. See https://developer.hashicorp.com/terraform/cloud-docs/vcs#supported-vcs-providers"
   type        = string
   sensitive   = true
 }

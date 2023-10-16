@@ -280,21 +280,11 @@ we recommend that you request 50 additional projects for the **projects step ser
 
 ## Deploying step 1-org
 
-1. Navigate into the gcp-org repo. All subsequent steps assume you are running them from the `gcp-org` directory.
+1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-org` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-org
-   ```
-
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-
-   git checkout -b production
-   git push --set-upstream origin production
    ```
 
 1. change to a non-production branch.
@@ -368,10 +358,10 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `production` branch and review the output.
 1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `production` environment.
-1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Current Run` item.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/1-shared/runs under `Current Run` item.
 1. If the speculative plan is successful, merge the pull request in to the `production` branch.
 1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `production` environment. You need to approve the apply in the `Runs` menu. 
-1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Current Run` item.
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/1-shared/runs under `Current Run` item.
 
 
 ## Deploying step 2-environments
@@ -382,22 +372,6 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
    ```bash
    cd gcp-environments
-   ```
-
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-
-   git checkout -b production
-   git push --set-upstream origin production
-
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-
-   git checkout -b development
-   git push --set-upstream origin development
    ```
 
 1. change to a non-production branch.
@@ -411,10 +385,6 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
    ```bash
    cp -RT ../terraform-example-foundation/2-environments/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   mkdir -p .github/workflows
-   cp ../terraform-example-foundation/build/github-tf-* ./.github/workflows/
-   cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
    ```
 
 1. Rename `terraform.example.tfvars` to `terraform.tfvars`.
@@ -425,15 +395,6 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
 1. Update the file with values from your GCP environment.
 See any of the envs folder [README.md](../2-environments/envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
-
-1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap.
-
-   ```bash
-   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw gcs_bucket_tfstate)
-   echo "remote_state_bucket = ${backend_bucket}"
-
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" terraform.tfvars
-   ```
 
 1. Commit changes.
 
@@ -448,28 +409,28 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
    git push --set-upstream origin plan
    ```
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `development` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `development` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
-1. If the GitHub action is successful, apply the next environment.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `development` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/2-development/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `development` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `development` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/2-development/runs under `Current Run` item.
+1. If the TFC Apply is successful, you can open the pull request (or merge request) for the next environment.
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `non-production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `non-production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
-1. If the GitHub action is successful, apply the next environment.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `development` branch to the `non-production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `non-production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/2-non-production/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `non-production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `non-production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/2-non-production/runs under `Current Run` item.
+1. If the TFC Apply is successful, you can open the pull request (or merge request) for the next environment.
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `non-production` branch to the `production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/2-production/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/2-production/runs under `Current Run` item.
 
 1. You can now move to the instructions in the network stage.
 To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc),
@@ -477,33 +438,11 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 
 ## Deploying step 3-networks-dual-svpc
 
-1. Clone the repository you created to host the `3-networks-dual-svpc` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-NETWORKS-REPO>.git gcp-networks
-   ```
-
 1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-networks
-   ```
-
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-
-   git checkout -b production
-   git push --set-upstream origin production
-
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-
-   git checkout -b development
-   git push --set-upstream origin development
    ```
 
 1. change to a non-production branch.
@@ -517,8 +456,6 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    ```bash
    cp -RT ../terraform-example-foundation/3-networks-dual-svpc/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   mkdir -p .github/workflows
-   cp ../terraform-example-foundation/build/github-tf-* ./.github/workflows/
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    ```
@@ -547,15 +484,6 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 1. Update `common.auto.tfvars` file with values from your GCP environment.
 See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
 1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
-1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
-
-   ```bash
-   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
-
-   echo "remote_state_bucket = ${backend_bucket}"
-
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
-   ```
 
 1. Commit changes
 
@@ -607,28 +535,28 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    git push --set-upstream origin plan
    ```
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `development` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `development` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
-1. If the GitHub action is successful, apply the next environment.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `development` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-development/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `development` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `development` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-development/runs under `Current Run` item.
+1. If the TFC Apply is successful, you can open the pull request (or merge request) for the next environment.
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `non-production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `non-production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
-1. If the GitHub action is successful, apply the next environment.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `development` branch to the `non-production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `non-production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-non-production/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `non-production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `non-production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-non-production/runs under `Current Run` item.
+1. If the TFC Apply is successful, you can open the pull request (or merge request) for the next environment.
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `non-production` branch to the `production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-production/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-production/runs under `Current Run` item.
 
 1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
@@ -640,33 +568,11 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 ## Deploying step 3-networks-hub-and-spoke
 
-1. Clone the repository you created to host the `3-networks-hub-and-spoke` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-NETWORKS-REPO>.git gcp-networks
-   ```
-
 1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-networks
-   ```
-
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-
-   git checkout -b production
-   git push --set-upstream origin production
-
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-
-   git checkout -b development
-   git push --set-upstream origin development
    ```
 
 1. change to a non-production branch.
@@ -680,8 +586,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```bash
    cp -RT ../terraform-example-foundation/3-networks-hub-and-spoke/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   mkdir -p .github/workflows
-   cp ../terraform-example-foundation/build/github-tf-* ./.github/workflows/
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    ```
@@ -697,15 +601,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. Update `common.auto.tfvars` file with values from your GCP environment.
 See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
 1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
-1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
-
-   ```bash
-   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
-
-   echo "remote_state_bucket = ${backend_bucket}"
-
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
-   ```
 
 1. Commit changes
 
@@ -757,28 +652,28 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    git push --set-upstream origin plan
    ```
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `development` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `development` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
-1. If the GitHub action is successful, apply the next environment.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `development` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-development/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `development` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `development` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-development/runs under `Current Run` item.
+1. If the TFC Apply is successful, you can open the pull request (or merge request) for the next environment.
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `non-production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `non-production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
-1. If the GitHub action is successful, apply the next environment.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `development` branch to the `non-production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `non-production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-non-production/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `non-production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `non-production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-non-production/runs under `Current Run` item.
+1. If the TFC Apply is successful, you can open the pull request (or merge request) for the next environment.
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `non-production` branch to the `production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-production/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/3-production/runs under `Current Run` item.
 
 
 1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
@@ -791,34 +686,12 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 ## Deploying step 4-projects
 
-1. Clone the repository you created to host the `4-projects` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-PROJECTS-REPO>.git gcp-projects
-   ```
-
 1. Navigate into the repo. All subsequent
    steps assume you are running them from the `gcp-projects` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-projects
-   ```
-
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-
-   git checkout -b production
-   git push --set-upstream origin production
-
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-
-   git checkout -b development
-   git push --set-upstream origin development
    ```
 
 1. change to a non-production branch.
@@ -832,8 +705,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```bash
    cp -RT ../terraform-example-foundation/4-projects/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   mkdir -p .github/workflows
-   cp ../terraform-example-foundation/build/github-tf-* ./.github/workflows/
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    ```
@@ -850,15 +721,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 1. See any of the envs folder [README.md](../4-projects/business_unit_1/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
 1. See any of the shared folder [README.md](../4-projects/business_unit_1/shared/README.md#inputs) files for additional information on the values in the `shared.auto.tfvars` file.
-
-1. Use `terraform output` to get the backend bucket value from bootstrap output.
-
-   ```bash
-   export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
-   echo "remote_state_bucket = ${remote_state_bucket}"
-
-   sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
-   ```
 
 1. Commit changes.
 
@@ -911,28 +773,28 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    git push --set-upstream origin plan
    ```
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `development` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `development` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.
-1. If the GitHub action is successful, apply the next environment.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `development` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/4-development/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `development` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `development` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/4-development/runs under `Current Run` item.
+1. If the TFC Apply is successful, you can open the pull request (or merge request) for the next environment.
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/pull/new/development from the `development` branch to the `non-production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `non-production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `non-production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.
-1. If the GitHub action is successful, apply the next environment.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `development` branch to the `non-production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `non-production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/4-non-production/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `non-production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `non-production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/4-non-production/runs under `Current Run` item.
+1. If the TFC Apply is successful, you can open the pull request (or merge request) for the next environment.
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/pull/new/non-production from the `non-production` branch to the `production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-PROJECTS-REPO/actions under `tf-apply`.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `non-production` branch to the `production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/4-production/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/4-production/runs under `Current Run` item.
 
 1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 

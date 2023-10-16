@@ -24,7 +24,7 @@ create_branches_and_push() {
 
     # Create production branches
     git checkout -b production
-    git push origin production
+    git push --set-upstream origin production
 
     # Check if the repo name contains "bootstrap" or "org"
     if [[ $repo_name == *"gcp-bootstrap"* || $repo_name == *"gcp-org"* ]]; then
@@ -32,10 +32,10 @@ create_branches_and_push() {
     else
       # Create development and non-production branches
       git checkout -b development
-      git push origin development
+      git push --set-upstream origin development
       
       git checkout -b non-production
-      git push origin non-production
+      git push --set-upstream origin non-production
       
       echo "Branches (development, non-production, production) created and pushed for $repo_name"
     fi

@@ -29,7 +29,7 @@ Session.vim
 *.tfstate.*
 
 # Local tfvars terraform.tfvars
-**/*.tfvars
+# **/*.tfvars
 
 # tf lock file
 **/.terraform.lock.hcl

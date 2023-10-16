@@ -1,4 +1,4 @@
-# Deploying a Terraform Cloud compatible environment
+# Deploying a Terraform Cloud (TFC) compatible environment
 
 The objective of the instructions below is to configure the infrastructure that allows you to run CI/CD deployments using
 Terraform Cloud for the Terraform Example Foundation stages (`0-bootstrap`, `1-org`, `2-environments`, `3-networks`, `4-projects`).
@@ -117,6 +117,16 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
    cd gcp-bootstrap
    ```
 
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+   ```
+
 1. change to a non-production branch.
 
    ```bash
@@ -233,23 +243,23 @@ export the OAuth Token ID as an environment variable:
 1. You need to rename the following files in order to configure the foundation steps for TFC:
 - `backend.tf` to `backend.tf.gcs.example` and `backend.tf.cloud.example` to `backend.tf` in order to define TFC workspace configuration and store Terraform's state in TFC.
 - `remote.tf` to `remote.tf.gcs.example` and `remote.tf.cloud.example` to `remote.tf` in order to retrieve the state outputs from workspace in TFC .
-- **Note:** You need to do this renaming in all the steps. You can run `scripts/set-backend-for-terraform-cloud.sh` script to do the renaming for all the steps automatically.
+- **Note:** You need to do this renaming in all the steps. You can run `scripts/set-tfc-backend-and-remote.sh` script to do the renaming for all the steps automatically.
 
    ```bash
    cd ../../../
-   chmod 775 ./terraform-example-foundation/scripts/set-backend-for-terraform-cloud.sh
-   ./terraform-example-foundation/scripts/set-backend-for-terraform-cloud.sh
+   chmod 775 ./terraform-example-foundation/scripts/set-tfc-backend-and-remote.sh
+   ./terraform-example-foundation/scripts/set-tfc-backend-and-remote.sh
    cd ./terraform-example-foundation/gcp-bootstrap/envs/shared
    ```
 
-1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Cloud Storage.
+1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Terraform Cloud.
 
    ```bash
    terraform init
    ```
 
 1. (Optional) Run `terraform plan` to verify that state is configured correctly. You should see no changes from the previous state.
-1. Save the Terraform configuration to `gcp-bootstrap` github repository:
+1. Save the Terraform configuration to `gcp-bootstrap` VCS repository:
 
    ```bash
    cd ../..
@@ -258,28 +268,19 @@ export the OAuth Token ID as an environment variable:
    git push --set-upstream origin plan
    ```
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/pull/new/plan from the `plan` branch to the `production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/actions under `tf-apply`.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Current Run` item.
 
-**Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage.
-They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
-
-**Note 2:** After the deploy, to prevent the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded),
+**Note:** After the deploy, to prevent the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded),
 we recommend that you request 50 additional projects for the **projects step service account** created in this step.
 
 ## Deploying step 1-org
 
-1. Clone the repository you created to host the `1-org` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-ORGANIZATION-REPO>.git gcp-org
-   ```
-
-1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-org` directory.
+1. Navigate into the gcp-org repo. All subsequent steps assume you are running them from the `gcp-org` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
@@ -307,10 +308,6 @@ we recommend that you request 50 additional projects for the **projects step ser
    ```bash
    cp -RT ../terraform-example-foundation/1-org/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   mkdir -p .github/workflows
-   cp ../terraform-example-foundation/build/github-tf-* ./.github/workflows/
-   cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
    ```
 
 1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
@@ -333,16 +330,6 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
     if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
     ```
-
-1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap.
-
-   ```bash
-   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw gcs_bucket_tfstate)
-
-   echo "remote_state_bucket = ${backend_bucket}"
-
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
-   ```
 
 1. Check if a Security Command Center Notification with the default name, **scc-notify**, already exists in your organization.
 
@@ -379,21 +366,15 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
    git push --set-upstream origin plan
    ```
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/pull/new/plan from the `plan` branch to the `production` branch and review the output.
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions under `tf-apply`.
+1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `production` branch and review the output.
+1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `production` environment.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Current Run` item.
+1. If the speculative plan is successful, merge the pull request in to the `production` branch.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `production` environment. You need to approve the apply in the `Runs` menu. 
+1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Current Run` item.
 
 
 ## Deploying step 2-environments
-
-1. Clone the repository you created to host the `2-environments` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@github.com:<GITHUB-OWNER>/<GITHUB-ENVIRONMENTS-REPO>.git gcp-environments
-   ```
 
 1. Navigate into the repo. All subsequent
    steps assume you are running them from the `gcp-environments` directory.

@@ -65,7 +65,7 @@ locals {
       "2-development"    = { vcs_branch = "development", directory = "/envs/development" },
     },
     "net" = {
-      "3-production"     = { vcs_branch = "production", directory = "/envs/production" },
+      "3-production"     = { vcs_branch = "production", directory = "/envs/production", trigger_patterns=["/foo/**/*"] },
       "3-non-production" = { vcs_branch = "non-production", directory = "/envs/non-production" },
       "3-development"    = { vcs_branch = "development", directory = "/envs/development" },
       "3-shared"         = { vcs_branch = "production", directory = "/envs/shared" },
@@ -90,6 +90,7 @@ locals {
           project   = project
           working_directory = config["directory"]
           branch = config["vcs_branch"]
+          trigger_patterns = try(config["trigger_patterns"], [])
         }
       ]
     ]
@@ -137,6 +138,7 @@ resource "tfe_workspace" "tfc_workspace" {
     oauth_token_id = var.vcs_oauth_token_id
   }
   global_remote_state = true
+  trigger_patterns = each.value.trigger_patterns
 }
 
 data "tfe_workspace" "workspace_lookup" {
@@ -197,7 +199,6 @@ resource "tfe_variable" "gcp_workload_provider_name" {
   variable_set_id = tfe_variable_set.tfc_variable_set.id
 }
 
-
 resource "tfe_variable" "service_account_email" {
   for_each = local.tfc_workspace_map
 
@@ -208,12 +209,16 @@ resource "tfe_variable" "service_account_email" {
   workspace_id = data.tfe_workspace.workspace_lookup[each.key].id
 }
 
-
 resource "tfe_workspace_variable_set" "tfc_workspace_variable_set" {
   for_each = local.tfc_workspace_map
 
   variable_set_id = tfe_variable_set.tfc_variable_set.id
   workspace_id    = data.tfe_workspace.workspace_lookup[each.key].id
+}
+
+resource "tfe_run_trigger" "shared_production" {
+  workspace_id  = data.tfe_workspace.workspace_lookup["3-shared"].id
+  sourceable_id = data.tfe_workspace.workspace_lookup["3-production"].id
 }
 
 module "tfc_cicd" {

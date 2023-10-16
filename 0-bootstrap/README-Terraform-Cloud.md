@@ -241,11 +241,12 @@ export the OAuth Token ID as an environment variable:
    ```
 
 1. You need to rename the following files in order to configure the foundation steps for TFC:
-- `backend.tf` to `backend.tf.gcs.example` and `backend.tf.cloud.example` to `backend.tf` in order to define TFC workspace configuration and store Terraform's state in TFC.
+- `backend.tf` (and `backend.tf.example`) to `backend.tf.gcs.example` and `backend.tf.cloud.example` to `backend.tf` in order to define TFC workspace configuration and store Terraform's state in TFC.
 - `remote.tf` to `remote.tf.gcs.example` and `remote.tf.cloud.example` to `remote.tf` in order to retrieve the state outputs from workspace in TFC .
 - **Note:** You need to do this renaming in all the steps. You can run `scripts/set-tfc-backend-and-remote.sh` script to do the renaming for all the steps automatically.
 
    ```bash
+   mv backend.tf.example backend.tf
    cd ../../../
    chmod 775 ./terraform-example-foundation/scripts/set-tfc-backend-and-remote.sh
    ./terraform-example-foundation/scripts/set-tfc-backend-and-remote.sh

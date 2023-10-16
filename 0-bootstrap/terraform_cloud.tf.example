@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,6 @@ locals {
   cicd_project_id = module.tfc_cicd.project_id
 
   tfc_org_name = var.tfc_org_name
-
-    tfc_config = {
-    "bootstrap" = var.vcs_repos.bootstrap,
-    "org"       = var.vcs_repos.organization,
-    "env"       = var.vcs_repos.environments,
-    "net"       = var.vcs_repos.networks,
-    "proj"      = var.vcs_repos.projects,
-  }
 
   tfc_projects = {
     "bootstrap" = {
@@ -65,7 +57,7 @@ locals {
       "2-development"    = { vcs_branch = "development", directory = "/envs/development" },
     },
     "net" = {
-      "3-production"     = { vcs_branch = "production", directory = "/envs/production", trigger_patterns=["/foo/**/*"] },
+      "3-production"     = { vcs_branch = "production", directory = "/envs/production", trigger_patterns = ["/foo/**/*"] },
       "3-non-production" = { vcs_branch = "non-production", directory = "/envs/non-production" },
       "3-development"    = { vcs_branch = "development", directory = "/envs/development" },
       "3-shared"         = { vcs_branch = "production", directory = "/envs/shared" },
@@ -84,32 +76,31 @@ locals {
   }
 
   tfc_workspaces_flat = flatten([
-      for project, workspaces in local.tfc_workspaces : [
-        for name, config in workspaces : {
-          name = name
-          project   = project
-          working_directory = config["directory"]
-          branch = config["vcs_branch"]
-          trigger_patterns = try(config["trigger_patterns"], [])
-        }
-      ]
+    for project, workspaces in local.tfc_workspaces : [
+      for name, config in workspaces : {
+        name              = name
+        project           = project
+        working_directory = config["directory"]
+        branch            = config["vcs_branch"]
+        trigger_patterns  = try(config["trigger_patterns"], [])
+      }
+    ]
     ]
   )
 
-  tfc_workspace_map = {for v in local.tfc_workspaces_flat: v.name => v}
+  tfc_workspace_map = { for v in local.tfc_workspaces_flat : v.name => v }
 
-  # Make a note related to the permissions being addressed via claim by VCS
   sa_mapping = {
-    for k, v in local.tfc_config : k => {
+    for k, v in local.tfc_projects : k => {
       sa_name   = google_service_account.terraform-env-sa[k].name
-      sa_email = google_service_account.terraform-env-sa[k].email
+      sa_email  = google_service_account.terraform-env-sa[k].email
       attribute = "*"
     }
   }
 }
 
 
-resource "tfe_project" "tfc_project" {
+resource "tfe_project" "main" {
   for_each = local.tfc_projects
 
   organization = local.tfc_org_name
@@ -122,10 +113,10 @@ data "tfe_project" "project_lookup" {
   organization = local.tfc_org_name
   name         = each.key
 
-  depends_on = [tfe_project.tfc_project]
+  depends_on = [tfe_project.main]
 }
 
-resource "tfe_workspace" "tfc_workspace" {
+resource "tfe_workspace" "main" {
   for_each = local.tfc_workspace_map
 
   organization      = local.tfc_org_name
@@ -138,41 +129,41 @@ resource "tfe_workspace" "tfc_workspace" {
     oauth_token_id = var.vcs_oauth_token_id
   }
   global_remote_state = true
-  trigger_patterns = each.value.trigger_patterns
+  trigger_patterns    = each.value.trigger_patterns
 }
 
 data "tfe_workspace" "workspace_lookup" {
   for_each = local.tfc_workspace_map
 
-  name              = each.value.name
-  organization      = local.tfc_org_name
+  name         = each.value.name
+  organization = local.tfc_org_name
 
-  depends_on = [tfe_workspace.tfc_workspace]
+  depends_on = [tfe_workspace.main]
 }
 
-resource "tfe_variable_set" "tfc_variable_set" {
+resource "tfe_variable_set" "main" {
   name         = "Terraform Cloud Keys Varset"
-  description  = ""
+  description  = "A resource that allows you to reuse the same variables across multiple workspaces"
   global       = false
   organization = local.tfc_org_name
 }
 
-resource "tfe_variable" "tfc_variable_oauth_id_vcs" {
-  key             = "vcs_oauth_token_id"
-  value           = var.vcs_oauth_token_id
-  category        = "terraform"
-  description     = "The VCS Connection OAuth Connection Token ID"
-  variable_set_id = tfe_variable_set.tfc_variable_set.id
-  sensitive       = true
+resource "tfe_variable" "tfc_oauth_id_vcs" {
+  key          = "vcs_oauth_token_id"
+  value        = var.vcs_oauth_token_id
+  category     = "terraform"
+  description  = "The VCS Connection OAuth Connection Token ID"
+  workspace_id = data.tfe_workspace.workspace_lookup["0-bootstrap"].id
+  sensitive    = true
 }
 
-resource "tfe_variable" "tfc_variable_token" {
-  key             = "tfc_token"
-  value           = var.tfc_token
-  category        = "terraform"
-  description     = "The token used to authenticate with Terraform Cloud"
-  variable_set_id = tfe_variable_set.tfc_variable_set.id
-  sensitive       = true
+resource "tfe_variable" "tfc_token" {
+  key          = "tfc_token"
+  value        = var.tfc_token
+  category     = "terraform"
+  description  = "The token used to authenticate with Terraform Cloud"
+  workspace_id = data.tfe_workspace.workspace_lookup["0-bootstrap"].id
+  sensitive    = true
 }
 
 resource "tfe_variable" "tfc_organization_name" {
@@ -180,39 +171,39 @@ resource "tfe_variable" "tfc_organization_name" {
   value           = var.tfc_org_name
   category        = "terraform"
   description     = "Name of the TFC organization"
-  variable_set_id = tfe_variable_set.tfc_variable_set.id
+  variable_set_id = tfe_variable_set.main.id
 }
 
 resource "tfe_variable" "gcp_provider_auth" {
   key             = "TFC_GCP_PROVIDER_AUTH"
   value           = "true"
   category        = "env"
-  description     = ""
-  variable_set_id = tfe_variable_set.tfc_variable_set.id
+  description     = "If true TFC will attempt to use dynamic credentials to authenticate to GCP"
+  variable_set_id = tfe_variable_set.main.id
 }
 
 resource "tfe_variable" "gcp_workload_provider_name" {
   key             = "TFC_GCP_WORKLOAD_PROVIDER_NAME"
   value           = module.tfc-oidc.provider_name
   category        = "env"
-  description     = ""
-  variable_set_id = tfe_variable_set.tfc_variable_set.id
+  description     = "The canonical name of the workload identity provider."
+  variable_set_id = tfe_variable_set.main.id
 }
 
 resource "tfe_variable" "service_account_email" {
   for_each = local.tfc_workspace_map
 
-  key             = "TFC_GCP_RUN_SERVICE_ACCOUNT_EMAIL"
-  value           = google_service_account.terraform-env-sa[each.value.project].email 
-  category        = "env"
-  description     = ""
+  key          = "TFC_GCP_RUN_SERVICE_ACCOUNT_EMAIL"
+  value        = google_service_account.terraform-env-sa[each.value.project].email
+  category     = "env"
+  description  = "The service account email to use for the plan phase of a run."
   workspace_id = data.tfe_workspace.workspace_lookup[each.key].id
 }
 
-resource "tfe_workspace_variable_set" "tfc_workspace_variable_set" {
+resource "tfe_workspace_variable_set" "main" {
   for_each = local.tfc_workspace_map
 
-  variable_set_id = tfe_variable_set.tfc_variable_set.id
+  variable_set_id = tfe_variable_set.main.id
   workspace_id    = data.tfe_workspace.workspace_lookup[each.key].id
 }
 
@@ -246,10 +237,10 @@ module "tfc-oidc" {
   source  = "GoogleCloudPlatform/tf-cloud-agents/google//modules/tfc-oidc"
   version = "0.1.0"
 
-  project_id  = module.tfc_cicd.project_id
-  pool_id     = "foundation-pool"
-  provider_id = "foundation-tfc-provider"
-  sa_mapping  = local.sa_mapping
+  project_id            = module.tfc_cicd.project_id
+  pool_id               = "foundation-pool"
+  provider_id           = "foundation-tfc-provider"
+  sa_mapping            = local.sa_mapping
   tfc_organization_name = local.tfc_org_name
-  attribute_condition = "assertion.sub.startsWith(\"organization:${local.tfc_org_name}:\")"
+  attribute_condition   = "assertion.sub.startsWith(\"organization:${local.tfc_org_name}:\")"
 }

@@ -130,6 +130,7 @@ resource "tfe_workspace" "main" {
   }
   global_remote_state = true
   trigger_patterns    = each.value.trigger_patterns
+  terraform_version   = var.tfc_terraform_version
 }
 
 data "tfe_workspace" "workspace_lookup" {
@@ -153,7 +154,7 @@ resource "tfe_variable" "tfc_oauth_id_vcs" {
   value        = var.vcs_oauth_token_id
   category     = "terraform"
   description  = "The VCS Connection OAuth Connection Token ID"
-  workspace_id = data.tfe_workspace.workspace_lookup["0-bootstrap"].id
+  workspace_id = data.tfe_workspace.workspace_lookup["0-shared"].id
   sensitive    = true
 }
 
@@ -162,8 +163,16 @@ resource "tfe_variable" "tfc_token" {
   value        = var.tfc_token
   category     = "terraform"
   description  = "The token used to authenticate with Terraform Cloud"
-  workspace_id = data.tfe_workspace.workspace_lookup["0-bootstrap"].id
+  workspace_id = data.tfe_workspace.workspace_lookup["0-shared"].id
   sensitive    = true
+}
+
+resource "tfe_variable" "tfc_terraform_version" {
+  key          = "tfc_terraform_version"
+  value        = var.tfc_terraform_version
+  category     = "terraform"
+  description  = "TF version desired for TFC workspaces"
+  workspace_id = data.tfe_workspace.workspace_lookup["0-shared"].id
 }
 
 resource "tfe_variable" "tfc_organization_name" {

@@ -283,6 +283,11 @@ variable "initial_group_config" {
 #   type        = string
 # }
 
+# variable "tfc_terraform_version" {
+#   description = "TF version desired for TFC workspaces"
+#   type        = string
+# }
+
 # variable "vcs_oauth_token_id" {
 #   description = "The VCS Connection OAuth Connection Token ID. This is the ID of the connection between TFC and VCS. See https://developer.hashicorp.com/terraform/cloud-docs/vcs#supported-vcs-providers"
 #   type        = string

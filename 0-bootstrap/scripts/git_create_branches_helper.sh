@@ -24,6 +24,9 @@ create_branches_and_push() {
 
     # Create production branches
     git checkout -b production
+    touch .gitignore
+    git add .gitignore
+    git commit -m "seed commit"
     git push --set-upstream origin production
 
     # Check if the repo name contains "bootstrap" or "org"
@@ -32,9 +35,15 @@ create_branches_and_push() {
     else
       # Create development and non-production branches
       git checkout -b development
+      touch .gitignore
+      git add .gitignore
+      git commit -m "seed commit"
       git push --set-upstream origin development
       
       git checkout -b non-production
+      touch .gitignore
+      git add .gitignore
+      git commit -m "seed commit"
       git push --set-upstream origin non-production
       
       echo "Branches (development, non-production, production) created and pushed for $repo_name"

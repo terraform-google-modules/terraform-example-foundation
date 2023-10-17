@@ -51,3 +51,9 @@ variable "ingress_policies" {
   }))
   default = []
 }
+
+variable "tfc_org_name" {
+  description = "Name of the TFC organization"
+  type        = string
+  default     = ""
+}

@@ -36,3 +36,9 @@ variable "peering_module_depends_on" {
   type        = list(any)
   default     = []
 }
+
+variable "tfc_org_name" {
+  description = "Name of the TFC organization"
+  type        = string
+  default     = ""
+}

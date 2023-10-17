@@ -202,3 +202,9 @@ variable "create_unique_tag_key" {
   type        = bool
   default     = false
 }
+
+variable "tfc_org_name" {
+  description = "Name of the TFC organization"
+  type        = string
+  default     = ""
+}

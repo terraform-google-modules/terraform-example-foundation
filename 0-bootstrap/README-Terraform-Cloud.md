@@ -271,10 +271,9 @@ export the OAuth Token ID as an environment variable:
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `production` branch and review the output.
 1. The pull request (or merge request) will trigger a Terraform Cloud [speculative plan](https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans) in the `production` environment.
-1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Run List` item.
+1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Run List` item. The output should be `Your infrastructure matches the configuration` since we applied the 0-bootstrap locally.
 1. If the speculative plan is successful, merge the pull request in to the `production` branch.
-1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `production` environment. You need to approve the apply in the `Runs` menu. 
-1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Run List` item.
+1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan again for the terraform configuration for the `production` environment.  
 
 **Note:** After the deploy, to prevent the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded),
 we recommend that you request 50 additional projects for the **projects step service account** created in this step.

@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 variable "region" {
   type        = string
   description = "The GCP region to deploy instances into"
-  default     = "us-east4"
+  default     = "us-central1"
 }
 
 variable "network_name" {
@@ -118,7 +118,7 @@ variable "machine_type" {
 variable "source_image_family" {
   type        = string
   description = "Source image family. If neither source_image nor source_image_family is specified, defaults to the latest public Ubuntu image."
-  default     = "ubuntu-1804-lts"
+  default     = "ubuntu-2204-lts"
 }
 
 variable "source_image_project" {
@@ -155,4 +155,9 @@ variable "cooldown_period" {
   description = "The number of seconds that the autoscaler should wait before it starts collecting information from a new instance."
   type        = number
   default     = 60
+}
+
+variable "project_id" {
+  type        = string
+  description = "ID of the project where the Gitlab runner will be created."
 }

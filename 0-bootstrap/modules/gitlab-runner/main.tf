@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,71 +15,48 @@
  */
 
 locals {
-  cicd_project_id = "../gitlab-oidc.project_id"
-  network_name    = var.create_network ? google_compute_network.gl_network[0].self_link : var.network_name
-  subnet_name     = var.create_network ? google_compute_subnetwork.gl_subnetwork[0].self_link : var.subnet_name
   service_account = var.service_account == "" ? google_service_account.runner_service_account[0].email : var.service_account
 }
 
 /*****************************************
   Optional Runner Networking
  *****************************************/
-resource "google_compute_network" "gl_network" {
-  count = var.create_network ? 1 : 0
+module "vpc_network" {
+  source       = "terraform-google-modules/network/google"
+  version      = "~> 7.0"
+  project_id   = var.project_id
+  network_name = "my-network"
+  mtu          = 1460
 
-  name                    = var.network_name
-  project                 = local.cicd_project_id
-  auto_create_subnetworks = false
+  subnets = [
+    {
+      subnet_name   = "subnet-01"
+      subnet_ip     = "10.10.10.0/24"
+      subnet_region = "us-central1"
+      #   subnet_private_access = "true"
+      #   subnet_flow_logs          = "true"
+      #   subnet_flow_logs_interval = "INTERVAL_10_MIN"
+      #   subnet_flow_logs_sampling = 0.7
+      #   subnet_flow_logs_metadata = "INCLUDE_ALL_METADATA"
+      #   subnet_flow_logs_filter   = "false"
+    },
+  ]
 }
-
-resource "google_compute_subnetwork" "gl_subnetwork" {
-  count = var.create_subnetwork ? 1 : 0
-
-  project       = local.cicd_project_id
-  name          = var.subnet_name
-  ip_cidr_range = var.subnet_ip
-  region        = var.region
-  network       = local.network_name
-  #network       = google_compute_network.gl_network[0].name
-}
-
-# module "peered_network" {
-#   source  = "terraform-google-modules/network/google"
-#   version = "~> 5.2"
-
-#   count   = var.private_worker_pool.create_peered_network ? 1 : 0
-
-#   project_id                             = var.project_id
-#   network_name                           = local.network_name
-#   delete_default_internet_gateway_routes = "true"
-
-#   subnets = [
-#     {
-#       subnet_name           = "sb-b-cbpools-${var.private_worker_pool.region}"
-#       subnet_ip             = var.private_worker_pool.peered_network_subnet_ip
-#       subnet_region         = var.private_worker_pool.region
-#       subnet_private_access = "true"
-#       subnet_flow_logs      = "true"
-#       description           = "Peered subnet for Cloud Build private pool"
-#     }
-#   ]
-
-# }
 
 resource "google_compute_router" "default" {
   count = var.create_network ? 1 : 0
 
   name    = "${var.network_name}-router"
-  network = google_compute_network.gl_network[0].self_link
+  network = module.vpc_network.network_self_link
   region  = var.region
-  project = local.cicd_project_id
+  project = var.project_id
 }
 
 // Nat is being used here since internet access is required for the Runner Network. Other internet access can be setup instead of NAT resource (e.g: Secure Web Proxy)
 resource "google_compute_router_nat" "nat" {
   count = var.create_network ? 1 : 0
 
-  project                            = local.cicd_project_id
+  project                            = var.project_id
   name                               = "${var.network_name}-nat"
   router                             = google_compute_router.default[0].name
   region                             = google_compute_router.default[0].region
@@ -88,26 +65,23 @@ resource "google_compute_router_nat" "nat" {
 }
 
 resource "google_dns_policy" "default_policy" {
-  project = local.cicd_project_id
-  #name                      = "dp-${local.vpc_name}-default-policy"
-  name                      = "dp-${local.network_name}-default-policy"
+  project                   = var.project_id
+  name                      = "dns-gl-runner-default-policy"
   enable_inbound_forwarding = true
   enable_logging            = true
 
   networks {
-    #network_url = module.network.network_self_link
-    network_url = local.network_name
+    network_url = module.vpc_network.network_self_link
   }
 }
 
 /*****************************************
   IAM Bindings GCE SVC
  *****************************************/
-
 resource "google_service_account" "runner_service_account" {
   count = var.service_account == "" ? 1 : 0
 
-  project      = local.cicd_project_id
+  project      = var.project_id
   account_id   = "runner-service-account"
   display_name = "GitLab Runner GCE Service Account"
 }
@@ -118,7 +92,7 @@ resource "google_service_account" "runner_service_account" {
 resource "google_secret_manager_secret" "gl-secret" {
   provider = google-beta
 
-  project   = local.cicd_project_id
+  project   = var.project_id
   secret_id = "gl-token"
 
   labels = {
@@ -148,7 +122,7 @@ resource "google_secret_manager_secret_version" "gl-secret-version" {
 resource "google_secret_manager_secret_iam_member" "gl-secret-member" {
   provider = google-beta
 
-  project   = local.cicd_project_id
+  project   = var.project_id
   secret_id = google_secret_manager_secret.gl-secret.id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${local.service_account}"
@@ -157,18 +131,17 @@ resource "google_secret_manager_secret_iam_member" "gl-secret-member" {
 /*****************************************
   Runner GCE Instance Template
  *****************************************/
-
 module "mig_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
   version = "~> 7.0"
 
-  project_id         = local.cicd_project_id
+  project_id         = var.project_id
   machine_type       = var.machine_type
   network_ip         = var.network_ip
-  network            = local.network_name
-  subnetwork         = local.subnet_name
+  network            = module.vpc_network.network_name
+  subnetwork         = module.vpc_network.subnets_names[0]
   region             = var.region
-  subnetwork_project = local.cicd_project_id
+  subnetwork_project = var.project_id
   service_account = {
     email = local.service_account
     scopes = [
@@ -181,8 +154,8 @@ module "mig_template" {
   name_prefix          = "gl-runner"
   source_image_family  = var.source_image_family
   source_image_project = var.source_image_project
-  startup_script       = file("${abspath(path.module)}/startup_script.sh")
-  source_image         = var.source_image
+  #startup_script       = file("${abspath(path.module)}/startup_script.sh")
+  source_image = var.source_image
   metadata = merge({
     "secret-id" = google_secret_manager_secret_version.gl-secret-version.name
   }, var.custom_metadata)
@@ -197,8 +170,8 @@ module "mig" {
   source  = "terraform-google-modules/vm/google//modules/mig"
   version = "~> 7.0"
 
-  project_id         = local.cicd_project_id
-  subnetwork_project = local.cicd_project_id
+  project_id         = var.project_id
+  subnetwork_project = var.project_id
   hostname           = var.instance_name
   region             = var.region
   instance_template  = module.mig_template.self_link
@@ -209,4 +182,3 @@ module "mig" {
   max_replicas        = var.max_replicas
   cooldown_period     = var.cooldown_period
 }
-

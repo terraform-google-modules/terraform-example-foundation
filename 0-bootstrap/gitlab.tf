@@ -91,6 +91,9 @@ module "gitlab_cicd" {
     "cloudresourcemanager.googleapis.com",
     "iamcredentials.googleapis.com",
     "sts.googleapis.com",
+    "dns.googleapis.com",
+    "secretmanager.googleapis.com",
+
   ]
 }
 
@@ -126,7 +129,8 @@ module "cicd_project_wif_iam_member" {
 module "gitlab_runner" {
   source = "./modules/gitlab-runner"
 
-  repo_owner = var.repo_owner
-  #gl_token = var.gitlab_token
+  repo_owner   = var.repo_owner
   gitlab_token = var.gitlab_token
+  project_id   = local.cicd_project_id
 }
+

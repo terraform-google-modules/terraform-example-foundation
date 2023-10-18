@@ -320,8 +320,3 @@ variable "subnet_name" {
   default     = "gl-runner-subnet"
 }
 
-# variable "service_account" {
-#   description = "Service account email address"
-#   type        = string
-#   #default     = "xxxx"
-# }

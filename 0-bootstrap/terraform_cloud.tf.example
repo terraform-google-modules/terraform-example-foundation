@@ -217,8 +217,8 @@ resource "tfe_workspace_variable_set" "main" {
 }
 
 resource "tfe_run_trigger" "shared_production" {
-  workspace_id  = data.tfe_workspace.workspace_lookup["3-shared"].id
-  sourceable_id = data.tfe_workspace.workspace_lookup["3-production"].id
+  workspace_id  = data.tfe_workspace.workspace_lookup["3-production"].id
+  sourceable_id = data.tfe_workspace.workspace_lookup["3-shared"].id
 }
 
 module "tfc_cicd" {

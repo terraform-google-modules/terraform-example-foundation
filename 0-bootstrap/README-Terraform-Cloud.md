@@ -16,6 +16,7 @@ To run the instructions described in this document, install the following:
     - [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 1.3.0  or later
+- [jq](https://jqlang.github.io/jq/download/) version 1.6.0 or later
 
 Also make sure that you have the following:
 
@@ -233,10 +234,11 @@ export the OAuth Token ID as an environment variable:
    echo "CI/CD Project ID = ${cicd_project_id}"
    ```
 
-1. Run `terraform output` to get the name of the TFC organization and export it as environment variables. `TF_CLOUD_ORGANIZATION` variable will be used by the `cloud` block in order to move the local Terraform's state to TFC.
+1. Run `terraform output` to get the name of the TFC organization and export it as environment variables. `TF_CLOUD_ORGANIZATION` variable will be used by the `cloud` block in order to move the local Terraform's state to TFC and `TF_VAR_tfc_org_name` will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`
 
    ```bash
    export TF_CLOUD_ORGANIZATION=$(terraform output -raw tfc_org_name)
+   export TF_VAR_tfc_org_name=$TF_CLOUD_ORGANIZATION
    echo "TFC Organization = ${TF_CLOUD_ORGANIZATION}"
    ```
 
@@ -438,6 +440,8 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 
 ## Deploying step 3-networks-dual-svpc
 
+**Note:** For all purposes we treat `shared` environment as `production` environment due to the possible impacts into `production`. So `3-production` TFC workspace have a [Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) sourcing `3-shared` TFC workspace, which means that every time you successfully run an apply job in `3-shared` TFC workspace, a `Plan and apply` job will be triggered automatically for `3-production` TFC workspace. (All the applies will continue requiring manual approvals in TFC console).
+
 1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
@@ -485,20 +489,26 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
 1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
 
-1. Commit changes
+1. You must manually plan and apply the `shared` environment from your (only once) since the `development`, `non-production` and `production` environments depend on it.
+
+1. In order to manually run the apply for shared workspace from your local we need to temporary unset the TFC backend by renaming `env/shared/backend.tf` to `env/shared/backend.tf.temporary_disabled`.
 
    ```bash
-   git add .
-   git commit -m 'Initialize networks repo'
+   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
    ```
 
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
 1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
 
    ```bash
    export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
    echo ${CICD_PROJECT_ID}
+   ```
+1. Use `terraform output` to get the name of the TFC organization from gcp-bootstrap output and export it as environment variables. The TFC organization  will be used during the manual apply process by `tfe_outputs` resource in order to grab the outputs from previous steps. 
+
+   ```bash
+   export TF_VAR_tfc_org_name=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw tfc_org_name)
+   echo "TFC Organization = ${TF_VAR_tfc_org_name}"
    ```
 
 1. The networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
@@ -527,6 +537,21 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    ./tf-wrapper.sh apply shared
+   ```
+
+   **Note:** Because we are running an apply locally instead of in the TFC workspace, this apply to shared won't be triggerring the [TFC Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) for `3-production` TFC workspace.
+
+1. In order to set the TFC backend for shared workspace we now can rename `env/shared/backend.tf.temporary_disabled` to `env/shared/backend.tf`.
+
+   ```bash
+   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   ```
+
+1. Commit changes
+
+   ```bash
+   git add .
+   git commit -m 'Initialize networks repo'
    ```
 
 1. Push your plan branch.
@@ -568,6 +593,8 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 ## Deploying step 3-networks-hub-and-spoke
 
+**Note:** For all purposes we treat `shared` environment as `production` environment due to the possible impacts into `production`. So `3-production` TFC workspace have a [Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) sourcing `3-shared` TFC workspace, which means that every time you successfully run an apply job in `3-shared` TFC workspace, a `Plan and apply` job will be triggered automatically for `3-production` TFC workspace. (All the applies will continue requiring manual approvals in TFC console).
+
 1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
@@ -602,20 +629,27 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
 1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
 
-1. Commit changes
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
+
+1. In order to manually run the apply for shared workspace from your local we need to temporary unset the TFC backend by renaming `env/shared/backend.tf` to `env/shared/backend.tf.temporary_disabled`.
 
    ```bash
-   git add .
-   git commit -m 'Initialize networks repo'
+   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
    ```
 
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
 1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
 
    ```bash
    export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
    echo ${CICD_PROJECT_ID}
+   ```
+
+1. Use `terraform output` to get the name of the TFC organization from gcp-bootstrap output and export it as environment variables. The TFC organization  will be used during the manual apply process by `tfe_outputs` resource in order to grab the outputs from previous steps. 
+
+   ```bash
+   export TF_VAR_tfc_org_name=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw tfc_org_name)
+   echo "TFC Organization = ${TF_VAR_tfc_org_name}"
    ```
 
 1. The networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
@@ -644,6 +678,20 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    ./tf-wrapper.sh apply shared
+   ```
+   **Note:** Because we are running an apply locally instead of in the TFC workspace, this apply to shared won't be triggerring the [TFC Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) for `3-production` TFC workspace.
+
+1. In order to set the TFC backend for shared workspace we now can rename `env/shared/backend.tf.temporary_disabled` to `env/shared/backend.tf`.
+
+   ```bash
+   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   ```
+
+1. Commit changes
+
+   ```bash
+   git add .
+   git commit -m 'Initialize networks repo'
    ```
 
 1. Push your plan branch.
@@ -686,6 +734,8 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 ## Deploying step 4-projects
 
+**Note:** For all purposes we treat `shared` environment as `production` environment due to the possible impacts into `production`. So `4-<business_unit>-production` TFC workspace have a [Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) sourcing `4-<business_unit>-shared` TFC workspace, which means that every time you successfully run an apply job in `4-<business_unit>-shared` TFC workspace, a `Plan and apply` job will be triggered automatically for `4-<business_unit>-production` TFC workspace. (All the applies will continue requiring manual approvals in TFC console).
+
 1. Navigate into the repo. All subsequent
    steps assume you are running them from the `gcp-projects` directory.
    If you run them from another directory, adjust your copy paths accordingly.
@@ -722,14 +772,14 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. See any of the envs folder [README.md](../4-projects/business_unit_1/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
 1. See any of the shared folder [README.md](../4-projects/business_unit_1/shared/README.md#inputs) files for additional information on the values in the `shared.auto.tfvars` file.
 
-1. Commit changes.
+1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
+
+1. In order to manually run the apply for shared workspace from your local we need to temporary unset the TFC backend by renaming `env/shared/backend.tf` to `env/shared/backend.tf.temporary_disabled`.
 
    ```bash
-   git add .
-   git commit -m 'Initialize projects repo'
+   mv business_unit_1/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   mv business_unit_2/shared/backend.tf env/shared/backend.tf.temporary_disabled
    ```
-
-1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
 
 1. Use `terraform output` to get the CI/CD project ID and the projects step Terraform Service Account from gcp-bootstrap output.
 1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
@@ -737,6 +787,13 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```bash
    export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
    echo ${CICD_PROJECT_ID}
+   ```
+
+1. Use `terraform output` to get the name of the TFC organization from gcp-bootstrap output and export it as environment variables. The TFC organization  will be used during the manual apply process by `tfe_outputs` resource in order to grab the outputs from previous steps. 
+
+   ```bash
+   export TF_VAR_tfc_org_name=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw tfc_org_name)
+   echo "TFC Organization = ${TF_VAR_tfc_org_name}"
    ```
 
 1. The projects step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
@@ -765,6 +822,21 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    ./tf-wrapper.sh apply shared
+   ```
+   **Note:** Because we are running an apply locally instead of in the TFC workspace, this apply to shared won't be triggerring the [TFC Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) for `4-<business_unit>-production` TFC workspace.
+
+
+1. In order to set the TFC backend for shared workspace we now can rename `env/shared/backend.tf.temporary_disabled` to `env/shared/backend.tf`.
+
+   ```bash
+   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   ```
+
+1. Commit changes
+
+   ```bash
+   git add .
+   git commit -m 'Initialize networks repo'
    ```
 
 1. Push your plan branch.

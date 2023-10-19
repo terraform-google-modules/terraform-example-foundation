@@ -57,7 +57,7 @@ locals {
       "2-development"    = { vcs_branch = "development", directory = "/envs/development" },
     },
     "net" = {
-      "3-production"     = { vcs_branch = "production", directory = "/envs/production", trigger_patterns = ["/foo/**/*"] },
+      "3-production"     = { vcs_branch = "production", directory = "/envs/production" },
       "3-non-production" = { vcs_branch = "non-production", directory = "/envs/non-production" },
       "3-development"    = { vcs_branch = "development", directory = "/envs/development" },
       "3-shared"         = { vcs_branch = "production", directory = "/envs/shared" },
@@ -82,7 +82,6 @@ locals {
         project           = project
         working_directory = config["directory"]
         branch            = config["vcs_branch"]
-        trigger_patterns  = try(config["trigger_patterns"], [])
       }
     ]
     ]
@@ -129,7 +128,6 @@ resource "tfe_workspace" "main" {
     oauth_token_id = var.vcs_oauth_token_id
   }
   global_remote_state = true
-  trigger_patterns    = each.value.trigger_patterns
   terraform_version   = var.tfc_terraform_version
 }
 

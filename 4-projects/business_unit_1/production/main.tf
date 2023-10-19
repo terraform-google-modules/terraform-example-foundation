@@ -24,4 +24,5 @@ module "env" {
   location_kms              = var.location_kms
   location_gcs              = var.location_gcs
   peering_module_depends_on = var.peering_module_depends_on
+  tfc_org_name              = var.tfc_org_name
 }

@@ -544,7 +544,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. In order to set the TFC backend for shared workspace we now can rename `env/shared/backend.tf.temporary_disabled` to `env/shared/backend.tf`.
 
    ```bash
-   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   mv env/shared/backend.tf.temporary_disabled env/shared/backend.tf
    ```
 
 1. Commit changes
@@ -684,7 +684,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. In order to set the TFC backend for shared workspace we now can rename `env/shared/backend.tf.temporary_disabled` to `env/shared/backend.tf`.
 
    ```bash
-   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   mv env/shared/backend.tf.temporary_disabled env/shared/backend.tf
    ```
 
 1. Commit changes
@@ -829,7 +829,8 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. In order to set the TFC backend for shared workspace we now can rename `env/shared/backend.tf.temporary_disabled` to `env/shared/backend.tf`.
 
    ```bash
-   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   mv business_unit_1/shared/backend.tf.temporary_disabled env/shared/backend.tf
+   mv business_unit_2/shared/backend.tf.temporary_disabled env/shared/backend.tf
    ```
 
 1. Commit changes

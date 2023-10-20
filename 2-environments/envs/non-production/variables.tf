@@ -29,9 +29,3 @@ variable "tfc_org_name" {
   type        = string
   default     = ""
 }
-
-variable "tfc_org_name" {
-  description = "Name of the TFC organization"
-  type        = string
-  default     = ""
-}

@@ -23,10 +23,10 @@ locals {
   default_region                     = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.default_region
   project_prefix                     = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.project_prefix
   folder_prefix                      = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.folder_prefix
-  projects_remote_bucket_tfstate     = data.tfe_outputs.bootstrap.nonsensitive_values.projects_gcs_bucket_tfstate
+  projects_remote_bucket_tfstate     = ""
   cloud_build_private_worker_pool_id = try(data.tfe_outputs.bootstrap.nonsensitive_values.cloud_build_private_worker_pool_id, "")
   cloud_builder_artifact_repo        = try(data.tfe_outputs.bootstrap.nonsensitive_values.cloud_builder_artifact_repo, "")
-  enable_cloudbuild_deploy           = try(data.tfe_outputs.bootstrap.nonsensitive_values.jenkins_agent_gce_instance_id, "") == ""
+  enable_cloudbuild_deploy           = local.cloud_builder_artifact_repo != ""
 }
 
 data "tfe_outputs" "bootstrap" {

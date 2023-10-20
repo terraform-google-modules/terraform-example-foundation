@@ -214,9 +214,19 @@ resource "tfe_workspace_variable_set" "main" {
   workspace_id    = data.tfe_workspace.workspace_lookup[each.key].id
 }
 
-resource "tfe_run_trigger" "shared_production" {
+resource "tfe_run_trigger" "networks_shared_production" {
   workspace_id  = data.tfe_workspace.workspace_lookup["3-production"].id
   sourceable_id = data.tfe_workspace.workspace_lookup["3-shared"].id
+}
+
+resource "tfe_run_trigger" "projects_bu1_shared_production" {
+  workspace_id  = data.tfe_workspace.workspace_lookup["4-bu1-production"].id
+  sourceable_id = data.tfe_workspace.workspace_lookup["4-bu1-shared"].id
+}
+
+resource "tfe_run_trigger" "projects_bu2_shared_production" {
+  workspace_id  = data.tfe_workspace.workspace_lookup["4-bu2-production"].id
+  sourceable_id = data.tfe_workspace.workspace_lookup["4-bu2-shared"].id
 }
 
 module "tfc_cicd" {

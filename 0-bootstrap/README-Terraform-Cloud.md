@@ -25,7 +25,7 @@ Also make sure that you have the following:
 - A Terraform Cloud [User token](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/api-tokens#user-api-tokens) or [Organization token](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/api-tokens#organization-api-tokens).
    - Organization token is prefered since the permissions are limited to a single TFC organization.
 - A [supported](https://developer.hashicorp.com/terraform/cloud-docs/vcs#supported-vcs-providers) version control system (VCS) provider [connected](https://developer.hashicorp.com/terraform/cloud-docs/vcs) with your Terraform Cloud account.
-   - There are different ways to connect TFC to your VCS provider fully supported by this tutorial listed below. The unlisted supported providers should work, but it may require some adjusts. 
+   - The following list has the supported methods for connecting TFC to your VCS provider fully supported by this README. While it's possible to connect with providers not listed here, doing so may require some adjustments.
       - [GitHub (OAuth)](https://developer.hashicorp.com/terraform/cloud-docs/vcs/github)
       - [GitHub Enterprise](https://developer.hashicorp.com/terraform/cloud-docs/vcs/github-enterprise)
       - [GitLab.com](https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-com)
@@ -162,13 +162,13 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
 export the Terraform Cloud token as an environment variable:
 
    ```bash
-   export TF_VAR_tfc_token="YOUR-TFC-TOKEN"
+   export TF_VAR_tfc_token=YOUR-TFC-TOKEN
    ```
 1. To prevent saving the `vcs_oauth_token_id` in plain text in the `terraform.tfvars` file,
 export the OAuth Token ID as an environment variable:
 
    ```bash
-   export TF_VAR_vcs_oauth_token_id="YOUR-VCS-OAUTH-TOKEN-ID"
+   export TF_VAR_vcs_oauth_token_id=YOUR-VCS-OAUTH-TOKEN-ID
    ```
 
 1. Run `terraform version` to get the version of your TF and export it as environment variables. `terraform_version` variable will be used by the `tfe_workspace` resource in order to set the version of the TF in TFC workspaces. This is important so the state migration (from your local to TFC) works.
@@ -195,21 +195,6 @@ export the OAuth Token ID as an environment variable:
    terraform init
    terraform plan -input=false -out bootstrap.tfplan
    ```
-
-1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Validate policies](https://cloud.google.com/docs/terraform/policy-validation/validate-policies) instructions for the Google Cloud CLI.
-
-1. Run the following commands and check for violations:
-
-   ```bash
-   export VET_PROJECT_ID=A-VALID-PROJECT-ID
-
-   terraform show -json bootstrap.tfplan > bootstrap.json
-   gcloud beta terraform vet bootstrap.json --policy-library="../../policy-library" --project ${VET_PROJECT_ID}
-   ```
-
-   *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
-
-1. No violations and an output with `done` means the validation was successful.
 
 1. Run `terraform apply`.
 
@@ -269,6 +254,7 @@ export the OAuth Token ID as an environment variable:
    git add .
    git commit -m 'Initialize bootstrap repo'
    git push --set-upstream origin plan
+   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `production` branch and review the output.
@@ -409,6 +395,7 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
 
    ```bash
    git push --set-upstream origin plan
+   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
@@ -491,10 +478,10 @@ See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/R
 
 1. You must manually plan and apply the `shared` environment from your (only once) since the `development`, `non-production` and `production` environments depend on it.
 
-1. In order to manually run the apply for shared workspace from your local we need to temporary unset the TFC backend by renaming `env/shared/backend.tf` to `env/shared/backend.tf.temporary_disabled`.
+1. In order to manually run the apply for shared workspace from your local we need to temporary unset the TFC backend by renaming `envs/shared/backend.tf` to `envs/shared/backend.tf.temporary_disabled`.
 
    ```bash
-   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   mv envs/shared/backend.tf envs/shared/backend.tf.temporary_disabled
    ```
 
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
@@ -541,10 +528,13 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    **Note:** Because we are running an apply locally instead of in the TFC workspace, this apply to shared won't be triggerring the [TFC Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) for `3-production` TFC workspace.
 
-1. In order to set the TFC backend for shared workspace we now can rename `env/shared/backend.tf.temporary_disabled` to `env/shared/backend.tf`.
+1. In order to set the TFC backend for shared workspace we now can rename `envs/shared/backend.tf.temporary_disabled` to `envs/shared/backend.tf` and run `terraform init`. When you're prompted, agree to copy Terraform state to Terraform Cloud.
 
    ```bash
-   mv env/shared/backend.tf.temporary_disabled env/shared/backend.tf
+   cd envs/shared/
+   mv backend.tf.temporary_disabled backend.tf
+   terraform init
+   cd ../..
    ```
 
 1. Commit changes
@@ -558,6 +548,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    git push --set-upstream origin plan
+   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
@@ -631,10 +622,10 @@ See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/producti
 
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
 
-1. In order to manually run the apply for shared workspace from your local we need to temporary unset the TFC backend by renaming `env/shared/backend.tf` to `env/shared/backend.tf.temporary_disabled`.
+1. In order to manually run the apply for shared workspace from your local we need to temporary unset the TFC backend by renaming `envs/shared/backend.tf` to `envs/shared/backend.tf.temporary_disabled`.
 
    ```bash
-   mv env/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   mv envs/shared/backend.tf envs/shared/backend.tf.temporary_disabled
    ```
 
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
@@ -681,10 +672,13 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```
    **Note:** Because we are running an apply locally instead of in the TFC workspace, this apply to shared won't be triggerring the [TFC Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) for `3-production` TFC workspace.
 
-1. In order to set the TFC backend for shared workspace we now can rename `env/shared/backend.tf.temporary_disabled` to `env/shared/backend.tf`.
+1. In order to set the TFC backend for shared workspace we now can rename `envs/shared/backend.tf.temporary_disabled` to `envs/shared/backend.tf` and run `terraform init`. When you're prompted, agree to copy Terraform state to Terraform Cloud.
 
    ```bash
-   mv env/shared/backend.tf.temporary_disabled env/shared/backend.tf
+   cd envs/shared/
+   mv backend.tf.temporary_disabled backend.tf
+   terraform init
+   cd ../..
    ```
 
 1. Commit changes
@@ -698,6 +692,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    git push --set-upstream origin plan
+   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
@@ -774,11 +769,11 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
 
-1. In order to manually run the apply for shared workspace from your local we need to temporary unset the TFC backend by renaming `env/shared/backend.tf` to `env/shared/backend.tf.temporary_disabled`.
+1. In order to manually run the apply for shared workspace from your local we need to temporary unset the TFC backend by renaming `envs/shared/backend.tf` to `envs/shared/backend.tf.temporary_disabled`.
 
    ```bash
-   mv business_unit_1/shared/backend.tf env/shared/backend.tf.temporary_disabled
-   mv business_unit_2/shared/backend.tf env/shared/backend.tf.temporary_disabled
+   mv business_unit_1/shared/backend.tf business_unit_1/shared/backend.tf.temporary_disabled
+   mv business_unit_2/shared/backend.tf business_unit_2/shared/backend.tf.temporary_disabled
    ```
 
 1. Use `terraform output` to get the CI/CD project ID and the projects step Terraform Service Account from gcp-bootstrap output.
@@ -826,11 +821,13 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    **Note:** Because we are running an apply locally instead of in the TFC workspace, this apply to shared won't be triggerring the [TFC Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) for `4-<business_unit>-production` TFC workspace.
 
 
-1. In order to set the TFC backend for shared workspace we now can rename `env/shared/backend.tf.temporary_disabled` to `env/shared/backend.tf`.
+1. In order to set the TFC backend for shared workspace we now can rename `envs/shared/backend.tf.temporary_disabled` to `envs/shared/backend.tf` and run `terraform init`. When you're prompted, agree to copy Terraform state to Terraform Cloud.
 
    ```bash
-   mv business_unit_1/shared/backend.tf.temporary_disabled env/shared/backend.tf
-   mv business_unit_2/shared/backend.tf.temporary_disabled env/shared/backend.tf
+   mv business_unit_1/shared/backend.tf.temporary_disabled business_unit_1/shared/backend.tf
+   mv business_unit_2/shared/backend.tf.temporary_disabled business_unit_2/shared/backend.tf
+   terraform -chdir="business_unit_1/shared/" init
+   terraform -chdir="business_unit_2/shared/" init
    ```
 
 1. Commit changes
@@ -844,6 +841,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    git push --set-upstream origin plan
+   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.

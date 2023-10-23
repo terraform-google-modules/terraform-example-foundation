@@ -25,13 +25,14 @@ Also make sure that you have the following:
     - Environments
     - Networks
     - Projects
-A [Personal](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) access token or a [Group](https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html) access token configured with the following [scopes](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#personal-access-token-scopes):
+- A [Personal](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) access token or a [Group](https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html) access token configured with the following [scopes](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#personal-access-token-scopes):
     - read_api
     - create_runner
     - read_repository
     - write_repository
     - read_registry
     - write_registry
+- A [Runner](https://docs.gitlab.com/ee/tutorials/create_register_first_runner/) with the name `gl_runner` should be created in your GitLab account. Save the token of the runner once it has been created. It will be used in the next steps.
 - A Google Cloud [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 - A Google Cloud [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
 - Cloud Identity or Google Workspace groups for organization and billing admins.
@@ -170,7 +171,6 @@ export the GitLab personal or group access token as an environment variable:
    ```bash
    export TF_VAR_gitlab_token="YOUR-PERSONAL-OR-GROUP-ACCESS-TOKEN"
    ```
-
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
    ```bash
@@ -206,6 +206,19 @@ export the GitLab personal or group access token as an environment variable:
    ```bash
    terraform apply bootstrap.tfplan
    ```
+
+1. Once `terraform apply` has finished, access the Gitlab instance by ssh that has been created and update following fields in the file `/etc/gitlab-runner/config.toml` using the values showed during the Gitlab Runner creation.
+
+```bash
+name = "xxxx"
+token = "glrt-XXX"
+```
+
+1. Copy the file `gitlab-ci.yml` to the 0-bootstrap directory.
+```bash
+cp ./modules/gitlab-runner/gitlab-ci.yml .
+```
+
 
 1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
 
@@ -254,6 +267,7 @@ export the GitLab personal or group access token as an environment variable:
    git commit -m 'Initialize bootstrap project'
    git push --set-upstream origin plan
    ```
+
 
 TODO
 

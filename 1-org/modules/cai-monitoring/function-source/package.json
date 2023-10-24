@@ -1,0 +1,14 @@
+{
+  "name": "caibindingnotification",
+  "version": "1.0.0",
+  "description": "A Cloud function that receives events from a Pub/Sub Subscription fed by a Cloud Asset Inventory IAM event feed, and then notify if the IAM Policy grants a set of permissions to a member.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/pubsub": "^4.0.6"
+  }
+}

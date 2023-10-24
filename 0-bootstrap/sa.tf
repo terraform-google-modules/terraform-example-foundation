@@ -47,6 +47,7 @@ locals {
       "roles/essentialcontacts.admin",
       "roles/resourcemanager.tagAdmin",
       "roles/resourcemanager.tagUser",
+      "roles/cloudasset.owner",
     ], local.common_roles)),
     "env" = distinct(concat([
       "roles/resourcemanager.tagUser",

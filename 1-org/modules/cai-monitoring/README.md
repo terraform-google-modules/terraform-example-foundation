@@ -1,0 +1,74 @@
+# Cloud Asset Inventory Notification
+Uses Google Cloud Asset Inventory to create a feed of IAM Policy change events, then process them to detect when they include a gmail address and revert that IAM policy change using a Cloud Function.  The terraform directory contains all the code required to deploy the solution (including the cloud function).
+
+## Usage
+
+```hcl
+module "secure_cai_notification" {
+  # source  = "" #TBD
+  # version = "" #TBD
+
+  org_id               = <ORG ID>
+  billing_account      = <BILLING ACCOUNT ID>
+  project_id           = <PROJECT ID>
+  region               = <REGION>
+  encryption_key       = <CMEK KEY>
+  labels               = <LABELS>
+  impersonate_sa_email = <SA TO IMPERSONATE>
+  roles_to_search      = <ROLES TO SEARCH>
+}
+```
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| encryption\_key | The KMS Key to Encrypt docker repository. | `string` | n/a | yes |
+| impersonate\_sa\_email | The Service Account email who will execute terraform code. | `string` | n/a | yes |
+| labels | Labels to be assigned to resources. | `map(any)` | `{}` | no |
+| location | Default location to create resources where applicable. | `string` | `"us-central1"` | no |
+| org\_id | GCP Organization ID | `string` | n/a | yes |
+| project\_id | The Project ID where the resources will be created | `string` | n/a | yes |
+| roles\_to\_search | The list of roles to search in the Cloud Functions for members in the organization that is binded. | `list(string)` | <pre>[<br>  "roles/owner",<br>  "roles/editor",<br>  "roles/resourcemanager.organizationAdmin",<br>  "roles/compute.networkAdmin",<br>  "roles/compute.orgFirewallPolicyAdmin"<br>]</pre> | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| function\_uri | URI of the Cloud Function. |
+| source\_bucket\_url | Storage bucket where the source code is. |
+
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+## Requirements
+
+### Software
+
+The following dependencies must be available:
+
+* [Terraform](https://www.terraform.io/downloads.html) >= 1.3
+* [Terraform Provider for GCP](https://github.com/terraform-providers/terraform-provider-google) < 5.0
+
+### APIs
+
+A project with the following APIs enabled must be used to host the resources of this module:
+
+* Project
+  * Google Cloud Key Management Service: `cloudkms.googleapis.com`
+  * Cloud Resource Manager API: `cloudresourcemanager.googleapis.com`
+  * Cloud Functions API: `cloudfunctions.googleapis.com`
+  * Cloud Build API: `cloudbuild.googleapis.com`
+  * Cloud Asset API`cloudasset.googleapis.com`
+  * Clouod Pub/Sub API: `pubsub.googleapis.com`
+  * Identity and Access Management (IAM) API: `iam.googleapis.com`
+  * Cloud Billing API: `cloudbilling.googleapis.com`
+
+### Service Account
+
+A service account with the following roles must be used to provision
+the resources of this module:
+
+* Billing Account
+  * Billing Account User: `roles/billingAccounts.user`

@@ -40,25 +40,25 @@ locals {
 
 data "tfe_outputs" "bootstrap" {
   organization = var.tfc_org_name
-  workspace = "0-shared"
+  workspace    = "0-shared"
 }
 
 data "tfe_outputs" "org" {
   organization = var.tfc_org_name
-  workspace = "1-shared"
+  workspace    = "1-shared"
 }
 
 data "tfe_outputs" "env_development" {
   organization = var.tfc_org_name
-  workspace = "2-development"
+  workspace    = "2-development"
 }
 
 data "tfe_outputs" "env_non_production" {
   organization = var.tfc_org_name
-  workspace = "2-non-production"
+  workspace    = "2-non-production"
 }
 
 data "tfe_outputs" "env_production" {
   organization = var.tfc_org_name
-  workspace = "2-production"
+  workspace    = "2-production"
 }

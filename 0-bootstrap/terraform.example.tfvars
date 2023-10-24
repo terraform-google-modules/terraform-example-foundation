@@ -98,17 +98,16 @@ default_region = "us-central1"
     Specific to tfc_bootstrap
    ---------------------------------------- */
 //  Un-comment tfc_bootstrap and its outputs if you want to use Terraform Cloud instead of Cloud Build
-// vcs_repos = {
-//   owner        = "YOUR-VCS-USER-OR-ORGANIZATION",
-//   bootstrap    = "YOUR-BOOTSTRAP-REPOSITORY",
-//   organization = "YOUR-ORGANIZATION-REPOSITORY",
-//   environments = "YOUR-ENVIRONMENTS-REPOSITORY",
-//   networks     = "YOUR-NETWORKS-REPOSITORY",
-//   projects     = "YOUR-PROJECTS-REPOSITORY",
-// }
 // Format expected: REPO-OWNER/REPO-NAME
-
-// tfc_org_name = "REPLACE_ME"
+#  vcs_repos = {
+#    owner        = "YOUR-VCS-USER-OR-ORGANIZATION",
+#    bootstrap    = "YOUR-BOOTSTRAP-REPOSITORY",
+#    organization = "YOUR-ORGANIZATION-REPOSITORY",
+#    environments = "YOUR-ENVIRONMENTS-REPOSITORY",
+#    networks     = "YOUR-NETWORKS-REPOSITORY",
+#    projects     = "YOUR-PROJECTS-REPOSITORY",
+#  }
+#  tfc_org_name = "REPLACE_ME"
 
 //  to prevent saving the `tfc_token` in plain text in this file,
 //  export the Terraform Cloud token in the command line

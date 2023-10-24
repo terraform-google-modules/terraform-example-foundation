@@ -129,7 +129,6 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
    ```bash
    mkdir -p envs/shared
    cp -RT ../terraform-example-foundation/0-bootstrap/ ./envs/shared
-   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    cd ./envs/shared
    ```
 
@@ -285,7 +284,6 @@ we recommend that you request 50 additional projects for the **projects step ser
 
    ```bash
    cp -RT ../terraform-example-foundation/1-org/ .
-   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    ```
 
 1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
@@ -372,7 +370,6 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
    ```bash
    cp -RT ../terraform-example-foundation/2-environments/ .
-   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    ```
 
 1. Rename `terraform.example.tfvars` to `terraform.tfvars`.

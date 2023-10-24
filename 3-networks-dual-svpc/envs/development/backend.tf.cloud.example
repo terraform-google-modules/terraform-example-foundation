@@ -17,7 +17,7 @@
 terraform {
   cloud {
     workspaces {
-      name="3-development"
+      name = "3-development"
     }
   }
 }

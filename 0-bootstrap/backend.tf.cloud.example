@@ -15,9 +15,9 @@
  */
 
 terraform {
-   cloud {
-     workspaces {
+  cloud {
+    workspaces {
       name = "0-shared"
-     }
+    }
   }
 }

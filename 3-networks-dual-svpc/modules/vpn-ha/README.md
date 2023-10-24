@@ -52,6 +52,6 @@ If you are not able to use Dedicated Interconnect or Partner Interconnect you ca
 
 ## Outputs
 
-No output.
+No outputs.
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

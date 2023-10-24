@@ -35,7 +35,7 @@ var (
 	bar = strings.Repeat("#", size)
 )
 
-func PressEnter(msg string) error {
+func PressEnter(msg string) {
 	reader := bufio.NewReader(os.Stdin)
 	t := "# Press Enter to continue"
 	if msg != "" {
@@ -43,7 +43,10 @@ func PressEnter(msg string) error {
 	}
 	fmt.Print(t)
 	_, err := reader.ReadString('\n')
-	return err
+	if err != nil {
+		fmt.Printf("# Failed to read string. Error: %s\n", err.Error())
+		os.Exit(3)
+	}
 }
 
 func pad(msg string, size int) string {

@@ -36,7 +36,7 @@ variable "location" {
 }
 
 variable "encryption_key" {
-  description = "The KMS Key to Encrypt docker repository."
+  description = "The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub."
   type        = string
 }
 
@@ -51,8 +51,8 @@ variable "impersonate_sa_email" {
   type        = string
 }
 
-variable "roles_to_search" {
-  description = "The list of roles to search in the Cloud Functions for members in the organization that is binded."
+variable "roles_to_monitor" {
+  description = "List of roles that will trigger a notification if granted to an identity in an update in the organization IAM Policy."
   type        = list(string)
   default = [
     "roles/owner",

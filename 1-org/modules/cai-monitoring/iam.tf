@@ -20,81 +20,60 @@ locals {
     "roles/eventarc.eventReceiver",
     "roles/run.invoker"
   ]
+  services = {
+    "cloudfunctions"   = "cloudfunctions.googleapis.com"
+    "artifactregistry" = "artifactregistry.googleapis.com"
+    "pubsub"           = "pubsub.googleapis.com"
+  }
+  identities = {
+    "cloudfunctions"   = "serviceAccount:${google_project_service_identity.service_sa["cloudfunctions"].email}",
+    "artifactregistry" = "serviceAccount:${google_project_service_identity.service_sa["artifactregistry"].email}",
+    "pubsub"           = "serviceAccount:${google_project_service_identity.service_sa["pubsub"].email}",
+    "storage"          = "serviceAccount:${data.google_storage_project_service_account.gcs_sa.email_address}"
+  }
 }
 
 // Service Accounts
-resource "google_project_service_identity" "cloudfunction_sa" {
+resource "google_project_service_identity" "service_sa" {
+  for_each = local.services
   provider = google-beta
 
   project = var.project_id
-  service = "cloudfunctions.googleapis.com"
-}
-
-resource "google_project_service_identity" "artifact_sa" {
-  provider = google-beta
-
-  project = var.project_id
-  service = "artifactregistry.googleapis.com"
-}
-
-resource "google_project_service_identity" "pubsub_sa" {
-  provider = google-beta
-
-  project = var.project_id
-  service = "pubsub.googleapis.com"
+  service = each.value
 }
 
 data "google_storage_project_service_account" "gcs_sa" {
   project = var.project_id
 }
 
-// Roles and permissions
-resource "google_kms_crypto_key_iam_member" "cloudfunction_sa_crypto_key" {
-  crypto_key_id = var.encryption_key
-  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-  member        = "serviceAccount:${google_project_service_identity.cloudfunction_sa.email}"
-}
+// Encrypter/Decrypter role
+resource "google_kms_crypto_key_iam_member" "encrypter_decrypter" {
+  for_each = local.identities
 
-resource "google_kms_crypto_key_iam_member" "artifact_sa_crypto_key" {
   crypto_key_id = var.encryption_key
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-  member        = "serviceAccount:${google_project_service_identity.artifact_sa.email}"
-}
-
-resource "google_kms_crypto_key_iam_member" "pubsub_sa_crypto_key" {
-  crypto_key_id = var.encryption_key
-  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-  member        = "serviceAccount:${google_project_service_identity.pubsub_sa.email}"
-}
-
-resource "google_kms_crypto_key_iam_member" "storage_sa_crypto_key" {
-  crypto_key_id = var.encryption_key
-  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-  member        = data.google_storage_project_service_account.gcs_sa.member
+  member        = each.value
 }
 
 // Cloud Function SA
-resource "google_service_account" "cloudfunction_sa" {
-  account_id = "cai-notification"
+resource "google_service_account" "cloudfunction" {
+  account_id = "cai-monitoring"
   project    = var.project_id
 }
 
-resource "google_project_iam_member" "cloudfunction_sa_iam" {
+resource "google_project_iam_member" "cloudfunction_iam" {
   for_each = toset(local.cf_roles)
 
   project = var.project_id
   role    = each.key
-  member  = "serviceAccount:${google_service_account.cloudfunction_sa.email}"
+  member  = "serviceAccount:${google_service_account.cloudfunction.email}"
 }
 
 // Time sleep
 resource "time_sleep" "wait_kms_iam" {
   create_duration = "60s"
   depends_on = [
-    google_kms_crypto_key_iam_member.cloudfunction_sa_crypto_key,
-    google_kms_crypto_key_iam_member.artifact_sa_crypto_key,
-    google_kms_crypto_key_iam_member.pubsub_sa_crypto_key,
-    google_kms_crypto_key_iam_member.storage_sa_crypto_key,
-    google_project_iam_member.cloudfunction_sa_iam
+    google_kms_crypto_key_iam_member.encrypter_decrypter,
+    google_project_iam_member.cloudfunction_iam
   ]
 }

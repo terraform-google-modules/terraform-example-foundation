@@ -1,7 +1,7 @@
 {
   "name": "caibindingnotification",
   "version": "1.0.0",
-  "description": "A Cloud function that receives events from a Pub/Sub Subscription fed by a Cloud Asset Inventory IAM event feed, and then notify if the IAM Policy grants a set of permissions to a member.",
+  "description": "A Cloud Function that receives events from a Pub/Sub Subscription fed by a Cloud Asset Inventory IAM event feed, and then notify if the IAM Policy grants roles from a predefined set to a new member.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

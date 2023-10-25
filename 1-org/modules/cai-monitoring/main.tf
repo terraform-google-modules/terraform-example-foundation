@@ -42,7 +42,7 @@ resource "google_project_service" "services" {
 }
 
 // Artifact Registry
-resource "google_artifact_registry_repository" "cloudfunction_repo" {
+resource "google_artifact_registry_repository" "cloudfunction" {
   location      = var.location
   project       = var.project_id
   repository_id = "ar-cai-notification-cf"
@@ -158,7 +158,7 @@ module "cloud_function" {
   function_location = var.location
   runtime           = "nodejs16"
   entrypoint        = "caiBindingNotification"
-  docker_repository = google_artifact_registry_repository.cloudfunction_repo.id
+  docker_repository = google_artifact_registry_repository.cloudfunction.id
 
   storage_source = {
     bucket = module.cloudfunction_source_bucket.name
@@ -166,9 +166,9 @@ module "cloud_function" {
   }
 
   service_config = {
-    service_account_email = google_service_account.cloudfunction_sa.email
+    service_account_email = google_service_account.cloudfunction.email
     runtime_env_variables = {
-      ROLES = join(",", var.roles_to_search)
+      ROLES = join(",", var.roles_to_monitor)
       TOPIC = module.pubsub_cai_notification.id
     }
   }
@@ -178,12 +178,11 @@ module "cloud_function" {
     event_type            = "google.cloud.pubsub.topic.v1.messagePublished"
     pubsub_topic          = module.pubsub_cai_feed.id
     retry_policy          = "RETRY_POLICY_RETRY"
-    service_account_email = google_service_account.cloudfunction_sa.email
+    service_account_email = google_service_account.cloudfunction.email
   }
 
   depends_on = [
     google_storage_bucket_object.cf_cai_source_zip,
-    time_sleep.wait_kms_iam,
-    google_project_iam_member.cloudfunction_sa_iam
+    time_sleep.wait_kms_iam
   ]
 }

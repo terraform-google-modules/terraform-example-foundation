@@ -5,6 +5,7 @@
 |------|-------------|------|---------|:--------:|
 | monitoring\_workspace\_users | Google Workspace or Cloud Identity group that have access to Monitoring Workspaces. | `string` | n/a | yes |
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
+| tfc\_org\_name | Name of the TFC organization | `string` | `""` | no |
 
 ## Outputs
 

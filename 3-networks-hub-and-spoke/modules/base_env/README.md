@@ -24,6 +24,7 @@
 | restricted\_private\_service\_connect\_ip | The base subnet internal IP to be used as the private service connect endpoint in the Restricted Shared VPC | `string` | n/a | yes |
 | restricted\_subnet\_primary\_ranges | The base subnet primary IPTs ranges to the Restricted Shared Vpc. | `map(string)` | n/a | yes |
 | restricted\_subnet\_secondary\_ranges | The base subnet secondary IPTs ranges to the Restricted Shared Vpc | `map(list(map(string)))` | n/a | yes |
+| tfc\_org\_name | Name of the TFC organization | `string` | n/a | yes |
 
 ## Outputs
 

@@ -154,8 +154,8 @@ module "mig_template" {
   name_prefix          = "gl-runner"
   source_image_family  = var.source_image_family
   source_image_project = var.source_image_project
-  #startup_script       = file("${abspath(path.module)}/startup_script.sh")
-  source_image = var.source_image
+  startup_script       = file("${abspath(path.module)}/startup_script.sh")
+  source_image         = var.source_image
   metadata = merge({
     "secret-id" = google_secret_manager_secret_version.gl-secret-version.name
   }, var.custom_metadata)

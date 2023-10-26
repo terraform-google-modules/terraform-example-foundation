@@ -18,13 +18,18 @@ const {PubSub} = require('@google-cloud/pubsub');
 const pubSubClient = new PubSub();
 
 exports.caiBindingNotification = message => {
-    var event = parseMessage(message)
-    var bindings = getRoleBindings(event.asset)
+    try {
+        var event = parseMessage(message);
+        var bindings = getRoleBindings(event.asset);
 
-    // If the list is not empty, search for the same member and role on the prior asset.
-    // Get only the new bindings that is not on the prior asset and post on Pub/Sub.
-    if (bindings.length > 0){
-        bindingDiff(bindings, getRoleBindings(event.priorAsset)).forEach(postOnPubSub);
+        // If the list is not empty, search for the same member and role on the prior asset.
+        // Get only the new bindings that is not on the prior asset and post on Pub/Sub.
+        if (bindings.length > 0){
+            var priorBindings = getRoleBindings(event.priorAsset);
+            bindingDiff(bindings, priorBindings).forEach(postOnPubSub);
+        }
+    } catch (error) {
+        console.error(error);
     }
 }
 
@@ -36,9 +41,15 @@ exports.caiBindingNotification = message => {
  * @returns {Array} The array of found bindings ({member: String, role: String}) sorted by role
  */
 function getRoleBindings(asset){
+    // If asset, iamPolicy or bindings is missing, log an error and return an empty list.
+    if (!(asset && asset.iamPolicy && asset.iamPolicy.bindings)){
+        console.warn(`Skipping execution because asset is missing fields (iamPolicy or iamPolicy.bindings)`);
+        return [];
+    }
+
     var foundRoles = [];
     var bindings = asset.iamPolicy.bindings;
-    var searchroles = process.env.ROLES.split(",")
+    var searchroles = process.env.ROLES.split(",");
 
     // Check for bindings that include the list of roles
     bindings.forEach(binding => {
@@ -73,7 +84,7 @@ function sortBindingList(actual, next) {
  * @returns {Array} The difference array between actual and prior bindings
  */
 function bindingDiff(bindings, priorBindings) {
-    return bindings.filter(actual => !priorBindings.some(prior => (prior.member === actual.member && prior.role === actual.role)))
+    return bindings.filter(actual => !priorBindings.some(prior => (prior.member === actual.member && prior.role === actual.role)));
 }
 
 /**
@@ -84,25 +95,20 @@ function bindingDiff(bindings, priorBindings) {
  * @exception If some error happens while parsing, it will log the error and finish the execution
  */
 function parseMessage(message) {
-    try {
-        // If message data is missing, log an error and exit.
-        if (!(message && message.data)){
-            throw new Error("Missing required fields (message or message.data): " + JSON.stringify(message))
-        }
-
-        // Extract the event data from the message
-        var event = JSON.parse(Buffer.from(message.data, 'base64').toString())
-
-        // if event asset data is missing, log an error and exit
-        if (!(event.asset && event.asset.iamPolicy)){
-            throw new Error("Missing required fields (asset or asset.iamPolicy): " + JSON.stringify(message))
-        }
-
-        return event
-    } catch (e) {
-        console.error("Error parsing message: " + JSON.stringify(e))
-        process.exitCode = 1;
+    // If message data is missing, log an error and exit.
+    if (!(message && message.data)){
+        throw new Error(`Missing required fields (message or message.data)`);
     }
+
+    // Extract the event data from the message
+    var event = JSON.parse(Buffer.from(message.data, 'base64').toString());
+
+    // if event asset data is missing, log an error and exit
+    if (!(event.asset && event.asset.iamPolicy)){
+        throw new Error(`Missing required fields (asset or asset.iamPolicy)`);
+    }
+
+    return event
 }
 
 /**
@@ -111,14 +117,10 @@ function parseMessage(message) {
  * @param {map} bindings  The binding object containing member email and role
  */
 async function postOnPubSub(binding) {
-    console.log("Found an address (" + binding.member + ") with role " + binding.role)
-    var dataBuffer = Buffer.from(JSON.stringify(binding))
-    try {
-        const messageId = await pubSubClient
+    console.log(`Found the address ${binding.member} with role ${binding.role}`);
+    var dataBuffer = Buffer.from(JSON.stringify(binding));
+    const messageId = await pubSubClient
           .topic(process.env.TOPIC)
           .publishMessage({data: dataBuffer});
-        console.log(`Message ${messageId} published.`);
-    } catch (error) {
-        console.error(`Error while publishing: ${error.message}`);
-    }
+    console.log(`Message ${messageId} published.`);
 }

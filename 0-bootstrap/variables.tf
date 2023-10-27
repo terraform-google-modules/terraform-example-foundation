@@ -306,7 +306,7 @@ variable "create_network" {
 variable "subnetwork_project" {
   type        = string
   description = "The ID of the project in which the subnetwork belongs. If it is not provided, the project_id is used."
-  #default     = ""
+  default     = ""
 }
 
 variable "subnet_ip" {

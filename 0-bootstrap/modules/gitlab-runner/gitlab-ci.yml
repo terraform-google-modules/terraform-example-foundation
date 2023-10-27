@@ -45,7 +45,7 @@ build-image:
 # disable -> projeto -> settings -> cicd -> token access -> limit access to this project
 
 image:
-  name: registry.gitlab.com/renatojr_ciandt_group2/project_group2/terraform-gcloud:latest
+  name: registry.gitlab.com/GITLAB-ACCOUNT/GITLAB-REPOSITORY/terraform-gcloud:latest 
   entrypoint: [""]
 
 terraform-plan:

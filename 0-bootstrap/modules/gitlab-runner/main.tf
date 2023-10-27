@@ -25,12 +25,12 @@ module "vpc_network" {
   source       = "terraform-google-modules/network/google"
   version      = "~> 7.0"
   project_id   = var.project_id
-  network_name = "my-network"
+  network_name = "gl-network"
   mtu          = 1460
 
   subnets = [
     {
-      subnet_name   = "subnet-01"
+      subnet_name   = "gl-subnet"
       subnet_ip     = "10.10.10.0/24"
       subnet_region = "us-central1"
       #   subnet_private_access = "true"

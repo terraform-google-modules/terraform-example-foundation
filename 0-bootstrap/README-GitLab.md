@@ -32,7 +32,6 @@ Also make sure that you have the following:
     - write_repository
     - read_registry
     - write_registry
-- A [Runner](https://docs.gitlab.com/ee/tutorials/create_register_first_runner/) with the name `gl_runner` should be created in your GitLab account. Save the token of the runner once it has been created. It will be used in the next steps.
 - A Google Cloud [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 - A Google Cloud [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
 - Cloud Identity or Google Workspace groups for organization and billing admins.
@@ -250,6 +249,19 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    cp ../terraform-example-foundation/build/gitlab/.gitlab-ci.yml ./.gitlab-ci.yml
    cp ../terraform-example-foundation/build/gitlab/Dockerfile ./Dockerfile
    ```
+1. Create a runner for your GitLab in [Settings -> CICD -> Runners](https://gitlab.com/renatojr_ciandt/fdt-bootstrap/-/settings/ci_cd)called `gl_runner` and set the tag name also for `gl_runner`.
+
+1. To execute the next step, access the Gitlab instance created in the 0-bootstrap step by ssh and update token field in the file `/etc/gitlab-runner/config.toml` using the value showed during the Gitlab Runner creation. To access the instance created you will need to open the SSH port in the firewall:
+
+```bash
+gcloud compute firewall-rules create allow-ssh --allow tcp:22 --network gl-network --project <cicd_project_id>
+```
+
+1. After have created the runner on GitLab interface, run the command below in the GCP instance for the GitLab. Remember to change the token `glrt-xxx` for the token generated in the GitLab interface. 
+
+```bash
+sudo gitlab-runner register --non-interactive --url https://gitlab.com --name gl_runner --executor docker --docker-image docker:dind --docker-privileged true --token glrt-xxx
+```
 
 1. Edit the `./.gitlab-ci.yml` file and update the paramenter the following line:
 
@@ -274,24 +286,8 @@ image:
    ```
 
 1. Review the CI/CD Job output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-RUNNER-REPO/-/jobs under name `build-image`.
+
 1. If the CI/CD Job is successful proceed with the next steps.
-
-1. Access the Gitlab instance created in the 0-bootstrap step by ssh and update token field in the file `/etc/gitlab-runner/config.toml` using the value showed during the Gitlab Runner creation. To access the instance created you will need to open the SSH port in the firewall:
-
-```bash
-gcloud compute firewall-rules create allow-ssh --allow tcp:22 --network gl-network --project <cicd_project_id>
-```
-
-Then, update the following field in the GitLab runner config file `sudo vi /etc/gitlab-runner/config.toml`.
-
-```bash
-token = "glrt-XXX"
-```
-
-Once GitLab runner file is updated, restart your runner:
-```bash
-sudo gitlab-runner restart
-```
 
 1. Copy the file `gitlab-ci.yml` to the 0-bootstrap directory.
 
@@ -317,4 +313,701 @@ They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the 
 
 **Note 2:** After the deploy, to prevent the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded),
 we recommend that you request 50 additional projects for the **projects step service account** created in this step.
+
+
+## Deploying step 1-org
+
+1. Clone the repository you created to host the `1-org` terraform configuration at the same level of the `terraform-example-foundation` folder.
+
+   ```bash
+   git clone git@gilab.com:<GITLAB-OWNER>/<GITLAB-ORGANIZATION-REPO>.git gcp-org
+   ```
+
+1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-org` directory.
+   If you run them from another directory, adjust your copy paths accordingly.
+
+   ```bash
+   cd gcp-org
+   ```
+
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
+   git checkout -b plan
+   ```
+
+1. Copy contents of foundation to new repo.
+
+   ```bash
+   cp -RT ../terraform-example-foundation/1-org/ .
+   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
+   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
+
+1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
+
+   ```bash
+   mv ./envs/shared/terraform.example.tfvars ./envs/shared/terraform.tfvars
+   ```
+
+1. Update the file `envs/shared/terraform.tfvars` with values from your GCP environment.
+See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for additional information on the values in the `terraform.tfvars` file.
+
+1. Un-comment the variable `create_access_context_manager_access_policy = false` if your organization already has an Access Context Manager Policy.
+
+    ```bash
+    export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -json common_config | jq '.org_id' --raw-output)
+
+    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+
+    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+
+    if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
+    ```
+
+1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap.
+
+   ```bash
+   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw gcs_bucket_tfstate)
+
+   echo "remote_state_bucket = ${backend_bucket}"
+
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+   ```
+
+1. Check if a Security Command Center Notification with the default name, **scc-notify**, already exists in your organization.
+
+   ```bash
+   export ORG_STEP_SA=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw organization_step_terraform_service_account_email)
+
+   gcloud scc notifications describe "scc-notify" --format="value(name)" --organization=${ORGANIZATION_ID} --impersonate-service-account=${ORG_STEP_SA}
+   ```
+
+1. If the notification exists the output will be:
+
+    ```text
+    organizations/ORGANIZATION_ID/notificationConfigs/scc-notify
+    ```
+
+1. If the notification does not exist the output will be:
+
+    ```text
+    ERROR: (gcloud.scc.notifications.describe) NOT_FOUND: Requested entity was not found.
+    ```
+
+1. If the notification exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
+
+1. Commit changes.
+
+   ```bash
+   git add .
+   git commit -m 'Initialize org repo'
+   ```
+
+1. Push your plan branch.
+
+   ```bash
+   git push --set-upstream origin plan
+   ```
+
+**Note 1:** Before open a merge request, make sure the option `Delete source branch` is unchecked.
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+1. If the GitLab pipelines is successful, apply the next environment.
+
+
+## Deploying step 2-environments
+
+1. Clone the repository you created to host the `2-environments` terraform configuration at the same level of the `terraform-example-foundation` folder.
+
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-ENVIRONMENTS-REPO>.git gcp-environments
+   ```
+
+1. Navigate into the repo. All subsequent
+   steps assume you are running them from the `gcp-environments` directory.
+   If you run them from another directory, adjust your copy paths accordingly.
+
+   ```bash
+   cd gcp-environments
+   ```
+
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b non-production
+   git push --set-upstream origin non-production
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
+   git checkout -b plan
+   ```
+
+1. Copy contents of foundation to new repo.
+
+   ```bash
+   cp -RT ../terraform-example-foundation/2-environments/ .
+   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
+   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
+
+1. Rename `terraform.example.tfvars` to `terraform.tfvars`.
+
+   ```bash
+   mv terraform.example.tfvars terraform.tfvars
+   ```
+
+1. Update the file with values from your GCP environment.
+See any of the envs folder [README.md](../2-environments/envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
+
+1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap.
+
+   ```bash
+   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${backend_bucket}"
+
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" terraform.tfvars
+   ```
+
+1. Commit changes.
+
+   ```bash
+   git add .
+   git commit -m 'Initialize environments repo'
+   ```
+
+1. Push your plan branch.
+
+   ```bash
+   git push --set-upstream origin plan
+   ```
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `development` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `development` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `development` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+1. If the Gitlab pipelines is successful, apply the next environment.
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `non-production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `non-production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+1. If the GitLab pipelines is successful, apply the next environment.
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `non-production` branch to the `production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+
+1. You can now move to the instructions in the network stage.
+To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc),
+or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
+
+## Deploying step 3-networks-dual-svpc
+
+1. Clone the repository you created to host the `3-networks-dual-svpc` terraform configuration at the same level of the `terraform-example-foundation` folder.
+
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-NETWORKS-REPO>.git gcp-networks
+   ```
+
+1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
+   If you run them from another directory, adjust your copy paths accordingly.
+
+   ```bash
+   cd gcp-networks
+   ```
+
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b non-production
+   git push --set-upstream origin non-production
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
+   git checkout -b plan
+   ```
+
+1. Copy contents of foundation to new repo.
+
+   ```bash
+   cp -RT ../terraform-example-foundation/3-networks-dual-svpc/ .
+   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
+   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
+
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
+
+   ```bash
+   mv common.auto.example.tfvars common.auto.tfvars
+   mv shared.auto.example.tfvars shared.auto.tfvars
+   mv access_context.auto.example.tfvars access_context.auto.tfvars
+   ```
+
+1. Update the file `shared.auto.tfvars` with the values for the `target_name_server_addresses`.
+1. Update the file `access_context.auto.tfvars` with the organization's `access_context_manager_policy_id`.
+
+   ```bash
+   export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -json common_config | jq '.org_id' --raw-output)
+
+   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+
+   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+
+   sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
+   ```
+
+1. Update `common.auto.tfvars` file with values from your GCP environment.
+See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
+
+   ```bash
+   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
+
+   echo "remote_state_bucket = ${backend_bucket}"
+
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   ```
+
+1. Commit changes
+
+   ```bash
+   git add .
+   git commit -m 'Initialize networks repo'
+   ```
+
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
+1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
+1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
+
+   ```bash
+   export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
+   echo ${CICD_PROJECT_ID}
+   ```
+
+1. The networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
+An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+
+   ```bash
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw networks_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
+
+1. Run `init` and `plan` and review output for environment shared.
+
+   ```bash
+   ./tf-wrapper.sh init shared
+   ./tf-wrapper.sh plan shared
+   ```
+
+1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
+1. Run `validate` and check for violations.
+
+   ```bash
+   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
+   ```
+
+1. Run `apply` shared.
+
+   ```bash
+   ./tf-wrapper.sh apply shared
+   ```
+
+1. Push your plan branch.
+
+   ```bash
+   git push --set-upstream origin plan
+   ```
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `development` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `development` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `development` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+1. If the Gitlab pipelines is successful, apply the next environment.
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `non-production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `non-production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+1. If the GitLab pipelines is successful, apply the next environment.
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `non-production` branch to the `production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+
+1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. You can now move to the instructions in the [4-projects](#deploying-step-4-projects) stage.
+
+## Deploying step 3-networks-hub-and-spoke
+
+1. Clone the repository you created to host the `3-networks-hub-and-spoke` terraform configuration at the same level of the `terraform-example-foundation` folder.
+
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-NETWORKS-REPO>.git gcp-networks
+   ```
+
+1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
+   If you run them from another directory, adjust your copy paths accordingly.
+
+   ```bash
+   cd gcp-networks
+   ```
+
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b non-production
+   git push --set-upstream origin non-production
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
+   git checkout -b plan
+   ```
+
+1. Copy contents of foundation to new repo.
+
+   ```bash
+   cp -RT ../terraform-example-foundation/3-networks-hub-and-spoke/ .
+   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
+   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
+
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
+
+   ```bash
+   mv common.auto.example.tfvars common.auto.tfvars
+   mv shared.auto.example.tfvars shared.auto.tfvars
+   mv access_context.auto.example.tfvars access_context.auto.tfvars
+   ```
+
+1. Update `common.auto.tfvars` file with values from your GCP environment.
+See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
+
+   ```bash
+   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
+
+   echo "remote_state_bucket = ${backend_bucket}"
+
+   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   ```
+
+1. Commit changes
+
+   ```bash
+   git add .
+   git commit -m 'Initialize networks repo'
+   ```
+
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
+1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
+1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
+
+   ```bash
+   export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
+   echo ${CICD_PROJECT_ID}
+   ```
+
+1. The networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
+An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+
+   ```bash
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw networks_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
+
+1. Run `init` and `plan` and review output for environment shared.
+
+   ```bash
+   ./tf-wrapper.sh init shared
+   ./tf-wrapper.sh plan shared
+   ```
+
+1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
+1. Run `validate` and check for violations.
+
+   ```bash
+   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
+   ```
+
+1. Run `apply` shared.
+
+   ```bash
+   ./tf-wrapper.sh apply shared
+   ```
+
+1. Push your plan branch.
+
+   ```bash
+   git push --set-upstream origin plan
+   ```
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `development` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `development` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `development` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+1. If the Gitlab pipelines is successful, apply the next environment.
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `non-production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `non-production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+1. If the GitLab pipelines is successful, apply the next environment.
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `non-production` branch to the `production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+
+
+1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. You can now move to the instructions in the [4-projects](#deploying-step-4-projects) stage.
+
+## Deploying step 4-projects
+
+1. Clone the repository you created to host the `4-projects` terraform configuration at the same level of the `terraform-example-foundation` folder.
+
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-PROJECTS-REPO>.git gcp-projects
+   ```
+
+1. Navigate into the repo. All subsequent
+   steps assume you are running them from the `gcp-projects` directory.
+   If you run them from another directory, adjust your copy paths accordingly.
+
+   ```bash
+   cd gcp-projects
+   ```
+
+1. Seed the repository if it has not been initialized yet.
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b non-production
+   git push --set-upstream origin non-production
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. change to a non-production branch.
+
+   ```bash
+   git checkout -b plan
+   ```
+
+1. Copy contents of foundation to new repo.
+
+   ```bash
+   cp -RT ../terraform-example-foundation/4-projects/ .
+   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
+   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
+
+1. Rename `auto.example.tfvars` files to `auto.tfvars`.
+
+   ```bash
+   mv common.auto.example.tfvars common.auto.tfvars
+   mv shared.auto.example.tfvars shared.auto.tfvars
+   mv development.auto.example.tfvars development.auto.tfvars
+   mv non-production.auto.example.tfvars non-production.auto.tfvars
+   mv production.auto.example.tfvars production.auto.tfvars
+   ```
+
+1. See any of the envs folder [README.md](../4-projects/business_unit_1/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
+1. See any of the shared folder [README.md](../4-projects/business_unit_1/shared/README.md#inputs) files for additional information on the values in the `shared.auto.tfvars` file.
+
+1. Use `terraform output` to get the backend bucket value from bootstrap output.
+
+   ```bash
+   export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${remote_state_bucket}"
+
+   sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
+   ```
+
+1. Commit changes.
+
+   ```bash
+   git add .
+   git commit -m 'Initialize projects repo'
+   ```
+
+1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
+
+1. Use `terraform output` to get the CI/CD project ID and the projects step Terraform Service Account from gcp-bootstrap output.
+1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
+
+   ```bash
+   export CICD_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw cicd_project_id)
+   echo ${CICD_PROJECT_ID}
+   ```
+
+1. The projects step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
+An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+
+   ```bash
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
+
+1. Run `init` and `plan` and review output for environment shared.
+
+   ```bash
+   ./tf-wrapper.sh init shared
+   ./tf-wrapper.sh plan shared
+   ```
+
+1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
+1. Run `validate` and check for violations.
+
+   ```bash
+   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
+   ```
+
+1. Run `apply` shared.
+
+   ```bash
+   ./tf-wrapper.sh apply shared
+   ```
+
+1. Push your plan branch.
+
+   ```bash
+   git push --set-upstream origin plan
+   ```
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `development` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `development` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `development` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+1. If the Gitlab pipelines is successful, apply the next environment.
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `non-production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `non-production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+1. If the GitLab pipelines is successful, apply the next environment.
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `non-production` branch to the `production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
+
+1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
 

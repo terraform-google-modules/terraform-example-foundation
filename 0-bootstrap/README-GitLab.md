@@ -97,11 +97,10 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
 
    cp -RT ../terraform-example-foundation/0-bootstrap/ ./envs/shared
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
-   cp ../terraform-example-foundation/build/gitlab/run_gcp_auth.sh .
+   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/run_gcp_auth.sh .
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./run_gcp_auth.sh
-   chmod 755 ./tf-wrapper.sh
+   chmod 755 ./*.sh
    cd ./envs/shared
    ```
 
@@ -244,8 +243,8 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
 1. Copy contents of foundation to cloned project (modify accordingly based on your current directory).
 
    ```bash
-   cp ../terraform-example-foundation/build/gitlab/.gitlab-ci.yml ./.gitlab-ci.yml
-   cp ../terraform-example-foundation/build/gitlab/Dockerfile ./Dockerfile
+   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/0-bootstrap/Dockerfile ./Dockerfile
    ```
 1. Create a runner for your GitLab in [Settings -> CICD -> Runners](https://gitlab.com/renatojr_ciandt/fdt-bootstrap/-/settings/ci_cd) called `gl_runner` and set the tag name also for `gl_runner`.
 
@@ -290,7 +289,7 @@ image:
 1. Copy the file `gitlab-ci.yml` to the 0-bootstrap directory.
 
 ```bash
-cp ../terraform-example-foundation/build/gitlab/.gitlab-ci.yml ../gcp-bootstrap/.gitlab-ci.yml
+cp ../terraform-example-foundation/build/gitlab-ci.yml ../gcp-bootstrap/.gitlab-ci.yml
 ```
 
 1. Make sure you have enabled the Gitlab Runner to the bootstrap project. You can do this in `https://gitlab.com/YOUR-GITLAB-USER/gcp-cicd-runner/-/settings/ci_cd#js-runners-settings`.
@@ -349,11 +348,10 @@ we recommend that you request 50 additional projects for the **projects step ser
    ```bash
    cp -RT ../terraform-example-foundation/1-org/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
-   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
-   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/run_gcp_auth.sh .
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
+   chmod 755 ./*.sh
    ```
 
 1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
@@ -476,11 +474,10 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
    ```bash
    cp -RT ../terraform-example-foundation/2-environments/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
-   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
-   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/run_gcp_auth.sh .
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
+   chmod 755 ./*.sh
    ```
 
 1. Rename `terraform.example.tfvars` to `terraform.tfvars`.
@@ -583,11 +580,10 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    ```bash
    cp -RT ../terraform-example-foundation/3-networks-dual-svpc/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
-   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
-   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/run_gcp_auth.sh .
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
+   chmod 755 ./*.sh
    ```
 
 1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
@@ -747,11 +743,10 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```bash
    cp -RT ../terraform-example-foundation/3-networks-hub-and-spoke/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
-   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
-   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/run_gcp_auth.sh .
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
+   chmod 755 ./*.sh
    ```
 
 1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
@@ -900,11 +895,10 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```bash
    cp -RT ../terraform-example-foundation/4-projects/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-   cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
-   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
-   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/run_gcp_auth.sh .
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
+   chmod 755 ./*.sh
    ```
 
 1. Rename `auto.example.tfvars` files to `auto.tfvars`.

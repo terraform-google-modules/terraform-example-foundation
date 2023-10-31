@@ -127,23 +127,16 @@ module "pubsub_cai_feed" {
   ]
 }
 
-module "pubsub_cai_notification" {
-  source  = "terraform-google-modules/pubsub/google"
-  version = "~> 5.0"
+// SCC source
+resource "random_id" "suffix" {
+  byte_length = var.scc_random_suffix ? 2 : 0
+  prefix      = var.scc_random_suffix ? " - " : null
+}
 
-  topic              = "top-cai-notification-cf"
-  project_id         = var.project_id
-  topic_kms_key_name = var.encryption_key
-
-  pull_subscriptions = [
-    {
-      name = "sub-cai-notification-cf"
-    }
-  ]
-
-  depends_on = [
-    time_sleep.wait_kms_iam
-  ]
+resource "google_scc_source" "custom_source" {
+  display_name = format("CAI Monitoring%s", random_id.suffix.hex)
+  organization = var.org_id
+  description  = "SCC Finding Source for caiMonitoring Cloud Functions."
 }
 
 // Cloud Function
@@ -151,13 +144,13 @@ module "cloud_function" {
   source  = "GoogleCloudPlatform/cloud-functions/google"
   version = "0.4.1"
 
-  function_name     = "caiBindingNotification"
+  function_name     = "caiMonitoring"
   description       = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."
   project_id        = var.project_id
   labels            = var.labels
   function_location = var.location
   runtime           = "nodejs16"
-  entrypoint        = "caiBindingNotification"
+  entrypoint        = "caiMonitoring"
   docker_repository = google_artifact_registry_repository.cloudfunction.id
 
   storage_source = {
@@ -168,8 +161,8 @@ module "cloud_function" {
   service_config = {
     service_account_email = google_service_account.cloudfunction.email
     runtime_env_variables = {
-      ROLES = join(",", var.roles_to_monitor)
-      TOPIC = module.pubsub_cai_notification.id
+      ROLES     = join(",", var.roles_to_monitor)
+      SOURCE_ID = google_scc_source.custom_source.id
     }
   }
 

@@ -32,6 +32,7 @@ module "secure_cai_notification" {
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | project\_id | The Project ID where the resources will be created | `string` | n/a | yes |
 | roles\_to\_monitor | List of roles that will trigger a notification if granted to an identity in an update in the organization IAM Policy. | `list(string)` | <pre>[<br>  "roles/owner",<br>  "roles/editor",<br>  "roles/resourcemanager.organizationAdmin",<br>  "roles/compute.networkAdmin",<br>  "roles/compute.orgFirewallPolicyAdmin"<br>]</pre> | no |
+| scc\_random\_suffix | Adds a suffix of 4 random characters to the `scc_source` name. | `bool` | `false` | no |
 
 ## Outputs
 

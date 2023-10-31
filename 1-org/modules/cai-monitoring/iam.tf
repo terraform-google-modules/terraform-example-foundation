@@ -61,6 +61,12 @@ resource "google_service_account" "cloudfunction" {
   project    = var.project_id
 }
 
+resource "google_organization_iam_member" "cloudfunction_findings_editor" {
+  org_id = var.org_id
+  role   = "roles/securitycenter.findingsEditor"
+  member = "serviceAccount:${google_service_account.cloudfunction.email}"
+}
+
 resource "google_project_iam_member" "cloudfunction_iam" {
   for_each = toset(local.cf_roles)
 
@@ -74,6 +80,7 @@ resource "time_sleep" "wait_kms_iam" {
   create_duration = "60s"
   depends_on = [
     google_kms_crypto_key_iam_member.encrypter_decrypter,
+    google_organization_iam_member.cloudfunction_findings_editor,
     google_project_iam_member.cloudfunction_iam
   ]
 }

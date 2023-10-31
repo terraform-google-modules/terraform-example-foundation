@@ -247,10 +247,10 @@ variable "initial_group_config" {
 # }
 
 /* ----------------------------------------
-    Specific to github_bootstrap
+    Specific to gitlab_bootstrap
    ---------------------------------------- */
 
-# Un-comment github_bootstrap and its outputs if you want to use GitHub Actions instead of Cloud Build
+# Un-comment gitlab_bootstrap and its outputs if you want to use GitLab Pipelines instead of Cloud Build
 variable "gl_repos" {
   description = <<EOT
   Configuration for the GitLab Repositories to be used to deploy the Terraform Example Foundation stages.
@@ -287,10 +287,6 @@ variable "repo_owner" {
   type        = string
 }
 
-/* ----------------------------------------
-    Specific to gitlab_bootstrap
-   ---------------------------------------- */
-
 variable "network_name" {
   type        = string
   description = "Name for the VPC network"
@@ -314,6 +310,7 @@ variable "subnet_ip" {
   description = "IP range for the subnet"
   default     = "10.10.10.0/24"
 }
+
 variable "subnet_name" {
   type        = string
   description = "Name for the subnet"

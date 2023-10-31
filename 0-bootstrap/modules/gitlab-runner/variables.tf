@@ -26,12 +26,6 @@ variable "network_name" {
   default     = "gl-runner-network"
 }
 
-variable "create_network" {
-  type        = bool
-  description = "When set to true, VPC,router and NAT will be auto created"
-  default     = true
-}
-
 variable "subnetwork_project" {
   type        = string
   description = "The ID of the project in which the subnetwork belongs. If it is not provided, the project_id is used."
@@ -56,17 +50,6 @@ variable "subnet_name" {
   default     = "gl-runner-subnet"
 }
 
-variable "repo_name" {
-  type        = string
-  description = "Name of the repo for the Github Action"
-  default     = ""
-}
-
-variable "repo_owner" {
-  type        = string
-  description = "Owner of the repo for the Github Action"
-}
-
 variable "gl_runner_labels" {
   type        = set(string)
   description = "GitHub runner labels to attach to the runners. Docs: https://docs.github.com/en/actions/hosting-your-own-runners/using-labels-with-self-hosted-runners"
@@ -83,12 +66,6 @@ variable "max_replicas" {
   type        = number
   default     = 10
   description = "Maximum number of runner instances"
-}
-
-variable "gitlab_token" {
-  type        = string
-  sensitive   = true
-  description = "Gitlab token that is used for generating Self Hosted Runner Token"
 }
 
 variable "service_account" {

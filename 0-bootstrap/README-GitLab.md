@@ -13,18 +13,19 @@ To run the instructions described in this document, install the following:
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
     - [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
-- [GLab](https://gitlab.com/gitlab-org/cli) version 1.32.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.3.0  or later
+- [Terraform](https://www.terraform.io/downloads.html) version 1.3.0 or later
+- [jq](https://jqlang.github.io/jq/) version 1.6 or later.
 
 Also make sure that you have the following:
 
 - A [GitLab](https://docs.gitlab.com/ee/user/profile/account/create_accounts.html) account for your User or Group.
-- A private GitLab project (repository) for each one of the stages of Foundation:
+- A private GitLab project (repository) for each one of the stages of Foundation and one for the GutLab runner Image:
     - Bootstrap
     - Organization
     - Environments
     - Networks
     - Projects
+    - CI/CD Runner
 - A [Personal](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) access token or a [Group](https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html) access token configured with the following [scopes](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#personal-access-token-scopes):
     - read_api
     - create_runner
@@ -59,8 +60,6 @@ that are created, see the organization bootstrap module
    git clone https://github.com/terraform-google-modules/terraform-example-foundation.git
    ```
 
-
-
 ### Deploying step 0-bootstrap
 
 1. Clone the private project you created to host the `0-bootstrap` terraform configuration at the same level of the `terraform-example-foundation` folder.
@@ -74,7 +73,6 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
 
    ```bash
    gcp-bootstrap/
-   gcp-cicd-runner/
    terraform-example-foundation/
    ```
 
@@ -100,9 +98,9 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    cp -RT ../terraform-example-foundation/0-bootstrap/ ./envs/shared
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    cp ../terraform-example-foundation/build/.gitlab-ci.yml ./.gitlab-ci.yml
-   cp ../terraform-example-foundation/build/gitlab/run_gcp_* .
-   chmod 755 ./run_gcp_*
+   cp ../terraform-example-foundation/build/gitlab/run_gcp_auth.sh .
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./run_gcp_auth.sh
    chmod 755 ./tf-wrapper.sh
    cd ./envs/shared
    ```
@@ -249,7 +247,7 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    cp ../terraform-example-foundation/build/gitlab/.gitlab-ci.yml ./.gitlab-ci.yml
    cp ../terraform-example-foundation/build/gitlab/Dockerfile ./Dockerfile
    ```
-1. Create a runner for your GitLab in [Settings -> CICD -> Runners](https://gitlab.com/renatojr_ciandt/fdt-bootstrap/-/settings/ci_cd)called `gl_runner` and set the tag name also for `gl_runner`.
+1. Create a runner for your GitLab in [Settings -> CICD -> Runners](https://gitlab.com/renatojr_ciandt/fdt-bootstrap/-/settings/ci_cd) called `gl_runner` and set the tag name also for `gl_runner`.
 
 1. To execute the next step, access the Gitlab instance created in the 0-bootstrap step by ssh and update token field in the file `/etc/gitlab-runner/config.toml` using the value showed during the Gitlab Runner creation. To access the instance created you will need to open the SSH port in the firewall:
 
@@ -257,7 +255,7 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
 gcloud compute firewall-rules create allow-ssh --allow tcp:22 --network gl-network --project <cicd_project_id>
 ```
 
-1. After have created the runner on GitLab interface, run the command below in the GCP instance for the GitLab. Remember to change the token `glrt-xxx` for the token generated in the GitLab interface. 
+1. After have created the runner on GitLab interface, run the command below in the GCP instance for the GitLab. Remember to change the token `glrt-xxx` for the token generated in the GitLab interface.
 
 ```bash
 sudo gitlab-runner register --non-interactive --url https://gitlab.com --name gl_runner --executor docker --docker-image docker:dind --docker-privileged true --token glrt-xxx

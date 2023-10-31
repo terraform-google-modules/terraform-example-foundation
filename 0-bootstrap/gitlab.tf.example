@@ -129,8 +129,6 @@ module "cicd_project_wif_iam_member" {
 module "gitlab_runner" {
   source = "./modules/gitlab-runner"
 
-  repo_owner   = var.repo_owner
-  gitlab_token = var.gitlab_token
-  project_id   = local.cicd_project_id
+  project_id = local.cicd_project_id
 }
 

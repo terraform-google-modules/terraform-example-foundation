@@ -22,30 +22,24 @@ locals {
   Optional Runner Networking
  *****************************************/
 module "vpc_network" {
-  source       = "terraform-google-modules/network/google"
-  version      = "~> 7.0"
+  source  = "terraform-google-modules/network/google"
+  version = "~> 7.0"
+
   project_id   = var.project_id
-  network_name = "gl-network"
+  network_name = var.network_name
   mtu          = 1460
 
   subnets = [
     {
-      subnet_name   = "gl-subnet"
-      subnet_ip     = "10.10.10.0/24"
-      subnet_region = "us-central1"
-      #   subnet_private_access = "true"
-      #   subnet_flow_logs          = "true"
-      #   subnet_flow_logs_interval = "INTERVAL_10_MIN"
-      #   subnet_flow_logs_sampling = 0.7
-      #   subnet_flow_logs_metadata = "INCLUDE_ALL_METADATA"
-      #   subnet_flow_logs_filter   = "false"
+      subnet_name           = var.subnet_name
+      subnet_ip             = var.subnet_ip
+      subnet_region         = var.region
+      subnet_private_access = "true"
     },
   ]
 }
 
 resource "google_compute_router" "default" {
-  count = var.create_network ? 1 : 0
-
   name    = "${var.network_name}-router"
   network = module.vpc_network.network_self_link
   region  = var.region
@@ -54,12 +48,10 @@ resource "google_compute_router" "default" {
 
 // Nat is being used here since internet access is required for the Runner Network. Other internet access can be setup instead of NAT resource (e.g: Secure Web Proxy)
 resource "google_compute_router_nat" "nat" {
-  count = var.create_network ? 1 : 0
-
   project                            = var.project_id
   name                               = "${var.network_name}-nat"
-  router                             = google_compute_router.default[0].name
-  region                             = google_compute_router.default[0].region
+  router                             = google_compute_router.default.name
+  region                             = google_compute_router.default.region
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 }
@@ -87,48 +79,6 @@ resource "google_service_account" "runner_service_account" {
 }
 
 /*****************************************
-  Runner Secrets
- *****************************************/
-resource "google_secret_manager_secret" "gl-secret" {
-  provider = google-beta
-
-  project   = var.project_id
-  secret_id = "gl-token"
-
-  labels = {
-    label = "gl-token"
-  }
-
-  replication {
-    user_managed {
-      replicas {
-        location = var.region
-      }
-    }
-  }
-}
-resource "google_secret_manager_secret_version" "gl-secret-version" {
-  provider = google-beta
-
-  secret = google_secret_manager_secret.gl-secret.id
-  secret_data = jsonencode({
-    "REPO_NAME"    = var.repo_name
-    "REPO_OWNER"   = var.repo_owner
-    "GITLAB_TOKEN" = var.gitlab_token
-    "LABELS"       = join(",", var.gl_runner_labels)
-  })
-}
-
-resource "google_secret_manager_secret_iam_member" "gl-secret-member" {
-  provider = google-beta
-
-  project   = var.project_id
-  secret_id = google_secret_manager_secret.gl-secret.id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${local.service_account}"
-}
-
-/*****************************************
   Runner GCE Instance Template
  *****************************************/
 module "mig_template" {
@@ -139,7 +89,7 @@ module "mig_template" {
   machine_type       = var.machine_type
   network_ip         = var.network_ip
   network            = module.vpc_network.network_name
-  subnetwork         = module.vpc_network.subnets_names[0]
+  subnetwork         = module.vpc_network.subnets_names
   region             = var.region
   subnetwork_project = var.project_id
   service_account = {
@@ -154,15 +104,14 @@ module "mig_template" {
   name_prefix          = "gl-runner"
   source_image_family  = var.source_image_family
   source_image_project = var.source_image_project
-  startup_script       = file("${abspath(path.module)}/startup_script.sh")
+  startup_script       = file("${abspath(path.module)}/files/startup_script.sh")
   source_image         = var.source_image
-  metadata = merge({
-    "secret-id" = google_secret_manager_secret_version.gl-secret-version.name
-  }, var.custom_metadata)
+  metadata             = var.custom_metadata
   tags = [
     "gl-runner-vm"
   ]
 }
+
 /*****************************************
   Runner MIG
  *****************************************/

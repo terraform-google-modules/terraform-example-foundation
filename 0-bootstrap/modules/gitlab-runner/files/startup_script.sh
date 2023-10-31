@@ -15,4 +15,4 @@
 
 curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | sudo bash
 sudo apt-get -y install gitlab-runner
-# TODO install docker
+sudo apt install docker.io -y

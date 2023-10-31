@@ -52,7 +52,7 @@ variable "subnet_name" {
 
 variable "gl_runner_labels" {
   type        = set(string)
-  description = "GitHub runner labels to attach to the runners. Docs: https://docs.github.com/en/actions/hosting-your-own-runners/using-labels-with-self-hosted-runners"
+  description = "GitLab runner labels to attach to the runners."
   default     = []
 }
 

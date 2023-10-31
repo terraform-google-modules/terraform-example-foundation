@@ -246,7 +246,7 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
    cp ../terraform-example-foundation/0-bootstrap/Dockerfile ./Dockerfile
    ```
-1. Create a runner for your GitLab in [Settings -> CICD -> Runners](https://gitlab.com/renatojr_ciandt/fdt-bootstrap/-/settings/ci_cd) called `gl_runner` and set the tag name also for `gl_runner`.
+1. Create a runner for your GitLab in [Settings -> CICD -> Runners](https://gitlab.com/GITLAB-ACCOUNT/BOOTSTRAP-REPOSITORY/-/settings/ci_cd) called `gl_runner` and set the tag name also for `gl_runner`.
 
 1. To execute the next step, access the Gitlab instance created in the 0-bootstrap step by ssh and update token field in the file `/etc/gitlab-runner/config.toml` using the value showed during the Gitlab Runner creation. To access the instance created you will need to open the SSH port in the firewall:
 

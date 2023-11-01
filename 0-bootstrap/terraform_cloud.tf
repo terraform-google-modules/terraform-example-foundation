@@ -260,11 +260,6 @@ module "tfc-oidc" {
 }
 
 
-
-
-
-
-
 data "google_client_config" "default" {
 }
 
@@ -293,7 +288,7 @@ resource "tfe_agent_token" "tfc_agent_token" {
 
 # Create the infrastructure for the agent to run
 module "tfc_agent_gke" {
-  source = "./agents/custom-tfc-agent-gke"
+  source = "./modules/tfc-agent-gke"
 
 
   create_network         = true

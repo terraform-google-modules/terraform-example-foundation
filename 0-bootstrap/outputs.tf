@@ -126,7 +126,6 @@ output "csr_repos" {
 output "cloud_build_private_worker_pool_id" {
   description = "ID of the Cloud Build private worker pool."
   value       = module.tf_private_pool.private_worker_pool_id
-
 }
 
 output "cloud_build_worker_range_id" {

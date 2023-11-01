@@ -216,7 +216,7 @@ function check_billing_account_roles(){
 # Checks if initial config was done for 0-bootstrap step
 function validate_bootstrap_step(){
     SCRIPTS_DIR="$( dirname -- "$0"; )"
-    FILE="$SCRIPTS_DIR/../0-bootstrap/terraform.tfvars"
+    FILE=`pwd`/terraform.tfvars
     if [ ! -f "$FILE" ]; then
         echo "  Rename the file 0-bootstrap/terraform.example.tfvars to 0-bootstrap/terraform.tfvars"
         ERRORS+=$'  terraform.tfvars file must exist for 0-bootstrap step.\n'

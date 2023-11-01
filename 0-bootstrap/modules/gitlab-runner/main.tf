@@ -89,7 +89,7 @@ module "mig_template" {
   machine_type       = var.machine_type
   network_ip         = var.network_ip
   network            = module.vpc_network.network_name
-  subnetwork         = module.vpc_network.subnets_names
+  subnetwork         = module.vpc_network.subnets_names[0]
   region             = var.region
   subnetwork_project = var.project_id
   service_account = {

@@ -41,12 +41,12 @@ output "common_folder_name" {
 
 output "network_folder_name" {
   value       = google_folder.network.name
-  description = "The network folder name"
+  description = "The network folder name."
 }
 
 output "org_audit_logs_project_id" {
   value       = module.org_audit_logs.project_id
-  description = "The org audit logs project ID"
+  description = "The org audit logs project ID."
 }
 
 output "org_billing_logs_project_id" {
@@ -121,10 +121,10 @@ output "logs_export_bigquery_dataset_name" {
 
 output "tags" {
   value       = local.tags_output
-  description = "Tag Values to be applied on next steps"
+  description = "Tag Values to be applied on next steps."
 }
 
 output "shared_vpc_projects" {
   value       = { for k, v in module.base_restricted_environment_network : k => v }
-  description = "Base and restricted shared VPC Projects info grouped by environment (development, non-production, production)"
+  description = "Base and restricted shared VPC Projects info grouped by environment (development, non-production, production)."
 }

@@ -15,7 +15,7 @@
  */
 
 variable "org_id" {
-  description = "GCP Organization ID"
+  description = "GCP Organization ID."
   type        = string
 }
 
@@ -36,7 +36,7 @@ variable "folder_id" {
 }
 
 variable "env" {
-  description = "The environment to prepare (ex. development)"
+  description = "The environment to prepare (ex. development)."
   type        = string
 }
 

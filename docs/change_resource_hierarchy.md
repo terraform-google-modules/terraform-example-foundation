@@ -8,7 +8,7 @@ The current deployment scenario of Terraform Foundation Example blueprint consid
 | --- | --- |
 | bootstrap | Contains the seed and CI/CD projects that are used to deploy foundation components. |
 | common | Contains projects with common resources used by the organization like logging and Security Command Center. |
-| network |  Contains projects with common networks resources used by the organization like DNS Hub, hybrid connectivity, and Shared VPCs. |
+| network | Contains projects with common networks resources used by the organization like DNS Hub, hybrid connectivity, and Shared VPCs. |
 | production | Environment folder that contains projects with cloud resources that have been promoted into production. |
 | non-production | Environment folder that contains a replica of the production environment to let you test workloads before you put them into production. |
 | development | Environment folder that is used as a development and sandbox environment. |

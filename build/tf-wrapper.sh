@@ -126,7 +126,7 @@ do_action() {
 #   fi
 # }
 
-##### End of default source organization #####
+##### End of alternative source organization #####
 
 #====================================================================#
 # Function to replace '/' with '-' to convert a path to a file name

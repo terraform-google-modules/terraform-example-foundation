@@ -177,4 +177,4 @@ options:
   - 'TF_VAR_instance_region=us-west1'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.10'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.16'

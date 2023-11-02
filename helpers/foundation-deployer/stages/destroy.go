@@ -34,7 +34,9 @@ const (
 
 func DestroyBootstrapStage(t testing.TB, s steps.Steps, c CommonConf) error {
 
-	forceBackendMigration(t, BootstrapRepo, "envs", "shared", c)
+	if err := forceBackendMigration(t, BootstrapRepo, "envs", "shared", c); err != nil {
+		return err
+	}
 
 	stageConf := StageConf{
 		Stage:         BootstrapStep,

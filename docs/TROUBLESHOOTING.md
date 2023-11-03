@@ -24,6 +24,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
 - [Error: Unsupported attribute](#error-unsupported-attribute)
 - [Error: Error adding network peering](#error-error-adding-network-peering)
+- [Error: Repository not found](#error-repository-not-found)
 
 - - -
 
@@ -388,3 +389,42 @@ You can get this information from step `0-bootstrap` by running the following co
 **Terraform State lock possible causes:**
 
 - If you realize that the Terraform State lock was due to a build timeout increase the build timeout on [build configuration](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/build/cloudbuild-tf-apply.yaml#L15).
+
+### Terraform deploy fails due GitLab repositories not found
+
+**Error message:**
+
+```text
+Error: POST https://gitlab.com/api/v4/projects/<GITLAB-ACCOUNT>/<GITLAB-REPOSITORY>/variables: 404 {message: 404 Project Not Found}
+
+```
+
+**Cause:**
+
+This message means that you are using a wrong Access Token or you have Access Token created in both Gitlab Account/Group and GitLab Repository.
+
+Only Personal Access Token under GitLab Account/Group should exist.
+
+**Solution:**
+
+Remove any Access Token from the GitLab repositories used by Google Secure Foundation Blueprint. 
+
+
+#########
+### Gitlab pipelines fails in 0-bootstrap
+
+**Error message:**
+
+From the logs of your Pipeline job:
+```text
+Error response from daemon: pull access denied for registry.gitlab.com/<YOUR-GITLAB-ACCOUNT>/<YOUR-GITLAB-CICD-REPO>/terraform-gcloud, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
+
+```
+
+**Cause:**
+
+This message means that you GitLab CICD repository may have `Limit access to this project` option enabled. 
+
+**Solution:**
+
+Disable this option on your `CICD Repo -> Settings -> CI/CD -> Token Access`.

@@ -246,32 +246,32 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
    cp ../terraform-example-foundation/0-bootstrap/Dockerfile ./Dockerfile
    ```
-1. Create a runner for your GitLab in [Settings -> CICD -> Runners](https://gitlab.com/GITLAB-ACCOUNT/BOOTSTRAP-REPOSITORY/-/settings/ci_cd) called `gl_runner` and set the tag name also for `gl_runner`.
+1. Create a runner for your GitLab CICD Repository in [Settings -> CICD -> Runners](https://gitlab.com/GITLAB-ACCOUNT/BOOTSTRAP-REPOSITORY/-/settings/ci_cd) called `gl_runner` and also set the tag name for `gl_runner`.
 
-1. To execute the next step, access the Gitlab instance created in the 0-bootstrap step by ssh and update token field in the file `/etc/gitlab-runner/config.toml` using the value showed during the Gitlab Runner creation. To access the instance created you will need to open the SSH port in the firewall:
+1. To execute the next step, you need to allow the SSH access for your Gitlab instance created in the CICD Project from 0-bootstrap step running the command below:
 
 ```bash
-gcloud compute firewall-rules create allow-ssh --allow tcp:22 --network gl-network --project <cicd_project_id>
+gcloud compute firewall-rules create allow-ssh --allow tcp:22 --network gl-runner-network --project <cicd_project_id>
 ```
 
-1. After have created the runner on GitLab interface, run the command below in the GCP instance for the GitLab. Remember to change the token `glrt-xxx` for the token generated in the GitLab interface.
+1. Once you have access to your GitLab runner instance, you need to register your runner in the GitLab using the command below. Remember to change the token `glrt-xxx` for the token generated in the GitLab interface.
 
 ```bash
-sudo gitlab-runner register --non-interactive --url https://gitlab.com --name gl_runner --executor docker --docker-image docker:dind --docker-privileged true --token glrt-xxx
+sudo gitlab-runner register --non-interactive --url https://gitlab.com --name gl_runner --executor docker --docker-image docker:dind --docker-privileged=true --token glrt-xxx
 ```
 
 1. Edit the `./.gitlab-ci.yml` file and update the paramenter the following line:
 
 ```bash
 image:
-  name: registry.gitlab.com/EXAMPLE-GITLAB-ACCOUNT/EXAMPLE-GITLAB-REPOSITORY/terraform-gcloud:latest
+  name: registry.gitlab.com/GITLAB-ACCOUNT/UPDATE_ME/terraform-gcloud:latest
 ```
 
 To:
 
 ```bash
 image:
-  name: registry.gitlab.com/GITLAB-ACCOUNT/GITLAB-REPOSITORY/terraform-gcloud:latest
+  name: registry.gitlab.com/GITLAB-ACCOUNT/GITLAB-IMAGE_REPOSITORY/terraform-gcloud:latest
 ```
 
 1. Save the CI/CD runner configuration to `gcp-cicd-runner` GitLab project:
@@ -289,7 +289,7 @@ image:
 1. Copy the file `gitlab-ci.yml` to the 0-bootstrap directory.
 
 ```bash
-cp ../terraform-example-foundation/build/gitlab-ci.yml ../gcp-bootstrap/.gitlab-ci.yml
+cp .gitlab-ci.yml ../gcp-bootstrap/.gitlab-ci.yml
 ```
 
 1. Make sure you have enabled the Gitlab Runner to the bootstrap project. You can do this in `https://gitlab.com/YOUR-GITLAB-USER/gcp-cicd-runner/-/settings/ci_cd#js-runners-settings`.
@@ -310,6 +310,10 @@ They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the 
 
 **Note 2:** After the deploy, to prevent the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded),
 we recommend that you request 50 additional projects for the **projects step service account** created in this step.
+
+**Note 3:** In case GitLab variables are not being created on Gitlab repositories, it may be related to the existence of Access Token in both User/Group profile and in the repo settings. The deploy will [fail](../docs/TROUBLESHOOTING.md#error-repository-not-found).
+
+**Note 4:** If the GitLab pipelines fail in 0-bootstrep or next steps, you may need to disable `Limit access to this project` in the CICD Runner repository. For more details see [fail](../docs/TROUBLESHOOTING.md#gitlab-pipelines-access-denied)
 
 
 ## Deploying step 1-org

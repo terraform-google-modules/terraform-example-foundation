@@ -232,6 +232,40 @@ func TestOrg(t *testing.T) {
 				"logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency",
 			}
 
+			// CAI Monitoring
+			// Variables
+			cfSaEmail := fmt.Sprintf("cai-monitoring@%s.iam.gserviceaccount.com", sccProjectID)
+			sccProjectNumber := org.GetStringOutput("scc_notifications_project_number")
+			cfKMSKey := fmt.Sprintf("projects/%s/locations/%s/keyRings/krg-cai-monitoring/cryptoKeys/key-cai-monitoring", sccProjectID, defaultRegion)
+			bucketSrcBucket := fmt.Sprintf("bkt-cai-monitoring-sources-%s-%s", sccProjectNumber, defaultRegion)
+			caiTopicFullName := fmt.Sprintf("projects/%s/topics/top-cai-event-cf", sccProjectID)
+
+			// Cloud Function
+			cf := gcloud.Runf(t, "functions describe caiMonitoring --project %s --gen2 --region %s", sccProjectID, defaultRegion)
+			assert.Equal("ACTIVE", cf.Get("state").String(), "Should be ACTIVE. Cloud Function is not successfully deployed.")
+			assert.Equal(cfSaEmail, cf.Get("serviceConfig.serviceAccountEmail").String(), fmt.Sprintf("Cloud Function should use the service account %s.", saEmail))
+			assert.Contains(cf.Get("eventTrigger.eventType").String(), "google.cloud.pubsub.topic.v1.messagePublished", "Event Trigger is not based on Pub/Sub message. Check the EventType configuration.")
+
+			// Cloud Function Storage Bucket
+			bktArgs := gcloud.WithCommonArgs([]string{"--project", sccProjectID, "--json"})
+			opSrcBucket := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", bucketSrcBucket), bktArgs).Array()
+			assert.Equal(cfKMSKey, opSrcBucket[0].Get("metadata.encryption.defaultKmsKeyName").String(), fmt.Sprintf("Should have same KMS key: %s", cfKMSKey))
+			assert.Equal("true", opSrcBucket[0].Get("metadata.iamConfiguration.bucketPolicyOnly.enabled").String(), "Should have Bucket Policy Only enabled.")
+
+			// Cloud Function Artifact Registry
+			opAR := gcloud.Runf(t, "artifacts repositories describe ar-cai-notification-cf --project %s --location %s", sccProjectID, defaultRegion)
+			assert.Equal(cfKMSKey, opAR.Get("kmsKeyName").String(), fmt.Sprintf("Should have KMS Key: %s", cfKMSKey))
+			assert.Equal("DOCKER", opAR.Get("format").String(), "Should have type: DOCKER")
+
+			// Cloud Function Pub/Sub
+			caiTopic := gcloud.Runf(t, "pubsub topics describe top-cai-event-cf --project %s", sccProjectID)
+			assert.Equal(caiTopicFullName, caiTopic.Get("name").String(), "Topic top-cai-event-cf should have been created")
+
+			caiFeed := gcloud.Runf(t, "asset feeds describe fd-cai-notification-cf ----organization %s", orgID)
+			assert.Equal("IAM_POLICY", caiFeed.Get("contentType").String(), "Feed content type should be IAM Policy")
+			assert.Equal(caiTopicFullName, caiFeed.Get("feedOutputConfig.pubsubDestination.topic").String(), fmt.Sprintf("Feed output Pub/Sub destination should be %s", caiTopicFullName)))
+
+			// Log Sink
 			for _, sink := range []struct {
 				name        string
 				hasFilter   bool

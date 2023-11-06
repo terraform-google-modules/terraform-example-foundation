@@ -149,7 +149,7 @@ module "cloud_function" {
   project_id        = var.project_id
   labels            = var.labels
   function_location = var.location
-  runtime           = "nodejs16"
+  runtime           = "nodejs20"
   entrypoint        = "caiMonitoring"
   docker_repository = google_artifact_registry_repository.cloudfunction.id
 

@@ -19,9 +19,9 @@ module "kms" {
   version = "~> 2.1"
 
   project_id      = module.scc_notifications.project_id
-  keyring         = "cai-monitoring-keyring"
+  keyring         = "krg-cai-monitoring"
   location        = local.default_region
-  keys            = ["cai-monitoring-key"]
+  keys            = ["key-cai-monitoring"]
   prevent_destroy = "false"
 }
 
@@ -32,6 +32,6 @@ module "cai_notify" {
   billing_account      = local.billing_account
   project_id           = module.scc_notifications.project_id
   location             = local.default_region
-  encryption_key       = module.kms.keys["cai-monitoring-key"]
+  encryption_key       = module.kms.keys["key-cai-monitoring"]
   impersonate_sa_email = local.org_step_terraform_service_account_email
 }

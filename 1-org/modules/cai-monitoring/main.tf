@@ -45,7 +45,7 @@ resource "google_project_service" "services" {
 resource "google_artifact_registry_repository" "cloudfunction" {
   location      = var.location
   project       = var.project_id
-  repository_id = "ar-cai-notification-cf"
+  repository_id = "ar-cai-monitoring"
   description   = "This repo stores de image of the cloud function."
   format        = "DOCKER"
   kms_key_name  = var.encryption_key
@@ -69,7 +69,7 @@ module "cloudfunction_source_bucket" {
   version = "~>3.4"
 
   project_id    = var.project_id
-  name          = "bkt-${var.location}-${data.google_project.project.number}-cai-notification-cf"
+  name          = "bkt-cai-monitoring-sources-${data.google_project.project.number}-${var.location}"
   location      = var.location
   storage_class = "REGIONAL"
   force_destroy = true
@@ -100,7 +100,7 @@ resource "google_storage_bucket_object" "cf_cai_source_zip" {
 
 // PubSub
 resource "google_cloud_asset_organization_feed" "organization_feed" {
-  feed_id         = "fd-cai-notification-cf"
+  feed_id         = "fd-cai-monitoring"
   billing_project = var.project_id
   org_id          = var.org_id
   content_type    = "IAM_POLICY"
@@ -118,7 +118,7 @@ module "pubsub_cai_feed" {
   source  = "terraform-google-modules/pubsub/google"
   version = "~> 5.0"
 
-  topic              = "top-cai-event-cf"
+  topic              = "top-cai-monitoring-eventf"
   project_id         = var.project_id
   topic_kms_key_name = var.encryption_key
 
@@ -162,7 +162,7 @@ module "cloud_function" {
     service_account_email = google_service_account.cloudfunction.email
     runtime_env_variables = {
       ROLES     = join(",", var.roles_to_monitor)
-      SOURCE_ID = google_scc_source.custom_source.id
+      SOURCE_ID = google_scc_source.cai_monitoring.id
     }
   }
 

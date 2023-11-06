@@ -133,7 +133,7 @@ resource "random_id" "suffix" {
   prefix      = var.scc_random_suffix ? " - " : null
 }
 
-resource "google_scc_source" "custom_source" {
+resource "google_scc_source" "cai_monitoring" {
   display_name = format("CAI Monitoring%s", random_id.suffix.hex)
   organization = var.org_id
   description  = "SCC Finding Source for caiMonitoring Cloud Functions."

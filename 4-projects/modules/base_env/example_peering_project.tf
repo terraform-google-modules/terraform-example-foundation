@@ -236,76 +236,57 @@ resource "google_compute_firewall" "allow_lb" {
 }
 
 // Allow SSH and RDP via IAP when using the Firewall Secure Tags.
-resource "google_compute_network_firewall_policy" "allow_iap_firewall_policy" {
-  count = var.peering_iap_fw_rules_enabled ? 1 : 0
+module "allow_iap_ssh_rdp" {
+  source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version      = "~> 8.0"
 
-  name    = "fp-${local.env_code}-allow-iap-policy"
-  project = module.peering_project.project_id
-}
+  project_id   = module.peering_project.project_id
+  policy_name  = "fp-${local.env_code}-allow-iap-policy"
+  target_vpcs  = [module.peering_network.network_id]
 
-// Allow SSH via IAP when using the ssh-iap-access/allow resource manager tag for Linux workloads.
-resource "google_compute_network_firewall_policy_rule" "allow_iap_ssh" {
-  count = var.peering_iap_fw_rules_enabled ? 1 : 0
-
-  rule_name       = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
-  project         = module.peering_project.project_id
-  action          = "allow"
-  direction       = "INGRESS"
-  disabled        = false
-  enable_logging  = true
-  firewall_policy = google_compute_network_firewall_policy.allow_iap_firewall_policy[0].name
-  priority        = 1000
-
-  target_secure_tags {
-    name = "tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"
-  }
-
-  match {
-    // Cloud IAP's TCP forwarding netblock
-    src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
-
-    layer4_configs {
-      ip_protocol = "tcp"
-      ports       = ["22"]
+  rules = [
+    {
+      // Allow SSH via IAP when using the ssh-iap-access/allow resource manager tag for Linux workloads.
+      rule_name      = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
+      action         = "allow"
+      direction      = "INGRESS"
+      priority       = "1000"
+      enable_logging = true
+      target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"]
+      match = {
+        src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
+        layer4_configs = [
+          {
+            ip_protocol = "tcp"
+            ports       = ["22"]
+          },
+        ]
+      }
+    },
+    {
+      // Allow RDP via IAP when using the rdp-iap-access/allow resource manager tag for Windows workloads.
+      rule_name      = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
+      action         = "allow"
+      direction      = "INGRESS"
+      priority       = "1001"
+      enable_logging = true
+      target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"]
+      match = {
+        src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
+        layer4_configs = [
+          {
+            ip_protocol = "tcp"
+            ports       = ["3389"]
+          },
+        ]
+      }
     }
-  }
-}
+  ]
 
-// Allow RDP via IAP when using the rdp-iap-access/allow resource manager tag for Windows workloads.
-resource "google_compute_network_firewall_policy_rule" "allow_iap_rdp" {
-  count = var.peering_iap_fw_rules_enabled ? 1 : 0
-
-  rule_name       = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
-  project         = module.peering_project.project_id
-  action          = "allow"
-  direction       = "INGRESS"
-  disabled        = false
-  enable_logging  = true
-  firewall_policy = google_compute_network_firewall_policy.allow_iap_firewall_policy[0].name
-  priority        = 1001
-
-  target_secure_tags {
-    name = "tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"
-  }
-
-  match {
-    // Cloud IAP's TCP forwarding netblock
-    src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
-
-    layer4_configs {
-      ip_protocol = "tcp"
-      ports       = ["3389"]
-    }
-  }
-}
-
-resource "google_compute_network_firewall_policy_association" "allow_iap_firewall_policy_association" {
-  count = var.peering_iap_fw_rules_enabled ? 1 : 0
-
-  name              = "allow-iap-policy-association"
-  project           = module.peering_project.project_id
-  attachment_target = module.peering_network.network_id
-  firewall_policy   = google_compute_network_firewall_policy.allow_iap_firewall_policy[0].name
+  depends_on = [
+    google_tags_tag_value.firewall_tag_value_ssh,
+    google_tags_tag_value.firewall_tag_value_rdp
+  ]
 }
 
 resource "google_tags_tag_key" "firewall_tag_key_ssh" {

@@ -48,6 +48,7 @@ locals {
       "roles/resourcemanager.tagAdmin",
       "roles/resourcemanager.tagUser",
       "roles/cloudasset.owner",
+      "roles/securitycenter.sourcesEditor",
     ], local.common_roles)),
     "env" = distinct(concat([
       "roles/resourcemanager.tagUser",

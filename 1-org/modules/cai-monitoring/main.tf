@@ -118,7 +118,7 @@ module "pubsub_cai_feed" {
   source  = "terraform-google-modules/pubsub/google"
   version = "~> 5.0"
 
-  topic              = "top-cai-monitoring-eventf"
+  topic              = "top-cai-monitoring-event"
   project_id         = var.project_id
   topic_kms_key_name = var.encryption_key
 

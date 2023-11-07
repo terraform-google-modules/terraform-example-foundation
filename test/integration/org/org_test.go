@@ -263,7 +263,7 @@ func TestOrg(t *testing.T) {
 
 			caiFeed := gcloud.Runf(t, "asset feeds describe fd-cai-notification-cf ----organization %s", orgID)
 			assert.Equal("IAM_POLICY", caiFeed.Get("contentType").String(), "Feed content type should be IAM Policy")
-			assert.Equal(caiTopicFullName, caiFeed.Get("feedOutputConfig.pubsubDestination.topic").String(), fmt.Sprintf("Feed output Pub/Sub destination should be %s", caiTopicFullName)))
+			assert.Equal(caiTopicFullName, caiFeed.Get("feedOutputConfig.pubsubDestination.topic").String(), fmt.Sprintf("Feed output Pub/Sub destination should be %s", caiTopicFullName))
 
 			// Log Sink
 			for _, sink := range []struct {

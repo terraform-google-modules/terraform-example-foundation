@@ -51,6 +51,7 @@
 | restricted\_net\_hub\_project\_number | The Restricted Network hub project number |
 | scc\_notification\_name | Name of SCC Notification |
 | scc\_notifications\_project\_id | The SCC notifications project ID |
+| scc\_notifications\_project\_number | The SCC notifications project number |
 | tags | Tag Values to be applied on next steps |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

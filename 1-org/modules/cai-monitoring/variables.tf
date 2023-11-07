@@ -63,8 +63,8 @@ variable "roles_to_monitor" {
   ]
 }
 
-variable "scc_random_suffix" {
+variable "random_suffix" {
   description = "Adds a suffix of 4 random characters to the `scc_source` name."
   type        = bool
-  default     = false
+  default     = true
 }

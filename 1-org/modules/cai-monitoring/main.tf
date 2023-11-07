@@ -26,10 +26,15 @@ locals {
     "run.googleapis.com",
     "eventarc.googleapis.com"
   ]
+  cai_source_name = var.random_suffix ? "CAI Monitoring - ${random_id.suffix.hex}" : "CAI Monitoring"
 }
 
 data "google_project" "project" {
   project_id = var.project_id
+}
+
+resource "random_id" "suffix" {
+  byte_length = 2
 }
 
 // Project Services
@@ -45,7 +50,7 @@ resource "google_project_service" "services" {
 resource "google_artifact_registry_repository" "cloudfunction" {
   location      = var.location
   project       = var.project_id
-  repository_id = "ar-cai-monitoring"
+  repository_id = "ar-cai-monitoring-${random_id.suffix.hex}-${random_id.suffix.hex}"
   description   = "This repo stores de image of the cloud function."
   format        = "DOCKER"
   kms_key_name  = var.encryption_key
@@ -69,7 +74,7 @@ module "cloudfunction_source_bucket" {
   version = "~>3.4"
 
   project_id    = var.project_id
-  name          = "bkt-cai-monitoring-sources-${data.google_project.project.number}-${var.location}"
+  name          = "bkt-cai-monitoring-${random_id.suffix.hex}-sources-${data.google_project.project.number}-${var.location}"
   location      = var.location
   storage_class = "REGIONAL"
   force_destroy = true
@@ -100,7 +105,7 @@ resource "google_storage_bucket_object" "cf_cai_source_zip" {
 
 // PubSub
 resource "google_cloud_asset_organization_feed" "organization_feed" {
-  feed_id         = "fd-cai-monitoring"
+  feed_id         = "fd-cai-monitoring-${random_id.suffix.hex}"
   billing_project = var.project_id
   org_id          = var.org_id
   content_type    = "IAM_POLICY"
@@ -118,7 +123,7 @@ module "pubsub_cai_feed" {
   source  = "terraform-google-modules/pubsub/google"
   version = "~> 5.0"
 
-  topic              = "top-cai-monitoring-event"
+  topic              = "top-cai-monitoring-${random_id.suffix.hex}-event"
   project_id         = var.project_id
   topic_kms_key_name = var.encryption_key
 
@@ -128,13 +133,8 @@ module "pubsub_cai_feed" {
 }
 
 // SCC source
-resource "random_id" "suffix" {
-  byte_length = var.scc_random_suffix ? 2 : 0
-  prefix      = var.scc_random_suffix ? " - " : null
-}
-
 resource "google_scc_source" "cai_monitoring" {
-  display_name = format("CAI Monitoring%s", random_id.suffix.hex)
+  display_name = local.cai_source_name
   organization = var.org_id
   description  = "SCC Finding Source for caiMonitoring Cloud Functions."
 }

@@ -25,7 +25,7 @@ module "kms" {
   prevent_destroy = "false"
 }
 
-module "cai_notify" {
+module "cai_monitoring" {
   source = "../../modules/cai-monitoring"
 
   org_id               = local.org_id

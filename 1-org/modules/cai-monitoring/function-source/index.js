@@ -46,7 +46,7 @@ exports.caiMonitoring = message => {
 
         // From this part of the code until the end of the function is specific for the CAI Monitoring scenario
         var bindings = getRoleBindings(event.asset);
-        
+
         // If the list is not empty, search for the same member and role on the prior asset.
         // Get only the new bindings that is not on the prior asset and create a new finding.
         if (bindings.length > 0) {
@@ -126,7 +126,7 @@ function getRoleBindings(asset) {
             if (searchroles.includes(binding.role)) {
                 binding.members.forEach(member => {
                     foundRoles.push({
-                        member: member, 
+                        member: member,
                         role: binding.role,
                         action: 'ADD'
                     });

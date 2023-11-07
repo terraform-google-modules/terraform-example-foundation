@@ -237,21 +237,21 @@ resource "google_compute_firewall" "allow_lb" {
 
 // Allow SSH and RDP via IAP when using the Firewall Secure Tags.
 module "allow_iap_ssh_rdp" {
-  source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version      = "~> 8.0"
+  source  = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version = "~> 8.0"
 
-  project_id   = module.peering_project.project_id
-  policy_name  = "fp-${local.env_code}-allow-iap-policy"
-  target_vpcs  = [module.peering_network.network_id]
+  project_id  = module.peering_project.project_id
+  policy_name = "fp-${local.env_code}-allow-iap-policy"
+  target_vpcs = [module.peering_network.network_id]
 
   rules = [
     {
       // Allow SSH via IAP when using the ssh-iap-access/allow resource manager tag for Linux workloads.
-      rule_name      = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
-      action         = "allow"
-      direction      = "INGRESS"
-      priority       = "1000"
-      enable_logging = true
+      rule_name          = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
+      action             = "allow"
+      direction          = "INGRESS"
+      priority           = "1000"
+      enable_logging     = true
       target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"]
       match = {
         src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
@@ -265,11 +265,11 @@ module "allow_iap_ssh_rdp" {
     },
     {
       // Allow RDP via IAP when using the rdp-iap-access/allow resource manager tag for Windows workloads.
-      rule_name      = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
-      action         = "allow"
-      direction      = "INGRESS"
-      priority       = "1001"
-      enable_logging = true
+      rule_name          = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
+      action             = "allow"
+      direction          = "INGRESS"
+      priority           = "1001"
+      enable_logging     = true
       target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"]
       match = {
         src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4

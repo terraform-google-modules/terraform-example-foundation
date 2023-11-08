@@ -50,7 +50,7 @@ resource "google_project_service" "services" {
 resource "google_artifact_registry_repository" "cloudfunction" {
   location      = var.location
   project       = var.project_id
-  repository_id = "ar-cai-monitoring-${random_id.suffix.hex}-${random_id.suffix.hex}"
+  repository_id = "ar-cai-monitoring-${random_id.suffix.hex}"
   description   = "This repo stores de image of the cloud function."
   format        = "DOCKER"
   kms_key_name  = var.encryption_key

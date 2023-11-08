@@ -14,9 +14,29 @@
  * limitations under the License.
  */
 
-output "source_bucket_url" {
+output "artifact_registry_name" {
+  description = "Artifact Registry Repo to store the Cloud Function image."
+  value       = google_artifact_registry_repository.cloudfunction.name
+}
+
+output "bucket_name" {
   description = "Storage bucket where the source code is."
-  value       = module.cloudfunction_source_bucket.url
+  value       = module.cloudfunction_source_bucket.name
+}
+
+output "asset_feed_name" {
+  description = "Organization Asset Feed."
+  value       = google_cloud_asset_organization_feed.organization_feed.id
+}
+
+output "topic_name" {
+  description = "Pub/Sub Topic for the Asset Feed."
+  value       = module.pubsub_cai_feed.topic
+}
+
+output "scc_source" {
+  description = "SCC Findings Source."
+  value       = google_scc_source.cai_monitoring.id
 }
 
 output "function_uri" {

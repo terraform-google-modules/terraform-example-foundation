@@ -38,8 +38,12 @@ module "secure_cai_notification" {
 
 | Name | Description |
 |------|-------------|
+| artifact\_registry\_name | Artifact Registry Repo to store the Cloud Function image. |
+| asset\_feed\_name | Organization Asset Feed. |
+| bucket\_name | Storage bucket where the source code is. |
 | function\_uri | URI of the Cloud Function. |
-| source\_bucket\_url | Storage bucket where the source code is. |
+| scc\_source | SCC Findings Source. |
+| topic\_name | Pub/Sub Topic for the Asset Feed. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

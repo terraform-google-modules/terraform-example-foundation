@@ -32,6 +32,10 @@
 | Name | Description |
 |------|-------------|
 | base\_net\_hub\_project\_id | The Base Network hub project ID |
+| cai\_monitoring\_artifact\_registry | CAI Monitoring Cloud Function Artifact Registry name. |
+| cai\_monitoring\_asset\_feed | CAI Monitoring Cloud Function Organization Asset Feed name. |
+| cai\_monitoring\_bucket | CAI Monitoring Cloud Function Source Bucket name. |
+| cai\_monitoring\_topic | CAI Monitoring Cloud Function Pub/Sub Topic name. |
 | common\_folder\_name | The common folder name |
 | dns\_hub\_project\_id | The DNS hub project ID |
 | domains\_to\_allow | The list of domains to allow users from in IAM. |

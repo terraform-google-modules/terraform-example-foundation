@@ -242,7 +242,6 @@ module "allow_iap_ssh_rdp" {
 
   project_id  = module.peering_project.project_id
   policy_name = "fp-${local.env_code}-allow-iap-policy"
-  target_vpcs = [module.peering_network.network_id]
 
   rules = [
     {
@@ -286,6 +285,18 @@ module "allow_iap_ssh_rdp" {
   depends_on = [
     google_tags_tag_value.firewall_tag_value_ssh,
     google_tags_tag_value.firewall_tag_value_rdp
+  ]
+}
+
+resource "google_compute_network_firewall_policy_association" "vpc_associations" {
+  name              = "fpa-${local.env_code}-allow-iap-ssh-rdp"
+  attachment_target = module.peering_network.network_id
+  firewall_policy   = module.allow_iap_ssh_rdp.fw_policy[0].id
+  project           = module.peering_project.project_id
+
+  depends_on = [
+    module.allow_iap_ssh_rdp,
+    module.peering_network
   ]
 }
 

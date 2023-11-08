@@ -264,7 +264,7 @@ func TestOrg(t *testing.T) {
 			opTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", caiTopic, sccProjectID)
 			assert.Equal(caiTopicFullName, opTopic.Get("name").String(), fmt.Sprintf("Topic %s should have been created", caiTopicFullName))
 
-			opFeed := gcloud.Runf(t, "asset feeds describe %s ----organization %s", caiAssetFeed, orgID)
+			opFeed := gcloud.Runf(t, "asset feeds describe %s --organization %s", caiAssetFeed, orgID)
 			assert.Equal("IAM_POLICY", opFeed.Get("contentType").String(), "Feed content type should be IAM Policy")
 			assert.Equal(caiTopicFullName, opFeed.Get("feedOutputConfig.pubsubDestination.topic").String(), fmt.Sprintf("Feed output Pub/Sub destination should be %s", caiTopicFullName))
 

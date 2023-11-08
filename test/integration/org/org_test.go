@@ -234,7 +234,6 @@ func TestOrg(t *testing.T) {
 
 			// CAI Monitoring
 			// Variables
-			sccProjectNumber := org.GetStringOutput("scc_notifications_project_number")
 			caiAr := org.GetStringOutput("cai_monitoring_artifact_registry")
 			caiAssetFeed := testutils.GetLastSplitElement(org.GetStringOutput("cai_monitoring_asset_feed"), "/")
 			caiBucket := org.GetStringOutput("cai_monitoring_bucket")
@@ -245,10 +244,10 @@ func TestOrg(t *testing.T) {
 			caiTopicFullName := fmt.Sprintf("projects/%s/topics/%s", sccProjectID, caiTopic)
 
 			// Cloud Function
-			cf := gcloud.Runf(t, "functions describe caiMonitoring --project %s --gen2 --region %s", sccProjectID, defaultRegion)
-			assert.Equal("ACTIVE", cf.Get("state").String(), "Should be ACTIVE. Cloud Function is not successfully deployed.")
-			assert.Equal(caiSaEmail, cf.Get("serviceConfig.serviceAccountEmail").String(), fmt.Sprintf("Cloud Function should use the service account %s.", caiSaEmail))
-			assert.Contains(cf.Get("eventTrigger.eventType").String(), "google.cloud.pubsub.topic.v1.messagePublished", "Event Trigger is not based on Pub/Sub message. Check the EventType configuration.")
+			opCf := gcloud.Runf(t, "functions describe caiMonitoring --project %s --gen2 --region %s", sccProjectID, defaultRegion)
+			assert.Equal("ACTIVE", opCf.Get("state").String(), "Should be ACTIVE. Cloud Function is not successfully deployed.")
+			assert.Equal(caiSaEmail, opCf.Get("serviceConfig.serviceAccountEmail").String(), fmt.Sprintf("Cloud Function should use the service account %s.", caiSaEmail))
+			assert.Contains(opCf.Get("eventTrigger.eventType").String(), "google.cloud.pubsub.topic.v1.messagePublished", "Event Trigger is not based on Pub/Sub message. Check the EventType configuration.")
 
 			// Cloud Function Storage Bucket
 			bktArgs := gcloud.WithCommonArgs([]string{"--project", sccProjectID, "--json"})
@@ -262,12 +261,12 @@ func TestOrg(t *testing.T) {
 			assert.Equal("DOCKER", opAR.Get("format").String(), "Should have type: DOCKER")
 
 			// Cloud Function Pub/Sub
-			caiTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", caiTopic, sccProjectID)
-			assert.Equal(caiTopicFullName, caiTopic.Get("name").String(), "Topic top-cai-event-cf should have been created")
+			opTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", caiTopic, sccProjectID)
+			assert.Equal(caiTopicFullName, opTopic.Get("name").String(), fmt.Sprintf("Topic %s should have been created", caiTopicFullName))
 
-			caiFeed := gcloud.Runf(t, "asset feeds describe %s ----organization %s", caiAssetFeed, orgID)
-			assert.Equal("IAM_POLICY", caiFeed.Get("contentType").String(), "Feed content type should be IAM Policy")
-			assert.Equal(caiTopicFullName, caiFeed.Get("feedOutputConfig.pubsubDestination.topic").String(), fmt.Sprintf("Feed output Pub/Sub destination should be %s", caiTopicFullName))
+			opFeed := gcloud.Runf(t, "asset feeds describe %s ----organization %s", caiAssetFeed, orgID)
+			assert.Equal("IAM_POLICY", opFeed.Get("contentType").String(), "Feed content type should be IAM Policy")
+			assert.Equal(caiTopicFullName, opFeed.Get("feedOutputConfig.pubsubDestination.topic").String(), fmt.Sprintf("Feed output Pub/Sub destination should be %s", caiTopicFullName))
 
 			// Log Sink
 			for _, sink := range []struct {

@@ -235,7 +235,6 @@ func TestOrg(t *testing.T) {
 			// CAI Monitoring
 			// Variables
 			caiAr := org.GetStringOutput("cai_monitoring_artifact_registry")
-			caiAssetFeed := testutils.GetLastSplitElement(org.GetStringOutput("cai_monitoring_asset_feed"), "/")
 			caiBucket := org.GetStringOutput("cai_monitoring_bucket")
 			caiTopic := org.GetStringOutput("cai_monitoring_topic")
 

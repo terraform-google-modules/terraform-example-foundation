@@ -40,6 +40,7 @@
 | dns\_hub\_project\_id | The DNS hub project ID |
 | domains\_to\_allow | The list of domains to allow users from in IAM. |
 | interconnect\_project\_id | The Dedicated Interconnect project ID |
+| interconnect\_project\_number | The Dedicated Interconnect project number |
 | logs\_export\_bigquery\_dataset\_name | The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets |
 | logs\_export\_logbucket\_name | The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets |
 | logs\_export\_pubsub\_topic | The Pub/Sub topic for destination of log exports |
@@ -54,7 +55,6 @@
 | restricted\_net\_hub\_project\_number | The Restricted Network hub project number |
 | scc\_notification\_name | Name of SCC Notification |
 | scc\_notifications\_project\_id | The SCC notifications project ID |
-| scc\_notifications\_project\_number | The SCC notifications project number |
 | tags | Tag Values to be applied on next steps |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

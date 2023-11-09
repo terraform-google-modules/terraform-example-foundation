@@ -59,9 +59,9 @@ output "interconnect_project_id" {
   description = "The Dedicated Interconnect project ID"
 }
 
-output "scc_notifications_project_number" {
-  value       = module.scc_notifications.project_number
-  description = "The SCC notifications project number"
+output "interconnect_project_number" {
+  value       = module.interconnect.project_number
+  description = "The Dedicated Interconnect project number"
 }
 
 output "scc_notifications_project_id" {

@@ -162,7 +162,7 @@ module "tf_cloud_builder" {
 
 module "bootstrap_csr_repo" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 3.1.0"
+  version = "~> 3.3.0"
   upgrade = false
 
   create_cmd_entrypoint = "${path.module}/scripts/push-to-repo.sh"
@@ -180,7 +180,7 @@ resource "time_sleep" "cloud_builder" {
 
 module "build_terraform_image" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 3.1.0"
+  version = "~> 3.3.0"
   upgrade = false
 
   create_cmd_triggers = {

@@ -16,6 +16,7 @@
 
 locals {
   service_account = var.service_account == "" ? google_service_account.runner_service_account[0].email : var.service_account
+  private_googleapis_cidr = module.private_service_connect.private_service_connect_ip
 }
 
 /*****************************************
@@ -27,7 +28,6 @@ module "vpc_network" {
 
   project_id   = var.project_id
   network_name = var.network_name
-  mtu          = 1460
 
   subnets = [
     {
@@ -67,6 +67,47 @@ resource "google_dns_policy" "default_policy" {
   }
 }
 
+/*******************************************
+  Private service connect and firewall rule
+ *******************************************/
+resource "google_compute_firewall" "allow_private_api_egress" {
+  name      = "fw-${module.vpc_network.network_name}-65430-e-a-allow-google-apis-all-tcp-443"
+  network   = module.vpc_network.network_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 65430
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["443"]
+  }
+
+  destination_ranges = [local.private_googleapis_cidr]
+
+  target_tags = ["gl-runner-vm"]
+}
+
+module "private_service_connect" {
+  source  = "terraform-google-modules/network/google//modules/private-service-connect"
+  version = "~> 5.2"
+
+  project_id                 = var.project_id
+  dns_code                   = "dz-${module.vpc_network.network_name}"
+  network_self_link          = module.vpc_network.network_self_link
+  private_service_connect_ip = var.private_service_connect_ip
+  forwarding_rule_target     = "all-apis"
+}
+
 /*****************************************
   IAM Bindings GCE SVC
  *****************************************/
@@ -76,6 +117,15 @@ resource "google_service_account" "runner_service_account" {
   project      = var.project_id
   account_id   = "runner-service-account"
   display_name = "GitLab Runner GCE Service Account"
+}
+
+# allow GCE to pull images from GCR
+resource "google_project_iam_binding" "gce" {
+  project = var.project_id
+  role    = "roles/storage.objectViewer"
+  members = [
+    "serviceAccount:${local.service_account}",
+  ]
 }
 
 /*****************************************
@@ -131,3 +181,35 @@ module "mig" {
   max_replicas        = var.max_replicas
   cooldown_period     = var.cooldown_period
 }
+
+
+# resource "google_compute_instance" "gitlab_runner" {
+#   name           = "gl-runner-instance"
+#   project        = var.project_id
+#   zone           = "us-central1-a"
+#   machine_type   = "e2-medium"
+#   can_ip_forward = true
+
+#   boot_disk {
+#     initialize_params {
+#       image = "debian-cloud/debian-11"
+#     }
+#   }
+#   tags                    = ["https-server", "gl-runner-vm"]
+#   metadata_startup_script = file("${abspath(path.module)}/files/startup_script.sh")
+
+#   network_interface {
+#     subnetwork         = module.vpc_network.subnets_names[0]
+#     network_ip         = "10.10.10.8"
+#     subnetwork_project = var.project_id
+#   }
+
+#   service_account {
+#     email  = local.service_account
+#     scopes = ["cloud-platform"]
+#   }
+
+#   depends_on = [
+#     module.vpc_network
+#   ]
+# }

@@ -138,3 +138,13 @@ variable "project_id" {
   type        = string
   description = "ID of the project where the Gitlab runner will be created."
 }
+
+variable "private_service_connect_ip" {
+  type = string
+  default = "10.10.64.5"
+}
+
+variable "firewall_enable_logging" {
+  type = bool
+  default = true
+}

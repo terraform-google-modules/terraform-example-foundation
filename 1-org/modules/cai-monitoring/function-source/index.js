@@ -50,8 +50,7 @@ exports.caiMonitoring = message => {
         // If the list is not empty, search for the same member and role on the prior asset.
         // Get only the new bindings that is not on the prior asset and create a new finding.
         if (bindings.length > 0) {
-            var priorBindings = getRoleBindings(event.priorAsset);
-            var delta = bindingDiff(bindings, priorBindings);
+            var delta = bindingDiff(bindings, getRoleBindings(event.priorAsset));
 
             if (delta.length > 0) {
                 // Map of extra properties to save on the finding with field name and value

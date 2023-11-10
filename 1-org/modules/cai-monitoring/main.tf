@@ -65,7 +65,7 @@ resource "google_artifact_registry_repository" "cloudfunction" {
 data "archive_file" "function_source_zip" {
   type        = "zip"
   source_dir  = "${path.module}/function-source/"
-  output_path = "${path.module}/cai_notification.zip"
+  output_path = "${path.module}/cai_monitoring.zip"
   excludes    = ["package-lock.json"]
 }
 
@@ -94,7 +94,7 @@ resource "time_sleep" "wait_for_bucket" {
 }
 
 resource "google_storage_bucket_object" "cf_cai_source_zip" {
-  name   = "${path.module}/cai_notification.zip"
+  name   = "${path.module}/cai_monitoring.zip"
   bucket = module.cloudfunction_source_bucket.name
   source = data.archive_file.function_source_zip.output_path
 

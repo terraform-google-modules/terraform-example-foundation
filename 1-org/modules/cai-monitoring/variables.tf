@@ -52,7 +52,7 @@ variable "impersonate_sa_email" {
 }
 
 variable "roles_to_monitor" {
-  description = "List of roles that will trigger a notification if granted to an identity in an update in the organization IAM Policy."
+  description = "List of roles that will save a SCC Finding if granted to any member (service account, user or group) on an update in the IAM Policy."
   type        = list(string)
   default = [
     "roles/owner",
@@ -64,7 +64,7 @@ variable "roles_to_monitor" {
 }
 
 variable "random_suffix" {
-  description = "Adds a suffix of 4 random characters to the `scc_source` name."
+  description = "Adds a suffix of 4 random characters to the created resources names."
   type        = bool
   default     = true
 }

@@ -1,12 +1,11 @@
 # Cloud Asset Inventory Notification
-Uses Google Cloud Asset Inventory to create a feed of IAM Policy change events, then process them to detect when they include a gmail address and revert that IAM policy change using a Cloud Function.  The terraform directory contains all the code required to deploy the solution (including the cloud function).
+Uses Google Cloud Asset Inventory to create a feed of IAM Policy change events, then process them to detect when a roles (from a preset list) is given to a member (service account, user or group). Then generates a SCC Finding with the member, role, resource where it was granted and the time that was granted.
 
 ## Usage
 
 ```hcl
 module "secure_cai_notification" {
-  # source  = "" #TBD
-  # version = "" #TBD
+  source = "terraform-google-modules/terraform-example-foundation/google//1-org/modules/cai-monitoring"
 
   org_id               = <ORG ID>
   billing_account      = <BILLING ACCOUNT ID>
@@ -25,7 +24,7 @@ module "secure_cai_notification" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
-| encryption\_key | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `string` | n/a | yes |
+| encryption\_key | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `string` | `null` | no |
 | impersonate\_sa\_email | The Service Account email who will execute terraform code. | `string` | n/a | yes |
 | labels | Labels to be assigned to resources. | `map(any)` | `{}` | no |
 | location | Default location to create resources where applicable. | `string` | `"us-central1"` | no |

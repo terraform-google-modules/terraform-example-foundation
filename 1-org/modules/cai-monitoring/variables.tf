@@ -38,6 +38,7 @@ variable "location" {
 variable "encryption_key" {
   description = "The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub."
   type        = string
+  default     = null
 }
 
 variable "labels" {

@@ -25,7 +25,7 @@ locals {
     "artifactregistry" = "artifactregistry.googleapis.com"
     "pubsub"           = "pubsub.googleapis.com"
   }
-  identities = {
+  identities = var.encryption_key == null ? {} : {
     "cloudfunctions"   = "serviceAccount:${google_project_service_identity.service_sa["cloudfunctions"].email}",
     "artifactregistry" = "serviceAccount:${google_project_service_identity.service_sa["artifactregistry"].email}",
     "pubsub"           = "serviceAccount:${google_project_service_identity.service_sa["pubsub"].email}",

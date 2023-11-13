@@ -79,7 +79,7 @@ module "cloudfunction_source_bucket" {
   storage_class = "REGIONAL"
   force_destroy = true
 
-  encryption = {
+  encryption = var.encryption_key == null ? null : {
     default_kms_key_name = var.encryption_key
   }
 

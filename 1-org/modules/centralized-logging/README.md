@@ -1,6 +1,6 @@
 # Centralized Logging Module
 
-This module handles logging configuration enabling one or more resources such as organization, folders, or projects to send logs to multiple destinations: [GCS bucket](https://cloud.google.com/logging/docs/export/using_exported_logs#gcs-overview), [Big Query](https://cloud.google.com/logging/docs/export/bigquery), [Pub/Sub](https://cloud.google.com/logging/docs/export/using_exported_logs#pubsub-overview), and [Log Buckets](https://cloud.google.com/logging/docs/routing/overview#buckets).
+This module handles logging configuration enabling one or more resources such as organization, folders, or projects to send logs to multiple destinations: [GCS bucket](https://cloud.google.com/logging/docs/export/using_exported_logs#gcs-overview), [Pub/Sub](https://cloud.google.com/logging/docs/export/using_exported_logs#pubsub-overview), and [Log Buckets](https://cloud.google.com/logging/docs/routing/overview#buckets) with [Log Analytics](https://cloud.google.com/logging/docs/log-analytics#analytics).
 
 ## Usage
 
@@ -33,11 +33,11 @@ module "logs_export" {
     logName: /logs/cloudaudit.googleapis.com%2Factivity OR
     logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
     logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR
+    logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency OR
+    logName: /logs/cloudaudit.googleapis.com%2Fpolicy OR
     logName: /logs/compute.googleapis.com%2Fvpc_flows OR
     logName: /logs/compute.googleapis.com%2Ffirewall OR
-    logName: /logs/dns.googleapis.com%2Fdns_queries OR
-    logName: /logs/cloudaudit.googleapis.com%2Fpolicy OR
-    logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
+    logName: /logs/dns.googleapis.com%2Fdns_queries
 EOF
   }
 }

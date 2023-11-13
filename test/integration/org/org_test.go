@@ -224,51 +224,41 @@ func TestOrg(t *testing.T) {
 			assert.Equal(logsExportTopicFullName, logsExportTopic.Get("name").String(), fmt.Sprintf("topic %s should have been created", logsExportTopicName))
 
 			// logging sinks
-			mainLogsFilter := []string{
+			logsFilter := []string{
 				"logName: /logs/cloudaudit.googleapis.com%2Factivity",
 				"logName: /logs/cloudaudit.googleapis.com%2Fsystem_event",
 				"logName: /logs/cloudaudit.googleapis.com%2Fdata_access",
+				"logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency",
+				"logName: /logs/cloudaudit.googleapis.com%2Fpolicy",
 				"logName: /logs/compute.googleapis.com%2Fvpc_flows",
 				"logName: /logs/compute.googleapis.com%2Ffirewall",
-				"logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency",
+				"logName: /logs/dns.googleapis.com%2Fdns_queries",
 			}
 
 			for _, sink := range []struct {
 				name        string
-				hasFilter   bool
 				destination string
 			}{
 				{
 					name:        "sk-c-logging-bkt",
-					hasFilter:   false,
 					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
 				},
 				{
 					name:        "sk-c-logging-logbkt",
-					hasFilter:   false,
 					destination: fmt.Sprintf("logging.googleapis.com/%s", logBktFullName),
 				},
 				{
 					name:        "sk-c-logging-pub",
-					hasFilter:   true,
 					destination: fmt.Sprintf("pubsub.googleapis.com/projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName),
-				},
-				{
-					name:        "sk-c-logging-bq",
-					hasFilter:   true,
-					destination: fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectID, auditLogsDatasetName),
 				},
 			} {
 				logSink := gcloud.Runf(t, "logging sinks describe %s --folder %s", sink.name, parentFolder)
 				assert.True(logSink.Get("includeChildren").Bool(), fmt.Sprintf("sink %s should include children", sink.name))
 				assert.Equal(sink.destination, logSink.Get("destination").String(), fmt.Sprintf("sink %s should have destination %s", sink.name, sink.destination))
-				if sink.hasFilter {
-					for _, filter := range mainLogsFilter {
-						assert.Contains(logSink.Get("filter").String(), filter, fmt.Sprintf("sink %s should include filter %s", sink.name, filter))
-					}
-				} else {
-					assert.Equal("", logSink.Get("filter").String(), fmt.Sprintf("sink %s should not have a filter", sink.name))
+				for _, filter := range logsFilter {
+					assert.Contains(logSink.Get("filter").String(), filter, fmt.Sprintf("sink %s should include filter %s", sink.name, filter))
 				}
+
 			}
 
 			// hub and spoke infrastructure

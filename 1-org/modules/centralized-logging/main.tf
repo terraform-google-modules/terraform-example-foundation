@@ -100,7 +100,7 @@ module "log_export" {
 #-------------------------#
 module "destination_logbucket" {
   source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  version = "~> 7.5.0"
+  version = "~> 7.7"
 
   count = var.logbucket_options != null ? 1 : 0
 
@@ -108,6 +108,9 @@ module "destination_logbucket" {
   name                          = coalesce(var.logbucket_options.name, local.logging_tgt_name.lbk)
   log_sink_writer_identity      = module.log_export["${local.value_first_resource}_lbk"].writer_identity
   location                      = var.logbucket_options.location
+  enable_analytics              = var.logbucket_options.enable_analytics
+  linked_dataset_id             = var.logbucket_options.linked_dataset_id
+  linked_dataset_description    = var.logbucket_options.linked_dataset_description
   retention_days                = var.logbucket_options.retention_days
   grant_write_permission_on_bkt = false
 }

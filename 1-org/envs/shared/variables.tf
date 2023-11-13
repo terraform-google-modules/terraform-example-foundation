@@ -202,3 +202,9 @@ variable "create_unique_tag_key" {
   type        = bool
   default     = false
 }
+
+variable "cai_monitoring_kms_force_destroy" {
+  description = "(Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present."
+  type        = bool
+  default     = false
+}

@@ -22,7 +22,7 @@ module "kms" {
   keyring         = "krg-cai-monitoring"
   location        = local.default_region
   keys            = ["key-cai-monitoring"]
-  prevent_destroy = "false"
+  prevent_destroy = var.cai_monitoring_kms_force_destroy
 }
 
 module "cai_monitoring" {

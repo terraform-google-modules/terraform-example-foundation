@@ -61,6 +61,9 @@ module "seed_bootstrap" {
   parent_folder                  = var.parent_folder == "" ? "" : local.parent
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
   project_prefix                 = var.project_prefix
+  encrypt_gcs_bucket_tfstate     = true
+  key_rotation_period            = "7776000s"
+  kms_prevent_destroy            = !var.bucket_tfstate_kms_force_destroy
 
   project_labels = {
     environment       = "bootstrap"

@@ -16,6 +16,7 @@ package projects
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -221,8 +222,39 @@ func TestProjects(t *testing.T) {
 						}
 
 						if projectOutput == "peering_project" {
+
+							peeringProjectSaRoles := append(project_sa_roles, "roles/resourcemanager.tagUser")
+							iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", sharedCloudBuildSA)
+							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
+							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()
+							listRoles := testutils.GetResultFieldStrSlice(projectPolicy, "bindings.role")
+							assert.Subset(listRoles, peeringProjectSaRoles, fmt.Sprintf("service account %s should have project level roles", sharedCloudBuildSA))
+
 							peering := gcloud.Runf(t, "compute networks peerings list --project %s", projectID).Array()[0]
 							assert.Contains(peering.Get("peerings.0.network").String(), tt.baseNetwork, "should have a peering network")
+
+							instanceRegion := utils.ValFromEnv(t, "TF_VAR_instance_region")
+							peeringSubnetworkSelfLink := projects.GetStringOutput("peering_subnetwork_self_link")
+							peeringSubnetworkSelfLinkSplitted := strings.Split(peeringSubnetworkSelfLink, "/")
+							peering_subnetwork_name := peeringSubnetworkSelfLinkSplitted[len(peeringSubnetworkSelfLinkSplitted)-1]
+							subnet := gcloud.Run(t, fmt.Sprintf("compute networks subnets describe %s --project %s --region %s", peering_subnetwork_name, projectID, instanceRegion))
+							assert.Equal("PRIVATE", subnet.Get("purpose").String(), "Purpose should be PRIVATE")
+
+							iapFirewallPolicy := gcloud.Run(t, fmt.Sprintf("compute network-firewall-policies list --project=%s --global", projectID)).Array()[0]
+							iapFirewallPolicyName := iapFirewallPolicy.Get("name")
+
+							iapSshRule := gcloud.Run(t, fmt.Sprintf("compute network-firewall-policies rules describe 1000 --firewall-policy=%s --global-firewall-policy --project=%s", iapFirewallPolicyName, projectID)).Array()[0]
+							assert.Equal("INGRESS", iapSshRule.Get("direction").String(), "Direction should be INGRESS")
+							assert.Equal("allow", iapSshRule.Get("action").String(), "Action should be ALLOW")
+							assert.Equal("EFFECTIVE", iapSshRule.Get("targetSecureTags.0.state").String(), "Should be bound to an effective terget secure tag")
+							assert.Equal("22", iapSshRule.Get("match.layer4Configs.0.ports.0").String(), "Protocol port should be 22")
+
+							iapRdpRule := gcloud.Run(t, fmt.Sprintf("compute network-firewall-policies rules describe 1001 --firewall-policy=%s --global-firewall-policy --project=%s", iapFirewallPolicyName, projectID)).Array()[0]
+							assert.Equal("INGRESS", iapRdpRule.Get("direction").String(), "Direction should be INGRESS")
+							assert.Equal("allow", iapRdpRule.Get("action").String(), "Action should be ALLOW")
+							assert.Equal("EFFECTIVE", iapRdpRule.Get("targetSecureTags.0.state").String(), "Should be bound to an effective terget secure tag")
+							assert.Equal("3389", iapRdpRule.Get("match.layer4Configs.0.ports.0").String(), "Protocol port should be 3389")
+
 						}
 					}
 				})

@@ -48,7 +48,7 @@ data "google_storage_project_service_account" "gcs_sa" {
 
 // Encrypter/Decrypter role
 resource "google_kms_crypto_key_iam_member" "encrypter_decrypter" {
-  for_each = var.encryption_key == null ? {} : local.identities
+  for_each = var.enable_cmek ? local.identities : {}
 
   crypto_key_id = var.encryption_key
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"

@@ -35,6 +35,12 @@ variable "location" {
   default     = "us-central1"
 }
 
+variable "enable_cmek" {
+  description = "The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub."
+  type        = bool
+  default     = false
+}
+
 variable "encryption_key" {
   description = "The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub."
   type        = string

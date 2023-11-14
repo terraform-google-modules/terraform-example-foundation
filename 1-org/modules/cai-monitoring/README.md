@@ -24,6 +24,7 @@ module "secure_cai_notification" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| enable\_cmek | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `bool` | `false` | no |
 | encryption\_key | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `string` | `null` | no |
 | impersonate\_sa\_email | The Service Account email who will execute terraform code. | `string` | n/a | yes |
 | labels | Labels to be assigned to resources. | `map(any)` | `{}` | no |

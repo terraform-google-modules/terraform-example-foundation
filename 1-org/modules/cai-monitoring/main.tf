@@ -79,9 +79,9 @@ module "cloudfunction_source_bucket" {
   storage_class = "REGIONAL"
   force_destroy = true
 
-  encryption = var.encryption_key == null ? null : {
+  encryption = var.enable_cmek ? {
     default_kms_key_name = var.encryption_key
-  }
+  } : null
 
   depends_on = [
     time_sleep.wait_kms_iam

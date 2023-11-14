@@ -22,7 +22,7 @@ module "kms" {
   keyring         = "krg-cai-monitoring"
   location        = local.default_region
   keys            = ["key-cai-monitoring"]
-  prevent_destroy = var.cai_monitoring_kms_force_destroy
+  prevent_destroy = !var.cai_monitoring_kms_force_destroy
 }
 
 module "cai_monitoring" {
@@ -32,6 +32,7 @@ module "cai_monitoring" {
   billing_account      = local.billing_account
   project_id           = module.scc_notifications.project_id
   location             = local.default_region
+  enable_cmek          = true
   encryption_key       = module.kms.keys["key-cai-monitoring"]
   impersonate_sa_email = local.org_step_terraform_service_account_email
 }

@@ -25,7 +25,7 @@ locals {
     "artifactregistry" = "artifactregistry.googleapis.com"
     "pubsub"           = "pubsub.googleapis.com"
   }
-  identities = var.encryption_key == null ? {} : {
+  identities = {
     "cloudfunctions"   = "serviceAccount:${google_project_service_identity.service_sa["cloudfunctions"].email}",
     "artifactregistry" = "serviceAccount:${google_project_service_identity.service_sa["artifactregistry"].email}",
     "pubsub"           = "serviceAccount:${google_project_service_identity.service_sa["pubsub"].email}",
@@ -48,7 +48,7 @@ data "google_storage_project_service_account" "gcs_sa" {
 
 // Encrypter/Decrypter role
 resource "google_kms_crypto_key_iam_member" "encrypter_decrypter" {
-  for_each = local.identities
+  for_each = var.encryption_key == null ? {} : local.identities
 
   crypto_key_id = var.encryption_key
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"

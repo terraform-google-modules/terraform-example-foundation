@@ -95,6 +95,16 @@ output "keys" {
 }
 
 output "bucket" {
-  description = "The created storage bucket"
+  description = "The created storage bucket."
   value       = module.env.bucket
+}
+
+output "peering_subnetwork_self_link" {
+  description = "The subnetwork self link of the peering network."
+  value       = module.env.peering_subnetwork_self_link
+}
+
+output "iap_firewall_tags" {
+  description = "The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project."
+  value       = module.env.iap_firewall_tags
 }

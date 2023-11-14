@@ -40,6 +40,25 @@ module "peering_project" {
   project_budget  = var.project_budget
   project_prefix  = local.project_prefix
 
+  // Enabling Cloud Build Deploy to use Service Accounts during the build and give permissions to the SA.
+  // The permissions will be the ones necessary for the deployment of the step 5-app-infra
+  enable_cloudbuild_deploy = local.enable_cloudbuild_deploy
+
+  // A map of Service Accounts to use on the infra pipeline (Cloud Build)
+  // Where the key is the repository name ("${var.business_code}-example-app")
+  app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
+
+  // Map for the roles where the key is the repository name ("${var.business_code}-example-app")
+  // and the value is the list of roles that this SA need to deploy step 5-app-infra
+  sa_roles = {
+    "${var.business_code}-example-app" = [
+      "roles/compute.instanceAdmin.v1",
+      "roles/iam.serviceAccountAdmin",
+      "roles/iam.serviceAccountUser",
+      "roles/resourcemanager.tagUser",
+    ]
+  }
+
   activate_apis = [
     "dns.googleapis.com"
   ]
@@ -55,13 +74,23 @@ module "peering_project" {
 
 module "peering_network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 5.0"
+  version = "~> 7.0"
 
   project_id                             = module.peering_project.project_id
   network_name                           = "vpc-${local.env_code}-peering-base"
   shared_vpc_host                        = "false"
   delete_default_internet_gateway_routes = "true"
-  subnets                                = []
+
+  subnets = [
+    {
+      subnet_name           = "sb-${local.env_code}-${var.business_code}-peered-${var.subnet_region}"
+      subnet_ip             = var.subnet_ip_range
+      subnet_region         = var.subnet_region
+      subnet_private_access = "true"
+      subnet_flow_logs      = "true"
+      description           = "Peered subnetwork on region ${var.subnet_region}."
+    }
+  ]
 }
 
 resource "google_dns_policy" "default_policy" {
@@ -76,7 +105,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "peering" {
   source  = "terraform-google-modules/network/google//modules/network-peering"
-  version = "~> 5.0"
+  version = "~> 7.0"
 
   prefix            = "${var.business_code}-${local.env_code}"
   local_network     = module.peering_network.network_self_link
@@ -149,62 +178,6 @@ resource "google_compute_firewall" "allow_private_api_egress" {
   Optional firewall rules
  *****************************************/
 
-// Allow SSH via IAP when using the allow-iap-ssh tag for Linux workloads.
-resource "google_compute_firewall" "allow_iap_ssh" {
-  count   = var.optional_fw_rules_enabled ? 1 : 0
-  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
-  network = module.peering_network.network_name
-  project = module.peering_project.project_id
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  // Cloud IAP's TCP forwarding netblock
-  source_ranges = concat(data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4)
-
-  allow {
-    protocol = "tcp"
-    ports    = ["22"]
-  }
-
-  target_tags = ["allow-iap-ssh"]
-}
-
-// Allow RDP via IAP when using the allow-iap-rdp tag for Windows workloads.
-resource "google_compute_firewall" "allow_iap_rdp" {
-  count   = var.optional_fw_rules_enabled ? 1 : 0
-  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-rdp-tcp-3389"
-  network = module.peering_network.network_name
-  project = module.peering_project.project_id
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  // Cloud IAP's TCP forwarding netblock
-  source_ranges = concat(data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4)
-
-  allow {
-    protocol = "tcp"
-    ports    = ["3389"]
-  }
-
-  target_tags = ["allow-iap-rdp"]
-}
-
 // Allow access to kms.windows.googlecloud.com for Windows license activation
 resource "google_compute_firewall" "allow_windows_activation" {
   count     = var.windows_activation_enabled ? 1 : 0
@@ -260,4 +233,107 @@ resource "google_compute_firewall" "allow_lb" {
   }
 
   target_tags = ["allow-lb"]
+}
+
+// Allow SSH and RDP via IAP when using the Firewall Secure Tags.
+module "allow_iap_ssh_rdp" {
+  source  = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version = "~> 8.0"
+
+  project_id  = module.peering_project.project_id
+  policy_name = "fp-${local.env_code}-allow-iap-policy"
+
+  rules = [
+    {
+      // Allow SSH via IAP when using the ssh-iap-access/allow resource manager tag for Linux workloads.
+      rule_name          = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
+      action             = "allow"
+      direction          = "INGRESS"
+      priority           = "1000"
+      enable_logging     = true
+      target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"]
+      match = {
+        src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
+        layer4_configs = [
+          {
+            ip_protocol = "tcp"
+            ports       = ["22"]
+          },
+        ]
+      }
+    },
+    {
+      // Allow RDP via IAP when using the rdp-iap-access/allow resource manager tag for Windows workloads.
+      rule_name          = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
+      action             = "allow"
+      direction          = "INGRESS"
+      priority           = "1001"
+      enable_logging     = true
+      target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"]
+      match = {
+        src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
+        layer4_configs = [
+          {
+            ip_protocol = "tcp"
+            ports       = ["3389"]
+          },
+        ]
+      }
+    }
+  ]
+
+  depends_on = [
+    google_tags_tag_value.firewall_tag_value_ssh,
+    google_tags_tag_value.firewall_tag_value_rdp
+  ]
+}
+
+resource "google_compute_network_firewall_policy_association" "vpc_associations" {
+  name              = "fpa-${local.env_code}-allow-iap-ssh-rdp"
+  attachment_target = module.peering_network.network_id
+  firewall_policy   = module.allow_iap_ssh_rdp.fw_policy[0].id
+  project           = module.peering_project.project_id
+
+  depends_on = [
+    module.allow_iap_ssh_rdp,
+    module.peering_network
+  ]
+}
+
+resource "google_tags_tag_key" "firewall_tag_key_ssh" {
+  count = var.peering_iap_fw_rules_enabled ? 1 : 0
+
+  short_name = "ssh-iap-access"
+  parent     = "projects/${module.peering_project.project_id}"
+  purpose    = "GCE_FIREWALL"
+
+  purpose_data = {
+    network = "${module.peering_project.project_id}/${module.peering_network.network_name}"
+  }
+}
+
+resource "google_tags_tag_value" "firewall_tag_value_ssh" {
+  count = var.peering_iap_fw_rules_enabled ? 1 : 0
+
+  short_name = "allow"
+  parent     = "tagKeys/${google_tags_tag_key.firewall_tag_key_ssh[0].name}"
+}
+
+resource "google_tags_tag_key" "firewall_tag_key_rdp" {
+  count = var.peering_iap_fw_rules_enabled ? 1 : 0
+
+  short_name = "rdp-iap-access"
+  parent     = "projects/${module.peering_project.project_id}"
+  purpose    = "GCE_FIREWALL"
+
+  purpose_data = {
+    network = "${module.peering_project.project_id}/${module.peering_network.network_name}"
+  }
+}
+
+resource "google_tags_tag_value" "firewall_tag_value_rdp" {
+  count = var.peering_iap_fw_rules_enabled ? 1 : 0
+
+  short_name = "allow"
+  parent     = "tagKeys/${google_tags_tag_key.firewall_tag_key_rdp[0].name}"
 }

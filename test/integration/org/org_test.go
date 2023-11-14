@@ -42,6 +42,7 @@ func TestOrg(t *testing.T) {
 		"remote_state_bucket":                         backend_bucket,
 		"log_export_storage_force_destroy":            "true",
 		"audit_logs_table_delete_contents_on_destroy": "true",
+		"cai_monitoring_kms_force_destroy":            "true",
 	}
 
 	backendConfig := map[string]interface{}{

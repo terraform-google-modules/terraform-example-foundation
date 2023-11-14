@@ -267,14 +267,14 @@ When you try to run 4-projects step without requesting additional project quota 
 
 You will need to mark some resources as tainted in order to trigger the proper missing project's recreation to fix the inconsistent terraform state by following the next steps.
 
-1. In your local, go to the path that the error is being reported.
+1. In a terminal, navigate to the path where the error is being reported.
 
    For example, if the unknown project ID is `prj-bu1-p-sample-base-abcd`, you should go to ./gcp-projects/business_unit_1/production (business_unit_1 due to `bu1` and production due to `p`).
 
    ```bash
    cd ./gcp-projects/<business_unit>/<environment>
    ```
-1. Run terraform init command so you can pull the remote state to your local.
+1. Run terraform init command so you can pull the remote state.
 
    ```bash
    terraform init
@@ -295,13 +295,13 @@ You will need to mark some resources as tainted in order to trigger the proper m
    terraform taint <resource>[index]
    ```
 
-   For example, in the following command we are marking as tainted the env secrets project. You may need to run the taint command multiple times, depending on how many missing projects you do have.
+   For example, in the following command we are marking as tainted the env secrets project. You may need to run the taint command multiple times, depending on how many missing projects you have.
 
    ```bash
    terraform taint module.env.module.env_secrets_project.module.project.module.project-factory.random_string.random_project_id_suffix[0]
    ```
 
-1. Finally, after run the taint command for all the non-matching items, you can go to Cloud Build and trigger the retry action for the failed job. You may have a success build or some similar error for another BU/environment that will require the same solution, but changing the proper paths according to the BU/environment reported in the error log.
+1. Finally, after running the taint command for all the non-matching items, you can go to Cloud Build and trigger a retry action for the failed job. This should complete successfully, if you encounter another similar error for another BU/environment that will require you to follow this guide again but instead changing paths according to the BU/environment reported in the error log.
 
 **Notes:**
 

@@ -210,7 +210,7 @@ func TestOrg(t *testing.T) {
 			logBktFullName := fmt.Sprintf("projects/%s/locations/%s/buckets/%s", auditLogsProjectID, defaultRegion, logsExportLogBktName)
 			logBktDetails := gcloud.Runf(t, fmt.Sprintf("logging buckets describe %s --location=%s --project=%s", logsExportLogBktName, defaultRegion, auditLogsProjectID))
 			assert.Equal(logBktFullName, logBktDetails.Get("name").String(), "log bucket name should match")
-			linkedDatasetID := "ds-c-logbkt-analytics"
+			linkedDatasetID := "ds_c_logbkt_analytics"
 			auditLogsProjectNumber := gcloud.Runf(t, "projects describe %s", auditLogsProjectID).Get("projectNumber").String()
 			linkedDsName := org.GetStringOutput("logs_export_logbucket_linked_dataset_name")
 			linkedDs := gcloud.Runf(t, "logging links describe %s --bucket=%s --location=%s --project=%s", linkedDatasetID, logsExportLogBktName, defaultRegion, auditLogsProjectID)

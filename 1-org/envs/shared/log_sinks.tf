@@ -77,7 +77,7 @@ module "logs_export" {
     name                       = "logbkt-org-logs-${random_string.suffix.result}"
     location                   = local.default_region
     enable_analytics           = true
-    linked_dataset_id          = "ds-c-logbkt-analytics"
+    linked_dataset_id          = "ds_c_logbkt_analytics"
     linked_dataset_description = "BigQuery Dataset for Logbucket analytics"
   }
 }

@@ -20,7 +20,7 @@ locals {
 
 module "peered_network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 5.2"
+  version = "~> 7.0"
   count   = var.private_worker_pool.create_peered_network ? 1 : 0
 
   project_id                             = var.project_id
@@ -85,7 +85,7 @@ resource "google_compute_network_peering_routes_config" "peering_routes" {
 
 module "firewall_rules" {
   source  = "terraform-google-modules/network/google//modules/firewall-rules"
-  version = "~> 5.2"
+  version = "~> 7.0"
   count   = var.private_worker_pool.enable_network_peering ? 1 : 0
 
   project_id   = var.project_id

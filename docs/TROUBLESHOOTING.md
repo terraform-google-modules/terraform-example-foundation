@@ -263,45 +263,72 @@ When you try to run 4-projects step without requesting additional project quota 
 
 **Solution:**
 
-- Make sure you [have requested the additional project quota](#project-quota-exceeded) for the **project SA e-mail** before the following steps.
+- Make sure you [have requested the additional project quota](#project-quota-exceeded) for the **project SA e-mail** before running the following steps.
 
-You will need to mark some resources as tainted in order to trigger the proper missing project's recreation to fix the inconsistent terraform state by following the next steps.
+You will need to mark some Terraform resources as **tainted** in order to trigger the recreation of the missing projects to fix the inconsistent in the terraform state.
 
 1. In a terminal, navigate to the path where the error is being reported.
 
-   For example, if the unknown project ID is `prj-bu1-p-sample-base-abcd`, you should go to ./gcp-projects/business_unit_1/production (business_unit_1 due to `bu1` and production due to `p`).
+   For example, if the unknown project ID is `prj-bu1-p-sample-base-abcd`, you should go to ./gcp-projects/business_unit_1/production (`business_unit_1` due to `bu1` and `production` due to `p`, see the Security Foundations [naming conventions](https://cloud.google.com/architecture/security-foundations/using-example-terraform#naming_conventions) for more information on the projects naming guideline).
 
    ```bash
    cd ./gcp-projects/<business_unit>/<environment>
    ```
-1. Run terraform init command so you can pull the remote state.
+
+1. Run the `terraform init` command so you can pull the remote state.
 
    ```bash
    terraform init
    ```
-1. Run terraform state list command, filtering by `random_project_id_suffix`. This command will give you all the expected projects that should be created for this BU and environment that uses a random suffix.
+
+1. Run the `terraform state list` command, filtering by `random_project_id_suffix`.
+This command will give you all the expected projects that should be created for this BU and environment that uses a random suffix.
 
    ```bash
    terraform state list | grep random_project_id_suffix
    ```
-1. Run gcloud projects list command. You should replace `id_of_the_environment_folder` with the proper ID of the folder. This command will give you all the projects that were actually created.
+
+1. Identify the folder which is the parent of the projects of the environment.
+If the Terraform Example Foundation is deployed directly under the organization use `--organization`, if the Terraform Example Foundation is deployed under a folder use `--folder`. The "ORGANIZATION_ID" and "PARENT_FOLDER" are the input values provided for the 0-bootstrap step.
+
+   ```bash
+   gcloud resource-manager folders list [ --organization=ORGANIZATION_ID ][ --folder=PARENT_FOLDER ]
+   ```
+
+1. The result of the `gcloud` command will look like the following output.
+Using the `production` environment for this example, the folder ID for the environment would be `333333333333`.
+
+   ```
+   DISPLAY_NAME         PARENT_NAME                     ID
+   fldr-bootstrap       folders/PARENT_FOLDER  111111111111
+   fldr-common          folders/PARENT_FOLDER  222222222222
+   fldr-production      folders/PARENT_FOLDER  333333333333
+   fldr-non-production  folders/PARENT_FOLDER  444444444444
+   fldr-development     folders/PARENT_FOLDER  555555555555
+   ```
+
+1. Run the `gcloud projects list` command to.
+Replace `id_of_the_environment_folder` with the proper ID of the folder retrieved in the previous step.
+This command will give you all the projects that were actually created.
 
    ```bash
    gcloud projects list --filter="parent=<id_of_the_environment_folder>"
    ```
-1. For each resource listed in terraform state step that's **not** returned by gcloud projects list step, we should mark as tainted to be recreated in order to fix the inconsistency in terraform state.
+
+1. For each resource listed in the `terraform state` step for a project that is **not** returned by the `gcloud projects list` step, we should mark that resource as tainted to force it to be recreated in order to fix the inconsistency in the terraform state.
 
    ```bash
    terraform taint <resource>[index]
    ```
 
-   For example, in the following command we are marking as tainted the env secrets project. You may need to run the taint command multiple times, depending on how many missing projects you have.
+   For example, in the following command we are marking as tainted the env secrets project. You may need to run the `terraform taint` command multiple times, depending on how many missing projects you have.
 
    ```bash
    terraform taint module.env.module.env_secrets_project.module.project.module.project-factory.random_string.random_project_id_suffix[0]
    ```
 
-1. Finally, after running the taint command for all the non-matching items, you can go to Cloud Build and trigger a retry action for the failed job. This should complete successfully, if you encounter another similar error for another BU/environment that will require you to follow this guide again but instead changing paths according to the BU/environment reported in the error log.
+1. After running the `terraform taint` command for all the non-matching items, go to Cloud Build and trigger a retry action for the failed job.
+This should complete successfully, if you encounter another similar error for another BU/environment that will require you to follow this guide again but instead changing paths according to the BU/environment reported in the error log.
 
 **Notes:**
 

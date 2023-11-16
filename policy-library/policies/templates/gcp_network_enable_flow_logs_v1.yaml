@@ -62,9 +62,12 @@ spec:
         	legacy_enable_flow_logs := lib.get_default(network, "enableFlowLogs", false)
         	log_config := lib.get_default(network, "logConfig", {})
         	log_config_enable_flow_logs := lib.get_default(log_config, "enable", false)
+        	purpose := lib.get_default(network, "purpose", "PRIVATE")
 
         	log_config_enable_flow_logs != true
         	legacy_enable_flow_logs != true
+        	purpose != "REGIONAL_MANAGED_PROXY"
+        	purpose != "INTERNAL_HTTPS_LOAD_BALANCER"
 
         	message := sprintf("Flow logs are disabled in subnetwork %v.", [asset.name])
         	metadata := {"resource": asset.name}

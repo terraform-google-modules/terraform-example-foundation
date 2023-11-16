@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-output "bigquery_destination_name" {
-  description = "The resource name for the destination BigQuery."
-  value       = try(module.destination_bigquery[0].resource_name, "")
-}
-
 output "storage_destination_name" {
   description = "The resource name for the destination Storage."
   value       = try(module.destination_storage[0].resource_name, "")

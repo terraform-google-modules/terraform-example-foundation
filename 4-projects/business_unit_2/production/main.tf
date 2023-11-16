@@ -17,12 +17,15 @@
 module "env" {
   source = "../../modules/base_env"
 
-  env                       = "production"
-  business_code             = "bu2"
-  business_unit             = "business_unit_2"
-  remote_state_bucket       = var.remote_state_bucket
-  location_kms              = var.location_kms
-  location_gcs              = var.location_gcs
-  peering_module_depends_on = var.peering_module_depends_on
-  tfc_org_name              = var.tfc_org_name
+  env                          = "production"
+  business_code                = "bu2"
+  business_unit                = "business_unit_2"
+  remote_state_bucket          = var.remote_state_bucket
+  location_kms                 = var.location_kms
+  location_gcs                 = var.location_gcs
+  tfc_org_name                 = var.tfc_org_name
+  peering_module_depends_on    = var.peering_module_depends_on
+  peering_iap_fw_rules_enabled = true
+  subnet_region                = var.instance_region
+  subnet_ip_range              = "10.4.192.0/21"
 }

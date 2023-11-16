@@ -28,3 +28,13 @@ module "base_shared_gce_instance" {
   region              = var.instance_region
   remote_state_bucket = var.remote_state_bucket
 }
+
+module "peering_gce_instance" {
+  source = "../../modules/env_base"
+
+  environment         = local.environment
+  business_unit       = local.business_unit
+  project_suffix      = "sample-peering"
+  region              = var.instance_region
+  remote_state_bucket = var.remote_state_bucket
+}

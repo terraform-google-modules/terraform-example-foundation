@@ -143,6 +143,52 @@ resource "google_compute_route" "routes" {
   next_hop_ilb = module.ilbs[each.value.region].forwarding_rule
 }
 
+module "transitivity_firewall_rules" {
+  source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version      = "~> 8.0"
+  project_id   = var.project_id
+  policy_name  = "fp-${var.environment_code}-transitivity-firewall"
+  description  = "Firewall rules for."
+  target_vpcs  = [var.vpc_name]
+
+  rules = [
+    {
+      priority       = "1000"
+      direction      = "INGRESS"
+      action         = "allow"
+      rule_name      = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
+      description    = "allow_transtivity_ingress #TODO: Fill description"
+      enable_logging = var.firewall_enable_logging
+      target_service_accounts = [module.service_account.email]
+      match = {
+        src_ip_ranges  = flatten(values(var.regional_aggregates))
+        layer4_configs = [
+          {
+            ip_protocol = "all"
+          },
+        ]
+      }
+    },
+    {
+      priority       = "1001"
+      direction      = "EGRESS"
+      action         = "allow"
+      rule_name      = "fw-allow-transitivity-egress"
+      description    = "allow_transitivity_egress #TODO: Fill description"
+      enable_logging = var.firewall_enable_logging
+      target_service_accounts = [module.service_account.email]
+      match = {
+        dest_ip_ranges  = flatten(values(var.regional_aggregates))
+        layer4_configs = [
+          {
+            ip_protocol = "all"
+          },
+        ]
+      }
+    },
+  ]
+}
+
 resource "google_compute_firewall" "allow_transtivity_ingress" {
   name      = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
   network   = var.vpc_name

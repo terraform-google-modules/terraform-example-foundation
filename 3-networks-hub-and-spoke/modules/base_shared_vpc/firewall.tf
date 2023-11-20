@@ -17,7 +17,6 @@
 /******************************************
   Mandatory firewall rules
  *****************************************/
-
 module "firewall_rules" {
   source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
   version      = "~> 8.0"

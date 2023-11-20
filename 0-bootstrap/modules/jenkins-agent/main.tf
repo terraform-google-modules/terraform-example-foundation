@@ -107,24 +107,34 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 /******************************************
   Jenkins Agent GCE Network and Firewall rules
 *******************************************/
+module "jenkins_firewall_rules" {
+  source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version      = "~> 8.0"
+  project_id   = var.project_id
+  policy_name  = "fp-${var.environment_code}-dual-svpc-firewalls"
+  description  = "Jenkins Agent GCE network firewall rules."
+  target_vpcs  = [google_compute_network.jenkins_agents.name]
 
-resource "google_compute_firewall" "fw_allow_ssh_into_jenkins_agent" {
-  project       = module.cicd_project.project_id
-  name          = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
-  description   = "Allow the Jenkins Controller (Client) to connect to the Jenkins Agents (Servers) using SSH."
-  network       = google_compute_network.jenkins_agents.name
-  source_ranges = var.jenkins_controller_subnetwork_cidr_range
-  target_tags   = local.jenkins_gce_fw_tags
-  priority      = 1000
-
-  log_config {
-    metadata = "INCLUDE_ALL_METADATA"
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["22"]
-  }
+  rules = [
+    {
+      priority       = "1000"
+      direction      = "EGRESS"
+      action         = "allow"
+      rule_name      = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
+      description    = "Allow the Jenkins Controller (Client) to connect to the Jenkins Agents (Servers) using SSH."
+      enable_logging = true
+      match = {
+        dest_ip_ranges  = var.jenkins_controller_subnetwork_cidr_range
+        src_secure_tags = local.jenkins_gce_fw_tags
+        layer4_configs = [
+          {
+            ip_protocol = "tcp"
+            ports       = ["22"]
+          },
+        ]
+      }
+    }
+  ]
 }
 
 resource "google_compute_network" "jenkins_agents" {

@@ -147,8 +147,8 @@ module "transitivity_firewall_rules" {
   source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
   version      = "~> 8.0"
   project_id   = var.project_id
-  policy_name  = "fp-${var.environment_code}-transitivity-firewall"
-  description  = "Firewall rules for."
+  policy_name  = "fp-${local.stripped_vpc_name}-transitivity-firewall"
+  description  = "Firewall rules for trasitivity VMs."
   target_vpcs  = [var.vpc_name]
 
   rules = [
@@ -157,7 +157,7 @@ module "transitivity_firewall_rules" {
       direction      = "INGRESS"
       action         = "allow"
       rule_name      = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
-      description    = "allow_transtivity_ingress #TODO: Fill description"
+      description    = "Allow ingress to regional IP ranges."
       enable_logging = var.firewall_enable_logging
       target_service_accounts = [module.service_account.email]
       match = {
@@ -174,7 +174,7 @@ module "transitivity_firewall_rules" {
       direction      = "EGRESS"
       action         = "allow"
       rule_name      = "fw-allow-transitivity-egress"
-      description    = "allow_transitivity_egress #TODO: Fill description"
+      description    = "Allow egress to regional IP ranges."
       enable_logging = var.firewall_enable_logging
       target_service_accounts = [module.service_account.email]
       match = {

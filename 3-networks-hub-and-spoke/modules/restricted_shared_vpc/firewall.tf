@@ -22,8 +22,8 @@ module "firewall_rules" {
   source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
   version      = "~> 8.0"
   project_id   = var.project_id
-  policy_name  = "fp-${var.environment_code}-dual-svpc-firewalls"
-  description  = "Mandatory firewall rules for dual shared vpc."
+  policy_name  = "fp-${var.environment_code}-hub-and-spoke-restricted-firewalls"
+  description  = "Mandatory firewall rules for restricted hub and spoke shared vpc."
   target_vpcs  = [module.main.network_name]
 
   rules = concat(
@@ -33,7 +33,7 @@ module "firewall_rules" {
         direction      = "EGRESS"
         action         = "deny"
         rule_name      = "fw-${var.environment_code}-shared-restricted-65530-e-d-all-all-all"
-        description    = "deny_all_egress #TODO: Fill description"
+        description    = "Lower priority rule to deny all egress traffic."
         enable_logging = var.firewall_enable_logging
         match = {
           dest_ip_ranges = ["0.0.0.0/0"]
@@ -49,7 +49,7 @@ module "firewall_rules" {
         direction      = "EGRESS"
         action         = "allow"
         rule_name      = "fw-${var.environment_code}-shared-restricted-65430-e-a-allow-google-apis-all-tcp-443"
-        description    = "allow_private_api_egress #TODO: Fill description"
+        description    = "Lower priority rule to allow restricted google apis on TCP port 443."
         enable_logging = var.firewall_enable_logging
         match = {
           dest_ip_ranges  = [local.restricted_googleapis_cidr]
@@ -69,7 +69,7 @@ module "firewall_rules" {
         direction      = "EGRESS"
         action         = "allow"
         rule_name      = "fw-${var.environment_code}-shared-base-1000-e-a-all-all-all"
-        description    = "allow_all_egress #TODO: Fill description"
+        description    = "Allow all egress to the provided IP range."
         enable_logging = var.firewall_enable_logging
         match = {
           dest_ip_ranges = var.allow_all_egress_ranges
@@ -87,7 +87,7 @@ module "firewall_rules" {
         direction      = "INGRESS"
         action         = "allow"
         rule_name      = "fw-${var.environment_code}-shared-base-1001-i-a-all"
-        description    = "allow_all_ingress #TODO: Fill description"
+        description    = "Allow all ingress to the provided IP range."
         enable_logging = var.firewall_enable_logging
         match = {
           src_ip_ranges = var.allow_all_ingress_ranges

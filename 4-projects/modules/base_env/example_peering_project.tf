@@ -131,7 +131,7 @@ module "firewall_rules" {
         direction      = "EGRESS"
         action         = "deny"
         rule_name      = "fw-${local.env_code}-peering-base-65530-e-d-all-all-tcp-udp"
-        description    = "deny_all_egress #TODO: Fill description"
+        description    = "Lower priority rule to deny all egress traffic."
         enable_logging = var.firewall_enable_logging
         match = {
           dest_ip_ranges = ["0.0.0.0/0"]
@@ -150,7 +150,7 @@ module "firewall_rules" {
         direction      = "EGRESS"
         action         = "allow"
         rule_name      = "fw-${local.env_code}-peering-base-65430-e-a-allow-google-apis-all-tcp-443"
-        description    = "allow_private_api_egress #TODO: Fill description"
+        description    = "Lower priority rule to allow private google apis on TCP port 443."
         enable_logging = var.firewall_enable_logging
         match = {
           dest_ip_ranges  = ["199.36.153.8/30"]
@@ -165,13 +165,12 @@ module "firewall_rules" {
       }
     ], 
     !var.windows_activation_enabled ? [] : [
-      // Allow access to kms.windows.googlecloud.com for Windows license activation
       {
         priority       = "0"
         direction      = "EGRESS"
         action         = "allow"
         rule_name      = "fw-${local.env_code}-peering-base-0-e-a-allow-win-activation-all-tcp-1688"
-        description    = "allow_windows_activation #TODO: Fill description"
+        description    = "Allow access to kms.windows.googlecloud.com for Windows license activation."
         enable_logging = var.firewall_enable_logging
         match = {
           dest_ip_ranges = ["35.190.247.13/32"]
@@ -186,20 +185,19 @@ module "firewall_rules" {
       }
     ],
     !var.optional_fw_rules_enabled ? [] : [
-      // Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
       {
         priority       = "1000"
         direction      = "INGRESS"
         action         = "allow"
         rule_name      = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
-        description    = "allow_lb #TODO: Fill description"
+        description    = "Allow traffic for Internal & Global load balancing health check and load balancing IP ranges."
         enable_logging = var.firewall_enable_logging
         match = {
           src_ip_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
           src_secure_tags = ["allow-lb"]
           layer4_configs = [
-            // Allow common app ports by default.
             {
+              // Allow common app ports by default.
               ip_protocol = "tcp"
               ports       = ["80", "8080", "443"]
             },

@@ -111,14 +111,14 @@ module "jenkins_firewall_rules" {
   source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
   version      = "~> 8.0"
   project_id   = var.project_id
-  policy_name  = "fp-${var.environment_code}-dual-svpc-firewalls"
+  policy_name  = "fp-${google_compute_network.jenkins_agents.name}-jenkins-firewall"
   description  = "Jenkins Agent GCE network firewall rules."
   target_vpcs  = [google_compute_network.jenkins_agents.name]
 
   rules = [
     {
       priority       = "1000"
-      direction      = "EGRESS"
+      direction      = "INGRESS"
       action         = "allow"
       rule_name      = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
       description    = "Allow the Jenkins Controller (Client) to connect to the Jenkins Agents (Servers) using SSH."

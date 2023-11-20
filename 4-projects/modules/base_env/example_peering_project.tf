@@ -114,125 +114,100 @@ module "peering" {
 }
 
 /******************************************
-  Mandatory firewall rules
+  Mandatory and Optional firewall rules
  *****************************************/
+module "firewall_rules" {
+  source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version      = "~> 8.0"
+  project_id   = module.peering_project.project_id
+  policy_name  = "fp-${local.env_code}-peering-project-firewalls"
+  description  = "Mandatory and optional firewall rules Peering Network Project."
+  target_vpcs  = [module.peering_network.network_name]
 
-resource "google_compute_firewall" "deny_all_egress" {
-  name      = "fw-${local.env_code}-peering-base-65530-e-d-all-all-tcp-udp"
-  network   = module.peering_network.network_name
-  project   = module.peering_project.project_id
-  direction = "EGRESS"
-  priority  = 65530
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  deny {
-    protocol = "tcp"
-  }
-
-  deny {
-    protocol = "udp"
-  }
-
-  destination_ranges = ["0.0.0.0/0"]
-}
-
-
-resource "google_compute_firewall" "allow_private_api_egress" {
-  name      = "fw-${local.env_code}-peering-base-65430-e-a-allow-google-apis-all-tcp-443"
-  network   = module.peering_network.network_name
-  project   = module.peering_project.project_id
-  direction = "EGRESS"
-  priority  = 65430
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["443"]
-  }
-
-  destination_ranges = ["199.36.153.8/30"]
-
-  target_tags = ["allow-google-apis"]
-}
-
-
-/******************************************
-  Optional firewall rules
- *****************************************/
-
-// Allow access to kms.windows.googlecloud.com for Windows license activation
-resource "google_compute_firewall" "allow_windows_activation" {
-  count     = var.windows_activation_enabled ? 1 : 0
-  name      = "fw-${local.env_code}-peering-base-0-e-a-allow-win-activation-all-tcp-1688"
-  network   = module.peering_network.network_name
-  project   = module.peering_project.project_id
-  direction = "EGRESS"
-  priority  = 0
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["1688"]
-  }
-
-  destination_ranges = ["35.190.247.13/32"]
-
-  target_tags = ["allow-win-activation"]
-}
-
-// Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
-resource "google_compute_firewall" "allow_lb" {
-  count   = var.optional_fw_rules_enabled ? 1 : 0
-  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
-  network = module.peering_network.network_name
-  project = module.peering_project.project_id
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  source_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
-
-  // Allow common app ports by default.
-  allow {
-    protocol = "tcp"
-    ports    = ["80", "8080", "443"]
-  }
-
-  target_tags = ["allow-lb"]
+  rules = concat(
+    [
+      {
+        priority       = "65530"
+        direction      = "EGRESS"
+        action         = "deny"
+        rule_name      = "fw-${local.env_code}-peering-base-65530-e-d-all-all-tcp-udp"
+        description    = "deny_all_egress #TODO: Fill description"
+        enable_logging = var.firewall_enable_logging
+        match = {
+          dest_ip_ranges = ["0.0.0.0/0"]
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+            },
+            {
+              ip_protocol = "udp"
+            },
+          ]
+        }
+      },
+      {
+        priority       = "65430"
+        direction      = "EGRESS"
+        action         = "allow"
+        rule_name      = "fw-${local.env_code}-peering-base-65430-e-a-allow-google-apis-all-tcp-443"
+        description    = "allow_private_api_egress #TODO: Fill description"
+        enable_logging = var.firewall_enable_logging
+        match = {
+          dest_ip_ranges  = ["199.36.153.8/30"]
+          src_secure_tags = ["allow-google-apis"]
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+              ports       = ["443"]
+            },
+          ]
+        }
+      }
+    ], 
+    !var.windows_activation_enabled ? [] : [
+      // Allow access to kms.windows.googlecloud.com for Windows license activation
+      {
+        priority       = "0"
+        direction      = "EGRESS"
+        action         = "allow"
+        rule_name      = "fw-${local.env_code}-peering-base-0-e-a-allow-win-activation-all-tcp-1688"
+        description    = "allow_windows_activation #TODO: Fill description"
+        enable_logging = var.firewall_enable_logging
+        match = {
+          dest_ip_ranges = ["35.190.247.13/32"]
+          src_secure_tags = ["allow-win-activation"]
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+              ports       = ["1688"]
+            },
+          ]
+        }
+      }
+    ],
+    !var.optional_fw_rules_enabled ? [] : [
+      // Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
+      {
+        priority       = "1000"
+        direction      = "INGRESS"
+        action         = "allow"
+        rule_name      = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
+        description    = "allow_lb #TODO: Fill description"
+        enable_logging = var.firewall_enable_logging
+        match = {
+          src_ip_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
+          src_secure_tags = ["allow-lb"]
+          layer4_configs = [
+            // Allow common app ports by default.
+            {
+              ip_protocol = "tcp"
+              ports       = ["80", "8080", "443"]
+            },
+          ]
+        }
+      },
+    ]
+  )
 }
 
 // Allow SSH and RDP via IAP when using the Firewall Secure Tags.

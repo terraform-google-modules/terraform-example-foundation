@@ -108,12 +108,12 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
   Jenkins Agent GCE Network and Firewall rules
 *******************************************/
 module "jenkins_firewall_rules" {
-  source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version      = "~> 8.0"
-  project_id   = var.project_id
-  policy_name  = "fp-${google_compute_network.jenkins_agents.name}-jenkins-firewall"
-  description  = "Jenkins Agent GCE network firewall rules."
-  target_vpcs  = [google_compute_network.jenkins_agents.name]
+  source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version     = "~> 8.0"
+  project_id  = var.project_id
+  policy_name = "fp-${google_compute_network.jenkins_agents.name}-jenkins-firewall"
+  description = "Jenkins Agent GCE network firewall rules."
+  target_vpcs = [google_compute_network.jenkins_agents.name]
 
   rules = [
     {

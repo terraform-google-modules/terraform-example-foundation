@@ -144,24 +144,24 @@ resource "google_compute_route" "routes" {
 }
 
 module "transitivity_firewall_rules" {
-  source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version      = "~> 8.0"
-  project_id   = var.project_id
-  policy_name  = "fp-${local.stripped_vpc_name}-transitivity-firewall"
-  description  = "Firewall rules for trasitivity VMs."
-  target_vpcs  = [var.vpc_name]
+  source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version     = "~> 8.0"
+  project_id  = var.project_id
+  policy_name = "fp-${local.stripped_vpc_name}-transitivity-firewall"
+  description = "Firewall rules for trasitivity VMs."
+  target_vpcs = [var.vpc_name]
 
   rules = [
     {
-      priority       = "1000"
-      direction      = "INGRESS"
-      action         = "allow"
-      rule_name      = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
-      description    = "Allow ingress to regional IP ranges."
-      enable_logging = var.firewall_enable_logging
+      priority                = "1000"
+      direction               = "INGRESS"
+      action                  = "allow"
+      rule_name               = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
+      description             = "Allow ingress to regional IP ranges."
+      enable_logging          = var.firewall_enable_logging
       target_service_accounts = [module.service_account.email]
       match = {
-        src_ip_ranges  = flatten(values(var.regional_aggregates))
+        src_ip_ranges = flatten(values(var.regional_aggregates))
         layer4_configs = [
           {
             ip_protocol = "all"
@@ -170,15 +170,15 @@ module "transitivity_firewall_rules" {
       }
     },
     {
-      priority       = "1001"
-      direction      = "EGRESS"
-      action         = "allow"
-      rule_name      = "fw-allow-transitivity-egress"
-      description    = "Allow egress to regional IP ranges."
-      enable_logging = var.firewall_enable_logging
+      priority                = "1001"
+      direction               = "EGRESS"
+      action                  = "allow"
+      rule_name               = "fw-allow-transitivity-egress"
+      description             = "Allow egress to regional IP ranges."
+      enable_logging          = var.firewall_enable_logging
       target_service_accounts = [module.service_account.email]
       match = {
-        dest_ip_ranges  = flatten(values(var.regional_aggregates))
+        dest_ip_ranges = flatten(values(var.regional_aggregates))
         layer4_configs = [
           {
             ip_protocol = "all"

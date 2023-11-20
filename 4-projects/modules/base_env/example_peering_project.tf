@@ -117,12 +117,12 @@ module "peering" {
   Mandatory and Optional firewall rules
  *****************************************/
 module "firewall_rules" {
-  source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version      = "~> 8.0"
-  project_id   = module.peering_project.project_id
-  policy_name  = "fp-${local.env_code}-peering-project-firewalls"
-  description  = "Mandatory and optional firewall rules Peering Network Project."
-  target_vpcs  = [module.peering_network.network_name]
+  source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version     = "~> 8.0"
+  project_id  = module.peering_project.project_id
+  policy_name = "fp-${local.env_code}-peering-project-firewalls"
+  description = "Mandatory and optional firewall rules Peering Network Project."
+  target_vpcs = [module.peering_network.network_name]
 
   rules = concat(
     [
@@ -163,7 +163,7 @@ module "firewall_rules" {
           ]
         }
       }
-    ], 
+    ],
     !var.windows_activation_enabled ? [] : [
       {
         priority       = "0"
@@ -173,7 +173,7 @@ module "firewall_rules" {
         description    = "Allow access to kms.windows.googlecloud.com for Windows license activation."
         enable_logging = var.firewall_enable_logging
         match = {
-          dest_ip_ranges = ["35.190.247.13/32"]
+          dest_ip_ranges  = ["35.190.247.13/32"]
           src_secure_tags = ["allow-win-activation"]
           layer4_configs = [
             {
@@ -193,7 +193,7 @@ module "firewall_rules" {
         description    = "Allow traffic for Internal & Global load balancing health check and load balancing IP ranges."
         enable_logging = var.firewall_enable_logging
         match = {
-          src_ip_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
+          src_ip_ranges   = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
           src_secure_tags = ["allow-lb"]
           layer4_configs = [
             {

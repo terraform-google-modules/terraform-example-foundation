@@ -18,12 +18,12 @@
   Mandatory firewall rules
  *****************************************/
 module "firewall_rules" {
-  source       = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version      = "~> 8.0"
-  project_id   = var.project_id
-  policy_name  = "fp-${var.environment_code}-dual-svpc-base-firewalls"
-  description  = "Mandatory firewall rules for base dual shared vpc."
-  target_vpcs  = [module.main.network_name]
+  source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version     = "~> 8.0"
+  project_id  = var.project_id
+  policy_name = "fp-${var.environment_code}-dual-svpc-base-firewalls"
+  description = "Mandatory firewall rules for base dual shared vpc."
+  target_vpcs = [module.main.network_name]
 
   rules = concat(
     [
@@ -61,7 +61,7 @@ module "firewall_rules" {
           ]
         }
       }
-    ], 
+    ],
     !var.allow_all_egress_ranges ? [] : [
       {
         priority       = "1000"

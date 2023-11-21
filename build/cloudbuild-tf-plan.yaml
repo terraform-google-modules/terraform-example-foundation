@@ -14,7 +14,7 @@
 
 timeout: 1200s
 substitutions:
-  _POLICY_REPO: '/workspace/policy-library' # add path to policies as per https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/policy_library.md
+  _POLICY_REPO: '/workspace/policy-library' # add path to policies as per https://github.com/GoogleCloudPlatform/policy-library/blob/main/docs/user_guide.md#how-to-set-up-constraints-with-policy-library
   _DOCKER_TAG_VERSION_TERRAFORM: 'latest'
 steps:
 - id: 'setup'

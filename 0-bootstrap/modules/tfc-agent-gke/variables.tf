@@ -21,7 +21,6 @@ variable "project_id" {
 
 variable "project_number" {
   description = "The project number to host the cluster in"
-  default = "869573241299"
 }
 
 variable "region" {
@@ -43,12 +42,12 @@ variable "nat_bgp_asn" {
 }
 
 variable "nat_enabled" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "nat_num_addresses" {
-  type = number
+  type    = number
   default = 2
 }
 
@@ -92,12 +91,6 @@ variable "subnet_name" {
   type        = string
   description = "Name for the subnet"
   default     = "tfc-agent-subnet"
-}
-
-variable "create_network" {
-  type        = bool
-  description = "When set to true, VPC will be auto created"
-  default     = true
 }
 
 variable "network_project_id" {
@@ -198,6 +191,18 @@ variable "tfc_agent_cpu_request" {
   default     = "2"
 }
 
+variable "tfc_agent_ephemeral_storage" {
+  type        = string
+  description = "A temporary storage for a container that gets wiped out and lost when the container is stopped or restarted"
+  default     = "1Gi"
+}
+
+variable "autopilot_gke_io_warden_version" {
+  type        = string
+  description = "Autopilot GKE IO Warden Version"
+  default     = "2.7.41"
+}
+
 variable "tfc_agent_token" {
   type        = string
   description = "Terraform Cloud agent token. (Organization Settings >> Agents)"
@@ -217,11 +222,11 @@ variable "tfc_agent_max_replicas" {
 }
 
 variable "firewall_enable_logging" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "private_service_connect_ip" {
-  type = string
+  type    = string
   default = "10.10.64.5"
 }

@@ -8,6 +8,8 @@ It is a best practice to have two separate projects here (`prj-b-seed` and `prj-
 On one hand, `prj-b-seed` has the Service Accounts able to create / modify infrastructure.
 On the other hand, the authentication infrastructure using [Workload identity federation](https://cloud.google.com/iam/docs/workload-identity-federation) is implemented in `prj-b-cicd-wif-tfc`. Unlike other deployment methods, Terraform state will be stored in Terraform Cloud instead of in a bucket in GCP.
 
+Note: If you choose to use [Terraform Cloud with Agents](https://developer.hashicorp.com/terraform/cloud-docs/agents) a private autopilot GKE cluster will be deployed in your `prj-b-cicd-wif-tfc` GCP project to be used as the Agent.
+
 ## Requirements
 
 To run the instructions described in this document, install the following:
@@ -136,6 +138,7 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
 1. In the variables file `./variables.tf` un-comment variables in the section `Specific to tfc_bootstrap`
 1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
 1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to tfc_bootstrap`
+    1. If you want to use [Terraform Cloud with Agents](https://developer.hashicorp.com/terraform/cloud-docs/agents), in addition to `Specific to tfc_bootstrap`, un-comment outputs in the section `Specific to tfc_bootstrap with Terraform Cloud Agents`
 1. Rename file `./cb.tf` to `./cb.tf.example`
 
    ```bash
@@ -157,6 +160,7 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
 1. Update the file `terraform.tfvars` with values from your Google Cloud environment
 1. Update the file `terraform.tfvars` with values from your VCS repositories at `tfc_bootstrap` section
 1. Update the file `terraform.tfvars` with values from your Terraform Cloud organization at `tfc_bootstrap` section
+    1. If you want to use [Terraform Cloud with Agents](https://developer.hashicorp.com/terraform/cloud-docs/agents) update `enable_tfc_cloud_agents` variable at `tfc_bootstrap` section
 1. To prevent saving the `tfc_token` in plain text in the `terraform.tfvars` file,
 export the Terraform Cloud token as an environment variable:
 
@@ -200,6 +204,12 @@ export the OAuth Token ID as an environment variable:
    ```bash
    terraform apply bootstrap.tfplan
    ```
+
+1. If you set `enable_tfc_cloud_agents` variable to `true` on `terraform.tfvars` in order to use [Terraform Cloud with Agents](https://developer.hashicorp.com/terraform/cloud-docs/agents) you need to run these additional steps. If not, you should skip it.
+    1. In `provider.tf` file, un-comment kubernetes provider section;
+    1. In `terraform_cloud.tf` file, un-comment `providers` block at `tfc_agent_gke` module;
+    1. Run `terraform plan -input=false -out bootstrap_2.tfplan`
+    1. Run `terraform apply bootstrap_2.tfplan`
 
 1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
 

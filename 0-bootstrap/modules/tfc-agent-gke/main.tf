@@ -16,7 +16,7 @@
 
 locals {
   service_account_email   = var.create_service_account ? google_service_account.tfc_agent_service_account[0].email : var.service_account_email
-  service_account_id   = var.create_service_account ? google_service_account.tfc_agent_service_account[0].id : var.service_account_id
+  service_account_id      = var.create_service_account ? google_service_account.tfc_agent_service_account[0].id : var.service_account_id
   tfc_agent_name          = "${var.tfc_agent_name_prefix}-${random_string.suffix.result}"
   vpc_name                = "b-tfc-runner"
   private_googleapis_cidr = module.private_service_connect.private_service_connect_ip
@@ -122,6 +122,8 @@ module "tfc_agent_cluster" {
 
   network_tags = ["tfc-runner-vm"]
 
+  depends_on = [module.network]
+
 }
 
 /*****************************************
@@ -148,6 +150,42 @@ resource "kubernetes_secret" "tfc_agent_secrets" {
 resource "kubernetes_deployment" "tfc_agent_deployment" {
   metadata {
     name = "${local.tfc_agent_name}-deployment"
+    annotations = { "autopilot.gke.io/resource-adjustment" = jsonencode(
+      {
+        input = {
+          containers = [
+            {
+              name = local.tfc_agent_name
+              requests = {
+                cpu               = var.tfc_agent_cpu_request
+                memory            = var.tfc_agent_memory_request
+                ephemeral-storage = var.tfc_agent_ephemeral_storage
+              }
+            },
+          ]
+        }
+        modified = true
+        output = {
+          containers = [
+            {
+              limits = {
+                cpu               = var.tfc_agent_cpu_request
+                ephemeral-storage = var.tfc_agent_ephemeral_storage
+                memory            = var.tfc_agent_memory_request
+              }
+              name = local.tfc_agent_name
+              requests = {
+                cpu               = var.tfc_agent_cpu_request
+                ephemeral-storage = var.tfc_agent_ephemeral_storage
+                memory            = var.tfc_agent_memory_request
+              }
+            },
+          ]
+        }
+      }
+      )
+      "autopilot.gke.io/warden-version" = "2.7.41"
+    }
   }
 
   spec {
@@ -224,60 +262,44 @@ resource "kubernetes_deployment" "tfc_agent_deployment" {
           # https://developer.hashicorp.com/terraform/cloud-docs/agents/requirements
           resources {
             requests = {
-              memory = var.tfc_agent_memory_request
-              cpu    = var.tfc_agent_cpu_request
+              memory            = var.tfc_agent_memory_request
+              cpu               = var.tfc_agent_cpu_request
+              ephemeral-storage = var.tfc_agent_ephemeral_storage
             }
           }
+
+          security_context {
+            allow_privilege_escalation = false
+            privileged                 = false
+            read_only_root_filesystem  = false
+            run_as_non_root            = false
+
+            capabilities {
+              add  = []
+              drop = ["NET_RAW"]
+            }
+          }
+
         }
+
+        security_context {
+          run_as_non_root     = false
+          supplemental_groups = []
+
+          seccomp_profile {
+            type = "RuntimeDefault"
+          }
+        }
+
+        toleration {
+          effect   = "NoSchedule"
+          key      = "kubernetes.io/arch"
+          operator = "Equal"
+          value    = "amd64"
+        }
+
       }
     }
-  }
-}
-
-# Deploy a horizontal pod autoscaler for the agent
-resource "kubernetes_horizontal_pod_autoscaler_v2" "tfc_agent_hpa" {
-  metadata {
-    name = "${local.tfc_agent_name}-deployment-hpa"
-  }
-
-  spec {
-    scale_target_ref {
-      kind = "Deployment"
-      name = "${local.tfc_agent_name}-deployment"
-    }
-
-    min_replicas = var.tfc_agent_min_replicas
-    max_replicas = var.tfc_agent_max_replicas
-
-    metric {
-      type = "Resource"
-
-      resource {
-        name = "cpu"
-
-        target {
-          type                = "Utilization"
-          average_utilization = 50
-        }
-      }
-    }
-  }
-}
-
-# provider "kubernetes" {
-#   host  = "https://${module.tfc_agent_cluster.endpoint}"
-#   token = data.google_client_config.default.access_token
-#   cluster_ca_certificate = base64decode(
-#     module.tfc_agent_cluster.ca_certificate
-#   )
-# }
-
-provider "kubernetes" {
-  host = "https://connectgateway.googleapis.com/v1/projects/${var.project_number}/locations/global/gkeMemberships/${module.hub.cluster_membership_id}"
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "gke-gcloud-auth-plugin"
   }
 }
 

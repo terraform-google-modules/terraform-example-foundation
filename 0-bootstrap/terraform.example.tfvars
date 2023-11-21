@@ -109,6 +109,13 @@ default_region = "us-central1"
 #  }
 #  tfc_org_name = "REPLACE_ME"
 
+
+// Set this to true if you want to use Terraform Cloud Agents instead of Terraform Cloud remote runner
+// If true, a private Autopilot GKE cluster will be created in your GCP account to be used as Terraform Cloud Agents
+// More info about Agents on: https://developer.hashicorp.com/terraform/cloud-docs/agents
+
+# enable_tfc_cloud_agents = false
+
 //  to prevent saving the `tfc_token` in plain text in this file,
 //  export the Terraform Cloud token in the command line
 //  as an environment variable before running terraform.

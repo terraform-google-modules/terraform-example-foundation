@@ -96,6 +96,11 @@ locals {
       attribute = "*"
     }
   }
+
+  tfc_agent_pool = "${var.tfc_agent_pool_name}-${random_string.suffix.result}"
+
+  workspaces_execution_mode = var.enable_tfc_cloud_agents == true ? "agent" : "remote"
+  workspaces_agent_pool_id  = var.enable_tfc_cloud_agents == true ? tfe_agent_pool.tfc_agent_pool[0].id : ""
 }
 
 
@@ -109,19 +114,20 @@ resource "tfe_project" "main" {
 resource "tfe_workspace" "main" {
   for_each = local.tfc_workspace_map
 
-  organization      = local.tfc_org_name
-  name              = each.value.name
-  working_directory = each.value.working_directory
-  project_id        = tfe_project.main[each.value.project].id
+  organization        = local.tfc_org_name
+  name                = each.value.name
+  working_directory   = each.value.working_directory
+  project_id          = tfe_project.main[each.value.project].id
+  global_remote_state = true
+  terraform_version   = var.tfc_terraform_version
+  agent_pool_id       = local.workspaces_agent_pool_id
+  execution_mode      = local.workspaces_execution_mode
+
   vcs_repo {
     identifier     = local.tfc_projects[each.value.project].vcs_repo
     branch         = each.value.branch
     oauth_token_id = var.vcs_oauth_token_id
   }
-  global_remote_state = true
-  terraform_version   = var.tfc_terraform_version
-  agent_pool_id       = tfe_agent_pool.tfc_agent_pool.id
-  execution_mode      = "agent"
 }
 
 data "tfe_workspace" "main" {
@@ -259,13 +265,7 @@ module "tfc-oidc" {
   attribute_condition   = "assertion.sub.startsWith(\"organization:${local.tfc_org_name}:\")"
 }
 
-
 data "google_client_config" "default" {
-}
-
-locals {
-  tfc_agent_pool = "${var.tfc_agent_pool_name}-${random_string.suffix.result}"
-  network_name   = "tfc-gke-simple-${random_string.suffix.result}"
 }
 
 resource "random_string" "suffix" {
@@ -276,12 +276,16 @@ resource "random_string" "suffix" {
 
 # Create a new agent pool in organization
 resource "tfe_agent_pool" "tfc_agent_pool" {
+  count = var.enable_tfc_cloud_agents == true ? 1 : 0
+
   name         = local.tfc_agent_pool
   organization = local.tfc_org_name
 }
 
 # Create a new token for the agent pool
 resource "tfe_agent_token" "tfc_agent_token" {
+  count = var.enable_tfc_cloud_agents == true ? 1 : 0
+
   agent_pool_id = tfe_agent_pool.tfc_agent_pool.id
   description   = var.tfc_agent_pool_token_description
 }
@@ -289,14 +293,17 @@ resource "tfe_agent_token" "tfc_agent_token" {
 # Create the infrastructure for the agent to run
 module "tfc_agent_gke" {
   source = "./modules/tfc-agent-gke"
+  count  = var.enable_tfc_cloud_agents == true ? 1 : 0
 
-
-  create_network         = true
-  network_name           = local.network_name
-  subnet_name            = local.network_name
   project_id             = module.tfc_cicd.project_id
-  tfc_agent_token        = tfe_agent_token.tfc_agent_token.token
+  project_number         = module.tfc_cicd.project_number
+  tfc_agent_token        = tfe_agent_token.tfc_agent_token[0].token
   create_service_account = false
   service_account_email  = google_service_account.terraform-env-sa["bootstrap"].email
-  service_account_id  = google_service_account.terraform-env-sa["bootstrap"].id
+  service_account_id     = google_service_account.terraform-env-sa["bootstrap"].id
+
+  //If you are using Terraform Cloud Agents, un-comment this block after the first apply according README instructions
+  # providers = {
+  #   kubernetes = kubernetes
+  # }
 }

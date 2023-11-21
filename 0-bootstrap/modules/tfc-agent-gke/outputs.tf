@@ -20,13 +20,6 @@ output "kubernetes_endpoint" {
   value       = module.tfc_agent_cluster.endpoint
 }
 
-# output "client_token" {
-#   description = "The bearer token for auth"
-#   sensitive   = true
-#   value       = base64encode(data.google_client_config.default.access_token)
-# }
-
-
 output "service_account" {
   description = "The default service account used for TFC agent nodes"
   value       = module.tfc_agent_cluster.service_account
@@ -37,16 +30,7 @@ output "cluster_name" {
   value       = module.tfc_agent_cluster.name
 }
 
-# output "network_name" {
-#   description = "Name of the VPC"
-#   value       = local.network_name
-# }
-
-# output "subnet_name" {
-#   description = "Name of the subnet in the VPC"
-#   value       = module.network.subnets_names[0]
-
-# output "location" {
-#   description = "GKE cluster location"
-#   value       = module.tfc_agent_cluster.location
-# }
+output "hub_cluster_membership_id" {
+  value       = module.hub.cluster_membership_id
+  description = "The ID of the cluster membership"
+}

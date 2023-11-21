@@ -24,8 +24,9 @@ This example shows how to deploy a custom Terraform Cloud agent image with GKE.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| create\_network | When set to true, VPC will be auto created | `bool` | `true` | no |
+| autopilot\_gke\_io\_warden\_version | Autopilot GKE IO Warden Version | `string` | `"2.7.41"` | no |
 | create\_service\_account | Set to true to create a new service account, false to use an existing one | `bool` | `true` | no |
+| firewall\_enable\_logging | n/a | `bool` | `true` | no |
 | ip\_range\_pods\_cidr | The secondary IP range CIDR to use for pods | `string` | `"192.168.0.0/18"` | no |
 | ip\_range\_pods\_name | The secondary IP range to use for pods | `string` | `"ip-range-pods"` | no |
 | ip\_range\_services\_cider | The secondary IP range CIDR to use for services | `string` | `"192.168.64.0/18"` | no |
@@ -33,16 +34,23 @@ This example shows how to deploy a custom Terraform Cloud agent image with GKE.
 | machine\_type | Machine type for TFC agent node pool | `string` | `"n1-standard-4"` | no |
 | max\_node\_count | Maximum number of nodes in the TFC agent node pool | `number` | `4` | no |
 | min\_node\_count | Minimum number of nodes in the TFC agent node pool | `number` | `2` | no |
+| nat\_bgp\_asn | BGP ASN for NAT cloud routes. | `number` | `64514` | no |
+| nat\_enabled | n/a | `bool` | `true` | no |
+| nat\_num\_addresses | n/a | `number` | `2` | no |
 | network\_name | Name for the VPC network | `string` | `"tfc-agent-network"` | no |
 | network\_project\_id | The project ID of the shared VPCs host (for shared vpc support).<br>If not provided, the project\_id is used | `string` | `""` | no |
+| private\_service\_connect\_ip | n/a | `string` | `"10.10.64.5"` | no |
 | project\_id | The Google Cloud Platform project ID to deploy Terraform Cloud agent cluster | `string` | n/a | yes |
+| project\_number | The project number to host the cluster in | `any` | n/a | yes |
 | region | The GCP region to use when deploying resources | `string` | `"us-central1"` | no |
 | service\_account\_email | Optional Service Account for the GKE nodes, required if create\_service\_account is set to false | `string` | `""` | no |
+| service\_account\_id | Optional Service Account for the GKE nodes, required if create\_service\_account is set to false | `string` | `""` | no |
 | subnet\_ip | IP range for the subnet | `string` | `"10.0.0.0/17"` | no |
 | subnet\_name | Name for the subnet | `string` | `"tfc-agent-subnet"` | no |
 | tfc\_agent\_address | The HTTP or HTTPS address of the Terraform Cloud/Enterprise API | `string` | `"https://app.terraform.io"` | no |
 | tfc\_agent\_auto\_update | Controls automatic core updates behavior. Acceptable values include disabled, patch, and minor | `string` | `"minor"` | no |
 | tfc\_agent\_cpu\_request | CPU request for the Terraform Cloud agent container | `string` | `"2"` | no |
+| tfc\_agent\_ephemeral\_storage | A temporary storage for a container that gets wiped out and lost when the container is stopped or restarted | `string` | `"1Gi"` | no |
 | tfc\_agent\_image | The Terraform Cloud agent image to use | `string` | `"hashicorp/tfc-agent:latest"` | no |
 | tfc\_agent\_k8s\_secrets | Name for the k8s secret required to configure TFC agent on GKE | `string` | `"tfc-agent-k8s-secrets"` | no |
 | tfc\_agent\_max\_replicas | Maximum replicas for the Terraform Cloud agent pod autoscaler | `string` | `"10"` | no |
@@ -57,14 +65,10 @@ This example shows how to deploy a custom Terraform Cloud agent image with GKE.
 
 | Name | Description |
 |------|-------------|
-| ca\_certificate | The cluster CA certificate (base64 encoded) |
-| client\_token | The bearer token for auth |
 | cluster\_name | GKE cluster name |
+| hub\_cluster\_membership\_id | The ID of the cluster membership |
 | kubernetes\_endpoint | The GKE cluster endpoint |
-| location | GKE cluster location |
-| network\_name | Name of the VPC |
 | service\_account | The default service account used for TFC agent nodes |
-| subnet\_name | Name of the subnet in the VPC |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

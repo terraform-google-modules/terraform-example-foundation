@@ -68,10 +68,10 @@ variable "project_budget" {
   default = {}
 }
 
-variable "secrets_prj_suffix" {
-  description = "Name suffix to use for secrets project created."
+variable "kms_prj_suffix" {
+  description = "Name suffix to use for KMS project created."
   type        = string
-  default     = "env-secrets"
+  default     = "env-kms"
 }
 
 variable "location_kms" {

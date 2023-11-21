@@ -56,7 +56,7 @@ Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/READM
 
 ### [1. org](./1-org/)
 
-The purpose of this stage is to set up the common folder used to house projects that contain shared resources such as DNS Hub, Interconnect, Security Command Center notification, org level secrets, network hub and org level logging.
+The purpose of this stage is to set up the common folder used to house projects that contain shared resources such as DNS Hub, Interconnect, Security Command Center notification, Cloud Key Management Service (KMS), org level secrets, network hub and org level logging.
 This will create the following folder and project structure:
 
 ```
@@ -69,6 +69,7 @@ example-organization
     ├── prj-c-interconnect
     ├── prj-c-restricted-net-hub
     ├── prj-c-scc
+    ├── prj-c-kms
     └── prj-c-secrets
 ```
 
@@ -98,6 +99,12 @@ Another project created under the common folder. This project will host the Secu
 This project will contain a Pub/Sub topic, a Pub/Sub subscription, and a [Security Command Center notification](https://cloud.google.com/security-command-center/docs/how-to-notifications) configured to send all new findings to the created topic.
 You can adjust the filter when deploying this step.
 
+#### KMS
+
+Another project created under the common folder. This project is allocated for [Cloud Key Management](https://cloud.google.com/security-key-management) for KMS resources shared by the organization.
+
+Usage instructions are available for the org step in the [README](./1-org/README.md).
+
 #### Secrets
 
 Another project created under the common folder. This project is allocated for [Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the organization.
@@ -113,16 +120,19 @@ This will create the following folder and project structure:
 example-organization
 └── fldr-development
     ├── prj-d-monitoring
+    ├── prj-d-kms
     ├── prj-d-secrets
     ├── prj-d-shared-base
     └── prj-d-shared-restricted
 └── fldr-non-production
     ├── prj-n-monitoring
+    ├── prj-n-kms
     ├── prj-n-secrets
     ├── prj-n-shared-base
     └── prj-n-shared-restricted
 └── fldr-production
     ├── prj-p-monitoring
+    ├── prj-p-kms
     ├── prj-p-secrets
     ├── prj-p-shared-base
     └── prj-p-shared-restricted
@@ -138,6 +148,12 @@ If you have strong IAM requirements for these monitoring workspaces, it is worth
 
 Under the environment folder, two projects, one for base and another for restricted network, are created per environment (`development`, `non-production`, and `production`) which is intended to be used as a [Shared VPC host project](https://cloud.google.com/vpc/docs/shared-vpc) for all projects in that environment.
 This stage only creates the projects and enables the correct APIs, the following networks stages, [3-networks-dual-svpc](./3-networks-dual-svpc/) and [3-networks-hub-and-spoke](./3-networks-hub-and-spoke/), create the actual Shared VPC networks.
+
+#### KMS
+
+Under the environment folder, a project is created per environment (`development`, `non-production`, and `production`), which is intended to be used by [Cloud Key Management](https://cloud.google.com/security-key-management) for KMS resources shared by the environment.
+
+Usage instructions are available for the environments step in the [README](./2-environments/README.md).
 
 #### Secrets
 
@@ -176,34 +192,34 @@ Running this code as-is should generate a structure as shown below:
 ```
 example-organization/
 └── fldr-development
-    ├── prj-bu1-d-env-secrets
+    ├── prj-bu1-d-env-kms
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
     ├── prj-bu1-d-sample-peering
-    ├── prj-bu2-d-env-secrets
+    ├── prj-bu2-d-env-kms
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
     ├── prj-bu2-d-sample-restrict
     └── prj-bu2-d-sample-peering
 └── fldr-non-production
-    ├── prj-bu1-n-env-secrets
+    ├── prj-bu1-n-env-kms
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
     ├── prj-bu1-n-sample-peering
-    ├── prj-bu2-n-env-secrets
+    ├── prj-bu2-n-env-kms
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
     ├── prj-bu2-n-sample-restrict
     └── prj-bu2-n-sample-peering
 └── fldr-production
-    ├── prj-bu1-p-env-secrets
+    ├── prj-bu1-p-env-kms
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
     ├── prj-bu1-p-sample-peering
-    ├── prj-bu2-p-env-secrets
+    ├── prj-bu2-p-env-kms
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
     ├── prj-bu2-p-sample-restrict
@@ -243,12 +259,12 @@ example-organization
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
 └── fldr-development
-    ├── prj-bu1-d-env-secrets
+    ├── prj-bu1-d-env-kms
     ├── prj-bu1-d-sample-floating
     ├── prj-bu1-d-sample-base
     ├── prj-bu1-d-sample-restrict
     ├── prj-bu1-d-sample-peering
-    ├── prj-bu2-d-env-secrets
+    ├── prj-bu2-d-env-kms
     ├── prj-bu2-d-sample-floating
     ├── prj-bu2-d-sample-base
     ├── prj-bu2-d-sample-restrict
@@ -258,12 +274,12 @@ example-organization
     ├── prj-d-shared-base
     └── prj-d-shared-restricted
 └── fldr-non-production
-    ├── prj-bu1-n-env-secrets
+    ├── prj-bu1-n-env-kms
     ├── prj-bu1-n-sample-floating
     ├── prj-bu1-n-sample-base
     ├── prj-bu1-n-sample-restrict
     ├── prj-bu1-n-sample-peering
-    ├── prj-bu2-n-env-secrets
+    ├── prj-bu2-n-env-kms
     ├── prj-bu2-n-sample-floating
     ├── prj-bu2-n-sample-base
     ├── prj-bu2-n-sample-restrict
@@ -273,12 +289,12 @@ example-organization
     ├── prj-n-shared-base
     └── prj-n-shared-restricted
 └── fldr-production
-    ├── prj-bu1-p-env-secrets
+    ├── prj-bu1-p-env-kms
     ├── prj-bu1-p-sample-floating
     ├── prj-bu1-p-sample-base
     ├── prj-bu1-p-sample-restrict
     ├── prj-bu1-p-sample-peering
-    ├── prj-bu2-p-env-secrets
+    ├── prj-bu2-p-env-kms
     ├── prj-bu2-p-sample-floating
     ├── prj-bu2-p-sample-base
     ├── prj-bu2-p-sample-restrict

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-module "env_secrets_project" {
+module "env_kms_project" {
   source = "../single_project"
 
   org_id          = local.org_id
@@ -22,7 +22,7 @@ module "env_secrets_project" {
   folder_id       = local.env_folder_name
   environment     = var.env
   project_budget  = var.project_budget
-  project_suffix  = var.secrets_prj_suffix
+  project_suffix  = var.kms_prj_suffix
   project_prefix  = local.project_prefix
 
   activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
@@ -43,7 +43,7 @@ module "kms" {
   source  = "terraform-google-modules/kms/google"
   version = "~> 2.1"
 
-  project_id          = module.env_secrets_project.project_id
+  project_id          = module.env_kms_project.project_id
   keyring             = var.keyring_name
   location            = var.location_kms
   keys                = [var.key_name]

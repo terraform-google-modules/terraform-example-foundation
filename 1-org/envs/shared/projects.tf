@@ -82,6 +82,38 @@ module "org_billing_logs" {
 }
 
 /******************************************
+  Project for Org-wide KMS
+*****************************************/
+
+module "org_kms" {
+  source  = "terraform-google-modules/project-factory/google"
+  version = "~> 14.0"
+
+  random_project_id        = true
+  random_project_id_length = 4
+  default_service_account  = "deprivilege"
+  name                     = "${local.project_prefix}-c-kms"
+  org_id                   = local.org_id
+  billing_account          = local.billing_account
+  folder_id                = google_folder.common.id
+  activate_apis            = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
+
+  labels = {
+    environment       = "production"
+    application_name  = "org-kms"
+    billing_code      = "1234"
+    primary_contact   = "example1"
+    secondary_contact = "example2"
+    business_code     = "abcd"
+    env_code          = "p"
+  }
+
+  budget_alert_pubsub_topic   = var.project_budget.org_kms_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.org_kms_alert_spent_percents
+  budget_amount               = var.project_budget.org_kms_budget_amount
+}
+
+/******************************************
   Project for Org-wide Secrets
 *****************************************/
 

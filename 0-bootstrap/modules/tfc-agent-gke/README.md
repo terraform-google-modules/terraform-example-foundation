@@ -1,23 +1,15 @@
 # Self Hosted Terraform Cloud agent on GKE
 
-This module handles the opinionated creation of infrastructure necessary to deploy Terraform Cloud agents on Google Kubernetes Engine (GKE).
+This module handles the opinionated creation of infrastructure necessary to deploy Terraform Cloud agents on a private autopilot Google Kubernetes Engine (GKE).
 
 This includes:
 
-- Enabling necessary APIs
 - VPC
-- GKE Cluster
+- GKE Private Cluster with Autopilot
 - Kubernetes Secret
-
-Below are some examples:
-
-## [Simple Terraform Cloud agents on GKE](../../examples/tfc-agent-gke-simple/README.md)
-
-This example shows how to deploy a simple GKE self hosted Terraform Cloud agent.
-
-## [Custom Terraform Cloud agents on GKE](../../examples/tfc-agent-gke-custom/README.md)
-
-This example shows how to deploy a custom Terraform Cloud agent image with GKE.
+- Kubernetes Deployment
+- Kubernetes Fleet Hub
+- Private Service Connect
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

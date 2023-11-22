@@ -1,30 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
-    ":semanticCommits",
-    ":preserveSemverRanges"
-  ],
-  "stabilityDays":7,
-  "ignorePaths": [],
-  "labels": ["dependencies"],
-    "vulnerabilityAlerts":{
-     "labels":[
-       "type:security"
-     ],
-     "stabilityDays":0
-  },
-  "packageRules": [
-    {
-      "matchDepTypes": ["require"],
-      "groupName": "GO modules",
-      "postUpdateOptions": ["gomodTidy"],
-      "separateMajorMinor":false
-    },
-    {
-      "matchPackageNames": ["go"],
-      "allowedVersions": "<1.19.0",
-      "postUpdateOptions": ["gomodTidy"]
-    }
-  ]
+  "extends": ["github>GoogleCloudPlatform/cloud-foundation-toolkit//infra/terraform/test-org/github/resources/renovate"]
 }

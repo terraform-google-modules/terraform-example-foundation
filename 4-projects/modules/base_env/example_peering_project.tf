@@ -173,7 +173,6 @@ module "firewall_rules" {
         enable_logging = var.firewall_enable_logging
         match = {
           dest_ip_ranges  = ["35.190.247.13/32"]
-          src_secure_tags = ["allow-win-activation"]
           layer4_configs = [
             {
               ip_protocol = "tcp"
@@ -193,7 +192,6 @@ module "firewall_rules" {
         enable_logging = var.firewall_enable_logging
         match = {
           src_ip_ranges   = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
-          src_secure_tags = ["allow-lb"]
           layer4_configs = [
             {
               // Allow common app ports by default.

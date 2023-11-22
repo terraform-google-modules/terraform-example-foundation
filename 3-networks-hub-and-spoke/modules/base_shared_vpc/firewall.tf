@@ -52,7 +52,6 @@ module "firewall_rules" {
         enable_logging = var.firewall_enable_logging
         match = {
           dest_ip_ranges  = [local.private_googleapis_cidr]
-          src_secure_tags = ["allow-google-apis"]
           layer4_configs = [
             {
               ip_protocol = "tcp"

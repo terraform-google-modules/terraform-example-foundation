@@ -158,12 +158,12 @@ variable "restricted_services" {
   description = "List of services to restrict."
 }
 
-variable "allow_all_egress_ranges" {
+variable "allow_egress_internal_ranges" {
   description = "List of network ranges to which all egress traffic will be allowed"
   default     = null
 }
 
-variable "allow_all_ingress_ranges" {
+variable "allow_ingress_internal_ranges" {
   description = "List of network ranges from which all ingress traffic will be allowed"
   default     = null
 }

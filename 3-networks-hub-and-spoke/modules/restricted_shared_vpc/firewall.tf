@@ -63,7 +63,7 @@ module "firewall_rules" {
         }
       }
     ],
-    !var.allow_all_egress_ranges ? [] : [
+    !var.allow_egress_internal_ranges ? [] : [
       {
         priority       = "1000"
         direction      = "EGRESS"
@@ -72,7 +72,7 @@ module "firewall_rules" {
         description    = "Allow all egress to the provided IP range."
         enable_logging = var.firewall_enable_logging
         match = {
-          dest_ip_ranges = var.allow_all_egress_ranges
+          dest_ip_ranges = var.allow_egress_internal_ranges
           layer4_configs = [
             {
               ip_protocol = "all"
@@ -81,7 +81,7 @@ module "firewall_rules" {
         }
       }
     ],
-    !var.allow_all_ingress_ranges ? [] : [
+    !var.allow_ingress_internal_ranges ? [] : [
       {
         priority       = "1001"
         direction      = "INGRESS"
@@ -90,7 +90,7 @@ module "firewall_rules" {
         description    = "Allow all ingress to the provided IP range."
         enable_logging = var.firewall_enable_logging
         match = {
-          src_ip_ranges = var.allow_all_ingress_ranges
+          src_ip_ranges = var.allow_ingress_internal_ranges
           layer4_configs = [
             {
               ip_protocol = "all"

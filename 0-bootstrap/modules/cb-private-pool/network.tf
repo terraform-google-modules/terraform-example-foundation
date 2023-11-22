@@ -20,7 +20,7 @@ locals {
 
 module "peered_network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 7.0"
+  version = "~> 7.3"
   count   = var.private_worker_pool.create_peered_network ? 1 : 0
 
   project_id                             = var.project_id

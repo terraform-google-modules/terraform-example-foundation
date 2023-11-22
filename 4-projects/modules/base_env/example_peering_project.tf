@@ -74,7 +74,7 @@ module "peering_project" {
 
 module "peering_network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 7.0"
+  version = "~> 7.3"
 
   project_id                             = module.peering_project.project_id
   network_name                           = "vpc-${local.env_code}-peering-base"

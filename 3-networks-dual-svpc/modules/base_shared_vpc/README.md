@@ -3,8 +3,8 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| allow\_all\_egress\_ranges | List of network ranges to which all egress traffic will be allowed | `any` | `null` | no |
-| allow\_all\_ingress\_ranges | List of network ranges from which all ingress traffic will be allowed | `any` | `null` | no |
+| allow\_egress\_internal\_ranges | List of network ranges to which all egress traffic will be allowed | `any` | `null` | no |
+| allow\_ingress\_internal\_ranges | List of network ranges from which all ingress traffic will be allowed | `any` | `null` | no |
 | bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | `number` | n/a | yes |
 | default\_region1 | Default region 1 for subnets and Cloud Routers | `string` | n/a | yes |
 | default\_region2 | Default region 2 for subnets and Cloud Routers | `string` | n/a | yes |

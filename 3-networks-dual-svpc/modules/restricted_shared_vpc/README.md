@@ -4,8 +4,8 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`. | `number` | n/a | yes |
-| allow\_all\_egress\_ranges | List of network ranges to which all egress traffic will be allowed | `any` | `null` | no |
-| allow\_all\_ingress\_ranges | List of network ranges from which all ingress traffic will be allowed | `any` | `null` | no |
+| allow\_egress\_internal\_ranges | List of network ranges to which all egress traffic will be allowed | `any` | `null` | no |
+| allow\_ingress\_internal\_ranges | List of network ranges from which all ingress traffic will be allowed | `any` | `null` | no |
 | bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | `number` | n/a | yes |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | `string` | n/a | yes |
 | default\_region2 | Second subnet region. The shared vpc modules only configures two regions. | `string` | n/a | yes |

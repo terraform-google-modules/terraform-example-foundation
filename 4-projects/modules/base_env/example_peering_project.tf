@@ -153,7 +153,7 @@ module "firewall_rules" {
         description    = "Lower priority rule to allow private google apis on TCP port 443."
         enable_logging = var.firewall_enable_logging
         match = {
-          dest_ip_ranges  = ["199.36.153.8/30"]
+          dest_ip_ranges = ["199.36.153.8/30"]
           layer4_configs = [
             {
               ip_protocol = "tcp"
@@ -172,7 +172,7 @@ module "firewall_rules" {
         description    = "Allow access to kms.windows.googlecloud.com for Windows license activation."
         enable_logging = var.firewall_enable_logging
         match = {
-          dest_ip_ranges  = ["35.190.247.13/32"]
+          dest_ip_ranges = ["35.190.247.13/32"]
           layer4_configs = [
             {
               ip_protocol = "tcp"
@@ -191,7 +191,7 @@ module "firewall_rules" {
         description    = "Allow traffic for Internal & Global load balancing health check and load balancing IP ranges."
         enable_logging = var.firewall_enable_logging
         match = {
-          src_ip_ranges   = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
+          src_ip_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
           layer4_configs = [
             {
               // Allow common app ports by default.

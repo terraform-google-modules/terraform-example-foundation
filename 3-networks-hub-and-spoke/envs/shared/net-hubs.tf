@@ -225,6 +225,7 @@ module "restricted_shared_vpc" {
     "serviceAccount:${local.networks_service_account}",
     "serviceAccount:${local.projects_service_account}",
     "serviceAccount:${local.organization_service_account}",
+    "serviceAccount:${local.environment_service_account}",
   ], var.perimeter_additional_members))
   bgp_asn_subnet                = local.bgp_asn_number
   default_region1               = local.default_region1

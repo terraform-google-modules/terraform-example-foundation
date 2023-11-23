@@ -42,6 +42,7 @@ locals {
   organization_service_account      = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
   networks_service_account          = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
   projects_service_account          = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+  environment_service_account       = data.terraform_remote_state.bootstrap.outputs.environment_step_terraform_service_account_email
 
   dedicated_interconnect_egress_policy = var.enable_dedicated_interconnect ? [
     {

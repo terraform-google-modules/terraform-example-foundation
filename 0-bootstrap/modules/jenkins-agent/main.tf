@@ -105,27 +105,43 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 }
 
 /******************************************
-  Jenkins Agent GCE Network and Firewall rules
+  Jenkins Agent GCE Network, Resource Manager Tags and Firewall rules
 *******************************************/
+resource "google_tags_tag_key" "jenkins_agents" {
+  description = "Tag Key to control the connection between Jenkins Controller (Client) and the Jenkins Agents (Servers) using SSH."
+  parent      = "organizations/${var.org_id}"
+  purpose     = "GCE_FIREWALL"
+  short_name  = "ssh-jenkins-agent"
+  purpose_data = {
+    network = "${module.cicd_project.project_id}/${google_compute_network.jenkins_agents.name}"
+  }
+}
+
+resource "google_tags_tag_value" "jenkins_agents" {
+  description = "Allow the connection."
+  parent      = "tagKeys/${google_tags_tag_key.basic_key.name}"
+  short_name  = "allow"
+}
+
 module "jenkins_firewall_rules" {
   source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
   version     = "~> 8.0"
-  project_id  = var.project_id
+  project_id  = module.cicd_project.project_id
   policy_name = "fp-${google_compute_network.jenkins_agents.name}-jenkins-firewall"
   description = "Jenkins Agent GCE network firewall rules."
   target_vpcs = [google_compute_network.jenkins_agents.name]
 
   rules = [
     {
-      priority       = "1000"
-      direction      = "INGRESS"
-      action         = "allow"
-      rule_name      = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
-      description    = "Allow the Jenkins Controller (Client) to connect to the Jenkins Agents (Servers) using SSH."
-      enable_logging = true
+      priority           = "1000"
+      direction          = "INGRESS"
+      action             = "allow"
+      rule_name          = "fw-${google_compute_network.jenkins_agents.name}-1000-i-a-all-all-tcp-22"
+      description        = "Allow the Jenkins Controller (Client) to connect to the Jenkins Agents (Servers) using SSH."
+      enable_logging     = true
+      target_secure_tags = ["tagValues/${google_tags_tag_value.jenkins_agents.name}"]
       match = {
-        dest_ip_ranges  = var.jenkins_controller_subnetwork_cidr_range
-        src_secure_tags = local.jenkins_gce_fw_tags
+        dest_ip_ranges = var.jenkins_controller_subnetwork_cidr_range
         layer4_configs = [
           {
             ip_protocol = "tcp"

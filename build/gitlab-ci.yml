@@ -19,8 +19,8 @@ stages:
 
 build-image:
   stage: build
-  tags:
-    - gl_runner
+  # tags:
+  #   - gl_runner
   image:
     name: docker:stable
   services:
@@ -50,8 +50,8 @@ image:
 
 terraform-plan:
   stage: validate
-  tags:
-    - gl_runner
+  # tags:
+  #   - gl_runner
   id_tokens:
     GITLAB_OIDC_TOKEN:
       aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
@@ -64,8 +64,8 @@ terraform-plan:
 
 terraform-plan:
   stage: validate
-  tags:
-    - gl_runner
+  # tags:
+  #   - gl_runner
   id_tokens:
     GITLAB_OIDC_TOKEN:
       aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
@@ -82,8 +82,8 @@ terraform-plan:
 
 terraform-apply:
   stage: apply
-  tags:
-    - gl_runner
+  # tags:
+  #   - gl_runner
   id_tokens:
     GITLAB_OIDC_TOKEN:
       aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"

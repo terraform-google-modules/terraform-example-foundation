@@ -493,7 +493,7 @@ Only Personal Access Token under GitLab Account/Group should exist.
 
 **Solution:**
 
-Remove any Access Token from the GitLab repositories used by Google Secure Foundation Blueprint. 
+Remove any Access Token from the GitLab repositories used by Google Secure Foundation Blueprint.
 
 
 #########
@@ -509,7 +509,7 @@ Error response from daemon: pull access denied for registry.gitlab.com/<YOUR-GIT
 
 **Cause:**
 
-This message means that you GitLab CICD repository may have `Limit access to this project` option enabled. 
+This message means that you GitLab CICD repository may have `Limit access to this project` option enabled.
 
 **Solution:**
 

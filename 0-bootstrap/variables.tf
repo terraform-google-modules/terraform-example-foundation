@@ -251,68 +251,33 @@ variable "initial_group_config" {
    ---------------------------------------- */
 
 # Un-comment gitlab_bootstrap and its outputs if you want to use GitLab Pipelines instead of Cloud Build
-# variable "gl_repos" {
-#   description = <<EOT
-#   Configuration for the GitLab Repositories to be used to deploy the Terraform Example Foundation stages.
-#   owner: The owner of the repositories. An user or a group.
-#   bootstrap: The repository to host the code of the bootstrap stage.
-#   organization: The repository to host the code of the organization stage.
-#   environments: The repository to host the code of the environments stage.
-#   networks: The repository to host the code of the networks stage.
-#   projects: The repository to host the code of the projects stage.
-#   EOT
-#   type = object({
-#     owner        = string,
-#     bootstrap    = string,
-#     organization = string,
-#     environments = string,
-#     networks     = string,
-#     projects     = string,
-#   })
-# }
+variable "gl_repos" {
+  description = <<EOT
+  Configuration for the GitLab Repositories to be used to deploy the Terraform Example Foundation stages.
+  owner: The owner of the repositories. An user or a group.
+  bootstrap: The repository to host the code of the bootstrap stage.
+  organization: The repository to host the code of the organization stage.
+  environments: The repository to host the code of the environments stage.
+  networks: The repository to host the code of the networks stage.
+  projects: The repository to host the code of the projects stage.
+  EOT
+  type = object({
+    owner        = string,
+    bootstrap    = string,
+    organization = string,
+    environments = string,
+    networks     = string,
+    projects     = string,
+  })
+}
 
-# variable "gitlab_token" {
-#   description = <<EOT
-#   A GitLab personal access token or group access token.
-#   See:
-#       https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html
-#       https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
-#   EOT
-#   type        = string
-#   sensitive   = true
-# }
-
-# variable "repo_owner" {
-#   description = "The owner of Gitlab repository."
-#   type        = string
-# }
-
-# variable "network_name" {
-#   type        = string
-#   description = "Name for the VPC network"
-#   default     = "gl-runner-network"
-# }
-
-# variable "create_network" {
-#   type        = bool
-#   description = "When set to true, VPC,router and NAT will be auto created"
-#   default     = true
-# }
-
-# variable "subnetwork_project" {
-#   type        = string
-#   description = "The ID of the project in which the subnetwork belongs. If it is not provided, the project_id is used."
-#   default     = ""
-# }
-
-# variable "subnet_ip" {
-#   type        = string
-#   description = "IP range for the subnet"
-#   default     = "10.10.10.0/24"
-# }
-
-# variable "subnet_name" {
-#   type        = string
-#   description = "Name for the subnet"
-#   default     = "gl-runner-subnet"
-# }
+variable "gitlab_token" {
+  description = <<EOT
+  A GitLab personal access token or group access token.
+  See:
+      https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html
+      https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
+  EOT
+  type        = string
+  sensitive   = true
+}

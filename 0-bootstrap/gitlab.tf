@@ -125,11 +125,3 @@ module "cicd_project_wif_iam_member" {
   parent_id   = local.cicd_project_id
   roles       = each.value
 }
-
-module "gitlab_runner" {
-  source = "./modules/gitlab-runner"
-
-  project_id = local.cicd_project_id
-  #service_account = google_service_account.terraform-env-sa["bootstrap"].email
-}
-

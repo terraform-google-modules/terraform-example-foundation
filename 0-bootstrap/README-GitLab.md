@@ -19,7 +19,7 @@ To run the instructions described in this document, install the following:
 Also make sure that you have the following:
 
 - A [GitLab](https://docs.gitlab.com/ee/user/profile/account/create_accounts.html) account for your User or Group.
-- A private GitLab project (repository) for each one of the stages of Foundation and one for the GutLab runner Image:
+- A private GitLab project (repository) for each one of the stages of Foundation and one for the GitLab runner Image:
     - Bootstrap
     - Organization
     - Environments
@@ -60,6 +60,55 @@ that are created, see the organization bootstrap module
    git clone https://github.com/terraform-google-modules/terraform-example-foundation.git
    ```
 
+### Build CI/CD runner image
+
+1. Clone the private project you created to host the docker configuration for the CI/CD runner at the same level of the `terraform-example-foundation` folder.
+You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured with GitLab.
+
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-RUNNER-REPO>.git gcp-cicd-runner
+   ```
+
+1. The layout should be:
+
+   ```bash
+   gcp-cicd-runner/
+   terraform-example-foundation/
+   ```
+
+
+1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-cicd-runner` directory.
+   If you run them from another directory, adjust your copy paths accordingly.
+
+   ```bash
+   cd gcp-cicd-runner
+   ```
+
+1. Create a new branch called `image` which will contains the Docker image using in the Gitlab Pipelines.
+
+   ```bash
+   git checkout -b image
+   ```
+
+1. Copy contents of foundation to cloned project (modify accordingly based on your current directory).
+
+   ```bash
+   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/0-bootstrap/Dockerfile ./Dockerfile
+   ```
+
+1. Save the CI/CD runner configuration to `gcp-cicd-runner` GitLab project:
+
+   ```bash
+   git add .
+   git commit -m 'Initialize CI/CD runner project'
+   git push --set-upstream origin image
+   ```
+
+1. Review the CI/CD Job output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-RUNNER-REPO/-/jobs under name `build-image`.
+
+1. If the CI/CD Job is successful proceed with the next steps.
+
 ### Deploying step 0-bootstrap
 
 1. Clone the private project you created to host the `0-bootstrap` terraform configuration at the same level of the `terraform-example-foundation` folder.
@@ -73,6 +122,7 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
 
    ```bash
    gcp-bootstrap/
+   gcp-cicd-runner/
    terraform-example-foundation/
    ```
 
@@ -137,7 +187,7 @@ export the GitLab personal or group access token as an environment variable:
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
    ```bash
-   ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+   ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL> -e
    ```
 
    **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
@@ -218,74 +268,7 @@ export the GitLab personal or group access token as an environment variable:
    git push --set-upstream origin plan
    ```
 
-### Build CI/CD runner image
-
-1. Clone the private project you created to host the docker configuration for the CI/CD runner at the same level of the `terraform-example-foundation` folder.
-You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured with GitLab.
-
-   ```bash
-   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-RUNNER-REPO>.git gcp-cicd-runner
-   ```
-
-1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-cicd-runner` directory.
-   If you run them from another directory, adjust your copy paths accordingly.
-
-   ```bash
-   cd gcp-cicd-runner
-   ```
-
-1. Create a new branch called `image` which will contains the Docker image using in the Gitlab Pipelines.
-
-   ```bash
-   git checkout -b image
-   ```
-
-1. Copy contents of foundation to cloned project (modify accordingly based on your current directory).
-
-   ```bash
-   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
-   cp ../terraform-example-foundation/0-bootstrap/Dockerfile ./Dockerfile
-   ```
-1. Create a runner for your GitLab CICD Repository in [Settings -> CICD -> Runners](https://gitlab.com/GITLAB-ACCOUNT/BOOTSTRAP-REPOSITORY/-/settings/ci_cd) called `gl_runner` and also set the tag name for `gl_runner`.
-
-1. To execute the next step, you need to allow the SSH access for your Gitlab instance created in the CICD Project from 0-bootstrap step running the command below:
-
-```bash
-gcloud compute firewall-rules create allow-ssh --allow tcp:22 --network gl-runner-network --project <cicd_project_id>
-```
-
-1. Once you have access to your GitLab runner instance, you need to register your runner in the GitLab using the command below. Remember to change the token `glrt-xxx` for the token generated in the GitLab interface.
-
-```bash
-sudo gitlab-runner register --non-interactive --url https://gitlab.com --name gl_runner --executor docker --docker-image docker:dind --docker-privileged=true --token glrt-xxx
-```
-
-1. Edit the `./.gitlab-ci.yml` file and update the paramenter the following line:
-
-```bash
-image:
-  name: registry.gitlab.com/GITLAB-ACCOUNT/UPDATE_ME/terraform-gcloud:latest
-```
-
-To:
-
-```bash
-image:
-  name: registry.gitlab.com/GITLAB-ACCOUNT/GITLAB-IMAGE_REPOSITORY/terraform-gcloud:latest
-```
-
-1. Save the CI/CD runner configuration to `gcp-cicd-runner` GitLab project:
-
-   ```bash
-   git add .
-   git commit -m 'Initialize CI/CD runner project'
-   git push --set-upstream origin image
-   ```
-
-1. Review the CI/CD Job output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-RUNNER-REPO/-/jobs under name `build-image`.
-
-1. If the CI/CD Job is successful proceed with the next steps.
-
+===============================================
 1. Copy the file `gitlab-ci.yml` to the 0-bootstrap directory.
 
 ```bash

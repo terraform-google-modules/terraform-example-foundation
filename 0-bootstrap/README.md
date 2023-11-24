@@ -282,7 +282,6 @@ Each step has instructions for this change.
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
 | bucket\_force\_destroy | When deleting a bucket, this boolean option will delete all contained objects. If false, Terraform will fail to delete buckets which contain objects. | `bool` | `false` | no |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
-| create\_network | When set to true, VPC,router and NAT will be auto created | `bool` | `true` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | gitlab\_token | A GitLab personal access token or group access token.<br>  See:<br>      https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html<br>      https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html | `string` | n/a | yes |
@@ -291,16 +290,11 @@ Each step has instructions for this change.
 | group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
 | groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_groups   = bool<br>    billing_project = string<br>    required_groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = string<br>      audit_data_users           = string<br>      monitoring_workspace_users = string<br>    })<br>    optional_groups = object({<br>      gcp_platform_viewer      = string<br>      gcp_security_reviewer    = string<br>      gcp_network_viewer       = string<br>      gcp_scc_admin            = string<br>      gcp_global_secrets_admin = string<br>      gcp_audit_viewer         = string<br>    })<br>  })</pre> | <pre>{<br>  "billing_project": "",<br>  "create_groups": false,<br>  "optional_groups": {<br>    "gcp_audit_viewer": "",<br>    "gcp_global_secrets_admin": "",<br>    "gcp_network_viewer": "",<br>    "gcp_platform_viewer": "",<br>    "gcp_scc_admin": "",<br>    "gcp_security_reviewer": ""<br>  },<br>  "required_groups": {<br>    "audit_data_users": "",<br>    "billing_data_users": "",<br>    "group_billing_admins": "",<br>    "group_org_admins": "",<br>    "monitoring_workspace_users": ""<br>  }<br>}</pre> | no |
 | initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
-| network\_name | Name for the VPC network | `string` | `"gl-runner-network"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. | `string` | `""` | no |
 | project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
-| repo\_owner | The owner of Gitlab repository. | `string` | n/a | yes |
-| subnet\_ip | IP range for the subnet | `string` | `"10.10.10.0/24"` | no |
-| subnet\_name | Name for the subnet | `string` | `"gl-runner-subnet"` | no |
-| subnetwork\_project | The ID of the project in which the subnetwork belongs. If it is not provided, the project\_id is used. | `string` | n/a | yes |
 
 ## Outputs
 

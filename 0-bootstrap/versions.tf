@@ -24,10 +24,10 @@ terraform {
     }
 
     // Un-comment gitlab required_providers when using gitlab CI/CD
-    # gitlab = {
-    #   source  = "gitlabhq/gitlab"
-    #   version = "16.3.0"
-    # }
+    gitlab = {
+      source  = "gitlabhq/gitlab"
+      version = "16.6.0"
+    }
   }
 
   provider_meta "google" {

@@ -18,7 +18,6 @@ locals {
   cicd_project_name           = format("%s-%s", var.project_prefix, "b-cicd")
   impersonation_enabled_count = var.sa_enable_impersonation ? 1 : 0
   activate_apis               = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
-  jenkins_gce_fw_tags         = ["ssh-jenkins-agent"]
 }
 
 resource "random_id" "suffix" {
@@ -70,7 +69,11 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
   machine_type = var.jenkins_agent_gce_machine_type
   zone         = "${var.default_region}-a"
 
-  tags = local.jenkins_gce_fw_tags
+  params {
+    resource_manager_tags = {
+      "tagKeys/${google_tags_tag_key.jenkins_agents.name}" = "tagValues/${google_tags_tag_value.jenkins_agents.name}"
+    }
+  }
 
   boot_disk {
     initialize_params {

@@ -114,14 +114,14 @@ module "peering" {
 }
 
 /******************************************
-  Mandatory and Optional firewall rules
+  Mandatory and optional firewall rules
  *****************************************/
 module "firewall_rules" {
   source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
   version     = "~> 8.0"
   project_id  = module.peering_project.project_id
   policy_name = "fp-${local.env_code}-peering-project-firewalls"
-  description = "Mandatory and optional firewall rules Peering Network Project."
+  description = "Firewall rules for Peering Network: ${module.peering_network.network_name}."
   target_vpcs = [module.peering_network.network_name]
 
   rules = concat(

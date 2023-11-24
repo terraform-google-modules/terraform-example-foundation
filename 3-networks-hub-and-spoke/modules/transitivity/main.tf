@@ -20,7 +20,7 @@
 
 locals {
   stripped_vpc_name = replace(var.vpc_name, "vpc-", "")
-  routes = flatten([for region, ranges in var.regional_aggregates : [for range in ranges : { region = region, range = range }]])
+  routes            = flatten([for region, ranges in var.regional_aggregates : [for range in ranges : { region = region, range = range }]])
 }
 
 module "service_account" {

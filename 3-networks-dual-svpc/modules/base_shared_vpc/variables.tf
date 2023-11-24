@@ -120,12 +120,8 @@ variable "windows_activation_enabled" {
   default     = false
 }
 
-variable "allow_egress_internal_ranges" {
-  description = "List of network ranges to which all egress traffic will be allowed"
-  default     = null
-}
-
-variable "allow_ingress_internal_ranges" {
-  description = "List of network ranges from which all ingress traffic will be allowed"
-  default     = null
+variable "enable_all_vpc_internal_traffic" {
+  type        = bool
+  description = "Enable firewall policy rule to allow internal traffic (ingress and egress)."
+  default     = false
 }

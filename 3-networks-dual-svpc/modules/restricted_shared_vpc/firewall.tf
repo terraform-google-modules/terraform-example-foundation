@@ -45,10 +45,10 @@ module "firewall_rules" {
         }
       },
       {
-        priority       = "65430"
+        priority       = "10000"
         direction      = "EGRESS"
         action         = "allow"
-        rule_name      = "fw-${var.environment_code}-shared-restricted-65430-e-a-allow-google-apis-all-tcp-443"
+        rule_name      = "fw-${var.environment_code}-shared-restricted-10000-e-a-allow-google-apis-all-tcp-443"
         description    = "Lower priority rule to allow restricted google apis on TCP port 443."
         enable_logging = var.firewall_enable_logging
         match = {

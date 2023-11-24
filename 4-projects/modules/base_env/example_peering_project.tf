@@ -146,10 +146,10 @@ module "firewall_rules" {
         }
       },
       {
-        priority       = "65430"
+        priority       = "10000"
         direction      = "EGRESS"
         action         = "allow"
-        rule_name      = "fw-${local.env_code}-peering-base-65430-e-a-allow-google-apis-all-tcp-443"
+        rule_name      = "fw-${local.env_code}-peering-base-10000-e-a-allow-google-apis-all-tcp-443"
         description    = "Lower priority rule to allow private google apis on TCP port 443."
         enable_logging = var.firewall_enable_logging
         match = {

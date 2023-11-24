@@ -20,6 +20,7 @@
 
 locals {
   stripped_vpc_name = replace(var.vpc_name, "vpc-", "")
+  routes = flatten([for region, ranges in var.regional_aggregates : [for range in ranges : { region = region, range = range }]])
 }
 
 module "service_account" {
@@ -127,10 +128,6 @@ module "ilbs" {
   project = var.project_id
 }
 
-locals {
-  routes = flatten([for region, ranges in var.regional_aggregates : [for range in ranges : { region = region, range = range }]])
-}
-
 resource "google_compute_route" "routes" {
   for_each = {
     for route in local.routes : replace("ilb-${route.region}-${route.range}", "/[./]/", "-") => route
@@ -148,7 +145,7 @@ module "transitivity_firewall_rules" {
   version     = "~> 8.0"
   project_id  = var.project_id
   policy_name = "fp-${local.stripped_vpc_name}-transitivity-firewall"
-  description = "Firewall rules for trasitivity VMs."
+  description = "Firewall policy rules for trasitivity VMs."
   target_vpcs = [var.vpc_name]
 
   rules = [
@@ -157,7 +154,7 @@ module "transitivity_firewall_rules" {
       direction               = "INGRESS"
       action                  = "allow"
       rule_name               = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
-      description             = "Allow ingress to regional IP ranges."
+      description             = "Allow ingress from regional IP ranges."
       enable_logging          = var.firewall_enable_logging
       target_service_accounts = [module.service_account.email]
       match = {
@@ -173,7 +170,7 @@ module "transitivity_firewall_rules" {
       priority                = "1001"
       direction               = "EGRESS"
       action                  = "allow"
-      rule_name               = "fw-allow-transitivity-egress"
+      rule_name               = "fw-${local.stripped_vpc_name}-1001-e-a-all-all-all-transitivity"
       description             = "Allow egress to regional IP ranges."
       enable_logging          = var.firewall_enable_logging
       target_service_accounts = [module.service_account.email]

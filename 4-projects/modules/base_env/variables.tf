@@ -59,7 +59,7 @@ variable "project_budget" {
   budget_amount: The amount to use as the budget.
   alert_spent_percents: A list of percentages of the budget to alert on when threshold is exceeded.
   alert_pubsub_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`.
-  alert_spend_basis: The type of basis used to determine if spend has passed the threshold.
+  alert_spend_basis: The type of basis used to determine if spend has passed the threshold. Possible choices are `CURRENT_SPEND` or `FORECASTED_SPEND` (default).
   EOT
   type = object({
     budget_amount        = optional(number, 1000)

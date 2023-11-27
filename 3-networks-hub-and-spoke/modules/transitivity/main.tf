@@ -158,7 +158,7 @@ module "transitivity_firewall_rules" {
       enable_logging          = var.firewall_enable_logging
       target_service_accounts = [module.service_account.email]
       match = {
-        src_ip_ranges = flatten(values(var.regional_aggregates))
+        # src_ip_ranges = flatten(values(var.regional_aggregates))
         layer4_configs = [
           {
             ip_protocol = "all"
@@ -175,7 +175,7 @@ module "transitivity_firewall_rules" {
       enable_logging          = var.firewall_enable_logging
       target_service_accounts = [module.service_account.email]
       match = {
-        dest_ip_ranges = flatten(values(var.regional_aggregates))
+        # dest_ip_ranges = flatten(values(var.regional_aggregates))
         layer4_configs = [
           {
             ip_protocol = "all"

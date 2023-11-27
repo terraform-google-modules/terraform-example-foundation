@@ -239,8 +239,6 @@ module "restricted_shared_vpc" {
   secondary_ranges = {
     "sb-${var.environment_code}-shared-restricted-${var.default_region1}" = var.restricted_subnet_secondary_ranges[var.default_region1]
   }
-  allow_ingress_internal_ranges = local.enable_transitivity ? local.restricted_hub_subnet_ranges : null
-  allow_egress_internal_ranges  = local.enable_transitivity ? local.restricted_subnet_aggregates : null
 }
 
 /******************************************
@@ -283,6 +281,4 @@ module "base_shared_vpc" {
   secondary_ranges = {
     "sb-${var.environment_code}-shared-base-${var.default_region1}" = var.base_subnet_secondary_ranges[var.default_region1]
   }
-  allow_ingress_internal_ranges = local.enable_transitivity ? local.base_hub_subnet_ranges : null
-  allow_egress_internal_ranges  = local.enable_transitivity ? local.base_subnet_aggregates : null
 }

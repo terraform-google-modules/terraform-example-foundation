@@ -1,168 +1,39 @@
 # Resource hierarchy customizations
 
-This document contains guidance for customizing resource hierarchy during Terraform Foundation Example blueprint deployment.
+This document contains guidance for customizing the Cloud Resource Manager resource hierarchy, Folders and Projects, during Terraform Foundation Example blueprint deployment.
 
-The current deployment scenario of Terraform Foundation Example blueprint considers a flat resource hierarchy where all folders are at the same level and have one folder for each environment. Here is a detailed explanation of each folder:
+The current deployment scenario of Terraform Foundation Example blueprint considers a flat resource hierarchy where all folders are at the same level and have one folder for each environment and three special folders. Here is a detailed explanation of each folder:
 
 | Folder | Description |
 | --- | --- |
 | bootstrap | Contains the seed and CI/CD projects that are used to deploy foundation components. |
-| common | Contains projects with common resources used by the organization like logging, SCC and hybrid connectivity. |
+| common | Contains projects with common resources used by the organization like logging and Security Command Center. |
+| network | Contains projects with common networks resources used by the organization like DNS Hub, hybrid connectivity, and Shared VPCs. |
 | production | Environment folder that contains projects with cloud resources that have been promoted into production. |
 | non-production | Environment folder that contains a replica of the production environment to let you test workloads before you put them into production. |
 | development | Environment folder that is used as a development and sandbox environment. |
 
-This document covers a scenario where you can have two or more levels of folders, with an environment-centric focus: `environments -> ... -> business units`.
+This document covers a scenario where you can have two or more levels of folders, both from the source code point of view and the Cloud Resource Manager point of view, with an environment-centric focus: `environments -> ... -> business units`.
 
 | Current Hierarchy | Changed Hierarchy |
 | --- | --- |
-| <pre>example-organization/<br>├── fldr-bootstrap<br>├── fldr-common<br>├── <b>fldr-development *</b><br>├── <b>fldr-non-production *</b><br>└── <b>fldr-production *</b><br></pre> | <pre>example-organization/<br>├── fldr-bootstrap<br>├── fldr-common<br>├── <b>fldr-development *</b><br>│   ├── finance<br>│   └── retail<br>├── <b>fldr-non-production *</b><br>│   ├── finance<br>│   └── retail<br>└── <b>fldr-production *</b><br>    ├── finance<br>    └── retail<br></pre> |
+| <pre>example-organization/<br>├── fldr-bootstrap<br>├── fldr-common<br>├── fldr-network<br>├── <b>fldr-development *</b><br>├── <b>fldr-non-production *</b><br>└── <b>fldr-production *</b><br></pre> | <pre>example-organization/<br>├── fldr-bootstrap<br>├── fldr-common<br>├── fldr-network<br>├── <b>fldr-development *</b><br>│   ├── finance<br>│   └── retail<br>├── <b>fldr-non-production *</b><br>│   ├── finance<br>│   └── retail<br>└── <b>fldr-production *</b><br>    ├── finance<br>    └── retail<br></pre> |
 
 ## Code Changes - Build Files
 
-Review the `tf-wrapper.sh`. It is a bash script helper responsible for applying  terraform configurations for Terraform Foundation Example blueprint. The `tf-wrapper.sh` script works based on the current branch (see [Branching strategy](../README.md#branching-strategy)) and searches for a folder in the source code where name matches the current branch name. When it finds a folder it applies the terraform configurations. These changes below will make `tf-wrapper.sh` capable of searching deeper for matching folders and complying with your source code folder hierarchy.
+The `tf-wrapper.sh` file is a bash script helper responsible for applying Terraform configurations for the Terraform Foundation Example blueprint.
+The `tf-wrapper.sh` script works based on the [Branching strategy](../README.md#branching-strategy) defined for the Terraform Example Foundation.
+It scans the source code folder hierarchy for folders which names matches the current git branch name (environments as leaf nodes) and applies the terraform configurations contained on those folders.
 
-1. Create a new variable `maxdepth` to set how many source folder levels should be searched for terraform configurations.
+The following change will configure the `tf-wrapper.sh` script to be capable of searching deeper for matching folders and complying with the source code folder hierarchy presented in this documentation.
 
-    ```text
-    ...
-    tmp_plan="${base_dir}/tmp_plan"
-    environments_regex="^(development|non-production|production|shared)$"
+Note: It is also possible to configure the `tf-wrapper.sh` script to scan the source code where the current branch name is at the root of the source code folder hierarchy and the business units are the leaves (environments as root nodes). see the `tf-wrapper.sh` script for details on this alternative.
 
-    #🟢 Create maxdepth variable
-    maxdepth=2  #🟢 Must be configured based in your directory design
+1. In the `tf-wrapper.sh` script set the value of the variable `max_depth` to `2`
 
-    #🟢 Create component temp variables
-    current_component=""
-    old_component=""
-
-    ...
-    ```
-
-1. Create the new function `check_env_path_folder` between new variables and already existing `tf_apply` function.
-
-    ```text
-    ...
-    current_component=""
-    old_component=""
-
-    #🟢 New check_env_path_folder function
-
-    ## Fix component name to be different for each environment. It is used as tf-plan file name
-    check_env_path_folder() {
-    local lenv_path=$1
-    local lbase_dir=$2
-    local lcomponent=$3
-    local lenv=$4
-
-    if [[ "$lenv_path" =~ ^($lbase_dir)/(.+)/$lenv ]] ; then
-        # The ${BASH_REMATCH[2]} means the second group in regex expression
-        # This group is the folders between base dir and env
-        # This value guarantees that tf-plan file name will be unique for each environment
-        current_component=$(echo ${BASH_REMATCH[2]} | sed -r 's/\//-/g')
-    else
-        current_component=$lcomponent
-    fi
-    }
-
-    #🟢 End of New check_env_path_folder function
-
-
-    ## Terraform apply for single environment.
-    tf_apply() {
-    ...
-    ```
-
-1. Change `find "$component_path"` command in `tf_plan_validate_all` function to set the new maxdepth variable.
-
-    ```text
-    tf_plan_validate_all() {
-    local env
-    local component
-    find "$base_dir" -mindepth 1 -maxdepth 1 -type d \
-    -not -path "$base_dir/modules" \
-    -not -path "$base_dir/.terraform" | while read -r component_path ; do
-        component="$(basename "$component_path")"
-
-        #🟢 Set maxdepth in find command -------------- 🟢
-        find "$component_path" -mindepth 1 -maxdepth $maxdepth -type d | while read -r env_path ; do
-            env="$(basename "$env_path")"
-    ```
-
-1. Add handling component variable and call to new function `check_env_path_folder`.
-
-    ```text
-            env="$(basename "$env_path")"
-
-            old_component=$component #🟢 Holds component value before call check_env_path_folder
-
-            #🟢 Calls check_env_path_folder to get fixed component value
-            check_env_path_folder "$env_path" "$base_dir" "$component" "$env"
-
-            component=$current_component #🟢 Get fixed component value
-            ...
-            if [[ "$env" =~ $environments_regex ]] ; then
-    ```
-
-1. Fix warning message for not matching directories.
-
-    ```text
-        ...
-        tf_plan "$env_path" "$env" "$component"
-        tf_validate "$env_path" "$env" "$policysource" "$component"
-      else
-        #🟢 Replace dash (-) for slash (/) in component to fix warning message
-        echo "$(echo ${component} | sed -r 's/-/\//g' )/$env doesn't match $environments_regex; skipping"
-      fi
-
-      component=$old_component #🟢 Assign old component value before next while-loop iteration
-    done
-    ```
-
-1. Change `find "$component_path"` command in `single_action_runner` function to set the new maxdepth variable.
-
-    ```text
-    single_action_runner() {
-    local env
-    local component
-    find "$base_dir" -mindepth 1 -maxdepth 1 -type d \
-    -not -path "$base_dir/modules" \
-    -not -path "$base_dir/.terraform" | while read -r component_path ; do
-        component="$(basename "$component_path")"
-        # sort -r is added to ensure shared is first if it exists.
-
-        #🟢 Set maxdepth in find command -------------- 🟢
-        find "$component_path" -mindepth 1 -maxdepth $maxdepth -type d | sort -r | while read -r env_path ; do
-            env="$(basename "$env_path")"
-    ```
-
-1. Add handling component variable and call to new function `check_env_path_folder`.
-
-    ```text
-            env="$(basename "$env_path")"
-
-            old_component=$component #🟢 Holds component value before call check_env_path_folder
-
-            #🟢 Calls check_env_path_folder to get fixed component value
-            check_env_path_folder "$env_path" "$base_dir" "$component" "$env"
-
-            component=$current_component #🟢 Get fixed component value
-    ...
-    ```
-
-1. Fix warning message for doesn't match directories.
-
-    ```text
-        esac
-      else
-        #🟢 Replace dash (-) for slash (/) in component to fix warning message
-        echo "$(echo ${component} | sed -r 's/-/\//g' )/${env} doesn't match ${branch}; skipping"
-      fi
-
-      #🟢 Assign old component value before next while-loop iteration
-      component=$old_component
-    done
-    ```
+```bash
+max_depth=2
+```
 
 ## Code Changes - Terraform Files
 

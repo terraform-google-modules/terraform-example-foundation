@@ -139,6 +139,7 @@ resource "google_compute_route" "routes" {
   dest_range   = each.value.range
   next_hop_ilb = module.ilbs[each.value.region].forwarding_rule
 }
+
 resource "google_compute_firewall" "allow_transtivity_ingress" {
   name      = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
   network   = var.vpc_name

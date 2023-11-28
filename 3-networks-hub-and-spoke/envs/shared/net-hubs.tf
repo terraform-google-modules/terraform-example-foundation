@@ -19,15 +19,15 @@ locals {
    * Base network ranges
    */
   base_subnet_primary_ranges = {
-    (local.default_region1) = "10.0.0.0/24"
-    (local.default_region2) = "10.1.0.0/24"
+    (local.default_region1) = "10.0.0.0/18"
+    (local.default_region2) = "10.1.0.0/18"
   }
   /*
    * Restricted network ranges
    */
   restricted_subnet_primary_ranges = {
-    (local.default_region1) = "10.8.0.0/24"
-    (local.default_region2) = "10.9.0.0/24"
+    (local.default_region1) = "10.8.0.0/18"
+    (local.default_region2) = "10.9.0.0/18"
   }
 
 
@@ -169,7 +169,7 @@ module "base_shared_vpc" {
   project_id                    = local.base_net_hub_project_id
   dns_hub_project_id            = local.dns_hub_project_id
   environment_code              = local.environment_code
-  private_service_connect_ip    = "10.2.0.5"
+  private_service_connect_ip    = "10.17.0.1"
   bgp_asn_subnet                = local.bgp_asn_number
   default_region1               = local.default_region1
   default_region2               = local.default_region2
@@ -218,7 +218,7 @@ module "restricted_shared_vpc" {
   project_number                   = local.restricted_net_hub_project_number
   dns_hub_project_id               = local.dns_hub_project_id
   environment_code                 = local.environment_code
-  private_service_connect_ip       = "10.10.0.5"
+  private_service_connect_ip       = "10.17.0.5"
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services
   members = distinct(concat([

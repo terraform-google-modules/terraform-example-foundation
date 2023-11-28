@@ -176,38 +176,44 @@ Running this code as-is should generate a structure as shown below:
 ```
 example-organization/
 └── fldr-development
-    ├── prj-bu1-d-env-secrets
-    ├── prj-bu1-d-sample-floating
-    ├── prj-bu1-d-sample-base
-    ├── prj-bu1-d-sample-restrict
-    ├── prj-bu1-d-sample-peering
-    ├── prj-bu2-d-env-secrets
-    ├── prj-bu2-d-sample-floating
-    ├── prj-bu2-d-sample-base
-    ├── prj-bu2-d-sample-restrict
-    └── prj-bu2-d-sample-peering
+    └── fldr-bu1-development
+        ├── prj-d-env-bu1secrets
+        ├── prj-d-bu1sample-floating
+        ├── prj-d-bu1sample-base
+        ├── prj-d-bu1sample-restrict
+        ├── prj-d-bu1sample-peering
+    └── fldr-bu2-development
+        ├── prj-d-env-bu2secrets
+        ├── prj-d-sample-bu2floating
+        ├── prj-d-sample-bu2base
+        ├── prj-d-sample-bu2restrict
+        └── prj-d-sample-bu2peering
 └── fldr-non-production
-    ├── prj-bu1-n-env-secrets
-    ├── prj-bu1-n-sample-floating
-    ├── prj-bu1-n-sample-base
-    ├── prj-bu1-n-sample-restrict
-    ├── prj-bu1-n-sample-peering
-    ├── prj-bu2-n-env-secrets
-    ├── prj-bu2-n-sample-floating
-    ├── prj-bu2-n-sample-base
-    ├── prj-bu2-n-sample-restrict
-    └── prj-bu2-n-sample-peering
+    └── fldr-bu1-non-production
+        ├── prj-n-env-bu1secrets
+        ├── prj-n-bu1sample-floating
+        ├── prj-n-bu1sample-base
+        ├── prj-n-bu1sample-restrict
+        ├── prj-n-bu1sample-peering
+    └── fldr-bu2-non-production
+        ├── prj-n-env-bu2secrets
+        ├── prj-n-sample-bu2floating
+        ├── prj-n-sample-bu2base
+        ├── prj-n-sample-bu2restrict
+        └── prj-n-sample-bu2peering
 └── fldr-production
-    ├── prj-bu1-p-env-secrets
-    ├── prj-bu1-p-sample-floating
-    ├── prj-bu1-p-sample-base
-    ├── prj-bu1-p-sample-restrict
-    ├── prj-bu1-p-sample-peering
-    ├── prj-bu2-p-env-secrets
-    ├── prj-bu2-p-sample-floating
-    ├── prj-bu2-p-sample-base
-    ├── prj-bu2-p-sample-restrict
-    └── prj-bu2-p-sample-peering
+    └── fldr-bu1-production
+        ├── prj-p-env-bu1secrets
+        ├── prj-p-bu1sample-floating
+        ├── prj-p-bu1sample-base
+        ├── prj-p-bu1sample-restrict
+        ├── prj-p-bu1sample-peering
+    └── fldr-bu2-production
+        ├── prj-p-env-bu2secrets
+        ├── prj-p-sample-bu2floating
+        ├── prj-p-sample-bu2base
+        ├── prj-p-sample-bu2restrict
+        └── prj-p-sample-bu2peering
 └── fldr-common
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
@@ -243,50 +249,56 @@ example-organization
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
 └── fldr-development
-    ├── prj-bu1-d-env-secrets
-    ├── prj-bu1-d-sample-floating
-    ├── prj-bu1-d-sample-base
-    ├── prj-bu1-d-sample-restrict
-    ├── prj-bu1-d-sample-peering
-    ├── prj-bu2-d-env-secrets
-    ├── prj-bu2-d-sample-floating
-    ├── prj-bu2-d-sample-base
-    ├── prj-bu2-d-sample-restrict
-    ├── prj-bu2-d-sample-peering
     ├── prj-d-monitoring
     ├── prj-d-secrets
     ├── prj-d-shared-base
     └── prj-d-shared-restricted
+    └── fldr-bu1-development
+        ├── prj-d-env-bu1secrets
+        ├── prj-d-bu1sample-floating
+        ├── prj-d-bu1sample-base
+        ├── prj-d-bu1sample-restrict
+        ├── prj-d-bu1sample-peering
+    └── fldr-bu2-development
+        ├── prj-d-env-bu2secrets
+        ├── prj-d-sample-bu2floating
+        ├── prj-d-sample-bu2base
+        ├── prj-d-sample-bu2restrict
+        └── prj-d-sample-bu2peering
 └── fldr-non-production
-    ├── prj-bu1-n-env-secrets
-    ├── prj-bu1-n-sample-floating
-    ├── prj-bu1-n-sample-base
-    ├── prj-bu1-n-sample-restrict
-    ├── prj-bu1-n-sample-peering
-    ├── prj-bu2-n-env-secrets
-    ├── prj-bu2-n-sample-floating
-    ├── prj-bu2-n-sample-base
-    ├── prj-bu2-n-sample-restrict
-    ├── prj-bu2-n-sample-peering
     ├── prj-n-monitoring
     ├── prj-n-secrets
     ├── prj-n-shared-base
     └── prj-n-shared-restricted
+    └── fldr-bu1-non-production
+        ├── prj-n-env-bu1secrets
+        ├── prj-n-bu1sample-floating
+        ├── prj-n-bu1sample-base
+        ├── prj-n-bu1sample-restrict
+        ├── prj-n-bu1sample-peering
+    └── fldr-bu2-non-production
+        ├── prj-n-env-bu2secrets
+        ├── prj-n-sample-bu2floating
+        ├── prj-n-sample-bu2base
+        ├── prj-n-sample-bu2restrict
+        └── prj-n-sample-bu2peering
 └── fldr-production
-    ├── prj-bu1-p-env-secrets
-    ├── prj-bu1-p-sample-floating
-    ├── prj-bu1-p-sample-base
-    ├── prj-bu1-p-sample-restrict
-    ├── prj-bu1-p-sample-peering
-    ├── prj-bu2-p-env-secrets
-    ├── prj-bu2-p-sample-floating
-    ├── prj-bu2-p-sample-base
-    ├── prj-bu2-p-sample-restrict
-    ├── prj-bu2-p-sample-peering
     ├── prj-p-monitoring
     ├── prj-p-secrets
     ├── prj-p-shared-base
     └── prj-p-shared-restricted
+    └── fldr-bu1-production
+        ├── prj-p-env-bu1secrets
+        ├── prj-p-bu1sample-floating
+        ├── prj-p-bu1sample-base
+        ├── prj-p-bu1sample-restrict
+        ├── prj-p-bu1sample-peering
+    └── fldr-bu2-production
+        ├── prj-p-env-bu2secrets
+        ├── prj-p-sample-bu2floating
+        ├── prj-p-sample-bu2base
+        ├── prj-p-sample-bu2restrict
+        └── prj-p-sample-bu2peering
 └── fldr-bootstrap
     ├── prj-b-cicd
     └── prj-b-seed

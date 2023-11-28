@@ -24,7 +24,7 @@ module "firewall_rules" {
   project_id  = var.project_id
   policy_name = "fp-${var.environment_code}-hub-and-spoke-restricted-firewalls"
   description = "Firewall rules for restricted hub and spoke shared vpc: ${module.main.network_name}."
-  target_vpcs = [module.main.network_name]
+  target_vpcs = ["projects/${var.project_id}/global/networks/${module.main.network_name}"]
 
   rules = concat(
     [
@@ -62,7 +62,7 @@ module "firewall_rules" {
         }
       }
     ],
-    !var.enable_all_vpc_internal_traffic ? [] : [
+    !var.enable_all_vpc_internal_traffic ? [] : concat([
       {
         priority       = "1000"
         direction      = "EGRESS"
@@ -95,6 +95,6 @@ module "firewall_rules" {
           ]
         }
       }
-    ]
+    ])
   )
 }

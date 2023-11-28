@@ -24,7 +24,7 @@ module "firewall_rules" {
   project_id  = var.project_id
   policy_name = "fp-${var.environment_code}-dual-svpc-restricted-firewalls"
   description = "Firewall rules for restricted dual shared vpc: ${module.main.network_name}."
-  target_vpcs = [module.main.network_name]
+  target_vpcs = ["projects/${var.project_id}/global/networks/${module.main.network_name}"]
 
   rules = concat(
     [
@@ -78,7 +78,9 @@ module "firewall_rules" {
             },
           ]
         }
-      },
+      }
+    ],
+    !var.enable_all_vpc_internal_traffic ? [] : [
       {
         priority       = "1001"
         direction      = "INGRESS"

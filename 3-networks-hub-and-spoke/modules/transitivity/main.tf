@@ -139,49 +139,52 @@ resource "google_compute_route" "routes" {
   dest_range   = each.value.range
   next_hop_ilb = module.ilbs[each.value.region].forwarding_rule
 }
+resource "google_compute_firewall" "allow_transtivity_ingress" {
+  name      = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
+  network   = var.vpc_name
+  project   = var.project_id
+  direction = "INGRESS"
+  priority  = 1000
 
-module "transitivity_firewall_rules" {
-  source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version     = "~> 8.0"
-  project_id  = var.project_id
-  policy_name = "fp-${local.stripped_vpc_name}-transitivity-firewall"
-  description = "Firewall policy rules for trasitivity VMs."
-  target_vpcs = [var.vpc_name]
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
 
-  rules = [
-    {
-      priority                = "1000"
-      direction               = "INGRESS"
-      action                  = "allow"
-      rule_name               = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
-      description             = "Allow ingress from regional IP ranges."
-      enable_logging          = var.firewall_enable_logging
-      target_service_accounts = [module.service_account.email]
-      match = {
-        # src_ip_ranges = flatten(values(var.regional_aggregates))
-        layer4_configs = [
-          {
-            ip_protocol = "all"
-          },
-        ]
-      }
-    },
-    {
-      priority                = "1001"
-      direction               = "EGRESS"
-      action                  = "allow"
-      rule_name               = "fw-${local.stripped_vpc_name}-1001-e-a-all-all-all-transitivity"
-      description             = "Allow egress to regional IP ranges."
-      enable_logging          = var.firewall_enable_logging
-      target_service_accounts = [module.service_account.email]
-      match = {
-        # dest_ip_ranges = flatten(values(var.regional_aggregates))
-        layer4_configs = [
-          {
-            ip_protocol = "all"
-          },
-        ]
-      }
-    },
-  ]
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
+
+  allow {
+    protocol = "all"
+  }
+
+  source_ranges           = flatten(values(var.regional_aggregates))
+  target_service_accounts = [module.service_account.email]
+}
+
+resource "google_compute_firewall" "allow_transitivity_egress" {
+  name      = "fw-allow-transitivity-egress"
+  network   = var.vpc_name
+  project   = var.project_id
+  direction = "EGRESS"
+  priority  = 1000
+
+  dynamic "log_config" {
+    for_each = var.firewall_enable_logging == true ? [{
+      metadata = "INCLUDE_ALL_METADATA"
+    }] : []
+
+    content {
+      metadata = log_config.value.metadata
+    }
+  }
+
+  allow {
+    protocol = "all"
+  }
+
+  destination_ranges      = flatten(values(var.regional_aggregates))
+  target_service_accounts = [module.service_account.email]
 }

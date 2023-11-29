@@ -231,8 +231,8 @@ func TestNetworks(t *testing.T) {
 			"restricted": []string{"10.8.128.0/21", "10.9.128.0/21"},
 		},
 		"production": {
-			"base":       []string{"10.0.192.0/21", "10.1.192.0/21"},
-			"restricted": []string{"10.8.192.0/21", "10.9.192.0/21"},
+			"base":       []string{"10.0.192.0/18", "10.1.192.0/18"},
+			"restricted": []string{"10.8.192.0/18", "10.9.192.0/18"},
 		},
 	}
 
@@ -246,8 +246,8 @@ func TestNetworks(t *testing.T) {
 			"restricted": "10.10.128.5",
 		},
 		"production": {
-			"base":       "10.2.192.5",
-			"restricted": "10.10.192.5",
+			"base":       "10.17.0.4",
+			"restricted": "10.17.0.8",
 		},
 	}
 

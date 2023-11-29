@@ -80,6 +80,6 @@ output "region2_router2" {
 }
 
 output "firewall_policy" {
-  value       = module.firewall_rules.fw_policy.name.name
+  value       = module.firewall_rules.fw_policy[0].name
   description = "Policy created for firewall policy rules."
 }

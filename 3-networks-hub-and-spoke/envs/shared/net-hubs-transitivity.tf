@@ -51,6 +51,7 @@ module "base_transitivity" {
   vpc_name            = module.base_shared_vpc.network_name
   gw_subnets          = { for region in keys(local.base_subnet_primary_ranges) : region => "sb-c-shared-base-hub-${region}" }
   regional_aggregates = local.base_regional_aggregates
+  firewall_policy     = module.base_shared_vpc.firewall_policy
   commands = [
     # Accept all ICMP (troubleshooting)
     "iptables -A INPUT -p icmp -j ACCEPT",
@@ -85,6 +86,7 @@ module "restricted_transitivity" {
   vpc_name            = module.restricted_shared_vpc.network_name
   gw_subnets          = { for region in keys(local.restricted_subnet_primary_ranges) : region => "sb-c-shared-restricted-hub-${region}" }
   regional_aggregates = local.restricted_regional_aggregates
+  firewall_policy     = module.restricted_shared_vpc.firewall_policy
   commands = [
     # Accept all ICMP (troubleshooting)
     "iptables -A INPUT -p icmp -j ACCEPT",

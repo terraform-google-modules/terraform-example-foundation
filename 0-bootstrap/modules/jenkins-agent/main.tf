@@ -122,7 +122,7 @@ resource "google_tags_tag_key" "jenkins_agents" {
 
 resource "google_tags_tag_value" "jenkins_agents" {
   description = "Allow the connection."
-  parent      = "tagKeys/${google_tags_tag_key.basic_key.name}"
+  parent      = "tagKeys/${google_tags_tag_key.jenkins_agents.name}"
   short_name  = "allow"
 }
 

@@ -255,6 +255,7 @@ example-organization
     ├── prj-c-interconnect
     ├── prj-c-restricted-net-hub
     ├── prj-c-scc
+    ├── prj-c-kms
     ├── prj-c-secrets
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
@@ -270,6 +271,7 @@ example-organization
     ├── prj-bu2-d-sample-restrict
     ├── prj-bu2-d-sample-peering
     ├── prj-d-monitoring
+    ├── prj-d-kms
     ├── prj-d-secrets
     ├── prj-d-shared-base
     └── prj-d-shared-restricted
@@ -285,6 +287,7 @@ example-organization
     ├── prj-bu2-n-sample-restrict
     ├── prj-bu2-n-sample-peering
     ├── prj-n-monitoring
+    ├── prj-n-kms
     ├── prj-n-secrets
     ├── prj-n-shared-base
     └── prj-n-shared-restricted
@@ -300,6 +303,7 @@ example-organization
     ├── prj-bu2-p-sample-restrict
     ├── prj-bu2-p-sample-peering
     ├── prj-p-monitoring
+    ├── prj-p-kms
     ├── prj-p-secrets
     ├── prj-p-shared-base
     └── prj-p-shared-restricted

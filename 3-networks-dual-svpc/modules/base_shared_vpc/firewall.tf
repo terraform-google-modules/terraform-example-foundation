@@ -44,10 +44,10 @@ module "firewall_rules" {
         }
       },
       {
-        priority       = "10000"
+        priority       = "1000"
         direction      = "EGRESS"
         action         = "allow"
-        rule_name      = "fw-${var.environment_code}-shared-base-10000-e-a-allow-google-apis-all-tcp-443"
+        rule_name      = "fw-${var.environment_code}-shared-base-1000-e-a-allow-google-apis-all-tcp-443"
         description    = "Lower priority rule to allow private google apis on TCP port 443."
         enable_logging = var.firewall_enable_logging
         match = {
@@ -63,10 +63,10 @@ module "firewall_rules" {
     ],
     !var.enable_all_vpc_internal_traffic ? [] : [
       {
-        priority       = "1000"
+        priority       = "10000"
         direction      = "EGRESS"
         action         = "allow"
-        rule_name      = "fw-${var.environment_code}-shared-base-1000-e-a-all-all-all"
+        rule_name      = "fw-${var.environment_code}-shared-base-10000-e-a-all-all-all"
         description    = "Allow all egress to the provided IP range."
         enable_logging = var.firewall_enable_logging
         match = {
@@ -81,10 +81,10 @@ module "firewall_rules" {
     ],
     !var.enable_all_vpc_internal_traffic ? [] : [
       {
-        priority       = "1001"
+        priority       = "10001"
         direction      = "INGRESS"
         action         = "allow"
-        rule_name      = "fw-${var.environment_code}-shared-base-1001-i-a-all"
+        rule_name      = "fw-${var.environment_code}-shared-base-10001-i-a-all"
         description    = "Allow all ingress to the provided IP range."
         enable_logging = var.firewall_enable_logging
         match = {

@@ -187,7 +187,7 @@ export the OAuth Token ID as an environment variable:
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
    ```bash
-   ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL> -t TerraformCloud
+   ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL> -e
    ```
 
    **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.

@@ -125,6 +125,7 @@ locals {
       "roles/cloudscheduler.admin",
       "roles/resourcemanager.projectDeleter",
       "roles/dns.admin",
+      "roles/iam.workloadIdentityPoolAdmin",
     ],
   }
 

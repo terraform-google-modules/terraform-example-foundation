@@ -39,6 +39,7 @@
 | Name | Description |
 |------|-------------|
 | access\_level\_name | Access context manager access level name |
+| firewall\_policy | Policy created for firewall policy rules. |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
 | region1\_router1 | Router 1 for Region 1 |

@@ -62,7 +62,7 @@ module "firewall_rules" {
         }
       }
     ],
-    !var.enable_all_vpc_internal_traffic ? [] : concat([
+    !var.enable_all_vpc_internal_traffic ? [] : [
       {
         priority       = "1000"
         direction      = "EGRESS"
@@ -78,7 +78,9 @@ module "firewall_rules" {
             },
           ]
         }
-      },
+      }
+    ],
+    !var.enable_all_vpc_internal_traffic ? [] : [
       {
         priority       = "1001"
         direction      = "INGRESS"
@@ -95,6 +97,6 @@ module "firewall_rules" {
           ]
         }
       }
-    ])
+    ]
   )
 }

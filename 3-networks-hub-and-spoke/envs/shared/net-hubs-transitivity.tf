@@ -18,22 +18,22 @@ locals {
   enable_transitivity = var.enable_hub_and_spoke_transitivity
   base_regional_aggregates = {
     (local.default_region1) = [
-      "10.0.0.0/18",
-      "100.64.0.0/18"
+      "10.0.0.0/16",
+      "100.64.0.0/16"
     ]
     (local.default_region2) = [
-      "10.1.0.0/18",
-      "100.65.0.0/18"
+      "10.1.0.0/16",
+      "100.65.0.0/16"
     ]
   }
   restricted_regional_aggregates = {
     (local.default_region1) = [
-      "10.8.0.0/18",
-      "100.72.0.0/18"
+      "10.8.0.0/16",
+      "100.72.0.0/16"
     ]
     (local.default_region2) = [
-      "10.9.0.0/18",
-      "100.73.0.0/18"
+      "10.9.0.0/16",
+      "100.73.0.0/16"
     ]
   }
 }

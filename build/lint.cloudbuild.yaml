@@ -30,3 +30,4 @@ options:
   env:
   - ENABLE_PARALLEL=0
   - DISABLE_TFLINT=1
+  - TF_IN_AUTOMATION=true

@@ -26,7 +26,7 @@ locals {
   projects_remote_bucket_tfstate     = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
   cloud_build_private_worker_pool_id = try(data.terraform_remote_state.bootstrap.outputs.cloud_build_private_worker_pool_id, "")
   cloud_builder_artifact_repo        = try(data.terraform_remote_state.bootstrap.outputs.cloud_builder_artifact_repo, "")
-  enable_cloudbuild_deploy           = try(data.terraform_remote_state.bootstrap.outputs.jenkins_agent_gce_instance_id, "") == ""
+  enable_cloudbuild_deploy           = local.cloud_builder_artifact_repo != ""
 }
 
 data "terraform_remote_state" "bootstrap" {

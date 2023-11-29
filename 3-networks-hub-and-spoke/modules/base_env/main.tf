@@ -30,12 +30,12 @@ locals {
   /*
    * Base network ranges
    */
-  base_subnet_aggregates = ["10.0.0.0/16", "10.1.0.0/16", "100.64.0.0/16", "100.65.0.0/16"]
+  base_subnet_aggregates = ["10.0.0.0/18", "10.1.0.0/18", "100.64.0.0/18", "100.65.0.0/18"]
   base_hub_subnet_ranges = ["10.0.0.0/24", "10.1.0.0/24"]
   /*
    * Restricted network ranges
    */
-  restricted_subnet_aggregates = ["10.8.0.0/16", "10.9.0.0/16", "100.72.0.0/16", "100.73.0.0/16"]
+  restricted_subnet_aggregates = ["10.8.0.0/18", "10.9.0.0/18", "100.72.0.0/18", "100.73.0.0/18"]
   restricted_hub_subnet_ranges = ["10.8.0.0/24", "10.9.0.0/24"]
 
   supported_restricted_service = [

@@ -37,7 +37,15 @@ func getNetworkMode(t *testing.T) string {
 	return ""
 }
 
-func getNetworkResourceNames(envCode string, networkMode string) map[string]map[string]string {
+func getFirewallMode(t *testing.T) string {
+	mode := utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
+	if mode == "HubAndSpoke" {
+		return "hub-and-spoke"
+	}
+	return "dual-svpc"
+}
+
+func getNetworkResourceNames(envCode string, networkMode string, firewallMode string) map[string]map[string]string {
 	return map[string]map[string]string{
 		"base": {
 			"network_name":          fmt.Sprintf("vpc-%s-shared-base%s", envCode, networkMode),
@@ -53,6 +61,7 @@ func getNetworkResourceNames(envCode string, networkMode string) map[string]map[
 			"region1_router2":       fmt.Sprintf("cr-%s-shared-base%s-us-west1-cr2", envCode, networkMode),
 			"region2_router1":       fmt.Sprintf("cr-%s-shared-base%s-us-central1-cr3", envCode, networkMode),
 			"region2_router2":       fmt.Sprintf("cr-%s-shared-base%s-us-central1-cr4", envCode, networkMode),
+			"firewall_policy":       fmt.Sprintf("fp-%s-%s-base-firewalls", envCode, firewallMode),
 			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-base-65530-e-d-all-all-all", envCode),
 			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-base-65430-e-a-allow-google-apis-all-tcp-443", envCode),
 		},
@@ -70,6 +79,7 @@ func getNetworkResourceNames(envCode string, networkMode string) map[string]map[
 			"region1_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-west1-cr6", envCode, networkMode),
 			"region2_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr7", envCode, networkMode),
 			"region2_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr8", envCode, networkMode),
+			"firewall_policy":       fmt.Sprintf("fp-%s-%s-restricted-firewalls", envCode, firewallMode),
 			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-restricted-65530-e-d-all-all-all", envCode),
 			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-restricted-65430-e-a-allow-google-apis-all-tcp-443", envCode),
 		},
@@ -84,6 +94,7 @@ func TestNetworks(t *testing.T) {
 
 	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
 	networkMode := getNetworkMode(t)
+	firewallMode := getFirewallMode(t)
 	policyID := testutils.GetOrgACMPolicyID(t, orgID)
 	require.NotEmpty(t, policyID, "Access Context Manager Policy ID must be configured in the organization for the test to proceed.")
 
@@ -331,7 +342,7 @@ func TestNetworks(t *testing.T) {
 
 					servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, networks.GetStringOutput("restricted_service_perimeter_name"))
 					accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, networks.GetStringOutput("restricted_access_level_name"))
-					networkNames := getNetworkResourceNames(envCode, networkMode)
+					networkNames := getNetworkResourceNames(envCode, networkMode, firewallMode)
 
 					servicePerimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
 					assert.Equal(servicePerimeterLink, servicePerimeter.Get("name").String(), fmt.Sprintf("service perimeter %s should exist", servicePerimeterLink))
@@ -395,7 +406,7 @@ func TestNetworks(t *testing.T) {
 						assert.Equal(usCentral1Range, subnet2.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usCentral1Range))
 
 						denyAllEgressName := networkNames[networkType]["fw_deny_all_egress"]
-						denyAllEgressRule := gcloud.Runf(t, "network-firewall-policies rules describe 65530 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", projectID, terraformSA)
+						denyAllEgressRule := gcloud.Runf(t, "compute network-firewall-policies rules describe 65530 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", networkNames[networkType]["firewall_policy"], projectID, terraformSA)
 						assert.Equal(denyAllEgressName, denyAllEgressRule.Get("ruleName").String(), fmt.Sprintf("firewall rule %s should exist", denyAllEgressName))
 						assert.Equal("EGRESS", denyAllEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", denyAllEgressName))
 						assert.Equal("deny", denyAllEgressRule.Get("action").String(), fmt.Sprintf("firewall rule %s action should be deny", denyAllEgressName))
@@ -403,7 +414,7 @@ func TestNetworks(t *testing.T) {
 						assert.Equal("0.0.0.0/0", denyAllEgressRule.Get("match.destIpRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be 0.0.0.0/0", denyAllEgressName))
 
 						allowApiEgressName := networkNames[networkType]["fw_allow_api_egress"]
-						allowApiEgressRule := gcloud.Runf(t, "network-firewall-policies rules describe 1000 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", projectID, terraformSA)
+						allowApiEgressRule := gcloud.Runf(t, "compute network-firewall-policies rules describe 1000 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", networkNames[networkType]["firewall_policy"], projectID, terraformSA)
 						assert.Equal(allowApiEgressName, allowApiEgressRule.Get("ruleName").String(), fmt.Sprintf("firewall rule %s should exist", allowApiEgressName))
 						assert.Equal("EGRESS", allowApiEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", allowApiEgressName))
 						assert.Equal("allow", allowApiEgressRule.Get("action").String(), fmt.Sprintf("firewall rule %s action should be allow", allowApiEgressName))

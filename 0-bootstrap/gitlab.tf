@@ -40,6 +40,7 @@ locals {
 
   common_vars = {
     "PROJECT_ID" : module.gitlab_cicd.project_id,
+    "CICD_RUNNER_REPO" : var.gl_repos.cicd_runner,
     "WIF_PROVIDER_NAME" : module.gitlab_oidc.provider_name,
     "TF_BACKEND" : module.seed_bootstrap.gcs_bucket_tfstate,
     "TF_VAR_gitlab_token" : var.gitlab_token,
@@ -124,4 +125,12 @@ module "cicd_project_wif_iam_member" {
   parent_type = "project"
   parent_id   = local.cicd_project_id
   roles       = each.value
+}
+
+resource "google_service_account_iam_member" "self_impersonate" {
+  for_each = local.granular_sa
+
+  service_account_id = google_service_account.terraform-env-sa[each.key].id
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
 }

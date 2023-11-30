@@ -260,6 +260,7 @@ variable "gl_repos" {
   environments: The repository to host the code of the environments stage.
   networks: The repository to host the code of the networks stage.
   projects: The repository to host the code of the projects stage.
+  cicd_runner: The repository to host the code of docker image used for CI/CD.
   EOT
   type = object({
     owner        = string,
@@ -268,6 +269,7 @@ variable "gl_repos" {
     environments = string,
     networks     = string,
     projects     = string,
+    cicd_runner  = string,
   })
 }
 

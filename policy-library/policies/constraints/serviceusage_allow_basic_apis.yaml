@@ -66,3 +66,4 @@ spec:
     - "storage-component.googleapis.com"
     - "workflows.googleapis.com"
     - "assuredworkloads.googleapis.com"
+    - "sts.googleapis.com"

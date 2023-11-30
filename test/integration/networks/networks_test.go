@@ -223,12 +223,12 @@ func TestNetworks(t *testing.T) {
 
 	cidrRanges := map[string]map[string][]string{
 		"development": {
-			"base":       []string{"10.0.64.0/21", "10.1.64.0/21"},
-			"restricted": []string{"10.8.64.0/21", "10.9.64.0/21"},
+			"base":       []string{"10.0.64.0/18", "10.1.64.0/18"},
+			"restricted": []string{"10.8.64.0/18", "10.9.64.0/18"},
 		},
 		"non-production": {
-			"base":       []string{"10.0.128.0/21", "10.1.128.0/21"},
-			"restricted": []string{"10.8.128.0/21", "10.9.128.0/21"},
+			"base":       []string{"10.0.128.0/18", "10.1.128.0/21"},
+			"restricted": []string{"10.8.128.0/21", "10.9.128.0/18"},
 		},
 		"production": {
 			"base":       []string{"10.0.192.0/18", "10.1.192.0/18"},
@@ -238,12 +238,12 @@ func TestNetworks(t *testing.T) {
 
 	googleapisCIDR := map[string]map[string]string{
 		"development": {
-			"base":       "10.2.64.5",
-			"restricted": "10.10.64.5",
+			"base":       "10.17.0.2",
+			"restricted": "10.17.0.6",
 		},
 		"non-production": {
 			"base":       "10.2.128.5",
-			"restricted": "10.10.128.5",
+			"restricted": "10.17.0.7",
 		},
 		"production": {
 			"base":       "10.17.0.4",

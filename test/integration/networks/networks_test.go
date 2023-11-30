@@ -395,26 +395,20 @@ func TestNetworks(t *testing.T) {
 						assert.Equal(usCentral1Range, subnet2.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usCentral1Range))
 
 						denyAllEgressName := networkNames[networkType]["fw_deny_all_egress"]
-						denyAllEgressRule := gcloud.Runf(t, "compute firewall-rules describe %s --project %s --impersonate-service-account %s", denyAllEgressName, projectID, terraformSA)
-						assert.Equal(denyAllEgressName, denyAllEgressRule.Get("name").String(), fmt.Sprintf("firewall rule %s should exist", denyAllEgressName))
+						denyAllEgressRule := gcloud.Runf(t, "network-firewall-policies rules describe 65530 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", projectID, terraformSA)
+						assert.Equal(denyAllEgressName, denyAllEgressRule.Get("ruleName").String(), fmt.Sprintf("firewall rule %s should exist", denyAllEgressName))
 						assert.Equal("EGRESS", denyAllEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", denyAllEgressName))
-						assert.True(denyAllEgressRule.Get("logConfig.enable").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", denyAllEgressName))
-						assert.Equal("0.0.0.0/0", denyAllEgressRule.Get("destinationRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be 0.0.0.0/0", denyAllEgressName))
-						assert.Equal(1, len(denyAllEgressRule.Get("denied").Array()), fmt.Sprintf("firewall rule %s should have only one denied", denyAllEgressName))
-						assert.Equal(1, len(denyAllEgressRule.Get("denied.0").Map()), fmt.Sprintf("firewall rule %s should have only one denied only with no ports", denyAllEgressName))
-						assert.Equal("all", denyAllEgressRule.Get("denied.0.IPProtocol").String(), fmt.Sprintf("firewall rule %s should deny all protocols", denyAllEgressName))
+						assert.Equal("deny", denyAllEgressRule.Get("action").String(), fmt.Sprintf("firewall rule %s action should be deny", denyAllEgressName))
+						assert.True(denyAllEgressRule.Get("enableLogging").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", denyAllEgressName))
+						assert.Equal("0.0.0.0/0", denyAllEgressRule.Get("match.destIpRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be 0.0.0.0/0", denyAllEgressName))
 
 						allowApiEgressName := networkNames[networkType]["fw_allow_api_egress"]
-						allowApiEgressRule := gcloud.Runf(t, "compute firewall-rules describe %s --project %s --impersonate-service-account %s", allowApiEgressName, projectID, terraformSA)
-						assert.Equal(allowApiEgressName, allowApiEgressRule.Get("name").String(), fmt.Sprintf("firewall rule %s should exist", allowApiEgressName))
+						allowApiEgressRule := gcloud.Runf(t, "network-firewall-policies rules describe 1000 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", projectID, terraformSA)
+						assert.Equal(allowApiEgressName, allowApiEgressRule.Get("ruleName").String(), fmt.Sprintf("firewall rule %s should exist", allowApiEgressName))
 						assert.Equal("EGRESS", allowApiEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", allowApiEgressName))
-						assert.True(allowApiEgressRule.Get("logConfig.enable").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", allowApiEgressName))
-						assert.Equal(googleapisCIDR[envName][networkType], allowApiEgressRule.Get("destinationRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be %s", allowApiEgressName, googleapisCIDR[envName][networkType]))
-						assert.Equal(1, len(allowApiEgressRule.Get("allowed").Array()), fmt.Sprintf("firewall rule %s should have only one allowed", allowApiEgressName))
-						assert.Equal(2, len(allowApiEgressRule.Get("allowed.0").Map()), fmt.Sprintf("firewall rule %s should have only one allowed only with protocol end ports", allowApiEgressName))
-						assert.Equal("tcp", allowApiEgressRule.Get("allowed.0.IPProtocol").String(), fmt.Sprintf("firewall rule %s should allow tcp protocol", allowApiEgressName))
-						assert.Equal(1, len(allowApiEgressRule.Get("allowed.0.ports").Array()), fmt.Sprintf("firewall rule %s should allow only one port", allowApiEgressName))
-						assert.Equal("443", allowApiEgressRule.Get("allowed.0.ports.0").String(), fmt.Sprintf("firewall rule %s should allow port 443", allowApiEgressName))
+						assert.Equal("allow", allowApiEgressRule.Get("action").String(), fmt.Sprintf("firewall rule %s action should be allow", allowApiEgressName))
+						assert.True(allowApiEgressRule.Get("enableLogging").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", allowApiEgressName))
+						assert.Equal(googleapisCIDR[envName][networkType], allowApiEgressRule.Get("match.destIpRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be %s", allowApiEgressName, googleapisCIDR[envName][networkType]))
 
 						if networkMode == "" {
 							for _, router := range []struct {

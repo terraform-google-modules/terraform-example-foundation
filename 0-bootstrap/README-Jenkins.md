@@ -234,7 +234,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
    ```bash
    mv backend.tf.example backend.tf
-   for i in `find . -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 
 1. Re-run `terraform init` and agree to copy state to gcs when prompted
@@ -340,15 +340,15 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i'' -e "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw organization_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
-   sed -i "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
+   sed -i'' -e "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
 
    CICD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cicd_project_id)
    echo "_PROJECT_ID = ${CICD_PROJECT_ID}"
-   sed -i "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
+   sed -i'' -e "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
    ```
 
 1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
@@ -377,9 +377,9 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
 
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
 
-   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
+   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
 
 1. Commit changes.
@@ -446,15 +446,15 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i'' -e "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw environment_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
-   sed -i "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
+   sed -i'' -e "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
 
    CICD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cicd_project_id)
    echo "_PROJECT_ID = ${CICD_PROJECT_ID}"
-   sed -i "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
+   sed -i'' -e "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
    ```
 
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment and 0-bootstrap.
@@ -468,7 +468,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
    ```
 
 1. Commit changes.
@@ -552,15 +552,15 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i'' -e "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
-   sed -i "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
+   sed -i'' -e "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
 
    CICD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cicd_project_id)
    echo "_PROJECT_ID = ${CICD_PROJECT_ID}"
-   sed -i "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
+   sed -i'' -e "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
    ```
 
 1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
@@ -580,11 +580,11 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
-   sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
+   sed -i'' -e "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
 
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
 
 1. Commit changes.
@@ -599,7 +599,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
 
    ```bash
-   for i in `find . -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 
 1. Use `terraform output` to get the Cloud Build project ID and the networks step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
@@ -705,15 +705,15 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i'' -e "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
-   sed -i "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
+   sed -i'' -e "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
 
    CICD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cicd_project_id)
    echo "_PROJECT_ID = ${CICD_PROJECT_ID}"
-   sed -i "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
+   sed -i'' -e "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
    ```
 
 1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
@@ -733,11 +733,11 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
-   sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
+   sed -i'' -e "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
 
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
 
 1. Commit changes.
@@ -752,7 +752,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
 
    ```bash
-   for i in `find . -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 
 1. Use `terraform output` to get the Cloud Build project ID and the networks step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
@@ -858,15 +858,15 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    BACKEND_STATE_BUCKET_NAME=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "_STATE_BUCKET_NAME = ${BACKEND_STATE_BUCKET_NAME}"
-   sed -i "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
+   sed -i'' -e "s/BACKEND_STATE_BUCKET_NAME/${BACKEND_STATE_BUCKET_NAME}/" ./Jenkinsfile
 
    TERRAFORM_SA_EMAIL=$(terraform -chdir="../0-bootstrap/" output -raw projects_step_terraform_service_account_email)
    echo "_TF_SA_EMAIL = ${TERRAFORM_SA_EMAIL}"
-   sed -i "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
+   sed -i'' -e "s/TERRAFORM_SA_EMAIL/${TERRAFORM_SA_EMAIL}/" ./Jenkinsfile
 
    CICD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cicd_project_id)
    echo "_PROJECT_ID = ${CICD_PROJECT_ID}"
-   sed -i "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
+   sed -i'' -e "s/CICD_PROJECT_ID/${CICD_PROJECT_ID}/" ./Jenkinsfile
    ```
 
 1. Rename `auto.example.tfvars` files to `auto.tfvars`.
@@ -886,7 +886,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```bash
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
 
 1. Commit changes.

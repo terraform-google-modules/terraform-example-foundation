@@ -62,7 +62,7 @@ echo "**** Startup Step 8/8: Add public SSH key to the list of authorized keys. 
 SSHD_CONFIG_DIR="/etc/ssh"
 
 # Setting up the sshd_config file
-sed -i $SSHD_CONFIG_DIR/sshd_config \
+sed -i'' -e $SSHD_CONFIG_DIR/sshd_config \
         -e 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/' \
         -e 's/#AuthorizedKeysFile.*/AuthorizedKeysFile    \/etc\/ssh\/authorized_keys/'
 

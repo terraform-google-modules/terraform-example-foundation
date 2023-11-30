@@ -86,7 +86,7 @@ output "optional_groups" {
 /* ----------------------------------------
     Specific to cloudbuild_module
    ---------------------------------------- */
-# Comment-out the cloudbuild_bootstrap module and its outputs if you want to use Jenkins instead of Cloud Build
+# Comment-out the cloudbuild_bootstrap module and its outputs if you want to use GitHub Actions, GitLab CI/CD, or Jenkins instead of Cloud Build
 # output "cloudbuild_project_id" {
 #   description = "Project where Cloud Build configuration and terraform container image will reside."
 #   value       = module.tf_source.cloudbuild_project_id
@@ -123,6 +123,7 @@ output "optional_groups" {
 #   }
 # }
 
+<<<<<<< HEAD
 # output "cloud_build_private_worker_pool_id" {
 #   description = "ID of the Cloud Build private worker pool."
 #   value       = module.tf_private_pool.private_worker_pool_id
@@ -132,6 +133,12 @@ output "optional_groups" {
 #   description = "The Cloud Build private worker IP range ID."
 #   value       = module.tf_private_pool.worker_range_id
 # }
+=======
+output "cloud_build_private_worker_pool_id" {
+  description = "ID of the Cloud Build private worker pool."
+  value       = module.tf_private_pool.private_worker_pool_id
+}
+>>>>>>> origin/master
 
 # output "cloud_build_worker_peered_ip_range" {
 #   description = "The IP range of the peered service network."
@@ -141,6 +148,20 @@ output "optional_groups" {
 # output "cloud_build_peered_network_id" {
 #   description = "The ID of the Cloud Build peered network."
 #   value       = module.tf_private_pool.peered_network_id
+# }
+
+/* ----------------------------------------
+    Specific to github_bootstrap
+   ---------------------------------------- */
+# Un-comment github_bootstrap and its outputs if you want to use GitHub Actions instead of Cloud Build
+# output "cicd_project_id" {
+#   description = "Project where the CI/CD infrastructure for GitHub Action resides."
+#   value       = module.gh_cicd.project_id
+# }
+
+# output "projects_gcs_bucket_tfstate" {
+#   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
+#   value       = module.seed_bootstrap.gcs_bucket_tfstate
 # }
 
 /* ----------------------------------------

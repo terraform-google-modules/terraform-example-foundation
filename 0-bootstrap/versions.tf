@@ -28,6 +28,12 @@ terraform {
       source  = "gitlabhq/gitlab"
       version = "16.6.0"
     }
+
+    // Un-comment github required_providers when using GitHub Actions
+    # github = {
+    #   source  = "integrations/github"
+    #   version = "5.34.0"
+    # }
   }
 
   provider_meta "google" {

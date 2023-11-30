@@ -165,6 +165,37 @@ variable "initial_group_config" {
 }
 
 /* ----------------------------------------
+    Specific to github_bootstrap
+   ---------------------------------------- */
+
+# Un-comment github_bootstrap and its outputs if you want to use GitHub Actions instead of Cloud Build
+# variable "gh_repos" {
+#   description = <<EOT
+#   Configuration for the GitHub Repositories to be used to deploy the Terraform Example Foundation stages.
+#   owner: The owner of the repositories. An user or an organization.
+#   bootstrap: The repository to host the code of the bootstrap stage.
+#   organization: The repository to host the code of the organization stage.
+#   environments: The repository to host the code of the environments stage.
+#   networks: The repository to host the code of the networks stage.
+#   projects: The repository to host the code of the projects stage.
+#   EOT
+#   type = object({
+#     owner        = string,
+#     bootstrap    = string,
+#     organization = string,
+#     environments = string,
+#     networks     = string,
+#     projects     = string,
+#   })
+# }
+
+# variable "gh_token" {
+#   description = "A fine-grained personal access token for the user or organization. See https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token"
+#   type        = string
+#   sensitive   = true
+# }
+
+/* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */
 

@@ -234,7 +234,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
    ```bash
    mv backend.tf.example backend.tf
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 
 1. Re-run `terraform init` and agree to copy state to gcs when prompted
@@ -599,7 +599,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
 
    ```bash
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 
 1. Use `terraform output` to get the Cloud Build project ID and the networks step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
@@ -752,7 +752,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
 
    ```bash
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
    ```
 
 1. Use `terraform output` to get the Cloud Build project ID and the networks step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
@@ -899,7 +899,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Also update `backend.tf` with your backend bucket from 0-bootstrap output.
 
    ```bash
-   for i in `find -name 'backend.tf'`; do sed -r -i "s/UPDATE_ME|UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -r -i "s/UPDATE_ME|UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
    ```
 
 1. You need to manually plan and apply only once the `shared` environments since `development`, `non-production`, and `production` depend on it.

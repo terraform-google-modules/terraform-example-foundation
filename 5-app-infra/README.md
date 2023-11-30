@@ -239,7 +239,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq '."bu1-example-app"' --raw-output)
    echo "backend_bucket = ${backend_bucket}"
 
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_APP_INFRA_BUCKET/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i "s/UPDATE_APP_INFRA_BUCKET/${backend_bucket}/" $i; done
    ```
 
 We will now deploy each of our environments (development/production/non-production) using this script.

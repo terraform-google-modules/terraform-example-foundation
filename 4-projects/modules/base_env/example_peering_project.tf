@@ -122,7 +122,6 @@ module "firewall_rules" {
   project_id  = module.peering_project.project_id
   policy_name = "fp-${local.env_code}-peering-project-firewalls"
   description = "Firewall rules for Peering Network: ${module.peering_network.network_name}."
-  target_vpcs = ["projects/${module.peering_project.project_id}/global/networks/${module.peering_network.network_name}"]
 
   rules = concat(
     [
@@ -243,6 +242,18 @@ module "firewall_rules" {
   depends_on = [
     google_tags_tag_value.firewall_tag_value_ssh,
     google_tags_tag_value.firewall_tag_value_rdp
+  ]
+}
+
+resource "google_compute_network_firewall_policy_association" "vpc_association" {
+  name              = "${module.firewall_rules.fw_policy[0].name}-${module.peering_network.network_name}"
+  attachment_target = module.peering_network.network_id
+  firewall_policy   = module.firewall_rules.fw_policy[0].id
+  project           = module.peering_project.project_id
+
+  depends_on = [
+    module.firewall_rules,
+    module.peering_network
   ]
 }
 

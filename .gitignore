@@ -74,3 +74,6 @@ helpers/foundation-deployer/.steps.json
 
 # File to populate env vars used by Docker test runs
 .envrc
+
+# Handle files generated on sed command by old (2013-) MacOS versions
+*.tf-e

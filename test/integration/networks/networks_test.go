@@ -63,7 +63,7 @@ func getNetworkResourceNames(envCode string, networkMode string, firewallMode st
 			"region2_router2":       fmt.Sprintf("cr-%s-shared-base%s-us-central1-cr4", envCode, networkMode),
 			"firewall_policy":       fmt.Sprintf("fp-%s-%s-base-firewalls", envCode, firewallMode),
 			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-base-65530-e-d-all-all-all", envCode),
-			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-base-65430-e-a-allow-google-apis-all-tcp-443", envCode),
+			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-base-1000-e-a-allow-google-apis-all-tcp-443", envCode),
 		},
 		"restricted": {
 			"network_name":          fmt.Sprintf("vpc-%s-shared-restricted%s", envCode, networkMode),
@@ -81,7 +81,7 @@ func getNetworkResourceNames(envCode string, networkMode string, firewallMode st
 			"region2_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr8", envCode, networkMode),
 			"firewall_policy":       fmt.Sprintf("fp-%s-%s-restricted-firewalls", envCode, firewallMode),
 			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-restricted-65530-e-d-all-all-all", envCode),
-			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-restricted-65430-e-a-allow-google-apis-all-tcp-443", envCode),
+			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-restricted-1000-e-a-allow-google-apis-all-tcp-443", envCode),
 		},
 	}
 }

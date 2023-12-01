@@ -206,6 +206,10 @@ If you received a `PERMISSION_DENIED` error while running the `gcloud access-con
 
 See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying-step-1-org).
 
+### Deploying with GitHub Actions
+
+See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-step-1-org).
+
 ### Running Terraform locally
 
 1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder.

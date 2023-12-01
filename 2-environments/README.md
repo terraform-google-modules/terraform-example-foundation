@@ -174,7 +174,11 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 
 ### Deploying with Jenkins
 
-See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying-step-2-environments)
+See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying-step-2-environments).
+
+### Deploying with GitHub Actions
+
+See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-step-2-environments).
 
 ### Run Terraform locally
 

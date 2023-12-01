@@ -122,6 +122,12 @@ for requirements and instructions on how to run the 0-bootstrap step. Using
 Jenkins requires a few manual steps, including configuring connectivity with
 your current Jenkins manager (controller) environment.
 
+## Deploying with GitHub Actions
+
+If you are deploying using [GitHub Actions](https://docs.github.com/en/actions), see [README-GitHub.md](./README-GitHub.md)
+for requirements and instructions on how to run the 0-bootstrap step.
+Using GitHub Actions requires manual creation of the GitHub repositories used in each stage.
+
 ## Deploying with Cloud Build
 
 1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and navigate to the `0-bootstrap` folder.

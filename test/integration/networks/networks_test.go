@@ -406,7 +406,7 @@ func TestNetworks(t *testing.T) {
 						assert.Equal(usCentral1Range, subnet2.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usCentral1Range))
 
 						denyAllEgressName := networkNames[networkType]["fw_deny_all_egress"]
-						denyAllEgressRule := gcloud.Runf(t, "compute network-firewall-policies rules describe 65530 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", networkNames[networkType]["firewall_policy"], projectID, terraformSA)
+						denyAllEgressRule := gcloud.Runf(t, "compute network-firewall-policies rules describe 65530 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", networkNames[networkType]["firewall_policy"], projectID, terraformSA).Array()[0]
 						assert.Equal(denyAllEgressName, denyAllEgressRule.Get("ruleName").String(), fmt.Sprintf("firewall rule %s should exist", denyAllEgressName))
 						assert.Equal("EGRESS", denyAllEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", denyAllEgressName))
 						assert.Equal("deny", denyAllEgressRule.Get("action").String(), fmt.Sprintf("firewall rule %s action should be deny", denyAllEgressName))
@@ -414,7 +414,7 @@ func TestNetworks(t *testing.T) {
 						assert.Equal("0.0.0.0/0", denyAllEgressRule.Get("match.destIpRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be 0.0.0.0/0", denyAllEgressName))
 
 						allowApiEgressName := networkNames[networkType]["fw_allow_api_egress"]
-						allowApiEgressRule := gcloud.Runf(t, "compute network-firewall-policies rules describe 1000 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", networkNames[networkType]["firewall_policy"], projectID, terraformSA)
+						allowApiEgressRule := gcloud.Runf(t, "compute network-firewall-policies rules describe 1000 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", networkNames[networkType]["firewall_policy"], projectID, terraformSA).Array()[0]
 						assert.Equal(allowApiEgressName, allowApiEgressRule.Get("ruleName").String(), fmt.Sprintf("firewall rule %s should exist", allowApiEgressName))
 						assert.Equal("EGRESS", allowApiEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", allowApiEgressName))
 						assert.Equal("allow", allowApiEgressRule.Get("action").String(), fmt.Sprintf("firewall rule %s action should be allow", allowApiEgressName))

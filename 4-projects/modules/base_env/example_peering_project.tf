@@ -122,7 +122,7 @@ module "firewall_rules" {
   project_id  = module.peering_project.project_id
   policy_name = "fp-${local.env_code}-peering-project-firewalls"
   description = "Firewall rules for Peering Network: ${module.peering_network.network_name}."
-  target_vpcs = [module.peering_network.network_name]
+  target_vpcs = ["projects/${module.peering_project.project_id}/global/networks/${module.peering_network.network_name}"]
 
   rules = concat(
     [
@@ -158,6 +158,42 @@ module "firewall_rules" {
             {
               ip_protocol = "tcp"
               ports       = ["443"]
+            },
+          ]
+        }
+      },
+      {
+        // Allow SSH via IAP when using the ssh-iap-access/allow resource manager tag for Linux workloads.
+        rule_name          = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
+        action             = "allow"
+        direction          = "INGRESS"
+        priority           = "1000"
+        enable_logging     = true
+        target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"]
+        match = {
+          src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+              ports       = ["22"]
+            },
+          ]
+        }
+      },
+      {
+        // Allow RDP via IAP when using the rdp-iap-access/allow resource manager tag for Windows workloads.
+        rule_name          = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
+        action             = "allow"
+        direction          = "INGRESS"
+        priority           = "1001"
+        enable_logging     = true
+        target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"]
+        match = {
+          src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+              ports       = ["3389"]
             },
           ]
         }
@@ -203,70 +239,10 @@ module "firewall_rules" {
       },
     ]
   )
-}
-
-// Allow SSH and RDP via IAP when using the Firewall Secure Tags.
-module "allow_iap_ssh_rdp" {
-  source  = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version = "~> 8.0"
-
-  project_id  = module.peering_project.project_id
-  policy_name = "fp-${local.env_code}-allow-iap-policy"
-
-  rules = [
-    {
-      // Allow SSH via IAP when using the ssh-iap-access/allow resource manager tag for Linux workloads.
-      rule_name          = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
-      action             = "allow"
-      direction          = "INGRESS"
-      priority           = "1000"
-      enable_logging     = true
-      target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"]
-      match = {
-        src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
-        layer4_configs = [
-          {
-            ip_protocol = "tcp"
-            ports       = ["22"]
-          },
-        ]
-      }
-    },
-    {
-      // Allow RDP via IAP when using the rdp-iap-access/allow resource manager tag for Windows workloads.
-      rule_name          = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
-      action             = "allow"
-      direction          = "INGRESS"
-      priority           = "1001"
-      enable_logging     = true
-      target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"]
-      match = {
-        src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
-        layer4_configs = [
-          {
-            ip_protocol = "tcp"
-            ports       = ["3389"]
-          },
-        ]
-      }
-    }
-  ]
 
   depends_on = [
     google_tags_tag_value.firewall_tag_value_ssh,
     google_tags_tag_value.firewall_tag_value_rdp
-  ]
-}
-
-resource "google_compute_network_firewall_policy_association" "vpc_associations" {
-  name              = "fpa-${local.env_code}-allow-iap-ssh-rdp"
-  attachment_target = "projects/${module.peering_project.project_id}/global/networks/${module.peering_network.network_id}"
-  firewall_policy   = module.allow_iap_ssh_rdp.fw_policy[0].id
-  project           = module.peering_project.project_id
-
-  depends_on = [
-    module.allow_iap_ssh_rdp,
-    module.peering_network
   ]
 }
 

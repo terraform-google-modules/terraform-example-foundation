@@ -260,7 +260,7 @@ module "allow_iap_ssh_rdp" {
 
 resource "google_compute_network_firewall_policy_association" "vpc_associations" {
   name              = "fpa-${local.env_code}-allow-iap-ssh-rdp"
-  attachment_target = module.peering_network.network_id
+  attachment_target = "projects/${module.peering_project.project_id}/global/networks/${module.peering_network.network_id}"
   firewall_policy   = module.allow_iap_ssh_rdp.fw_policy[0].id
   project           = module.peering_project.project_id
 

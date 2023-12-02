@@ -22,6 +22,12 @@ terraform {
       source  = "hashicorp/google"
       version = ">= 3.50, != 4.31.0"
     }
+
+    // Un-comment github required_providers when using GitHub Actions
+    # github = {
+    #   source  = "integrations/github"
+    #   version = "5.34.0"
+    # }
   }
 
   provider_meta "google" {

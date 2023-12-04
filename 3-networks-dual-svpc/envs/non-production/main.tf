@@ -27,6 +27,10 @@ locals {
     (local.default_region1) = "10.0.128.0/18"
     (local.default_region2) = "10.1.128.0/18"
   }
+  base_subnet_proxy_ranges = {
+    (local.default_region1) = "10.18.4.0/23"
+    (local.default_region2) = "10.19.4.0/23"
+  }
   base_subnet_secondary_ranges = {
     (local.default_region1) = [
       {
@@ -46,6 +50,10 @@ locals {
   restricted_subnet_primary_ranges = {
     (local.default_region1) = "10.8.128.0/18"
     (local.default_region2) = "10.9.128.0/18"
+  }
+  restricted_subnet_proxy_ranges = {
+    (local.default_region1) = "10.26.4.0/23"
+    (local.default_region2) = "10.27.4.0/23"
   }
   restricted_subnet_secondary_ranges = {
     (local.default_region1) = [
@@ -76,9 +84,11 @@ module "base_env" {
   enable_partner_interconnect           = false
   base_private_service_cidr             = local.base_private_service_cidr
   base_subnet_primary_ranges            = local.base_subnet_primary_ranges
+  base_subnet_proxy_ranges = local.base_subnet_proxy_ranges
   base_subnet_secondary_ranges          = local.base_subnet_secondary_ranges
   base_private_service_connect_ip       = "10.17.0.3"
   restricted_private_service_cidr       = local.restricted_private_service_cidr
+  restricted_subnet_proxy_ranges = local.restricted_subnet_proxy_ranges
   restricted_subnet_primary_ranges      = local.restricted_subnet_primary_ranges
   restricted_subnet_secondary_ranges    = local.restricted_subnet_secondary_ranges
   restricted_private_service_connect_ip = "10.17.0.7"

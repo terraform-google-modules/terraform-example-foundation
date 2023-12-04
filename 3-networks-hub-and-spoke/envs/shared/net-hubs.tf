@@ -22,6 +22,10 @@ locals {
     (local.default_region1) = "10.0.0.0/18"
     (local.default_region2) = "10.1.0.0/18"
   }
+  base_subnet_proxy_ranges = {
+    (local.default_region1) = "10.18.0.0/23"
+    (local.default_region2) = "10.19.0.0/23"
+  }
   /*
    * Restricted network ranges
    */
@@ -29,7 +33,10 @@ locals {
     (local.default_region1) = "10.8.0.0/18"
     (local.default_region2) = "10.9.0.0/18"
   }
-
+  restricted_subnet_proxy_ranges = {
+    (local.default_region1) = "10.26.0.0/23"
+    (local.default_region2) = "10.27.0.0/23"
+  }
 
   supported_restricted_service = [
     "accessapproval.googleapis.com",
@@ -200,6 +207,22 @@ module "base_shared_vpc" {
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
       description           = "Base network hub subnet for ${local.default_region2}"
+    },
+    {
+      subnet_name           = "sb-c-shared-base-hub-${local.default_region1}-proxy"
+      subnet_ip             = local.base_subnet_proxy_ranges[local.default_region1]
+      subnet_region         = local.default_region1
+      subnet_private_access = "true"
+      subnet_flow_logs      = false
+      description           = "Base network hub proxy-only subnet for ${local.default_region1}"
+    },
+    {
+      subnet_name           = "sb-c-shared-base-hub-${local.default_region2}-proxy"
+      subnet_ip             = local.base_subnet_proxy_ranges[local.default_region2]
+      subnet_region         = local.default_region2
+      subnet_private_access = "true"
+      subnet_flow_logs      = false
+      description           = "Base network hub proxy-only subnet for ${local.default_region2}"
     }
   ]
   secondary_ranges = {}
@@ -256,6 +279,22 @@ module "restricted_shared_vpc" {
       subnet_private_access = "true"
       subnet_flow_logs      = var.subnetworks_enable_logging
       description           = "Restricted network hub subnet for ${local.default_region2}"
+    },
+    {
+      subnet_name           = "sb-c-shared-restricted-hub-${local.default_region1}-proxy"
+      subnet_ip             = local.restricted_subnet_proxy_ranges[local.default_region1]
+      subnet_region         = local.default_region1
+      subnet_private_access = "true"
+      subnet_flow_logs      = false
+      description           = "Restricted network hub proxy-only subnet for ${local.default_region1}"
+    },
+    {
+      subnet_name           = "sb-c-shared-restricted-hub-${local.default_region2}-proxy"
+      subnet_ip             = local.restricted_subnet_proxy_ranges[local.default_region2]
+      subnet_region         = local.default_region2
+      subnet_private_access = "true"
+      subnet_flow_logs      = false
+      description           = "Restricted network hub proxy-only subnet for ${local.default_region2}"
     }
   ]
   secondary_ranges = {}

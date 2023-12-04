@@ -243,7 +243,7 @@ tf_validate() {
   echo "*****************************************************"
   if [ -z "$policy_file_path" ]; then
     echo "no policy repo found! Check the argument provided for policy_source to this script."
-    echo "https://github.com/GoogleCloudPlatform/terraform-validator/blob/main/docs/policy_library.md"
+    echo "https://github.com/GoogleCloudPlatform/policy-library/blob/main/docs/user_guide.md#how-to-set-up-constraints-with-policy-library"
   else
     if [ -d "$path" ]; then
       cd "$path" || exit

@@ -79,7 +79,7 @@ spec:
 
         # The Beta version of the API uses the identityNamespace field instead
         # It won't appear in Cloud Asset Inventory data, but it will appear
-        # in conversions from Terraform Validator (using the Beta provider).
+        # in conversions using the Beta provider.
         workload_identity_field_exists(workload_identity_config) {
         	lib.has_field(workload_identity_config, "identityNamespace")
         }

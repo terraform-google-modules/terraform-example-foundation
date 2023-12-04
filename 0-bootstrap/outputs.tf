@@ -123,7 +123,6 @@ output "optional_groups" {
 #   }
 # }
 
-<<<<<<< HEAD
 # output "cloud_build_private_worker_pool_id" {
 #   description = "ID of the Cloud Build private worker pool."
 #   value       = module.tf_private_pool.private_worker_pool_id
@@ -133,12 +132,6 @@ output "optional_groups" {
 #   description = "The Cloud Build private worker IP range ID."
 #   value       = module.tf_private_pool.worker_range_id
 # }
-=======
-output "cloud_build_private_worker_pool_id" {
-  description = "ID of the Cloud Build private worker pool."
-  value       = module.tf_private_pool.private_worker_pool_id
-}
->>>>>>> origin/master
 
 # output "cloud_build_worker_peered_ip_range" {
 #   description = "The IP range of the peered service network."

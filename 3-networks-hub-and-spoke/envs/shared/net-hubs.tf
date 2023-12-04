@@ -215,6 +215,7 @@ module "base_shared_vpc" {
       subnet_private_access = "true"
       subnet_flow_logs      = false
       description           = "Base network hub proxy-only subnet for ${local.default_region1}"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     },
     {
       subnet_name           = "sb-c-shared-base-hub-${local.default_region2}-proxy"
@@ -223,6 +224,7 @@ module "base_shared_vpc" {
       subnet_private_access = "true"
       subnet_flow_logs      = false
       description           = "Base network hub proxy-only subnet for ${local.default_region2}"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     }
   ]
   secondary_ranges = {}

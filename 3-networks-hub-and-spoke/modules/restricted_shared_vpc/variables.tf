@@ -97,7 +97,7 @@ variable "default_region2" {
 }
 
 variable "subnets" {
-  type        = list(map(string))
+  type        = list(object({subnet_name = string, subnet_ip = string, subnet_region = string }))
   description = "The list of subnets being created"
   default     = []
 }

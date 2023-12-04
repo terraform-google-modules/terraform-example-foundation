@@ -324,7 +324,7 @@ module "base_shared_vpc" {
       purpose               = "REGIONAL_MANAGED_PROXY"
     }
   ]
-  
+
   secondary_ranges = {
     "sb-${var.environment_code}-shared-base-${var.default_region1}" = var.base_subnet_secondary_ranges[var.default_region1]
   }

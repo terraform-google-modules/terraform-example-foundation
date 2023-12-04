@@ -7,6 +7,7 @@
 | base\_private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services in the Base Shared Vpc. | `string` | n/a | yes |
 | base\_private\_service\_connect\_ip | The base subnet internal IP to be used as the private service connect endpoint in the Base Shared VPC | `string` | n/a | yes |
 | base\_subnet\_primary\_ranges | The base subnet primary IPTs ranges to the Base Shared Vpc. | `map(string)` | n/a | yes |
+| base\_subnet\_proxy\_ranges | The base proxy-only subnet primary IPTs ranges to the Base Shared Vpc. | `map(string)` | n/a | yes |
 | base\_subnet\_secondary\_ranges | The base subnet secondary IPTs ranges to the Base Shared Vpc. | `map(list(map(string)))` | n/a | yes |
 | custom\_restricted\_services | List of custom services to be protected by the VPC-SC perimeter. If empty, all supported services (https://cloud.google.com/vpc-service-controls/docs/supported-products) will be protected. | `list(string)` | `[]` | no |
 | default\_region1 | First subnet region. The shared vpc modules only configures two regions. | `string` | n/a | yes |
@@ -23,6 +24,7 @@
 | restricted\_private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services in the Restricted Shared Vpc. | `string` | n/a | yes |
 | restricted\_private\_service\_connect\_ip | The base subnet internal IP to be used as the private service connect endpoint in the Restricted Shared VPC | `string` | n/a | yes |
 | restricted\_subnet\_primary\_ranges | The base subnet primary IPTs ranges to the Restricted Shared Vpc. | `map(string)` | n/a | yes |
+| restricted\_subnet\_proxy\_ranges | The base proxy-only subnet primary IPTs ranges to the Restricted Shared Vpc. | `map(string)` | n/a | yes |
 | restricted\_subnet\_secondary\_ranges | The base subnet secondary IPTs ranges to the Restricted Shared Vpc | `map(list(map(string)))` | n/a | yes |
 
 ## Outputs

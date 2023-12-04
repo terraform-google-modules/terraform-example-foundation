@@ -22,7 +22,7 @@
 | private\_service\_connect\_ip | Internal IP to be used as the private service connect endpoint | `string` | n/a | yes |
 | project\_id | Project ID for Private Shared VPC. | `string` | n/a | yes |
 | secondary\_ranges | Secondary ranges that will be used in some of the subnets | `map(list(object({ range_name = string, ip_cidr_range = string })))` | `{}` | no |
-| subnets | The list of subnets being created | `list(object({subnet_name = string, subnet_ip = string, subnet_region = string }))` | `[]` | no |
+| subnets | The list of subnets being created | `list(object({ subnet_name = string, subnet_ip = string, subnet_region = string }))` | `[]` | no |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | `bool` | `false` | no |
 
 ## Outputs

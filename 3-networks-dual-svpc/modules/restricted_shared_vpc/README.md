@@ -28,7 +28,7 @@
 | project\_number | Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter. | `number` | n/a | yes |
 | restricted\_services | List of services to restrict. | `list(string)` | n/a | yes |
 | secondary\_ranges | Secondary ranges that will be used in some of the subnets | `map(list(object({ range_name = string, ip_cidr_range = string })))` | `{}` | no |
-| subnets | The list of subnets being created | `list(object({subnet_name = string, subnet_ip = string, subnet_region = string }))` | `[]` | no |
+| subnets | The list of subnets being created | `list(object({ subnet_name = string, subnet_ip = string, subnet_region = string }))` | `[]` | no |
 | windows\_activation\_enabled | Enable Windows license activation for Windows workloads. | `bool` | `false` | no |
 
 ## Outputs

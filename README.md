@@ -303,7 +303,7 @@ Development happens on feature and bug fix branches (which can be named `feature
 
 After validated in `development`, changes can be promoted to `non-production` by opening a PR or MR targeting the `non-production` branch and merging them. Similarly, changes can be promoted from `non-production` to `production`.
 
-### Terraform-validator
+### Policy validation
 
 This repo uses the [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies) component of the `gcloud` CLI to validate the Terraform plans against a [library of Google Cloud policies](https://github.com/GoogleCloudPlatform/policy-library).
 

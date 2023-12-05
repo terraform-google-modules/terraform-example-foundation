@@ -48,4 +48,5 @@ module "monitoring_project" {
   budget_alert_pubsub_topic   = var.project_budget.monitoring_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.monitoring_alert_spent_percents
   budget_amount               = var.project_budget.monitoring_budget_amount
+  budget_alert_spend_basis    = var.project_budget.monitoring_budget_alert_spend_basis
 }

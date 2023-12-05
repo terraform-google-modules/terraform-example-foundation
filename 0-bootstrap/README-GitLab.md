@@ -2,7 +2,7 @@
 
 The objective of the following instructions is to configure the infrastructure that allows CI/CD deployments using
 GitLab CI/CD for the deploy of the Terraform Example Foundation stages (`0-bootstrap`, `1-org`, `2-environments`, `3-networks`, `4-projects`).
-The infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-b-cicd-wif-gl`).
+This infrastructure consists in two Google Cloud Platform projects (`prj-b-seed` and `prj-b-cicd-wif-gl`).
 
 It is a best practice to have two separate projects here (`prj-b-seed` and `prj-b-cicd-wif-gl`) for separation of concerns.
 On one hand, `prj-b-seed` stores terraform state and has the Service Accounts able to create / modify infrastructure.
@@ -61,6 +61,63 @@ that are created, see the organization bootstrap module
    git clone https://github.com/terraform-google-modules/terraform-example-foundation.git
    ```
 
+### Create git branches
+
+1. The instructions described in this document require that the branches used in the Terraform Example Foundation deploy to exist and to be [protected](https://docs.gitlab.com/ee/user/project/protected_branches.html). Follow the instructions on this section to create all the branches.
+1. Clone all the private projects you created at the same level of the `terraform-example-foundation` folder.
+You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured with GitLab for [authentication](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github).
+
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-BOOTSTRAP-REPO>.git gcp-bootstrap
+   ```
+   ```bash
+   git clone git@gilab.com:<GITLAB-OWNER>/<GITLAB-ORGANIZATION-REPO>.git gcp-org
+   ```
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-ENVIRONMENTS-REPO>.git gcp-environments
+   ```
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-NETWORKS-REPO>.git gcp-networks
+   ```
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-PROJECTS-REPO>.git gcp-projects
+   ```
+   ```bash
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-RUNNER-REPO>.git gcp-cicd-runner
+   ```
+
+1. The layout should be:
+
+   ```bash
+   gcp-bootstrap/
+   gcp-cicd-runner/
+   gcp-environments/
+   gcp-networks/
+   gcp-org/
+   gcp-projects/
+   terraform-example-foundation/
+   ```
+
+1. The following branches must be created in your git projects .
+
+   - CI/CD Runner: `image`
+   - Bootstrap: `plan` and `production`
+   - Organization: `plan` and `production`
+   - Environments: `plan`, `development`, `non-production`, and `production`
+   - Networks: `plan`, `development`, `non-production`, and `production`
+   - Projects: `plan`, `development`, `non-production`, and `production`
+
+1. These branches must not be empty, so that they can be the target branch of a merge request.
+Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create these branches with a seed file for each repository automatically.
+
+   ```bash
+   ./terraform-example-foundation/0-bootstrap/scripts/git_create_branches_helper.sh
+   ```
+
+1. The script will output logs related to the branches creation in the console and it will output the message
+`"Branch creation and push completed for all repositories"` at the end of the script execution.
+1. Terraform configuration on stage `0-bootstrap` will make these branches **protected**
+
 ### Build CI/CD runner image
 
 1. Clone the private project you created to host the docker configuration for the CI/CD runner at the same level of the `terraform-example-foundation` folder.
@@ -85,10 +142,10 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    cd gcp-cicd-runner
    ```
 
-1. Create a new branch called `image` which will contains the Docker image using in the Gitlab Pipelines.
+1. Checkout branch `image`. It will contain the Docker image used in the Gitlab Pipelines.
 
    ```bash
-   git checkout -b image
+   git checkout image
    ```
 
 1. Copy contents of foundation to cloned project (modify accordingly based on your current directory).
@@ -103,7 +160,7 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    ```bash
    git add .
    git commit -m 'Initialize CI/CD runner project'
-   git push --set-upstream origin image
+   git push
    ```
 
 1. Review the CI/CD Job output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-RUNNER-REPO/-/jobs under name `build-image`.
@@ -114,22 +171,7 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
 
 ### Deploying step 0-bootstrap
 
-1. Clone the private project you created to host the `0-bootstrap` terraform configuration at the same level of the `terraform-example-foundation` folder.
-You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured with GitLab.
-
-   ```bash
-   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-BOOTSTRAP-REPO>.git gcp-bootstrap
-   ```
-
-1. The layout should be:
-
-   ```bash
-   gcp-bootstrap/
-   gcp-cicd-runner/
-   terraform-example-foundation/
-   ```
-
-1. Navigate into the repo. All subsequent
+1. Navigate into the Bootstrap repo. All subsequent
    steps assume you are running them from the `gcp-bootstrap` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
@@ -140,7 +182,7 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
 1. change to a non-production branch.
 
    ```bash
-   git checkout -b plan
+   git checkout plan
    ```
 
 1. Copy contents of foundation to cloned project (modify accordingly based on your current directory).
@@ -269,15 +311,16 @@ export the GitLab personal or group access token as an environment variable:
    cd ../..
    git add .
    git commit -m 'Initialize bootstrap project'
-   git push --set-upstream origin plan
+   git push
    ```
 
-1. Merge changes to the production branch. TODO approval after pushing the code to the `production` branch go to https://gitlab.com/<GITLAB-OWNER>/<GITLAB-BOOTSTRAP-REPO>/-/jobs/ to run the apply job. go to the `terraform-apply` job with the Status "Manual" and Select "Run job".
-
-   ```bash
-   git checkout -b production
-   git push origin production
-   ```
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-BOOTSTRAP-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `production` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-BOOTSTRAP-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-BOOTSTRAP-REPO/-/pipelines under `tf-apply`.
+1. If the GitLab pipelines is successful, apply the next environment.
 
 **Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage.
 They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
@@ -291,11 +334,6 @@ we recommend that you request 50 additional projects for the **projects step ser
 
 ## Deploying step 1-org
 
-1. Clone the repository you created to host the `1-org` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@gilab.com:<GITLAB-OWNER>/<GITLAB-ORGANIZATION-REPO>.git gcp-org
-   ```
 
 1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-org` directory.
    If you run them from another directory, adjust your copy paths accordingly.
@@ -304,24 +342,10 @@ we recommend that you request 50 additional projects for the **projects step ser
    cd gcp-org
    ```
 
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-   ```
-
-1. Create the production branch
-
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-   ```
-
 1. change to a non-production branch.
 
    ```bash
-   git checkout -b plan
+   git checkout plan
    ```
 
 1. Copy contents of foundation to new repo.
@@ -388,20 +412,13 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
 1. If the notification exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
 
-1. Commit changes.
+1. Commit changes and Push your plan branch.
 
    ```bash
    git add .
    git commit -m 'Initialize org repo'
+   git push
    ```
-
-1. Push your plan branch.
-
-   ```bash
-   git push --set-upstream origin plan
-   ```
-
-**Important:** Before opening a merge request, make sure the option `Delete source branch when merge request is accepted.` in the "Merge options" section is unchecked.
 
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `production` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
@@ -414,12 +431,6 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
 ## Deploying step 2-environments
 
-1. Clone the repository you created to host the `2-environments` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-ENVIRONMENTS-REPO>.git gcp-environments
-   ```
-
 1. Navigate into the repo. All subsequent
    steps assume you are running them from the `gcp-environments` directory.
    If you run them from another directory, adjust your copy paths accordingly.
@@ -428,30 +439,10 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
    cd gcp-environments
    ```
 
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-   ```
-
-1. Create the production, non-production, and development branches
-
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-
-   git checkout -b development
-   git push --set-upstream origin development
-   ```
-
 1. change to a non-production branch.
 
    ```bash
-   git checkout -b plan
+   git checkout plan
    ```
 
 1. Copy contents of foundation to new repo.
@@ -483,20 +474,13 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
    sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" terraform.tfvars
    ```
 
-1. Commit changes.
+1. Commit changes and push your plan branch.
 
    ```bash
    git add .
    git commit -m 'Initialize environments repo'
+   git push
    ```
-
-1. Push your plan branch.
-
-   ```bash
-   git push --set-upstream origin plan
-   ```
-
-**Important:** Before opening a merge request, make sure the option `Delete source branch when merge request is accepted.` in the "Merge options" section is unchecked.
 
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `development` environment.
@@ -527,12 +511,6 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 
 ## Deploying step 3-networks-dual-svpc
 
-1. Clone the repository you created to host the `3-networks-dual-svpc` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-NETWORKS-REPO>.git gcp-networks
-   ```
-
 1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
@@ -540,30 +518,10 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    cd gcp-networks
    ```
 
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-   ```
-
-1. Create the production, non-production, and development branches
-
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-
-   git checkout -b development
-   git push --set-upstream origin development
-   ```
-
 1. change to a non-production branch.
 
    ```bash
-   git checkout -b plan
+   git checkout plan
    ```
 
 1. Copy contents of foundation to new repo.
@@ -658,10 +616,8 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. Push your plan branch.
 
    ```bash
-   git push --set-upstream origin plan
+   git push
    ```
-
-**Important:** Before opening a merge request, make sure the option `Delete source branch when merge request is accepted.` in the "Merge options" section is unchecked.
 
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `development` environment.
@@ -696,12 +652,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 ## Deploying step 3-networks-hub-and-spoke
 
-1. Clone the repository you created to host the `3-networks-hub-and-spoke` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-NETWORKS-REPO>.git gcp-networks
-   ```
-
 1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
@@ -709,30 +659,10 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    cd gcp-networks
    ```
 
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-   ```
-
-1. Create the production, non-production, and development branches
-
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-
-   git checkout -b development
-   git push --set-upstream origin development
-   ```
-
 1. change to a non-production branch.
 
    ```bash
-   git checkout -b plan
+   git checkout plan
    ```
 
 1. Copy contents of foundation to new repo.
@@ -814,10 +744,8 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. Push your plan branch.
 
    ```bash
-   git push --set-upstream origin plan
+   git push
    ```
-
-**Important:** Before opening a merge request, make sure the option `Delete source branch when merge request is accepted.` in the "Merge options" section is unchecked.
 
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `development` environment.
@@ -853,12 +781,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 ## Deploying step 4-projects
 
-1. Clone the repository you created to host the `4-projects` terraform configuration at the same level of the `terraform-example-foundation` folder.
-
-   ```bash
-   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-PROJECTS-REPO>.git gcp-projects
-   ```
-
 1. Navigate into the repo. All subsequent
    steps assume you are running them from the `gcp-projects` directory.
    If you run them from another directory, adjust your copy paths accordingly.
@@ -867,30 +789,10 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    cd gcp-projects
    ```
 
-1. Seed the repository if it has not been initialized yet.
-
-   ```bash
-   git commit --allow-empty -m 'repository seed'
-   git push --set-upstream origin main
-   ```
-
-1. Create the production, non-production, and development branches
-
-   ```bash
-   git checkout -b production
-   git push --set-upstream origin production
-
-   git checkout -b non-production
-   git push --set-upstream origin non-production
-
-   git checkout -b development
-   git push --set-upstream origin development
-   ```
-
 1. change to a non-production branch.
 
    ```bash
-   git checkout -b plan
+   git checkout plan
    ```
 
 1. Copy contents of foundation to new repo.
@@ -974,10 +876,8 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. Push your plan branch.
 
    ```bash
-   git push --set-upstream origin plan
+   git push
    ```
-
-**Important:** Before opening a merge request, make sure the option `Delete source branch when merge request is accepted.` in the "Merge options" section is unchecked.
 
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `development` environment.

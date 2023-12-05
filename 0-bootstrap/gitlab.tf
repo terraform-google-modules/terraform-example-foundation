@@ -31,6 +31,12 @@ locals {
     "proj"      = var.gl_repos.projects,
   }
 
+  gl_branch_protection_envs = {
+    "env"  = var.gl_repos.environments,
+    "net"  = var.gl_repos.networks,
+    "proj" = var.gl_repos.projects,
+  }
+
   sa_mapping = {
     for k, v in local.gl_config : k => {
       sa_name   = google_service_account.terraform-env-sa[k].name
@@ -113,8 +119,41 @@ resource "gitlab_project_variable" "variables" {
   project   = "${var.gl_repos.owner}/${each.value.repository}"
   key       = each.value.name
   value     = each.value.value
-  protected = false
+  protected = true
   masked    = true
+}
+
+resource "gitlab_branch_protection" "image" {
+  project = "${var.gl_repos.owner}/${var.gl_repos.cicd_runner}"
+  branch  = "image"
+}
+
+resource "gitlab_branch_protection" "plan" {
+  for_each = local.gl_config
+
+  project = "${var.gl_repos.owner}/${each.value}"
+  branch  = "plan"
+}
+
+resource "gitlab_branch_protection" "production" {
+  for_each = local.gl_config
+
+  project = "${var.gl_repos.owner}/${each.value}"
+  branch  = "production"
+}
+
+resource "gitlab_branch_protection" "non_production" {
+  for_each = local.gl_branch_protection_envs
+
+  project = "${var.gl_repos.owner}/${each.value}"
+  branch  = "non-production"
+}
+
+resource "gitlab_branch_protection" "development" {
+  for_each = local.gl_branch_protection_envs
+
+  project = "${var.gl_repos.owner}/${each.value}"
+  branch  = "development"
 }
 
 module "cicd_project_wif_iam_member" {

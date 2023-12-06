@@ -119,7 +119,7 @@ resource "gitlab_project_variable" "variables" {
   project   = "${var.gl_repos.owner}/${each.value.repository}"
   key       = each.value.name
   value     = each.value.value
-  protected = true
+  protected = false
   masked    = true
 }
 

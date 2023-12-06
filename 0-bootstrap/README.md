@@ -290,8 +290,6 @@ Each step has instructions for this change.
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
-| gitlab\_token | A GitLab personal access token or group access token.<br>  See:<br>      https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html<br>      https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html | `string` | n/a | yes |
-| gl\_repos | Configuration for the GitLab Repositories to be used to deploy the Terraform Example Foundation stages.<br>  owner: The owner of the repositories. An user or a group.<br>  bootstrap: The repository to host the code of the bootstrap stage.<br>  organization: The repository to host the code of the organization stage.<br>  environments: The repository to host the code of the environments stage.<br>  networks: The repository to host the code of the networks stage.<br>  projects: The repository to host the code of the projects stage.<br>  cicd\_runner: The repository to host the code of docker image used for CI/CD. | <pre>object({<br>    owner        = string,<br>    bootstrap    = string,<br>    organization = string,<br>    environments = string,<br>    networks     = string,<br>    projects     = string,<br>    cicd_runner  = string,<br>  })</pre> | n/a | yes |
 | group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
 | group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
 | groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_groups   = bool<br>    billing_project = string<br>    required_groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = string<br>      audit_data_users           = string<br>      monitoring_workspace_users = string<br>    })<br>    optional_groups = object({<br>      gcp_platform_viewer      = string<br>      gcp_security_reviewer    = string<br>      gcp_network_viewer       = string<br>      gcp_scc_admin            = string<br>      gcp_global_secrets_admin = string<br>      gcp_audit_viewer         = string<br>    })<br>  })</pre> | <pre>{<br>  "billing_project": "",<br>  "create_groups": false,<br>  "optional_groups": {<br>    "gcp_audit_viewer": "",<br>    "gcp_global_secrets_admin": "",<br>    "gcp_network_viewer": "",<br>    "gcp_platform_viewer": "",<br>    "gcp_scc_admin": "",<br>    "gcp_security_reviewer": ""<br>  },<br>  "required_groups": {<br>    "audit_data_users": "",<br>    "billing_data_users": "",<br>    "group_billing_admins": "",<br>    "group_org_admins": "",<br>    "monitoring_workspace_users": ""<br>  }<br>}</pre> | no |
@@ -307,9 +305,17 @@ Each step has instructions for this change.
 | Name | Description |
 |------|-------------|
 | bootstrap\_step\_terraform\_service\_account\_email | Bootstrap Step Terraform Account |
-| cicd\_project\_id | Project where the CI/CD infrastructure for GitLab CI/CD resides. |
+| cloud\_build\_peered\_network\_id | The ID of the Cloud Build peered network. |
+| cloud\_build\_private\_worker\_pool\_id | ID of the Cloud Build private worker pool. |
+| cloud\_build\_worker\_peered\_ip\_range | The IP range of the peered service network. |
+| cloud\_build\_worker\_range\_id | The Cloud Build private worker IP range ID. |
+| cloud\_builder\_artifact\_repo | Artifact Registry (AR) Repository created to store TF Cloud Builder images. |
+| cloudbuild\_project\_id | Project where Cloud Build configuration and terraform container image will reside. |
 | common\_config | Common configuration data to be used in other steps. |
+| csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
 | environment\_step\_terraform\_service\_account\_email | Environment Step Terraform Account |
+| gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud Build artifacts in cicd project. |
+| gcs\_bucket\_cloudbuild\_logs | Bucket used to store Cloud Build logs in cicd project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for Foundations Pipelines in Seed Project. |
 | group\_billing\_admins | Google Group for GCP Billing Administrators. |
 | group\_org\_admins | Google Group for GCP Organization Administrators. |

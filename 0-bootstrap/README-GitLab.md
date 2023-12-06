@@ -111,7 +111,7 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
 Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create these branches with a seed file for each repository automatically.
 
    ```bash
-   ./terraform-example-foundation/0-bootstrap/scripts/git_create_branches_helper.sh
+   ./terraform-example-foundation/0-bootstrap/scripts/git_create_branches_helper.sh GITLAB
    ```
 
 1. The script will output logs related to the branches creation in the console and it will output the message

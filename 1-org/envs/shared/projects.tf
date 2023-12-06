@@ -331,12 +331,14 @@ module "base_restricted_environment_network" {
   env_code = each.value
 
   project_budget = {
-    base_network_budget_amount              = var.project_budget.base_network_budget_amount
-    base_network_alert_spent_percents       = var.project_budget.base_network_alert_spent_percents
-    base_network_alert_pubsub_topic         = var.project_budget.base_network_alert_pubsub_topic
-    restricted_network_budget_amount        = var.project_budget.restricted_network_budget_amount
-    restricted_network_alert_spent_percents = var.project_budget.restricted_network_alert_spent_percents
-    restricted_network_alert_pubsub_topic   = var.project_budget.restricted_network_alert_pubsub_topic
+    base_network_budget_amount                  = var.project_budget.base_network_budget_amount
+    base_network_alert_spent_percents           = var.project_budget.base_network_alert_spent_percents
+    base_network_alert_pubsub_topic             = var.project_budget.base_network_alert_pubsub_topic
+    base_network_budget_alert_spend_basis       = var.project_budget.base_network_budget_alert_spend_basis
+    restricted_network_budget_amount            = var.project_budget.restricted_network_budget_amount
+    restricted_network_alert_spent_percents     = var.project_budget.restricted_network_alert_spent_percents
+    restricted_network_alert_pubsub_topic       = var.project_budget.restricted_network_alert_pubsub_topic
+    restricted_network_budget_alert_spend_basis = var.project_budget.restricted_network_budget_alert_spend_basis
   }
 }
 

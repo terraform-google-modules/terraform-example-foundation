@@ -108,6 +108,9 @@ func ValidateDestroyFlags(t testing.TB, g GlobalTFVars) {
 	if g.BucketTfstateKmsForceDestroy == nil || !*g.BucketTfstateKmsForceDestroy {
 		flags = append(flags, "bucket_tfstate_kms_force_destroy")
 	}
+	if g.CaiMonitoringKmsForceDestroy == nil || !*g.CaiMonitoringKmsForceDestroy {
+		flags = append(flags, "cai_monitoring_kms_force_destroy")
+	}
 
 	if len(flags) > 0 {
 		fmt.Println("# To use the feature to destroy the deployment created by this helper,")

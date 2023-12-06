@@ -17,6 +17,13 @@ stages:
   - validate
   - apply
 
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
 build-image:
   stage: build
   image:
@@ -36,8 +43,6 @@ build-image:
   only:
     - image
 
-# All branches need to be protected, otherwise the value of environment variables won't be read.
-
 image:
   name: registry.gitlab.com/$CI_PROJECT_NAMESPACE/${CICD_RUNNER_REPO}/terraform-gcloud:latest
   entrypoint: [""]
@@ -53,22 +58,12 @@ terraform-plan:
     - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
     - gcloud config set project "$PROJECT_ID"
     - bash tf-wrapper.sh plan_validate_all $CI_COMMIT_REF_NAME $CI_PROJECT_DIR/policy-library $PROJECT_ID "FILESYSTEM"
-
-terraform-plan:
-  stage: validate
-  id_tokens:
-    GITLAB_OIDC_TOKEN:
-      aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
-  variables:
-    GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: "$SERVICE_ACCOUNT_EMAIL"
-  script:
-    - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
-    - gcloud config set project "$PROJECT_ID"
-    - bash tf-wrapper.sh plan_validate_all $CI_COMMIT_REF_NAME $CI_PROJECT_DIR/policy-library $PROJECT_ID "FILESYSTEM"
   rules:
-    - if: $CI_PIPELINE_SOURCE != 'merge_request_event' && $CI_COMMIT_REF_NAME == "plan"
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "plan"
 
-terraform-plan:
+terraform-plan-mr:
   stage: validate
   id_tokens:
     GITLAB_OIDC_TOKEN:
@@ -98,7 +93,9 @@ terraform-apply:
     - bash tf-wrapper.sh plan $CI_COMMIT_REF_NAME
     - bash tf-wrapper.sh validate $CI_COMMIT_REF_NAME "$CI_PROJECT_DIR/policy-library" $PROJECT_ID "FILESYSTEM"
     - bash tf-wrapper.sh apply $CI_COMMIT_REF_NAME
-  only:
-    - development
-    - production
-    - non-production
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "development"
+    - if: $CI_COMMIT_REF_NAME == "production"
+    - if: $CI_COMMIT_REF_NAME == "non-production"

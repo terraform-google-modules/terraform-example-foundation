@@ -127,7 +127,7 @@ Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create the
    cd gcp-cicd-runner
    ```
 
-1. Checkout branch `image`. It will contain the Docker image used in the Gitlab Pipelines.
+1. Checkout branch `image`. It will contain the Docker image used in the GitLab Pipelines.
 
    ```bash
    git checkout image
@@ -316,7 +316,7 @@ They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the 
 **Note 2:** After the deploy, to prevent the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded),
 we recommend that you request 50 additional projects for the **projects step service account** created in this step.
 
-**Note 3:** In case GitLab variables are not being created on Gitlab projects, it may be related to the existence of an Access Token in both User/Group profile and in the repo settings. The deploy will [fail](../docs/TROUBLESHOOTING.md#terraform-deploy-fails-due-to-gitlab-repositories-not-found).
+**Note 3:** In case GitLab variables are not being created on GitLab projects, it may be related to the existence of an Access Token in both User/Group profile and in the repo settings. The deploy will [fail](../docs/TROUBLESHOOTING.md#terraform-deploy-fails-due-to-gitlab-repositories-not-found).
 
 **Note 4:** If the GitLab pipelines fail in 0-bootstrap or next steps with access denied in the runner image, you may need to add all projects to the [Token Access allow list in the CI/CD Runner repository](../docs/TROUBLESHOOTING.md#gitlab-pipelines-access-denied).
 
@@ -474,7 +474,7 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
 1. If the GitLab pipelines is successful, merge the merge request in to the `development` branch.
 1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `development` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines under `tf-apply`.
-1. If the Gitlab pipelines is successful, apply the next environment.
+1. If the GitLab pipelines is successful, apply the next environment.
 
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
@@ -611,7 +611,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. If the GitLab pipelines is successful, merge the merge request in to the `development` branch.
 1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `development` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines under `tf-apply`.
-1. If the Gitlab pipelines is successful, apply the next environment.
+1. If the GitLab pipelines is successful, apply the next environment.
 
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
@@ -739,7 +739,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. If the GitLab pipelines is successful, merge the merge request in to the `development` branch.
 1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `development` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines under `tf-apply`.
-1. If the Gitlab pipelines is successful, apply the next environment.
+1. If the GitLab pipelines is successful, apply the next environment.
 
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
@@ -871,7 +871,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. If the GitLab pipelines is successful, merge the merge request in to the `development` branch.
 1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `development` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/pipelines under `tf-apply`.
-1. If the Gitlab pipelines is successful, apply the next environment.
+1. If the GitLab pipelines is successful, apply the next environment.
 
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.

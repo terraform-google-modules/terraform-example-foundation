@@ -25,7 +25,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Error: Unsupported attribute](#error-unsupported-attribute)
 - [Error: Error adding network peering](#error-error-adding-network-peering)
 - [Error: Terraform deploy fails due to GitLab repositories not found](#terraform-deploy-fails-due-to-gitlab-repositories-not-found)
-- [Error: Gitlab pipelines fails in 0-bootstrap](#gitlab-pipelines-fails-in-0-bootstrap)
+- [Error: Gitlab pipelines access denied](#gitlab-pipelines-access-denied)
 - [Error: Unknown project id on 4-project step context](#error-unknown-project-id-on-4-project-step-context)
 - - -
 
@@ -496,7 +496,7 @@ Only Personal Access Token under GitLab Account/Group should exist.
 
 Remove any Access Token from the GitLab repositories used by Google Secure Foundation Blueprint.
 
-### Gitlab pipelines fails in 0-bootstrap
+### Gitlab pipelines access denied
 
 **Error message:**
 

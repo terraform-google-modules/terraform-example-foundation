@@ -105,6 +105,9 @@ func ValidateDestroyFlags(t testing.TB, g GlobalTFVars) {
 	if g.LogExportStorageForceDestroy == nil || !*g.LogExportStorageForceDestroy {
 		flags = append(flags, "log_export_storage_force_destroy")
 	}
+	if g.CaiMonitoringKmsForceDestroy == nil || !*g.CaiMonitoringKmsForceDestroy {
+		flags = append(flags, "cai_monitoring_kms_force_destroy")
+	}
 
 	if len(flags) > 0 {
 		fmt.Println("# To use the feature to destroy the deployment created by this helper,")

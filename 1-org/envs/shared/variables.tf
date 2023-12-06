@@ -115,32 +115,41 @@ variable "project_budget" {
   budget_amount: The amount to use as the budget.
   alert_spent_percents: A list of percentages of the budget to alert on when threshold is exceeded.
   alert_pubsub_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`.
+  alert_spend_basis: The type of basis used to determine if spend has passed the threshold. Possible choices are `CURRENT_SPEND` or `FORECASTED_SPEND` (default).
   EOT
   type = object({
-    dns_hub_budget_amount                   = optional(number, 1000)
-    dns_hub_alert_spent_percents            = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    dns_hub_alert_pubsub_topic              = optional(string, null)
-    base_net_hub_budget_amount              = optional(number, 1000)
-    base_net_hub_alert_spent_percents       = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    base_net_hub_alert_pubsub_topic         = optional(string, null)
-    restricted_net_hub_budget_amount        = optional(number, 1000)
-    restricted_net_hub_alert_spent_percents = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    restricted_net_hub_alert_pubsub_topic   = optional(string, null)
-    interconnect_budget_amount              = optional(number, 1000)
-    interconnect_alert_spent_percents       = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    interconnect_alert_pubsub_topic         = optional(string, null)
-    org_secrets_budget_amount               = optional(number, 1000)
-    org_secrets_alert_spent_percents        = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    org_secrets_alert_pubsub_topic          = optional(string, null)
-    org_billing_logs_budget_amount          = optional(number, 1000)
-    org_billing_logs_alert_spent_percents   = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    org_billing_logs_alert_pubsub_topic     = optional(string, null)
-    org_audit_logs_budget_amount            = optional(number, 1000)
-    org_audit_logs_alert_spent_percents     = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    org_audit_logs_alert_pubsub_topic       = optional(string, null)
-    scc_notifications_budget_amount         = optional(number, 1000)
-    scc_notifications_alert_spent_percents  = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    scc_notifications_alert_pubsub_topic    = optional(string, null)
+    dns_hub_budget_amount                       = optional(number, 1000)
+    dns_hub_alert_spent_percents                = optional(list(number), [1.2])
+    dns_hub_alert_pubsub_topic                  = optional(string, null)
+    dns_hub_budget_alert_spend_basis            = optional(string, "FORECASTED_SPEND")
+    base_net_hub_budget_amount                  = optional(number, 1000)
+    base_net_hub_alert_spent_percents           = optional(list(number), [1.2])
+    base_net_hub_alert_pubsub_topic             = optional(string, null)
+    base_net_hub_budget_alert_spend_basis       = optional(string, "FORECASTED_SPEND")
+    restricted_net_hub_budget_amount            = optional(number, 1000)
+    restricted_net_hub_alert_spent_percents     = optional(list(number), [1.2])
+    restricted_net_hub_alert_pubsub_topic       = optional(string, null)
+    restricted_net_hub_budget_alert_spend_basis = optional(string, "FORECASTED_SPEND")
+    interconnect_budget_amount                  = optional(number, 1000)
+    interconnect_alert_spent_percents           = optional(list(number), [1.2])
+    interconnect_alert_pubsub_topic             = optional(string, null)
+    interconnect_budget_alert_spend_basis       = optional(string, "FORECASTED_SPEND")
+    org_secrets_budget_amount                   = optional(number, 1000)
+    org_secrets_alert_spent_percents            = optional(list(number), [1.2])
+    org_secrets_alert_pubsub_topic              = optional(string, null)
+    org_secrets_budget_alert_spend_basis        = optional(string, "FORECASTED_SPEND")
+    org_billing_logs_budget_amount              = optional(number, 1000)
+    org_billing_logs_alert_spent_percents       = optional(list(number), [1.2])
+    org_billing_logs_alert_pubsub_topic         = optional(string, null)
+    org_billing_logs_budget_alert_spend_basis   = optional(string, "FORECASTED_SPEND")
+    org_audit_logs_budget_amount                = optional(number, 1000)
+    org_audit_logs_alert_spent_percents         = optional(list(number), [1.2])
+    org_audit_logs_alert_pubsub_topic           = optional(string, null)
+    org_audit_logs_budget_alert_spend_basis     = optional(string, "FORECASTED_SPEND")
+    scc_notifications_budget_amount             = optional(number, 1000)
+    scc_notifications_alert_spent_percents      = optional(list(number), [1.2])
+    scc_notifications_alert_pubsub_topic        = optional(string, null)
+    scc_notifications_budget_alert_spend_basis  = optional(string, "FORECASTED_SPEND")
   })
   default = {}
 }
@@ -199,6 +208,12 @@ variable "essential_contacts_domains_to_allow" {
 
 variable "create_unique_tag_key" {
   description = "Creates unique organization-wide tag keys by adding a random suffix to each key."
+  type        = bool
+  default     = false
+}
+
+variable "cai_monitoring_kms_force_destroy" {
+  description = "If set to true, delete KMS keyring and keys when destroying the module; otherwise, destroying the module will fail if KMS keys are present."
   type        = bool
   default     = false
 }

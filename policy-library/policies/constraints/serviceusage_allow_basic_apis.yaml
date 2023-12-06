@@ -67,3 +67,7 @@ spec:
     - "workflows.googleapis.com"
     - "assuredworkloads.googleapis.com"
     - "sts.googleapis.com"
+    - "cloudfunctions.googleapis.com"
+    - "storage.googleapis.com"
+    - "run.googleapis.com"
+    - "eventarc.googleapis.com"

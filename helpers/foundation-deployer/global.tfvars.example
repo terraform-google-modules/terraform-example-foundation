@@ -92,6 +92,7 @@ domains_to_allow                    = ["example.com"] # Must include the domain 
 essential_contacts_domains_to_allow = ["@example.com"]
 
 scc_notification_name                       = "scc-notify"
+cai_monitoring_kms_force_destroy            = false
 audit_logs_table_delete_contents_on_destroy = false
 log_export_storage_force_destroy            = false
 log_export_storage_location                 = "US"

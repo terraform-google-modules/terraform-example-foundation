@@ -8,6 +8,7 @@
 | audit\_logs\_table\_expiration\_days | Period before tables expire for all audit logs in milliseconds. Default is 30 days. | `number` | `30` | no |
 | billing\_data\_users | Google Workspace or Cloud Identity group that have access to billing data set. | `string` | n/a | yes |
 | billing\_export\_dataset\_location | The location of the dataset for billing data export. | `string` | `"US"` | no |
+| cai\_monitoring\_kms\_force\_destroy | If set to true, delete KMS keyring and keys when destroying the module; otherwise, destroying the module will fail if KMS keys are present. | `bool` | `false` | no |
 | create\_access\_context\_manager\_access\_policy | Whether to create access context manager access policy. | `bool` | `true` | no |
 | create\_unique\_tag\_key | Creates unique organization-wide tag keys by adding a random suffix to each key. | `bool` | `false` | no |
 | data\_access\_logs\_enabled | Enable Data Access logs of types DATA\_READ, DATA\_WRITE for all GCP services. Enabling Data Access logs might result in your organization being charged for the additional logs usage. See https://cloud.google.com/logging/docs/audit#data-access The ADMIN\_READ logs are enabled by default. | `bool` | `false` | no |
@@ -32,6 +33,10 @@
 | Name | Description |
 |------|-------------|
 | base\_net\_hub\_project\_id | The Base Network hub project ID |
+| cai\_monitoring\_artifact\_registry | CAI Monitoring Cloud Function Artifact Registry name. |
+| cai\_monitoring\_asset\_feed | CAI Monitoring Cloud Function Organization Asset Feed name. |
+| cai\_monitoring\_bucket | CAI Monitoring Cloud Function Source Bucket name. |
+| cai\_monitoring\_topic | CAI Monitoring Cloud Function Pub/Sub Topic name. |
 | common\_folder\_name | The common folder name |
 | dns\_hub\_project\_id | The DNS hub project ID |
 | domains\_to\_allow | The list of domains to allow users from in IAM. |

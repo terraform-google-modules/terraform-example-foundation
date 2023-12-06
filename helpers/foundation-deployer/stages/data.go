@@ -154,6 +154,7 @@ type GlobalTFVars struct {
 	SccNotificationName                   string          `hcl:"scc_notification_name"`
 	ProjectPrefix                         *string         `hcl:"project_prefix"`
 	FolderPrefix                          *string         `hcl:"folder_prefix"`
+	CaiMonitoringKmsForceDestroy          *bool           `hcl:"cai_monitoring_kms_force_destroy"`
 	BucketForceDestroy                    *bool           `hcl:"bucket_force_destroy"`
 	AuditLogsTableDeleteContentsOnDestroy *bool           `hcl:"audit_logs_table_delete_contents_on_destroy"`
 	LogExportStorageForceDestroy          *bool           `hcl:"log_export_storage_force_destroy"`
@@ -216,6 +217,7 @@ type OrgTfvars struct {
 	EnableHubAndSpoke                     bool      `hcl:"enable_hub_and_spoke"`
 	CreateACMAPolicy                      bool      `hcl:"create_access_context_manager_access_policy"`
 	CreateUniqueTagKey                    bool      `hcl:"create_unique_tag_key"`
+	CaiMonitoringKmsForceDestroy          *bool     `hcl:"cai_monitoring_kms_force_destroy"`
 	AuditLogsTableDeleteContentsOnDestroy *bool     `hcl:"audit_logs_table_delete_contents_on_destroy"`
 	LogExportStorageForceDestroy          *bool     `hcl:"log_export_storage_force_destroy"`
 	LogExportStorageLocation              string    `hcl:"log_export_storage_location"`

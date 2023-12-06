@@ -71,7 +71,7 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-BOOTSTRAP-REPO>.git gcp-bootstrap
    ```
    ```bash
-   git clone git@gilab.com:<GITLAB-OWNER>/<GITLAB-ORGANIZATION-REPO>.git gcp-org
+   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-ORGANIZATION-REPO>.git gcp-org
    ```
    ```bash
    git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-ENVIRONMENTS-REPO>.git gcp-environments
@@ -120,22 +120,7 @@ Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create the
 
 ### Build CI/CD runner image
 
-1. Clone the private project you created to host the docker configuration for the CI/CD runner at the same level of the `terraform-example-foundation` folder.
-You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured with GitLab.
-
-   ```bash
-   git clone git@gitlab.com:<GITLAB-OWNER>/<GITLAB-RUNNER-REPO>.git gcp-cicd-runner
-   ```
-
-1. The layout should be:
-
-   ```bash
-   gcp-cicd-runner/
-   terraform-example-foundation/
-   ```
-
-
-1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-cicd-runner` directory.
+1. Navigate into CI/CD runner the repo. All subsequent steps assume you are running them from the `gcp-cicd-runner` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
@@ -164,10 +149,13 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    ```
 
 1. Review the CI/CD Job output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-RUNNER-REPO/-/jobs under name `build-image`.
-1. Add all the repositories: Bootstrap, Organization, Environments, Networks, and Projects to the allow list tha allow access to the CI/CD runner image.
-1. Go to https://gitlab.com/<GITLAB-OWNER>/<GITLAB-RUNNER-REPO>/-/settings/ci_cd#js-token-access
-1. In "Allow CI job tokens from the following projects to access this project" add the other projects/repositories. Format is <GITLAB-OWNER>/<GITLAB-REPO>
 1. If the CI/CD Job is successful proceed with the next steps.
+
+### Provide access to the CI/CD runner image
+
+1. Go to https://gitlab.com/GITLAB-OWNER/GITLAB-RUNNER-REPO/-/settings/ci_cd#js-token-access
+1. Add all the repositories: Bootstrap, Organization, Environments, Networks, and Projects to the allow list tha allow access to the CI/CD runner image.
+1. In "Allow CI job tokens from the following projects to access this project" add the other projects/repositories. Format is <GITLAB-OWNER>/<GITLAB-REPO>
 
 ### Deploying step 0-bootstrap
 
@@ -292,8 +280,8 @@ export the GitLab personal or group access token as an environment variable:
    cp backend.tf.example backend.tf
    cd ../../../
 
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
 
    cd gcp-bootstrap/envs/shared
    ```
@@ -328,12 +316,11 @@ They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the 
 **Note 2:** After the deploy, to prevent the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded),
 we recommend that you request 50 additional projects for the **projects step service account** created in this step.
 
-**Note 3:** In case GitLab variables are not being created on Gitlab repositories, it may be related to the existence of Access Token in both User/Group profile and in the repo settings. The deploy will [fail](../docs/TROUBLESHOOTING.md#error-repository-not-found).
+**Note 3:** In case GitLab variables are not being created on Gitlab projects, it may be related to the existence of an Access Token in both User/Group profile and in the repo settings. The deploy will [fail](../docs/TROUBLESHOOTING.md#terraform-deploy-fails-due-to-gitlab-repositories-not-found).
 
-**Note 4:** If the GitLab pipelines fail in 0-bootstrep or next steps, you may need to disable `Limit access to this project` in the CICD Runner repository. For more details see [fail](../docs/TROUBLESHOOTING.md#gitlab-pipelines-access-denied)
+**Note 4:** If the GitLab pipelines fail in 0-bootstrap or next steps with access denied in the runner image, you may need to add all projects to the [Token Access allow list in the CI/CD Runner repository](../docs/TROUBLESHOOTING.md#gitlab-pipelines-access-denied).
 
 ## Deploying step 1-org
-
 
 1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-org` directory.
    If you run them from another directory, adjust your copy paths accordingly.
@@ -377,7 +364,7 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
     echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
 
-    if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
+    if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
     ```
 
 1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap.
@@ -387,7 +374,7 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
    echo "remote_state_bucket = ${backend_bucket}"
 
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
    ```
 
 1. Check if a Security Command Center Notification with the default name, **scc-notify**, already exists in your organization.
@@ -427,7 +414,6 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `production` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ORGANIZATION-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
-
 
 ## Deploying step 2-environments
 
@@ -471,7 +457,7 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
    export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
 
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" terraform.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" terraform.tfvars
    ```
 
 1. Commit changes and push your plan branch.
@@ -553,7 +539,7 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 
    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
 
-   sed -i "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
+   sed -i'' -e "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./access_context.auto.tfvars
    ```
 
 1. Update `common.auto.tfvars` file with values from your GCP environment.
@@ -566,7 +552,7 @@ See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/R
 
    echo "remote_state_bucket = ${backend_bucket}"
 
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
 
 1. Commit changes
@@ -694,7 +680,7 @@ See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/producti
 
    echo "remote_state_bucket = ${backend_bucket}"
 
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
 
 1. Commit changes
@@ -825,7 +811,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${remote_state_bucket}"
 
-   sed -i "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
 1. Commit changes.

@@ -52,6 +52,7 @@ module "org_audit_logs" {
   budget_alert_pubsub_topic   = var.project_budget.org_audit_logs_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.org_audit_logs_alert_spent_percents
   budget_amount               = var.project_budget.org_audit_logs_budget_amount
+  budget_alert_spend_basis    = var.project_budget.org_audit_logs_budget_alert_spend_basis
 }
 
 module "org_billing_logs" {
@@ -79,6 +80,7 @@ module "org_billing_logs" {
   budget_alert_pubsub_topic   = var.project_budget.org_billing_logs_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.org_billing_logs_alert_spent_percents
   budget_amount               = var.project_budget.org_billing_logs_budget_amount
+  budget_alert_spend_basis    = var.project_budget.org_billing_logs_budget_alert_spend_basis
 }
 
 /******************************************
@@ -110,6 +112,7 @@ module "org_secrets" {
   budget_alert_pubsub_topic   = var.project_budget.org_secrets_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.org_secrets_alert_spent_percents
   budget_amount               = var.project_budget.org_secrets_budget_amount
+  budget_alert_spend_basis    = var.project_budget.org_secrets_budget_alert_spend_basis
 }
 
 /******************************************
@@ -141,6 +144,7 @@ module "interconnect" {
   budget_alert_pubsub_topic   = var.project_budget.interconnect_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.interconnect_alert_spent_percents
   budget_amount               = var.project_budget.interconnect_budget_amount
+  budget_alert_spend_basis    = var.project_budget.interconnect_budget_alert_spend_basis
 }
 
 /******************************************
@@ -158,7 +162,7 @@ module "scc_notifications" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
-  activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com", "cloudkms.googleapis.com"]
 
   labels = {
     environment       = "production"
@@ -172,6 +176,7 @@ module "scc_notifications" {
   budget_alert_pubsub_topic   = var.project_budget.scc_notifications_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.scc_notifications_alert_spent_percents
   budget_amount               = var.project_budget.scc_notifications_budget_amount
+  budget_alert_spend_basis    = var.project_budget.scc_notifications_budget_alert_spend_basis
 }
 
 /******************************************
@@ -211,6 +216,7 @@ module "dns_hub" {
   budget_alert_pubsub_topic   = var.project_budget.dns_hub_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.dns_hub_alert_spent_percents
   budget_amount               = var.project_budget.dns_hub_budget_amount
+  budget_alert_spend_basis    = var.project_budget.dns_hub_budget_alert_spend_basis
 }
 
 /******************************************
@@ -251,6 +257,7 @@ module "base_network_hub" {
   budget_alert_pubsub_topic   = var.project_budget.base_net_hub_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.base_net_hub_alert_spent_percents
   budget_amount               = var.project_budget.base_net_hub_budget_amount
+  budget_alert_spend_basis    = var.project_budget.base_net_hub_budget_alert_spend_basis
 }
 
 resource "google_project_iam_member" "network_sa_base" {
@@ -299,6 +306,7 @@ module "restricted_network_hub" {
   budget_alert_pubsub_topic   = var.project_budget.restricted_net_hub_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.restricted_net_hub_alert_spent_percents
   budget_amount               = var.project_budget.restricted_net_hub_budget_amount
+  budget_alert_spend_basis    = var.project_budget.restricted_net_hub_budget_alert_spend_basis
 }
 
 resource "google_project_iam_member" "network_sa_restricted" {

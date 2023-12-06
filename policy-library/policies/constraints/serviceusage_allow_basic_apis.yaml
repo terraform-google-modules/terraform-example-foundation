@@ -66,3 +66,7 @@ spec:
     - "storage-component.googleapis.com"
     - "workflows.googleapis.com"
     - "assuredworkloads.googleapis.com"
+    - "cloudfunctions.googleapis.com"
+    - "storage.googleapis.com"
+    - "run.googleapis.com"
+    - "eventarc.googleapis.com"

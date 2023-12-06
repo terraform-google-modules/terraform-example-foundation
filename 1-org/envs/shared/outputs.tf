@@ -128,3 +128,23 @@ output "shared_vpc_projects" {
   value       = { for k, v in module.base_restricted_environment_network : k => v }
   description = "Base and restricted shared VPC Projects info grouped by environment (development, non-production, production)."
 }
+
+output "cai_monitoring_artifact_registry" {
+  value       = module.cai_monitoring.artifact_registry_name
+  description = "CAI Monitoring Cloud Function Artifact Registry name."
+}
+
+output "cai_monitoring_asset_feed" {
+  value       = module.cai_monitoring.asset_feed_name
+  description = "CAI Monitoring Cloud Function Organization Asset Feed name."
+}
+
+output "cai_monitoring_bucket" {
+  value       = module.cai_monitoring.bucket_name
+  description = "CAI Monitoring Cloud Function Source Bucket name."
+}
+
+output "cai_monitoring_topic" {
+  value       = module.cai_monitoring.topic_name
+  description = "CAI Monitoring Cloud Function Pub/Sub Topic name."
+}

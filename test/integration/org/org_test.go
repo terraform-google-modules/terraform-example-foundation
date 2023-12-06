@@ -42,6 +42,7 @@ func TestOrg(t *testing.T) {
 		"remote_state_bucket":                         backend_bucket,
 		"log_export_storage_force_destroy":            "true",
 		"audit_logs_table_delete_contents_on_destroy": "true",
+		"cai_monitoring_kms_force_destroy":            "true",
 	}
 
 	backendConfig := map[string]interface{}{
@@ -242,6 +243,38 @@ func TestOrg(t *testing.T) {
 				"logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency",
 			}
 
+			// CAI Monitoring
+			// Variables
+			caiAr := org.GetStringOutput("cai_monitoring_artifact_registry")
+			caiBucket := org.GetStringOutput("cai_monitoring_bucket")
+			caiTopic := org.GetStringOutput("cai_monitoring_topic")
+
+			caiSaEmail := fmt.Sprintf("cai-monitoring@%s.iam.gserviceaccount.com", sccProjectID)
+			caiKmsKey := fmt.Sprintf("projects/%s/locations/%s/keyRings/krg-cai-monitoring/cryptoKeys/key-cai-monitoring", sccProjectID, defaultRegion)
+			caiTopicFullName := fmt.Sprintf("projects/%s/topics/%s", sccProjectID, caiTopic)
+
+			// Cloud Function
+			opCf := gcloud.Runf(t, "functions describe caiMonitoring --project %s --gen2 --region %s", sccProjectID, defaultRegion)
+			assert.Equal("ACTIVE", opCf.Get("state").String(), "Should be ACTIVE. Cloud Function is not successfully deployed.")
+			assert.Equal(caiSaEmail, opCf.Get("serviceConfig.serviceAccountEmail").String(), fmt.Sprintf("Cloud Function should use the service account %s.", caiSaEmail))
+			assert.Contains(opCf.Get("eventTrigger.eventType").String(), "google.cloud.pubsub.topic.v1.messagePublished", "Event Trigger is not based on Pub/Sub message. Check the EventType configuration.")
+
+			// Cloud Function Storage Bucket
+			bktArgs := gcloud.WithCommonArgs([]string{"--project", sccProjectID, "--json"})
+			opSrcBucket := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", caiBucket), bktArgs).Array()
+			assert.Equal(caiKmsKey, opSrcBucket[0].Get("metadata.encryption.defaultKmsKeyName").String(), fmt.Sprintf("Should have same KMS key: %s", caiKmsKey))
+			assert.Equal("true", opSrcBucket[0].Get("metadata.iamConfiguration.bucketPolicyOnly.enabled").String(), "Should have Bucket Policy Only enabled.")
+
+			// Cloud Function Artifact Registry
+			opAR := gcloud.Runf(t, "artifacts repositories describe %s --project %s --location %s", caiAr, sccProjectID, defaultRegion)
+			assert.Equal(caiKmsKey, opAR.Get("kmsKeyName").String(), fmt.Sprintf("Should have KMS Key: %s", caiKmsKey))
+			assert.Equal("DOCKER", opAR.Get("format").String(), "Should have type: DOCKER")
+
+			// Cloud Function Pub/Sub
+			opTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", caiTopic, sccProjectID)
+			assert.Equal(caiTopicFullName, opTopic.Get("name").String(), fmt.Sprintf("Topic %s should have been created", caiTopicFullName))
+
+			// Log Sink
 			for _, sink := range []struct {
 				name        string
 				hasFilter   bool

@@ -167,7 +167,7 @@ module "scc_notifications" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
-  activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com", "cloudkms.googleapis.com"]
 
   labels = {
     environment       = "production"

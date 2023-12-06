@@ -1,0 +1,16 @@
+{
+  "name": "caiMonitoring",
+  "version": "1.0.0",
+  "description": "A Cloud Function that receives events from a Pub/Sub Subscription fed by a Cloud Asset Inventory IAM event feed, and then notify if the IAM Policy grants roles from a predefined set to a new member.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/security-center": "8.1.0",
+    "uuid4": "2.0.3",
+    "moment": "2.29.4"
+  }
+}

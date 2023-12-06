@@ -118,3 +118,23 @@ output "tags" {
   value       = local.tags_output
   description = "Tag Values to be applied on next steps"
 }
+
+output "cai_monitoring_artifact_registry" {
+  value       = module.cai_monitoring.artifact_registry_name
+  description = "CAI Monitoring Cloud Function Artifact Registry name."
+}
+
+output "cai_monitoring_asset_feed" {
+  value       = module.cai_monitoring.asset_feed_name
+  description = "CAI Monitoring Cloud Function Organization Asset Feed name."
+}
+
+output "cai_monitoring_bucket" {
+  value       = module.cai_monitoring.bucket_name
+  description = "CAI Monitoring Cloud Function Source Bucket name."
+}
+
+output "cai_monitoring_topic" {
+  value       = module.cai_monitoring.topic_name
+  description = "CAI Monitoring Cloud Function Pub/Sub Topic name."
+}

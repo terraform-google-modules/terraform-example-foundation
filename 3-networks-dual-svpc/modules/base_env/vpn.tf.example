@@ -18,6 +18,15 @@ locals {
   env_secret_project_id = data.terraform_remote_state.environments_env.outputs.env_secrets_project_id
 }
 
+data "terraform_remote_state" "environments_env" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.remote_state_bucket
+    prefix = "terraform/environments/${var.env}"
+  }
+}
+
 module "shared_base_vpn" {
   source = "../vpn-ha"
 

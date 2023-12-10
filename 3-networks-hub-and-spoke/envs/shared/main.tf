@@ -33,6 +33,7 @@ locals {
   parent_id                         = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   bootstrap_folder_name             = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
   common_folder_name                = data.terraform_remote_state.org.outputs.common_folder_name
+  network_folder_name               = data.terraform_remote_state.org.outputs.network_folder_name
   development_folder_name           = data.terraform_remote_state.env_development.outputs.env_folder
   non_production_folder_name        = data.terraform_remote_state.env_non_production.outputs.env_folder
   production_folder_name            = data.terraform_remote_state.env_production.outputs.env_folder

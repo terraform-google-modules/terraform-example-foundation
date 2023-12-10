@@ -21,6 +21,11 @@ locals {
     "roles/resourcemanager.projectIamAdmin",
     "roles/iam.serviceAccountUser",
   ]
+  environments = {
+    "development" : "d",
+    "non-production" : "n",
+    "production" : "p"
+  }
 }
 
 /******************************************
@@ -129,7 +134,7 @@ module "interconnect" {
   name                     = "${local.project_prefix}-c-interconnect"
   org_id                   = local.org_id
   billing_account          = local.billing_account
-  folder_id                = google_folder.common.id
+  folder_id                = google_folder.network.id
   activate_apis            = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
 
   labels = {
@@ -162,7 +167,7 @@ module "scc_notifications" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
-  activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com", "cloudkms.googleapis.com"]
 
   labels = {
     environment       = "production"
@@ -193,7 +198,7 @@ module "dns_hub" {
   name                     = "${local.project_prefix}-c-dns-hub"
   org_id                   = local.org_id
   billing_account          = local.billing_account
-  folder_id                = google_folder.common.id
+  folder_id                = google_folder.network.id
 
   activate_apis = [
     "compute.googleapis.com",
@@ -234,7 +239,7 @@ module "base_network_hub" {
   name                     = "${local.project_prefix}-c-base-net-hub"
   org_id                   = local.org_id
   billing_account          = local.billing_account
-  folder_id                = google_folder.common.id
+  folder_id                = google_folder.network.id
 
   activate_apis = [
     "compute.googleapis.com",
@@ -283,7 +288,7 @@ module "restricted_network_hub" {
   name                     = "${local.project_prefix}-c-restricted-net-hub"
   org_id                   = local.org_id
   billing_account          = local.billing_account
-  folder_id                = google_folder.common.id
+  folder_id                = google_folder.network.id
 
   activate_apis = [
     "compute.googleapis.com",
@@ -308,6 +313,38 @@ module "restricted_network_hub" {
   budget_amount               = var.project_budget.restricted_net_hub_budget_amount
   budget_alert_spend_basis    = var.project_budget.restricted_net_hub_budget_alert_spend_basis
 }
+
+/************************************************************
+  Base and Restricted Network Projects for each Environment
+************************************************************/
+
+module "base_restricted_environment_network" {
+  source   = "../../modules/network"
+  for_each = local.environments
+
+  org_id          = local.org_id
+  billing_account = local.billing_account
+  project_prefix  = local.project_prefix
+  folder_id       = google_folder.network.id
+
+  env      = each.key
+  env_code = each.value
+
+  project_budget = {
+    base_network_budget_amount                  = var.project_budget.base_network_budget_amount
+    base_network_alert_spent_percents           = var.project_budget.base_network_alert_spent_percents
+    base_network_alert_pubsub_topic             = var.project_budget.base_network_alert_pubsub_topic
+    base_network_budget_alert_spend_basis       = var.project_budget.base_network_budget_alert_spend_basis
+    restricted_network_budget_amount            = var.project_budget.restricted_network_budget_amount
+    restricted_network_alert_spent_percents     = var.project_budget.restricted_network_alert_spent_percents
+    restricted_network_alert_pubsub_topic       = var.project_budget.restricted_network_alert_pubsub_topic
+    restricted_network_budget_alert_spend_basis = var.project_budget.restricted_network_budget_alert_spend_basis
+  }
+}
+
+/*********************************************************************
+  Roles granted to the networks SA for Hub and Spoke network topology
+*********************************************************************/
 
 resource "google_project_iam_member" "network_sa_restricted" {
   for_each = toset(var.enable_hub_and_spoke ? local.hub_and_spoke_roles : [])

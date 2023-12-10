@@ -101,30 +101,6 @@ func TestEnvs(t *testing.T) {
 							},
 						},
 						{
-							projectOutput: "base_shared_vpc_project_id",
-							apis: []string{
-								"compute.googleapis.com",
-								"dns.googleapis.com",
-								"servicenetworking.googleapis.com",
-								"container.googleapis.com",
-								"logging.googleapis.com",
-								"billingbudgets.googleapis.com",
-							},
-						},
-						{
-							projectOutput: "restricted_shared_vpc_project_id",
-							apis: []string{
-								"compute.googleapis.com",
-								"dns.googleapis.com",
-								"servicenetworking.googleapis.com",
-								"container.googleapis.com",
-								"logging.googleapis.com",
-								"cloudresourcemanager.googleapis.com",
-								"accesscontextmanager.googleapis.com",
-								"billingbudgets.googleapis.com",
-							},
-						},
-						{
 							projectOutput: "env_secrets_project_id",
 							apis: []string{
 								"secretmanager.googleapis.com",

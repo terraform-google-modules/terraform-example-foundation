@@ -42,6 +42,7 @@ func TestOrg(t *testing.T) {
 		"remote_state_bucket":                         backend_bucket,
 		"log_export_storage_force_destroy":            "true",
 		"audit_logs_table_delete_contents_on_destroy": "true",
+		"cai_monitoring_kms_force_destroy":            "true",
 	}
 
 	backendConfig := map[string]interface{}{
@@ -101,6 +102,11 @@ func TestOrg(t *testing.T) {
 			folder := gcloud.Runf(t, "resource-manager folders describe %s", commonFolder)
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 
+			// creation of network folder
+			networkFolder := testutils.GetLastSplitElement(org.GetStringOutput("network_folder_name"), "/")
+			folderOP := gcloud.Runf(t, "resource-manager folders describe %s", networkFolder)
+			assert.Equal("fldr-network", folderOP.Get("displayName").String(), "folder fldr-network should have been created")
+
 			// check tags applied to common and bootstrap folder
 			commonConfig := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
 			bootstrapFolder := testutils.GetLastSplitElement(commonConfig["bootstrap_folder_name"], "/")
@@ -113,6 +119,11 @@ func TestOrg(t *testing.T) {
 				{
 					folderId:   commonFolder,
 					folderName: "common",
+					value:      "production",
+				},
+				{
+					folderId:   networkFolder,
+					folderName: "network",
 					value:      "production",
 				},
 				{
@@ -232,6 +243,38 @@ func TestOrg(t *testing.T) {
 				"logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency",
 			}
 
+			// CAI Monitoring
+			// Variables
+			caiAr := org.GetStringOutput("cai_monitoring_artifact_registry")
+			caiBucket := org.GetStringOutput("cai_monitoring_bucket")
+			caiTopic := org.GetStringOutput("cai_monitoring_topic")
+
+			caiSaEmail := fmt.Sprintf("cai-monitoring@%s.iam.gserviceaccount.com", sccProjectID)
+			caiKmsKey := fmt.Sprintf("projects/%s/locations/%s/keyRings/krg-cai-monitoring/cryptoKeys/key-cai-monitoring", sccProjectID, defaultRegion)
+			caiTopicFullName := fmt.Sprintf("projects/%s/topics/%s", sccProjectID, caiTopic)
+
+			// Cloud Function
+			opCf := gcloud.Runf(t, "functions describe caiMonitoring --project %s --gen2 --region %s", sccProjectID, defaultRegion)
+			assert.Equal("ACTIVE", opCf.Get("state").String(), "Should be ACTIVE. Cloud Function is not successfully deployed.")
+			assert.Equal(caiSaEmail, opCf.Get("serviceConfig.serviceAccountEmail").String(), fmt.Sprintf("Cloud Function should use the service account %s.", caiSaEmail))
+			assert.Contains(opCf.Get("eventTrigger.eventType").String(), "google.cloud.pubsub.topic.v1.messagePublished", "Event Trigger is not based on Pub/Sub message. Check the EventType configuration.")
+
+			// Cloud Function Storage Bucket
+			bktArgs := gcloud.WithCommonArgs([]string{"--project", sccProjectID, "--json"})
+			opSrcBucket := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", caiBucket), bktArgs).Array()
+			assert.Equal(caiKmsKey, opSrcBucket[0].Get("metadata.encryption.defaultKmsKeyName").String(), fmt.Sprintf("Should have same KMS key: %s", caiKmsKey))
+			assert.Equal("true", opSrcBucket[0].Get("metadata.iamConfiguration.bucketPolicyOnly.enabled").String(), "Should have Bucket Policy Only enabled.")
+
+			// Cloud Function Artifact Registry
+			opAR := gcloud.Runf(t, "artifacts repositories describe %s --project %s --location %s", caiAr, sccProjectID, defaultRegion)
+			assert.Equal(caiKmsKey, opAR.Get("kmsKeyName").String(), fmt.Sprintf("Should have KMS Key: %s", caiKmsKey))
+			assert.Equal("DOCKER", opAR.Get("format").String(), "Should have type: DOCKER")
+
+			// Cloud Function Pub/Sub
+			opTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", caiTopic, sccProjectID)
+			assert.Equal(caiTopicFullName, opTopic.Get("name").String(), fmt.Sprintf("Topic %s should have been created", caiTopicFullName))
+
+			// Log Sink
 			for _, sink := range []struct {
 				name        string
 				hasFilter   bool
@@ -346,6 +389,52 @@ func TestOrg(t *testing.T) {
 				enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
 				listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 				assert.Subset(listApis, projectOutput.apis, "APIs should have been enabled")
+			}
+			// shared vpc projects
+			for _, envName := range []string{
+				"development",
+				"non-production",
+				"production",
+			} {
+				for _, projectEnvOutput := range []struct {
+					projectOutput string
+					apis          []string
+				}{
+					{
+						projectOutput: "base_shared_vpc_project_id",
+						apis: []string{
+							"compute.googleapis.com",
+							"dns.googleapis.com",
+							"servicenetworking.googleapis.com",
+							"container.googleapis.com",
+							"logging.googleapis.com",
+							"billingbudgets.googleapis.com",
+						},
+					},
+					{
+						projectOutput: "restricted_shared_vpc_project_id",
+						apis: []string{
+							"compute.googleapis.com",
+							"dns.googleapis.com",
+							"servicenetworking.googleapis.com",
+							"container.googleapis.com",
+							"logging.googleapis.com",
+							"cloudresourcemanager.googleapis.com",
+							"accesscontextmanager.googleapis.com",
+							"billingbudgets.googleapis.com",
+						},
+					},
+				} {
+					envProj := terraform.OutputMapOfObjects(t, org.GetTFOptions(), "shared_vpc_projects")[envName].(map[string]interface{})
+					projectID := envProj[projectEnvOutput.projectOutput]
+					prj := gcloud.Runf(t, "projects describe %s", projectID)
+					assert.Equal(projectID, prj.Get("projectId").String(), fmt.Sprintf("project %s should exist", projectID))
+					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
+
+					enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
+					listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
+					assert.Subset(listApis, projectEnvOutput.apis, "APIs should have been enabled")
+				}
 			}
 		})
 	org.Test()

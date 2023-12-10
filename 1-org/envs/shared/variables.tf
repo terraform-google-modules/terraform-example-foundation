@@ -126,10 +126,18 @@ variable "project_budget" {
     base_net_hub_alert_spent_percents           = optional(list(number), [1.2])
     base_net_hub_alert_pubsub_topic             = optional(string, null)
     base_net_hub_budget_alert_spend_basis       = optional(string, "FORECASTED_SPEND")
+    base_network_budget_amount                  = optional(number, 1000)
+    base_network_alert_spent_percents           = optional(list(number), [1.2])
+    base_network_alert_pubsub_topic             = optional(string, null)
+    base_network_budget_alert_spend_basis       = optional(string, "FORECASTED_SPEND")
     restricted_net_hub_budget_amount            = optional(number, 1000)
     restricted_net_hub_alert_spent_percents     = optional(list(number), [1.2])
     restricted_net_hub_alert_pubsub_topic       = optional(string, null)
     restricted_net_hub_budget_alert_spend_basis = optional(string, "FORECASTED_SPEND")
+    restricted_network_budget_amount            = optional(number, 1000)
+    restricted_network_alert_spent_percents     = optional(list(number), [1.2])
+    restricted_network_alert_pubsub_topic       = optional(string, null)
+    restricted_network_budget_alert_spend_basis = optional(string, "FORECASTED_SPEND")
     interconnect_budget_amount                  = optional(number, 1000)
     interconnect_alert_spent_percents           = optional(list(number), [1.2])
     interconnect_alert_pubsub_topic             = optional(string, null)
@@ -208,6 +216,12 @@ variable "essential_contacts_domains_to_allow" {
 
 variable "create_unique_tag_key" {
   description = "Creates unique organization-wide tag keys by adding a random suffix to each key."
+  type        = bool
+  default     = false
+}
+
+variable "cai_monitoring_kms_force_destroy" {
+  description = "If set to true, delete KMS keyring and keys when destroying the module; otherwise, destroying the module will fail if KMS keys are present."
   type        = bool
   default     = false
 }

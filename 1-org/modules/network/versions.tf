@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 
-/******************************************
-  Top level folders
- *****************************************/
-
-resource "google_folder" "common" {
-  display_name = "${local.folder_prefix}-common"
-  parent       = local.parent
-}
-
-resource "google_folder" "network" {
-  display_name = "${local.folder_prefix}-network"
-  parent       = local.parent
+terraform {
+  required_version = ">= 1.3"
 }

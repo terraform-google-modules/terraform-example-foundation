@@ -56,25 +56,33 @@ Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/READM
 
 ### [1. org](./1-org/)
 
-The purpose of this stage is to set up the common folder used to house projects that contain shared resources such as DNS Hub, Interconnect, Security Command Center notification, org level secrets, network hub and org level logging.
+The purpose of this stage is to set up the common folder used to house projects that contain shared resources such as Security Command Center notification, org level secrets, and org level logging.
+This stage also sets up the network folder used to house network related projects such as DNS Hub, Interconnect, network hub, and base and restricted projects for each environment  (`development`, `non-production` or `production`).
 This will create the following folder and project structure:
 
 ```
 example-organization
 └── fldr-common
     ├── prj-c-logging
-    ├── prj-c-base-net-hub
     ├── prj-c-billing-logs
+    ├── prj-c-scc
+    └── prj-c-secrets
+└── fldr-network
+    ├── prj-c-base-net-hub
     ├── prj-c-dns-hub
     ├── prj-c-interconnect
     ├── prj-c-restricted-net-hub
-    ├── prj-c-scc
-    └── prj-c-secrets
+    ├── prj-d-shared-base
+    ├── prj-d-shared-restricted
+    ├── prj-n-shared-base
+    ├── prj-n-shared-restricted
+    ├── prj-p-shared-base
+    └── prj-p-shared-restricted
 ```
 
 #### Logs
 
-Among the eight projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
+Among the four projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
 The first one is for organization-wide audit logs, and the second one is for billing logs.
 In both cases, the logs are collected into BigQuery datasets which you can then use for general querying, dashboarding, and reporting. Logs are also exported to Pub/Sub, a Cloud Storage bucket, and a log bucket.
 
@@ -83,14 +91,6 @@ In both cases, the logs are collected into BigQuery datasets which you can then 
 - Log export to Cloud Storage bucket has optional object versioning support via `log_export_storage_versioning`.
 - The various audit log types being captured in BigQuery are retained for 30 days.
 - For billing data, a BigQuery dataset is created with permissions attached, however you will need to configure a billing export [manually](https://cloud.google.com/billing/docs/how-to/export-data-bigquery), as there is no easy way to automate this at the moment.
-
-#### DNS hub
-
-Another project created under the common folder. This project will host the DNS hub for the organization.
-
-#### Interconnect
-
-Another project created under the common folder. This project will host the Dedicated Interconnect [Interconnect connection](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#elements) for the organization. In case of Partner Interconnect, this project is unused and the [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#for-partner-interconnect) will be placed directly into the corresponding hub projects.
 
 #### Security Command Center notification
 
@@ -104,28 +104,35 @@ Another project created under the common folder. This project is allocated for [
 
 Usage instructions are available for the org step in the [README](./1-org/README.md).
 
+#### DNS hub
+
+This project is created under the network folder. This project will host the DNS hub for the organization.
+
+#### Interconnect
+
+Another project created under the network folder. This project will host the Dedicated Interconnect [Interconnect connection](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#elements) for the organization. In case of Partner Interconnect, this project is unused and the [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/terminology#for-partner-interconnect) will be placed directly into the corresponding hub projects.
+
+#### Networking
+
+Under the network folder, two projects, one for base and another for restricted network, are created per environment (`development`, `non-production`, and `production`) which is intended to be used as a [Shared VPC host project](https://cloud.google.com/vpc/docs/shared-vpc) for all projects in that environment.
+This stage only creates the projects and enables the correct APIs, the following networks stages, [3-networks-dual-svpc](./3-networks-dual-svpc/) and [3-networks-hub-and-spoke](./3-networks-hub-and-spoke/), create the actual Shared VPC networks.
+
 ### [2. environments](./2-environments/)
 
-The purpose of this stage is to set up the environments folders used for projects that contain monitoring, secrets, and networking projects.
+The purpose of this stage is to set up the environments folders used for projects that contain monitoring and secrets projects.
 This will create the following folder and project structure:
 
 ```
 example-organization
 └── fldr-development
     ├── prj-d-monitoring
-    ├── prj-d-secrets
-    ├── prj-d-shared-base
-    └── prj-d-shared-restricted
+    └── prj-d-secrets
 └── fldr-non-production
     ├── prj-n-monitoring
-    ├── prj-n-secrets
-    ├── prj-n-shared-base
-    └── prj-n-shared-restricted
+    └── prj-n-secrets
 └── fldr-production
     ├── prj-p-monitoring
-    ├── prj-p-secrets
-    ├── prj-p-shared-base
-    └── prj-p-shared-restricted
+    └── prj-p-secrets
 ```
 
 #### Monitoring
@@ -133,11 +140,6 @@ example-organization
 Under the environment folder, a project is created per environment (`development`, `non-production`, and `production`), which is intended to be used as a [Cloud Monitoring workspace](https://cloud.google.com/monitoring/workspaces) for all projects in that environment.
 Please note that creating the [workspace and linking projects](https://cloud.google.com/monitoring/workspaces/create) can currently only be completed through the Cloud Console.
 If you have strong IAM requirements for these monitoring workspaces, it is worth considering creating these at a more granular level, such as per business unit or per application.
-
-#### Networking
-
-Under the environment folder, two projects, one for base and another for restricted network, are created per environment (`development`, `non-production`, and `production`) which is intended to be used as a [Shared VPC host project](https://cloud.google.com/vpc/docs/shared-vpc) for all projects in that environment.
-This stage only creates the projects and enables the correct APIs, the following networks stages, [3-networks-dual-svpc](./3-networks-dual-svpc/) and [3-networks-hub-and-spoke](./3-networks-hub-and-spoke/), create the actual Shared VPC networks.
 
 #### Secrets
 
@@ -239,26 +241,31 @@ After all steps above have been executed, your Google Cloud organization should 
 example-organization
 └── fldr-common
     ├── prj-c-logging
-    ├── prj-c-base-net-hub
     ├── prj-c-billing-logs
-    ├── prj-c-dns-hub
-    ├── prj-c-interconnect
-    ├── prj-c-restricted-net-hub
     ├── prj-c-scc
     ├── prj-c-secrets
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
+└── fldr-network
+    ├── prj-c-base-net-hub
+    ├── prj-c-dns-hub
+    ├── prj-c-interconnect
+    ├── prj-c-restricted-net-hub
+    ├── prj-d-shared-base
+    ├── prj-d-shared-restricted
+    ├── prj-n-shared-base
+    ├── prj-n-shared-restricted
+    ├── prj-p-shared-base
+    └── prj-p-shared-restricted
 └── fldr-development
     ├── prj-d-monitoring
     ├── prj-d-secrets
-    ├── prj-d-shared-base
-    └── prj-d-shared-restricted
     └── fldr-bu1-development
         ├── prj-d-env-bu1secrets
         ├── prj-d-bu1sample-floating
         ├── prj-d-bu1sample-base
         ├── prj-d-bu1sample-restrict
-        ├── prj-d-bu1sample-peering
+        └── prj-d-bu1sample-peering
     └── fldr-bu2-development
         ├── prj-d-env-bu2secrets
         ├── prj-d-sample-bu2floating
@@ -268,14 +275,12 @@ example-organization
 └── fldr-non-production
     ├── prj-n-monitoring
     ├── prj-n-secrets
-    ├── prj-n-shared-base
-    └── prj-n-shared-restricted
     └── fldr-bu1-non-production
         ├── prj-n-env-bu1secrets
         ├── prj-n-bu1sample-floating
         ├── prj-n-bu1sample-base
         ├── prj-n-bu1sample-restrict
-        ├── prj-n-bu1sample-peering
+        └── prj-n-bu1sample-peering
     └── fldr-bu2-non-production
         ├── prj-n-env-bu2secrets
         ├── prj-n-sample-bu2floating
@@ -285,14 +290,12 @@ example-organization
 └── fldr-production
     ├── prj-p-monitoring
     ├── prj-p-secrets
-    ├── prj-p-shared-base
-    └── prj-p-shared-restricted
     └── fldr-bu1-production
         ├── prj-p-env-bu1secrets
         ├── prj-p-bu1sample-floating
         ├── prj-p-bu1sample-base
         ├── prj-p-bu1sample-restrict
-        ├── prj-p-bu1sample-peering
+        └── prj-p-bu1sample-peering
     └── fldr-bu2-production
         ├── prj-p-env-bu2secrets
         ├── prj-p-sample-bu2floating

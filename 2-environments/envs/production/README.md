@@ -12,12 +12,9 @@
 |------|-------------|
 | assured\_workload\_id | Assured Workload ID. |
 | assured\_workload\_resources | Resources associated with the Assured Workload. |
-| base\_shared\_vpc\_project\_id | Project for base shared VPC. |
 | env\_folder | Environment folder created under parent. |
 | env\_secrets\_project\_id | Project for environment related secrets. |
 | monitoring\_project\_id | Project for monitoring infra. |
-| restricted\_shared\_vpc\_project\_id | Project for restricted shared VPC. |
-| restricted\_shared\_vpc\_project\_number | Project number for restricted shared VPC. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

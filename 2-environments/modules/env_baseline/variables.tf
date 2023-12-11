@@ -40,20 +40,25 @@ variable "project_budget" {
   budget_amount: The amount to use as the budget.
   alert_spent_percents: A list of percentages of the budget to alert on when threshold is exceeded.
   alert_pubsub_topic: The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`.
+  alert_spend_basis: The type of basis used to determine if spend has passed the threshold. Possible choices are `CURRENT_SPEND` or `FORECASTED_SPEND` (default).
   EOT
   type = object({
-    base_network_budget_amount              = optional(number, 1000)
-    base_network_alert_spent_percents       = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    base_network_alert_pubsub_topic         = optional(string, null)
-    restricted_network_budget_amount        = optional(number, 1000)
-    restricted_network_alert_spent_percents = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    restricted_network_alert_pubsub_topic   = optional(string, null)
-    monitoring_budget_amount                = optional(number, 1000)
-    monitoring_alert_spent_percents         = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    monitoring_alert_pubsub_topic           = optional(string, null)
-    secret_budget_amount                    = optional(number, 1000)
-    secret_alert_spent_percents             = optional(list(number), [0.5, 0.75, 0.9, 0.95])
-    secret_alert_pubsub_topic               = optional(string, null)
+    base_network_budget_amount                  = optional(number, 1000)
+    base_network_alert_spent_percents           = optional(list(number), [1.2])
+    base_network_alert_pubsub_topic             = optional(string, null)
+    base_network_budget_alert_spend_basis       = optional(string, "FORECASTED_SPEND")
+    restricted_network_budget_amount            = optional(number, 1000)
+    restricted_network_alert_spent_percents     = optional(list(number), [1.2])
+    restricted_network_alert_pubsub_topic       = optional(string, null)
+    restricted_network_budget_alert_spend_basis = optional(string, "FORECASTED_SPEND")
+    monitoring_budget_amount                    = optional(number, 1000)
+    monitoring_alert_spent_percents             = optional(list(number), [1.2])
+    monitoring_alert_pubsub_topic               = optional(string, null)
+    monitoring_budget_alert_spend_basis         = optional(string, "FORECASTED_SPEND")
+    secret_budget_amount                        = optional(number, 1000)
+    secret_alert_spent_percents                 = optional(list(number), [1.2])
+    secret_alert_pubsub_topic                   = optional(string, null)
+    secret_budget_alert_spend_basis             = optional(string, "FORECASTED_SPEND")
   })
   default = {}
 }

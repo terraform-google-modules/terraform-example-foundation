@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ module "base_shared_vpc_host_project" {
 
   random_project_id           = true
   random_project_id_length    = 4
-  name                        = format("%s-%s-shared-base", local.project_prefix, var.environment_code)
-  org_id                      = local.org_id
-  billing_account             = local.billing_account
-  folder_id                   = google_folder.env.id
+  name                        = format("%s-%s-shared-base", var.project_prefix, var.env_code)
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = var.folder_id
   disable_services_on_destroy = false
-  depends_on                  = [time_sleep.wait_60_seconds]
+
   activate_apis = [
     "compute.googleapis.com",
     "dns.googleapis.com",
@@ -46,7 +46,7 @@ module "base_shared_vpc_host_project" {
     primary_contact   = "example1"
     secondary_contact = "example2"
     business_code     = "abcd"
-    env_code          = var.environment_code
+    env_code          = var.env_code
   }
   budget_alert_pubsub_topic   = var.project_budget.base_network_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.base_network_alert_spent_percents
@@ -59,12 +59,12 @@ module "restricted_shared_vpc_host_project" {
 
   random_project_id           = true
   random_project_id_length    = 4
-  name                        = format("%s-%s-shared-restricted", local.project_prefix, var.environment_code)
-  org_id                      = local.org_id
-  billing_account             = local.billing_account
-  folder_id                   = google_folder.env.id
+  name                        = format("%s-%s-shared-restricted", var.project_prefix, var.env_code)
+  org_id                      = var.org_id
+  billing_account             = var.billing_account
+  folder_id                   = var.folder_id
   disable_services_on_destroy = false
-  depends_on                  = [time_sleep.wait_60_seconds]
+
   activate_apis = [
     "compute.googleapis.com",
     "dns.googleapis.com",
@@ -83,9 +83,10 @@ module "restricted_shared_vpc_host_project" {
     primary_contact   = "example1"
     secondary_contact = "example2"
     business_code     = "abcd"
-    env_code          = var.environment_code
+    env_code          = var.env_code
   }
   budget_alert_pubsub_topic   = var.project_budget.restricted_network_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.restricted_network_alert_spent_percents
   budget_amount               = var.project_budget.restricted_network_budget_amount
+  budget_alert_spend_basis    = var.project_budget.restricted_network_budget_alert_spend_basis
 }

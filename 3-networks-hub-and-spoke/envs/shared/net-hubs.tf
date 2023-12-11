@@ -286,17 +286,19 @@ module "restricted_shared_vpc" {
       subnet_name           = "sb-c-shared-restricted-hub-${local.default_region1}-proxy"
       subnet_ip             = local.restricted_subnet_proxy_ranges[local.default_region1]
       subnet_region         = local.default_region1
-      subnet_private_access = "true"
       subnet_flow_logs      = false
       description           = "Restricted network hub proxy-only subnet for ${local.default_region1}"
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     },
     {
       subnet_name           = "sb-c-shared-restricted-hub-${local.default_region2}-proxy"
       subnet_ip             = local.restricted_subnet_proxy_ranges[local.default_region2]
       subnet_region         = local.default_region2
-      subnet_private_access = "true"
       subnet_flow_logs      = false
       description           = "Restricted network hub proxy-only subnet for ${local.default_region2}"
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     }
   ]
   secondary_ranges = {}

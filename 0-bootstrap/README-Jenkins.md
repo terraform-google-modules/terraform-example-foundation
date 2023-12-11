@@ -69,14 +69,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
    - You will see an output similar to this:
 
-   ```text
-   -----BEGIN RSA PRIVATE KEY-----
-         copy your private key
-           from BEGIN to END
-      And configure a new
-     Jenkins Agent in the Web UI
-   -----END RSA PRIVATE KEY-----
-   ```
+      ![RSA private key example](./files/private_key_example.png)
 
 1. Configure a new SSH Jenkins Agent in the Jenkins Controller’s Web UI. You need the following information:
    - [SSH Agent Jenkins plugin](https://plugins.jenkins.io/ssh-agent/) installed in your Controller

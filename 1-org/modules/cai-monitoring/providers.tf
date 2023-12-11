@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-output "env_folder" {
-  description = "Environment folder created under parent."
-  value       = module.env.env_folder
+provider "google" {
+  impersonate_service_account = var.impersonate_sa_email
+  request_timeout             = "60s"
 }
 
-output "monitoring_project_id" {
-  description = "Project for monitoring infra."
-  value       = module.env.monitoring_project_id
-}
-
-output "env_secrets_project_id" {
-  description = "Project for environment related secrets."
-  value       = module.env.env_secrets_project_id
+provider "google-beta" {
+  impersonate_service_account = var.impersonate_sa_email
+  request_timeout             = "60s"
 }

@@ -246,22 +246,22 @@ module "restricted_shared_vpc" {
       description           = "Second ${var.env} subnet example."
     },
     {
-      subnet_name           = "sb-${var.environment_code}-shared-restricted-${var.default_region1}-proxy"
-      subnet_ip             = var.restricted_subnet_proxy_ranges[var.default_region1]
-      subnet_region         = var.default_region1
-      subnet_flow_logs      = false
-      description           = "First ${var.env} proxy-only subnet example."
-      role                  = "ACTIVE"
-      purpose               = "REGIONAL_MANAGED_PROXY"
+      subnet_name      = "sb-${var.environment_code}-shared-restricted-${var.default_region1}-proxy"
+      subnet_ip        = var.restricted_subnet_proxy_ranges[var.default_region1]
+      subnet_region    = var.default_region1
+      subnet_flow_logs = false
+      description      = "First ${var.env} proxy-only subnet example."
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
     },
     {
-      subnet_name           = "sb-${var.environment_code}-shared-restricted-${var.default_region2}-proxy"
-      subnet_ip             = var.restricted_subnet_proxy_ranges[var.default_region2]
-      subnet_region         = var.default_region2
-      subnet_flow_logs      = false
-      description           = "Second ${var.env} proxy-only subnet example."
-      role                  = "ACTIVE"
-      purpose               = "REGIONAL_MANAGED_PROXY"
+      subnet_name      = "sb-${var.environment_code}-shared-restricted-${var.default_region2}-proxy"
+      subnet_ip        = var.restricted_subnet_proxy_ranges[var.default_region2]
+      subnet_region    = var.default_region2
+      subnet_flow_logs = false
+      description      = "Second ${var.env} proxy-only subnet example."
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
   secondary_ranges = {
@@ -306,22 +306,22 @@ module "base_shared_vpc" {
       description           = "Second ${var.env} subnet example."
     },
     {
-      subnet_name           = "sb-${var.environment_code}-shared-base-${var.default_region1}-proxy"
-      subnet_ip             = var.base_subnet_proxy_ranges[var.default_region1]
-      subnet_region         = var.default_region1
-      subnet_flow_logs      = false
-      description           = "First ${var.env} proxy-only subnet example."
-      role                  = "ACTIVE"
-      purpose               = "REGIONAL_MANAGED_PROXY"
+      subnet_name      = "sb-${var.environment_code}-shared-base-${var.default_region1}-proxy"
+      subnet_ip        = var.base_subnet_proxy_ranges[var.default_region1]
+      subnet_region    = var.default_region1
+      subnet_flow_logs = false
+      description      = "First ${var.env} proxy-only subnet example."
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
     },
     {
-      subnet_name           = "sb-${var.environment_code}-shared-base-${var.default_region2}-proxy"
-      subnet_ip             = var.base_subnet_proxy_ranges[var.default_region2]
-      subnet_region         = var.default_region2
-      subnet_flow_logs      = false
-      description           = "Second ${var.env} proxy-only subnet example."
-      role                  = "ACTIVE"
-      purpose               = "REGIONAL_MANAGED_PROXY"
+      subnet_name      = "sb-${var.environment_code}-shared-base-${var.default_region2}-proxy"
+      subnet_ip        = var.base_subnet_proxy_ranges[var.default_region2]
+      subnet_region    = var.default_region2
+      subnet_flow_logs = false
+      description      = "Second ${var.env} proxy-only subnet example."
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
 

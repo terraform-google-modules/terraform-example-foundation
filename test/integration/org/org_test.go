@@ -147,7 +147,6 @@ func TestOrg(t *testing.T) {
 			for _, booleanConstraint := range []string{
 				"constraints/compute.disableNestedVirtualization",
 				"constraints/compute.disableSerialPortAccess",
-				"constraints/compute.disableGuestAttributesAccess",
 				"constraints/compute.skipDefaultNetworkCreation",
 				"constraints/compute.restrictXpnProjectLienRemoval",
 				"constraints/sql.restrictPublicIp",

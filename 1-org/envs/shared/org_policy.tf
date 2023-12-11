@@ -27,7 +27,6 @@ locals {
   boolean_type_organization_policies = toset([
     "compute.disableNestedVirtualization",
     "compute.disableSerialPortAccess",
-    "compute.disableGuestAttributesAccess",
     "compute.skipDefaultNetworkCreation",
     "compute.restrictXpnProjectLienRemoval",
     "compute.disableVpcExternalIpv6",

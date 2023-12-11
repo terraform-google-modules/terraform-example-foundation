@@ -171,16 +171,20 @@ module "restricted_shared_vpc" {
   environment_code                  = var.environment_code
   access_context_manager_policy_id  = var.access_context_manager_policy_id
   restricted_services               = local.restricted_services
-  members                           = distinct(concat(["serviceAccount:${local.networks_service_account}", "serviceAccount:${local.projects_service_account}"], var.perimeter_additional_members))
-  private_service_cidr              = var.restricted_private_service_cidr
-  private_service_connect_ip        = var.restricted_private_service_connect_ip
-  ingress_policies                  = var.ingress_policies
-  egress_policies                   = var.egress_policies
-  bgp_asn_subnet                    = local.bgp_asn_number
-  default_region1                   = var.default_region1
-  default_region2                   = var.default_region2
-  domain                            = var.domain
-  mode                              = "spoke"
+  members = distinct(concat([
+    "serviceAccount:${local.networks_service_account}",
+    "serviceAccount:${local.projects_service_account}",
+    "serviceAccount:${local.organization_service_account}",
+  ], var.perimeter_additional_members))
+  private_service_cidr       = var.restricted_private_service_cidr
+  private_service_connect_ip = var.restricted_private_service_connect_ip
+  ingress_policies           = var.ingress_policies
+  egress_policies            = var.egress_policies
+  bgp_asn_subnet             = local.bgp_asn_number
+  default_region1            = var.default_region1
+  default_region2            = var.default_region2
+  domain                     = var.domain
+  mode                       = "spoke"
 
   subnets = [
     {

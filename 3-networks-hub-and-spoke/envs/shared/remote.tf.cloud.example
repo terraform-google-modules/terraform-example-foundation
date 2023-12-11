@@ -27,6 +27,7 @@ locals {
   parent_id                         = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.parent_id
   bootstrap_folder_name             = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.bootstrap_folder_name
   common_folder_name                = data.tfe_outputs.org.nonsensitive_values.common_folder_name
+  network_folder_name               = data.tfe_outputs.org.nonsensitive_values.network_folder_name
   development_folder_name           = data.tfe_outputs.env_development.nonsensitive_values.env_folder
   non_production_folder_name        = data.tfe_outputs.env_non_production.nonsensitive_values.env_folder
   production_folder_name            = data.tfe_outputs.env_production.nonsensitive_values.env_folder

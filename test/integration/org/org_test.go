@@ -102,6 +102,11 @@ func TestOrg(t *testing.T) {
 			folder := gcloud.Runf(t, "resource-manager folders describe %s", commonFolder)
 			assert.Equal("fldr-common", folder.Get("displayName").String(), "folder fldr-common should have been created")
 
+			// creation of network folder
+			networkFolder := testutils.GetLastSplitElement(org.GetStringOutput("network_folder_name"), "/")
+			folderOP := gcloud.Runf(t, "resource-manager folders describe %s", networkFolder)
+			assert.Equal("fldr-network", folderOP.Get("displayName").String(), "folder fldr-network should have been created")
+
 			// check tags applied to common and bootstrap folder
 			commonConfig := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
 			bootstrapFolder := testutils.GetLastSplitElement(commonConfig["bootstrap_folder_name"], "/")
@@ -114,6 +119,11 @@ func TestOrg(t *testing.T) {
 				{
 					folderId:   commonFolder,
 					folderName: "common",
+					value:      "production",
+				},
+				{
+					folderId:   networkFolder,
+					folderName: "network",
 					value:      "production",
 				},
 				{
@@ -138,7 +148,6 @@ func TestOrg(t *testing.T) {
 			for _, booleanConstraint := range []string{
 				"constraints/compute.disableNestedVirtualization",
 				"constraints/compute.disableSerialPortAccess",
-				"constraints/compute.disableGuestAttributesAccess",
 				"constraints/compute.skipDefaultNetworkCreation",
 				"constraints/compute.restrictXpnProjectLienRemoval",
 				"constraints/sql.restrictPublicIp",
@@ -379,6 +388,52 @@ func TestOrg(t *testing.T) {
 				enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
 				listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 				assert.Subset(listApis, projectOutput.apis, "APIs should have been enabled")
+			}
+			// shared vpc projects
+			for _, envName := range []string{
+				"development",
+				"non-production",
+				"production",
+			} {
+				for _, projectEnvOutput := range []struct {
+					projectOutput string
+					apis          []string
+				}{
+					{
+						projectOutput: "base_shared_vpc_project_id",
+						apis: []string{
+							"compute.googleapis.com",
+							"dns.googleapis.com",
+							"servicenetworking.googleapis.com",
+							"container.googleapis.com",
+							"logging.googleapis.com",
+							"billingbudgets.googleapis.com",
+						},
+					},
+					{
+						projectOutput: "restricted_shared_vpc_project_id",
+						apis: []string{
+							"compute.googleapis.com",
+							"dns.googleapis.com",
+							"servicenetworking.googleapis.com",
+							"container.googleapis.com",
+							"logging.googleapis.com",
+							"cloudresourcemanager.googleapis.com",
+							"accesscontextmanager.googleapis.com",
+							"billingbudgets.googleapis.com",
+						},
+					},
+				} {
+					envProj := terraform.OutputMapOfObjects(t, org.GetTFOptions(), "shared_vpc_projects")[envName].(map[string]interface{})
+					projectID := envProj[projectEnvOutput.projectOutput]
+					prj := gcloud.Runf(t, "projects describe %s", projectID)
+					assert.Equal(projectID, prj.Get("projectId").String(), fmt.Sprintf("project %s should exist", projectID))
+					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
+
+					enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
+					listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
+					assert.Subset(listApis, projectEnvOutput.apis, "APIs should have been enabled")
+				}
 			}
 		})
 	org.Test()

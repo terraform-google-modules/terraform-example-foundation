@@ -156,6 +156,7 @@ type GlobalTFVars struct {
 	FolderPrefix                          *string         `hcl:"folder_prefix"`
 	CaiMonitoringKmsForceDestroy          *bool           `hcl:"cai_monitoring_kms_force_destroy"`
 	BucketForceDestroy                    *bool           `hcl:"bucket_force_destroy"`
+	BucketTfstateKmsForceDestroy          *bool           `hcl:"bucket_tfstate_kms_force_destroy"`
 	AuditLogsTableDeleteContentsOnDestroy *bool           `hcl:"audit_logs_table_delete_contents_on_destroy"`
 	LogExportStorageForceDestroy          *bool           `hcl:"log_export_storage_force_destroy"`
 	LogExportStorageLocation              string          `hcl:"log_export_storage_location"`
@@ -193,18 +194,19 @@ func (g GlobalTFVars) CheckString(s string) {
 }
 
 type BootstrapTfvars struct {
-	OrgID              string   `hcl:"org_id"`
-	BillingAccount     string   `hcl:"billing_account"`
-	GroupOrgAdmins     string   `hcl:"group_org_admins"`
-	GroupBillingAdmins string   `hcl:"group_billing_admins"`
-	DefaultRegion      string   `hcl:"default_region"`
-	ParentFolder       *string  `hcl:"parent_folder"`
-	ProjectPrefix      *string  `hcl:"project_prefix"`
-	FolderPrefix       *string  `hcl:"folder_prefix"`
-	BucketForceDestroy *bool    `hcl:"bucket_force_destroy"`
-	OrgProjectCreators []string `hcl:"org_project_creators"`
-	Groups             *Groups  `hcl:"groups"`
-	InitialGroupConfig *string  `hcl:"initial_group_config"`
+	OrgID                        string   `hcl:"org_id"`
+	BillingAccount               string   `hcl:"billing_account"`
+	GroupOrgAdmins               string   `hcl:"group_org_admins"`
+	GroupBillingAdmins           string   `hcl:"group_billing_admins"`
+	DefaultRegion                string   `hcl:"default_region"`
+	ParentFolder                 *string  `hcl:"parent_folder"`
+	ProjectPrefix                *string  `hcl:"project_prefix"`
+	FolderPrefix                 *string  `hcl:"folder_prefix"`
+	BucketForceDestroy           *bool    `hcl:"bucket_force_destroy"`
+	BucketTfstateKmsForceDestroy *bool    `hcl:"bucket_tfstate_kms_force_destroy"`
+	OrgProjectCreators           []string `hcl:"org_project_creators"`
+	Groups                       *Groups  `hcl:"groups"`
+	InitialGroupConfig           *string  `hcl:"initial_group_config"`
 }
 
 type OrgTfvars struct {

@@ -238,6 +238,7 @@ module "restricted_shared_vpc" {
       subnet_flow_logs = false
       description      = "First ${var.env} proxy-only subnet example."
       role             = "ACTIVE"
+      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     },
     {
@@ -247,6 +248,7 @@ module "restricted_shared_vpc" {
       subnet_flow_logs = false
       description      = "Second ${var.env} proxy-only subnet example."
       role             = "ACTIVE"
+      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
@@ -300,6 +302,7 @@ module "base_shared_vpc" {
       description      = "First ${var.env} proxy-only subnet example."
       subnet_flow_logs = false
       role             = "ACTIVE"
+      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     },
     {
@@ -309,6 +312,7 @@ module "base_shared_vpc" {
       description      = "Second ${var.env} proxy-only subnet example."
       subnet_flow_logs = false
       role             = "ACTIVE"
+      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]

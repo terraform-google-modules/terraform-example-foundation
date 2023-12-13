@@ -4,8 +4,6 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | audit\_data\_users | Google Workspace or Cloud Identity group that have access to audit logs. | `string` | n/a | yes |
-| audit\_logs\_table\_delete\_contents\_on\_destroy | (Optional) If set to true, delete all the tables in the dataset when destroying the resource; otherwise, destroying the resource will fail if tables are present. | `bool` | `false` | no |
-| audit\_logs\_table\_expiration\_days | Period before tables expire for all audit logs in milliseconds. Default is 30 days. | `number` | `30` | no |
 | billing\_data\_users | Google Workspace or Cloud Identity group that have access to billing data set. | `string` | n/a | yes |
 | billing\_export\_dataset\_location | The location of the dataset for billing data export. | `string` | `"US"` | no |
 | cai\_monitoring\_kms\_force\_destroy | If set to true, delete KMS keyring and keys when destroying the module; otherwise, destroying the module will fail if KMS keys are present. | `bool` | `false` | no |
@@ -42,8 +40,8 @@
 | domains\_to\_allow | The list of domains to allow users from in IAM. |
 | interconnect\_project\_id | The Dedicated Interconnect project ID |
 | interconnect\_project\_number | The Dedicated Interconnect project number |
-| logs\_export\_bigquery\_dataset\_name | The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets |
-| logs\_export\_logbucket\_name | The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets |
+| logs\_export\_logbucket\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset created for Log Analytics. See https://cloud.google.com/logging/docs/log-analytics . |
+| logs\_export\_logbucket\_name | The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets . |
 | logs\_export\_pubsub\_topic | The Pub/Sub topic for destination of log exports |
 | logs\_export\_storage\_bucket\_name | The storage bucket for destination of log exports |
 | network\_folder\_name | The network folder name. |

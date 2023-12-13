@@ -3,13 +3,13 @@ module github.com/terraform-google-modules/terraform-example-foundation/helpers/
 go 1.20
 
 require (
-	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.5.0
-	github.com/gruntwork-io/terratest v0.41.12
-	github.com/hashicorp/hcl/v2 v2.16.1
+	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.10.2
+	github.com/gruntwork-io/terratest v0.46.8
+	github.com/hashicorp/hcl/v2 v2.19.1
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
-	github.com/stretchr/testify v1.8.2
-	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20230503230051-e9e2618ef515
-	github.com/tidwall/gjson v1.14.4
+	github.com/stretchr/testify v1.8.4
+	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.1.0
+	github.com/tidwall/gjson v1.17.0
 )
 
 require (

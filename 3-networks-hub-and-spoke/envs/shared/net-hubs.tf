@@ -193,20 +193,30 @@ module "base_shared_vpc" {
 
   subnets = [
     {
-      subnet_name           = "sb-c-shared-base-hub-${local.default_region1}"
-      subnet_ip             = local.base_subnet_primary_ranges[local.default_region1]
-      subnet_region         = local.default_region1
-      subnet_private_access = "true"
-      subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Base network hub subnet for ${local.default_region1}"
+      subnet_name                      = "sb-c-shared-base-hub-${local.default_region1}"
+      subnet_ip                        = local.base_subnet_primary_ranges[local.default_region1]
+      subnet_region                    = local.default_region1
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = var.base_vpc_flow_logs.enable_logging
+      subnet_flow_logs_interval        = var.base_vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.base_vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.base_vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.base_vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.base_vpc_flow_logs.filter_expr
+      description                      = "Base network hub subnet for ${local.default_region1}"
     },
     {
-      subnet_name           = "sb-c-shared-base-hub-${local.default_region2}"
-      subnet_ip             = local.base_subnet_primary_ranges[local.default_region2]
-      subnet_region         = local.default_region2
-      subnet_private_access = "true"
-      subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Base network hub subnet for ${local.default_region2}"
+      subnet_name                      = "sb-c-shared-base-hub-${local.default_region2}"
+      subnet_ip                        = local.base_subnet_primary_ranges[local.default_region2]
+      subnet_region                    = local.default_region2
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = var.base_vpc_flow_logs.enable_logging
+      subnet_flow_logs_interval        = var.base_vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.base_vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.base_vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.base_vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.base_vpc_flow_logs.filter_expr
+      description                      = "Base network hub subnet for ${local.default_region2}"
     },
     {
       subnet_name      = "sb-c-shared-base-hub-${local.default_region1}-proxy"
@@ -215,7 +225,6 @@ module "base_shared_vpc" {
       subnet_flow_logs = false
       description      = "Base network hub proxy-only subnet for ${local.default_region1}"
       role             = "ACTIVE"
-      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     },
     {
@@ -225,7 +234,6 @@ module "base_shared_vpc" {
       subnet_flow_logs = false
       description      = "Base network hub proxy-only subnet for ${local.default_region2}"
       role             = "ACTIVE"
-      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
@@ -269,20 +277,30 @@ module "restricted_shared_vpc" {
 
   subnets = [
     {
-      subnet_name           = "sb-c-shared-restricted-hub-${local.default_region1}"
-      subnet_ip             = local.restricted_subnet_primary_ranges[local.default_region1]
-      subnet_region         = local.default_region1
-      subnet_private_access = "true"
-      subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Restricted network hub subnet for ${local.default_region1}"
+      subnet_name                      = "sb-c-shared-restricted-hub-${local.default_region1}"
+      subnet_ip                        = local.restricted_subnet_primary_ranges[local.default_region1]
+      subnet_region                    = local.default_region1
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = var.restricted_vpc_flow_logs.enable_logging
+      subnet_flow_logs_interval        = var.restricted_vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.restricted_vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.restricted_vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.restricted_vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.restricted_vpc_flow_logs.filter_expr
+      description = "Restricted network hub subnet for ${local.default_region1}"
     },
     {
-      subnet_name           = "sb-c-shared-restricted-hub-${local.default_region2}"
-      subnet_ip             = local.restricted_subnet_primary_ranges[local.default_region2]
-      subnet_region         = local.default_region2
-      subnet_private_access = "true"
-      subnet_flow_logs      = var.subnetworks_enable_logging
-      description           = "Restricted network hub subnet for ${local.default_region2}"
+      subnet_name                      = "sb-c-shared-restricted-hub-${local.default_region2}"
+      subnet_ip                        = local.restricted_subnet_primary_ranges[local.default_region2]
+      subnet_region                    = local.default_region2
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = var.restricted_vpc_flow_logs.enable_logging
+      subnet_flow_logs_interval        = var.restricted_vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.restricted_vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.restricted_vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.restricted_vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.restricted_vpc_flow_logs.filter_expr
+      description = "Restricted network hub subnet for ${local.default_region2}"
     },
     {
       subnet_name      = "sb-c-shared-restricted-hub-${local.default_region1}-proxy"
@@ -291,7 +309,6 @@ module "restricted_shared_vpc" {
       subnet_flow_logs = false
       description      = "Restricted network hub proxy-only subnet for ${local.default_region1}"
       role             = "ACTIVE"
-      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     },
     {
@@ -301,7 +318,6 @@ module "restricted_shared_vpc" {
       subnet_flow_logs = false
       description      = "Restricted network hub proxy-only subnet for ${local.default_region2}"
       role             = "ACTIVE"
-      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]

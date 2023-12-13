@@ -143,6 +143,7 @@ resource "google_compute_subnetwork" "jenkins_agents_subnet" {
     aggregation_interval = "INTERVAL_5_SEC"
     flow_sampling        = 0.5
     metadata             = "INCLUDE_ALL_METADATA"
+    metadata_fields      = null
     filter_expr          = true
   }
 }

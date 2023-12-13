@@ -216,20 +216,30 @@ module "restricted_shared_vpc" {
 
   subnets = [
     {
-      subnet_name           = "sb-${var.environment_code}-shared-restricted-${var.default_region1}"
-      subnet_ip             = var.restricted_subnet_primary_ranges[var.default_region1]
-      subnet_region         = var.default_region1
-      subnet_private_access = "true"
-      subnet_flow_logs      = true
-      description           = "First ${var.env} subnet example."
+      subnet_name                      = "sb-${var.environment_code}-shared-restricted-${var.default_region1}"
+      subnet_ip                        = var.restricted_subnet_primary_ranges[var.default_region1]
+      subnet_region                    = var.default_region1
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = true
+      subnet_flow_logs_interval        = var.restricted_vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.restricted_vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.restricted_vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.restricted_vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.restricted_vpc_flow_logs.filter_expr
+      description                      = "First ${var.env} subnet example."
     },
     {
-      subnet_name           = "sb-${var.environment_code}-shared-restricted-${var.default_region2}"
-      subnet_ip             = var.restricted_subnet_primary_ranges[var.default_region2]
-      subnet_region         = var.default_region2
-      subnet_private_access = "true"
-      subnet_flow_logs      = true
-      description           = "Second ${var.env} subnet example."
+      subnet_name                      = "sb-${var.environment_code}-shared-restricted-${var.default_region2}"
+      subnet_ip                        = var.restricted_subnet_primary_ranges[var.default_region2]
+      subnet_region                    = var.default_region2
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = true
+      subnet_flow_logs_interval        = var.restricted_vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.restricted_vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.restricted_vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.restricted_vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.restricted_vpc_flow_logs.filter_expr
+      description                      = "Second ${var.env} subnet example."
     },
     {
       subnet_name      = "sb-${var.environment_code}-shared-restricted-${var.default_region1}-proxy"
@@ -238,7 +248,6 @@ module "restricted_shared_vpc" {
       subnet_flow_logs = false
       description      = "First ${var.env} proxy-only subnet example."
       role             = "ACTIVE"
-      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     },
     {
@@ -248,7 +257,6 @@ module "restricted_shared_vpc" {
       subnet_flow_logs = false
       description      = "Second ${var.env} proxy-only subnet example."
       role             = "ACTIVE"
-      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
@@ -280,20 +288,30 @@ module "base_shared_vpc" {
 
   subnets = [
     {
-      subnet_name           = "sb-${var.environment_code}-shared-base-${var.default_region1}"
-      subnet_ip             = var.base_subnet_primary_ranges[var.default_region1]
-      subnet_region         = var.default_region1
-      subnet_private_access = "true"
-      subnet_flow_logs      = true
-      description           = "First ${var.env} subnet example."
+      subnet_name                      = "sb-${var.environment_code}-shared-base-${var.default_region1}"
+      subnet_ip                        = var.base_subnet_primary_ranges[var.default_region1]
+      subnet_region                    = var.default_region1
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = true
+      subnet_flow_logs_interval        = var.base_vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.base_vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.base_vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.base_vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.base_vpc_flow_logs.filter_expr
+      description                      = "First ${var.env} subnet example."
     },
     {
-      subnet_name           = "sb-${var.environment_code}-shared-base-${var.default_region2}"
-      subnet_ip             = var.base_subnet_primary_ranges[var.default_region2]
-      subnet_region         = var.default_region2
-      subnet_private_access = "true"
-      subnet_flow_logs      = true
-      description           = "Second ${var.env} subnet example."
+      subnet_name                      = "sb-${var.environment_code}-shared-base-${var.default_region2}"
+      subnet_ip                        = var.base_subnet_primary_ranges[var.default_region2]
+      subnet_region                    = var.default_region2
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = true
+      subnet_flow_logs_interval        = var.base_vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.base_vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.base_vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.base_vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.base_vpc_flow_logs.filter_expr
+      description                      = "Second ${var.env} subnet example."
     },
     {
       subnet_name      = "sb-${var.environment_code}-shared-base-${var.default_region1}-proxy"
@@ -302,7 +320,6 @@ module "base_shared_vpc" {
       description      = "First ${var.env} proxy-only subnet example."
       subnet_flow_logs = false
       role             = "ACTIVE"
-      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     },
     {
@@ -312,7 +329,6 @@ module "base_shared_vpc" {
       description      = "Second ${var.env} proxy-only subnet example."
       subnet_flow_logs = false
       role             = "ACTIVE"
-      ipv6_access_type = "INTERNAL"
       purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]

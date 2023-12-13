@@ -39,34 +39,30 @@ locals {
     for v in local.exports_list : "${v.res}_${v.type}" => v
   }
   destinations_options = {
-    bgq = var.bigquery_options
     pub = var.pubsub_options
     sto = var.storage_options
     lbk = var.logbucket_options
   }
 
   logging_sink_name_map = {
-    bgq = try("sk-to-ds-logs-${var.logging_destination_project_id}", "sk-to-ds-logs")
     pub = try("sk-to-tp-logs-${var.logging_destination_project_id}", "sk-to-tp-logs")
     sto = try("sk-to-bkt-logs-${var.logging_destination_project_id}", "sk-to-bkt-logs")
     lbk = try("sk-to-logbkt-logs-${var.logging_destination_project_id}", "sk-to-logbkt-logs")
   }
 
   logging_tgt_name = {
-    bgq = replace("${local.logging_tgt_prefix.bgq}${random_string.suffix.result}", "-", "_")
     pub = "${local.logging_tgt_prefix.pub}${random_string.suffix.result}"
     sto = "${local.logging_tgt_prefix.sto}${random_string.suffix.result}"
     lbk = "${local.logging_tgt_prefix.lbk}${random_string.suffix.result}"
   }
 
   destination_uri_map = {
-    bgq = try(module.destination_bigquery[0].destination_uri, "")
     pub = try(module.destination_pubsub[0].destination_uri, "")
     sto = try(module.destination_storage[0].destination_uri, "")
     lbk = try(module.destination_logbucket[0].destination_uri, "")
   }
+
   logging_tgt_prefix = {
-    bgq = "ds_logs_"
     pub = "tp-logs-"
     sto = try("bkt-logs-${var.logging_destination_project_id}-", "bkt-logs-")
     lbk = "logbkt-logs-"
@@ -92,7 +88,6 @@ module "log_export" {
   parent_resource_type   = var.resource_type
   unique_writer_identity = true
   include_children       = local.include_children
-  bigquery_options       = each.value.type == "bgq" ? { use_partitioned_tables = true } : null
 }
 
 #-------------------------#
@@ -100,7 +95,7 @@ module "log_export" {
 #-------------------------#
 module "destination_logbucket" {
   source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  version = "~> 7.5.0"
+  version = "~> 7.7"
 
   count = var.logbucket_options != null ? 1 : 0
 
@@ -108,6 +103,9 @@ module "destination_logbucket" {
   name                          = coalesce(var.logbucket_options.name, local.logging_tgt_name.lbk)
   log_sink_writer_identity      = module.log_export["${local.value_first_resource}_lbk"].writer_identity
   location                      = var.logbucket_options.location
+  enable_analytics              = var.logbucket_options.enable_analytics
+  linked_dataset_id             = var.logbucket_options.linked_dataset_id
+  linked_dataset_description    = var.logbucket_options.linked_dataset_description
   retention_days                = var.logbucket_options.retention_days
   grant_write_permission_on_bkt = false
 }
@@ -125,35 +123,6 @@ resource "google_project_iam_member" "logbucket_sink_member" {
   # module.log_export key "<resource>_<dest>"
   member = module.log_export["${each.value}_lbk"].writer_identity
 }
-
-
-#-----------------------#
-# Send logs to BigQuery #
-#-----------------------#
-module "destination_bigquery" {
-  source  = "terraform-google-modules/log-export/google//modules/bigquery"
-  version = "~> 7.4"
-
-  count = var.bigquery_options != null ? 1 : 0
-
-  project_id                 = var.logging_destination_project_id
-  dataset_name               = coalesce(var.bigquery_options.dataset_name, local.logging_tgt_name.bgq)
-  log_sink_writer_identity   = module.log_export["${local.value_first_resource}_bgq"].writer_identity
-  expiration_days            = var.bigquery_options.expiration_days
-  delete_contents_on_destroy = var.bigquery_options.delete_contents_on_destroy
-}
-
-#-----------------------------------------#
-# Bigquery Service account IAM membership #
-#-----------------------------------------#
-resource "google_project_iam_member" "bigquery_sink_member" {
-  for_each = var.bigquery_options != null ? var.resources : {}
-
-  project = var.logging_destination_project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = module.log_export["${each.value}_bgq"].writer_identity
-}
-
 
 #----------------------#
 # Send logs to Storage #

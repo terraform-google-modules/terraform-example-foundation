@@ -55,38 +55,20 @@ Destination LogBucket options:
 - logging_sink_name: The name of the log sink to be created.
 - logging_sink_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is "" which exports all logs.
 - location: The location of the log bucket. Default: global.
+- enable_analytics: Whether or not Log Analytics is enabled. A Log bucket with Log Analytics enabled can be queried in the Log Analytics page using SQL queries. Cannot be disabled once enabled.
+- linked_dataset_id: The ID of the linked BigQuery dataset. A valid link dataset ID must only have alphanumeric characters and underscores within it and have up to 100 characters.
+- linked_dataset_description: A use-friendly description of the linked BigQuery dataset. The maximum length of the description is 8000 characters.
 - retention_days: The number of days data should be retained for the log bucket. Default 30.
 EOT
   type = object({
-    name                = optional(string, null)
-    logging_sink_name   = optional(string, null)
-    logging_sink_filter = optional(string, "")
-    location            = optional(string, "global")
-    retention_days      = optional(number, 30)
-  })
-  default = null
-}
-
-#----------------------------- #
-# Big Query specific variables #
-#----------------------------- #
-variable "bigquery_options" {
-  description = <<EOT
-Destination BigQuery options:
-- dataset_name: The name of the bigquery dataset to be created and used for log entries.
-- logging_sink_name: The name of the log sink to be created.
-- logging_sink_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is "" which exports all logs.
-- expiration_days: Table expiration time. If null logs will never be deleted.
-- partitioned_tables: Options that affect sinks exporting data to BigQuery. use_partitioned_tables - (Required) Whether to use BigQuery's partition tables.
-- delete_contents_on_destroy: If set to true, delete all contained objects in the logging destination.
-EOT
-  type = object({
-    dataset_name               = optional(string, null)
+    name                       = optional(string, null)
     logging_sink_name          = optional(string, null)
     logging_sink_filter        = optional(string, "")
-    expiration_days            = optional(number, null)
-    partitioned_tables         = optional(bool, true)
-    delete_contents_on_destroy = optional(bool, false)
+    location                   = optional(string, "global")
+    enable_analytics           = optional(bool, true)
+    linked_dataset_id          = optional(string, null)
+    linked_dataset_description = optional(string, null)
+    retention_days             = optional(number, 30)
   })
   default = null
 }

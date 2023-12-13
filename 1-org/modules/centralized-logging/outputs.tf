@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-output "bigquery_destination_name" {
-  description = "The resource name for the destination BigQuery."
-  value       = try(module.destination_bigquery[0].resource_name, "")
-}
-
 output "storage_destination_name" {
   description = "The resource name for the destination Storage."
   value       = try(module.destination_storage[0].resource_name, "")
@@ -32,4 +27,9 @@ output "pubsub_destination_name" {
 output "logbucket_destination_name" {
   description = "The resource name for the destination Log Bucket."
   value       = try(module.destination_logbucket[0].resource_name, "")
+}
+
+output "logbucket_linked_dataset_name" {
+  description = "The resource name of the Log Bucket linked BigQuery dataset."
+  value       = try(module.destination_logbucket[0].linked_dataset_name, "")
 }

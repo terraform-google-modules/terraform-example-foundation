@@ -97,6 +97,7 @@ locals {
       "roles/storage.admin",
       "roles/iam.serviceAccountAdmin",
       "roles/resourcemanager.projectDeleter",
+      "roles/cloudkms.admin",
     ],
     "org" = [
       "roles/storage.objectAdmin",

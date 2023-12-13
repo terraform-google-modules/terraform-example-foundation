@@ -6,7 +6,7 @@ require (
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.5.0
 	github.com/gruntwork-io/terratest v0.41.12
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210217184823-a52172cd2f64
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.4
 	github.com/tidwall/gjson v1.14.4
 	golang.org/x/oauth2 v0.7.0
 )

@@ -287,7 +287,7 @@ module "restricted_shared_vpc" {
       subnet_flow_logs_metadata        = var.restricted_vpc_flow_logs.metadata
       subnet_flow_logs_metadata_fields = var.restricted_vpc_flow_logs.metadata_fields
       subnet_flow_logs_filter          = var.restricted_vpc_flow_logs.filter_expr
-      description = "Restricted network hub subnet for ${local.default_region1}"
+      description                      = "Restricted network hub subnet for ${local.default_region1}"
     },
     {
       subnet_name                      = "sb-c-shared-restricted-hub-${local.default_region2}"
@@ -300,7 +300,7 @@ module "restricted_shared_vpc" {
       subnet_flow_logs_metadata        = var.restricted_vpc_flow_logs.metadata
       subnet_flow_logs_metadata_fields = var.restricted_vpc_flow_logs.metadata_fields
       subnet_flow_logs_filter          = var.restricted_vpc_flow_logs.filter_expr
-      description = "Restricted network hub subnet for ${local.default_region2}"
+      description                      = "Restricted network hub subnet for ${local.default_region2}"
     },
     {
       subnet_name      = "sb-c-shared-restricted-hub-${local.default_region1}-proxy"

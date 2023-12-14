@@ -35,10 +35,24 @@ variable "dns_enable_logging" {
   default     = true
 }
 
-variable "subnetworks_enable_logging" {
-  type        = bool
-  description = "Toggle subnetworks flow logging for VPC Subnetworks."
-  default     = true
+variable "dns_vpc_flow_logs" {
+  description = <<EOT
+  enable_logging: set to true to enable VPC flow logging for the subnetworks.
+  aggregation_interval: Toggles the aggregation interval for collecting flow logs. Increasing the interval time will reduce the amount of generated flow logs for long lasting connections. Possible values are: INTERVAL_5_SEC, INTERVAL_30_SEC, INTERVAL_1_MIN, INTERVAL_5_MIN, INTERVAL_10_MIN, INTERVAL_15_MIN.
+  flow_sampling: Set the sampling rate of VPC flow logs within the subnetwork where 1.0 means all collected logs are reported and 0.0 means no logs are reported. The value of the field must be in [0, 1].
+  metadata: Configures whether metadata fields should be added to the reported VPC flow logs. Possible values are: EXCLUDE_ALL_METADATA, INCLUDE_ALL_METADATA, CUSTOM_METADATA.
+  metadata_fields: ist of metadata fields that should be added to reported logs. Can only be specified if VPC flow logs for this subnetwork is enabled and "metadata" is set to CUSTOM_METADATA.
+  filter_expr: Export filter used to define which VPC flow logs should be logged, as as CEL expression. See https://cloud.google.com/vpc/docs/flow-logs#filtering for details on how to format this field.
+EOT
+  type = object({
+    enable_logging       = optional(string, "true")
+    aggregation_interval = optional(string, "INTERVAL_5_SEC")
+    flow_sampling        = optional(string, "0.5")
+    metadata             = optional(string, "INCLUDE_ALL_METADATA")
+    metadata_fields      = optional(list(string), [])
+    filter_expr          = optional(string, "true")
+  })
+  default = {}
 }
 
 variable "domain" {
@@ -151,6 +165,46 @@ variable "restricted_hub_nat_num_addresses_region2" {
   type        = number
   description = "Number of external IPs to reserve for second Cloud NAT in Restricted Hub."
   default     = 2
+}
+
+variable "base_vpc_flow_logs" {
+  description = <<EOT
+  enable_logging: set to true to enable VPC flow logging for the subnetworks.
+  aggregation_interval: Toggles the aggregation interval for collecting flow logs. Increasing the interval time will reduce the amount of generated flow logs for long lasting connections. Possible values are: INTERVAL_5_SEC, INTERVAL_30_SEC, INTERVAL_1_MIN, INTERVAL_5_MIN, INTERVAL_10_MIN, INTERVAL_15_MIN.
+  flow_sampling: Set the sampling rate of VPC flow logs within the subnetwork where 1.0 means all collected logs are reported and 0.0 means no logs are reported. The value of the field must be in [0, 1].
+  metadata: Configures whether metadata fields should be added to the reported VPC flow logs. Possible values are: EXCLUDE_ALL_METADATA, INCLUDE_ALL_METADATA, CUSTOM_METADATA.
+  metadata_fields: ist of metadata fields that should be added to reported logs. Can only be specified if VPC flow logs for this subnetwork is enabled and "metadata" is set to CUSTOM_METADATA.
+  filter_expr: Export filter used to define which VPC flow logs should be logged, as as CEL expression. See https://cloud.google.com/vpc/docs/flow-logs#filtering for details on how to format this field.
+EOT
+  type = object({
+    enable_logging       = optional(string, "true")
+    aggregation_interval = optional(string, "INTERVAL_5_SEC")
+    flow_sampling        = optional(string, "0.5")
+    metadata             = optional(string, "INCLUDE_ALL_METADATA")
+    metadata_fields      = optional(list(string), [])
+    filter_expr          = optional(string, "true")
+  })
+  default = {}
+}
+
+variable "restricted_vpc_flow_logs" {
+  description = <<EOT
+  enable_logging: set to true to enable VPC flow logging for the subnetworks.
+  aggregation_interval: Toggles the aggregation interval for collecting flow logs. Increasing the interval time will reduce the amount of generated flow logs for long lasting connections. Possible values are: INTERVAL_5_SEC, INTERVAL_30_SEC, INTERVAL_1_MIN, INTERVAL_5_MIN, INTERVAL_10_MIN, INTERVAL_15_MIN.
+  flow_sampling: Set the sampling rate of VPC flow logs within the subnetwork where 1.0 means all collected logs are reported and 0.0 means no logs are reported. The value of the field must be in [0, 1].
+  metadata: Configures whether metadata fields should be added to the reported VPC flow logs. Possible values are: EXCLUDE_ALL_METADATA, INCLUDE_ALL_METADATA, CUSTOM_METADATA.
+  metadata_fields: ist of metadata fields that should be added to reported logs. Can only be specified if VPC flow logs for this subnetwork is enabled and "metadata" is set to CUSTOM_METADATA.
+  filter_expr: Export filter used to define which VPC flow logs should be logged, as as CEL expression. See https://cloud.google.com/vpc/docs/flow-logs#filtering for details on how to format this field.
+EOT
+  type = object({
+    enable_logging       = optional(string, "true")
+    aggregation_interval = optional(string, "INTERVAL_5_SEC")
+    flow_sampling        = optional(string, "0.5")
+    metadata             = optional(string, "INCLUDE_ALL_METADATA")
+    metadata_fields      = optional(list(string), [])
+    filter_expr          = optional(string, "true")
+  })
+  default = {}
 }
 
 variable "firewall_policies_enable_logging" {

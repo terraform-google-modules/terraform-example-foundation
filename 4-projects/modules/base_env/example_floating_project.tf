@@ -19,7 +19,7 @@ module "floating_project" {
 
   org_id          = local.org_id
   billing_account = local.billing_account
-  folder_id       = local.env_folder_name
+  folder_id       = google_folder.env_business_unit.name
   environment     = var.env
   project_budget  = var.project_budget
   project_prefix  = local.project_prefix

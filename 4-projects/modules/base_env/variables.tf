@@ -152,3 +152,9 @@ variable "subnet_ip_range" {
   type        = string
   default     = null
 }
+
+variable "folder_prefix" {
+  description = "Name prefix to use for folders created. Should be the same in all steps."
+  type        = string
+  default     = "fldr"
+}

@@ -48,6 +48,7 @@ func TestBootstrap(t *testing.T) {
 
 	vars := map[string]interface{}{
 		"bucket_force_destroy": true,
+		"bucket_tfstate_kms_force_destroy": true,
 	}
 
 	temp := tft.NewTFBlueprintTest(t,

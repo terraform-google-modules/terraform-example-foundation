@@ -82,6 +82,12 @@ variable "bucket_force_destroy" {
   default     = false
 }
 
+variable "bucket_tfstate_kms_force_destroy" {
+  description = "When deleting a bucket, this boolean option will delete the KMS keys used for the Terraform state bucket."
+  type        = bool
+  default     = false
+}
+
 /* ----------------------------------------
     Specific to Groups creation
    ---------------------------------------- */

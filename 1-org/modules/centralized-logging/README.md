@@ -1,6 +1,6 @@
 # Centralized Logging Module
 
-This module handles logging configuration enabling one or more resources such as organization, folders, or projects to send logs to multiple destinations: [GCS bucket](https://cloud.google.com/logging/docs/export/using_exported_logs#gcs-overview), [Big Query](https://cloud.google.com/logging/docs/export/bigquery), [Pub/Sub](https://cloud.google.com/logging/docs/export/using_exported_logs#pubsub-overview), and [Log Buckets](https://cloud.google.com/logging/docs/routing/overview#buckets).
+This module handles logging configuration enabling one or more resources such as organization, folders, or projects to send logs to multiple destinations: [GCS bucket](https://cloud.google.com/logging/docs/export/using_exported_logs#gcs-overview), [Pub/Sub](https://cloud.google.com/logging/docs/export/using_exported_logs#pubsub-overview), and [Log Buckets](https://cloud.google.com/logging/docs/routing/overview#buckets) with [Log Analytics](https://cloud.google.com/logging/docs/log-analytics#analytics).
 
 ## Usage
 
@@ -24,19 +24,6 @@ module "logs_export" {
     logging_sink_name   = "sk-c-logging-bkt"
     storage_bucket_name = "bkt-logs"
     location            = "us-central1"
-  }
-
-  bigquery_options = {
-    dataset_name               = "ds_logs"
-    logging_sink_name          = "sk-c-logging-bq"
-    logging_sink_filter        = <<EOF
-    logName: /logs/cloudaudit.googleapis.com%2Factivity OR
-    logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
-    logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR
-    logName: /logs/compute.googleapis.com%2Fvpc_flows OR
-    logName: /logs/compute.googleapis.com%2Ffirewall OR
-    logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
-EOF
   }
 }
 ```
@@ -72,8 +59,7 @@ module "logging_logbucket" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| bigquery\_options | Destination BigQuery options:<br>- dataset\_name: The name of the bigquery dataset to be created and used for log entries.<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is "" which exports all logs.<br>- expiration\_days: Table expiration time. If null logs will never be deleted.<br>- partitioned\_tables: Options that affect sinks exporting data to BigQuery. use\_partitioned\_tables - (Required) Whether to use BigQuery's partition tables.<br>- delete\_contents\_on\_destroy: If set to true, delete all contained objects in the logging destination. | <pre>object({<br>    dataset_name               = optional(string, null)<br>    logging_sink_name          = optional(string, null)<br>    logging_sink_filter        = optional(string, "")<br>    expiration_days            = optional(number, null)<br>    partitioned_tables         = optional(bool, true)<br>    delete_contents_on_destroy = optional(bool, false)<br>  })</pre> | `null` | no |
-| logbucket\_options | Destination LogBucket options:<br>- name: The name of the log bucket to be created and used for log entries matching the filter.<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is "" which exports all logs.<br>- location: The location of the log bucket. Default: global.<br>- retention\_days: The number of days data should be retained for the log bucket. Default 30. | <pre>object({<br>    name                = optional(string, null)<br>    logging_sink_name   = optional(string, null)<br>    logging_sink_filter = optional(string, "")<br>    location            = optional(string, "global")<br>    retention_days      = optional(number, 30)<br>  })</pre> | `null` | no |
+| logbucket\_options | Destination LogBucket options:<br>- name: The name of the log bucket to be created and used for log entries matching the filter.<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is "" which exports all logs.<br>- location: The location of the log bucket. Default: global.<br>- enable\_analytics: Whether or not Log Analytics is enabled. A Log bucket with Log Analytics enabled can be queried in the Log Analytics page using SQL queries. Cannot be disabled once enabled.<br>- linked\_dataset\_id: The ID of the linked BigQuery dataset. A valid link dataset ID must only have alphanumeric characters and underscores within it and have up to 100 characters.<br>- linked\_dataset\_description: A use-friendly description of the linked BigQuery dataset. The maximum length of the description is 8000 characters.<br>- retention\_days: The number of days data should be retained for the log bucket. Default 30. | <pre>object({<br>    name                       = optional(string, null)<br>    logging_sink_name          = optional(string, null)<br>    logging_sink_filter        = optional(string, "")<br>    location                   = optional(string, "global")<br>    enable_analytics           = optional(bool, true)<br>    linked_dataset_id          = optional(string, null)<br>    linked_dataset_description = optional(string, null)<br>    retention_days             = optional(number, 30)<br>  })</pre> | `null` | no |
 | logging\_destination\_project\_id | The ID of the project that will have the resources where the logs will be created. | `string` | n/a | yes |
 | logging\_project\_key | (Optional) The key of logging destination project if it is inside resources map. It is mandatory when resource\_type = project and logging\_target\_type = logbucket. | `string` | `""` | no |
 | pubsub\_options | Destination Pubsub options:<br>- topic\_name: The name of the pubsub topic to be created and used for log entries matching the filter.<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is "" which exports all logs.<br>- create\_subscriber: Whether to create a subscription to the topic that was created and used for log entries matching the filter. If 'true', a pull subscription is created along with a service account that is granted roles/pubsub.subscriber and roles/pubsub.viewer to the topic. | <pre>object({<br>    topic_name          = optional(string, null)<br>    logging_sink_name   = optional(string, null)<br>    logging_sink_filter = optional(string, "")<br>    create_subscriber   = optional(bool, true)<br>  })</pre> | `null` | no |
@@ -85,8 +71,8 @@ module "logging_logbucket" {
 
 | Name | Description |
 |------|-------------|
-| bigquery\_destination\_name | The resource name for the destination BigQuery. |
 | logbucket\_destination\_name | The resource name for the destination Log Bucket. |
+| logbucket\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset. |
 | pubsub\_destination\_name | The resource name for the destination Pub/Sub. |
 | storage\_destination\_name | The resource name for the destination Storage. |
 

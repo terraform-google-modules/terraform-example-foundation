@@ -35,12 +35,6 @@ variable "domains_to_allow" {
   type        = list(string)
 }
 
-variable "audit_logs_table_expiration_days" {
-  description = "Period before tables expire for all audit logs in milliseconds. Default is 30 days."
-  type        = number
-  default     = 30
-}
-
 variable "scc_notification_name" {
   description = "Name of the Security Command Center Notification. It must be unique in the organization. Run `gcloud scc notifications describe <scc_notification_name> --organization=org_id` to check if it already exists."
   type        = string
@@ -90,12 +84,6 @@ variable "log_export_storage_force_destroy" {
 
 variable "log_export_storage_versioning" {
   description = "(Optional) Toggles bucket versioning, ability to retain a non-current object version when the live object version gets replaced or deleted."
-  type        = bool
-  default     = false
-}
-
-variable "audit_logs_table_delete_contents_on_destroy" {
-  description = "(Optional) If set to true, delete all the tables in the dataset when destroying the resource; otherwise, destroying the resource will fail if tables are present."
   type        = bool
   default     = false
 }

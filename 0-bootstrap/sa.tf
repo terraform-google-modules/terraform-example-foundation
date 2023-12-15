@@ -84,8 +84,7 @@ locals {
       "roles/dns.admin",
     ],
     "proj" = [
-      "roles/resourcemanager.folderViewer",
-      "roles/resourcemanager.folderIamAdmin",
+      "roles/resourcemanager.folderAdmin",
       "roles/artifactregistry.admin",
       "roles/compute.networkAdmin",
       "roles/compute.xpnAdmin",
@@ -98,6 +97,7 @@ locals {
       "roles/storage.admin",
       "roles/iam.serviceAccountAdmin",
       "roles/resourcemanager.projectDeleter",
+      "roles/cloudkms.admin",
     ],
     "org" = [
       "roles/storage.objectAdmin",

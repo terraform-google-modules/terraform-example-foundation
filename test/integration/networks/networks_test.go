@@ -330,6 +330,7 @@ func TestNetworks(t *testing.T) {
 					// Comment DefaultVerify because proxy-only subnets tries to change `ipv6_access_type` from `INTERNAL` to `null` on every run (plan and apply)
 					// Module issue: https://github.com/terraform-google-modules/terraform-google-network/issues/528
 					// Resource issue: https://github.com/hashicorp/terraform-provider-google/issues/16801
+					// Resource issue: https://github.com/hashicorp/terraform-provider-google/issues/16804
 					// networks.DefaultVerify(assert)
 
 					servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, networks.GetStringOutput("restricted_service_perimeter_name"))

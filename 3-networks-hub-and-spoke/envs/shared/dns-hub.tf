@@ -20,7 +20,7 @@
 
 module "dns_hub_vpc" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 7.0"
+  version = "~> 8.0"
 
   project_id                             = local.dns_hub_project_id
   network_name                           = "vpc-c-dns-hub"
@@ -28,19 +28,29 @@ module "dns_hub_vpc" {
   delete_default_internet_gateway_routes = "true"
 
   subnets = [{
-    subnet_name           = "sb-c-dns-hub-${local.default_region1}"
-    subnet_ip             = "172.16.0.0/25"
-    subnet_region         = local.default_region1
-    subnet_private_access = "true"
-    subnet_flow_logs      = var.subnetworks_enable_logging
-    description           = "DNS hub subnet for region 1."
+    subnet_name                      = "sb-c-dns-hub-${local.default_region1}"
+    subnet_ip                        = "172.16.0.0/25"
+    subnet_region                    = local.default_region1
+    subnet_private_access            = "true"
+    subnet_flow_logs                 = var.dns_vpc_flow_logs.enable_logging
+    subnet_flow_logs_interval        = var.dns_vpc_flow_logs.aggregation_interval
+    subnet_flow_logs_sampling        = var.dns_vpc_flow_logs.flow_sampling
+    subnet_flow_logs_metadata        = var.dns_vpc_flow_logs.metadata
+    subnet_flow_logs_metadata_fields = var.dns_vpc_flow_logs.metadata_fields
+    subnet_flow_logs_filter          = var.dns_vpc_flow_logs.filter_expr
+    description                      = "DNS hub subnet for region 1."
     }, {
-    subnet_name           = "sb-c-dns-hub-${local.default_region2}"
-    subnet_ip             = "172.16.0.128/25"
-    subnet_region         = local.default_region2
-    subnet_private_access = "true"
-    subnet_flow_logs      = var.subnetworks_enable_logging
-    description           = "DNS hub subnet for region 2."
+    subnet_name                      = "sb-c-dns-hub-${local.default_region2}"
+    subnet_ip                        = "172.16.0.128/25"
+    subnet_region                    = local.default_region2
+    subnet_private_access            = "true"
+    subnet_flow_logs                 = var.dns_vpc_flow_logs.enable_logging
+    subnet_flow_logs_interval        = var.dns_vpc_flow_logs.aggregation_interval
+    subnet_flow_logs_sampling        = var.dns_vpc_flow_logs.flow_sampling
+    subnet_flow_logs_metadata        = var.dns_vpc_flow_logs.metadata
+    subnet_flow_logs_metadata_fields = var.dns_vpc_flow_logs.metadata_fields
+    subnet_flow_logs_filter          = var.dns_vpc_flow_logs.filter_expr
+    description                      = "DNS hub subnet for region 2."
   }]
 
   routes = [{

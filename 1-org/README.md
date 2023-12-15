@@ -81,7 +81,7 @@ to Bigquery and Pub/Sub. This will result in additional charges for those copies
 
 - This module implements but does not enable [bucket policy retention](https://cloud.google.com/storage/docs/bucket-lock) for organization logs. If needed, enable a retention policy by configuring the `log_export_storage_retention_policy` variable.
 
-- This module implements but does not enable [object versioning](https://cloud.google.com/storage/docs/object-versioning) for organization logs. If needed, enable object versioning by setting the `audit_logs_table_delete_contents_on_destroy` variable to true.
+- This module implements but does not enable [object versioning](https://cloud.google.com/storage/docs/object-versioning) for organization logs. If needed, enable object versioning by setting the `log_export_storage_versioning` variable to true.
 
 - Bucket policy retention and object versioning are **mutually exclusive**.
 

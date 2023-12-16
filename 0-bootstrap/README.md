@@ -209,8 +209,8 @@ Using GitHub Actions requires manual creation of the GitHub repositories used in
    cp backend.tf.example backend.tf
    cd ..
 
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_ME/${backend_bucket}/" $i; done
-   for i in `find -name 'backend.tf'`; do sed -i "s/UPDATE_PROJECTS_BACKEND/${backend_bucket_projects}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_ME/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${backend_bucket_projects}/" $i; done
 
    cd 0-bootstrap
    ```

@@ -29,12 +29,17 @@ module "peered_network" {
 
   subnets = [
     {
-      subnet_name           = "sb-b-cbpools-${var.private_worker_pool.region}"
-      subnet_ip             = var.private_worker_pool.peered_network_subnet_ip
-      subnet_region         = var.private_worker_pool.region
-      subnet_private_access = "true"
-      subnet_flow_logs      = "true"
-      description           = "Peered subnet for Cloud Build private pool"
+      subnet_name                      = "sb-b-cbpools-${var.private_worker_pool.region}"
+      subnet_ip                        = var.private_worker_pool.peered_network_subnet_ip
+      subnet_region                    = var.private_worker_pool.region
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = "true"
+      subnet_flow_logs_interval        = var.vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
+      description                      = "Peered subnet for Cloud Build private pool"
     }
   ]
 

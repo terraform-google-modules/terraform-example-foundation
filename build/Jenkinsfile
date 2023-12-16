@@ -17,7 +17,7 @@ pipeline {
           echo "Setting up gcloud for impersonation"
           gcloud config set auth/impersonate_service_account ${_TF_SA_EMAIL}
           echo "Adding bucket information to backends"
-          for i in `find -name 'backend.tf'`; do sed -r -i "s/UPDATE_ME|UPDATE_PROJECTS_BACKEND|UPDATE_APP_INFRA_BUCKET/${_STATE_BUCKET_NAME}/" $i; done
+          for i in `find . -name 'backend.tf'`; do sed -r -i "s/UPDATE_ME|UPDATE_PROJECTS_BACKEND|UPDATE_APP_INFRA_BUCKET/${_STATE_BUCKET_NAME}/" $i; done
           '''
         }
     }

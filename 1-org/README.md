@@ -81,7 +81,7 @@ to Bigquery and Pub/Sub. This will result in additional charges for those copies
 
 - This module implements but does not enable [bucket policy retention](https://cloud.google.com/storage/docs/bucket-lock) for organization logs. If needed, enable a retention policy by configuring the `log_export_storage_retention_policy` variable.
 
-- This module implements but does not enable [object versioning](https://cloud.google.com/storage/docs/object-versioning) for organization logs. If needed, enable object versioning by setting the `audit_logs_table_delete_contents_on_destroy` variable to true.
+- This module implements but does not enable [object versioning](https://cloud.google.com/storage/docs/object-versioning) for organization logs. If needed, enable object versioning by setting the `log_export_storage_versioning` variable to true.
 
 - Bucket policy retention and object versioning are **mutually exclusive**.
 
@@ -166,9 +166,9 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
    export backend_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
 
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
 
-   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
+   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
 
 1. Commit changes.
@@ -248,9 +248,9 @@ Change into the `1-org` folder, copy the Terraform wrapper script, and ensure it
    export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
 
-   sed -i "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
 
-   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
+   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
 
 You can now deploy your environment (production) using this script.

@@ -18,15 +18,16 @@ locals {
   parent_resource_id   = local.parent_folder != "" ? local.parent_folder : local.org_id
   parent_resource_type = local.parent_folder != "" ? "folder" : "organization"
   parent_resources     = { resource = local.parent_resource_id }
-  main_logs_filter     = <<EOF
+  logs_filter          = <<EOF
     logName: /logs/cloudaudit.googleapis.com%2Factivity OR
     logName: /logs/cloudaudit.googleapis.com%2Fsystem_event OR
     logName: /logs/cloudaudit.googleapis.com%2Fdata_access OR
+    logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency OR
+    logName: /logs/cloudaudit.googleapis.com%2Fpolicy OR
     logName: /logs/compute.googleapis.com%2Fvpc_flows OR
     logName: /logs/compute.googleapis.com%2Ffirewall OR
-    logName: /logs/cloudaudit.googleapis.com%2Faccess_transparency
+    logName: /logs/dns.googleapis.com%2Fdns_queries
 EOF
-  all_logs_filter      = ""
 }
 
 resource "random_string" "suffix" {
@@ -43,21 +44,10 @@ module "logs_export" {
   logging_destination_project_id = module.org_audit_logs.project_id
 
   /******************************************
-    Send logs to BigQuery
-  *****************************************/
-  bigquery_options = {
-    logging_sink_name          = "sk-c-logging-bq"
-    logging_sink_filter        = local.main_logs_filter
-    dataset_name               = "audit_logs"
-    expiration_days            = var.audit_logs_table_expiration_days
-    delete_contents_on_destroy = var.audit_logs_table_delete_contents_on_destroy
-  }
-
-  /******************************************
     Send logs to Storage
   *****************************************/
   storage_options = {
-    logging_sink_filter          = local.all_logs_filter
+    logging_sink_filter          = local.logs_filter
     logging_sink_name            = "sk-c-logging-bkt"
     storage_bucket_name          = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
     location                     = var.log_export_storage_location
@@ -72,7 +62,7 @@ module "logs_export" {
     Send logs to Pub\Sub
   *****************************************/
   pubsub_options = {
-    logging_sink_filter = local.main_logs_filter
+    logging_sink_filter = local.logs_filter
     logging_sink_name   = "sk-c-logging-pub"
     topic_name          = "tp-org-logs-${random_string.suffix.result}"
     create_subscriber   = true
@@ -82,13 +72,15 @@ module "logs_export" {
     Send logs to Logbucket
   *****************************************/
   logbucket_options = {
-    logging_sink_name   = "sk-c-logging-logbkt"
-    logging_sink_filter = local.all_logs_filter
-    name                = "logbkt-org-logs-${random_string.suffix.result}"
-    location            = local.default_region
+    logging_sink_name          = "sk-c-logging-logbkt"
+    logging_sink_filter        = local.logs_filter
+    name                       = "logbkt-org-logs-${random_string.suffix.result}"
+    location                   = local.default_region
+    enable_analytics           = true
+    linked_dataset_id          = "ds_c_logbkt_analytics"
+    linked_dataset_description = "BigQuery Dataset for Logbucket analytics"
   }
 }
-
 
 /******************************************
   Billing logs (Export configured manually)

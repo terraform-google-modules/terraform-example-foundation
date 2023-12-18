@@ -37,6 +37,12 @@ variable "peering_module_depends_on" {
   default     = []
 }
 
+variable "tfc_org_name" {
+  description = "Name of the TFC organization"
+  type        = string
+  default     = ""
+}
+
 variable "instance_region" {
   description = "Region which the peered subnet will be created (Should be same region as the VM that will be created on step 5-app-infra on the peering project)."
   type        = string

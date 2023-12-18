@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,3 +112,47 @@ default_region = "us-central1"
 # tunnel1_bgp_peer_address = "169.254.2.1"
 #
 # tunnel1_bgp_session_range = "169.254.2.2/30"
+
+/* ----------------------------------------
+    Specific to tfc_bootstrap
+   ---------------------------------------- */
+//  Un-comment tfc_bootstrap and its outputs if you want to use Terraform Cloud instead of Cloud Build
+// Format expected: REPO-OWNER/REPO-NAME
+#  vcs_repos = {
+#    owner        = "YOUR-VCS-USER-OR-ORGANIZATION",
+#    bootstrap    = "YOUR-BOOTSTRAP-REPOSITORY",
+#    organization = "YOUR-ORGANIZATION-REPOSITORY",
+#    environments = "YOUR-ENVIRONMENTS-REPOSITORY",
+#    networks     = "YOUR-NETWORKS-REPOSITORY",
+#    projects     = "YOUR-PROJECTS-REPOSITORY",
+#  }
+#  tfc_org_name = "REPLACE_ME"
+
+
+// Set this to true if you want to use Terraform Cloud Agents instead of Terraform Cloud remote runner
+// If true, a private Autopilot GKE cluster will be created in your GCP account to be used as Terraform Cloud Agents
+// More info about Agents on: https://developer.hashicorp.com/terraform/cloud-docs/agents
+
+# enable_tfc_cloud_agents = false
+
+//  to prevent saving the `tfc_token` in plain text in this file,
+//  export the Terraform Cloud token in the command line
+//  as an environment variable before running terraform.
+//  Run the following commnad in your shell:
+//   export TF_VAR_tfc_token="YOUR-TFC-TOKEN"
+
+//  For VCS connection based in OAuth: (GitHub OAuth/GitHub Enterprise/Gitlab.com/GitLab Enterprise or Community Edition)
+//  to prevent saving the `vcs_oauth_token_id` in plain text in this file,
+//  export the Terraform Cloud VCS Connection OAuth token ID in the command line
+//  as an environment variable before running terraform.
+
+// Note: you should be able to copy `OAuth Token ID` (vcs_oauth_token_id) in TFC console:
+// https://app.terraform.io/app/YOUR-TFC-ORGANIZATION/settings/version-control
+
+//  Run the following commnad in your shell:
+//   export TF_VAR_vcs_oauth_token_id="YOUR-VCS-OAUTH-TOKEN-ID"
+
+//  For GitHub OAuth see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/github
+//  For GitHub Enterprise see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/github-enterprise
+//  For GitLab.com see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-com
+//  For GitLab EE/CE see: https://developer.hashicorp.com/terraform/cloud-docs/vcs/gitlab-eece

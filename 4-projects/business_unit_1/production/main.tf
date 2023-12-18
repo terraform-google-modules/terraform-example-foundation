@@ -23,8 +23,9 @@ module "env" {
   remote_state_bucket          = var.remote_state_bucket
   location_kms                 = var.location_kms
   location_gcs                 = var.location_gcs
+  tfc_org_name                 = var.tfc_org_name
+  peering_module_depends_on    = var.peering_module_depends_on
   peering_iap_fw_rules_enabled = true
   subnet_region                = var.instance_region
   subnet_ip_range              = "10.3.192.0/21"
-  peering_module_depends_on    = var.peering_module_depends_on
 }

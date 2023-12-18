@@ -65,6 +65,7 @@ To run the commands described in this document, install the following:
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 1.3.0
+- [jq](https://jqlang.github.io/jq/download/) version 1.6.0 or later
 
 **Note:** Make sure that you use version 1.3.0 of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 

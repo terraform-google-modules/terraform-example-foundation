@@ -15,18 +15,8 @@
  */
 
 locals {
-  restricted_project_id             = data.terraform_remote_state.org.outputs.shared_vpc_projects[var.env].restricted_shared_vpc_project_id
-  restricted_project_number         = data.terraform_remote_state.org.outputs.shared_vpc_projects[var.env].restricted_shared_vpc_project_number
-  base_project_id                   = data.terraform_remote_state.org.outputs.shared_vpc_projects[var.env].base_shared_vpc_project_id
-  dns_hub_project_id                = data.terraform_remote_state.org.outputs.dns_hub_project_id
-  base_net_hub_project_id           = data.terraform_remote_state.org.outputs.base_net_hub_project_id
-  restricted_net_hub_project_id     = data.terraform_remote_state.org.outputs.restricted_net_hub_project_id
-  restricted_net_hub_project_number = data.terraform_remote_state.org.outputs.restricted_net_hub_project_number
-  bgp_asn_number                    = var.enable_partner_interconnect ? "16550" : "64514"
-  enable_transitivity               = var.enable_hub_and_spoke_transitivity
-  organization_service_account      = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
-  networks_service_account          = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
-  projects_service_account          = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+  bgp_asn_number      = var.enable_partner_interconnect ? "16550" : "64514"
+  enable_transitivity = var.enable_hub_and_spoke_transitivity
 
   /*
    * Base network ranges
@@ -165,24 +155,6 @@ locals {
   ]
 
   restricted_services = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
-}
-
-data "terraform_remote_state" "bootstrap" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/bootstrap/state"
-  }
-}
-
-data "terraform_remote_state" "org" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/org/state"
-  }
 }
 
 /******************************************

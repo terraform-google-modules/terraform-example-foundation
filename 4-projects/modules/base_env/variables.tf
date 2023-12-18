@@ -135,6 +135,11 @@ variable "remote_state_bucket" {
   type        = string
 }
 
+variable "tfc_org_name" {
+  description = "Name of the TFC organization"
+  type        = string
+}
+
 variable "peering_iap_fw_rules_enabled" {
   description = "Toggle creation of optional IAP firewall rules: SSH, RDP."
   type        = bool

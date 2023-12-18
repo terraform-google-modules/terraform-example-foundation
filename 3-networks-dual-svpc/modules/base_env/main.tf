@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,6 @@
  */
 
 locals {
-  restricted_project_id        = data.terraform_remote_state.org.outputs.shared_vpc_projects[var.env].restricted_shared_vpc_project_id
-  restricted_project_number    = data.terraform_remote_state.org.outputs.shared_vpc_projects[var.env].restricted_shared_vpc_project_number
-  base_project_id              = data.terraform_remote_state.org.outputs.shared_vpc_projects[var.env].base_shared_vpc_project_id
-  interconnect_project_number  = data.terraform_remote_state.org.outputs.interconnect_project_number
-  dns_hub_project_id           = data.terraform_remote_state.org.outputs.dns_hub_project_id
-  organization_service_account = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
-  networks_service_account     = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
-  projects_service_account     = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
-
   dedicated_interconnect_egress_policy = var.enable_dedicated_interconnect ? [
     {
       "from" = {
@@ -169,24 +160,6 @@ locals {
   ]
 
   restricted_services = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
-}
-
-data "terraform_remote_state" "bootstrap" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/bootstrap/state"
-  }
-}
-
-data "terraform_remote_state" "org" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/org/state"
-  }
 }
 
 /******************************************

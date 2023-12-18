@@ -86,7 +86,8 @@ output "optional_groups" {
 /* ----------------------------------------
     Specific to cloudbuild_module
    ---------------------------------------- */
-# Comment-out the cloudbuild_bootstrap module and its outputs if you want to use GitHub Actions, GitLab CI/CD, or Jenkins instead of Cloud Build
+# Comment-out the cloudbuild_bootstrap module and its outputs if you want to use
+# GitHub Actions, GitLab CI/CD, Terraform Cloud, or Jenkins instead of Cloud Build
 output "cloudbuild_project_id" {
   description = "Project where Cloud Build configuration and terraform container image will reside."
   value       = module.tf_source.cloudbuild_project_id
@@ -208,4 +209,45 @@ output "cloud_build_peered_network_id" {
 # output "projects_gcs_bucket_tfstate" {
 #   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
 #   value       = module.seed_bootstrap.gcs_bucket_tfstate
+# }
+
+/* ----------------------------------------
+    Specific to tfc_bootstrap
+   ---------------------------------------- */
+# Un-comment tfc_bootstrap and its outputs if you want to use Terraform Cloud instead of Cloud Build
+# output "cicd_project_id" {
+#   description = "Project where the CI/CD infrastructure for Terraform Cloud resides."
+#   value       = module.tfc_cicd.project_id
+# }
+#
+# output "tfc_org_name" {
+#   description = "Name of the TFC organization."
+#   value       = var.tfc_org_name
+# }
+
+/* ----------------------------------------
+    Specific to tfc_bootstrap with Terraform Cloud Agents
+   ---------------------------------------- */
+# Un-comment if you want to use Terraform Cloud Agents
+# (In other words, un-comment if you set enable_tfc_cloud_agents to true on .tfvars)
+
+# output "kubernetes_endpoint" {
+#   description = "The GKE cluster endpoint"
+#   sensitive   = true
+#   value       = module.tfc_agent_gke[0].kubernetes_endpoint
+# }
+
+# output "service_account" {
+#   description = "The default service account used for TFC agent nodes"
+#   value       = module.tfc_agent_gke[0].service_account
+# }
+
+# output "cluster_name" {
+#   description = "GKE cluster name"
+#   value       = module.tfc_agent_gke[0].cluster_name
+# }
+
+# output "hub_cluster_membership_id" {
+#   value = module.tfc_agent_gke[0].hub_cluster_membership_id
+#   description = "The ID of the cluster membership"
 # }

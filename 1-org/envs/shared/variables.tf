@@ -211,9 +211,14 @@ variable "create_unique_tag_key" {
   type        = bool
   default     = false
 }
-
 variable "cai_monitoring_kms_force_destroy" {
   description = "If set to true, delete KMS keyring and keys when destroying the module; otherwise, destroying the module will fail if KMS keys are present."
   type        = bool
   default     = false
+}
+
+variable "tfc_org_name" {
+  description = "Name of the TFC organization"
+  type        = string
+  default     = ""
 }

@@ -29,6 +29,11 @@ variable "remote_state_bucket" {
   type        = string
 }
 
+variable "tfc_org_name" {
+  description = "Name of the TFC organization"
+  type        = string
+}
+
 variable "monitoring_workspace_users" {
   description = "Google Workspace or Cloud Identity group that have access to Monitoring Workspaces."
   type        = string

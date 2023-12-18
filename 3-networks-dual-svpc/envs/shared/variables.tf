@@ -78,3 +78,9 @@ variable "preactivate_partner_interconnect" {
   type        = bool
   default     = false
 }
+
+variable "tfc_org_name" {
+  description = "Name of the TFC organization"
+  type        = string
+  default     = ""
+}

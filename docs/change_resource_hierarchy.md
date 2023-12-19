@@ -180,17 +180,17 @@ example-organization/
 1. **(Optional)** To simplify the below changes renaming business_units here is helper script. **Remember to review the changes**. The below script assumes you are in `gcp-projects` folder:
 
     ```bash
-    for i in `find "./business_unit_1" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/bu1/<YOUR BUSINESS UNIT CODE>/" $i; done
+    for i in `find "./business_unit_1" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i'' -e "s/bu1/<YOUR BUSINESS UNIT CODE>/" $i; done
 
-    for i in `find "./business_unit_1" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/business_unit_1/<YOUR BUSINESS UNIT NAME>/" $i; done
+    for i in `find "./business_unit_1" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i'' -e "s/business_unit_1/<YOUR BUSINESS UNIT NAME>/" $i; done
 
-    for i in `find "./business_unit_2" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/bu2/<YOUR BUSINESS UNIT CODE>/" $i; done
+    for i in `find "./business_unit_2" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i'' -e "s/bu2/<YOUR BUSINESS UNIT CODE>/" $i; done
 
-    for i in `find "./business_unit_2" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/business_unit_2/<YOUR BUSINESS UNIT NAME>/" $i; done
+    for i in `find "./business_unit_2" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i'' -e "s/business_unit_2/<YOUR BUSINESS UNIT NAME>/" $i; done
 
-    for i in `find "./business_unit_<NEW BUSINESS UNIT NUMBER>" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/bu<NEW BUSINESS UNIT NUMBER>/<YOUR BUSINESS UNIT CODE>/" $i; done
+    for i in `find "./business_unit_<NEW BUSINESS UNIT NUMBER>" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i'' -e "s/bu<NEW BUSINESS UNIT NUMBER>/<YOUR BUSINESS UNIT CODE>/" $i; done
 
-    for i in `find "./business_unit_<NEW BUSINESS UNIT NUMBER>" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i "s/business_unit_<NEW BUSINESS UNIT NUMBER>/<YOUR BUSINESS UNIT NAME>/" $i; done
+    for i in `find "./business_unit_<NEW BUSINESS UNIT NUMBER>" -type f -not -path "*/.terraform/*" -name '*.tf'`; do sed -i'' -e "s/business_unit_<NEW BUSINESS UNIT NUMBER>/<YOUR BUSINESS UNIT NAME>/" $i; done
     ```
 
 1. For this example, just rename folders business_unit_1 and business_unit_2 to your Business Units names, i.e: finance and retail, to match the example folder hierarchy.

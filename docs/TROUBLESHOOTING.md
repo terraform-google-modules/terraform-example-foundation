@@ -428,7 +428,7 @@ You can get this information from step `0-bootstrap` by running the following co
 1. Update `backend.tf` with the remote state backend bucket you got on previously inside `<YOUR-REMOTE-STATE-BACKEND-BUCKET>`:
 
    ```bash
-   for i in `find -name 'backend.tf'`; do sed -i 's/UPDATE_ME/<YOUR-REMOTE-STATE-BACKEND-BUCKET>/' $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e 's/UPDATE_ME/<YOUR-REMOTE-STATE-BACKEND-BUCKET>/' $i; done
    ```
 
 1. Navigate into `envs/development` where your terraform config files are in and run terraform init:

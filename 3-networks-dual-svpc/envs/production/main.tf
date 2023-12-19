@@ -83,4 +83,5 @@ module "base_env" {
   restricted_subnet_secondary_ranges    = local.restricted_subnet_secondary_ranges
   restricted_private_service_connect_ip = "10.10.192.5"
   remote_state_bucket                   = var.remote_state_bucket
+  tfc_org_name                          = var.tfc_org_name
 }

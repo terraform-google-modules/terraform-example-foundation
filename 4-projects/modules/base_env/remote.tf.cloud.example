@@ -1,0 +1,52 @@
+/**
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+locals {
+  org_id                              = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.org_id
+  billing_account                     = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.billing_account
+  project_prefix                      = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.project_prefix
+  projects_backend_bucket             = ""
+  perimeter_name                      = data.tfe_outputs.network_env.nonsensitive_values.restricted_service_perimeter_name
+  base_network_self_link              = data.tfe_outputs.network_env.nonsensitive_values.base_network_self_link
+  base_subnets_self_links             = data.tfe_outputs.network_env.nonsensitive_values.base_subnets_self_links
+  base_host_project_id                = data.tfe_outputs.network_env.nonsensitive_values.base_host_project_id
+  restricted_host_project_id          = data.tfe_outputs.network_env.nonsensitive_values.restricted_host_project_id
+  restricted_subnets_self_links       = data.tfe_outputs.network_env.nonsensitive_values.restricted_subnets_self_links
+  access_context_manager_policy_id    = data.tfe_outputs.network_env.nonsensitive_values.access_context_manager_policy_id
+  env_folder_name                     = data.tfe_outputs.environments_env.nonsensitive_values.env_folder
+  app_infra_pipeline_service_accounts = data.tfe_outputs.business_unit_shared.nonsensitive_values.terraform_service_accounts
+  enable_cloudbuild_deploy            = data.tfe_outputs.business_unit_shared.nonsensitive_values.enable_cloudbuild_deploy
+}
+
+data "tfe_outputs" "bootstrap" {
+  organization = var.tfc_org_name
+  workspace    = "0-shared"
+}
+
+data "tfe_outputs" "org" {
+  organization = var.tfc_org_name
+  workspace    = "1-shared"
+}
+
+data "tfe_outputs" "environments_env" {
+  organization = var.tfc_org_name
+  workspace    = "2-${var.env}"
+}
+
+data "tfe_outputs" "business_unit_shared" {
+  organization = var.tfc_org_name
+  workspace    = "4-${var.business_code}-shared"
+}

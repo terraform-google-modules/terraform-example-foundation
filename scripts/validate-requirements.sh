@@ -33,7 +33,7 @@ BILLING_LEVEL_ROLES=("roles/billing.admin")
 END_USER_CREDENTIAL=""
 ORGANIZATION_ID=""
 BILLING_ACCOUNT=""
-TARGET_DEPLOY=""
+EXTERNAL_REPO="false"
 
 # Collect the errors
 ERRORS=""
@@ -229,8 +229,8 @@ function validate_bootstrap_step(){
     fi
 }
 
-# Checks if initial config was done for 0-bootstrap step in GitHub deploy
-function validate_bootstrap_step_github(){
+# Checks if initial config was done for 0-bootstrap step using external repository
+function validate_bootstrap_step_external_repo(){
     SCRIPTS_DIR="$( dirname -- "$0"; )"
     FILE="$SCRIPTS_DIR/../../gcp-bootstrap/envs/shared/terraform.tfvars"
     if [ ! -f "$FILE" ]; then
@@ -304,8 +304,8 @@ function main(){
     fi
 
     echo "Validating 0-bootstrap configuration..."
-    if [[ "$TARGET_DEPLOY" == "GitHub" ]]; then
-        validate_bootstrap_step_github
+    if [[ "$EXTERNAL_REPO" == "true" ]]; then
+        validate_bootstrap_step_external_repo
     else
         validate_bootstrap_step
     fi
@@ -324,16 +324,17 @@ function main(){
 usage() {
     echo
     echo " Usage:"
-    echo "     $0 -o <organization id> -b <billing account id> -u <end user email>"
-    echo "         organization id          (required)"
-    echo "         billing account id       (required)"
-    echo "         end user email           (required)"
+    echo "     $0 -o <organization id> -b <billing account id> -u <end user email> [-e]"
+    echo "         organization id                   (required)"
+    echo "         billing account id                (required)"
+    echo "         end user email                    (required)"
+    echo "         set -e if using an external repo  (optional)"
     echo
     exit 1
 }
 
 # Check for input variables
-while getopts ":o:b:u:t:" OPT; do
+while getopts ":o:b:u:e" OPT; do
   case ${OPT} in
     o )
       ORGANIZATION_ID=$OPTARG
@@ -344,8 +345,8 @@ while getopts ":o:b:u:t:" OPT; do
     u )
       END_USER_CREDENTIAL=$OPTARG
       ;;
-    t )
-      TARGET_DEPLOY=$OPTARG
+    e )
+      EXTERNAL_REPO="true"
       ;;
     : )
       echo
@@ -364,7 +365,7 @@ shift $((OPTIND -1))
 # Check for required input variables
 if [ -z "${ORGANIZATION_ID}" ] || [ -z "${BILLING_ACCOUNT}" ]|| [ -z "${END_USER_CREDENTIAL}" ]; then
   echo
-  echo " Error: -o <organization id>, -b <billing account id> and -u <end user email> required."
+  echo " Error: -o <organization id>, -b <billing account id> and -u <end user email> are required."
   usage
 fi
 

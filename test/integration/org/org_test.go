@@ -340,6 +340,13 @@ func TestOrg(t *testing.T) {
 					},
 				},
 				{
+					output: "org_kms_project_id",
+					apis: []string{
+						"logging.googleapis.com",
+						"cloudkms.googleapis.com",
+					},
+				},
+				{
 					output: "org_secrets_project_id",
 					apis: []string{
 						"logging.googleapis.com",

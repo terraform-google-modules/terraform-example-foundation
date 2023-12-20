@@ -101,6 +101,13 @@ func TestEnvs(t *testing.T) {
 							},
 						},
 						{
+							projectOutput: "env_kms_project_id",
+							apis: []string{
+								"cloudkms.googleapis.com",
+								"logging.googleapis.com",
+							},
+						},
+						{
 							projectOutput: "env_secrets_project_id",
 							apis: []string{
 								"secretmanager.googleapis.com",

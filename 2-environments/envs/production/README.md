@@ -14,6 +14,7 @@
 | assured\_workload\_id | Assured Workload ID. |
 | assured\_workload\_resources | Resources associated with the Assured Workload. |
 | env\_folder | Environment folder created under parent. |
+| env\_kms\_project\_id | Project for environment Cloud Key Management Service (KMS). |
 | env\_secrets\_project\_id | Project for environment related secrets. |
 | monitoring\_project\_id | Project for monitoring infra. |
 

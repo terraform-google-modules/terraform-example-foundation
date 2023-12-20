@@ -28,5 +28,8 @@ var (
 
 		// Editing VPC Service Controls is eventually consistent.
 		".*Error 403.*Request is prohibited by organization's policy.*vpcServiceControlsUniqueIdentifier.*": "Request is prohibited by organization's policy.",
+
+		// Error code 13 during the creation of a Resource Manager Tag Value.
+		".*Error getting operation for committing purpose for TagValue.*": "Failed creating TagValue.",
 	}
 )

@@ -1,0 +1,65 @@
+/**
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+locals {
+  dns_hub_project_id                = data.tfe_outputs.org.nonsensitive_values.dns_hub_project_id
+  interconnect_project_id           = data.tfe_outputs.org.nonsensitive_values.interconnect_project_id
+  interconnect_project_number       = data.tfe_outputs.org.nonsensitive_values.interconnect_project_number
+  parent_folder                     = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.parent_folder
+  org_id                            = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.org_id
+  billing_account                   = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.billing_account
+  default_region                    = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.default_region
+  project_prefix                    = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.project_prefix
+  folder_prefix                     = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.folder_prefix
+  parent_id                         = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.parent_id
+  bootstrap_folder_name             = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.bootstrap_folder_name
+  common_folder_name                = data.tfe_outputs.org.nonsensitive_values.common_folder_name
+  network_folder_name               = data.tfe_outputs.org.nonsensitive_values.network_folder_name
+  development_folder_name           = data.tfe_outputs.env_development.nonsensitive_values.env_folder
+  non_production_folder_name        = data.tfe_outputs.env_non_production.nonsensitive_values.env_folder
+  production_folder_name            = data.tfe_outputs.env_production.nonsensitive_values.env_folder
+  base_net_hub_project_id           = data.tfe_outputs.org.nonsensitive_values.base_net_hub_project_id
+  restricted_net_hub_project_id     = data.tfe_outputs.org.nonsensitive_values.restricted_net_hub_project_id
+  restricted_net_hub_project_number = data.tfe_outputs.org.nonsensitive_values.restricted_net_hub_project_number
+  organization_service_account      = data.tfe_outputs.bootstrap.nonsensitive_values.organization_step_terraform_service_account_email
+  networks_service_account          = data.tfe_outputs.bootstrap.nonsensitive_values.networks_step_terraform_service_account_email
+  projects_service_account          = data.tfe_outputs.bootstrap.nonsensitive_values.projects_step_terraform_service_account_email
+}
+
+data "tfe_outputs" "bootstrap" {
+  organization = var.tfc_org_name
+  workspace    = "0-shared"
+}
+
+data "tfe_outputs" "org" {
+  organization = var.tfc_org_name
+  workspace    = "1-shared"
+}
+
+data "tfe_outputs" "env_development" {
+  organization = var.tfc_org_name
+  workspace    = "2-development"
+}
+
+data "tfe_outputs" "env_non_production" {
+  organization = var.tfc_org_name
+  workspace    = "2-non-production"
+}
+
+data "tfe_outputs" "env_production" {
+  organization = var.tfc_org_name
+  workspace    = "2-production"
+}

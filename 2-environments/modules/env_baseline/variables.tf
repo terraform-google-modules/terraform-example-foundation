@@ -64,6 +64,10 @@ variable "project_budget" {
     secret_alert_spent_percents                 = optional(list(number), [1.2])
     secret_alert_pubsub_topic                   = optional(string, null)
     secret_budget_alert_spend_basis             = optional(string, "FORECASTED_SPEND")
+    kms_budget_amount                           = optional(number, 1000)
+    kms_alert_spent_percents                    = optional(list(number), [1.2])
+    kms_alert_pubsub_topic                      = optional(string, null)
+    kms_budget_alert_spend_basis                = optional(string, "FORECASTED_SPEND")
   })
   default = {}
 }

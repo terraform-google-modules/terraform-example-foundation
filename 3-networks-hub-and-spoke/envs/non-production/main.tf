@@ -22,40 +22,48 @@ locals {
   /*
    * Base network ranges
    */
-  base_private_service_cidr = "10.16.128.0/21"
+  base_private_service_cidr = "10.16.16.0/21"
   base_subnet_primary_ranges = {
-    (local.default_region1) = "10.0.128.0/21"
-    (local.default_region2) = "10.1.128.0/21"
+    (local.default_region1) = "10.0.128.0/18"
+    (local.default_region2) = "10.1.128.0/18"
+  }
+  base_subnet_proxy_ranges = {
+    (local.default_region1) = "10.18.4.0/23"
+    (local.default_region2) = "10.19.4.0/23"
   }
   base_subnet_secondary_ranges = {
     (local.default_region1) = [
       {
         range_name    = "rn-${local.environment_code}-shared-base-${local.default_region1}-gke-pod"
-        ip_cidr_range = "100.64.128.0/21"
+        ip_cidr_range = "100.64.128.0/18"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-base-${local.default_region1}-gke-svc"
-        ip_cidr_range = "100.64.136.0/21"
+        ip_cidr_range = "100.65.128.0/18"
       }
     ]
   }
   /*
    * Restricted network ranges
    */
-  restricted_private_service_cidr = "10.24.128.0/21"
+  restricted_private_service_cidr = "10.16.48.0/21"
   restricted_subnet_primary_ranges = {
-    (local.default_region1) = "10.8.128.0/21"
-    (local.default_region2) = "10.9.128.0/21"
+    (local.default_region1) = "10.8.128.0/18"
+    (local.default_region2) = "10.9.128.0/18"
+  }
+  restricted_subnet_proxy_ranges = {
+    (local.default_region1) = "10.26.4.0/23"
+    (local.default_region2) = "10.27.4.0/23"
   }
   restricted_subnet_secondary_ranges = {
     (local.default_region1) = [
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${local.default_region1}-gke-pod"
-        ip_cidr_range = "100.72.128.0/21"
+        ip_cidr_range = "100.72.128.0/18"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${local.default_region1}-gke-svc"
-        ip_cidr_range = "100.72.136.0/21"
+        ip_cidr_range = "100.73.128.0/18"
       }
     ]
   }
@@ -77,12 +85,14 @@ module "base_env" {
   enable_hub_and_spoke_transitivity     = var.enable_hub_and_spoke_transitivity
   base_private_service_cidr             = local.base_private_service_cidr
   base_subnet_primary_ranges            = local.base_subnet_primary_ranges
+  base_subnet_proxy_ranges              = local.base_subnet_proxy_ranges
   base_subnet_secondary_ranges          = local.base_subnet_secondary_ranges
-  base_private_service_connect_ip       = "10.2.128.5"
+  base_private_service_connect_ip       = "10.17.0.3"
   restricted_private_service_cidr       = local.restricted_private_service_cidr
   restricted_subnet_primary_ranges      = local.restricted_subnet_primary_ranges
+  restricted_subnet_proxy_ranges        = local.restricted_subnet_proxy_ranges
   restricted_subnet_secondary_ranges    = local.restricted_subnet_secondary_ranges
-  restricted_private_service_connect_ip = "10.10.128.5"
+  restricted_private_service_connect_ip = "10.17.0.7"
   remote_state_bucket                   = var.remote_state_bucket
   tfc_org_name                          = var.tfc_org_name
 }

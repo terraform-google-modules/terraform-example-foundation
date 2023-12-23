@@ -19,17 +19,24 @@ locals {
    * Base network ranges
    */
   base_subnet_primary_ranges = {
-    (local.default_region1) = "10.0.0.0/24"
-    (local.default_region2) = "10.1.0.0/24"
+    (local.default_region1) = "10.0.0.0/18"
+    (local.default_region2) = "10.1.0.0/18"
+  }
+  base_subnet_proxy_ranges = {
+    (local.default_region1) = "10.18.0.0/23"
+    (local.default_region2) = "10.19.0.0/23"
   }
   /*
    * Restricted network ranges
    */
   restricted_subnet_primary_ranges = {
-    (local.default_region1) = "10.8.0.0/24"
-    (local.default_region2) = "10.9.0.0/24"
+    (local.default_region1) = "10.8.0.0/18"
+    (local.default_region2) = "10.9.0.0/18"
   }
-
+  restricted_subnet_proxy_ranges = {
+    (local.default_region1) = "10.26.0.0/23"
+    (local.default_region2) = "10.27.0.0/23"
+  }
 
   supported_restricted_service = [
     "accessapproval.googleapis.com",
@@ -169,7 +176,7 @@ module "base_shared_vpc" {
   project_id                    = local.base_net_hub_project_id
   dns_hub_project_id            = local.dns_hub_project_id
   environment_code              = local.environment_code
-  private_service_connect_ip    = "10.2.0.5"
+  private_service_connect_ip    = "10.17.0.1"
   bgp_asn_subnet                = local.bgp_asn_number
   default_region1               = local.default_region1
   default_region2               = local.default_region2
@@ -210,6 +217,24 @@ module "base_shared_vpc" {
       subnet_flow_logs_metadata_fields = var.base_vpc_flow_logs.metadata_fields
       subnet_flow_logs_filter          = var.base_vpc_flow_logs.filter_expr
       description                      = "Base network hub subnet for ${local.default_region2}"
+    },
+    {
+      subnet_name      = "sb-c-shared-base-hub-${local.default_region1}-proxy"
+      subnet_ip        = local.base_subnet_proxy_ranges[local.default_region1]
+      subnet_region    = local.default_region1
+      subnet_flow_logs = false
+      description      = "Base network hub proxy-only subnet for ${local.default_region1}"
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
+    },
+    {
+      subnet_name      = "sb-c-shared-base-hub-${local.default_region2}-proxy"
+      subnet_ip        = local.base_subnet_proxy_ranges[local.default_region2]
+      subnet_region    = local.default_region2
+      subnet_flow_logs = false
+      description      = "Base network hub proxy-only subnet for ${local.default_region2}"
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
   secondary_ranges = {}
@@ -228,7 +253,7 @@ module "restricted_shared_vpc" {
   project_number                   = local.restricted_net_hub_project_number
   dns_hub_project_id               = local.dns_hub_project_id
   environment_code                 = local.environment_code
-  private_service_connect_ip       = "10.10.0.5"
+  private_service_connect_ip       = "10.17.0.5"
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services
   members = distinct(concat([
@@ -262,8 +287,7 @@ module "restricted_shared_vpc" {
       subnet_flow_logs_metadata        = var.restricted_vpc_flow_logs.metadata
       subnet_flow_logs_metadata_fields = var.restricted_vpc_flow_logs.metadata_fields
       subnet_flow_logs_filter          = var.restricted_vpc_flow_logs.filter_expr
-
-      description = "Restricted network hub subnet for ${local.default_region1}"
+      description                      = "Restricted network hub subnet for ${local.default_region1}"
     },
     {
       subnet_name                      = "sb-c-shared-restricted-hub-${local.default_region2}"
@@ -276,8 +300,25 @@ module "restricted_shared_vpc" {
       subnet_flow_logs_metadata        = var.restricted_vpc_flow_logs.metadata
       subnet_flow_logs_metadata_fields = var.restricted_vpc_flow_logs.metadata_fields
       subnet_flow_logs_filter          = var.restricted_vpc_flow_logs.filter_expr
-
-      description = "Restricted network hub subnet for ${local.default_region2}"
+      description                      = "Restricted network hub subnet for ${local.default_region2}"
+    },
+    {
+      subnet_name      = "sb-c-shared-restricted-hub-${local.default_region1}-proxy"
+      subnet_ip        = local.restricted_subnet_proxy_ranges[local.default_region1]
+      subnet_region    = local.default_region1
+      subnet_flow_logs = false
+      description      = "Restricted network hub proxy-only subnet for ${local.default_region1}"
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
+    },
+    {
+      subnet_name      = "sb-c-shared-restricted-hub-${local.default_region2}-proxy"
+      subnet_ip        = local.restricted_subnet_proxy_ranges[local.default_region2]
+      subnet_region    = local.default_region2
+      subnet_flow_logs = false
+      description      = "Restricted network hub proxy-only subnet for ${local.default_region2}"
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
   secondary_ranges = {}

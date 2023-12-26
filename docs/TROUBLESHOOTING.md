@@ -25,6 +25,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Error: Unsupported attribute](#error-unsupported-attribute)
 - [Error: Error adding network peering](#error-error-adding-network-peering)
 - [Error: Unknown project id on 4-project step context](#error-unknown-project-id-on-4-project-step-context)
+- [Error: Error getting operation for committing purpose for TagValue](#error-error-getting-operation-for-committing-purpose-for-tagvalue)
 - - -
 
 ### Project quota exceeded
@@ -334,6 +335,22 @@ This should complete successfully, if you encounter another similar error for an
 
    - Make sure you run the taint command just for the resources that contain the [number] at the end of the line returned by terraform state list step. You don't need to run for the groups (the resources that don't have the [] at the end).
 
+### Error: Error getting operation for committing purpose for TagValue
+
+**Error message:**
+
+```text
+Error: Error waiting to create TagValue: Error waiting for Creating TagValue: Error code 13, message: Error getting operation for committing purpose for TagValue: tagValues/{tag_value_id}
+```
+
+**Cause:**
+
+Sometimes when deploying a [google_tags_tag_value](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/tags_tag_value) the error occurs and Terraform is not able to finish the execution.
+
+**Solution:**
+
+1. This is a transient error and the deploy can be retried.
+1. A retry policy was added to prevent this error during the integration test.
 - - -
 
 ### Caller does not have permission in the Organization

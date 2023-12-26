@@ -56,7 +56,7 @@ Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/READM
 
 ### [1. org](./1-org/)
 
-The purpose of this stage is to set up the common folder used to house projects that contain shared resources such as Security Command Center notification, org level secrets, and org level logging.
+The purpose of this stage is to set up the common folder used to house projects that contain shared resources such as Security Command Center notification, Cloud Key Management Service (KMS), org level secrets, and org level logging.
 This stage also sets up the network folder used to house network related projects such as DNS Hub, Interconnect, network hub, and base and restricted projects for each environment  (`development`, `non-production` or `production`).
 This will create the following folder and project structure:
 
@@ -66,6 +66,7 @@ example-organization
     ├── prj-c-logging
     ├── prj-c-billing-logs
     ├── prj-c-scc
+    ├── prj-c-kms
     └── prj-c-secrets
 └── fldr-network
     ├── prj-c-base-net-hub
@@ -98,6 +99,12 @@ Another project created under the common folder. This project will host the Secu
 This project will contain a Pub/Sub topic, a Pub/Sub subscription, and a [Security Command Center notification](https://cloud.google.com/security-command-center/docs/how-to-notifications) configured to send all new findings to the created topic.
 You can adjust the filter when deploying this step.
 
+#### KMS
+
+Another project created under the common folder. This project is allocated for [Cloud Key Management](https://cloud.google.com/security-key-management) for KMS resources shared by the organization.
+
+Usage instructions are available for the org step in the [README](./1-org/README.md).
+
 #### Secrets
 
 Another project created under the common folder. This project is allocated for [Secret Manager](https://cloud.google.com/secret-manager) for secrets shared by the organization.
@@ -126,12 +133,15 @@ This will create the following folder and project structure:
 example-organization
 └── fldr-development
     ├── prj-d-monitoring
+    ├── prj-p-kms
     └── prj-d-secrets
 └── fldr-non-production
     ├── prj-n-monitoring
+    ├── prj-n-kms
     └── prj-n-secrets
 └── fldr-production
     ├── prj-p-monitoring
+    ├── prj-p-kms
     └── prj-p-secrets
 ```
 
@@ -140,6 +150,12 @@ example-organization
 Under the environment folder, a project is created per environment (`development`, `non-production`, and `production`), which is intended to be used as a [Cloud Monitoring workspace](https://cloud.google.com/monitoring/workspaces) for all projects in that environment.
 Please note that creating the [workspace and linking projects](https://cloud.google.com/monitoring/workspaces/create) can currently only be completed through the Cloud Console.
 If you have strong IAM requirements for these monitoring workspaces, it is worth considering creating these at a more granular level, such as per business unit or per application.
+
+#### KMS
+
+Under the environment folder, a project is created per environment (`development`, `non-production`, and `production`), which is intended to be used by [Cloud Key Management](https://cloud.google.com/security-key-management) for KMS resources shared by the environment.
+
+Usage instructions are available for the environments step in the [README](./2-environments/README.md).
 
 #### Secrets
 
@@ -178,44 +194,38 @@ Running this code as-is should generate a structure as shown below:
 ```
 example-organization/
 └── fldr-development
-    └── fldr-bu1-development
-        ├── prj-d-env-bu1secrets
-        ├── prj-d-bu1sample-floating
-        ├── prj-d-bu1sample-base
-        ├── prj-d-bu1sample-restrict
-        ├── prj-d-bu1sample-peering
-    └── fldr-bu2-development
-        ├── prj-d-env-bu2secrets
-        ├── prj-d-sample-bu2floating
-        ├── prj-d-sample-bu2base
-        ├── prj-d-sample-bu2restrict
-        └── prj-d-sample-bu2peering
+    ├── prj-bu1-d-env-kms
+    ├── prj-bu1-d-sample-floating
+    ├── prj-bu1-d-sample-base
+    ├── prj-bu1-d-sample-restrict
+    ├── prj-bu1-d-sample-peering
+    ├── prj-bu2-d-env-kms
+    ├── prj-bu2-d-sample-floating
+    ├── prj-bu2-d-sample-base
+    ├── prj-bu2-d-sample-restrict
+    └── prj-bu2-d-sample-peering
 └── fldr-non-production
-    └── fldr-bu1-non-production
-        ├── prj-n-env-bu1secrets
-        ├── prj-n-bu1sample-floating
-        ├── prj-n-bu1sample-base
-        ├── prj-n-bu1sample-restrict
-        ├── prj-n-bu1sample-peering
-    └── fldr-bu2-non-production
-        ├── prj-n-env-bu2secrets
-        ├── prj-n-sample-bu2floating
-        ├── prj-n-sample-bu2base
-        ├── prj-n-sample-bu2restrict
-        └── prj-n-sample-bu2peering
+    ├── prj-bu1-n-env-kms
+    ├── prj-bu1-n-sample-floating
+    ├── prj-bu1-n-sample-base
+    ├── prj-bu1-n-sample-restrict
+    ├── prj-bu1-n-sample-peering
+    ├── prj-bu2-n-env-kms
+    ├── prj-bu2-n-sample-floating
+    ├── prj-bu2-n-sample-base
+    ├── prj-bu2-n-sample-restrict
+    └── prj-bu2-n-sample-peering
 └── fldr-production
-    └── fldr-bu1-production
-        ├── prj-p-env-bu1secrets
-        ├── prj-p-bu1sample-floating
-        ├── prj-p-bu1sample-base
-        ├── prj-p-bu1sample-restrict
-        ├── prj-p-bu1sample-peering
-    └── fldr-bu2-production
-        ├── prj-p-env-bu2secrets
-        ├── prj-p-sample-bu2floating
-        ├── prj-p-sample-bu2base
-        ├── prj-p-sample-bu2restrict
-        └── prj-p-sample-bu2peering
+    ├── prj-bu1-p-env-kms
+    ├── prj-bu1-p-sample-floating
+    ├── prj-bu1-p-sample-base
+    ├── prj-bu1-p-sample-restrict
+    ├── prj-bu1-p-sample-peering
+    ├── prj-bu2-p-env-kms
+    ├── prj-bu2-p-sample-floating
+    ├── prj-bu2-p-sample-base
+    ├── prj-bu2-p-sample-restrict
+    └── prj-bu2-p-sample-peering
 └── fldr-common
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
@@ -243,6 +253,7 @@ example-organization
     ├── prj-c-logging
     ├── prj-c-billing-logs
     ├── prj-c-scc
+    ├── prj-c-kms
     ├── prj-c-secrets
     ├── prj-bu1-c-infra-pipeline
     └── prj-bu2-c-infra-pipeline
@@ -258,50 +269,47 @@ example-organization
     ├── prj-p-shared-base
     └── prj-p-shared-restricted
 └── fldr-development
+    ├── prj-bu1-d-env-kms
+    ├── prj-bu1-d-sample-floating
+    ├── prj-bu1-d-sample-base
+    ├── prj-bu1-d-sample-restrict
+    ├── prj-bu1-d-sample-peering
+    ├── prj-bu2-d-env-kms
+    ├── prj-bu2-d-sample-floating
+    ├── prj-bu2-d-sample-base
+    ├── prj-bu2-d-sample-restrict
+    ├── prj-bu2-d-sample-peering
     ├── prj-d-monitoring
-    ├── prj-d-secrets
-    └── fldr-bu1-development
-        ├── prj-d-env-bu1secrets
-        ├── prj-d-bu1sample-floating
-        ├── prj-d-bu1sample-base
-        ├── prj-d-bu1sample-restrict
-        └── prj-d-bu1sample-peering
-    └── fldr-bu2-development
-        ├── prj-d-env-bu2secrets
-        ├── prj-d-sample-bu2floating
-        ├── prj-d-sample-bu2base
-        ├── prj-d-sample-bu2restrict
-        └── prj-d-sample-bu2peering
+    ├── prj-d-kms
+    └── prj-d-secrets
 └── fldr-non-production
+    ├── prj-bu1-n-env-kms
+    ├── prj-bu1-n-sample-floating
+    ├── prj-bu1-n-sample-base
+    ├── prj-bu1-n-sample-restrict
+    ├── prj-bu1-n-sample-peering
+    ├── prj-bu2-n-env-kms
+    ├── prj-bu2-n-sample-floating
+    ├── prj-bu2-n-sample-base
+    ├── prj-bu2-n-sample-restrict
+    ├── prj-bu2-n-sample-peering
     ├── prj-n-monitoring
-    ├── prj-n-secrets
-    └── fldr-bu1-non-production
-        ├── prj-n-env-bu1secrets
-        ├── prj-n-bu1sample-floating
-        ├── prj-n-bu1sample-base
-        ├── prj-n-bu1sample-restrict
-        └── prj-n-bu1sample-peering
-    └── fldr-bu2-non-production
-        ├── prj-n-env-bu2secrets
-        ├── prj-n-sample-bu2floating
-        ├── prj-n-sample-bu2base
-        ├── prj-n-sample-bu2restrict
-        └── prj-n-sample-bu2peering
+    ├── prj-n-kms
+    └── prj-n-secrets
 └── fldr-production
+    ├── prj-bu1-p-env-kms
+    ├── prj-bu1-p-sample-floating
+    ├── prj-bu1-p-sample-base
+    ├── prj-bu1-p-sample-restrict
+    ├── prj-bu1-p-sample-peering
+    ├── prj-bu2-p-env-kms
+    ├── prj-bu2-p-sample-floating
+    ├── prj-bu2-p-sample-base
+    ├── prj-bu2-p-sample-restrict
+    ├── prj-bu2-p-sample-peering
     ├── prj-p-monitoring
-    ├── prj-p-secrets
-    └── fldr-bu1-production
-        ├── prj-p-env-bu1secrets
-        ├── prj-p-bu1sample-floating
-        ├── prj-p-bu1sample-base
-        ├── prj-p-bu1sample-restrict
-        └── prj-p-bu1sample-peering
-    └── fldr-bu2-production
-        ├── prj-p-env-bu2secrets
-        ├── prj-p-sample-bu2floating
-        ├── prj-p-sample-bu2base
-        ├── prj-p-sample-bu2restrict
-        └── prj-p-sample-bu2peering
+    ├── prj-p-kms
+    └── prj-p-secrets
 └── fldr-bootstrap
     ├── prj-b-cicd
     └── prj-b-seed

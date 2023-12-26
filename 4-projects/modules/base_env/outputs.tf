@@ -79,9 +79,9 @@ output "peering_complete" {
   value       = module.peering.complete
 }
 
-output "env_secrets_project" {
-  description = "Project sample peering project id."
-  value       = module.env_secrets_project.project_id
+output "env_kms_project" {
+  description = "Project sample for KMS usage project ID."
+  value       = module.env_kms_project.project_id
 }
 
 output "keyring" {

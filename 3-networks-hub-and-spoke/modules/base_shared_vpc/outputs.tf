@@ -78,3 +78,8 @@ output "region2_router2" {
   value       = try(module.region2_router2[0], null)
   description = "Router 2 for Region 2"
 }
+
+output "firewall_policy" {
+  value       = module.firewall_rules.fw_policy[0].name
+  description = "Policy created for firewall policy rules."
+}

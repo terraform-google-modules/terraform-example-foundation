@@ -14,6 +14,7 @@ For example usage, please check the the [net-hubs-transitivity.tf](../../envs/sh
 |------|-------------|------|---------|:--------:|
 | commands | Commands for the transitivity gateway to run on every boot. | `list(string)` | `[]` | no |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
+| firewall\_policy | Network Firewall Policy Id to deploy transitivity firewall rules. | `string` | n/a | yes |
 | gw\_subnets | Subnets in {REGION => SUBNET} format. | `map(string)` | n/a | yes |
 | health\_check\_enable\_log | Toggle logging for health checks. | `bool` | `false` | no |
 | project\_id | VPC Project ID | `string` | n/a | yes |

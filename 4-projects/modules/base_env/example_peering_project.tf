@@ -119,173 +119,130 @@ module "peering" {
 }
 
 /******************************************
-  Mandatory firewall rules
+  Mandatory and optional firewall rules
  *****************************************/
-
-resource "google_compute_firewall" "deny_all_egress" {
-  name      = "fw-${local.env_code}-peering-base-65530-e-d-all-all-tcp-udp"
-  network   = module.peering_network.network_name
-  project   = module.peering_project.project_id
-  direction = "EGRESS"
-  priority  = 65530
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  deny {
-    protocol = "tcp"
-  }
-
-  deny {
-    protocol = "udp"
-  }
-
-  destination_ranges = ["0.0.0.0/0"]
-}
-
-
-resource "google_compute_firewall" "allow_private_api_egress" {
-  name      = "fw-${local.env_code}-peering-base-65430-e-a-allow-google-apis-all-tcp-443"
-  network   = module.peering_network.network_name
-  project   = module.peering_project.project_id
-  direction = "EGRESS"
-  priority  = 65430
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["443"]
-  }
-
-  destination_ranges = ["199.36.153.8/30"]
-
-  target_tags = ["allow-google-apis"]
-}
-
-
-/******************************************
-  Optional firewall rules
- *****************************************/
-
-// Allow access to kms.windows.googlecloud.com for Windows license activation
-resource "google_compute_firewall" "allow_windows_activation" {
-  count     = var.windows_activation_enabled ? 1 : 0
-  name      = "fw-${local.env_code}-peering-base-0-e-a-allow-win-activation-all-tcp-1688"
-  network   = module.peering_network.network_name
-  project   = module.peering_project.project_id
-  direction = "EGRESS"
-  priority  = 0
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["1688"]
-  }
-
-  destination_ranges = ["35.190.247.13/32"]
-
-  target_tags = ["allow-win-activation"]
-}
-
-// Allow traffic for Internal & Global load balancing health check and load balancing IP ranges.
-resource "google_compute_firewall" "allow_lb" {
-  count   = var.optional_fw_rules_enabled ? 1 : 0
-  name    = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
-  network = module.peering_network.network_name
-  project = module.peering_project.project_id
-
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
-    }
-  }
-
-  source_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
-
-  // Allow common app ports by default.
-  allow {
-    protocol = "tcp"
-    ports    = ["80", "8080", "443"]
-  }
-
-  target_tags = ["allow-lb"]
-}
-
-// Allow SSH and RDP via IAP when using the Firewall Secure Tags.
-module "allow_iap_ssh_rdp" {
-  source  = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version = "~> 8.0"
-
+module "firewall_rules" {
+  source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version     = "~> 8.0"
   project_id  = module.peering_project.project_id
-  policy_name = "fp-${local.env_code}-allow-iap-policy"
+  policy_name = "fp-${local.env_code}-peering-project-firewalls"
+  description = "Firewall rules for Peering Network: ${module.peering_network.network_name}."
 
-  rules = [
-    {
-      // Allow SSH via IAP when using the ssh-iap-access/allow resource manager tag for Linux workloads.
-      rule_name          = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
-      action             = "allow"
-      direction          = "INGRESS"
-      priority           = "1000"
-      enable_logging     = true
-      target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"]
-      match = {
-        src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
-        layer4_configs = [
-          {
-            ip_protocol = "tcp"
-            ports       = ["22"]
-          },
-        ]
+  rules = concat(
+    [
+      {
+        priority       = "65530"
+        direction      = "EGRESS"
+        action         = "deny"
+        rule_name      = "fw-${local.env_code}-peering-base-65530-e-d-all-all-tcp-udp"
+        description    = "Lower priority rule to deny all egress traffic."
+        enable_logging = var.firewall_enable_logging
+        match = {
+          dest_ip_ranges = ["0.0.0.0/0"]
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+            },
+            {
+              ip_protocol = "udp"
+            },
+          ]
+        }
+      },
+      {
+        priority       = "10000"
+        direction      = "EGRESS"
+        action         = "allow"
+        rule_name      = "fw-${local.env_code}-peering-base-10000-e-a-allow-google-apis-all-tcp-443"
+        description    = "Lower priority rule to allow private google apis on TCP port 443."
+        enable_logging = var.firewall_enable_logging
+        match = {
+          dest_ip_ranges = ["199.36.153.8/30"]
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+              ports       = ["443"]
+            },
+          ]
+        }
+      },
+      {
+        // Allow SSH via IAP when using the ssh-iap-access/allow resource manager tag for Linux workloads.
+        rule_name          = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-iap-ssh-tcp-22"
+        action             = "allow"
+        direction          = "INGRESS"
+        priority           = "1000"
+        enable_logging     = true
+        target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"]
+        match = {
+          src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+              ports       = ["22"]
+            },
+          ]
+        }
+      },
+      {
+        // Allow RDP via IAP when using the rdp-iap-access/allow resource manager tag for Windows workloads.
+        rule_name          = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
+        action             = "allow"
+        direction          = "INGRESS"
+        priority           = "1001"
+        enable_logging     = true
+        target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"]
+        match = {
+          src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+              ports       = ["3389"]
+            },
+          ]
+        }
       }
-    },
-    {
-      // Allow RDP via IAP when using the rdp-iap-access/allow resource manager tag for Windows workloads.
-      rule_name          = "fw-${local.env_code}-peering-base-1001-i-a-all-allow-iap-rdp-tcp-3389"
-      action             = "allow"
-      direction          = "INGRESS"
-      priority           = "1001"
-      enable_logging     = true
-      target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"]
-      match = {
-        src_ip_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks_ipv4
-        layer4_configs = [
-          {
-            ip_protocol = "tcp"
-            ports       = ["3389"]
-          },
-        ]
+    ],
+    !var.windows_activation_enabled ? [] : [
+      {
+        priority       = "0"
+        direction      = "EGRESS"
+        action         = "allow"
+        rule_name      = "fw-${local.env_code}-peering-base-0-e-a-allow-win-activation-all-tcp-1688"
+        description    = "Allow access to kms.windows.googlecloud.com for Windows license activation."
+        enable_logging = var.firewall_enable_logging
+        match = {
+          dest_ip_ranges = ["35.190.247.13/32"]
+          layer4_configs = [
+            {
+              ip_protocol = "tcp"
+              ports       = ["1688"]
+            },
+          ]
+        }
       }
-    }
-  ]
+    ],
+    !var.optional_fw_rules_enabled ? [] : [
+      {
+        priority       = "1000"
+        direction      = "INGRESS"
+        action         = "allow"
+        rule_name      = "fw-${local.env_code}-peering-base-1000-i-a-all-allow-lb-tcp-80-8080-443"
+        description    = "Allow traffic for Internal & Global load balancing health check and load balancing IP ranges."
+        enable_logging = var.firewall_enable_logging
+        match = {
+          src_ip_ranges = concat(data.google_netblock_ip_ranges.health_checkers.cidr_blocks_ipv4, data.google_netblock_ip_ranges.legacy_health_checkers.cidr_blocks_ipv4)
+          layer4_configs = [
+            {
+              // Allow common app ports by default.
+              ip_protocol = "tcp"
+              ports       = ["80", "8080", "443"]
+            },
+          ]
+        }
+      },
+    ]
+  )
 
   depends_on = [
     google_tags_tag_value.firewall_tag_value_ssh,
@@ -293,14 +250,14 @@ module "allow_iap_ssh_rdp" {
   ]
 }
 
-resource "google_compute_network_firewall_policy_association" "vpc_associations" {
-  name              = "fpa-${local.env_code}-allow-iap-ssh-rdp"
+resource "google_compute_network_firewall_policy_association" "vpc_association" {
+  name              = "${module.firewall_rules.fw_policy[0].name}-${module.peering_network.network_name}"
   attachment_target = module.peering_network.network_id
-  firewall_policy   = module.allow_iap_ssh_rdp.fw_policy[0].id
+  firewall_policy   = module.firewall_rules.fw_policy[0].id
   project           = module.peering_project.project_id
 
   depends_on = [
-    module.allow_iap_ssh_rdp,
+    module.firewall_rules,
     module.peering_network
   ]
 }

@@ -57,3 +57,8 @@ variable "health_check_enable_log" {
   description = "Toggle logging for health checks."
   default     = false
 }
+
+variable "firewall_policy" {
+  type        = string
+  description = "Network Firewall Policy Id to deploy transitivity firewall rules."
+}

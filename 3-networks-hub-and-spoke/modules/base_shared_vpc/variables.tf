@@ -149,12 +149,14 @@ variable "windows_activation_enabled" {
   default     = false
 }
 
-variable "allow_all_egress_ranges" {
-  description = "List of network ranges to which all egress traffic will be allowed"
-  default     = null
+variable "enable_all_vpc_internal_traffic" {
+  type        = bool
+  description = "Enable firewall policy rule to allow internal traffic (ingress and egress)."
+  default     = false
 }
 
-variable "allow_all_ingress_ranges" {
-  description = "List of network ranges from which all ingress traffic will be allowed"
-  default     = null
+variable "enable_transitivity_traffic" {
+  type        = bool
+  description = "Enable a firewall policy rule to allow traffic between Hub and Spokes (ingress only)."
+  default     = true
 }

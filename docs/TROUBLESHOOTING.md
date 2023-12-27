@@ -47,7 +47,7 @@ form to request a quota increase.
 
 In the support form,
 for the field **Email addresses that will be used to create projects**,
-use the email address of `terraform_service_account` that is created by the Terraform Example Foundation 0-bootstrap step.
+use the email address of `projects_step_terraform_service_account_email` that is created by the Terraform Example Foundation 0-bootstrap step.
 
 **Notes:**
 

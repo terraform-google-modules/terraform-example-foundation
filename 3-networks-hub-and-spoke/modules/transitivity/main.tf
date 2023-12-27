@@ -20,6 +20,7 @@
 
 locals {
   stripped_vpc_name = replace(var.vpc_name, "vpc-", "")
+  routes            = flatten([for region, ranges in var.regional_aggregates : [for range in ranges : { region = region, range = range }]])
 }
 
 module "service_account" {
@@ -127,10 +128,6 @@ module "ilbs" {
   project = var.project_id
 }
 
-locals {
-  routes = flatten([for region, ranges in var.regional_aggregates : [for range in ranges : { region = region, range = range }]])
-}
-
 resource "google_compute_route" "routes" {
   for_each = {
     for route in local.routes : replace("ilb-${route.region}-${route.range}", "/[./]/", "-") => route
@@ -143,52 +140,38 @@ resource "google_compute_route" "routes" {
   next_hop_ilb = module.ilbs[each.value.region].forwarding_rule
 }
 
-resource "google_compute_firewall" "allow_transtivity_ingress" {
-  name      = "fw-${local.stripped_vpc_name}-1000-i-a-all-all-all-transitivity"
-  network   = var.vpc_name
-  project   = var.project_id
-  direction = "INGRESS"
-  priority  = 1000
+resource "google_compute_network_firewall_policy_rule" "allow_transtivity_ingress" {
+  rule_name               = "fw-${local.stripped_vpc_name}-20000-i-a-all-all-all-transitivity"
+  project                 = var.project_id
+  firewall_policy         = var.firewall_policy
+  priority                = 20000
+  direction               = "INGRESS"
+  action                  = "allow"
+  target_service_accounts = [module.service_account.email]
+  description             = "Allow ingress from regional IP ranges."
 
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
+  match {
+    src_ip_ranges = flatten(values(var.regional_aggregates))
+    layer4_configs {
+      ip_protocol = "all"
     }
   }
-
-  allow {
-    protocol = "all"
-  }
-
-  source_ranges           = flatten(values(var.regional_aggregates))
-  target_service_accounts = [module.service_account.email]
 }
 
-resource "google_compute_firewall" "allow_transitivity_egress" {
-  name      = "fw-allow-transitivity-egress"
-  network   = var.vpc_name
-  project   = var.project_id
-  direction = "EGRESS"
-  priority  = 1000
+resource "google_compute_network_firewall_policy_rule" "allow_transitivity_egress" {
+  rule_name               = "fw-${local.stripped_vpc_name}-20001-e-a-all-all-all-transitivity"
+  project                 = var.project_id
+  firewall_policy         = var.firewall_policy
+  priority                = 20001
+  direction               = "EGRESS"
+  action                  = "allow"
+  target_service_accounts = [module.service_account.email]
+  description             = "Allow egress from regional IP ranges."
 
-  dynamic "log_config" {
-    for_each = var.firewall_enable_logging == true ? [{
-      metadata = "INCLUDE_ALL_METADATA"
-    }] : []
-
-    content {
-      metadata = log_config.value.metadata
+  match {
+    dest_ip_ranges = flatten(values(var.regional_aggregates))
+    layer4_configs {
+      ip_protocol = "all"
     }
   }
-
-  allow {
-    protocol = "all"
-  }
-
-  destination_ranges      = flatten(values(var.regional_aggregates))
-  target_service_accounts = [module.service_account.email]
 }

@@ -20,17 +20,17 @@ terraform {
 
     google = {
       source  = "hashicorp/google"
-      version = ">= 4.3.0, < 5.11"
+      version = ">= 4.3.0, < 6"
     }
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = ">= 2.0, <3.0"
+      version = ">= 2.0, < 3"
     }
 
     random = {
       source  = "hashicorp/random"
-      version = ">= 3.4.3, < 4.0"
+      version = ">= 3.4.3, < 4"
     }
   }
 

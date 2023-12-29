@@ -107,7 +107,6 @@ resource "github_actions_secret" "secrets" {
   plaintext_value = each.value.plaintext_value
 }
 
-
 resource "google_service_account_iam_member" "self_impersonate" {
   for_each = local.granular_sa
 

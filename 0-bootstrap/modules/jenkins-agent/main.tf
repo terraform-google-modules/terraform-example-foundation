@@ -79,6 +79,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
     initialize_params {
       // It is better if user has a golden image with all necessary packages.
       image = "debian-cloud/debian-11"
+      size  = 20
     }
   }
 
@@ -90,8 +91,7 @@ resource "google_compute_instance" "jenkins_agent_gce_instance" {
 
   // Adding ssh public keys to the GCE instance metadata, so the Jenkins Controller can connect to this Agent
   metadata = {
-    enable-oslogin = "false"
-    ssh-keys       = var.jenkins_agent_gce_ssh_pub_key
+    ssh-keys = var.jenkins_agent_gce_ssh_pub_key
   }
 
   metadata_startup_script = data.template_file.jenkins_agent_gce_startup_script.rendered
@@ -132,7 +132,7 @@ module "jenkins_firewall_rules" {
   project_id  = module.cicd_project.project_id
   policy_name = "fp-${google_compute_network.jenkins_agents.name}-jenkins-firewall"
   description = "Jenkins Agent GCE network firewall rules."
-  target_vpcs = [google_compute_network.jenkins_agents.name]
+  target_vpcs = [google_compute_network.jenkins_agents.id]
 
   rules = [
     {
@@ -144,7 +144,7 @@ module "jenkins_firewall_rules" {
       enable_logging     = true
       target_secure_tags = ["tagValues/${google_tags_tag_value.jenkins_agents.name}"]
       match = {
-        dest_ip_ranges = var.jenkins_controller_subnetwork_cidr_range
+        src_ip_ranges = var.jenkins_controller_subnetwork_cidr_range
         layer4_configs = [
           {
             ip_protocol = "tcp"

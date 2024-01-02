@@ -110,6 +110,12 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
 
    You will see some GIT logs related to the branches creation in the console and the message  `"Branch creation and push completed for all repositories"` at the end of the script execution.
 
+1. [Authenticate your Terraform CLI](https://developer.hashicorp.com/terraform/cli/commands/login) by running the `login` command and following the instructions provided in the browser tab that should open automatically.
+   ```bash
+   terraform login
+   ```
+**Note**: It is required to do this step even if you already have an [Organization token](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/api-tokens#organization-api-tokens) in order to generate your User token.
+
 ### Deploying step 0-bootstrap
 
 1. Navigate into the repo. All subsequent

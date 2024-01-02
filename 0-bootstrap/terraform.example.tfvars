@@ -114,6 +114,26 @@ default_region = "us-central1"
 # tunnel1_bgp_session_range = "169.254.2.2/30"
 
 /* ----------------------------------------
+    Specific to gitlab_bootstrap
+   ---------------------------------------- */
+# Un-comment gitlab_bootstrap and its outputs if you want to use GitLab CI/CD instead of Cloud Build
+# gl_repos = {
+#     owner        = "YOUR-GITLAB-USER-OR-GROUP",
+#     bootstrap    = "YOUR-BOOTSTRAP-REPOSITORY",
+#     organization = "YOUR-ORGANIZATION-REPOSITORY",
+#     environments = "YOUR-ENVIRONMENTS-REPOSITORY",
+#     networks     = "YOUR-NETWORKS-REPOSITORY",
+#     projects     = "YOUR-PROJECTS-REPOSITORY",
+#     cicd_runner  = "YOUR-CICD-RUNNER-REPOSITORY",
+# }
+#
+#  to prevent saving the `gitlab_token` in plain text in this file,
+#  export the GitLab access token in the command line
+#  as an environment variable before running terraform.
+#  Run the following commnad in your shell:
+#   export TF_VAR_gitlab_token="YOUR-ACCESS-TOKEN"
+
+/* ----------------------------------------
     Specific to tfc_bootstrap
    ---------------------------------------- */
 //  Un-comment tfc_bootstrap and its outputs if you want to use Terraform Cloud instead of Cloud Build

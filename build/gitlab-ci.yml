@@ -1,0 +1,101 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+stages:
+  - build
+  - validate
+  - apply
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+build-image:
+  stage: build
+  image:
+    name: docker:stable
+  services:
+   - name: docker:dind
+     alias: dockerhost
+  variables:
+    DOCKER_HOST: tcp://dockerhost:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u  $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    - docker build -t $CI_REGISTRY_IMAGE/terraform-gcloud:latest .
+    - docker push $CI_REGISTRY_IMAGE/terraform-gcloud:latest
+    - docker logout
+  only:
+    - image
+
+image:
+  name: registry.gitlab.com/$CI_PROJECT_NAMESPACE/${CICD_RUNNER_REPO}/terraform-gcloud:latest
+  entrypoint: [""]
+
+terraform-plan:
+  stage: validate
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
+  variables:
+    GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: "$SERVICE_ACCOUNT_EMAIL"
+  script:
+    - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
+    - gcloud config set project "$PROJECT_ID"
+    - bash tf-wrapper.sh plan_validate_all $CI_COMMIT_REF_NAME $CI_PROJECT_DIR/policy-library $PROJECT_ID "FILESYSTEM"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "plan"
+
+terraform-plan-mr:
+  stage: validate
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
+  variables:
+    GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: "$SERVICE_ACCOUNT_EMAIL"
+  script:
+    - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
+    - gcloud config set project "$PROJECT_ID"
+    - bash tf-wrapper.sh init $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    - bash tf-wrapper.sh plan $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    - bash tf-wrapper.sh validate $CI_MERGE_REQUEST_TARGET_BRANCH_NAME "$CI_PROJECT_DIR/policy-library" $PROJECT_ID "FILESYSTEM"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
+terraform-apply:
+  stage: apply
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
+  variables:
+    GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: "$SERVICE_ACCOUNT_EMAIL"
+  script:
+    - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
+    - gcloud config set project "$PROJECT_ID"
+    - bash tf-wrapper.sh init $CI_COMMIT_REF_NAME
+    - bash tf-wrapper.sh plan $CI_COMMIT_REF_NAME
+    - bash tf-wrapper.sh validate $CI_COMMIT_REF_NAME "$CI_PROJECT_DIR/policy-library" $PROJECT_ID "FILESYSTEM"
+    - bash tf-wrapper.sh apply $CI_COMMIT_REF_NAME
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "development"
+    - if: $CI_COMMIT_REF_NAME == "production"
+    - if: $CI_COMMIT_REF_NAME == "non-production"

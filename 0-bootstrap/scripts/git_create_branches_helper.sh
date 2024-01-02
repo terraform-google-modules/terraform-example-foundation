@@ -15,7 +15,9 @@
 # limitations under the License.
 
 # Define the base path where your repositories are located
-BASE_PATH="."
+SCRIPTS_DIR="$( dirname -- "$0"; )"
+BASE_PATH="$SCRIPTS_DIR/../../.."
+TARGET="$1"
 
 # Function to create branches and push to remote
 create_branches_and_push() {
@@ -30,22 +32,44 @@ create_branches_and_push() {
 
     # Check if the repo name contains the expected repo names in order to avoid
     # creating branches for non-related foundation repos
-    if [[ ! $repo_name =~ (gcp-bootstrap|gcp-org|gcp-environments|gcp-networks|gcp-projects) ]]; then
+    if [[ ! $repo_name =~ (gcp-bootstrap|gcp-org|gcp-environments|gcp-networks|gcp-projects|gcp-cicd-runner) ]]; then
       return
     fi
 
     echo "Processing repository: $repo_name"
 
-    # Create production branches
+    # process gcp-cicd-runner repo
+    if [[ $repo_name == *"gcp-cicd-runner"* && $TARGET == "GITLAB" ]]; then
+      git checkout -b image
+      touch .gitignore
+      git add .gitignore
+      git commit -m "seed commit"
+      git push --set-upstream origin image
+      echo "Branch (image) created and pushed for $repo_name"
+      return
+    fi
+
+    # Create plan branch
+    if [[ $TARGET == "GITLAB" ]]; then
+      git checkout -b plan
+      touch .gitignore
+      git add .gitignore
+      git commit -m "seed commit"
+      git push --set-upstream origin plan
+      echo "Branch (plan) created and pushed for $repo_name"
+    fi
+
+    # Create production branch
     git checkout -b production
     touch .gitignore
     git add .gitignore
     git commit -m "seed commit"
     git push --set-upstream origin production
+    echo "Branch (production) created and pushed for $repo_name"
 
     # Check if the repo name contains "bootstrap" or "org"
     if [[ $repo_name == *"gcp-bootstrap"* || $repo_name == *"gcp-org"* ]]; then
-      echo "Branches (production) created and pushed for $repo_name"
+      echo "All branches created and pushed for $repo_name"
     else
       # Create development and non-production branches
       git checkout -b development
@@ -53,14 +77,16 @@ create_branches_and_push() {
       git add .gitignore
       git commit -m "seed commit"
       git push --set-upstream origin development
+      echo "Branch (development) created and pushed for $repo_name"
 
       git checkout -b non-production
       touch .gitignore
       git add .gitignore
       git commit -m "seed commit"
       git push --set-upstream origin non-production
+      echo "Branch (non-production) created and pushed for $repo_name"
 
-      echo "Branches (development, non-production, production) created and pushed for $repo_name"
+      echo "All branches created and pushed for $repo_name"
     fi
   else
     echo "Skipping non-Git directory: $repo_path"

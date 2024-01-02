@@ -24,6 +24,8 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
 - [Error: Unsupported attribute](#error-unsupported-attribute)
 - [Error: Error adding network peering](#error-error-adding-network-peering)
+- [Error: Terraform deploy fails due to GitLab repositories not found](#terraform-deploy-fails-due-to-gitlab-repositories-not-found)
+- [Error: Gitlab pipelines access denied](#gitlab-pipelines-access-denied)
 - [Error: Unknown project id on 4-project step context](#error-unknown-project-id-on-4-project-step-context)
 - [Error: Error getting operation for committing purpose for TagValue](#error-error-getting-operation-for-committing-purpose-for-tagvalue)
 - - -
@@ -491,3 +493,41 @@ You can get this information from step `0-bootstrap` by running the following co
 **Terraform State lock possible causes:**
 
 - If you realize that the Terraform State lock was due to a build timeout increase the build timeout on [build configuration](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/build/cloudbuild-tf-apply.yaml#L15).
+
+### Terraform deploy fails due to GitLab repositories not found
+
+**Error message:**
+
+```text
+Error: POST https://gitlab.com/api/v4/projects/<GITLAB-ACCOUNT>/<GITLAB-REPOSITORY>/variables: 404 {message: 404 Project Not Found}
+
+```
+
+**Cause:**
+
+This message means that you are using a wrong Access Token or you have Access Token created in both Gitlab Account/Group and GitLab Repository.
+
+Only Personal Access Token under GitLab Account/Group should exist.
+
+**Solution:**
+
+Remove any Access Token from the GitLab repositories used by Google Secure Foundation Blueprint.
+
+### Gitlab pipelines access denied
+
+**Error message:**
+
+From the logs of your Pipeline job:
+
+```text
+Error response from daemon: pull access denied for registry.gitlab.com/<YOUR-GITLAB-ACCOUNT>/<YOUR-GITLAB-CICD-REPO>/terraform-gcloud, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
+```
+
+**Cause:**
+
+The cause of this message is that the CI/CD repository has "Limit access to this project" enabled in the Token Access settings.
+
+**Solution:**
+
+Add all the projects/repositories to be used in the Terraform Example Foundation to the allow list available in
+`CI/CD Repo -> Settings -> CI/CD -> Token Access -> Allow CI job tokens from the following projects to access this project`.

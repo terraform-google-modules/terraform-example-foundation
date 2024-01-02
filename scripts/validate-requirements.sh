@@ -222,7 +222,7 @@ function validate_bootstrap_step(){
         echo "  Rename the file 0-bootstrap/terraform.example.tfvars to 0-bootstrap/terraform.tfvars"
         ERRORS+=$'  terraform.tfvars file must exist for 0-bootstrap step.\n'
     else
-        if [ "$(grep -c REPLACE_ME "$FILE")" != 0 ]; then
+	if [ "$(grep -v '^#' "$FILE" |grep -c 'REPLACE_ME')" != 0 ]; then
             echo "  0-bootstrap/terraform.tfvars must have required values fulfilled."
             ERRORS+=$'  terraform.tfvars file must be correctly fulfilled for 0-bootstrap step.\n'
         fi
@@ -237,7 +237,7 @@ function validate_bootstrap_step_external_repo(){
         echo "  Rename the file gcp-bootstrap/envs/shared/terraform.example.tfvars to gcp-bootstrap/envs/shared/terraform.tfvars"
         ERRORS+=$'  terraform.tfvars file must exist for gcp-bootstrap step.\n'
     else
-        if [ "$(grep -c REPLACE_ME "$FILE")" != 0 ]; then
+	if [ "$(grep -v '^#' "$FILE" |grep -c 'REPLACE_ME')" != 0 ]; then
             echo "  gcp-bootstrap/envs/shared/terraform.tfvars must have required values fulfilled."
             ERRORS+=$'  terraform.tfvars file must be correctly fulfilled for gcp-bootstrap step.\n'
         fi

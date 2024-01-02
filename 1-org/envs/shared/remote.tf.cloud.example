@@ -31,6 +31,7 @@ locals {
   networks_step_terraform_service_account_email = data.tfe_outputs.bootstrap.nonsensitive_values.networks_step_terraform_service_account_email
   bootstrap_folder_name                         = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.bootstrap_folder_name
   cloud_build_private_worker_pool_id            = try(data.tfe_outputs.bootstrap.nonsensitive_values.cloud_build_private_worker_pool_id, "")
+  org_step_terraform_service_account_email      = data.tfe_outputs.bootstrap.nonsensitive_values.organization_step_terraform_service_account_email
 }
 
 data "tfe_outputs" "bootstrap" {

@@ -241,6 +241,12 @@ export the GitHub fine grained access token as an environment variable:
 1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-BOOTSTRAP-REPO/actions under `tf-apply`.
 
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
+   ```
+
 **Note 1:** The stages after `0-bootstrap` use `terraform_remote_state` data source to read common configuration like the organization ID from the output of the `0-bootstrap` stage.
 They will [fail](../docs/TROUBLESHOOTING.md#error-unsupported-attribute) if the state is not copied to the Cloud Storage bucket.
 
@@ -362,6 +368,12 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ORGANIZATION-REPO/actions under `tf-apply`.
 
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
+   ```
+
 
 ## Deploying step 2-environments
 
@@ -469,6 +481,12 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
 1. You can now move to the instructions in the network stage.
 To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc),
 or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
+
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
+   ```
 
 ## Deploying step 3-networks-dual-svpc
 
@@ -631,6 +649,12 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
+   ```
+
 1. You can now move to the instructions in the [4-projects](#deploying-step-4-projects) stage.
 
 ## Deploying step 3-networks-hub-and-spoke
@@ -780,6 +804,12 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
    ```
 
 1. You can now move to the instructions in the [4-projects](#deploying-step-4-projects) stage.

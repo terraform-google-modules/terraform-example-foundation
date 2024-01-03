@@ -144,7 +144,7 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
 1. In the variables file `./variables.tf` un-comment variables in the section `Specific to tfc_bootstrap`
 1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
 1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to tfc_bootstrap`
-    1. If you want to use [Terraform Cloud with Agents](https://developer.hashicorp.com/terraform/cloud-docs/agents), in addition to `Specific to tfc_bootstrap`, un-comment outputs in the section `Specific to tfc_bootstrap with Terraform Cloud Agents`
+    1. If you want to use [Terraform Cloud with Agents](https://developer.hashicorp.com/terraform/cloud-docs/agents), in addition to `Specific to tfc_bootstrap`, un-comment outputs in the section `Specific to tfc_bootstrap with Terraform Cloud Agents` and update `enable_tfc_cloud_agents` to `true` variable at `terraform.tfvars`
 1. Rename file `./cb.tf` to `./cb.tf.example`
 
    ```bash
@@ -269,7 +269,6 @@ export the OAuth Token ID as an environment variable:
    git add .
    git commit -m 'Initialize bootstrap repo'
    git push --set-upstream origin plan
-   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `production` branch and review the output.
@@ -277,6 +276,12 @@ export the OAuth Token ID as an environment variable:
 1. Review the speculative plan output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/0-shared/runs under `Run List` item. The output should be `Your infrastructure matches the configuration` since we applied the 0-bootstrap locally.
 1. If the speculative plan is successful, merge the pull request in to the `production` branch.
 1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan again for the terraform configuration for the `production` environment.
+
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
+   ```
 
 **Note:** After the deploy, to prevent the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded),
 we recommend that you request 50 additional projects for the **projects step service account** created in this step.
@@ -365,6 +370,12 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 1. The merge will trigger a Terraform Cloud `Plan and Apply` run, that will run the plan and apply the terraform configuration for the `production` environment. You need to approve the apply in the `Runs` menu.
 1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/1-shared/runs under `Run List` item.
 
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
+   ```
+
 
 ## Deploying step 2-environments
 
@@ -408,7 +419,6 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
 
    ```bash
    git push --set-upstream origin plan
-   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
@@ -437,6 +447,12 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
 1. You can now move to the instructions in the network stage.
 To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc),
 or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
+
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
+   ```
 
 ## Deploying step 3-networks-dual-svpc
 
@@ -561,7 +577,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    git push --set-upstream origin plan
-   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
@@ -591,6 +606,12 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
    ```
 
 1. You can now move to the instructions in the [4-projects](#deploying-step-4-projects) stage.
@@ -705,7 +726,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    git push --set-upstream origin plan
-   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.
@@ -736,6 +756,12 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. Before moving to the next step, go back to the parent directory.
+
+   ```bash
+   cd ..
    ```
 
 1. You can now move to the instructions in the [4-projects](#deploying-step-4-projects) stage.
@@ -854,7 +880,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
    ```bash
    git push --set-upstream origin plan
-   cd ..
    ```
 
 1. Open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) (for GitHub) or a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html) (for GitLab) from the `plan` branch to the `development` branch and review the output.

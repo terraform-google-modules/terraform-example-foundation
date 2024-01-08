@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,13 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 0.13"
-  required_providers {
-
-    google = {
-      source  = "hashicorp/google"
-      version = ">= 4.3.0, < 6"
-    }
-
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.0, < 3"
-    }
-
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.4.3, < 4"
-    }
-  }
-
-  provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-tf-cloud-agents:tfc-agent-gke/v0.1.0"
-  }
+/******************************************
+  Provider request timeout configuration
+ *****************************************/
+provider "google" {
+  request_timeout = "5m"
 }
 
+provider "google-beta" {
+  request_timeout = "5m"
+}

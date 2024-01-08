@@ -30,4 +30,5 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-issue-message: 'This issue is stale because it has been open 60 days with no activity. Remove stale label or comment or this will be closed in 7 days'
         stale-pr-message: 'This PR is stale because it has been open 60 days with no activity. Remove stale label or comment or this will be closed in 7 days'
-        exempt-issue-labels: triaged,dependencies
+        exempt-issue-labels: 'triaged'
+        exempt-pr-labels: 'dependencies,autorelease: pending'

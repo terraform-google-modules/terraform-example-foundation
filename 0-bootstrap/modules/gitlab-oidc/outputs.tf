@@ -14,28 +14,12 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 0.13"
-  required_providers {
-
-    google = {
-      source  = "hashicorp/google"
-      version = ">= 4.3.0, < 6"
-    }
-
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.0, < 3"
-    }
-
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.4.3, < 4"
-    }
-  }
-
-  provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-tf-cloud-agents:tfc-agent-gke/v0.1.0"
-  }
+output "pool_name" {
+  description = "Pool name"
+  value       = google_iam_workload_identity_pool.main.name
 }
 
+output "provider_name" {
+  description = "Provider name"
+  value       = google_iam_workload_identity_pool_provider.main.name
+}

@@ -24,7 +24,10 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
 - [Error: Unsupported attribute](#error-unsupported-attribute)
 - [Error: Error adding network peering](#error-error-adding-network-peering)
+- [Error: Terraform deploy fails due to GitLab repositories not found](#terraform-deploy-fails-due-to-gitlab-repositories-not-found)
+- [Error: Gitlab pipelines access denied](#gitlab-pipelines-access-denied)
 - [Error: Unknown project id on 4-project step context](#error-unknown-project-id-on-4-project-step-context)
+- [Error: Error getting operation for committing purpose for TagValue](#error-error-getting-operation-for-committing-purpose-for-tagvalue)
 - - -
 
 ### Project quota exceeded
@@ -46,7 +49,7 @@ form to request a quota increase.
 
 In the support form,
 for the field **Email addresses that will be used to create projects**,
-use the email address of `terraform_service_account` that is created by the Terraform Example Foundation 0-bootstrap step.
+use the email address of `projects_step_terraform_service_account_email` that is created by the Terraform Example Foundation 0-bootstrap step.
 
 **Notes:**
 
@@ -334,6 +337,22 @@ This should complete successfully, if you encounter another similar error for an
 
    - Make sure you run the taint command just for the resources that contain the [number] at the end of the line returned by terraform state list step. You don't need to run for the groups (the resources that don't have the [] at the end).
 
+### Error: Error getting operation for committing purpose for TagValue
+
+**Error message:**
+
+```text
+Error: Error waiting to create TagValue: Error waiting for Creating TagValue: Error code 13, message: Error getting operation for committing purpose for TagValue: tagValues/{tag_value_id}
+```
+
+**Cause:**
+
+Sometimes when deploying a [google_tags_tag_value](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/tags_tag_value) the error occurs and Terraform is not able to finish the execution.
+
+**Solution:**
+
+1. This is a transient error and the deploy can be retried.
+1. A retry policy was added to prevent this error during the integration test.
 - - -
 
 ### Caller does not have permission in the Organization
@@ -474,3 +493,41 @@ You can get this information from step `0-bootstrap` by running the following co
 **Terraform State lock possible causes:**
 
 - If you realize that the Terraform State lock was due to a build timeout increase the build timeout on [build configuration](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/build/cloudbuild-tf-apply.yaml#L15).
+
+### Terraform deploy fails due to GitLab repositories not found
+
+**Error message:**
+
+```text
+Error: POST https://gitlab.com/api/v4/projects/<GITLAB-ACCOUNT>/<GITLAB-REPOSITORY>/variables: 404 {message: 404 Project Not Found}
+
+```
+
+**Cause:**
+
+This message means that you are using a wrong Access Token or you have Access Token created in both Gitlab Account/Group and GitLab Repository.
+
+Only Personal Access Token under GitLab Account/Group should exist.
+
+**Solution:**
+
+Remove any Access Token from the GitLab repositories used by Google Secure Foundation Blueprint.
+
+### Gitlab pipelines access denied
+
+**Error message:**
+
+From the logs of your Pipeline job:
+
+```text
+Error response from daemon: pull access denied for registry.gitlab.com/<YOUR-GITLAB-ACCOUNT>/<YOUR-GITLAB-CICD-REPO>/terraform-gcloud, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
+```
+
+**Cause:**
+
+The cause of this message is that the CI/CD repository has "Limit access to this project" enabled in the Token Access settings.
+
+**Solution:**
+
+Add all the projects/repositories to be used in the Terraform Example Foundation to the allow list available in
+`CI/CD Repo -> Settings -> CI/CD -> Token Access -> Allow CI job tokens from the following projects to access this project`.

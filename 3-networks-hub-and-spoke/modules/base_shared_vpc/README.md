@@ -3,8 +3,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| allow\_all\_egress\_ranges | List of network ranges to which all egress traffic will be allowed | `any` | `null` | no |
-| allow\_all\_ingress\_ranges | List of network ranges from which all ingress traffic will be allowed | `any` | `null` | no |
 | base\_net\_hub\_project\_id | The base net hub project ID | `string` | `""` | no |
 | bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | `number` | n/a | yes |
 | default\_region1 | Default region 1 for subnets and Cloud Routers | `string` | n/a | yes |
@@ -13,6 +11,8 @@
 | dns\_enable\_logging | Toggle DNS logging for VPC DNS. | `bool` | `true` | no |
 | dns\_hub\_project\_id | The DNS hub project ID | `string` | n/a | yes |
 | domain | The DNS name of peering managed zone, for instance 'example.com.' | `string` | n/a | yes |
+| enable\_all\_vpc\_internal\_traffic | Enable firewall policy rule to allow internal traffic (ingress and egress). | `bool` | `false` | no |
+| enable\_transitivity\_traffic | Enable a firewall policy rule to allow traffic between Hub and Spokes (ingress only). | `bool` | `true` | no |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization. | `string` | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | mode | Network deployment mode, should be set to `hub` or `spoke` when `enable_hub_and_spoke` architecture chosen, keep as `null` otherwise. | `string` | `null` | no |
@@ -31,6 +31,7 @@
 
 | Name | Description |
 |------|-------------|
+| firewall\_policy | Policy created for firewall policy rules. |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
 | region1\_router1 | Router 1 for Region 1 |

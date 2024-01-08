@@ -71,6 +71,11 @@ variable "base_subnet_primary_ranges" {
   description = "The base subnet primary IPTs ranges to the Base Shared Vpc."
 }
 
+variable "base_subnet_proxy_ranges" {
+  type        = map(string)
+  description = "The base proxy-only subnet primary IPTs ranges to the Base Shared Vpc."
+}
+
 variable "base_subnet_secondary_ranges" {
   type        = map(list(map(string)))
   description = "The base subnet secondary IPTs ranges to the Base Shared Vpc."
@@ -107,6 +112,11 @@ variable "restricted_private_service_cidr" {
 variable "restricted_subnet_primary_ranges" {
   type        = map(string)
   description = "The base subnet primary IPTs ranges to the Restricted Shared Vpc."
+}
+
+variable "restricted_subnet_proxy_ranges" {
+  type        = map(string)
+  description = "The base proxy-only subnet primary IPTs ranges to the Restricted Shared Vpc."
 }
 
 variable "restricted_subnet_secondary_ranges" {

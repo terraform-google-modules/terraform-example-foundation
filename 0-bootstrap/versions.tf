@@ -22,19 +22,25 @@ terraform {
       source  = "hashicorp/google"
       version = ">= 3.50, != 4.31.0"
     }
+
+    // Un-comment gitlab required_providers when using gitlab CI/CD
+    # gitlab = {
+    #   source  = "gitlabhq/gitlab"
+    #   version = "16.6.0"
+    # }
+
+    // Un-comment github required_providers when using GitHub Actions
+    # github = {
+    #   source  = "integrations/github"
+    #   version = "5.34.0"
+    # }
+
+    // Un-comment tfe required_providers when using Terraform Cloud
+    # tfe = {
+    #   source  = "hashicorp/tfe"
+    #   version = "0.48.0"
+    # }
   }
-
-  // Un-comment github required_providers when using GitHub Actions
-  # github = {
-  #   source  = "integrations/github"
-  #   version = "5.34.0"
-  # }
-
-  // Un-comment tfe required_providers when using Terraform Cloud
-  # tfe = {
-  #   source  = "hashicorp/tfe"
-  #   version = "0.48.0"
-  # }
 
   provider_meta "google" {
     module_name = "blueprints/terraform/terraform-example-foundation:bootstrap/v3.0.0"

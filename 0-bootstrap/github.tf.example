@@ -106,3 +106,11 @@ resource "github_actions_secret" "secrets" {
   secret_name     = each.value.secret_name
   plaintext_value = each.value.plaintext_value
 }
+
+resource "google_service_account_iam_member" "self_impersonate" {
+  for_each = local.granular_sa
+
+  service_account_id = google_service_account.terraform-env-sa[each.key].id
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+}

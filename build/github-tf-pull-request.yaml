@@ -65,12 +65,10 @@ jobs:
 
       - id: plan-validate-all
         run: |
-          ${GITHUB_WORKSPACE}/tf-wrapper.sh plan_validate_all "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"
+          ${GITHUB_WORKSPACE}/tf-wrapper.sh plan_validate_all "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB" > ${GITHUB_WORKSPACE}/plan.out
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
-        env:
-          PLAN_VALIDATE_ALL: "\n${{ steps.plan-validate-all.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -83,16 +81,24 @@ jobs:
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Initialization')
             })
 
+            const run_url = process.env.GITHUB_SERVER_URL + '/' + process.env.GITHUB_REPOSITORY + '/actions/runs/' + process.env.GITHUB_RUN_ID
+            const run_link = '<a href="' + run_url + '">Actions</a>.'
+            const fs = require('fs')
+            const plan_file = fs.readFileSync('plan.out', 'utf8')
+            const plan = plan_file.length > 65000 ? plan_file.toString().substring(0, 65000) + " ..." : plan_file
+            const truncated_message = plan_file.length > 65000 ? "Output is too long and was truncated. You can read full Plan in " + run_link + "<br /><br />" : ""
             const output = `
             #### Terraform Plan Validate All 📖\`${{ steps.plan-validate-all.outcome }}\`
 
             <details><summary>Show Plan</summary>
 
             \`\`\`\n
-            ${process.env.PLAN_VALIDATE_ALL}
+            ${plan}
             \`\`\`
 
-            </details>`;
+            </details>
+            ${truncated_message}
+            `;
 
             if (botComment) {
               github.rest.issues.updateComment({

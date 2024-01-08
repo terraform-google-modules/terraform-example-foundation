@@ -46,6 +46,11 @@ data "tfe_outputs" "environments_env" {
   workspace    = "2-${var.env}"
 }
 
+data "tfe_outputs" "network_env" {
+  organization = var.tfc_org_name
+  workspace    = "3-${var.env}"
+}
+
 data "tfe_outputs" "business_unit_shared" {
   organization = var.tfc_org_name
   workspace    = "4-${var.business_code}-shared"

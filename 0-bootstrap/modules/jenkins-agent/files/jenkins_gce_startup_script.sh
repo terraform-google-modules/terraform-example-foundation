@@ -59,6 +59,23 @@ useradd -d /home/jenkins jenkins
 chown -R jenkins:jenkins /home/jenkins/
 
 echo "**** Startup Step 8/8: Add public SSH key to the list of authorized keys. ****"
+
+USER_SSH_DIR="$JENKINS_HOME_DIR/.ssh"
+
+mkdir -p "$USER_SSH_DIR" && \
+  chmod 766 "$USER_SSH_DIR"
+
+# shellcheck disable=SC2154
+cat > $USER_SSH_DIR/authorized_keys <<-EOT
+${tpl_SSH_PUB_KEY}
+EOT
+
+chown -R jenkins "$USER_SSH_DIR"
+
+chmod 755 $USER_SSH_DIR && \
+ chmod 655 $USER_SSH_DIR/authorized_keys
+
+# Global
 SSHD_CONFIG_DIR="/etc/ssh"
 
 # Setting up the sshd_config file

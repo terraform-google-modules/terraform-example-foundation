@@ -37,7 +37,7 @@ default_region  = "us-central1"
 
 group_org_admins     = "REPLACE_ME" # "gcp-organization-admins@example.com"
 group_billing_admins = "REPLACE_ME" # "gcp-billing-admins@example.com"
-org_project_creators = []
+org_project_creators = [] # Optional - Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required.
 
 bucket_force_destroy             = false
 bucket_tfstate_kms_force_destroy = false
@@ -126,7 +126,7 @@ monitoring_workspace_users = "REPLACE_ME" # "gcp-monitoring-admins@example.com"
 
 domain = "example.com." # The DNS name of peering managed zone. Must end with a period.
 
-// Add you email in the perimeter_additional_members list.
+// Add your email in the perimeter_additional_members list.
 // You must be in this list to be able to view/access resources in the project protected by the VPC service controls.
 
 perimeter_additional_members = ["user:YOUR-USER-EMAIL@example.com"]

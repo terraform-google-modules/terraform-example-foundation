@@ -286,7 +286,7 @@ resource "tfe_agent_pool" "tfc_agent_pool" {
 resource "tfe_agent_token" "tfc_agent_token" {
   count = var.enable_tfc_cloud_agents == true ? 1 : 0
 
-  agent_pool_id = tfe_agent_pool.tfc_agent_pool.id
+  agent_pool_id = tfe_agent_pool.tfc_agent_pool[0].id
   description   = var.tfc_agent_pool_token_description
 }
 
@@ -306,4 +306,12 @@ module "tfc_agent_gke" {
   # providers = {
   #   kubernetes = kubernetes
   # }
+}
+
+resource "google_service_account_iam_member" "self_impersonate" {
+  for_each = local.granular_sa
+
+  service_account_id = google_service_account.terraform-env-sa[each.key].id
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
 }

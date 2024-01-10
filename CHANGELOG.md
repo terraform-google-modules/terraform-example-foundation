@@ -1,5 +1,52 @@
 # Changelog
 
+## [4.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v3.0.0...v4.0.0) (2024-01-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* Add support for Log Analytics and Remove BigQuery log destination ([#1025](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1025))
+* Enable CMEK for Terraform state buckets ([#1030](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1030))
+* Network Refactoring ([#991](https://github.com/terraform-google-modules/terraform-example-foundation/issues/991))
+* **deps:** update terraform terraform-google-modules/network/google to v7 ([#956](https://github.com/terraform-google-modules/terraform-example-foundation/issues/956))
+
+### Features
+
+* add assured workload example ([#934](https://github.com/terraform-google-modules/terraform-example-foundation/issues/934)) ([be568ab](https://github.com/terraform-google-modules/terraform-example-foundation/commit/be568ab4267291591a81f679bd40acb78ba1ab64))
+* add instructions for deployment using GitHub Actions ([#955](https://github.com/terraform-google-modules/terraform-example-foundation/issues/955)) ([56450bd](https://github.com/terraform-google-modules/terraform-example-foundation/commit/56450bdd16ca178b4f1191aadc3690b45cbf8f3d))
+* add instructions for deployment using GitLab pipelines ([#1047](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1047)) ([0805878](https://github.com/terraform-google-modules/terraform-example-foundation/commit/0805878ff9f5ee5cc2e1fad7a6907a80ba5d28ce))
+* add support for fine grained configuration of VPC-flow logs ([#1035](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1035)) ([ee3a1d8](https://github.com/terraform-google-modules/terraform-example-foundation/commit/ee3a1d819b7a81f8fb8195a57f0bbc4ce23c2809))
+* Add support for Log Analytics and Remove BigQuery log destination ([#1025](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1025)) ([25c61c4](https://github.com/terraform-google-modules/terraform-example-foundation/commit/25c61c48c94eb530776373bffd668a57b0d79ed8))
+* Add support to proxy-only subnetworks and new IP CIDR allocation ([#1040](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1040)) ([79b217e](https://github.com/terraform-google-modules/terraform-example-foundation/commit/79b217ea25ad21a03f07dd4be94dfb736887892e))
+* CAI Monitoring Cloud Function ([#1015](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1015)) ([141f067](https://github.com/terraform-google-modules/terraform-example-foundation/commit/141f067430c1a2f17d5698a9e9a88f989c19fbf9))
+* change budget alerts to alarm by forecast ([#1037](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1037)) ([8a4c106](https://github.com/terraform-google-modules/terraform-example-foundation/commit/8a4c10627bf4d8ce39ea374ea8a6b1d2d7e314d9))
+* Change old firewall to new network-firewall ([#1041](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1041)) ([f2469c1](https://github.com/terraform-google-modules/terraform-example-foundation/commit/f2469c1a966220710968bcc1d2be51eb82b33abb))
+* create projects for KMS resources ([#1032](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1032)) ([f16e805](https://github.com/terraform-google-modules/terraform-example-foundation/commit/f16e80570b0eb026887c0c460ef598fadad23644))
+* create subfolders for business units in 4-projects step ([#1039](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1039)) ([06084be](https://github.com/terraform-google-modules/terraform-example-foundation/commit/06084befe130c23329b014615a2ccf37145dbcfd))
+* **deps:** Expand Terraform Google Provider to v5 (major) ([#1004](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1004)) ([511f5cb](https://github.com/terraform-google-modules/terraform-example-foundation/commit/511f5cb4131e160660fa505c7f70b33a4d6f6aea))
+* **deps:** Update Terraform google to v5 ([#1059](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1059)) ([87f3832](https://github.com/terraform-google-modules/terraform-example-foundation/commit/87f3832a5dba424751632c214973e50e75c6af8e))
+* Enable CMEK for Terraform state buckets ([#1030](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1030)) ([63906d8](https://github.com/terraform-google-modules/terraform-example-foundation/commit/63906d8186740c634c1ca9b356333a3e85ffd72d))
+* Firewall policy rule with resource manager tag ([#1005](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1005)) ([a92e31b](https://github.com/terraform-google-modules/terraform-example-foundation/commit/a92e31b3c6e48ca1c13570e96c88042ec65d868a))
+* implementing terraform cloud deploy with agents ([#1034](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1034)) ([2c96a2f](https://github.com/terraform-google-modules/terraform-example-foundation/commit/2c96a2f3f64d608fa6fe4e40fc8807d17305622d))
+* make sed and find commands portable between Linux (GNU) and Mac OS (BSD) ([#1043](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1043)) ([62e8c23](https://github.com/terraform-google-modules/terraform-example-foundation/commit/62e8c236e0e00dbdb2451b6d6708679762657d44))
+* Network Refactoring ([#991](https://github.com/terraform-google-modules/terraform-example-foundation/issues/991)) ([5f698ed](https://github.com/terraform-google-modules/terraform-example-foundation/commit/5f698ed12e149c722c31c555802471a191ff7865))
+* Remove "compute.disableGuestAttributesAccess" org policy ([#1019](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1019)) ([9fac80f](https://github.com/terraform-google-modules/terraform-example-foundation/commit/9fac80ff192025b51d48286f3345b4a18eae93ba))
+* update tf-wrapper.sh script to deal with generic folder hierarchy ([#992](https://github.com/terraform-google-modules/terraform-example-foundation/issues/992)) ([4d7e822](https://github.com/terraform-google-modules/terraform-example-foundation/commit/4d7e822b85d6c21c28389e82b3794b9e1554ebc6))
+
+
+### Bug Fixes
+
+* add cloud build bucket location ([#921](https://github.com/terraform-google-modules/terraform-example-foundation/issues/921)) ([cf3f117](https://github.com/terraform-google-modules/terraform-example-foundation/commit/cf3f1172c0b162acca07c3581dc9c745ca65d417))
+* add VPC Flow logs exceptions for REGIONAL_MANAGED_PROXY and INTERNAL_HTTPS_LOAD_BALANCER ([#976](https://github.com/terraform-google-modules/terraform-example-foundation/issues/976)) ([dd4ff91](https://github.com/terraform-google-modules/terraform-example-foundation/commit/dd4ff91b5dfb765160a57cb38d37a466e3c59595))
+* alternative deployment methods minor issues fix ([#1065](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1065)) ([e09d174](https://github.com/terraform-google-modules/terraform-example-foundation/commit/e09d1747bc2209b625d765514b4e4d8943c52f13))
+* change priority of 'allow-google-apis' firewall rules to prevent collision with the deny all rule ([#972](https://github.com/terraform-google-modules/terraform-example-foundation/issues/972)) ([7205518](https://github.com/terraform-google-modules/terraform-example-foundation/commit/7205518e62b4c296ee6cf51f08cc1f49d69e20ea))
+* **CI:** bump request_timeout for 1-org ([#1070](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1070)) ([336487b](https://github.com/terraform-google-modules/terraform-example-foundation/commit/336487bf60b0bc71e21c8ee95fc7cf6a44ae0125))
+* correct terraform required_version for optional ([#1003](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1003)) ([5ef089c](https://github.com/terraform-google-modules/terraform-example-foundation/commit/5ef089c56717a98f74100a61d788513fe9c28c55))
+* **deps:** update terraform terraform-google-modules/network/google to v7 ([#956](https://github.com/terraform-google-modules/terraform-example-foundation/issues/956)) ([2f54ad6](https://github.com/terraform-google-modules/terraform-example-foundation/commit/2f54ad621404fb2a38df0006f4692fdb0a22ee12))
+* Fix missing Terraform module attribution ([#973](https://github.com/terraform-google-modules/terraform-example-foundation/issues/973)) ([d1d2973](https://github.com/terraform-google-modules/terraform-example-foundation/commit/d1d29736987ea31ee74cc20557c46ff3085baf02))
+* replace text example of private key with an image in the jenkins readme ([#1027](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1027)) ([325785c](https://github.com/terraform-google-modules/terraform-example-foundation/commit/325785c1b0d811c70a52e81f1c2c2c265e2c763d))
+* set the build timeout for the build that creates the Terraform and gcloud image to 20 minutes ([#1071](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1071)) ([7f5ce28](https://github.com/terraform-google-modules/terraform-example-foundation/commit/7f5ce282154e8e112dedf0f847fec0984fb74652))
+
 ## [3.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v2.3.1...v3.0.0) (2022-12-16)
 
 

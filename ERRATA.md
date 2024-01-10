@@ -1,6 +1,13 @@
 # Errata Summary
 This is an overview of the delta between the example foundation repository and the [Google Cloud security foundations guide](https://services.google.com/fh/files/misc/google-cloud-security-foundations-guide.pdf), including code discrepancies and notes on future automation. This document will be updated as new code is merged.
 
+## 4.x [WIP]
+
+### Code Discrepancies
+
+#### Notes
+- The "Alerting on log-based metrics and performance metrics" described in Section "Architecture/Detective controls" will be integrated in a future release.
+
 ## 3.x [WIP]
 
 ### Code Discrepancies

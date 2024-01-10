@@ -3,19 +3,19 @@
 Defined terms in the documentation for Terraform Example Foundation are capitalized and have
 specific meaning within the domain of knowledge.
 
-## Terraform Service Account
+## Terraform Service Accounts
 
-The email for the privileged service account created in the seed project of the step 0-bootstrap.
-This service account is used to run Terraform by Cloud Build and Jenkins. When using Jenkins, the service account of the Jenkins Agent uses impersonation over this Terraform Service Account.
+The email for the privileged service accounts created in the seed project of the step 0-bootstrap.
+This service accounts are used to run Terraform by Cloud Build and Jenkins. When using Jenkins, the service account of the Jenkins Agent uses impersonation over this Terraform Service Accounts. A Terraform service account is created for each one of the steps.
 
 ## Seed Project
 
-Seed Project created in the 0-bootstrap step. It is the project where the Terraform Service Account (`terraform_service_account`) is created and hosts the GCS bucket used to store Terraform state of each environment in subsequent phases.
+Seed Project created in the 0-bootstrap step. It is the project where the Terraform Service Accounts (`terraform_service_account`) are created and hosts the GCS bucket used to store Terraform state of each environment in subsequent phases.
 
 ## Foundation CI/CD Pipeline
 
 A project created in step 0-bootstrap to manage infrastructure **within the organization**.
-The pipeline can use either **Cloud Build** or **Jenkins** depending or your context and Terraform is executed using the seed project service account.
+The pipeline can use either **Cloud Build**, **Github Actions**, **GitLab pipeline**, **Terraform Cloud** or **Jenkins** depending on your context and Terraform is executed using the seed project service account.
 Also known as the CI/CD project.
 It is located under folder `bootstrap`.
 

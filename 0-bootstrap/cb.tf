@@ -154,13 +154,14 @@ module "tf_private_pool" {
 
 module "tf_cloud_builder" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
-  version = "~> 6.4"
+  version = "~> 6.5"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
   gar_repo_location            = var.default_region
   workflow_region              = var.default_region
   terraform_version            = local.terraform_version
+  build_timeout                = "1200s"
   cb_logs_bucket_force_destroy = var.bucket_force_destroy
   trigger_location             = var.default_region
   enable_worker_pool           = true

@@ -38,28 +38,33 @@ locals {
   log_exports = {
     for v in local.exports_list : "${v.res}_${v.type}" => v
   }
+
   destinations_options = {
     pub = var.pubsub_options
     sto = var.storage_options
     lbk = var.logbucket_options
+    prj = var.project_options
   }
 
   logging_sink_name_map = {
     pub = try("sk-to-tp-logs-${var.logging_destination_project_id}", "sk-to-tp-logs")
     sto = try("sk-to-bkt-logs-${var.logging_destination_project_id}", "sk-to-bkt-logs")
     lbk = try("sk-to-logbkt-logs-${var.logging_destination_project_id}", "sk-to-logbkt-logs")
+    prj = try("sk-to-prj-logs-${var.logging_destination_project_id}", "sk-to-prj-logs")
   }
 
   logging_tgt_name = {
     pub = "${local.logging_tgt_prefix.pub}${random_string.suffix.result}"
     sto = "${local.logging_tgt_prefix.sto}${random_string.suffix.result}"
     lbk = "${local.logging_tgt_prefix.lbk}${random_string.suffix.result}"
+    prj = ""
   }
 
   destination_uri_map = {
     pub = try(module.destination_pubsub[0].destination_uri, "")
     sto = try(module.destination_storage[0].destination_uri, "")
     lbk = try(module.destination_logbucket[0].destination_uri, "")
+    prj = try(module.destination_project[0].destination_uri, "")
   }
 
   logging_tgt_prefix = {
@@ -77,7 +82,7 @@ resource "random_string" "suffix" {
 
 module "log_export" {
   source  = "terraform-google-modules/log-export/google"
-  version = "~> 7.4"
+  version = "~> 7.8"
 
   for_each = local.log_exports
 
@@ -90,12 +95,55 @@ module "log_export" {
   include_children       = local.include_children
 }
 
+
+#--------------------------#
+# Send logs to Log project #
+#--------------------------#
+
+module "destination_project" {
+  source  = "terraform-google-modules/log-export/google//modules/project"
+  version = "~> 7.8"
+  count   = var.project_options != null ? 1 : 0
+
+  project_id               = var.logging_destination_project_id
+  log_sink_writer_identity = module.log_export["${local.value_first_resource}_prj"].writer_identity
+}
+
+#-----------------------------------------------#
+# Send logs to Log project - Default Log bucket #
+#-----------------------------------------------#
+
+resource "google_logging_project_bucket_config" "default_bucket" {
+  count = var.project_options != null ? 1 : 0
+
+  project          = var.logging_destination_project_id
+  bucket_id        = "_Default"
+  description      = "Default bucket"
+  location         = "global"
+  retention_days   = var.project_options.retention_days
+  enable_analytics = var.project_options.enable_analytics
+}
+
+#------------------------------------------------------------#
+# Send logs to Log project - Default Linked BigQuery dataset #
+#------------------------------------------------------------#
+
+resource "google_logging_linked_dataset" "default_linked_dataset" {
+  count = var.project_options != null ? 1 : 0
+
+  link_id     = var.project_options.linked_dataset_id
+  description = var.project_options.linked_dataset_description
+  parent      = "projects/${var.logging_destination_project_id}"
+  bucket      = google_logging_project_bucket_config.default_bucket[0].id
+  location    = "global"
+}
+
 #-------------------------#
 # Send logs to Log Bucket #
 #-------------------------#
 module "destination_logbucket" {
   source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  version = "~> 7.7"
+  version = "~> 7.8"
 
   count = var.logbucket_options != null ? 1 : 0
 
@@ -129,7 +177,7 @@ resource "google_project_iam_member" "logbucket_sink_member" {
 #----------------------#
 module "destination_storage" {
   source  = "terraform-google-modules/log-export/google//modules/storage"
-  version = "~> 7.4"
+  version = "~> 7.8"
 
   count = var.storage_options != null ? 1 : 0
 
@@ -164,7 +212,7 @@ resource "google_storage_bucket_iam_member" "storage_sink_member" {
 #----------------------#
 module "destination_pubsub" {
   source  = "terraform-google-modules/log-export/google//modules/pubsub"
-  version = "~> 7.4"
+  version = "~> 7.8"
 
   count = var.pubsub_options != null ? 1 : 0
 

@@ -80,6 +80,17 @@ module "logs_export" {
     linked_dataset_id          = "ds_c_logbkt_analytics"
     linked_dataset_description = "BigQuery Dataset for Logbucket analytics"
   }
+
+  /******************************************
+    Send logs to Logging project
+  *****************************************/
+  project_options = {
+    logging_sink_name          = "sk-c-logging-prj"
+    logging_sink_filter        = local.logs_filter
+    enable_analytics           = true
+    linked_dataset_id          = "ds_c_default_logbkt_analytics"
+    linked_dataset_description = "Default logbucket BigQuery Dataset for Logbucket analytics"
+  }
 }
 
 /******************************************

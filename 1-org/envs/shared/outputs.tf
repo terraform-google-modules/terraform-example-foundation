@@ -124,6 +124,16 @@ output "logs_export_logbucket_linked_dataset_name" {
   description = "The resource name of the Log Bucket linked BigQuery dataset created for Log Analytics. See https://cloud.google.com/logging/docs/log-analytics ."
 }
 
+output "logs_export_project_logbucket_name" {
+  description = "The resource name for the Log Bucket created for the project destination."
+  value       = module.logs_export.project_logbucket_name
+}
+
+output "logs_export_project_linked_dataset_name" {
+  description = "The resource name of the Log Bucket linked BigQuery dataset for the project destination."
+  value       = module.logs_export.project_linked_dataset_name
+}
+
 output "tags" {
   value       = local.tags_output
   description = "Tag Values to be applied on next steps."

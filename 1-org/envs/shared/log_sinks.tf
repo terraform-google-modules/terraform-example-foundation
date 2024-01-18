@@ -87,9 +87,11 @@ module "logs_export" {
   project_options = {
     logging_sink_name          = "sk-c-logging-prj"
     logging_sink_filter        = local.logs_filter
-    enable_analytics           = true
-    linked_dataset_id          = "ds_c_default_logbkt_analytics"
-    linked_dataset_description = "Default logbucket BigQuery Dataset for Logbucket analytics"
+    log_bucket_id              = "logbkt-prj-logs"
+    log_bucket_description     = "Project destination log bucket"
+    location                   = local.default_region
+    linked_dataset_id          = "ds_c_prj_logbkt_analytics"
+    linked_dataset_description = "Project destination BigQuery Dataset for Logbucket analytics"
   }
 }
 

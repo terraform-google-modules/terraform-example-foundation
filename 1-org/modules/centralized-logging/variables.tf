@@ -51,6 +51,8 @@ variable "project_options" {
 Destination Project options:
 - logging_sink_name: The name of the log sink to be created.
 - logging_sink_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is "" which exports all logs.
+- log_bucket_id: Id of the log bucket create to store the logs exported to the project.
+- log_bucket_description: Description of the log bucket create to store the logs exported to the project.
 - location: The location of the log bucket. Default: global.
 - enable_analytics: Whether or not Log Analytics is enabled in the _Default log bucket. A Log bucket with Log Analytics enabled can be queried in the Log Analytics page using SQL queries. Cannot be disabled once enabled.
 - retention_days: The number of days data should be retained for the _Default log bucket. Default 30.
@@ -60,11 +62,13 @@ EOT
   type = object({
     logging_sink_name          = optional(string, null)
     logging_sink_filter        = optional(string, "")
+    log_bucket_id              = optional(string, null)
+    log_bucket_description     = optional(string, null)
     location                   = optional(string, "global")
     enable_analytics           = optional(bool, true)
     retention_days             = optional(number, 30)
-    linked_dataset_id          = optional(string, "ds_c_default_logbkt_analytics")
-    linked_dataset_description = optional(string, "Default logbucket BigQuery Dataset for Logbucket analytics")
+    linked_dataset_id          = optional(string, null)
+    linked_dataset_description = optional(string, null)
   })
   default = null
 }

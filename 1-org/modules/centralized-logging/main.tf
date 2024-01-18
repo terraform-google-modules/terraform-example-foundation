@@ -113,13 +113,13 @@ module "destination_project" {
 # Send logs to Log project - Default Log bucket #
 #-----------------------------------------------#
 
-resource "google_logging_project_bucket_config" "default_bucket" {
+resource "google_logging_project_bucket_config" "prj_logs_bucket" {
   count = var.project_options != null ? 1 : 0
 
   project          = var.logging_destination_project_id
-  bucket_id        = "_Default"
-  description      = "Default bucket"
-  location         = "global"
+  bucket_id        = coalesce(var.project_options.log_bucket_id, "logbkt-prj-logs")
+  description      = var.project_options.log_bucket_description
+  location         = var.project_options.location
   retention_days   = var.project_options.retention_days
   enable_analytics = var.project_options.enable_analytics
 }
@@ -128,14 +128,29 @@ resource "google_logging_project_bucket_config" "default_bucket" {
 # Send logs to Log project - Default Linked BigQuery dataset #
 #------------------------------------------------------------#
 
-resource "google_logging_linked_dataset" "default_linked_dataset" {
-  count = var.project_options != null ? 1 : 0
+resource "google_logging_linked_dataset" "prj_logs_linked_dataset" {
+  count = var.project_options != null && var.project_options.enable_analytics ? 1 : 0
 
-  link_id     = var.project_options.linked_dataset_id
+  link_id     = coalesce(var.project_options.linked_dataset_id, "ds_c_prj_logbkt_analytics")
   description = var.project_options.linked_dataset_description
+  location    = var.project_options.location
   parent      = "projects/${var.logging_destination_project_id}"
-  bucket      = google_logging_project_bucket_config.default_bucket[0].id
-  location    = "global"
+  bucket      = google_logging_project_bucket_config.prj_logs_bucket[0].id
+}
+
+#-----------------------------------------------#
+# Send logs to Log project - Internal Log sink #
+#-----------------------------------------------#
+
+module "internal_project_log_export" {
+  source  = "terraform-google-modules/log-export/google"
+  version = "~> 7.8"
+
+  destination_uri      = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${var.project_options.log_bucket_id}"
+  filter               = var.project_options.logging_sink_filter
+  log_sink_name        = coalesce(var.project_options.logging_sink_name, local.logging_sink_name_map["prj"])
+  parent_resource_id   = var.logging_destination_project_id
+  parent_resource_type = "project"
 }
 
 #-------------------------#

@@ -81,7 +81,7 @@ In most cases, this is enough to update your terraform configuration. However, i
 ```hcl
     module "tf_source" {
         source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_source"
-        version = "~> 7.0"
+        version = "~> 6.2"
 
         org_id                = var.org_id
         folder_id             = google_folder.bootstrap.id

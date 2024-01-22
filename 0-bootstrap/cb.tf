@@ -128,6 +128,9 @@ module "tf_source" {
     business_code     = "abcd"
     env_code          = "b"
   }
+
+  # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
+  depends_on = [module.seed_bootstrap]
 }
 
 module "tf_private_pool" {

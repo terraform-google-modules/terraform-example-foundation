@@ -3,12 +3,12 @@ module github.com/terraform-google-modules/terraform-example-foundation/helpers/
 go 1.21
 
 require (
-	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.10.2
-	github.com/gruntwork-io/terratest v0.46.8
+	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.11.1
+	github.com/gruntwork-io/terratest v0.46.9
 	github.com/hashicorp/hcl/v2 v2.19.1
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.8.4
-	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20231213170019-25c61c48c94e
+	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.1.0
 	github.com/tidwall/gjson v1.17.0
 )
 

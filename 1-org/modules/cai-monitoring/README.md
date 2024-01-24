@@ -54,7 +54,7 @@ module "secure_cai_notification" {
 The following dependencies must be available:
 
 * [Terraform](https://www.terraform.io/downloads.html) >= 1.3
-* [Terraform Provider for GCP](https://github.com/terraform-providers/terraform-provider-google) < 5.0
+* [Terraform Provider for GCP](https://github.com/terraform-providers/terraform-provider-google) >= 3.77
 
 ### APIs
 

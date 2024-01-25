@@ -11,6 +11,6 @@
   "dependencies": {
     "@google-cloud/security-center": "8.1.0",
     "uuid4": "2.0.3",
-    "moment": "2.29.4"
+    "moment": "2.30.1"
   }
 }

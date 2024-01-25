@@ -77,3 +77,6 @@ helpers/foundation-deployer/.steps.json
 
 # Handle files generated on sed command by old (2013-) MacOS versions
 *.tf-e
+
+# Go multi-module workspace sum
+go.work.sum

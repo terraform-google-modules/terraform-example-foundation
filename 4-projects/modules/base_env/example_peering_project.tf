@@ -110,7 +110,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "peering" {
   source  = "terraform-google-modules/network/google//modules/network-peering"
-  version = "~> 7.0"
+  version = "~> 8.0"
 
   prefix            = "${var.business_code}-${local.env_code}"
   local_network     = module.peering_network.network_self_link

@@ -205,7 +205,7 @@ module "build_terraform_image" {
 
 module "tf_workspace" {
   source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 7.0"
+  version  = "~> 6.4"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id

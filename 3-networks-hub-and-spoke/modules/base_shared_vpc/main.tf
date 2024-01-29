@@ -74,7 +74,7 @@ data "google_compute_network" "vpc_base_net_hub" {
 
 module "peering" {
   source  = "terraform-google-modules/network/google//modules/network-peering"
-  version = "~> 7.0"
+  version = "~> 8.0"
   count   = var.mode == "spoke" ? 1 : 0
 
   prefix                    = "np"

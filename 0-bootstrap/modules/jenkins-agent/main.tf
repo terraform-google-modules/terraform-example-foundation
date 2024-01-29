@@ -128,7 +128,7 @@ resource "google_tags_tag_value" "jenkins_agents" {
 
 module "jenkins_firewall_rules" {
   source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version     = "~> 8.0"
+  version     = "~> 9.0"
   project_id  = module.cicd_project.project_id
   policy_name = "fp-${google_compute_network.jenkins_agents.name}-jenkins-firewall"
   description = "Jenkins Agent GCE network firewall rules."

@@ -16,6 +16,9 @@ package testutils
 
 var (
 	RetryableTransientErrors = map[string]string{
+		// Error code 429 for quota.
+		".*Error 429.*Resource has been exhausted.*": "Qutoa exhausted.",
+
 		// Error code 409 for concurrent policy changes.
 		".*Error 409.*There were concurrent policy changes.*": "Concurrent policy changes.",
 

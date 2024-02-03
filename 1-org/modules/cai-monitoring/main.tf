@@ -121,7 +121,7 @@ resource "google_cloud_asset_organization_feed" "organization_feed" {
 
 module "pubsub_cai_feed" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   topic              = "top-cai-monitoring-${random_id.suffix.hex}-event"
   project_id         = var.project_id

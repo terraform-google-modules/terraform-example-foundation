@@ -94,7 +94,7 @@ resource "google_service_account" "tfc_agent_service_account" {
 
 module "tfc_agent_cluster" {
   source  = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-private-cluster/"
-  version = "~> 28.0"
+  version = "~> 29.0"
 
   project_id         = var.project_id
   region             = var.region
@@ -392,7 +392,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "hub" {
   source  = "terraform-google-modules/kubernetes-engine/google//modules/fleet-membership"
-  version = "~> 28.0"
+  version = "~> 29.0"
 
   project_id   = var.project_id
   location     = var.region

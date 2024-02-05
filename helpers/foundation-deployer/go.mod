@@ -8,7 +8,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.19.1
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.8.4
-	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240112234556-03b1976b42c4
+	github.com/terraform-google-modules/terraform-example-foundation/test/integration v4.0.0
 	github.com/tidwall/gjson v1.17.0
 )
 

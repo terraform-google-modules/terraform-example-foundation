@@ -125,8 +125,9 @@ module "tf_source" {
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
+    business_code     = "shared"
     env_code          = "b"
+    vpc               = var.vpc
   }
 
   # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160

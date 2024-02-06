@@ -71,7 +71,7 @@ module "project" {
     secondary_contact = element(split("@", var.secondary_contact), 0)
     business_code     = var.business_code
     env_code          = local.env_code
-    vpc_type          = var.vpc_type
+    vpc               = var.vpc
   }
   budget_alert_pubsub_topic   = var.project_budget.alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.alert_spent_percents

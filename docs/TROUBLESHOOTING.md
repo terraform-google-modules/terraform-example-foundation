@@ -272,7 +272,7 @@ You will need to mark some Terraform resources as **tainted** in order to trigge
 
 1. In a terminal, navigate to the path where the error is being reported.
 
-   For example, if the unknown project ID is `prj-bu1-p-sample-base-abcd`, you should go to ./gcp-projects/business_unit_1/production (`business_unit_1` due to `bu1` and `production` due to `p`, see the Security Foundations [naming conventions](https://cloud.google.com/architecture/security-foundations/using-example-terraform#naming_conventions) for more information on the projects naming guideline).
+   For example, if the unknown project ID is `prj-bu1-p-sample-base-shared`, you should go to ./gcp-projects/business_unit_1/production (`business_unit_1` due to `bu1` and `production` due to `p`, see the Security Foundations [naming conventions](https://cloud.google.com/architecture/security-foundations/using-example-terraform#naming_conventions) for more information on the projects naming guideline).
 
    ```bash
    cd ./gcp-projects/<business_unit>/<environment>

@@ -58,7 +58,7 @@ variable "secondary_contact" {
 variable "business_code" {
   description = "The code that describes which business unit owns the project"
   type        = string
-  default     = "abcd"
+  default     = "shared"
 }
 
 variable "activate_apis" {
@@ -72,10 +72,10 @@ variable "environment" {
   type        = string
 }
 
-variable "vpc_type" {
+variable "vpc" {
   description = "The type of VPC to attach the project to. Possible options are base or restricted."
   type        = string
-  default     = ""
+  default     = "null"
 }
 
 variable "shared_vpc_host_project_id" {

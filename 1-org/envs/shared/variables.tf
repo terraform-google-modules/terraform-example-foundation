@@ -97,6 +97,12 @@ variable "log_export_storage_retention_policy" {
   default = null
 }
 
+variable "vpc" {
+  description = "The type of VPC to attach the project to. Possible options are base or restricted."
+  type        = string
+  default     = "null"
+}
+
 variable "project_budget" {
   description = <<EOT
   Budget configuration for projects.

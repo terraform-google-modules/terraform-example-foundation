@@ -8,7 +8,7 @@
 | application\_name | The name of application where GCP resources relate | `string` | n/a | yes |
 | billing\_account | The ID of the billing account to associated this project with | `string` | n/a | yes |
 | billing\_code | The code that's used to provide chargeback information | `string` | n/a | yes |
-| business\_code | The code that describes which business unit owns the project | `string` | `"abcd"` | no |
+| business\_code | The code that describes which business unit owns the project | `string` | `"shared"` | no |
 | enable\_cloudbuild\_deploy | Enable infra deployment using Cloud Build | `bool` | `false` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | folder\_id | The folder id where project will be created | `string` | n/a | yes |
@@ -21,10 +21,10 @@
 | secondary\_contact | The secondary email contact for the project | `string` | `""` | no |
 | shared\_vpc\_host\_project\_id | Shared VPC host project ID | `string` | `""` | no |
 | shared\_vpc\_subnets | List of the shared vpc subnets self links. | `list(string)` | `[]` | no |
+| vpc | The type of VPC to attach the project to. Possible options are base or restricted. | `string` | `"null"` | no |
 | vpc\_service\_control\_attach\_enabled | Whether the project will be attached to a VPC Service Control Perimeter | `bool` | `false` | no |
 | vpc\_service\_control\_perimeter\_name | The name of a VPC Service Control Perimeter to add the created project to | `string` | `null` | no |
 | vpc\_service\_control\_sleep\_duration | The duration to sleep in seconds before adding the project to a shared VPC after the project is added to the VPC Service Control Perimeter | `string` | `"5s"` | no |
-| vpc\_type | The type of VPC to attach the project to. Possible options are base or restricted. | `string` | `""` | no |
 
 ## Outputs
 

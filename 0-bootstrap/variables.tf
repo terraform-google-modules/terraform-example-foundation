@@ -88,6 +88,12 @@ variable "bucket_tfstate_kms_force_destroy" {
   default     = false
 }
 
+variable "vpc" {
+  description = "The type of VPC to attach the project to. Possible options are base or restricted."
+  type        = string
+  default     = "null"
+}
+
 /* ----------------------------------------
     Specific to Groups creation
    ---------------------------------------- */

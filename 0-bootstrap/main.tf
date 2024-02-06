@@ -71,8 +71,9 @@ module "seed_bootstrap" {
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
+    business_code     = "shared"
     env_code          = "b"
+    vpc               = var.vpc
   }
 
   activate_apis = [

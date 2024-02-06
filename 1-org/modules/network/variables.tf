@@ -45,6 +45,13 @@ variable "env_code" {
   description = "A short form of the environment to prepare within the Google Cloud organization (ex. d)."
 }
 
+variable "vpc" {
+  description = "The type of VPC to attach the project to. Possible options are base or restricted."
+  type        = string
+  default     = "null"
+}
+
+
 variable "project_budget" {
   description = <<EOT
   Budget configuration for projects.

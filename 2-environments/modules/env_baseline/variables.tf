@@ -39,6 +39,12 @@ variable "monitoring_workspace_users" {
   type        = string
 }
 
+variable "vpc" {
+  description = "The type of VPC to attach the project to. Possible options are base or restricted."
+  type        = string
+  default     = "null"
+}
+
 variable "project_budget" {
   description = <<EOT
   Budget configuration for projects.

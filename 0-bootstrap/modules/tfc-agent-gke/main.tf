@@ -34,7 +34,7 @@ resource "random_string" "suffix" {
 
 module "network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   project_id                             = var.project_id
   network_name                           = var.network_name
@@ -370,7 +370,7 @@ resource "google_compute_firewall" "allow_private_api_egress" {
 
 module "private_service_connect" {
   source  = "terraform-google-modules/network/google//modules/private-service-connect"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   project_id                 = var.project_id
   dns_code                   = "dz-${local.vpc_name}"

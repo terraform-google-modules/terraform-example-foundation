@@ -25,7 +25,6 @@
 | vpc\_service\_control\_attach\_enabled | Whether the project will be attached to a VPC Service Control Perimeter | `bool` | `false` | no |
 | vpc\_service\_control\_perimeter\_name | The name of a VPC Service Control Perimeter to add the created project to | `string` | `null` | no |
 | vpc\_service\_control\_sleep\_duration | The duration to sleep in seconds before adding the project to a shared VPC after the project is added to the VPC Service Control Perimeter | `string` | `"5s"` | no |
-| vpc\_type | The type of VPC to attach the project to. Possible options are base or restricted. | `string` | `""` | no |
 
 ## Outputs
 

@@ -28,7 +28,7 @@ data "google_secret_manager_secret_version" "psk" {
 
 module "vpn_ha_cb_to_onprem" {
   source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  version = "~> 2.3"
+  version = "~> 4.0"
   count   = var.vpn_configuration.enable_vpn ? 1 : 0
 
   project_id = var.project_id

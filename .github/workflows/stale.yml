@@ -1,4 +1,4 @@
-# Copyright 2022-2023 Google LLC
+# Copyright 2022-2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ jobs:
     if: github.repository_owner == 'GoogleCloudPlatform' || github.repository_owner == 'terraform-google-modules'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/stale@v8
+    - uses: actions/stale@v9
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-issue-message: 'This issue is stale because it has been open 60 days with no activity. Remove stale label or comment or this will be closed in 7 days'

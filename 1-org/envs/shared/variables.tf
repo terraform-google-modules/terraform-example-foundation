@@ -165,12 +165,13 @@ variable "gcp_groups" {
   global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Manage
   EOT
   type = object({
-    platform_viewer      = optional(string, null)
+    audit_viewer         = optional(string, null)
+    monitoring_viewer    = optional(string, null)
     security_reviewer    = optional(string, null)
     network_viewer       = optional(string, null)
     scc_admin            = optional(string, null)
-    audit_viewer         = optional(string, null)
     global_secrets_admin = optional(string, null)
+    kms_admin            = optional(string, null)
   })
   default = {}
 }

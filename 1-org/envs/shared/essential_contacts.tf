@@ -16,7 +16,6 @@
 
 locals {
   gcp_scc_admin         = var.gcp_groups.scc_admin == null ? local.group_org_admins : var.gcp_groups.scc_admin
-  gcp_platform_viewer   = var.gcp_groups.platform_viewer == null ? local.group_org_admins : var.gcp_groups.platform_viewer
   gcp_security_reviewer = var.gcp_groups.security_reviewer == null ? local.group_org_admins : var.gcp_groups.security_reviewer
   gcp_network_viewer    = var.gcp_groups.network_viewer == null ? local.group_org_admins : var.gcp_groups.network_viewer
 
@@ -24,10 +23,10 @@ locals {
   categories_map = {
     "BILLING"         = setunion([local.group_billing_admins, var.billing_data_users])
     "LEGAL"           = setunion([local.group_org_admins, var.audit_data_users])
-    "PRODUCT_UPDATES" = setunion([local.gcp_scc_admin, local.gcp_platform_viewer])
+    "PRODUCT_UPDATES" = [local.gcp_scc_admin]
     "SECURITY"        = setunion([local.gcp_scc_admin, local.gcp_security_reviewer])
     "SUSPENSION"      = [local.group_org_admins]
-    "TECHNICAL"       = setunion([local.gcp_platform_viewer, local.gcp_security_reviewer, local.gcp_network_viewer])
+    "TECHNICAL"       = setunion([local.gcp_security_reviewer, local.gcp_network_viewer])
   }
 
   # Convert a map indexed by category to a map indexed by email

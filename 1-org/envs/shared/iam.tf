@@ -64,6 +64,12 @@ resource "google_folder_iam_audit_config" "folder_config" {
   }
 }
 
+resource "google_project_iam_member" "audit_log_logging_viewer" {
+  project = module.org_audit_logs.project_id
+  role    = "roles/logging.viewer"
+  member  = "group:${var.audit_data_users}"
+}
+
 resource "google_project_iam_member" "audit_log_bq_user" {
   project = module.org_audit_logs.project_id
   role    = "roles/bigquery.user"
@@ -105,20 +111,6 @@ resource "google_organization_iam_member" "billing_viewer" {
 /******************************************
  Groups permissions according to SFB (Section 6.2 - Users and groups) - IAM
 *****************************************/
-
-resource "google_organization_iam_member" "organization_viewer" {
-  count  = var.gcp_groups.platform_viewer != null && local.parent_folder == "" ? 1 : 0
-  org_id = local.org_id
-  role   = "roles/viewer"
-  member = "group:${var.gcp_groups.platform_viewer}"
-}
-
-resource "google_folder_iam_member" "organization_viewer" {
-  count  = var.gcp_groups.platform_viewer != null && local.parent_folder != "" ? 1 : 0
-  folder = "folders/${local.parent_folder}"
-  role   = "roles/viewer"
-  member = "group:${var.gcp_groups.platform_viewer}"
-}
 
 resource "google_organization_iam_member" "security_reviewer" {
   count  = var.gcp_groups.security_reviewer != null && local.parent_folder == "" ? 1 : 0
@@ -169,7 +161,14 @@ resource "google_project_iam_member" "audit_bq_data_viewer" {
   member  = "group:${var.gcp_groups.audit_viewer}"
 }
 
-resource "google_project_iam_member" "scc_admin" {
+resource "google_organization_iam_member" "org_scc_admin" {
+  count  = var.gcp_groups.scc_admin != null && local.parent_folder == "" ? 1 : 0
+  org_id = local.org_id
+  role   = "roles/securitycenter.adminEditor"
+  member = "group:${var.gcp_groups.scc_admin}"
+}
+
+resource "google_project_iam_member" "project_scc_admin" {
   count   = var.gcp_groups.scc_admin != null ? 1 : 0
   project = module.scc_notifications.project_id
   role    = "roles/securitycenter.adminEditor"
@@ -181,6 +180,12 @@ resource "google_project_iam_member" "global_secrets_admin" {
   project = module.org_secrets.project_id
   role    = "roles/secretmanager.admin"
   member  = "group:${var.gcp_groups.global_secrets_admin}"
+}
+
+resource "google_project_iam_member" "kms_admin" {
+  project = module.org_kms.project_id
+  role    = "roles/cloudkms.viewer"
+  member  = "group:${var.gcp_groups.kms_admin}"
 }
 
 /******************************************

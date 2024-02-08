@@ -65,12 +65,12 @@ output "common_config" {
 
 output "group_org_admins" {
   description = "Google Group for GCP Organization Administrators."
-  value       = var.groups.create_groups == true ? module.required_group["group_org_admins"].id : var.group_org_admins
+  value       = var.groups.create_groups == true ? module.required_group["group_org_admins"].id : var.groups.required_groups.group_org_admins
 }
 
 output "group_billing_admins" {
   description = "Google Group for GCP Billing Administrators."
-  value       = var.groups.create_groups == true ? module.required_group["group_billing_admins"].id : var.group_billing_admins
+  value       = var.groups.create_groups == true ? module.required_group["group_billing_admins"].id : var.groups.required_groups.group_billing_admins
 }
 
 output "required_groups" {

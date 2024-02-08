@@ -24,16 +24,6 @@ variable "billing_account" {
   type        = string
 }
 
-variable "group_org_admins" {
-  description = "Google Group for GCP Organization Administrators"
-  type        = string
-}
-
-variable "group_billing_admins" {
-  description = "Google Group for GCP Billing Administrators"
-  type        = string
-}
-
 variable "default_region" {
   description = "Default region to create resources where applicable."
   type        = string
@@ -94,42 +84,32 @@ variable "bucket_tfstate_kms_force_destroy" {
 variable "groups" {
   description = "Contain the details of the Groups to be created."
   type = object({
-    create_groups   = bool
-    billing_project = string
+    create_groups   = optional(bool, false)
+    billing_project = optional(string, "")
     required_groups = object({
-      group_org_admins           = string
-      group_billing_admins       = string
-      billing_data_users         = string
-      audit_data_users           = string
-      monitoring_workspace_users = string
+      group_org_admins     = string
+      group_billing_admins = string
     })
-    optional_groups = object({
-      gcp_platform_viewer      = string
-      gcp_security_reviewer    = string
-      gcp_network_viewer       = string
-      gcp_scc_admin            = string
-      gcp_global_secrets_admin = string
-      gcp_audit_viewer         = string
-    })
+    optional_groups = optional(object({
+      gcp_billing_viewer       = optional(string, "")
+      gcp_audit_viewer         = optional(string, "")
+      gcp_monitoring_viewer    = optional(string, "")
+      gcp_security_reviewer    = optional(string, "")
+      gcp_network_viewer       = optional(string, "")
+      gcp_scc_admin            = optional(string, "")
+      gcp_global_secrets_admin = optional(string, "")
+      gcp_kms_admin            = optional(string, "")
+    }), {})
   })
-  default = {
-    create_groups   = false
-    billing_project = ""
-    required_groups = {
-      group_org_admins           = ""
-      group_billing_admins       = ""
-      billing_data_users         = ""
-      audit_data_users           = ""
-      monitoring_workspace_users = ""
-    }
-    optional_groups = {
-      gcp_platform_viewer      = ""
-      gcp_security_reviewer    = ""
-      gcp_network_viewer       = ""
-      gcp_scc_admin            = ""
-      gcp_global_secrets_admin = ""
-      gcp_audit_viewer         = ""
-    }
+
+  validation {
+    condition     = var.groups.required_groups.group_org_admins != "" ? true : false
+    error_message = "The group group_org_admins is invalid, it must be a valid email."
+  }
+
+  validation {
+    condition     = var.groups.required_groups.group_billing_admins != "" ? true : false
+    error_message = "The group group_billing_admins is invalid, it must be a valid email."
   }
 
   validation {
@@ -138,28 +118,43 @@ variable "groups" {
   }
 
   validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.group_org_admins != "" ? true : false) : true
-    error_message = "The group group_org_admins is invalid, it must be a valid email."
+    condition     = var.groups.create_groups == true ? (var.groups.required_groups.billing_viewer != "" ? true : false) : true
+    error_message = "The group billing_viewer is invalid, it must be a valid email."
   }
 
   validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.group_billing_admins != "" ? true : false) : true
-    error_message = "The group group_billing_admins is invalid, it must be a valid email."
+    condition     = var.groups.create_groups == true ? (var.groups.required_groups.audit_viewer != "" ? true : false) : true
+    error_message = "The group audit_viewer is invalid, it must be a valid email."
   }
 
   validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.billing_data_users != "" ? true : false) : true
-    error_message = "The group billing_data_users is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.audit_data_users != "" ? true : false) : true
-    error_message = "The group audit_data_users is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.monitoring_workspace_users != "" ? true : false) : true
+    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_monitoring_viewer != "" ? true : false) : true
     error_message = "The group monitoring_workspace_users is invalid, it must be a valid email."
+  }
+
+  validation {
+    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_security_reviewer != "" ? true : false) : true
+    error_message = "The group gcp_security_reviewer is invalid, it must be a valid email."
+  }
+
+  validation {
+    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_network_viewer != "" ? true : false) : true
+    error_message = "The group gcp_network_viewer is invalid, it must be a valid email."
+  }
+
+  validation {
+    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_scc_admin != "" ? true : false) : true
+    error_message = "The group gcp_scc_admin is invalid, it must be a valid email."
+  }
+
+  validation {
+    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_global_secrets_admin != "" ? true : false) : true
+    error_message = "The group gcp_global_secrets_admin is invalid, it must be a valid email."
+  }
+
+  validation {
+    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_kms_admin != "" ? true : false) : true
+    error_message = "The group gcp_kms_admin is invalid, it must be a valid email."
   }
 
 }

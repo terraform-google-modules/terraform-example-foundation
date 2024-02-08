@@ -68,13 +68,6 @@ type StageConf struct {
 	Envs                []string
 }
 
-// type GcpGroup struct {
-// 	Id string
-// }
-// type RequiredGroups struct {
-// 	map[string]GcpGroup
-// }
-
 type BootstrapOutputs struct {
 	RemoteStateBucket         string
 	RemoteStateBucketProjects string
@@ -102,44 +95,42 @@ type ServerAddress struct {
 }
 
 type RequiredGroups struct {
-	GroupOrgAdmins           string `cty:"group_org_admins"`
-	GroupBillingAdmins       string `cty:"group_billing_admins"`
-	BillingDataUsers         string `cty:"billing_data_users"`
-	AuditDataUsers           string `cty:"audit_data_users"`
-	MonitoringWorkspaceUsers string `cty:"monitoring_workspace_users"`
+	GroupOrgAdmins     string `cty:"group_org_admins"`
+	GroupBillingAdmins string `cty:"group_billing_admins"`
 }
 
 type OptionalGroups struct {
-	GcpPlatformViewer     *string `cty:"gcp_platform_viewer"`
+	GcpBillingViewer      *string `cty:"gcp_billing_viewer"`
+	GcpAuditViewer        *string `cty:"gcp_audit_viewer"`
+	GcpMonitoringViewer   *string `cty:"gcp_monitoring_viewer"`
 	GcpSecurityReviewer   *string `cty:"gcp_security_reviewer"`
 	GcpNetworkViewer      *string `cty:"gcp_network_viewer"`
 	GcpSccAdmin           *string `cty:"gcp_scc_admin"`
 	GcpGlobalSecretsAdmin *string `cty:"gcp_global_secrets_admin"`
-	GcpAuditViewer        *string `cty:"gcp_audit_viewer"`
+	GcpKmsAdmin           *string `cty:"gcp_kms_admin"`
 }
 
 type Groups struct {
-	CreateGroups   bool           `cty:"create_groups"`
-	BillingProject string         `cty:"billing_project"`
-	RequiredGroups RequiredGroups `cty:"required_groups"`
-	OptionalGroups OptionalGroups `cty:"optional_groups"`
+	CreateGroups   *bool           `cty:"create_groups"`
+	BillingProject *string         `cty:"billing_project"`
+	RequiredGroups RequiredGroups  `cty:"required_groups"`
+	OptionalGroups *OptionalGroups `cty:"optional_groups"`
 }
 
 type GcpGroups struct {
-	PlatformViewer     *string `cty:"platform_viewer"`
+	AuditViewer        *string `cty:"audit_viewer"`
+	MonitoringViewer   *string `cty:"monitoring_viewer"`
 	SecurityReviewer   *string `cty:"security_reviewer"`
 	NetworkViewer      *string `cty:"network_viewer"`
 	SccAdmin           *string `cty:"scc_admin"`
 	GlobalSecretsAdmin *string `cty:"global_secrets_admin"`
-	AuditViewer        *string `cty:"audit_viewer"`
+	KmsAdmin           *string `cty:"kms_admin"`
 }
 
 // GlobalTFVars contains all the configuration for the deploy
 type GlobalTFVars struct {
 	OrgID                                 string          `hcl:"org_id"`
 	BillingAccount                        string          `hcl:"billing_account"`
-	GroupOrgAdmins                        string          `hcl:"group_org_admins"`
-	GroupBillingAdmins                    string          `hcl:"group_billing_admins"`
 	BillingDataUsers                      string          `hcl:"billing_data_users"`
 	MonitoringWorkspaceUsers              string          `hcl:"monitoring_workspace_users"`
 	AuditDataUsers                        string          `hcl:"audit_data_users"`
@@ -169,7 +160,7 @@ type GlobalTFVars struct {
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
 	ValidatorProjectId                    *string         `hcl:"validator_project_id"`
-	Groups                                *Groups         `hcl:"groups"`
+	Groups                                Groups          `hcl:"groups"`
 	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
 }
 
@@ -180,7 +171,7 @@ func (g GlobalTFVars) HasValidatorProj() bool {
 
 // HasGroupsCreation checks if Groups creation is enabled
 func (g GlobalTFVars) HasGroupsCreation() bool {
-	return g.Groups != nil && (*g.Groups).CreateGroups
+	return (*g.Groups.CreateGroups)
 }
 
 // CheckString checks if any of the string fields in the GlobalTFVars has the given string
@@ -196,8 +187,6 @@ func (g GlobalTFVars) CheckString(s string) {
 type BootstrapTfvars struct {
 	OrgID                        string   `hcl:"org_id"`
 	BillingAccount               string   `hcl:"billing_account"`
-	GroupOrgAdmins               string   `hcl:"group_org_admins"`
-	GroupBillingAdmins           string   `hcl:"group_billing_admins"`
 	DefaultRegion                string   `hcl:"default_region"`
 	ParentFolder                 *string  `hcl:"parent_folder"`
 	ProjectPrefix                *string  `hcl:"project_prefix"`
@@ -205,7 +194,7 @@ type BootstrapTfvars struct {
 	BucketForceDestroy           *bool    `hcl:"bucket_force_destroy"`
 	BucketTfstateKmsForceDestroy *bool    `hcl:"bucket_tfstate_kms_force_destroy"`
 	OrgProjectCreators           []string `hcl:"org_project_creators"`
-	Groups                       *Groups  `hcl:"groups"`
+	Groups                       Groups   `hcl:"groups"`
 	InitialGroupConfig           *string  `hcl:"initial_group_config"`
 }
 

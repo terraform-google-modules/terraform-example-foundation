@@ -114,7 +114,7 @@ variable "groups" {
   })
   default = {
     create_groups   = false
-    billing_project = ""
+    billing_project = null
     required_groups = {
       group_org_admins           = ""
       group_billing_admins       = ""

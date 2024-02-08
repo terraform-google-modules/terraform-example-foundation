@@ -314,7 +314,7 @@ Each step has instructions for this change.
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. | `string` | `""` | no |
 | project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
-| vpc | The type of VPC to attach the project to. Possible options are base or restricted. | `string` | `"null"` | no |
+| vpc | The type of VPC to attach the project to. Possible options are base or restricted. | `string` | `"none"` | no |
 
 ## Outputs
 

@@ -91,7 +91,12 @@ variable "bucket_tfstate_kms_force_destroy" {
 variable "vpc" {
   description = "The type of VPC to attach the project to. Possible options are base or restricted."
   type        = string
-  default     = "null"
+  default     = "none"
+
+  validation {
+    condition     = var.vpc == "base" || var.vpc == "restricted" || var.vpc == "none"
+    error_message = "For vpc only `base`, `restricted`, and `none` are valid."
+  }
 }
 
 /* ----------------------------------------

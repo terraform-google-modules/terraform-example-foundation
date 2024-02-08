@@ -68,6 +68,27 @@ output "monitoring_workspace_users" {
   value = var.group_email
 }
 
+output "groups" {
+  value = {
+    # create_groups = false, # Set to true to create the optional groups
+    # billing_project = "",
+    required_groups = {
+      group_org_admins     = var.group_email
+      group_billing_admins = var.group_email
+    },
+    # optional_groups = { # Fill in only the groups to be created (if create_group is true)
+    #   gcp_billing_viewer       = ""
+    #   gcp_audit_viewer         = ""
+    #   gcp_monitoring_viewer    = ""
+    #   gcp_security_reviewer    = ""
+    #   gcp_network_viewer       = ""
+    #   gcp_scc_admin            = ""
+    #   gcp_global_secrets_admin = ""
+    #   gcp_kms_admin            = ""
+    # }
+  }
+}
+
 output "project_prefix" {
   value = local.project_prefix
 }

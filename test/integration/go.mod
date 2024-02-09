@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.11.1
 	github.com/gruntwork-io/terratest v0.46.11
-	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
+	github.com/mitchellh/go-testing-interface 93f0c65740d3
 	github.com/stretchr/testify v1.8.4
 	github.com/tidwall/gjson v1.17.0
 	golang.org/x/oauth2 v0.16.0

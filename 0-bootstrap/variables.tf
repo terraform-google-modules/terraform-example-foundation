@@ -85,7 +85,7 @@ variable "groups" {
   description = "Contain the details of the Groups to be created."
   type = object({
     create_groups   = optional(bool, false)
-    billing_project = optional(string, "")
+    billing_project = optional(string, null)
     required_groups = object({
       group_org_admins     = string
       group_billing_admins = string

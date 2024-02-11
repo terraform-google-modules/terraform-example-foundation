@@ -184,7 +184,18 @@ tf_plan() {
   fi
   if [ -d "$path" ]; then
     cd "$path" || exit
-    terraform plan -no-color -input=false -out "${tmp_plan}/${tf_file}.tfplan" || exit 21
+    # Prepare a temporary file to capture the output
+    local tmp_output=$(mktemp)
+    if terraform plan -no-color -input=false -out "${tmp_plan}/${tf_file}.tfplan" >"$tmp_output" 2>&1; then
+      # If terraform plan succeeds, indicate success without printing the plan
+      echo "Terraform plan succeeded for environment: ${tf_env}"
+    else
+      # If terraform plan fails, display the error output and exit
+      echo "ERROR: terraform plan failed for environment: ${tf_env} with output:"
+      cat "$tmp_output" >&2
+      exit 21
+    fi
+    rm -f "$tmp_output"
     cd "$base_dir" || exit
   else
     echo "ERROR: ${path} does not exist"

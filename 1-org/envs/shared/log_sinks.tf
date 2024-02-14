@@ -92,3 +92,4 @@ resource "google_bigquery_dataset" "billing_dataset" {
   friendly_name = "GCP Billing Data"
   location      = var.billing_export_dataset_location
 }
+

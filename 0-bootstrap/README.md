@@ -105,7 +105,6 @@ To enable automatic creation of the [required groups](https://cloud.google.com/a
 
 All groups in the `groups.required_groups` are **required**.
 
-
 All groups in the `groups.optional_groups` are **optional** and the roles assigned are:
 - **billing_viewer**:
    - `roles/bigquery.user` on **prj-c-billing-logs** project.

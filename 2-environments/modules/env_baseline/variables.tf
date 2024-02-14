@@ -40,12 +40,12 @@ variable "monitoring_workspace_users" {
 }
 
 variable "vpc" {
-  description = "The type of VPC to attach the project to. Possible options are base or restricted."
+  description = "The type of VPC to attach the project to. Possible options are none, base, or restricted."
   type        = string
   default     = "none"
 
   validation {
-    condition     = var.vpc == "base" || var.vpc == "restricted" || var.vpc == "none"
+    condition     = contains(["none", "base", "restricted"], var.vpc)
     error_message = "For vpc only `base`, `restricted`, and `none` are valid."
   }
 }

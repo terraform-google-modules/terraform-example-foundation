@@ -117,46 +117,6 @@ variable "groups" {
     error_message = "A billing_project must be passed to use the automatic group creation."
   }
 
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.billing_viewer != "" ? true : false) : true
-    error_message = "The group billing_viewer is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.audit_viewer != "" ? true : false) : true
-    error_message = "The group audit_viewer is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_monitoring_viewer != "" ? true : false) : true
-    error_message = "The group monitoring_workspace_users is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_security_reviewer != "" ? true : false) : true
-    error_message = "The group gcp_security_reviewer is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_network_viewer != "" ? true : false) : true
-    error_message = "The group gcp_network_viewer is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_scc_admin != "" ? true : false) : true
-    error_message = "The group gcp_scc_admin is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_global_secrets_admin != "" ? true : false) : true
-    error_message = "The group gcp_global_secrets_admin is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.required_groups.gcp_kms_admin != "" ? true : false) : true
-    error_message = "The group gcp_kms_admin is invalid, it must be a valid email."
-  }
-
 }
 
 variable "initial_group_config" {

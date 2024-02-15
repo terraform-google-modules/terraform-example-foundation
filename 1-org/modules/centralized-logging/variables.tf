@@ -25,23 +25,22 @@ variable "resources" {
 }
 
 variable "resource_type" {
-  description = "Resource type of the resource that will export logs to destination. Must be: project, organization, billing_account or folder."
+  description = "Resource type of the resource that will export logs to destination. Must be: project, organization or folder."
   type        = string
 
   validation {
-    condition     = contains(["project", "folder", "organization", "billing_account"], var.resource_type)
-    error_message = "The resource_type value must be: project, organization, billing_account or folder."
+    condition     = contains(["project", "folder", "organization"], var.resource_type)
+    error_message = "The resource_type value must be: project, organization or folder."
   }
 }
 
 variable "billing_account" {
   description = "Billing Account ID used in case sinks are under billing account level. Format 000000-000000-000000."
   type        = string
-  default     = ""
 }
 
 variable "enable_billing_account_sink" {
-  description = "Verify if billing account will be logged in the sink."
+  description = "If true, a log router sink will be created for the billing account."
   type        = bool
   default     = true
 }

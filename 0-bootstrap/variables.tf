@@ -85,7 +85,7 @@ variable "groups" {
   description = "Contain the details of the Groups to be created."
   type = object({
     create_groups   = optional(bool, false)
-    billing_project = optional(string, "")
+    billing_project = optional(string, null) # Can't be empty string, must be null
     required_groups = object({
       group_org_admins     = string
       group_billing_admins = string
@@ -113,7 +113,7 @@ variable "groups" {
   }
 
   validation {
-    condition     = var.groups.create_groups == true ? (var.groups.billing_project != "" ? true : false) : true
+    condition     = var.groups.create_groups == true ? (var.groups.billing_project != null ? true : false) : true
     error_message = "A billing_project must be passed to use the automatic group creation."
   }
 

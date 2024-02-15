@@ -33,8 +33,6 @@ locals {
   org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
     "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
   ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
-  group_org_admins     = var.groups.create_groups ? module.required_group["group_org_admins"].id : var.groups.required_groups.group_org_admins
-  group_billing_admins = var.groups.create_groups ? module.required_group["group_billing_admins"].id : var.groups.required_groups.group_billing_admins
 }
 
 resource "google_folder" "bootstrap" {
@@ -52,8 +50,8 @@ module "seed_bootstrap" {
   state_bucket_name              = "${var.bucket_prefix}-${var.project_prefix}-b-seed-tfstate"
   force_destroy                  = var.bucket_force_destroy
   billing_account                = var.billing_account
-  group_org_admins               = local.group_org_admins
-  group_billing_admins           = local.group_billing_admins
+  group_org_admins               = var.groups.required_groups.group_org_admins
+  group_billing_admins           = var.groups.required_groups.group_billing_admins
   default_region                 = var.default_region
   org_project_creators           = local.org_project_creators
   sa_enable_impersonation        = true

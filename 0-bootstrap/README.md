@@ -75,8 +75,10 @@ Also make sure that you've done the following:
    [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 1. Set up a Google Cloud
    [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
-1. Create Cloud Identity or Google Workspace groups for
-   organization and billing admins.
+1. Create Cloud Identity or Google Workspace groups for organization and billing admins.
+   Those groups will be used on the variable `groups.required_groups`:
+   - The **group_org_admins** group should have `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
+   - The **group_billing_admins** group should have `roles/billing.admin` role on the Google Cloud organization.
 1. Add the user who will use Terraform to the `group_org_admins` group.
    They must be in this group, or they won't have
    `roles/resourcemanager.projectCreator` access.
@@ -103,9 +105,7 @@ To enable automatic creation of the [required groups](https://cloud.google.com/a
 - Grant role `roles/serviceusage.serviceUsageConsumer` to the user running Terraform on the billing project.
 - Provide values for the groups and billing project in the variable `groups`.
 
-All groups in the `groups.required_groups` are **required**.
-
-All groups in the `groups.optional_groups` are **optional** and the roles assigned are:
+All groups in the `groups.optional_groups` are **optional** and the roles assigned on the creation are:
 - **billing_viewer**:
    - `roles/bigquery.user` on **prj-c-billing-logs** project.
    - `roles/bigquery.dataViewer` on **prj-c-billing-logs** project.
@@ -326,7 +326,7 @@ Each step has instructions for this change.
 | bucket\_tfstate\_kms\_force\_destroy | When deleting a bucket, this boolean option will delete the KMS keys used for the Terraform state bucket. | `bool` | `false` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
-| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_groups   = optional(bool, false)<br>    billing_project = optional(string, null)<br>    required_groups = object({<br>      group_org_admins     = string<br>      group_billing_admins = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_billing_viewer       = optional(string, "")<br>      gcp_audit_viewer         = optional(string, "")<br>      gcp_monitoring_viewer    = optional(string, "")<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
+| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_groups   = optional(bool, false)<br>    billing_project = optional(string, "")<br>    required_groups = object({<br>      group_org_admins     = string<br>      group_billing_admins = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_billing_viewer       = optional(string, "")<br>      gcp_audit_viewer         = optional(string, "")<br>      gcp_monitoring_viewer    = optional(string, "")<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
 | initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
@@ -358,7 +358,6 @@ Each step has instructions for this change.
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |
 | projects\_gcs\_bucket\_tfstate | Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project. |
 | projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
-| required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

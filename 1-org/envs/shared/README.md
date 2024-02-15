@@ -43,6 +43,8 @@
 | interconnect\_project\_number | The Dedicated Interconnect project number |
 | logs\_export\_logbucket\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset created for Log Analytics. See https://cloud.google.com/logging/docs/log-analytics . |
 | logs\_export\_logbucket\_name | The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets . |
+| logs\_export\_project\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset for the project destination. |
+| logs\_export\_project\_logbucket\_name | The resource name for the Log Bucket created for the project destination. |
 | logs\_export\_pubsub\_topic | The Pub/Sub topic for destination of log exports |
 | logs\_export\_storage\_bucket\_name | The storage bucket for destination of log exports |
 | network\_folder\_name | The network folder name. |

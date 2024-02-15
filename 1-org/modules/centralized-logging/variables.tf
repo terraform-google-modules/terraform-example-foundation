@@ -37,6 +37,7 @@ variable "resource_type" {
 variable "logging_project_key" {
   description = "(Optional) The key of logging destination project if it is inside resources map. It is mandatory when resource_type = project and logging_target_type = logbucket."
   type        = string
+  default     = ""
 }
 
 variable "billing_account" {

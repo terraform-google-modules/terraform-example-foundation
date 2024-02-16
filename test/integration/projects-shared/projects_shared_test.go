@@ -66,7 +66,9 @@ func TestProjectsShared(t *testing.T) {
 			tfDir: "../../../4-projects/business_unit_2/shared",
 		},
 	} {
+		tts := tts
 		t.Run(tts.name, func(t *testing.T) {
+			t.Parallel()
 
 			sharedVars := map[string]interface{}{
 				"remote_state_bucket": backend_bucket,

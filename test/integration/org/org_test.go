@@ -245,7 +245,9 @@ func TestOrg(t *testing.T) {
 			prjLinkedDatasetID := "ds_c_prj_logbkt_analytics"
 			prjLinkedDsName := org.GetStringOutput("logs_export_project_linked_dataset_name")
 			prjLinkedDs := gcloud.Runf(t, "logging links describe %s --bucket=%s --location=%s --project=%s", prjLinkedDatasetID, prjLogsExportLogBktName, defaultRegion, auditLogsProjectID)
-			assert.Equal(prjLinkedDsName, prjLinkedDs.Get("name").String(), "log bucket linked dataset name should match")
+			prjLinkedDsFullName := fmt.Sprintf("projects/%s/locations/%s/buckets/%s/links/%s", auditLogsProjectID, defaultRegion, prjLogsExportLogBktName, prjLinkedDsName)//
+			//assert.Equal(prjLinkedDsName, prjLinkedDs.Get("name").String(), "log bucket linked dataset name should match")
+			assert.Equal(prjLinkedDsFullName, prjLinkedDs.Get("name").String(), "log bucket linked dataset name should match")
 			prjBigqueryDatasetID := fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectNumber, prjLinkedDatasetID)
 			assert.Equal(prjBigqueryDatasetID, prjLinkedDs.Get("bigqueryDataset.datasetId").String(), "log bucket BigQuery dataset ID should match")
 
@@ -262,24 +264,29 @@ func TestOrg(t *testing.T) {
 			}
 
 			// Log Sink
+			randomSuffix := org.GetStringOutput("generated_suffix")
 			for _, sink := range []struct {
 				name        string
 				destination string
 			}{
 				{
-					name:        "sk-c-logging-bkt",
+					//name:        "sk-c-logging-bkt",
+					name:        fmt.Sprintf("sk-c-logging-bkt-%s", randomSuffix),
 					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
 				},
 				{
-					name:        "sk-c-logging-logbkt",
+					//name:        "sk-c-logging-logbkt",
+					name:        fmt.Sprintf("sk-c-logging-logbkt-%s", randomSuffix),
 					destination: fmt.Sprintf("logging.googleapis.com/%s", logBktFullName),
 				},
 				{
-					name:        "sk-c-logging-pub",
+					//name:        "sk-c-logging-pub",
+					name:        fmt.Sprintf("sk-c-logging-pub-%s", randomSuffix),
 					destination: fmt.Sprintf("pubsub.googleapis.com/projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName),
 				},
 				{
-					name:        "sk-c-logging-prj",
+					//name:        "sk-c-logging-prj",
+					name:        fmt.Sprintf("sk-c-logging-prj-%s", randomSuffix),
 					destination: fmt.Sprintf("logging.googleapis.com/projects/%s", auditLogsProjectID),
 				},
 			} {

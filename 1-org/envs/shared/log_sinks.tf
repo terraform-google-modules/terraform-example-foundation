@@ -49,7 +49,7 @@ module "logs_export" {
   *****************************************/
   storage_options = {
     logging_sink_filter          = local.logs_filter
-    logging_sink_name            = "sk-c-logging-bkt"
+    logging_sink_name            = "sk-c-logging-bkt-${random_string.suffix.result}"
     storage_bucket_name          = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
     location                     = var.log_export_storage_location
     retention_policy_enabled     = var.log_export_storage_retention_policy != null
@@ -64,7 +64,7 @@ module "logs_export" {
   *****************************************/
   pubsub_options = {
     logging_sink_filter = local.logs_filter
-    logging_sink_name   = "sk-c-logging-pub"
+    logging_sink_name   = "sk-c-logging-pub-${random_string.suffix.result}"
     topic_name          = "tp-org-logs-${random_string.suffix.result}"
     create_subscriber   = true
   }
@@ -73,7 +73,7 @@ module "logs_export" {
     Send logs to Logbucket
   *****************************************/
   logbucket_options = {
-    logging_sink_name          = "sk-c-logging-logbkt"
+    logging_sink_name          = "sk-c-logging-logbkt-${random_string.suffix.result}"
     logging_sink_filter        = local.logs_filter
     name                       = "logbkt-org-logs-${random_string.suffix.result}"
     location                   = local.default_region
@@ -86,7 +86,7 @@ module "logs_export" {
     Send logs to Logging project
   *****************************************/
   project_options = {
-    logging_sink_name          = "sk-c-logging-prj"
+    logging_sink_name          = "sk-c-logging-prj-${random_string.suffix.result}"
     logging_sink_filter        = local.logs_filter
     log_bucket_id              = "logbkt-prj-logs"
     log_bucket_description     = "Project destination log bucket"

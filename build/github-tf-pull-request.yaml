@@ -65,7 +65,7 @@ jobs:
 
       - id: plan-validate-all
         run: |
-          ${GITHUB_WORKSPACE}/tf-wrapper.sh plan_validate_all "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB" > ${GITHUB_WORKSPACE}/plan.out
+          ${GITHUB_WORKSPACE}/tf-wrapper.sh plan_validate_all "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB" | tee ${GITHUB_WORKSPACE}/plan.out
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'

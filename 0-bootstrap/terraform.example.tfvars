@@ -18,26 +18,34 @@ org_id = "REPLACE_ME" # format "000000000000"
 
 billing_account = "REPLACE_ME" # format "000000-000000-000000"
 
-#  Optional - for enabling the automatic groups creation, uncoment the
-#  variables and update the values with the group names
-groups = {
-  # create_groups = true,
-  # billing_project = "billing-project",
-  required_groups = {
+// REQUIRED - org_admins and billing_admins are required
+// For enabling the automatic groups creation, uncoment the
+// variables and update the values with the group names
+required_groups = {
+  # create_groups   = true
+  # billing_project = "REPLACE_ME"
+  groups = {
     group_org_admins     = "REPLACE_ME" # example "gcp-organization-admins@example.com"
     group_billing_admins = "REPLACE_ME" # example "gcp-billing-admins@example.com"
-  },
-  # optional_groups = {
-  #   gcp_billing_viewer       = "billing_data_users_local_test@example.com"
-  #   gcp_audit_viewer         = "audit_data_users_local_test@example.com"
-  #   gcp_monitoring_viewer    = "monitoring_workspace_users_local_test@example.com"
-  #   gcp_security_reviewer    = "gcp_security_reviewer_local_test@example.com"
-  #   gcp_network_viewer       = "gcp_network_viewer_local_test@example.com"
-  #   gcp_scc_admin            = "gcp_scc_admin_local_test@example.com"
-  #   gcp_global_secrets_admin = "gcp_global_secrets_admin_local_test@example.com"
-  #   gcp_kms_admin            = "gcp_kms_admin_local_test@example.com"
-  # }
+    # billing_data_users         = "REPLACE_ME"
+    # audit_data_users           = "REPLACE_ME"
+    # monitoring_workspace_users = "REPLACE_ME"
+  }
 }
+
+// OPTIONAL - for enabling the automatic groups creation, uncoment the
+// variables and update the values with the group names
+# optional_groups = {
+#   create_groups   = true
+#   billing_project = "REPLACE_ME"
+#   groups = {
+#     gcp_security_reviewer    = "gcp_security_reviewer_local_test@example.com"
+#     gcp_network_viewer       = "gcp_network_viewer_local_test@example.com"
+#     gcp_scc_admin            = "gcp_scc_admin_local_test@example.com"
+#     gcp_global_secrets_admin = "gcp_global_secrets_admin_local_test@example.com"
+#     gcp_kms_admin            = "gcp_kms_admin_local_test@example.com"
+#   }
+# }
 
 default_region = "us-central1"
 

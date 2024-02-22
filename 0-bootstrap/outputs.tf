@@ -65,17 +65,22 @@ output "common_config" {
 
 output "group_org_admins" {
   description = "Google Group for GCP Organization Administrators."
-  value       = var.groups.required_groups.group_org_admins
+  value       = var.required_groups.group_org_admins
 }
 
 output "group_billing_admins" {
   description = "Google Group for GCP Billing Administrators."
-  value       = var.groups.required_groups.group_billing_admins
+  value       = var.required_groups.group_billing_admins
+}
+
+output "required_groups" {
+  description = "List of Google Groups created that are required by the Example Foundation steps."
+  value       = var.required_groups.create_groups == true ? module.required_group : {}
 }
 
 output "optional_groups" {
   description = "List of Google Groups created that are optional to the Example Foundation steps."
-  value       = var.groups.create_groups == true ? module.optional_group : {}
+  value       = var.optional_groups.create_groups == true ? module.optional_group : {}
 }
 
 /* ----------------------------------------

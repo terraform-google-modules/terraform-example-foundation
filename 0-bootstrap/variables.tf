@@ -81,39 +81,54 @@ variable "bucket_tfstate_kms_force_destroy" {
 /* ----------------------------------------
     Specific to Groups creation
    ---------------------------------------- */
-variable "groups" {
+variable "required_groups" {
   description = "Contain the details of the Groups to be created."
   type = object({
     create_groups   = optional(bool, false)
-    billing_project = optional(string, null) # Can't be empty string, must be null
-    required_groups = object({
-      group_org_admins     = string
-      group_billing_admins = string
+    billing_project = optional(string, null)
+    groups = object({
+      group_org_admins           = string
+      group_billing_admins       = string
+      billing_data_users         = optional(string, "")
+      audit_data_users           = optional(string, "")
+      monitoring_workspace_users = optional(string, "")
     })
-    optional_groups = optional(object({
-      gcp_billing_viewer       = optional(string, "")
-      gcp_audit_viewer         = optional(string, "")
-      gcp_monitoring_viewer    = optional(string, "")
-      gcp_security_reviewer    = optional(string, "")
-      gcp_network_viewer       = optional(string, "")
-      gcp_scc_admin            = optional(string, "")
-      gcp_global_secrets_admin = optional(string, "")
-      gcp_kms_admin            = optional(string, "")
-    }), {})
   })
 
   validation {
-    condition     = var.groups.required_groups.group_org_admins != "" ? true : false
-    error_message = "The group group_org_admins is invalid, it must be a valid email."
+    condition     = var.required_groups.create_groups == true ? (var.required_groups.billing_project != null ? true : false) : true
+    error_message = "A billing_project must be passed to use the automatic group creation."
+  }
+
+}
+
+variable "optional_groups" {
+  description = "Contain the details of the Groups to be created."
+  type = object({
+    create_groups   = bool
+    billing_project = string
+    groups = object({
+      gcp_security_reviewer    = string
+      gcp_network_viewer       = string
+      gcp_scc_admin            = string
+      gcp_global_secrets_admin = string
+      gcp_kms_admin            = string
+    })
+  })
+  default = {
+    create_groups   = false
+    billing_project = null
+    groups = {
+      gcp_security_reviewer    = ""
+      gcp_network_viewer       = ""
+      gcp_scc_admin            = ""
+      gcp_global_secrets_admin = ""
+      gcp_kms_admin            = ""
+    }
   }
 
   validation {
-    condition     = var.groups.required_groups.group_billing_admins != "" ? true : false
-    error_message = "The group group_billing_admins is invalid, it must be a valid email."
-  }
-
-  validation {
-    condition     = var.groups.create_groups == true ? (var.groups.billing_project != null ? true : false) : true
+    condition     = var.optional_groups.create_groups == true ? (var.optional_groups.billing_project != null ? true : false) : true
     error_message = "A billing_project must be passed to use the automatic group creation."
   }
 

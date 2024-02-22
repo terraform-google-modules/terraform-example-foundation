@@ -59,24 +59,29 @@ folder_prefix  = "fldr"
 // https://github.com/terraform-google-modules/terraform-google-group/blob/main/README.md#google-workspace-formerly-known-as-g-suite-roles
 
 //initial_group_config = "WITH_INITIAL_OWNER"
-groups = {
-  create_groups = false, # Set to true to create the optional groups
-  billing_project = "", # Provide a billing project only if create_group is true
-  required_groups = {
-    group_org_admins     = "REPLACE_ME" # "gcp-organization-admins@example.com"
-    group_billing_admins = "REPLACE_ME" # "gcp-billing-admins@example.com"
-  },
-  optional_groups = { # Fill in the groups to be created (if create_group is true)
-    gcp_billing_viewer       = ""
-    gcp_audit_viewer         = ""
-    gcp_monitoring_viewer    = ""
-    gcp_security_reviewer    = ""
-    gcp_network_viewer       = ""
-    gcp_scc_admin            = ""
-    gcp_global_secrets_admin = ""
-    gcp_kms_admin            = ""
+required_groups = {
+  #  create_groups   = false
+  #  billing_project = ""
+  groups = {
+    group_org_admins           = "REPLACE_ME" # "gcp-organization-admins@example.com"
+    group_billing_admins       = "REPLACE_ME" # "gcp-billing-admins@example.com"
+#    billing_data_users         = ""
+#    audit_data_users           = ""
+#    monitoring_workspace_users = ""
   }
 }
+
+# optional_groups = {
+#   create_groups   = true
+#   billing_project = "REPLACE_ME"
+#   groups = {
+#     gcp_security_reviewer    = "gcp_security_reviewer_local_test@example.com"
+#     gcp_network_viewer       = "gcp_network_viewer_local_test@example.com"
+#     gcp_scc_admin            = "gcp_scc_admin_local_test@example.com"
+#     gcp_global_secrets_admin = "gcp_global_secrets_admin_local_test@example.com"
+#     gcp_kms_admin            = "gcp_kms_admin_local_test@example.com"
+#   }
+# }
 
 // 1-org inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/1-org/envs/shared/README.md#inputs

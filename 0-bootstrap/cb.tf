@@ -93,7 +93,7 @@ module "tf_source" {
   project_id            = "${var.project_prefix}-b-cicd-${random_string.suffix.result}"
   location              = var.default_region
   billing_account       = var.billing_account
-  group_org_admins      = var.required_groups.group_org_admins
+  group_org_admins      = var.required_groups.groups.group_org_admins
   buckets_force_destroy = var.bucket_force_destroy
 
   activate_apis = [

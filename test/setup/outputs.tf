@@ -68,9 +68,9 @@ output "monitoring_workspace_users" {
   value = var.group_email
 }
 
-output "groups" {
+output "required_groups" {
   value = {
-    required_groups = {
+    groups = {
       group_org_admins     = var.group_email
       group_billing_admins = var.group_email
     }

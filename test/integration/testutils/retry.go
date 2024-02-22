@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2022-2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,11 @@ package testutils
 
 var (
 	RetryableTransientErrors = map[string]string{
+		// Error 400: There is a peering operation in progress on the local or peer network.
+		".*Error 400.*There is a peering operation in progress on the local or peer network.*": "Peering operation in progress.",
+
+		// Error code 409 for concurrent policy changes.
+		".*Error 409.*There were concurrent policy changes.*": "Concurrent policy changes.",
 
 		// API Rate limit exceeded errors can be retried.
 		".*rateLimitExceeded.*": "Rate limit exceeded.",

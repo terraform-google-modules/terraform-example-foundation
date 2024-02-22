@@ -20,7 +20,7 @@
  *****************************************/
 module "firewall_rules" {
   source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version     = "~> 8.0"
+  version     = "~> 9.0"
   project_id  = var.project_id
   policy_name = "fp-${var.environment_code}-dual-svpc-restricted-firewalls"
   description = "Firewall rules for restricted dual shared vpc: ${module.main.network_name}."

@@ -159,12 +159,11 @@ module "internal_project_log_export" {
   source  = "terraform-google-modules/log-export/google"
   version = "~> 7.8"
 
-  destination_uri        = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${var.project_options.log_bucket_id}"
-  filter                 = var.project_options.logging_sink_filter
-  log_sink_name          = coalesce(var.project_options.logging_sink_name, local.logging_sink_name_map["prj"])
-  parent_resource_id     = var.logging_destination_project_id
-  parent_resource_type   = "project"
-  unique_writer_identity = true //###
+  destination_uri      = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${var.project_options.log_bucket_id}"
+  filter               = var.project_options.logging_sink_filter
+  log_sink_name        = coalesce(var.project_options.logging_sink_name, local.logging_sink_name_map["prj"])
+  parent_resource_id   = var.logging_destination_project_id
+  parent_resource_type = "project"
 }
 
 #-------------------------#

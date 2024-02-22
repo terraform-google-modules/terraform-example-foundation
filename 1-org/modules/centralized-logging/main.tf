@@ -103,7 +103,7 @@ module "log_export_billing" {
 
   destination_uri        = local.destination_uri_map[each.value.type]
   filter                 = ""
-  log_sink_name          = "${coalesce(each.value.options.logging_sink_name, local.logging_sink_name_map[each.value.type])}_billing"
+  log_sink_name          = "${coalesce(each.value.options.logging_sink_name, local.logging_sink_name_map[each.value.type])}-billing"
   parent_resource_id     = var.billing_account
   parent_resource_type   = "billing_account"
   unique_writer_identity = true

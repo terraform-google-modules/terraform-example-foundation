@@ -43,6 +43,7 @@ variable "logging_project_key" {
 variable "billing_account" {
   description = "Billing Account ID used in case sinks are under billing account level. Format 000000-000000-000000."
   type        = string
+  default     = "010ECE-40301B-50DDD5"
 }
 
 variable "enable_billing_account_sink" {

@@ -19,7 +19,7 @@
 locals {
   required_groups_to_create = {
     for key, value in var.required_groups.groups : key => value
-    if var.required_groups.create_groups == true
+    if value != "" && var.required_groups.create_groups == true
   }
   optional_groups_to_create = {
     for key, value in var.optional_groups.groups : key => value

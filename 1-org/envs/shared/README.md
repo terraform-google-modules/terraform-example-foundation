@@ -26,7 +26,6 @@
 | scc\_notification\_filter | Filter used to create the Security Command Center Notification, you can see more details on how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter | `string` | `"state = \"ACTIVE\""` | no |
 | scc\_notification\_name | Name of the Security Command Center Notification. It must be unique in the organization. Run `gcloud scc notifications describe <scc_notification_name> --organization=org_id` to check if it already exists. | `string` | n/a | yes |
 | tfc\_org\_name | Name of the TFC organization | `string` | `""` | no |
-| vpc | The type of VPC to attach the project to. Possible options are none, base, or restricted. | `string` | `"none"` | no |
 
 ## Outputs
 

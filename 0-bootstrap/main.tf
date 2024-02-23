@@ -73,7 +73,7 @@ module "seed_bootstrap" {
     secondary_contact = "example2"
     business_code     = "shared"
     env_code          = "b"
-    vpc               = var.vpc
+    vpc               = "none"
   }
 
   activate_apis = [

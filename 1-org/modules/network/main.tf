@@ -47,7 +47,7 @@ module "base_shared_vpc_host_project" {
     secondary_contact = "example2"
     business_code     = "shared"
     env_code          = var.env_code
-    vpc               = var.vpc
+    vpc               = "base"
   }
   budget_alert_pubsub_topic   = var.project_budget.base_network_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.base_network_alert_spent_percents
@@ -85,7 +85,7 @@ module "restricted_shared_vpc_host_project" {
     secondary_contact = "example2"
     business_code     = "shared"
     env_code          = var.env_code
-    vpc               = var.vpc
+    vpc               = "restricted"
   }
   budget_alert_pubsub_topic   = var.project_budget.restricted_network_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.restricted_network_alert_spent_percents

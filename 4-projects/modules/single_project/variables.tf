@@ -79,7 +79,7 @@ variable "vpc" {
 
   validation {
     condition     = contains(["none", "base", "restricted"], var.vpc)
-    error_message = "For vpc only `base`, `restricted`, and `none` are valid."
+    error_message = "For vpc, only `none`, `base`, or `restricted` are valid."
   }
 }
 

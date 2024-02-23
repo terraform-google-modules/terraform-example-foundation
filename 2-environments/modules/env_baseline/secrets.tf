@@ -42,7 +42,7 @@ module "env_secrets" {
     secondary_contact = "example2"
     business_code     = "shared"
     env_code          = var.environment_code
-    vpc               = var.vpc
+    vpc               = "none"
   }
   budget_alert_pubsub_topic   = var.project_budget.secret_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.secret_alert_spent_percents

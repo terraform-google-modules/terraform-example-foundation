@@ -127,7 +127,7 @@ module "tf_source" {
     secondary_contact = "example2"
     business_code     = "shared"
     env_code          = "b"
-    vpc               = var.vpc
+    vpc               = "none"
   }
 
   # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160

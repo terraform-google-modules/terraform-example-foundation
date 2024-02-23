@@ -39,17 +39,6 @@ variable "monitoring_workspace_users" {
   type        = string
 }
 
-variable "vpc" {
-  description = "The type of VPC to attach the project to. Possible options are none, base, or restricted."
-  type        = string
-  default     = "none"
-
-  validation {
-    condition     = contains(["none", "base", "restricted"], var.vpc)
-    error_message = "For vpc only `base`, `restricted`, and `none` are valid."
-  }
-}
-
 variable "project_budget" {
   description = <<EOT
   Budget configuration for projects.

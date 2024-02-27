@@ -54,7 +54,10 @@ func TestEnvs(t *testing.T) {
 		"non-production",
 		"production",
 	} {
+		envName := envName
 		t.Run(envName, func(t *testing.T) {
+			t.Parallel()
+
 			envs := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../2-environments/envs/%s", envName)),
 				tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),

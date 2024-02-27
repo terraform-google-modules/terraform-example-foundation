@@ -253,7 +253,7 @@ func DeployEnvStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		MonitoringWorkspaceUsers: tfvars.MonitoringWorkspaceUsers,
 		RemoteStateBucket:        outputs.RemoteStateBucket,
 	}
-	if tfvars.HasRequiredGroupsCreation() {
+	if tfvars.HasOptionalGroupsCreation() {
 		envsTfvars.MonitoringWorkspaceUsers = (*tfvars.Groups.OptionalGroups.MonitoringWorkspaceUsers)
 	}
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, EnvironmentsStep, "terraform.tfvars"), envsTfvars)

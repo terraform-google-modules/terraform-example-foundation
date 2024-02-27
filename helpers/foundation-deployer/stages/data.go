@@ -78,6 +78,7 @@ type BootstrapOutputs struct {
 	EnvsSA                    string
 	OrgSA                     string
 	BootstrapSA               string
+	RequiredGroups            map[string]string
 }
 
 type InfraPipelineOutputs struct {
@@ -95,19 +96,19 @@ type ServerAddress struct {
 }
 
 type RequiredGroups struct {
-	GroupOrgAdmins     string `cty:"group_org_admins"`
-	GroupBillingAdmins string `cty:"group_billing_admins"`
+	GroupOrgAdmins           string `cty:"group_org_admins"`
+	GroupBillingAdmins       string `cty:"group_billing_admins"`
+	BillingDataUsers         string `cty:"billing_data_users"`
+	AuditDataUsers           string `cty:"audit_data_users"`
+	MonitoringWorkspaceUsers string `cty:"monitoring_workspace_users"`
 }
 
 type OptionalGroups struct {
-	BillingDataUsers         *string `cty:"billing_data_users"`
-	AuditDataUsers           *string `cty:"audit_data_users"`
-	MonitoringWorkspaceUsers *string `cty:"monitoring_workspace_users"`
-	GcpSecurityReviewer      *string `cty:"gcp_security_reviewer"`
-	GcpNetworkViewer         *string `cty:"gcp_network_viewer"`
-	GcpSccAdmin              *string `cty:"gcp_scc_admin"`
-	GcpGlobalSecretsAdmin    *string `cty:"gcp_global_secrets_admin"`
-	GcpKmsAdmin              *string `cty:"gcp_kms_admin"`
+	GcpSecurityReviewer   *string `cty:"gcp_security_reviewer"`
+	GcpNetworkViewer      *string `cty:"gcp_network_viewer"`
+	GcpSccAdmin           *string `cty:"gcp_scc_admin"`
+	GcpGlobalSecretsAdmin *string `cty:"gcp_global_secrets_admin"`
+	GcpKmsAdmin           *string `cty:"gcp_kms_admin"`
 }
 
 type Groups struct {
@@ -193,23 +194,21 @@ func (g GlobalTFVars) CheckString(s string) {
 }
 
 type BootstrapTfvars struct {
-	OrgID                        string   `hcl:"org_id"`
-	BillingAccount               string   `hcl:"billing_account"`
-	DefaultRegion                string   `hcl:"default_region"`
-	ParentFolder                 *string  `hcl:"parent_folder"`
-	ProjectPrefix                *string  `hcl:"project_prefix"`
-	FolderPrefix                 *string  `hcl:"folder_prefix"`
-	BucketForceDestroy           *bool    `hcl:"bucket_force_destroy"`
-	BucketTfstateKmsForceDestroy *bool    `hcl:"bucket_tfstate_kms_force_destroy"`
-	Groups                       Groups   `hcl:"groups"`
-	InitialGroupConfig           *string  `hcl:"initial_group_config"`
+	OrgID                        string  `hcl:"org_id"`
+	BillingAccount               string  `hcl:"billing_account"`
+	DefaultRegion                string  `hcl:"default_region"`
+	ParentFolder                 *string `hcl:"parent_folder"`
+	ProjectPrefix                *string `hcl:"project_prefix"`
+	FolderPrefix                 *string `hcl:"folder_prefix"`
+	BucketForceDestroy           *bool   `hcl:"bucket_force_destroy"`
+	BucketTfstateKmsForceDestroy *bool   `hcl:"bucket_tfstate_kms_force_destroy"`
+	Groups                       Groups  `hcl:"groups"`
+	InitialGroupConfig           *string `hcl:"initial_group_config"`
 }
 
 type OrgTfvars struct {
 	DomainsToAllow                        []string  `hcl:"domains_to_allow"`
 	EssentialContactsDomains              []string  `hcl:"essential_contacts_domains_to_allow"`
-	BillingDataUsers                      string    `hcl:"billing_data_users"`
-	AuditDataUsers                        string    `hcl:"audit_data_users"`
 	SccNotificationName                   string    `hcl:"scc_notification_name"`
 	RemoteStateBucket                     string    `hcl:"remote_state_bucket"`
 	EnableHubAndSpoke                     bool      `hcl:"enable_hub_and_spoke"`
@@ -224,8 +223,7 @@ type OrgTfvars struct {
 }
 
 type EnvsTfvars struct {
-	MonitoringWorkspaceUsers string `hcl:"monitoring_workspace_users"`
-	RemoteStateBucket        string `hcl:"remote_state_bucket"`
+	RemoteStateBucket string `hcl:"remote_state_bucket"`
 }
 
 type NetCommonTfvars struct {
@@ -277,6 +275,7 @@ func GetBootstrapStepOutputs(t testing.TB, foundationPath string) BootstrapOutpu
 		EnvsSA:                    terraform.Output(t, options, "environment_step_terraform_service_account_email"),
 		OrgSA:                     terraform.Output(t, options, "organization_step_terraform_service_account_email"),
 		BootstrapSA:               terraform.Output(t, options, "bootstrap_step_terraform_service_account_email"),
+		RequiredGroups:            terraform.OutputMap(t, options, "required_groups"),
 	}
 }
 

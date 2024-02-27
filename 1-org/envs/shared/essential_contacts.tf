@@ -21,8 +21,8 @@ locals {
 
   # Notification categories details: https://cloud.google.com/resource-manager/docs/managing-notification-contacts#notification-categories
   categories_map = {
-    "BILLING"         = setunion([local.group_billing_admins, var.billing_data_users])
-    "LEGAL"           = setunion([local.group_org_admins, var.audit_data_users])
+    "BILLING"         = setunion([local.group_billing_admins, local.required_groups["billing_data_users"]])
+    "LEGAL"           = setunion([local.group_org_admins, local.required_groups["audit_data_users"]])
     "PRODUCT_UPDATES" = setunion([local.group_org_admins, local.gcp_scc_admin])
     "SECURITY"        = setunion([local.gcp_scc_admin, local.gcp_security_reviewer])
     "SUSPENSION"      = [local.group_org_admins]

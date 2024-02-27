@@ -294,7 +294,7 @@ Each step has instructions for this change.
 | bucket\_tfstate\_kms\_force\_destroy | When deleting a bucket, this boolean option will delete the KMS keys used for the Terraform state bucket. | `bool` | `false` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
-| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins     = string<br>      group_billing_admins = string<br>    })<br>    optional_groups = optional(object({<br>      billing_data_users         = optional(string, "")<br>      audit_data_users           = optional(string, "")<br>      monitoring_workspace_users = optional(string, "")<br>      gcp_security_reviewer      = optional(string, "")<br>      gcp_network_viewer         = optional(string, "")<br>      gcp_scc_admin              = optional(string, "")<br>      gcp_global_secrets_admin   = optional(string, "")<br>      gcp_kms_admin              = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
+| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = string<br>      audit_data_users           = string<br>      monitoring_workspace_users = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
 | initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
@@ -318,8 +318,6 @@ Each step has instructions for this change.
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud Build artifacts in cicd project. |
 | gcs\_bucket\_cloudbuild\_logs | Bucket used to store Cloud Build logs in cicd project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for Foundations Pipelines in Seed Project. |
-| group\_billing\_admins | Google Group for GCP Billing Administrators. |
-| group\_org\_admins | Google Group for GCP Organization Administrators. |
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
 | optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |

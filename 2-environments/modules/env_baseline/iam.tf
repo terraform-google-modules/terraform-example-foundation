@@ -21,5 +21,5 @@
 resource "google_project_iam_member" "monitoring_viewer" {
   project = module.monitoring_project.project_id
   role    = "roles/monitoring.viewer"
-  member  = "group:${var.monitoring_workspace_users}"
+  member  = "group:${local.required_groups["monitoring_workspace_users"]}"
 }

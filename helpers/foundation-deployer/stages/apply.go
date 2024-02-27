@@ -35,7 +35,6 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		OrgID:                        tfvars.OrgID,
 		DefaultRegion:                tfvars.DefaultRegion,
 		BillingAccount:               tfvars.BillingAccount,
-		OrgProjectCreators:           tfvars.OrgProjectCreators,
 		ParentFolder:                 tfvars.ParentFolder,
 		ProjectPrefix:                tfvars.ProjectPrefix,
 		FolderPrefix:                 tfvars.FolderPrefix,
@@ -194,8 +193,6 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 	orgTfvars := OrgTfvars{
 		DomainsToAllow:                        tfvars.DomainsToAllow,
 		EssentialContactsDomains:              tfvars.EssentialContactsDomains,
-		BillingDataUsers:                      tfvars.BillingDataUsers,
-		AuditDataUsers:                        tfvars.AuditDataUsers,
 		SccNotificationName:                   tfvars.SccNotificationName,
 		RemoteStateBucket:                     outputs.RemoteStateBucket,
 		EnableHubAndSpoke:                     tfvars.EnableHubAndSpoke,
@@ -209,8 +206,6 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 	}
 	orgTfvars.GcpGroups = GcpGroups{}
 	if tfvars.HasOptionalGroupsCreation() {
-		orgTfvars.BillingDataUsers = (*tfvars.Groups.OptionalGroups.BillingDataUsers)
-		orgTfvars.AuditDataUsers = (*tfvars.Groups.OptionalGroups.AuditDataUsers)
 		if (*tfvars.Groups.OptionalGroups.GcpSecurityReviewer) != "" {
 			orgTfvars.GcpGroups.SecurityReviewer = tfvars.Groups.OptionalGroups.GcpSecurityReviewer
 		}
@@ -250,11 +245,7 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 func DeployEnvStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf) error {
 
 	envsTfvars := EnvsTfvars{
-		MonitoringWorkspaceUsers: tfvars.MonitoringWorkspaceUsers,
-		RemoteStateBucket:        outputs.RemoteStateBucket,
-	}
-	if tfvars.HasOptionalGroupsCreation() {
-		envsTfvars.MonitoringWorkspaceUsers = (*tfvars.Groups.OptionalGroups.MonitoringWorkspaceUsers)
+		RemoteStateBucket: outputs.RemoteStateBucket,
 	}
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, EnvironmentsStep, "terraform.tfvars"), envsTfvars)
 	if err != nil {

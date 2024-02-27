@@ -82,24 +82,49 @@ variable "groups" {
     create_optional_groups = optional(bool, false)
     billing_project        = optional(string, null)
     required_groups = object({
-      group_org_admins     = string
-      group_billing_admins = string
+      group_org_admins           = string
+      group_billing_admins       = string
+      billing_data_users         = string
+      audit_data_users           = string
+      monitoring_workspace_users = string
     })
     optional_groups = optional(object({
-      billing_data_users         = optional(string, "")
-      audit_data_users           = optional(string, "")
-      monitoring_workspace_users = optional(string, "")
-      gcp_security_reviewer      = optional(string, "")
-      gcp_network_viewer         = optional(string, "")
-      gcp_scc_admin              = optional(string, "")
-      gcp_global_secrets_admin   = optional(string, "")
-      gcp_kms_admin              = optional(string, "")
+      gcp_security_reviewer    = optional(string, "")
+      gcp_network_viewer       = optional(string, "")
+      gcp_scc_admin            = optional(string, "")
+      gcp_global_secrets_admin = optional(string, "")
+      gcp_kms_admin            = optional(string, "")
     }), {})
   })
 
   validation {
     condition     = var.groups.create_required_groups || var.groups.create_optional_groups ? (var.groups.billing_project != null ? true : false) : true
     error_message = "A billing_project must be passed to use the automatic group creation."
+  }
+
+  validation {
+    condition     = var.groups.required_groups.group_org_admins != ""
+    error_message = "The group group_org_admins is invalid, it must be a valid email"
+  }
+
+  validation {
+    condition     = var.groups.required_groups.group_billing_admins != ""
+    error_message = "The group group_billing_admins is invalid, it must be a valid email"
+  }
+
+  validation {
+    condition     = var.groups.required_groups.billing_data_users != ""
+    error_message = "The group billing_data_users is invalid, it must be a valid email"
+  }
+
+  validation {
+    condition     = var.groups.required_groups.audit_data_users != ""
+    error_message = "The group audit_data_users is invalid, it must be a valid email"
+  }
+
+  validation {
+    condition     = var.groups.required_groups.monitoring_workspace_users != ""
+    error_message = "The group monitoring_workspace_users is invalid, it must be a valid email"
   }
 }
 

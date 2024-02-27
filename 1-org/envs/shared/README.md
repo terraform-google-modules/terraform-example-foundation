@@ -3,8 +3,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| audit\_data\_users | Google Workspace or Cloud Identity group that have access to audit logs. | `string` | n/a | yes |
-| billing\_data\_users | Google Workspace or Cloud Identity group that have access to billing data set. | `string` | n/a | yes |
 | billing\_export\_dataset\_location | The location of the dataset for billing data export. | `string` | `"US"` | no |
 | cai\_monitoring\_kms\_force\_destroy | If set to true, delete KMS keyring and keys when destroying the module; otherwise, destroying the module will fail if KMS keys are present. | `bool` | `false` | no |
 | create\_access\_context\_manager\_access\_policy | Whether to create access context manager access policy. | `bool` | `true` | no |

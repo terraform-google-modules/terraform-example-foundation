@@ -28,8 +28,7 @@ locals {
     "serviceAccount:${google_service_account.terraform-env-sa["net"].email}",
     "serviceAccount:${google_service_account.terraform-env-sa["proj"].email}",
   ]
-  org_project_creators = distinct(concat(var.org_project_creators, local.step_terraform_sa))
-  parent               = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
+  parent = var.parent_folder != "" ? "folders/${var.parent_folder}" : "organizations/${var.org_id}"
   org_admins_org_iam_permissions = var.org_policy_admin_role == true ? [
     "roles/orgpolicy.policyAdmin", "roles/resourcemanager.organizationAdmin", "roles/billing.user"
   ] : ["roles/resourcemanager.organizationAdmin", "roles/billing.user"]
@@ -53,7 +52,7 @@ module "seed_bootstrap" {
   group_org_admins               = var.groups.required_groups.group_org_admins
   group_billing_admins           = var.groups.required_groups.group_billing_admins
   default_region                 = var.default_region
-  org_project_creators           = local.org_project_creators
+  org_project_creators           = local.step_terraform_sa
   sa_enable_impersonation        = true
   create_terraform_sa            = false
   parent_folder                  = var.parent_folder == "" ? "" : local.parent

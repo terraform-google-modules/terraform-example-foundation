@@ -133,7 +133,6 @@ type GlobalTFVars struct {
 	BillingDataUsers                      string          `hcl:"billing_data_users"`
 	MonitoringWorkspaceUsers              string          `hcl:"monitoring_workspace_users"`
 	AuditDataUsers                        string          `hcl:"audit_data_users"`
-	OrgProjectCreators                    []string        `hcl:"org_project_creators"`
 	DefaultRegion                         string          `hcl:"default_region"`
 	ParentFolder                          *string         `hcl:"parent_folder"`
 	Domain                                string          `hcl:"domain"`
@@ -202,7 +201,6 @@ type BootstrapTfvars struct {
 	FolderPrefix                 *string  `hcl:"folder_prefix"`
 	BucketForceDestroy           *bool    `hcl:"bucket_force_destroy"`
 	BucketTfstateKmsForceDestroy *bool    `hcl:"bucket_tfstate_kms_force_destroy"`
-	OrgProjectCreators           []string `hcl:"org_project_creators"`
 	Groups                       Groups   `hcl:"groups"`
 	InitialGroupConfig           *string  `hcl:"initial_group_config"`
 }

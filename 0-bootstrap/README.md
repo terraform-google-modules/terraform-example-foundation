@@ -76,21 +76,13 @@ Also make sure that you've done the following:
 1. Set up a Google Cloud
    [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
 1. Create Cloud Identity or Google Workspace groups as defined in [groups for access control](https://cloud.google.com/architecture/security-foundations/authentication-authorization#groups_for_access_control).
-Set the variables in `groups.required_groups` to use the specific group names you create.
-1. Add the user who will use Terraform to the `group_org_admins` group.
-   They must be in this group, or they won't have
-   `roles/resourcemanager.projectCreator` access.
+Set the variables in **terraform.tfvars** (`groups` block) to use the specific group names you create.
 1. For the user who will run the procedures in this document, grant the following roles:
    - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
    - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
+   - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
    - The `roles/billing.admin` role on the billing account.
    - The `roles/resourcemanager.folderCreator` role.
-
-If other users need to be able to run these procedures, add them to the group
-represented by the `org_project_creators` variable.
-For more information about the permissions that are required, and the resources
-that are created, see the organization bootstrap module
-[documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
 ### Optional - Automatic creation of Google Cloud Identity groups
 
@@ -101,8 +93,8 @@ To enable automatic creation of the [groups](https://cloud.google.com/architectu
 - Have an existing project for Cloud Identity API billing.
 - Enable the Cloud Identity API (`cloudidentity.googleapis.com`) on the billing project.
 - Grant role `roles/serviceusage.serviceUsageConsumer` to the user running Terraform on the billing project.
-- Change the field `create_required_groups` to **true** to create the required groups.
-- Change the field `create_optional_groups` to **true** and fill the `optional_groups` that will be created.
+- Change the field `groups.create_required_groups` to **true** to create the required groups.
+- Change the field `groups.create_optional_groups` to **true** and fill the `groups.optional_groups` with the emails to be created.
 
 ### Optional - Cloud Build access to on-prem
 
@@ -306,7 +298,6 @@ Each step has instructions for this change.
 | initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
-| org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. | `string` | `""` | no |
 | project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
 

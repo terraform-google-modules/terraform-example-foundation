@@ -35,8 +35,6 @@ org_id          = "REPLACE_ME" # format "000000000000"
 billing_account = "REPLACE_ME" # format "000000-000000-000000"
 default_region  = "us-central1"
 
-org_project_creators = [] # Optional - Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required.
-
 bucket_force_destroy             = false
 bucket_tfstate_kms_force_destroy = false
 

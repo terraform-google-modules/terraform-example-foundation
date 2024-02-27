@@ -36,12 +36,6 @@ variable "parent_folder" {
   default     = ""
 }
 
-variable "org_project_creators" {
-  description = "Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required."
-  type        = list(string)
-  default     = []
-}
-
 variable "org_policy_admin_role" {
   description = "Additional Org Policy Admin role for admin group. You can use this for testing purposes."
   type        = bool

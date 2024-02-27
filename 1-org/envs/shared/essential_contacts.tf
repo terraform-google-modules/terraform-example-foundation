@@ -23,7 +23,7 @@ locals {
   categories_map = {
     "BILLING"         = setunion([local.group_billing_admins, var.billing_data_users])
     "LEGAL"           = setunion([local.group_org_admins, var.audit_data_users])
-    "PRODUCT_UPDATES" = [local.gcp_scc_admin]
+    "PRODUCT_UPDATES" = setunion([local.group_org_admins, local.gcp_scc_admin])
     "SECURITY"        = setunion([local.gcp_scc_admin, local.gcp_security_reviewer])
     "SUSPENSION"      = [local.group_org_admins]
     "TECHNICAL"       = setunion([local.gcp_security_reviewer, local.gcp_network_viewer])

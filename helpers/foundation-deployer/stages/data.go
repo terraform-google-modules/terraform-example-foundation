@@ -94,32 +94,28 @@ type ServerAddress struct {
 	ForwardingPath string `cty:"forwarding_path"`
 }
 
-type RequiredGroups_Groups struct {
-	GroupOrgAdmins           string  `cty:"group_org_admins"`
-	GroupBillingAdmins       string  `cty:"group_billing_admins"`
-	BillingDataUsers         *string `cty:"billing_data_users"`
-	AuditDataUsers           *string `cty:"audit_data_users"`
-	MonitoringWorkspaceUsers *string `cty:"monitoring_workspace_users"`
-}
-
 type RequiredGroups struct {
-	CreateGroups   *bool                 `cty:"create_groups"`
-	BillingProject *string               `cty:"billing_project"`
-	Groups         RequiredGroups_Groups `cty:"groups"`
-}
-
-type OptionalGroups_Groups struct {
-	GcpSecurityReviewer   string `cty:"gcp_security_reviewer"`
-	GcpNetworkViewer      string `cty:"gcp_network_viewer"`
-	GcpSccAdmin           string `cty:"gcp_scc_admin"`
-	GcpGlobalSecretsAdmin string `cty:"gcp_global_secrets_admin"`
-	GcpKmsAdmin           string `cty:"gcp_kms_admin"`
+	GroupOrgAdmins     string `cty:"group_org_admins"`
+	GroupBillingAdmins string `cty:"group_billing_admins"`
 }
 
 type OptionalGroups struct {
-	CreateGroups   bool                  `cty:"create_groups"`
-	BillingProject string                `cty:"billing_project"`
-	Groups         OptionalGroups_Groups `cty:"groups"`
+	BillingDataUsers         *string `cty:"billing_data_users"`
+	AuditDataUsers           *string `cty:"audit_data_users"`
+	MonitoringWorkspaceUsers *string `cty:"monitoring_workspace_users"`
+	GcpSecurityReviewer      *string `cty:"gcp_security_reviewer"`
+	GcpNetworkViewer         *string `cty:"gcp_network_viewer"`
+	GcpSccAdmin              *string `cty:"gcp_scc_admin"`
+	GcpGlobalSecretsAdmin    *string `cty:"gcp_global_secrets_admin"`
+	GcpKmsAdmin              *string `cty:"gcp_kms_admin"`
+}
+
+type Groups struct {
+	CreateRequiredGroups *bool           `cty:"create_required_groups"`
+	CreateOptionalGroups *bool           `cty:"create_optional_groups"`
+	BillingProject       *string         `cty:"billing_project"`
+	RequiredGroups       RequiredGroups  `cty:"required_groups"`
+	OptionalGroups       *OptionalGroups `cty:"optional_groups"`
 }
 
 type GcpGroups struct {
@@ -163,8 +159,7 @@ type GlobalTFVars struct {
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
 	ValidatorProjectId                    *string         `hcl:"validator_project_id"`
-	RequiredGroups                        RequiredGroups  `hcl:"required_groups"`
-	OptionalGroups                        *OptionalGroups `hcl:"optional_groups"`
+	Groups                                Groups          `hcl:"groups"`
 	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
 }
 
@@ -180,12 +175,12 @@ func (g GlobalTFVars) HasGroupsCreation() bool {
 
 // HasRequiredGroupsCreation checks if Required Groups creation is enabled
 func (g GlobalTFVars) HasRequiredGroupsCreation() bool {
-	return (*g.RequiredGroups.CreateGroups)
+	return (*g.Groups.CreateRequiredGroups)
 }
 
 // HasOptionalGroupsCreation checks if Optional Groups creation is enabled
 func (g GlobalTFVars) HasOptionalGroupsCreation() bool {
-	return (*g.OptionalGroups).CreateGroups
+	return (*g.Groups.CreateOptionalGroups)
 }
 
 // CheckString checks if any of the string fields in the GlobalTFVars has the given string
@@ -199,18 +194,17 @@ func (g GlobalTFVars) CheckString(s string) {
 }
 
 type BootstrapTfvars struct {
-	OrgID                        string          `hcl:"org_id"`
-	BillingAccount               string          `hcl:"billing_account"`
-	DefaultRegion                string          `hcl:"default_region"`
-	ParentFolder                 *string         `hcl:"parent_folder"`
-	ProjectPrefix                *string         `hcl:"project_prefix"`
-	FolderPrefix                 *string         `hcl:"folder_prefix"`
-	BucketForceDestroy           *bool           `hcl:"bucket_force_destroy"`
-	BucketTfstateKmsForceDestroy *bool           `hcl:"bucket_tfstate_kms_force_destroy"`
-	OrgProjectCreators           []string        `hcl:"org_project_creators"`
-	RequiredGroups               RequiredGroups  `hcl:"required_groups"`
-	OptionalGroups               *OptionalGroups `hcl:"optional_groups"`
-	InitialGroupConfig           *string         `hcl:"initial_group_config"`
+	OrgID                        string   `hcl:"org_id"`
+	BillingAccount               string   `hcl:"billing_account"`
+	DefaultRegion                string   `hcl:"default_region"`
+	ParentFolder                 *string  `hcl:"parent_folder"`
+	ProjectPrefix                *string  `hcl:"project_prefix"`
+	FolderPrefix                 *string  `hcl:"folder_prefix"`
+	BucketForceDestroy           *bool    `hcl:"bucket_force_destroy"`
+	BucketTfstateKmsForceDestroy *bool    `hcl:"bucket_tfstate_kms_force_destroy"`
+	OrgProjectCreators           []string `hcl:"org_project_creators"`
+	Groups                       Groups   `hcl:"groups"`
+	InitialGroupConfig           *string  `hcl:"initial_group_config"`
 }
 
 type OrgTfvars struct {

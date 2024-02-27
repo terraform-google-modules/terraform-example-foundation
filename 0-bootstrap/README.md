@@ -75,10 +75,8 @@ Also make sure that you've done the following:
    [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 1. Set up a Google Cloud
    [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
-1. Create Cloud Identity or Google Workspace groups for organization and billing admins.
-   Those groups will be used on the variable `groups.required_groups`:
-   - The **group_org_admins** group should have `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
-   - The **group_billing_admins** group should have `roles/billing.admin` role on the Google Cloud organization.
+1. Create Cloud Identity or Google Workspace groups as defined in [groups for access control](https://cloud.google.com/architecture/security-foundations/authentication-authorization#groups_for_access_control).
+Set the variables in `groups.required_groups` to use the specific group names you create.
 1. Add the user who will use Terraform to the `group_org_admins` group.
    They must be in this group, or they won't have
    `roles/resourcemanager.projectCreator` access.
@@ -98,35 +96,13 @@ that are created, see the organization bootstrap module
 
 In the foundation, Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) .
 
-To enable automatic creation of the [required groups](https://cloud.google.com/architecture/security-foundations/authentication-authorization#users_and_groups), complete the following actions:
+To enable automatic creation of the [groups](https://cloud.google.com/architecture/security-foundations/authentication-authorization#groups_for_access_control), complete the following actions:
 
 - Have an existing project for Cloud Identity API billing.
 - Enable the Cloud Identity API (`cloudidentity.googleapis.com`) on the billing project.
 - Grant role `roles/serviceusage.serviceUsageConsumer` to the user running Terraform on the billing project.
-- Provide values for the groups and billing project in the variable `groups`.
-
-All groups in the `groups.optional_groups` are **optional** and the roles assigned on the creation are:
-- **billing_viewer**:
-   - `roles/bigquery.user` on **prj-c-billing-logs** project.
-   - `roles/bigquery.dataViewer` on **prj-c-billing-logs** project.
-   - `roles/billing.viewer` on **Organization**.
-- **audit_viewer**:
-   - `roles/logging.viewer` on **prj-c-logging** project.
-   - `roles/bigquery.user` on **prj-c-logging** project.
-   - `roles/bigquery.dataViewer` on **prj-c-logging** project.
-- **monitoring_viewer**:
-   - `roles/monitoring.viewer` on **prj-{env}-logging** project.
-- **gcp_security_reviewer**:
-   - `roles/iam.securityReviewer` on **Organization** or on **fldr-common** folder.
-- **gcp_network_viewer**:
-   - `roles/compute.networkViewer` on **Organization** or on **fldr-common** folder.
-- **gcp_scc_admin**:
-   - `roles/securitycenter.adminEditor` on **prj-c-scc** and if there's no **fldr-common** folder on **Organization** too.
-- **gcp_global_secrets_admin**:
-   - `roles/secretmanager.admin` on **prj-c-secrets** project.
-- **gcp_kms_admin**:
-   - `roles/cloudkms.viewer` on **prj-c-kms** project.
-
+- Change the field `create_required_groups` to **true** to create the required groups.
+- Change the field `create_optional_groups` to **true** and fill the `optional_groups` that will be created.
 
 ### Optional - Cloud Build access to on-prem
 
@@ -326,14 +302,13 @@ Each step has instructions for this change.
 | bucket\_tfstate\_kms\_force\_destroy | When deleting a bucket, this boolean option will delete the KMS keys used for the Terraform state bucket. | `bool` | `false` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
+| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins     = string<br>      group_billing_admins = string<br>    })<br>    optional_groups = optional(object({<br>      billing_data_users         = optional(string, "")<br>      audit_data_users           = optional(string, "")<br>      monitoring_workspace_users = optional(string, "")<br>      gcp_security_reviewer      = optional(string, "")<br>      gcp_network_viewer         = optional(string, "")<br>      gcp_scc_admin              = optional(string, "")<br>      gcp_global_secrets_admin   = optional(string, "")<br>      gcp_kms_admin              = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
 | initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
-| optional\_groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_groups   = bool<br>    billing_project = string<br>    groups = object({<br>      gcp_security_reviewer    = string<br>      gcp_network_viewer       = string<br>      gcp_scc_admin            = string<br>      gcp_global_secrets_admin = string<br>      gcp_kms_admin            = string<br>    })<br>  })</pre> | <pre>{<br>  "billing_project": null,<br>  "create_groups": false,<br>  "groups": {<br>    "gcp_global_secrets_admin": "",<br>    "gcp_kms_admin": "",<br>    "gcp_network_viewer": "",<br>    "gcp_scc_admin": "",<br>    "gcp_security_reviewer": ""<br>  }<br>}</pre> | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
 | org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. | `string` | `""` | no |
 | project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
-| required\_groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_groups   = optional(bool, false)<br>    billing_project = optional(string, null)<br>    groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = optional(string, "")<br>      audit_data_users           = optional(string, "")<br>      monitoring_workspace_users = optional(string, "")<br>    })<br>  })</pre> | n/a | yes |
 
 ## Outputs
 

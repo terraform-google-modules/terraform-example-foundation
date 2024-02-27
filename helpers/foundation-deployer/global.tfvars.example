@@ -59,29 +59,25 @@ folder_prefix  = "fldr"
 // https://github.com/terraform-google-modules/terraform-google-group/blob/main/README.md#google-workspace-formerly-known-as-g-suite-roles
 
 //initial_group_config = "WITH_INITIAL_OWNER"
-required_groups = {
-  #  create_groups   = false
-  #  billing_project = ""
-  groups = {
-    group_org_admins           = "REPLACE_ME" # "gcp-organization-admins@example.com"
-    group_billing_admins       = "REPLACE_ME" # "gcp-billing-admins@example.com"
-#    billing_data_users         = ""
-#    audit_data_users           = ""
-#    monitoring_workspace_users = ""
+groups = {
+  create_required_groups = false # Change to true to create the required_groups
+  create_optional_groups = false # Change to true to create the optional_groups
+  billing_project        = null  # Fill to create required or optional groups
+  required_groups = {
+    group_org_admins     = "REPLACE_ME" # "gcp-organization-admins@example.com"
+    group_billing_admins = "REPLACE_ME" # "gcp-billing-admins@example.com"
+  }
+  optional_groups = {
+    billing_data_users         = "" #"billing_data_users_local_test@example.com"
+    audit_data_users           = "" #"audit_data_users_local_test@example.com"
+    monitoring_workspace_users = "" #"monitoring_workspace_users_local_test@example.com"
+    gcp_security_reviewer      = "" #"gcp_security_reviewer_local_test@example.com"
+    gcp_network_viewer         = "" #"gcp_network_viewer_local_test@example.com"
+    gcp_scc_admin              = "" #"gcp_scc_admin_local_test@example.com"
+    gcp_global_secrets_admin   = "" #"gcp_global_secrets_admin_local_test@example.com"
+    gcp_kms_admin              = "" #"gcp_kms_admin_local_test@example.com"
   }
 }
-
-# optional_groups = {
-#   create_groups   = true
-#   billing_project = "REPLACE_ME"
-#   groups = {
-#     gcp_security_reviewer    = "gcp_security_reviewer_local_test@example.com"
-#     gcp_network_viewer       = "gcp_network_viewer_local_test@example.com"
-#     gcp_scc_admin            = "gcp_scc_admin_local_test@example.com"
-#     gcp_global_secrets_admin = "gcp_global_secrets_admin_local_test@example.com"
-#     gcp_kms_admin            = "gcp_kms_admin_local_test@example.com"
-#   }
-# }
 
 // 1-org inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/1-org/envs/shared/README.md#inputs

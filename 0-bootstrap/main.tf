@@ -50,8 +50,8 @@ module "seed_bootstrap" {
   state_bucket_name              = "${var.bucket_prefix}-${var.project_prefix}-b-seed-tfstate"
   force_destroy                  = var.bucket_force_destroy
   billing_account                = var.billing_account
-  group_org_admins               = var.required_groups.groups.group_org_admins
-  group_billing_admins           = var.required_groups.groups.group_billing_admins
+  group_org_admins               = var.groups.required_groups.group_org_admins
+  group_billing_admins           = var.groups.required_groups.group_billing_admins
   default_region                 = var.default_region
   org_project_creators           = local.org_project_creators
   sa_enable_impersonation        = true

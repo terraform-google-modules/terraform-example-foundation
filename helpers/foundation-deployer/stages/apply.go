@@ -41,8 +41,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		FolderPrefix:                 tfvars.FolderPrefix,
 		BucketForceDestroy:           tfvars.BucketForceDestroy,
 		BucketTfstateKmsForceDestroy: tfvars.BucketTfstateKmsForceDestroy,
-		RequiredGroups:               tfvars.RequiredGroups,
-		OptionalGroups:               tfvars.OptionalGroups,
+		Groups:                       tfvars.Groups,
 		InitialGroupConfig:           tfvars.InitialGroupConfig,
 	}
 
@@ -209,25 +208,23 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		BillingExportDatasetLocation:          tfvars.BillingExportDatasetLocation,
 	}
 	orgTfvars.GcpGroups = GcpGroups{}
-	if tfvars.HasRequiredGroupsCreation() {
-		orgTfvars.BillingDataUsers = (*tfvars.RequiredGroups.Groups.BillingDataUsers)
-		orgTfvars.AuditDataUsers = (*tfvars.RequiredGroups.Groups.AuditDataUsers)
-	}
 	if tfvars.HasOptionalGroupsCreation() {
-		if (*tfvars.OptionalGroups).Groups.GcpSecurityReviewer != "" {
-			orgTfvars.GcpGroups.SecurityReviewer = &tfvars.OptionalGroups.Groups.GcpSecurityReviewer
+		orgTfvars.BillingDataUsers = (*tfvars.Groups.OptionalGroups.BillingDataUsers)
+		orgTfvars.AuditDataUsers = (*tfvars.Groups.OptionalGroups.AuditDataUsers)
+		if (*tfvars.Groups.OptionalGroups.GcpSecurityReviewer) != "" {
+			orgTfvars.GcpGroups.SecurityReviewer = tfvars.Groups.OptionalGroups.GcpSecurityReviewer
 		}
-		if (*tfvars.OptionalGroups).Groups.GcpNetworkViewer != "" {
-			orgTfvars.GcpGroups.NetworkViewer = &tfvars.OptionalGroups.Groups.GcpNetworkViewer
+		if (*tfvars.Groups.OptionalGroups.GcpNetworkViewer) != "" {
+			orgTfvars.GcpGroups.NetworkViewer = tfvars.Groups.OptionalGroups.GcpNetworkViewer
 		}
-		if (*tfvars.OptionalGroups).Groups.GcpSccAdmin != "" {
-			orgTfvars.GcpGroups.SccAdmin = &tfvars.OptionalGroups.Groups.GcpSccAdmin
+		if (*tfvars.Groups.OptionalGroups.GcpSccAdmin) != "" {
+			orgTfvars.GcpGroups.SccAdmin = tfvars.Groups.OptionalGroups.GcpSccAdmin
 		}
-		if (*tfvars.OptionalGroups).Groups.GcpGlobalSecretsAdmin != "" {
-			orgTfvars.GcpGroups.GlobalSecretsAdmin = &tfvars.OptionalGroups.Groups.GcpGlobalSecretsAdmin
+		if (*tfvars.Groups.OptionalGroups.GcpGlobalSecretsAdmin) != "" {
+			orgTfvars.GcpGroups.GlobalSecretsAdmin = tfvars.Groups.OptionalGroups.GcpGlobalSecretsAdmin
 		}
-		if (*tfvars.OptionalGroups).Groups.GcpKmsAdmin != "" {
-			orgTfvars.GcpGroups.KmsAdmin = &tfvars.OptionalGroups.Groups.GcpKmsAdmin
+		if (*tfvars.Groups.OptionalGroups.GcpKmsAdmin) != "" {
+			orgTfvars.GcpGroups.KmsAdmin = tfvars.Groups.OptionalGroups.GcpKmsAdmin
 		}
 	}
 
@@ -257,7 +254,7 @@ func DeployEnvStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		RemoteStateBucket:        outputs.RemoteStateBucket,
 	}
 	if tfvars.HasRequiredGroupsCreation() {
-		envsTfvars.MonitoringWorkspaceUsers = (*tfvars.RequiredGroups.Groups.MonitoringWorkspaceUsers)
+		envsTfvars.MonitoringWorkspaceUsers = (*tfvars.Groups.OptionalGroups.MonitoringWorkspaceUsers)
 	}
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, EnvironmentsStep, "terraform.tfvars"), envsTfvars)
 	if err != nil {

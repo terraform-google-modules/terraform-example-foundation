@@ -109,7 +109,7 @@ resource "google_organization_iam_member" "billing_viewer" {
 }
 
 /******************************************
- Groups permissions according to SFB (Section 6.2 - Users and groups) - IAM
+ Groups permissions
 *****************************************/
 
 resource "google_organization_iam_member" "security_reviewer" {
@@ -187,36 +187,4 @@ resource "google_project_iam_member" "kms_admin" {
   project = module.org_kms.project_id
   role    = "roles/cloudkms.viewer"
   member  = "group:${var.gcp_groups.kms_admin}"
-}
-
-/******************************************
- Privileged accounts permissions according to SFB (Section 6.3 - Privileged identities)
-*****************************************/
-
-resource "google_organization_iam_member" "org_admin_user" {
-  count  = var.gcp_user.org_admin != null && local.parent_folder == "" ? 1 : 0
-  org_id = local.org_id
-  role   = "roles/resourcemanager.organizationAdmin"
-  member = "user:${var.gcp_user.org_admin}"
-}
-
-resource "google_folder_iam_member" "org_admin_user" {
-  count  = var.gcp_user.org_admin != null && local.parent_folder != "" ? 1 : 0
-  folder = "folders/${local.parent_folder}"
-  role   = "roles/resourcemanager.folderAdmin"
-  member = "user:${var.gcp_user.org_admin}"
-}
-
-resource "google_organization_iam_member" "billing_creator_user" {
-  count  = var.gcp_user.billing_creator != null && local.parent_folder == "" ? 1 : 0
-  org_id = local.org_id
-  role   = "roles/billing.creator"
-  member = "user:${var.gcp_user.billing_creator}"
-}
-
-resource "google_billing_account_iam_member" "billing_admin_user" {
-  count              = var.gcp_user.billing_admin != null ? 1 : 0
-  billing_account_id = local.billing_account
-  role               = "roles/billing.admin"
-  member             = "user:${var.gcp_user.billing_admin}"
 }

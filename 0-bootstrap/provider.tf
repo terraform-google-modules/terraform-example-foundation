@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-locals {
-  billing_project = var.optional_groups.billing_project != null ? var.optional_groups.billing_project : var.required_groups.billing_project
-}
-
 provider "google-beta" {
   user_project_override = true
-  billing_project       = local.billing_project
+  billing_project       = var.groups.billing_project
 }
 
 # If you are using Terraform Cloud Agents, un-comment this block after the first apply according README instructions

@@ -48,14 +48,6 @@ output "group_email" {
   value = var.group_email
 }
 
-output "group_org_admins" {
-  value = var.group_email
-}
-
-output "group_billing_admins" {
-  value = var.group_email
-}
-
 output "audit_data_users" {
   value = var.group_email
 }

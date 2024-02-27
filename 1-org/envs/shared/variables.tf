@@ -166,27 +166,11 @@ variable "gcp_groups" {
   EOT
   type = object({
     audit_viewer         = optional(string, null)
-    monitoring_viewer    = optional(string, null)
     security_reviewer    = optional(string, null)
     network_viewer       = optional(string, null)
     scc_admin            = optional(string, null)
     global_secrets_admin = optional(string, null)
     kms_admin            = optional(string, null)
-  })
-  default = {}
-}
-
-variable "gcp_user" {
-  description = <<EOT
-  Users to grant specific roles in the Organization.
-  org_admin: Identity that has organization administrator permissions.
-  billing_creator: Identity that can create billing accounts.
-  billing_admin: Identity that has billing administrator permissions.
-  EOT
-  type = object({
-    org_admin       = optional(string, null)
-    billing_creator = optional(string, null)
-    billing_admin   = optional(string, null)
   })
   default = {}
 }

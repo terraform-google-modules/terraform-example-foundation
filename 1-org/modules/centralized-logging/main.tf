@@ -138,6 +138,20 @@ resource "google_project_iam_member" "logbucket_sink_member" {
   member = module.log_export["${each.value}_lbk"].writer_identity
 }
 
+#------------------------------------------------------------------#
+# Log Bucket Service account IAM membership for log_export_billing #
+#------------------------------------------------------------------#
+resource "google_project_iam_member" "logbucket_sink_member_billing" {
+  for_each = var.logbucket_options != null ? local.logbucket_sink_member : {}
+
+  project = var.logging_destination_project_id
+  role    = "roles/logging.bucketWriter"
+
+  # Set permission only on sinks for this destination using
+  # module.log_export_billing key "<resource>_<dest>"
+  member = module.log_export_billing["${each.value}_lbk"].writer_identity
+}
+
 #----------------------#
 # Send logs to Storage #
 #----------------------#
@@ -172,6 +186,17 @@ resource "google_storage_bucket_iam_member" "storage_sink_member" {
   member = module.log_export["${each.value}_sto"].writer_identity
 }
 
+#---------------------------------------------------------------#
+# Storage Service account IAM membership for log_export_billing #
+#---------------------------------------------------------------#
+resource "google_storage_bucket_iam_member" "storage_sink_member_billing" {
+  for_each = var.storage_options != null ? var.resources : {}
+
+  bucket = module.destination_storage[0].resource_name
+  role   = "roles/storage.objectCreator"
+  member = module.log_export_billing["${each.value}_sto"].writer_identity
+}
+
 
 #----------------------#
 # Send logs to Pub\Sub #
@@ -198,4 +223,16 @@ resource "google_pubsub_topic_iam_member" "pubsub_sink_member" {
   topic   = module.destination_pubsub[0].resource_name
   role    = "roles/pubsub.publisher"
   member  = module.log_export["${each.value}_pub"].writer_identity
+}
+
+#--------------------------------------------------------------#
+# Pubsub Service account IAM membership for log_export_billing #
+#--------------------------------------------------------------#
+resource "google_pubsub_topic_iam_member" "pubsub_sink_member_billing" {
+  for_each = var.pubsub_options != null ? var.resources : {}
+
+  project = var.logging_destination_project_id
+  topic   = module.destination_pubsub[0].resource_name
+  role    = "roles/pubsub.publisher"
+  member  = module.log_export_billing["${each.value}_pub"].writer_identity
 }

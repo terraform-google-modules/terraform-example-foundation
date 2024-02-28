@@ -26,8 +26,6 @@ locals {
   default_region                                = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   project_prefix                                = data.terraform_remote_state.bootstrap.outputs.common_config.project_prefix
   folder_prefix                                 = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  group_billing_admins                          = data.terraform_remote_state.bootstrap.outputs.group_billing_admins
-  group_org_admins                              = data.terraform_remote_state.bootstrap.outputs.group_org_admins
   networks_step_terraform_service_account_email = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
   org_step_terraform_service_account_email      = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
   bootstrap_folder_name                         = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name

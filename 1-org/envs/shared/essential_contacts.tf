@@ -15,6 +15,8 @@
  */
 
 locals {
+  group_org_admins      = local.required_groups["group_org_admins"]
+  group_billing_admins  = local.required_groups["group_billing_admins"]
   gcp_scc_admin         = var.gcp_groups.scc_admin == null ? local.group_org_admins : var.gcp_groups.scc_admin
   gcp_security_reviewer = var.gcp_groups.security_reviewer == null ? local.group_org_admins : var.gcp_groups.security_reviewer
   gcp_network_viewer    = var.gcp_groups.network_viewer == null ? local.group_org_admins : var.gcp_groups.network_viewer

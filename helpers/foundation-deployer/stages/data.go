@@ -131,9 +131,6 @@ type GcpGroups struct {
 type GlobalTFVars struct {
 	OrgID                                 string          `hcl:"org_id"`
 	BillingAccount                        string          `hcl:"billing_account"`
-	BillingDataUsers                      string          `hcl:"billing_data_users"`
-	MonitoringWorkspaceUsers              string          `hcl:"monitoring_workspace_users"`
-	AuditDataUsers                        string          `hcl:"audit_data_users"`
 	DefaultRegion                         string          `hcl:"default_region"`
 	ParentFolder                          *string         `hcl:"parent_folder"`
 	Domain                                string          `hcl:"domain"`

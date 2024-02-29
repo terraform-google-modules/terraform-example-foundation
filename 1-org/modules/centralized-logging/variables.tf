@@ -25,12 +25,12 @@ variable "resources" {
 }
 
 variable "resource_type" {
-  description = "Resource type of the resource that will export logs to destination. Must be: project, organization or folder."
+  description = "Resource type of the resource that will export logs to destination. Must be: project, organization, or folder."
   type        = string
 
   validation {
     condition     = contains(["project", "folder", "organization"], var.resource_type)
-    error_message = "The resource_type value must be: project, organization or folder."
+    error_message = "The resource_type value must be: project, organization, or folder."
   }
 }
 
@@ -135,4 +135,3 @@ EOT
   })
   default = null
 }
-

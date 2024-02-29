@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+variable "enable_billing_account_sink" {
+  description = "If true, a log router sink will be created for the billing account. The billing_account variable cannot be null."
+  type        = bool
+  default     = false
+}
+
 variable "enable_hub_and_spoke" {
   description = "Enable Hub-and-Spoke architecture."
   type        = bool

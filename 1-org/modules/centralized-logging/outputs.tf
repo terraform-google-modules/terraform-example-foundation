@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+output "enable_billing_account_sink" {
+  description = "If true, a log router sink will be created for the billing account. The billing_account variable cannot be null."
+  value       = var.enable_billing_account_sink
+}
+
 output "storage_destination_name" {
   description = "The resource name for the destination Storage."
   value       = try(module.destination_storage[0].resource_name, "")

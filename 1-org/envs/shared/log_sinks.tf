@@ -43,6 +43,7 @@ module "logs_export" {
   resource_type                  = local.parent_resource_type
   logging_destination_project_id = module.org_audit_logs.project_id
   billing_account                = local.billing_account
+  enable_billing_account_sink    = var.enable_billing_account_sink
 
   /******************************************
     Send logs to Storage
@@ -93,4 +94,3 @@ resource "google_bigquery_dataset" "billing_dataset" {
   friendly_name = "GCP Billing Data"
   location      = var.billing_export_dataset_location
 }
-

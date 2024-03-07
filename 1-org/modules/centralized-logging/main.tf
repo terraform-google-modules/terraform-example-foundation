@@ -131,6 +131,7 @@ resource "google_project_iam_member" "project_sink_member" {
 module "internal_project_log_export" {
   source  = "terraform-google-modules/log-export/google"
   version = "~> 7.8"
+  count   = var.project_options != null ? 1 : 0
 
   destination_uri      = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${coalesce(var.project_options.log_bucket_id, "_AggregatedLogs")}"
   filter               = var.project_options.logging_sink_filter
@@ -139,35 +140,21 @@ module "internal_project_log_export" {
   parent_resource_type = "project"
 }
 
-#-------------------------------------------------------#
-# Send logs to Log project - _AggregatedLogs Log bucket #
-#-------------------------------------------------------#
+module "destination_aggregated_logs" {
+  source  = "terraform-google-modules/log-export/google//modules/logbucket"
+  version = "~> 7.8"
+  count   = var.project_options != null ? 1 : 0
 
-resource "google_logging_project_bucket_config" "prj_logs_bucket" {
-  count = var.project_options != null ? 1 : 0
-
-  project          = var.logging_destination_project_id
-  bucket_id        = coalesce(var.project_options.log_bucket_id, "_AggregatedLogs")
-  description      = var.project_options.log_bucket_description
-  location         = var.project_options.location
-  retention_days   = var.project_options.retention_days
-  enable_analytics = var.project_options.enable_analytics
+  project_id                    = var.logging_destination_project_id
+  name                          = coalesce(var.project_options.log_bucket_id, "_AggregatedLogs")
+  log_sink_writer_identity      = module.internal_project_log_export[0].writer_identity
+  location                      = var.project_options.location
+  enable_analytics              = var.project_options.enable_analytics
+  linked_dataset_id             = var.project_options.linked_dataset_id
+  linked_dataset_description    = var.project_options.linked_dataset_description
+  retention_days                = var.project_options.retention_days
+  grant_write_permission_on_bkt = false
 }
-
-#--------------------------------------------------------------------#
-# Send logs to Log project - _AggregatedLogs Linked BigQuery dataset #
-#--------------------------------------------------------------------#
-
-resource "google_logging_linked_dataset" "prj_logs_linked_dataset" {
-  count = var.project_options != null && var.project_options.enable_analytics ? 1 : 0
-
-  link_id     = coalesce(var.project_options.linked_dataset_id, "ds_c_aggregated_logs_analytics")
-  description = var.project_options.linked_dataset_description
-  location    = var.project_options.location
-  parent      = "projects/${var.logging_destination_project_id}"
-  bucket      = google_logging_project_bucket_config.prj_logs_bucket[0].id
-}
-
 
 #-------------------------------------------------#
 # Send logs to Log project - update _Default sink #

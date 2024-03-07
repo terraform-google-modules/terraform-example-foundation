@@ -109,48 +109,102 @@ module "destination_project" {
   log_sink_writer_identity = module.log_export["${local.value_first_resource}_prj"].writer_identity
 }
 
-#-----------------------------------------------#
-# Send logs to Log project - Default Log bucket #
-#-----------------------------------------------#
+#---------------------------------------------#
+# Log Projects Service account IAM membership #
+#---------------------------------------------#
+
+resource "google_project_iam_member" "project_sink_member" {
+  for_each = var.project_options != null ? var.resources : {}
+
+  project = var.logging_destination_project_id
+  role    = "roles/logging.logWriter"
+
+  # Set permission only on sinks for this destination using
+  # module.log_export key "<resource>_<dest>"
+  member = module.log_export["${each.value}_prj"].writer_identity
+}
+
+#----------------------------------------------#
+# Send logs to Log project - Internal Log sink #
+#----------------------------------------------#
+
+module "internal_project_log_export" {
+  source  = "terraform-google-modules/log-export/google"
+  version = "~> 7.8"
+
+  destination_uri      = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${coalesce(var.project_options.log_bucket_id, "_AggregatedLogs")}"
+  filter               = var.project_options.logging_sink_filter
+  log_sink_name        = "${coalesce(var.project_options.logging_sink_name, local.logging_sink_name_map["prj"])}-la"
+  parent_resource_id   = var.logging_destination_project_id
+  parent_resource_type = "project"
+}
+
+#-------------------------------------------------------#
+# Send logs to Log project - _AggregatedLogs Log bucket #
+#-------------------------------------------------------#
 
 resource "google_logging_project_bucket_config" "prj_logs_bucket" {
   count = var.project_options != null ? 1 : 0
 
   project          = var.logging_destination_project_id
-  bucket_id        = coalesce(var.project_options.log_bucket_id, "logbkt-prj-logs")
+  bucket_id        = coalesce(var.project_options.log_bucket_id, "_AggregatedLogs")
   description      = var.project_options.log_bucket_description
   location         = var.project_options.location
   retention_days   = var.project_options.retention_days
   enable_analytics = var.project_options.enable_analytics
 }
 
-#------------------------------------------------------------#
-# Send logs to Log project - Default Linked BigQuery dataset #
-#------------------------------------------------------------#
+#--------------------------------------------------------------------#
+# Send logs to Log project - _AggregatedLogs Linked BigQuery dataset #
+#--------------------------------------------------------------------#
 
 resource "google_logging_linked_dataset" "prj_logs_linked_dataset" {
   count = var.project_options != null && var.project_options.enable_analytics ? 1 : 0
 
-  link_id     = coalesce(var.project_options.linked_dataset_id, "ds_c_prj_logbkt_analytics")
+  link_id     = coalesce(var.project_options.linked_dataset_id, "ds_c_aggregated_logs_analytics")
   description = var.project_options.linked_dataset_description
   location    = var.project_options.location
   parent      = "projects/${var.logging_destination_project_id}"
   bucket      = google_logging_project_bucket_config.prj_logs_bucket[0].id
 }
 
-#-----------------------------------------------#
-# Send logs to Log project - Internal Log sink #
-#-----------------------------------------------#
 
-module "internal_project_log_export" {
-  source  = "terraform-google-modules/log-export/google"
-  version = "~> 7.8"
+#-------------------------------------------------#
+# Send logs to Log project - update _Default sink #
+#-------------------------------------------------#
 
-  destination_uri      = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${var.project_options.log_bucket_id}"
-  filter               = var.project_options.logging_sink_filter
-  log_sink_name        = coalesce(var.project_options.logging_sink_name, local.logging_sink_name_map["prj"])
-  parent_resource_id   = var.logging_destination_project_id
-  parent_resource_type = "project"
+data "google_client_config" "default" {
+}
+
+resource "terracurl_request" "exclude_external_logs" {
+  name   = "exclude_external_logs"
+  url    = "https://logging.googleapis.com/v2/projects/${var.logging_destination_project_id}/sinks/_Default?updateMask=exclusions"
+  method = "PUT"
+  headers = {
+    Authorization = "Bearer ${data.google_client_config.default.access_token}"
+    Content-Type  = "application/json",
+  }
+  request_body = <<EOF
+{
+  "exclusions": [
+    {
+      "name": "exclude_external_logs",
+      "filter": "-logName : \"/${var.logging_destination_project_id}/\""
+    }
+  ],
+}
+
+EOF
+
+  response_codes = [200]
+  // no-op destroy
+  destroy_url            = "https://logging.googleapis.com/v2/projects/${var.logging_destination_project_id}/sinks/_Default"
+  destroy_method         = "GET"
+  destroy_response_codes = [200]
+  destroy_headers = {
+    Authorization = "Bearer ${data.google_client_config.default.access_token}"
+    Content-Type  = "application/json",
+  }
 }
 
 #-------------------------#

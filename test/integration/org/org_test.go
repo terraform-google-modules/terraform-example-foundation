@@ -249,6 +249,14 @@ func TestOrg(t *testing.T) {
 			prjBigqueryDatasetID := fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectNumber, prjLinkedDatasetID)
 			assert.Equal(prjBigqueryDatasetID, prjLinkedDs.Get("bigqueryDataset.datasetId").String(), "log bucket BigQuery dataset ID should match")
 
+			// add filter exclusion
+			prjLogsExportDefaultSink := gcloud.Runf(t, "logging sinks describe _Default --project=%s", auditLogsProjectID)
+			exclusions := prjLogsExportDefaultSink.Get("exclusions").Array()
+			assert.NotEmpty(exclusions, fmt.Sprintf("exclusion list for _Default sink in project %s must not be empty", auditLogsProjectID))
+			exclusionFilter := fmt.Sprintf("-logName : \"/%s/\"",auditLogsProjectID)
+			assert.Equal(exclusions[0].Get("filter").String(), exclusionFilter)
+
+
 			// logging sinks
 			logsFilter := []string{
 				"logName: /logs/cloudaudit.googleapis.com%2Factivity",

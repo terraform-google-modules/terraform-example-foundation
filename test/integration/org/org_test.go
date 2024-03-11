@@ -216,20 +216,6 @@ func TestOrg(t *testing.T) {
 			bkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", logsExportStorageBucketName), gcAlphaOpts).Array()[0]
 			assert.Equal(logsExportStorageBucketName, bkt.Get("metadata.id").String(), fmt.Sprintf("Bucket %s should exist", logsExportStorageBucketName))
 
-			// Log Bucket destination
-			logsExportLogBktName := org.GetStringOutput("logs_export_logbucket_name")
-			defaultRegion := commonConfig["default_region"]
-			logBktFullName := fmt.Sprintf("projects/%s/locations/%s/buckets/%s", auditLogsProjectID, defaultRegion, logsExportLogBktName)
-			logBktDetails := gcloud.Runf(t, fmt.Sprintf("logging buckets describe %s --location=%s --project=%s", logsExportLogBktName, defaultRegion, auditLogsProjectID))
-			assert.Equal(logBktFullName, logBktDetails.Get("name").String(), "log bucket name should match")
-			linkedDatasetID := "ds_c_logbkt_analytics"
-			auditLogsProjectNumber := gcloud.Runf(t, "projects describe %s", auditLogsProjectID).Get("projectNumber").String()
-			linkedDsName := org.GetStringOutput("logs_export_logbucket_linked_dataset_name")
-			linkedDs := gcloud.Runf(t, "logging links describe %s --bucket=%s --location=%s --project=%s", linkedDatasetID, logsExportLogBktName, defaultRegion, auditLogsProjectID)
-			assert.Equal(linkedDsName, linkedDs.Get("name").String(), "log bucket linked dataset name should match")
-			bigqueryDatasetID := fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectNumber, linkedDatasetID)
-			assert.Equal(bigqueryDatasetID, linkedDs.Get("bigqueryDataset.datasetId").String(), "log bucket BigQuery dataset ID should match")
-
 			// Pub/Sub destination
 			logsExportTopicName := org.GetStringOutput("logs_export_pubsub_topic")
 			logsExportTopicFullName := fmt.Sprintf("projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName)
@@ -242,7 +228,7 @@ func TestOrg(t *testing.T) {
 			prjLogBktDetails := gcloud.Runf(t, fmt.Sprintf("logging buckets describe %s --location=%s --project=%s", prjLogsExportLogBktName, defaultRegion, auditLogsProjectID))
 			assert.Equal(prjLogBktFullName, prjLogBktDetails.Get("name").String(), "log bucket name should match")
 
-			prjLinkedDatasetID := "ds_c_prj_logbkt_analytics"
+			prjLinkedDatasetID := "ds_c_prj_aggregated_logs_analytics"
 			prjLinkedDsName := org.GetStringOutput("logs_export_project_linked_dataset_name")
 			prjLinkedDs := gcloud.Runf(t, "logging links describe %s --bucket=%s --location=%s --project=%s", prjLinkedDatasetID, prjLogsExportLogBktName, defaultRegion, auditLogsProjectID)
 			assert.Equal(prjLinkedDsName, prjLinkedDs.Get("name").String(), "log bucket linked dataset name should match")
@@ -277,10 +263,6 @@ func TestOrg(t *testing.T) {
 				{
 					name:        "sk-c-logging-bkt",
 					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
-				},
-				{
-					name:        "sk-c-logging-logbkt",
-					destination: fmt.Sprintf("logging.googleapis.com/%s", logBktFullName),
 				},
 				{
 					name:        "sk-c-logging-pub",

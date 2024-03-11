@@ -42,35 +42,30 @@ locals {
   destinations_options = {
     pub = var.pubsub_options
     sto = var.storage_options
-    lbk = var.logbucket_options
     prj = var.project_options
   }
 
   logging_sink_name_map = {
     pub = try("sk-to-tp-logs-${var.logging_destination_project_id}", "sk-to-tp-logs")
     sto = try("sk-to-bkt-logs-${var.logging_destination_project_id}", "sk-to-bkt-logs")
-    lbk = try("sk-to-logbkt-logs-${var.logging_destination_project_id}", "sk-to-logbkt-logs")
     prj = try("sk-to-prj-logs-${var.logging_destination_project_id}", "sk-to-prj-logs")
   }
 
   logging_tgt_name = {
     pub = "${local.logging_tgt_prefix.pub}${random_string.suffix.result}"
     sto = "${local.logging_tgt_prefix.sto}${random_string.suffix.result}"
-    lbk = "${local.logging_tgt_prefix.lbk}${random_string.suffix.result}"
     prj = ""
   }
 
   destination_uri_map = {
     pub = try(module.destination_pubsub[0].destination_uri, "")
     sto = try(module.destination_storage[0].destination_uri, "")
-    lbk = try(module.destination_logbucket[0].destination_uri, "")
     prj = try(module.destination_project[0].destination_uri, "")
   }
 
   logging_tgt_prefix = {
     pub = "tp-logs-"
     sto = try("bkt-logs-${var.logging_destination_project_id}-", "bkt-logs-")
-    lbk = "logbkt-logs-"
   }
 }
 
@@ -133,7 +128,7 @@ module "internal_project_log_export" {
   version = "~> 7.8"
   count   = var.project_options != null ? 1 : 0
 
-  destination_uri      = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${coalesce(var.project_options.log_bucket_id, "_AggregatedLogs")}"
+  destination_uri      = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${coalesce(var.project_options.log_bucket_id, "AggregatedLogs")}"
   filter               = var.project_options.logging_sink_filter
   log_sink_name        = "${coalesce(var.project_options.logging_sink_name, local.logging_sink_name_map["prj"])}-la"
   parent_resource_id   = var.logging_destination_project_id
@@ -146,7 +141,7 @@ module "destination_aggregated_logs" {
   count   = var.project_options != null ? 1 : 0
 
   project_id                    = var.logging_destination_project_id
-  name                          = coalesce(var.project_options.log_bucket_id, "_AggregatedLogs")
+  name                          = coalesce(var.project_options.log_bucket_id, "AggregatedLogs")
   log_sink_writer_identity      = module.internal_project_log_export[0].writer_identity
   location                      = var.project_options.location
   enable_analytics              = var.project_options.enable_analytics
@@ -164,9 +159,12 @@ data "google_client_config" "default" {
 }
 
 resource "terracurl_request" "exclude_external_logs" {
-  name   = "exclude_external_logs"
-  url    = "https://logging.googleapis.com/v2/projects/${var.logging_destination_project_id}/sinks/_Default?updateMask=exclusions"
-  method = "PUT"
+  count = var.project_options != null ? 1 : 0
+
+  name           = "exclude_external_logs"
+  url            = "https://logging.googleapis.com/v2/projects/${var.logging_destination_project_id}/sinks/_Default?updateMask=exclusions"
+  method         = "PUT"
+  response_codes = [200]
   headers = {
     Authorization = "Bearer ${data.google_client_config.default.access_token}"
     Content-Type  = "application/json",
@@ -180,52 +178,7 @@ resource "terracurl_request" "exclude_external_logs" {
     }
   ],
 }
-
 EOF
-
-  response_codes = [200]
-  // no-op destroy
-  destroy_url            = "https://logging.googleapis.com/v2/projects/${var.logging_destination_project_id}/sinks/_Default"
-  destroy_method         = "GET"
-  destroy_response_codes = [200]
-  destroy_headers = {
-    Authorization = "Bearer ${data.google_client_config.default.access_token}"
-    Content-Type  = "application/json",
-  }
-}
-
-#-------------------------#
-# Send logs to Log Bucket #
-#-------------------------#
-module "destination_logbucket" {
-  source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  version = "~> 7.8"
-
-  count = var.logbucket_options != null ? 1 : 0
-
-  project_id                    = var.logging_destination_project_id
-  name                          = coalesce(var.logbucket_options.name, local.logging_tgt_name.lbk)
-  log_sink_writer_identity      = module.log_export["${local.value_first_resource}_lbk"].writer_identity
-  location                      = var.logbucket_options.location
-  enable_analytics              = var.logbucket_options.enable_analytics
-  linked_dataset_id             = var.logbucket_options.linked_dataset_id
-  linked_dataset_description    = var.logbucket_options.linked_dataset_description
-  retention_days                = var.logbucket_options.retention_days
-  grant_write_permission_on_bkt = false
-}
-
-#-------------------------------------------#
-# Log Bucket Service account IAM membership #
-#-------------------------------------------#
-resource "google_project_iam_member" "logbucket_sink_member" {
-  for_each = var.logbucket_options != null ? local.logbucket_sink_member : {}
-
-  project = var.logging_destination_project_id
-  role    = "roles/logging.bucketWriter"
-
-  # Set permission only on sinks for this destination using
-  # module.log_export key "<resource>_<dest>"
-  member = module.log_export["${each.value}_lbk"].writer_identity
 }
 
 #----------------------#

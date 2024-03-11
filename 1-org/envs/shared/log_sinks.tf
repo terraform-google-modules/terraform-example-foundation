@@ -69,19 +69,6 @@ module "logs_export" {
   }
 
   /******************************************
-    Send logs to Logbucket
-  *****************************************/
-  logbucket_options = {
-    logging_sink_name          = "sk-c-logging-logbkt"
-    logging_sink_filter        = local.logs_filter
-    name                       = "logbkt-org-logs-${random_string.suffix.result}"
-    location                   = local.default_region
-    enable_analytics           = true
-    linked_dataset_id          = "ds_c_logbkt_analytics"
-    linked_dataset_description = "BigQuery Dataset for Logbucket analytics"
-  }
-
-  /******************************************
     Send logs to Logging project
   *****************************************/
   project_options = {

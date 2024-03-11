@@ -209,6 +209,7 @@ func TestOrg(t *testing.T) {
 			assert.Equal(billingDatasetFullName, billingDataset.Get("id").String(), fmt.Sprintf("dataset %s should exist", billingDatasetFullName))
 
 			auditLogsProjectID := org.GetStringOutput("org_audit_logs_project_id")
+			auditLogsProjectNumber := gcloud.Runf(t, "projects describe %s", auditLogsProjectID).Get("projectNumber").String()
 
 			// Bucket destination
 			logsExportStorageBucketName := org.GetStringOutput("logs_export_storage_bucket_name")
@@ -224,6 +225,7 @@ func TestOrg(t *testing.T) {
 
 			// Project destination
 			prjLogsExportLogBktName := org.GetStringOutput("logs_export_project_logbucket_name")
+			defaultRegion := commonConfig["default_region"]
 			prjLogBktFullName := fmt.Sprintf("projects/%s/locations/%s/buckets/%s", auditLogsProjectID, defaultRegion, prjLogsExportLogBktName)
 			prjLogBktDetails := gcloud.Runf(t, fmt.Sprintf("logging buckets describe %s --location=%s --project=%s", prjLogsExportLogBktName, defaultRegion, auditLogsProjectID))
 			assert.Equal(prjLogBktFullName, prjLogBktDetails.Get("name").String(), "log bucket name should match")

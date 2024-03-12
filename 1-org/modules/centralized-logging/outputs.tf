@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-output "enable_billing_account_sink" {
-  description = "If true, a log router sink will be created for the billing account. The billing_account variable cannot be null."
-  value       = var.enable_billing_account_sink
-}
-
 output "storage_destination_name" {
   description = "The resource name for the destination Storage."
   value       = try(module.destination_storage[0].resource_name, "")
@@ -34,15 +29,12 @@ output "logbucket_destination_name" {
   value       = try(module.destination_logbucket[0].resource_name, "")
 }
 
-output "log_sink_names" {
-  value = [
-    for key, options in local.destinations_options : "${coalesce(options.logging_sink_name, local.logging_sink_name_map[key])}-billing-${random_string.suffix.result}"
-  ]
-}
-
-output "billing_account" {
-  description = "Billing Account ID used in case sinks are under billing account level."
-  value       = var.billing_account
+output "billing_sink_names" {
+  description = "Map of log sink names with billing suffix"
+  value = {
+    for key, options in local.destinations_options :
+      key => "${coalesce(options.logging_sink_name, local.logging_sink_name_map[key])}-billing-${random_string.suffix.result}"
+  }
 }
 
 output "logbucket_linked_dataset_name" {

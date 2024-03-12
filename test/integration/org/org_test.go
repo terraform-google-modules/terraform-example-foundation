@@ -233,7 +233,7 @@ func TestOrg(t *testing.T) {
 			logsExportTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", logsExportTopicName, auditLogsProjectID)
 			assert.Equal(logsExportTopicFullName, logsExportTopic.Get("name").String(), fmt.Sprintf("topic %s should have been created", logsExportTopicName))
 
-			// logging sinks
+			// // logging sinks
 			logsFilter := []string{
 				"logName: /logs/cloudaudit.googleapis.com%2Factivity",
 				"logName: /logs/cloudaudit.googleapis.com%2Fsystem_event",
@@ -304,29 +304,30 @@ func TestOrg(t *testing.T) {
 			}
 
 			// Log Sink billing
-			billingAccount := org.GetStringOutput("billing_account")
-			billingLBKSinkName := org.GetStringOutput("billing_sink_names")[0]
-			billingPUBSinkName := org.GetStringOutput("billing_sink_names")[1]
-			billingSTOSinkName := org.GetStringOutput("billing_sink_names")[2]
+			billingAccount := bootstrap.GetTFSetupStringOutput("billing_account")
+			billingSinkNames := terraform.OutputMap(t, org.GetTFOptions(), "billing_sink_names")
+			billingLBKSinkName := billingSinkNames["lbk"]
+			billingPUBSinkName := billingSinkNames["pub"]
+			billingSTOSinkName := billingSinkNames["sto"]
 
 			for _, sinkBilling := range []struct {
 				name        string
 				destination string
 			}{
 				{
-					name:        string(billingLBKSinkName),
+					name:        billingSTOSinkName,
 					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
 				},
 				{
-					name:        string(billingSTOSinkName),
+					name:        billingLBKSinkName,
 					destination: fmt.Sprintf("logging.googleapis.com/%s", logBktFullName),
 				},
 				{
-					name:        string(billingPUBSinkName),
+					name:        billingPUBSinkName,
 					destination: fmt.Sprintf("pubsub.googleapis.com/projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName),
 				},
 			} {
-				logSinkBilling := gcloud.Runf(t, "logging sinks describe %s ----billing-account %s", sinkBilling.name, billingAccount)
+				logSinkBilling := gcloud.Runf(t, "logging sinks describe %s --billing-account %s", sinkBilling.name, billingAccount)
 				assert.Equal(sinkBilling.destination, logSinkBilling.Get("destination").String(), fmt.Sprintf("sink %s should have destination %s", sinkBilling.name, sinkBilling.destination))
 			}
 

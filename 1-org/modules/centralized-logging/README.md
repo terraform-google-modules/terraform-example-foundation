@@ -73,9 +73,7 @@ module "logging_logbucket" {
 
 | Name | Description |
 |------|-------------|
-| billing\_account | Billing Account ID used in case sinks are under billing account level. |
-| enable\_billing\_account\_sink | If true, a log router sink will be created for the billing account. The billing\_account variable cannot be null. |
-| log\_sink\_names | n/a |
+| billing\_sink\_names | Map of log sink names with billing suffix |
 | logbucket\_destination\_name | The resource name for the destination Log Bucket. |
 | logbucket\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset. |
 | pubsub\_destination\_name | The resource name for the destination Pub/Sub. |

@@ -33,7 +33,7 @@ output "billing_sink_names" {
   description = "Map of log sink names with billing suffix"
   value = {
     for key, options in local.destinations_options :
-      key => "${coalesce(options.logging_sink_name, local.logging_sink_name_map[key])}-billing-${random_string.suffix.result}"
+    key => "${coalesce(options.logging_sink_name, local.logging_sink_name_map[key])}-billing-${random_string.suffix.result}"
   }
 }
 

@@ -119,6 +119,17 @@ output "logs_export_logbucket_name" {
   description = "The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets ."
 }
 
+output "billing_sink_names" {
+  value       = module.logs_export.log_sink_names
+  description = "The name of the sinks under billing account level."
+}
+
+output "billing_account" {
+  value       = module.logs_export.billing_account
+  description = "Billing Account ID used in case sinks are under billing account level. "
+}
+
+
 output "logs_export_logbucket_linked_dataset_name" {
   value       = module.logs_export.logbucket_linked_dataset_name
   description = "The resource name of the Log Bucket linked BigQuery dataset created for Log Analytics. See https://cloud.google.com/logging/docs/log-analytics ."

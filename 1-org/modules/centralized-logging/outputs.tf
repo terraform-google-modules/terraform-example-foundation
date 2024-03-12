@@ -34,6 +34,17 @@ output "logbucket_destination_name" {
   value       = try(module.destination_logbucket[0].resource_name, "")
 }
 
+output "log_sink_names" {
+  value = [
+    for key, options in local.destinations_options : "${coalesce(options.logging_sink_name, local.logging_sink_name_map[key])}-billing-${random_string.suffix.result}"
+  ]
+}
+
+output "billing_account" {
+  description = "Billing Account ID used in case sinks are under billing account level."
+  value       = var.billing_account
+}
+
 output "logbucket_linked_dataset_name" {
   description = "The resource name of the Log Bucket linked BigQuery dataset."
   value       = try(module.destination_logbucket[0].linked_dataset_name, "")

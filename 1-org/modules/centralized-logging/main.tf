@@ -179,6 +179,12 @@ resource "terracurl_request" "exclude_external_logs" {
   ],
 }
 EOF
+
+  lifecycle {
+    ignore_changes = [
+      headers,
+    ]
+  }
 }
 
 #----------------------#

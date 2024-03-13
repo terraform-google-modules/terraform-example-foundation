@@ -92,7 +92,7 @@ func TestEnvs(t *testing.T) {
 					}{
 						{
 							projectOutput: "monitoring_project_id",
-							role:          "roles/monitoring.editor",
+							role:          "roles/monitoring.viewer",
 							group:         monitoringWorkspaceUsers,
 							apis: []string{
 								"logging.googleapis.com",

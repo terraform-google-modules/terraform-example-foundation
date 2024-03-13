@@ -17,9 +17,8 @@
 module "env" {
   source = "../../modules/env_baseline"
 
-  env                        = "non-production"
-  environment_code           = "n"
-  monitoring_workspace_users = var.monitoring_workspace_users
-  remote_state_bucket        = var.remote_state_bucket
-  tfc_org_name               = var.tfc_org_name
+  env                 = "non-production"
+  environment_code    = "n"
+  remote_state_bucket = var.remote_state_bucket
+  tfc_org_name        = var.tfc_org_name
 }

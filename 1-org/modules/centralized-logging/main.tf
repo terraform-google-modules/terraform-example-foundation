@@ -210,8 +210,6 @@ resource "google_storage_bucket_iam_member" "storage_sink_member" {
 #---------------------------------------------------------------#
 resource "google_storage_bucket_iam_member" "storage_sink_member_billing" {
   count = var.enable_billing_account_sink == true && var.storage_options != null ? length(var.resources) : 0
-  #count = var.enable_billing_account_sink && var.storage_options != null ? length(var.resources) : 0
-
 
   bucket = module.destination_storage[0].resource_name
   role   = "roles/storage.objectCreator"

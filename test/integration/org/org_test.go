@@ -233,7 +233,7 @@ func TestOrg(t *testing.T) {
 			logsExportTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", logsExportTopicName, auditLogsProjectID)
 			assert.Equal(logsExportTopicFullName, logsExportTopic.Get("name").String(), fmt.Sprintf("topic %s should have been created", logsExportTopicName))
 
-			// // logging sinks
+			// logging sinks
 			logsFilter := []string{
 				"logName: /logs/cloudaudit.googleapis.com%2Factivity",
 				"logName: /logs/cloudaudit.googleapis.com%2Fsystem_event",
@@ -304,7 +304,7 @@ func TestOrg(t *testing.T) {
 			}
 
 			// Log Sink billing
-			billingAccount := bootstrap.GetTFSetupStringOutput("billing_account")
+			billingAccount := org.GetTFSetupStringOutput("billing_account")
 			billingSinkNames := terraform.OutputMap(t, org.GetTFOptions(), "billing_sink_names")
 			billingLBKSinkName := billingSinkNames["lbk"]
 			billingPUBSinkName := billingSinkNames["pub"]

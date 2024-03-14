@@ -128,11 +128,12 @@ module "internal_project_log_export" {
   version = "~> 7.8"
   count   = var.project_options != null ? 1 : 0
 
-  destination_uri      = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${coalesce(var.project_options.log_bucket_id, "AggregatedLogs")}"
-  filter               = var.project_options.logging_sink_filter
-  log_sink_name        = "${coalesce(var.project_options.logging_sink_name, local.logging_sink_name_map["prj"])}-la"
-  parent_resource_id   = var.logging_destination_project_id
-  parent_resource_type = "project"
+  destination_uri        = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${coalesce(var.project_options.log_bucket_id, "AggregatedLogs")}"
+  filter                 = var.project_options.logging_sink_filter
+  log_sink_name          = "${coalesce(var.project_options.logging_sink_name, local.logging_sink_name_map["prj"])}-la"
+  parent_resource_id     = var.logging_destination_project_id
+  parent_resource_type   = "project"
+  unique_writer_identity = true
 }
 
 module "destination_aggregated_logs" {

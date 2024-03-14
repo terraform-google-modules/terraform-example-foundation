@@ -43,6 +43,7 @@ module "logs_export" {
   resource_type                  = local.parent_resource_type
   logging_destination_project_id = module.org_audit_logs.project_id
   billing_account                = local.billing_account
+  enable_billing_account_sink    = true
 
 
   /******************************************

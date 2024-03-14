@@ -43,7 +43,7 @@ variable "billing_account" {
 variable "enable_billing_account_sink" {
   description = "If true, a log router sink will be created for the billing account. The billing_account variable cannot be null."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "logging_project_key" {

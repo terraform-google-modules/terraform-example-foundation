@@ -75,7 +75,7 @@ module "logs_export" {
     logging_sink_name          = "sk-c-logging-logbkt"
     logging_sink_filter        = local.logs_filter
     name                       = "logbkt-org-logs-${random_string.suffix.result}"
-    location                   = local.default_region
+    location                   = var.log_export_storage_location
     enable_analytics           = true
     linked_dataset_id          = "ds_c_logbkt_analytics"
     linked_dataset_description = "BigQuery Dataset for Logbucket analytics"

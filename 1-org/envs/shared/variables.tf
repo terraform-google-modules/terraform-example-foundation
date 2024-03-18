@@ -20,16 +20,6 @@ variable "enable_hub_and_spoke" {
   default     = false
 }
 
-variable "billing_data_users" {
-  description = "Google Workspace or Cloud Identity group that have access to billing data set."
-  type        = string
-}
-
-variable "audit_data_users" {
-  description = "Google Workspace or Cloud Identity group that have access to audit logs."
-  type        = string
-}
-
 variable "domains_to_allow" {
   description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the Terraform Service Account used in the deploy."
   type        = list(string)
@@ -166,27 +156,12 @@ variable "gcp_groups" {
   global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Manage
   EOT
   type = object({
-    platform_viewer      = optional(string, null)
+    audit_viewer         = optional(string, null)
     security_reviewer    = optional(string, null)
     network_viewer       = optional(string, null)
     scc_admin            = optional(string, null)
-    audit_viewer         = optional(string, null)
     global_secrets_admin = optional(string, null)
-  })
-  default = {}
-}
-
-variable "gcp_user" {
-  description = <<EOT
-  Users to grant specific roles in the Organization.
-  org_admin: Identity that has organization administrator permissions.
-  billing_creator: Identity that can create billing accounts.
-  billing_admin: Identity that has billing administrator permissions.
-  EOT
-  type = object({
-    org_admin       = optional(string, null)
-    billing_creator = optional(string, null)
-    billing_admin   = optional(string, null)
+    kms_admin            = optional(string, null)
   })
   default = {}
 }

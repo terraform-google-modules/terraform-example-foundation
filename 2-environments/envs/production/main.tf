@@ -17,11 +17,10 @@
 module "env" {
   source = "../../modules/env_baseline"
 
-  env                        = "production"
-  environment_code           = "p"
-  monitoring_workspace_users = var.monitoring_workspace_users
-  remote_state_bucket        = var.remote_state_bucket
-  tfc_org_name               = var.tfc_org_name
+  env                 = "production"
+  environment_code    = "p"
+  remote_state_bucket = var.remote_state_bucket
+  tfc_org_name        = var.tfc_org_name
 
   assured_workload_configuration = {
     enabled           = false

@@ -37,19 +37,12 @@ Also make sure that you have the following:
 - A Google Cloud [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 - A Google Cloud [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
 - Cloud Identity or Google Workspace groups for organization and billing admins.
-- Add the Identity (user or Service Account) who will run Terraform to the `group_org_admins` group.
-They must be in this group, or they won't have `roles/resourcemanager.projectCreator` access.
-- For the Identity who will run the procedures in this document, grant the following roles:
-    - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
-    - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
-    - The `roles/billing.admin` role on the billing account.
-    - The `roles/resourcemanager.folderCreator` role.
-
-If other users need to be able to run these procedures, add them to the group
-represented by the `org_project_creators` variable.
-For more information about the permissions that are required, and the resources
-that are created, see the organization bootstrap module
-[documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
+- For the user who will run the procedures in this document, grant the following roles:
+   - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
+   - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
+   - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
+   - The `roles/billing.admin` role on the billing account.
+   - The `roles/resourcemanager.folderCreator` role.
 
 ## Instructions
 

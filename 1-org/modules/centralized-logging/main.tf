@@ -83,7 +83,7 @@ resource "random_string" "suffix" {
 
 module "log_export" {
   source  = "terraform-google-modules/log-export/google"
-  version = "~> 7.4"
+  version = "~> 8.0"
 
   for_each = local.log_exports
 
@@ -99,7 +99,7 @@ module "log_export" {
 
 module "log_export_billing" {
   source  = "terraform-google-modules/log-export/google"
-  version = "~> 7.4"
+  version = "~> 8.0"
 
   for_each = var.enable_billing_account_sink ? local.destination_resource_name : {}
 
@@ -123,7 +123,7 @@ resource "time_sleep" "wait_sa_iam_membership" {
 #-------------------------#
 module "destination_logbucket" {
   source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  version = "~> 7.7"
+  version = "~> 8.0"
 
   count = var.logbucket_options != null ? 1 : 0
 
@@ -176,7 +176,7 @@ resource "google_project_iam_member" "logbucket_sink_member_billing" {
 #----------------------#
 module "destination_storage" {
   source  = "terraform-google-modules/log-export/google//modules/storage"
-  version = "~> 7.4"
+  version = "~> 8.0"
 
   count = var.storage_options != null ? 1 : 0
 
@@ -227,7 +227,7 @@ resource "google_storage_bucket_iam_member" "storage_sink_member_billing" {
 #----------------------#
 module "destination_pubsub" {
   source  = "terraform-google-modules/log-export/google//modules/pubsub"
-  version = "~> 7.4"
+  version = "~> 8.0"
 
   count = var.pubsub_options != null ? 1 : 0
 

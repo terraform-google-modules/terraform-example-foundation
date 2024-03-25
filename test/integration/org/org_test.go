@@ -303,6 +303,34 @@ func TestOrg(t *testing.T) {
 
 			}
 
+			// Log Sink billing
+			billingAccount := org.GetTFSetupStringOutput("billing_account")
+			billingSinkNames := terraform.OutputMap(t, org.GetTFOptions(), "billing_sink_names")
+			billingLBKSinkName := billingSinkNames["lbk"]
+			billingPUBSinkName := billingSinkNames["pub"]
+			billingSTOSinkName := billingSinkNames["sto"]
+
+			for _, sinkBilling := range []struct {
+				name        string
+				destination string
+			}{
+				{
+					name:        billingSTOSinkName,
+					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
+				},
+				{
+					name:        billingLBKSinkName,
+					destination: fmt.Sprintf("logging.googleapis.com/%s", logBktFullName),
+				},
+				{
+					name:        billingPUBSinkName,
+					destination: fmt.Sprintf("pubsub.googleapis.com/projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName),
+				},
+			} {
+				logSinkBilling := gcloud.Runf(t, "logging sinks describe %s --billing-account %s", sinkBilling.name, billingAccount)
+				assert.Equal(sinkBilling.destination, logSinkBilling.Get("destination").String(), fmt.Sprintf("sink %s should have destination %s", sinkBilling.name, sinkBilling.destination))
+			}
+
 			// hub and spoke infrastructure
 			enable_hub_and_spoke, err := strconv.ParseBool(bootstrap.GetTFSetupStringOutput("enable_hub_and_spoke"))
 			require.NoError(t, err)

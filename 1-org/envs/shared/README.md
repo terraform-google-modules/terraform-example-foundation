@@ -29,6 +29,7 @@
 | Name | Description |
 |------|-------------|
 | base\_net\_hub\_project\_id | The Base Network hub project ID |
+| billing\_sink\_names | The name of the sinks under billing account level. |
 | cai\_monitoring\_artifact\_registry | CAI Monitoring Cloud Function Artifact Registry name. |
 | cai\_monitoring\_asset\_feed | CAI Monitoring Cloud Function Organization Asset Feed name. |
 | cai\_monitoring\_bucket | CAI Monitoring Cloud Function Source Bucket name. |

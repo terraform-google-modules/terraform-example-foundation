@@ -1,5 +1,40 @@
 # Changelog
 
+## [5.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v4.0.0...v5.0.0) (2024-03-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Groups creation and permissions ([#1110](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1110))
+
+### Features
+
+* Add Billing Account Log sinks ([#1164](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1164)) ([a72d12f](https://github.com/terraform-google-modules/terraform-example-foundation/commit/a72d12f54f4cf637a8261b08e8dd48b98c53a869))
+
+
+### Bug Fixes
+
+* **deps:** bump debug from 4.1.1 to 4.3.4 in /1-org/modules/cai-monitoring/function-source ([#1048](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1048)) ([145c433](https://github.com/terraform-google-modules/terraform-example-foundation/commit/145c4332693d8c0d4da3b8fcead53639574c096f))
+* **deps:** relax to terraform google v5 ([#1066](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1066)) ([a6adc7e](https://github.com/terraform-google-modules/terraform-example-foundation/commit/a6adc7eee3b8b83238122a54a82b35b142c299f2))
+* **deps:** update dependency moment to v2.30.1 ([#1068](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1068)) ([05acc75](https://github.com/terraform-google-modules/terraform-example-foundation/commit/05acc75027a252bdff3335d53cfe5754cff15357))
+* **deps:** update GO 1.21 ([#1057](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1057)) ([e96ab70](https://github.com/terraform-google-modules/terraform-example-foundation/commit/e96ab703210acf354348ea3087081625eae16ca4))
+* **deps:** update GO modules ([#1077](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1077)) ([2d9a438](https://github.com/terraform-google-modules/terraform-example-foundation/commit/2d9a438a0c77ca8974441e38166d4848329fe031))
+* **deps:** Update golangci/golangci-lint-action action to v4 ([#1114](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1114)) ([ba6b860](https://github.com/terraform-google-modules/terraform-example-foundation/commit/ba6b860c84a3e5cab61e5e559b8d0d2d982c7a64))
+* **deps:** Update Terraform terraform-google-modules/bootstrap/google to v7 ([#1093](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1093)) ([16bd67c](https://github.com/terraform-google-modules/terraform-example-foundation/commit/16bd67ce69cca00d1644d2c127a44b693e849c4a))
+* **deps:** update terraform terraform-google-modules/cloud-router/google to v6 ([#1089](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1089)) ([cb5b516](https://github.com/terraform-google-modules/terraform-example-foundation/commit/cb5b5163c2deef8e54a6ff8df1d0ba923c1a1ed3))
+* **deps:** update terraform terraform-google-modules/cloud-storage/google to v5 ([#1088](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1088)) ([5c737b0](https://github.com/terraform-google-modules/terraform-example-foundation/commit/5c737b04b1e1573daec0c19ffcf95666f09cd9f1))
+* **deps:** update terraform terraform-google-modules/kubernetes-engine/google to v29 ([#1094](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1094)) ([0f79a88](https://github.com/terraform-google-modules/terraform-example-foundation/commit/0f79a88ec4a34b73b58f4132bd3f16e195b8c0f1))
+* **deps:** Update Terraform terraform-google-modules/kubernetes-engine/google to v30 ([#1108](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1108)) ([66ea687](https://github.com/terraform-google-modules/terraform-example-foundation/commit/66ea68735ac3b5ac6fee0da642d9a58fe393e7f5))
+* **deps:** Update Terraform terraform-google-modules/network/google to v9 ([#1095](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1095)) ([fdba866](https://github.com/terraform-google-modules/terraform-example-foundation/commit/fdba8669fc6ecb840ce798e63146807974827d5a))
+* **deps:** update terraform terraform-google-modules/pubsub/google to v6 ([#1096](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1096)) ([3a92c9a](https://github.com/terraform-google-modules/terraform-example-foundation/commit/3a92c9ac036f920dbfaf1b7fb9a7ae7ed6bfbd67))
+* **deps:** update terraform terraform-google-modules/vm/google to v10 ([#1097](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1097)) ([8a0e477](https://github.com/terraform-google-modules/terraform-example-foundation/commit/8a0e477325d61cbb8beba528817bd57a00c060b0))
+* **deps:** update terraform terraform-google-modules/vpc-service-controls/google to v5 ([#1098](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1098)) ([b1be0d5](https://github.com/terraform-google-modules/terraform-example-foundation/commit/b1be0d5e362a39d439bc323d7777df8feba5f60c))
+* **deps:** Update Terraform terraform-google-modules/vpn/google to v4 ([#1100](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1100)) ([2c4a27b](https://github.com/terraform-google-modules/terraform-example-foundation/commit/2c4a27b059202878e9190f8b3f8ca1786684771b))
+* **deps:** update terraform-google-modules/network/google to v8.0 ([#1082](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1082)) ([6d8e106](https://github.com/terraform-google-modules/terraform-example-foundation/commit/6d8e106444ca1b7b04b0beafbde5eac1b353559f))
+* **deps:** update tf modules ([#1023](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1023)) ([03b1976](https://github.com/terraform-google-modules/terraform-example-foundation/commit/03b1976b42c427e3efbc879a894641593206d1c6))
+* **deps:** update to terraform-google-modules/network/google//modules/network-peering v8 for increased TPG v5 compatibility ([#1073](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1073)) ([5d808b1](https://github.com/terraform-google-modules/terraform-example-foundation/commit/5d808b16fe23b0a1d7c6b43664d6d599cfb2bf8b))
+* Groups creation and permissions ([#1110](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1110)) ([f57a47c](https://github.com/terraform-google-modules/terraform-example-foundation/commit/f57a47c2e36e9924a3232983385e741fd05ee2f3))
+
 ## [4.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v3.0.0...v4.0.0) (2024-01-10)
 
 

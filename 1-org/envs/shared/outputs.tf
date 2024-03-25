@@ -124,6 +124,11 @@ output "logs_export_project_linked_dataset_name" {
   value       = module.logs_export.project_linked_dataset_name
 }
 
+output "billing_sink_names" {
+  value       = module.logs_export.billing_sink_names
+  description = "The name of the sinks under billing account level."
+}
+
 output "tags" {
   value       = local.tags_output
   description = "Tag Values to be applied on next steps."

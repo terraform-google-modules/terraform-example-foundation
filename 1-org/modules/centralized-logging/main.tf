@@ -15,9 +15,8 @@
  */
 
 locals {
-  value_first_resource  = values(var.resources)[0]
-  logbucket_sink_member = { for k, v in var.resources : k => v if k != var.logging_project_key }
-  include_children      = (var.resource_type == "organization" || var.resource_type == "folder")
+  value_first_resource = values(var.resources)[0]
+  include_children     = (var.resource_type == "organization" || var.resource_type == "folder")
 
   # Create an intermediate list with all resources X all destinations
   exports_list = flatten([
@@ -63,9 +62,16 @@ locals {
     prj = try(module.destination_project[0].destination_uri, "")
   }
 
+  destination_resource_name = merge(
+    var.pubsub_options != null ? { pub = module.destination_pubsub[0].resource_name } : {},
+    var.storage_options != null ? { sto = module.destination_storage[0].resource_name } : {},
+    var.project_options != null ? { prj = module.destination_project[0].resource_name } : {}
+  )
+
   logging_tgt_prefix = {
     pub = "tp-logs-"
     sto = try("bkt-logs-${var.logging_destination_project_id}-", "bkt-logs-")
+    prj = ""
   }
 }
 
@@ -90,6 +96,26 @@ module "log_export" {
   include_children       = local.include_children
 }
 
+module "log_export_billing" {
+  source  = "terraform-google-modules/log-export/google"
+  version = "~> 7.4"
+
+  for_each = var.enable_billing_account_sink ? local.destination_resource_name : {}
+
+  destination_uri        = local.destination_uri_map[each.key]
+  filter                 = ""
+  log_sink_name          = "${coalesce(local.destinations_options[each.key].logging_sink_name, local.logging_sink_name_map[each.key])}-billing-${random_string.suffix.result}"
+  parent_resource_id     = var.billing_account
+  parent_resource_type   = "billing_account"
+  unique_writer_identity = true
+}
+
+resource "time_sleep" "wait_sa_iam_membership" {
+  create_duration = "30s"
+  depends_on = [
+    module.log_export_billing
+  ]
+}
 
 #--------------------------#
 # Send logs to Log project #
@@ -188,6 +214,25 @@ EOF
   }
 }
 
+#---------------------------------------------------------------#
+# Project Service account IAM membership for log_export_billing #
+#---------------------------------------------------------------#
+resource "google_project_iam_member" "project_sink_member_billing" {
+  count = var.enable_billing_account_sink == true && var.project_options != null ? 1 : 0
+
+  project = var.logging_destination_project_id
+  role    = "roles/logging.logWriter"
+
+  # Set permission only on sinks for this destination using
+  # module.log_export_billing key "<resource>_<dest>"
+  member = module.log_export_billing["prj"].writer_identity
+
+
+  depends_on = [
+    time_sleep.wait_sa_iam_membership
+  ]
+}
+
 #----------------------#
 # Send logs to Storage #
 #----------------------#
@@ -222,6 +267,22 @@ resource "google_storage_bucket_iam_member" "storage_sink_member" {
   member = module.log_export["${each.value}_sto"].writer_identity
 }
 
+#---------------------------------------------------------------#
+# Storage Service account IAM membership for log_export_billing #
+#---------------------------------------------------------------#
+resource "google_storage_bucket_iam_member" "storage_sink_member_billing" {
+  count = var.enable_billing_account_sink == true && var.storage_options != null ? length(var.resources) : 0
+
+  bucket = module.destination_storage[0].resource_name
+  role   = "roles/storage.objectCreator"
+  member = module.log_export_billing["sto"].writer_identity
+
+
+  depends_on = [
+    google_project_iam_member.project_sink_member_billing
+  ]
+}
+
 
 #----------------------#
 # Send logs to Pub\Sub #
@@ -248,4 +309,21 @@ resource "google_pubsub_topic_iam_member" "pubsub_sink_member" {
   topic   = module.destination_pubsub[0].resource_name
   role    = "roles/pubsub.publisher"
   member  = module.log_export["${each.value}_pub"].writer_identity
+}
+
+#--------------------------------------------------------------#
+# Pubsub Service account IAM membership for log_export_billing #
+#--------------------------------------------------------------#
+resource "google_pubsub_topic_iam_member" "pubsub_sink_member_billing" {
+  count = var.enable_billing_account_sink && var.pubsub_options != null ? length(var.resources) : 0
+
+
+  project = var.logging_destination_project_id
+  topic   = module.destination_pubsub[0].resource_name
+  role    = "roles/pubsub.publisher"
+  member  = module.log_export_billing["pub"].writer_identity
+
+  depends_on = [
+    google_storage_bucket_iam_member.storage_sink_member_billing
+  ]
 }

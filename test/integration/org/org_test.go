@@ -314,6 +314,61 @@ func TestOrg(t *testing.T) {
 			opTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", caiTopic, sccProjectID)
 			assert.Equal(caiTopicFullName, opTopic.Get("name").String(), fmt.Sprintf("Topic %s should have been created", caiTopicFullName))
 
+			// Log Sink
+			for _, sink := range []struct {
+				name        string
+				destination string
+			}{
+				{
+					name:        "sk-c-logging-bkt",
+					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
+				},
+				{
+					name:        "sk-c-logging-prj",
+					destination: fmt.Sprintf("logging.googleapis.com/projects/%s", auditLogsProjectID),
+				},
+				{
+					name:        "sk-c-logging-pub",
+					destination: fmt.Sprintf("pubsub.googleapis.com/projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName),
+				},
+			} {
+				logSink := gcloud.Runf(t, "logging sinks describe %s --folder %s", sink.name, parentFolder)
+				assert.True(logSink.Get("includeChildren").Bool(), fmt.Sprintf("sink %s should include children", sink.name))
+				assert.Equal(sink.destination, logSink.Get("destination").String(), fmt.Sprintf("sink %s should have destination %s", sink.name, sink.destination))
+				for _, filter := range logsFilter {
+					assert.Contains(logSink.Get("filter").String(), filter, fmt.Sprintf("sink %s should include filter %s", sink.name, filter))
+				}
+
+			}
+
+			// Log Sink billing
+			billingAccount := org.GetTFSetupStringOutput("billing_account")
+			billingSinkNames := terraform.OutputMap(t, org.GetTFOptions(), "billing_sink_names")
+			billingPRJSinkName := billingSinkNames["prj"]
+			billingPUBSinkName := billingSinkNames["pub"]
+			billingSTOSinkName := billingSinkNames["sto"]
+
+			for _, sinkBilling := range []struct {
+				name        string
+				destination string
+			}{
+				{
+					name:        billingSTOSinkName,
+					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
+				},
+				{
+					name:        billingPRJSinkName,
+					destination: fmt.Sprintf("logging.googleapis.com/projects/%s", auditLogsProjectID),
+				},
+				{
+					name:        billingPUBSinkName,
+					destination: fmt.Sprintf("pubsub.googleapis.com/projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName),
+				},
+			} {
+				logSinkBilling := gcloud.Runf(t, "logging sinks describe %s --billing-account %s", sinkBilling.name, billingAccount)
+				assert.Equal(sinkBilling.destination, logSinkBilling.Get("destination").String(), fmt.Sprintf("sink %s should have destination %s", sinkBilling.name, sinkBilling.destination))
+			}
+
 			// hub and spoke infrastructure
 			enable_hub_and_spoke, err := strconv.ParseBool(bootstrap.GetTFSetupStringOutput("enable_hub_and_spoke"))
 			require.NoError(t, err)

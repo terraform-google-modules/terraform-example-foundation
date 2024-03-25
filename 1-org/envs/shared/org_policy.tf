@@ -90,6 +90,13 @@ module "restrict_protocol_fowarding" {
   IAM
 *******************************************/
 
+resource "time_sleep" "wait_logs_export" {
+  create_duration = "30s"
+  depends_on = [
+    module.logs_export
+  ]
+}
+
 module "org_domain_restricted_sharing" {
   source  = "terraform-google-modules/org-policy/google//modules/domain_restricted_sharing"
   version = "~> 5.1"
@@ -98,6 +105,10 @@ module "org_domain_restricted_sharing" {
   folder_id        = local.folder_id
   policy_for       = local.policy_for
   domains_to_allow = var.domains_to_allow
+
+  depends_on = [
+    time_sleep.wait_logs_export
+  ]
 }
 
 /******************************************

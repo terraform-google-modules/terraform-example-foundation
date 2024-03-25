@@ -227,3 +227,10 @@ resource "google_billing_account_iam_member" "billing_admin_user" {
     google_billing_account_iam_member.tf_billing_user
   ]
 }
+
+resource "google_billing_account_iam_member" "billing_account_sink" {
+  billing_account_id = var.billing_account
+  role               = "roles/logging.configWriter"
+  member             = "serviceAccount:${google_service_account.terraform-env-sa["org"].email}"
+}
+

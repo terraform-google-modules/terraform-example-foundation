@@ -59,6 +59,8 @@ module "logging_logbucket" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| billing\_account | Billing Account ID used in case sinks are under billing account level. Format 000000-000000-000000. | `string` | `null` | no |
+| enable\_billing\_account\_sink | If true, a log router sink will be created for the billing account. The billing\_account variable cannot be null. | `bool` | `false` | no |
 | logging\_destination\_project\_id | The ID of the project that will have the resources where the logs will be created. | `string` | n/a | yes |
 | logging\_project\_key | (Optional) The key of logging destination project if it is inside resources map. It is mandatory when resource\_type = project and logging\_target\_type = logbucket. | `string` | `""` | no |
 | project\_options | Destination Project options:<br>- logging\_sink\_name: The name of the log sink to be created.<br>- logging\_sink\_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is "" which exports all logs.<br>- log\_bucket\_id: Id of the log bucket create to store the logs exported to the project.<br>- log\_bucket\_description: Description of the log bucket create to store the logs exported to the project.<br>- location: The location of the log bucket. Default: global.<br>- enable\_analytics: Whether or not Log Analytics is enabled in the \_Default log bucket. A Log bucket with Log Analytics enabled can be queried in the Log Analytics page using SQL queries. Cannot be disabled once enabled.<br>- retention\_days: The number of days data should be retained for the \_Default log bucket. Default 30.<br>- linked\_dataset\_id: The ID of the linked BigQuery dataset for the \_Default log bucket. A valid link dataset ID must only have alphanumeric characters and underscores within it and have up to 100 characters.<br>- linked\_dataset\_description: A use-friendly description of the linked BigQuery dataset for the \_Default log bucket. The maximum length of the description is 8000 characters. | <pre>object({<br>    logging_sink_name          = optional(string, null)<br>    logging_sink_filter        = optional(string, "")<br>    log_bucket_id              = optional(string, null)<br>    log_bucket_description     = optional(string, null)<br>    location                   = optional(string, "global")<br>    enable_analytics           = optional(bool, true)<br>    retention_days             = optional(number, 30)<br>    linked_dataset_id          = optional(string, null)<br>    linked_dataset_description = optional(string, null)<br>  })</pre> | `null` | no |
@@ -71,6 +73,7 @@ module "logging_logbucket" {
 
 | Name | Description |
 |------|-------------|
+| billing\_sink\_names | Map of log sink names with billing suffix |
 | project\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset for the project destination. |
 | project\_logbucket\_name | The resource name for the Log Bucket created for the project destination. |
 | pubsub\_destination\_name | The resource name for the destination Pub/Sub. |

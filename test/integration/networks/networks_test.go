@@ -310,10 +310,7 @@ func TestNetworks(t *testing.T) {
 		"non-production",
 		"production",
 	} {
-		envName := envName
 		t.Run(envName, func(t *testing.T) {
-			t.Parallel()
-
 			vars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,
 				"remote_state_bucket":              backend_bucket,

@@ -120,10 +120,7 @@ func TestProjects(t *testing.T) {
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
 		},
 	} {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
 			env := testutils.GetLastSplitElement(tt.name, "_")
 			netVars := map[string]interface{}{
 				"access_context_manager_policy_id": policyID,

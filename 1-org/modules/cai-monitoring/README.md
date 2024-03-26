@@ -13,7 +13,6 @@ module "secure_cai_notification" {
   region               = <REGION>
   encryption_key       = <CMEK KEY>
   labels               = <LABELS>
-  impersonate_sa_email = <SA TO IMPERSONATE>
   roles_to_monitor     = <ROLES TO MONITOR>
 }
 ```
@@ -26,7 +25,6 @@ module "secure_cai_notification" {
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
 | enable\_cmek | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `bool` | `false` | no |
 | encryption\_key | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `string` | `null` | no |
-| impersonate\_sa\_email | The Service Account email who will execute terraform code. | `string` | n/a | yes |
 | labels | Labels to be assigned to resources. | `map(any)` | `{}` | no |
 | location | Default location to create resources where applicable. | `string` | `"us-central1"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |

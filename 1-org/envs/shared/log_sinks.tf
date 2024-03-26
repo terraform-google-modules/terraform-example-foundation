@@ -72,16 +72,16 @@ module "logs_export" {
   }
 
   /******************************************
-    Send logs to Logbucket
+    Send logs to Logging project
   *****************************************/
-  logbucket_options = {
-    logging_sink_name          = "sk-c-logging-logbkt"
+  project_options = {
+    logging_sink_name          = "sk-c-logging-prj"
     logging_sink_filter        = local.logs_filter
-    name                       = "logbkt-org-logs-${random_string.suffix.result}"
+    log_bucket_id              = "AggregatedLogs"
+    log_bucket_description     = "Project destination log bucket for aggregated logs"
     location                   = local.default_region
-    enable_analytics           = true
-    linked_dataset_id          = "ds_c_logbkt_analytics"
-    linked_dataset_description = "BigQuery Dataset for Logbucket analytics"
+    linked_dataset_id          = "ds_c_prj_aggregated_logs_analytics"
+    linked_dataset_description = "Project destination BigQuery Dataset for Logbucket analytics"
   }
 }
 

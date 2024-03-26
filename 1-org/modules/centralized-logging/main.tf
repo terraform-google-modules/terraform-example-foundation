@@ -65,7 +65,7 @@ locals {
   destination_resource_name = merge(
     var.pubsub_options != null ? { pub = module.destination_pubsub[0].resource_name } : {},
     var.storage_options != null ? { sto = module.destination_storage[0].resource_name } : {},
-    var.project_options != null ? { prj = module.destination_project[0].resource_name } : {}
+    var.project_options != null ? { prj = module.destination_project[0].project } : {}
   )
 
   logging_tgt_prefix = {

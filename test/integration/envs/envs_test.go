@@ -38,11 +38,9 @@ func TestEnvs(t *testing.T) {
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
-	monitoringWorkspaceUsers := bootstrap.GetTFSetupStringOutput("monitoring_workspace_users")
 
 	vars := map[string]interface{}{
-		"remote_state_bucket":        backend_bucket,
-		"monitoring_workspace_users": monitoringWorkspaceUsers,
+		"remote_state_bucket": backend_bucket,
 	}
 
 	backendConfig := map[string]interface{}{

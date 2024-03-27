@@ -22,6 +22,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
@@ -38,11 +39,9 @@ func TestEnvs(t *testing.T) {
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
-	monitoringWorkspaceUsers := bootstrap.GetTFSetupStringOutput("monitoring_workspace_users")
 
 	vars := map[string]interface{}{
-		"remote_state_bucket":        backend_bucket,
-		"monitoring_workspace_users": monitoringWorkspaceUsers,
+		"remote_state_bucket": backend_bucket,
 	}
 
 	backendConfig := map[string]interface{}{
@@ -87,6 +86,7 @@ func TestEnvs(t *testing.T) {
 					}
 					assert.Subset([]string{envName}, fldrTagValue, fmt.Sprintf("tag value should be %s for %s env folder", envName, envName))
 
+					monitoringWorkspaceUsers := terraform.OutputMap(t, bootstrap.GetTFOptions(), "required_groups")["monitoring_workspace_users"]
 					for _, projectEnvOutput := range []struct {
 						projectOutput string
 						role          string

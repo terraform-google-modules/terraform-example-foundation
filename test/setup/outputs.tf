@@ -44,18 +44,6 @@ output "group_email" {
   value = var.group_email
 }
 
-output "audit_data_users" {
-  value = var.group_email
-}
-
-output "billing_data_users" {
-  value = var.group_email
-}
-
-output "monitoring_workspace_users" {
-  value = var.group_email
-}
-
 output "groups" {
   value = {
     required_groups = {

@@ -65,12 +65,12 @@ output "common_config" {
 
 output "required_groups" {
   description = "List of Google Groups created that are required by the Example Foundation steps."
-  value       = var.groups.create_required_groups == true ? module.required_group : tomap(var.groups.required_groups)
+  value       = var.groups.create_required_groups == false ? tomap(var.groups.required_groups) : tomap({ for key, value in module.required_group : key => value.id })
 }
 
 output "optional_groups" {
   description = "List of Google Groups created that are optional to the Example Foundation steps."
-  value       = var.groups.create_optional_groups == true ? module.optional_group : tomap(var.groups.optional_groups)
+  value       = var.groups.create_optional_groups == false ? tomap(var.groups.optional_groups) : tomap({ for key, value in module.optional_group : key => value.id })
 }
 
 /* ----------------------------------------

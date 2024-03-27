@@ -34,6 +34,18 @@ variable "resource_type" {
   }
 }
 
+variable "billing_account" {
+  description = "Billing Account ID used in case sinks are under billing account level. Format 000000-000000-000000."
+  type        = string
+  default     = null
+}
+
+variable "enable_billing_account_sink" {
+  description = "If true, a log router sink will be created for the billing account. The billing_account variable cannot be null."
+  type        = bool
+  default     = false
+}
+
 variable "logging_project_key" {
   description = "(Optional) The key of logging destination project if it is inside resources map. It is mandatory when resource_type = project and logging_target_type = logbucket."
   type        = string

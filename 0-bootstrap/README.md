@@ -83,7 +83,7 @@ Set the variables in **terraform.tfvars** (`groups` block) to use the specific g
    - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
    - The `roles/billing.admin` role on the billing account.
    - The `roles/resourcemanager.folderCreator` role.
-
+   - The `roles/securitycenter.admin` role.
 ### Optional - Automatic creation of Google Cloud Identity groups
 
 In the foundation, Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) .

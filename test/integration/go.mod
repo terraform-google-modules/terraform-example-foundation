@@ -3,12 +3,12 @@ module github.com/terraform-google-modules/terraform-example-foundation/test/int
 go 1.21
 
 require (
-	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.12.1
-	github.com/gruntwork-io/terratest v0.46.11
+	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.13.1
+	github.com/gruntwork-io/terratest v0.46.13
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
-	github.com/stretchr/testify v1.8.4
-	github.com/tidwall/gjson v1.17.0
-	golang.org/x/oauth2 v0.16.0
+	github.com/stretchr/testify v1.9.0
+	github.com/tidwall/gjson v1.17.1
+	golang.org/x/oauth2 v0.18.0
 )
 
 require (
@@ -62,11 +62,11 @@ require (
 	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/zclconf/go-cty v1.14.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
-	golang.org/x/mod v0.15.0 // indirect
-	golang.org/x/net v0.20.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/mod v0.16.0 // indirect
+	golang.org/x/net v0.22.0 // indirect
 	golang.org/x/sync v0.4.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.138.0 // indirect

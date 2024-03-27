@@ -86,7 +86,8 @@ func TestEnvs(t *testing.T) {
 					}
 					assert.Subset([]string{envName}, fldrTagValue, fmt.Sprintf("tag value should be %s for %s env folder", envName, envName))
 
-					monitoringWorkspaceUsers := terraform.OutputMap(t, bootstrap.GetTFOptions(), "groups")["required_groups"]["monitoring_workspace_users"]
+					requiredGroups := terraform.OutputMapOfObjects(t, bootstrap.GetTFOptions(), "groups")["required_groups"].(map[string]string)
+					monitoringWorkspaceUsers := requiredGroups["monitoring_workspace_users"]
 					for _, projectEnvOutput := range []struct {
 						projectOutput string
 						role          string

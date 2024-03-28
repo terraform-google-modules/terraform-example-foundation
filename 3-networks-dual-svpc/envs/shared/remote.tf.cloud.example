@@ -28,7 +28,7 @@ locals {
   common_folder_name         = data.tfe_outputs.org.nonsensitive_values.common_folder_name
   network_folder_name        = data.tfe_outputs.org.nonsensitive_values.network_folder_name
   development_folder_name    = data.tfe_outputs.env_development.nonsensitive_values.env_folder
-  non_production_folder_name = data.tfe_outputs.env_non_production.nonsensitive_values.env_folder
+  nonproduction_folder_name = data.tfe_outputs.env_nonproduction.nonsensitive_values.env_folder
   production_folder_name     = data.tfe_outputs.env_production.nonsensitive_values.env_folder
 }
 
@@ -47,9 +47,9 @@ data "tfe_outputs" "env_development" {
   workspace    = "2-development"
 }
 
-data "tfe_outputs" "env_non_production" {
+data "tfe_outputs" "env_nonproduction" {
   organization = var.tfc_org_name
-  workspace    = "2-non-production"
+  workspace    = "2-nonproduction"
 }
 
 data "tfe_outputs" "env_production" {

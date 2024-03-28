@@ -21,7 +21,7 @@ module "base_shared_vpc_project" {
   billing_account                     = local.billing_account
   folder_id                           = google_folder.env_business_unit.name
   environment                         = var.env
-  vpc_type                            = "base"
+  vpc                                 = "base"
   shared_vpc_host_project_id          = local.base_host_project_id
   shared_vpc_subnets                  = local.base_subnets_self_links
   project_budget                      = var.project_budget

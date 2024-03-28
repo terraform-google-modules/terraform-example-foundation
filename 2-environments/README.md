@@ -21,7 +21,7 @@ organizational policy.</td>
 </tr>
 <tr>
 <td><span style="white-space: nowrap;">2-environments</span> (this file)</td>
-<td>Sets up development, non-production, and production environments within the
+<td>Sets up development, nonproduction, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
@@ -55,7 +55,7 @@ For an overview of the architecture and the parts, see the
 
 ## Purpose
 
-The purpose of this step is to setup development, non-production, and production environments within the Google Cloud organization that you've created.
+The purpose of this step is to setup development, nonproduction, and production environments within the Google Cloud organization that you've created.
 
 ## Prerequisites
 
@@ -154,12 +154,12 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    ```
 
 1. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
-1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
+1. Merge changes to nonproduction. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your cloud build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
-   git checkout -b non-production
-   git push origin non-production
+   git checkout -b nonproduction
+   git push origin nonproduction
    ```
 
 1. Merge changes to production branch. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
@@ -206,7 +206,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
    ```
 
-We will now deploy each of our environments(development/production/non-production) using this script.
+We will now deploy each of our environments(development/production/nonproduction) using this script.
 When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 2-environments step and only the corresponding environment is applied.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
@@ -240,23 +240,23 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ./tf-wrapper.sh apply development
    ```
 
-1. Run `init` and `plan` and review output for environment non-production.
+1. Run `init` and `plan` and review output for environment nonproduction.
 
    ```bash
-   ./tf-wrapper.sh init non-production
-   ./tf-wrapper.sh plan non-production
+   ./tf-wrapper.sh init nonproduction
+   ./tf-wrapper.sh plan nonproduction
    ```
 
 1. Run `validate` and check for violations.
 
    ```bash
-   ./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ./tf-wrapper.sh validate nonproduction $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
    ```
 
-1. Run `apply` non-production.
+1. Run `apply` nonproduction.
 
    ```bash
-   ./tf-wrapper.sh apply non-production
+   ./tf-wrapper.sh apply nonproduction
    ```
 
 1. Run `init` and `plan` and review output for environment production.

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-terraform {
-  backend "gcs" {
-    bucket = "UPDATE_ME"
-    prefix = "terraform/networks/non-production"
-  }
+module "env" {
+  source = "../../modules/env_baseline"
+
+  env                 = "nonproduction"
+  environment_code    = "n"
+  remote_state_bucket = var.remote_state_bucket
+  tfc_org_name        = var.tfc_org_name
 }

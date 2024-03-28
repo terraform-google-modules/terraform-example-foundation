@@ -17,7 +17,7 @@
 module "env" {
   source = "../../modules/base_env"
 
-  env                          = "non-production"
+  env                          = "nonproduction"
   business_code                = "bu2"
   business_unit                = "business_unit_2"
   remote_state_bucket          = var.remote_state_bucket

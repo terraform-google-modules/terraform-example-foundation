@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 locals {
-  env              = "non-production"
+  env              = "nonproduction"
   environment_code = substr(local.env, 0, 1)
   default_region1  = "us-west1"
   default_region2  = "us-central1"
@@ -82,14 +82,15 @@ module "base_env" {
   ingress_policies                      = var.ingress_policies
   egress_policies                       = var.egress_policies
   enable_partner_interconnect           = false
+  enable_hub_and_spoke_transitivity     = var.enable_hub_and_spoke_transitivity
   base_private_service_cidr             = local.base_private_service_cidr
   base_subnet_primary_ranges            = local.base_subnet_primary_ranges
   base_subnet_proxy_ranges              = local.base_subnet_proxy_ranges
   base_subnet_secondary_ranges          = local.base_subnet_secondary_ranges
   base_private_service_connect_ip       = "10.17.0.3"
   restricted_private_service_cidr       = local.restricted_private_service_cidr
-  restricted_subnet_proxy_ranges        = local.restricted_subnet_proxy_ranges
   restricted_subnet_primary_ranges      = local.restricted_subnet_primary_ranges
+  restricted_subnet_proxy_ranges        = local.restricted_subnet_proxy_ranges
   restricted_subnet_secondary_ranges    = local.restricted_subnet_secondary_ranges
   restricted_private_service_connect_ip = "10.17.0.7"
   remote_state_bucket                   = var.remote_state_bucket

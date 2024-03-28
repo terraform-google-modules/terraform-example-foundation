@@ -142,11 +142,11 @@ resource "gitlab_branch_protection" "production" {
   branch  = "production"
 }
 
-resource "gitlab_branch_protection" "non_production" {
+resource "gitlab_branch_protection" "nonproduction" {
   for_each = local.gl_branch_protection_envs
 
   project = "${var.gl_repos.owner}/${each.value}"
-  branch  = "non-production"
+  branch  = "nonproduction"
 }
 
 resource "gitlab_branch_protection" "development" {

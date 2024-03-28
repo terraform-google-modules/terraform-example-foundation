@@ -17,7 +17,7 @@
 terraform {
   cloud {
     workspaces {
-      name = "3-non-production"
+      name = "3-nonproduction"
     }
   }
 }

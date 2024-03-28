@@ -125,8 +125,9 @@ module "tf_source" {
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
+    business_code     = "shared"
     env_code          = "b"
+    vpc               = "none"
   }
 
   # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
@@ -234,7 +235,7 @@ module "tf_workspace" {
     "_DOCKER_TAG_VERSION_TERRAFORM" = local.docker_tag_version_terraform
   }
 
-  tf_apply_branches = ["development", "non\\-production", "production"]
+  tf_apply_branches = ["development", "nonproduction", "production"]
 
   depends_on = [
     module.tf_source,

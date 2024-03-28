@@ -47,7 +47,7 @@ func fileExists(filePath string) (bool, error) {
 func TestBootstrap(t *testing.T) {
 
 	vars := map[string]interface{}{
-		"bucket_force_destroy": true,
+		"bucket_force_destroy":             true,
 		"bucket_tfstate_kms_force_destroy": true,
 	}
 
@@ -80,7 +80,7 @@ func TestBootstrap(t *testing.T) {
 		"gcp-projects",
 	}
 
-	branchesRegex := `^(development|non\\-production|production)$`
+	branchesRegex := `^(development|nonproduction|production)$`
 
 	activateApis := []string{
 		"serviceusage.googleapis.com",

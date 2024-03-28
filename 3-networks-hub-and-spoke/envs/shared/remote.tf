@@ -29,7 +29,7 @@ locals {
   common_folder_name                = data.terraform_remote_state.org.outputs.common_folder_name
   network_folder_name               = data.terraform_remote_state.org.outputs.network_folder_name
   development_folder_name           = data.terraform_remote_state.env_development.outputs.env_folder
-  non_production_folder_name        = data.terraform_remote_state.env_non_production.outputs.env_folder
+  nonproduction_folder_name         = data.terraform_remote_state.env_nonproduction.outputs.env_folder
   production_folder_name            = data.terraform_remote_state.env_production.outputs.env_folder
   base_net_hub_project_id           = data.terraform_remote_state.org.outputs.base_net_hub_project_id
   restricted_net_hub_project_id     = data.terraform_remote_state.org.outputs.restricted_net_hub_project_id
@@ -66,12 +66,12 @@ data "terraform_remote_state" "env_development" {
   }
 }
 
-data "terraform_remote_state" "env_non_production" {
+data "terraform_remote_state" "env_nonproduction" {
   backend = "gcs"
 
   config = {
     bucket = var.remote_state_bucket
-    prefix = "terraform/environments/non-production"
+    prefix = "terraform/environments/nonproduction"
   }
 }
 

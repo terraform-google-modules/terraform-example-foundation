@@ -107,7 +107,7 @@ func DestroyEnvStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c Co
 		Step:          EnvironmentsStep,
 		Repo:          EnvironmentsRepo,
 		GroupingUnits: []string{"envs"},
-		Envs:          []string{"development", "non-production", "production"},
+		Envs:          []string{"development", "nonproduction", "production"},
 	}
 	return destroyStage(t, stageConf, s, c)
 }
@@ -122,7 +122,7 @@ func DestroyNetworksStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		Repo:          NetworksRepo,
 		HasManualStep: true,
 		GroupingUnits: []string{"envs"},
-		Envs:          []string{"development", "non-production", "production"},
+		Envs:          []string{"development", "nonproduction", "production"},
 	}
 	return destroyStage(t, stageConf, s, c)
 }
@@ -136,7 +136,7 @@ func DestroyProjectsStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		Repo:          ProjectsRepo,
 		HasManualStep: true,
 		GroupingUnits: []string{"business_unit_1", "business_unit_2"},
-		Envs:          []string{"development", "non-production", "production"},
+		Envs:          []string{"development", "nonproduction", "production"},
 	}
 	return destroyStage(t, stageConf, s, c)
 }
@@ -149,7 +149,7 @@ func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOu
 		Step:          AppInfraStep,
 		Repo:          AppInfraRepo,
 		GroupingUnits: []string{"business_unit_1"},
-		Envs:          []string{"development", "non-production", "production"},
+		Envs:          []string{"development", "nonproduction", "production"},
 	}
 	return destroyStage(t, stageConf, s, c)
 }

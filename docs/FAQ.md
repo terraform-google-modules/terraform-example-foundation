@@ -18,7 +18,7 @@ _named branches_. Pushing to a named branch causes the _apply_ command to be
 run. Pushing to branches other than the named branches does not run _apply_.
 
 * development
-* non-production
+* nonproduction
 * production
 
 ## Which Terraform commands are run when I push to a branch?

@@ -51,7 +51,7 @@ module "project" {
   random_project_id        = true
   random_project_id_length = 4
   activate_apis            = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
-  name                     = "${var.project_prefix}-${local.env_code}-${var.business_code}${var.project_suffix}"
+  name                     = "${var.project_prefix}-${local.env_code}-${var.business_code}-${var.project_suffix}"
   org_id                   = var.org_id
   billing_account          = var.billing_account
   folder_id                = var.folder_id
@@ -71,7 +71,7 @@ module "project" {
     secondary_contact = element(split("@", var.secondary_contact), 0)
     business_code     = var.business_code
     env_code          = local.env_code
-    vpc_type          = var.vpc_type
+    vpc               = var.vpc
   }
   budget_alert_pubsub_topic   = var.project_budget.alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.alert_spent_percents

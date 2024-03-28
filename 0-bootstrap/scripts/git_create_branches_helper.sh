@@ -71,7 +71,7 @@ create_branches_and_push() {
     if [[ $repo_name == *"gcp-bootstrap"* || $repo_name == *"gcp-org"* ]]; then
       echo "All branches created and pushed for $repo_name"
     else
-      # Create development and non-production branches
+      # Create development and nonproduction branches
       git checkout -b development
       touch .gitignore
       git add .gitignore
@@ -79,12 +79,12 @@ create_branches_and_push() {
       git push --set-upstream origin development
       echo "Branch (development) created and pushed for $repo_name"
 
-      git checkout -b non-production
+      git checkout -b nonproduction
       touch .gitignore
       git add .gitignore
       git commit -m "seed commit"
-      git push --set-upstream origin non-production
-      echo "Branch (non-production) created and pushed for $repo_name"
+      git push --set-upstream origin nonproduction
+      echo "Branch (nonproduction) created and pushed for $repo_name"
 
       echo "All branches created and pushed for $repo_name"
     fi

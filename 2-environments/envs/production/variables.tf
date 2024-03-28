@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+variable "monitoring_workspace_users" {
+  description = "Google Workspace or Cloud Identity group that have access to Monitoring Workspaces."
+  type        = string
+}
+
 variable "remote_state_bucket" {
   description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string

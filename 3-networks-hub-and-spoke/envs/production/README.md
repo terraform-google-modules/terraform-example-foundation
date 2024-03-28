@@ -1,6 +1,6 @@
 # 3-networks-hub-and-spoke/production
 
-The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated Interconnect, onprem VPN and baseline firewall rules for environment non-production. This version of the Network step will makes usage of the Hub and Spoke network architecture.
+The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated Interconnect, onprem VPN and baseline firewall rules for environment nonproduction. This version of the Network step will makes usage of the Hub and Spoke network architecture.
 
 ## Prerequisites
 

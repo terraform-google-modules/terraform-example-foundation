@@ -53,22 +53,22 @@ locals {
     },
     "env" = {
       "2-production"     = { vcs_branch = "production", directory = "/envs/production" },
-      "2-non-production" = { vcs_branch = "non-production", directory = "/envs/non-production" },
+      "2-nonproduction" = { vcs_branch = "nonproduction", directory = "/envs/nonproduction" },
       "2-development"    = { vcs_branch = "development", directory = "/envs/development" },
     },
     "net" = {
       "3-production"     = { vcs_branch = "production", directory = "/envs/production" },
-      "3-non-production" = { vcs_branch = "non-production", directory = "/envs/non-production" },
+      "3-nonproduction" = { vcs_branch = "nonproduction", directory = "/envs/nonproduction" },
       "3-development"    = { vcs_branch = "development", directory = "/envs/development" },
       "3-shared"         = { vcs_branch = "production", directory = "/envs/shared" },
     },
     "proj" = {
       "4-bu1-production"     = { vcs_branch = "production", directory = "/business_unit_1/production" },
-      "4-bu1-non-production" = { vcs_branch = "non-production", directory = "/business_unit_1/non-production" },
+      "4-bu1-nonproduction" = { vcs_branch = "nonproduction", directory = "/business_unit_1/nonproduction" },
       "4-bu1-development"    = { vcs_branch = "development", directory = "/business_unit_1/development" },
       "4-bu1-shared"         = { vcs_branch = "production", directory = "/business_unit_1/shared" },
       "4-bu2-production"     = { vcs_branch = "production", directory = "/business_unit_2/production" },
-      "4-bu2-non-production" = { vcs_branch = "non-production", directory = "/business_unit_2/non-production" },
+      "4-bu2-nonproduction" = { vcs_branch = "nonproduction", directory = "/business_unit_2/nonproduction" },
       "4-bu2-development"    = { vcs_branch = "development", directory = "/business_unit_2/development" },
       "4-bu2-shared"         = { vcs_branch = "production", directory = "/business_unit_2/shared" },
 

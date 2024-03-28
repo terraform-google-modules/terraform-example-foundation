@@ -69,7 +69,7 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 
 By default the foundation regional resources are deployed in `us-west1` and `us-central1` regions and multi-regional resources are deployed in the `US` multi-region.
 
-In addition to the variables declared in the file `global.tfvars` for configuring location, there are two locals, `default_region1` and `default_region2`, in each one of the environments (`production`, `non-production`, and `development`) in the network steps (`3-networks-dual-svpc` and `3-networks-hub-and-spoke`).
+In addition to the variables declared in the file `global.tfvars` for configuring location, there are two locals, `default_region1` and `default_region2`, in each one of the environments (`production`, `nonproduction`, and `development`) in the network steps (`3-networks-dual-svpc` and `3-networks-hub-and-spoke`).
 They are located in the [main.tf](../../3-networks-dual-svpc/envs/production/main.tf#L20-L21) files for each environments.
 Change the two locals **before** starting the deployment to deploy in other regions.
 
@@ -109,13 +109,13 @@ Change the two locals **before** starting the deployment to deploy in other regi
 For these extra check you need at least the roles *Security Center Notification Configurations Viewer* (`roles/securitycenter.notificationConfigViewer`) and *Tag Viewer* (`roles/resourcemanager.tagViewer`):
 
     ```bash
-    $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE> -validate
+    $HOME/go/bin/foundation-deployer -tfvars_file /home/mariamartins/repo-foundation/test-non-production/deploy-directory/global.tfvars -validate
     ```
 
 - Run the helper:
 
     ```bash
-    $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE>
+    $HOME/go/bin/foundation-deployer -tfvars_file /home/mariamartins/repo-foundation/test-non-production/deploy-directory/global.tfvars
     ```
 
 - To Suppress additional output use:

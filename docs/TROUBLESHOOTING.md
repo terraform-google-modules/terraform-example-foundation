@@ -306,7 +306,7 @@ Using the `production` environment for this example, the folder ID for the envir
    fldr-bootstrap       folders/PARENT_FOLDER  111111111111
    fldr-common          folders/PARENT_FOLDER  222222222222
    fldr-production      folders/PARENT_FOLDER  333333333333
-   fldr-non-production  folders/PARENT_FOLDER  444444444444
+   fldr-nonproduction  folders/PARENT_FOLDER  444444444444
    fldr-development     folders/PARENT_FOLDER  555555555555
    ```
 

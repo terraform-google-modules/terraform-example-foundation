@@ -23,7 +23,7 @@ locals {
   ]
   environments = {
     "development" : "d",
-    "non-production" : "n",
+    "nonproduction" : "n",
     "production" : "p"
   }
 }

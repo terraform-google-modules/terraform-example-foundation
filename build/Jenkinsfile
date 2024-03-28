@@ -27,7 +27,7 @@ pipeline {
                       anyOf {
                       branch 'development'
                       branch 'production'
-                      branch 'non-production'
+                      branch 'nonproduction'
                   }
               }
       }
@@ -43,7 +43,7 @@ pipeline {
               anyOf {
                   branch 'development'
                   branch 'production'
-                  branch 'non-production'
+                  branch 'nonproduction'
               }
       }
       steps {
@@ -58,7 +58,7 @@ pipeline {
               anyOf {
                   branch 'development'
                   branch 'production'
-                  branch 'non-production'
+                  branch 'nonproduction'
               }
       }
       steps {
@@ -73,7 +73,7 @@ pipeline {
               anyOf {
                   branch 'development'
                   branch 'production'
-                  branch 'non-production'
+                  branch 'nonproduction'
               }
       }
       steps {
@@ -88,7 +88,7 @@ pipeline {
     //           anyOf {
     //               branch 'development'
     //               branch 'production'
-    //               branch 'non-production'
+    //               branch 'nonproduction'
     //           }
     //   }
     //   steps {
@@ -102,7 +102,7 @@ pipeline {
               anyOf {
                   branch 'development'
                   branch 'production'
-                  branch 'non-production'
+                  branch 'nonproduction'
               }
       }
       steps {

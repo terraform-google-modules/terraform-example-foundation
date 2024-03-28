@@ -235,7 +235,7 @@ module "tf_workspace" {
     "_DOCKER_TAG_VERSION_TERRAFORM" = local.docker_tag_version_terraform
   }
 
-  tf_apply_branches = ["development", "non\\-production", "production"]
+  tf_apply_branches = ["development", "nonproduction", "production"]
 
   depends_on = [
     module.tf_source,

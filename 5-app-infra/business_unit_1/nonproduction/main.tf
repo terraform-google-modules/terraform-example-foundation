@@ -16,7 +16,7 @@
 
 locals {
   business_unit = "business_unit_1"
-  environment   = "non-production"
+  environment   = "nonproduction"
 }
 
 module "base_shared_gce_instance" {

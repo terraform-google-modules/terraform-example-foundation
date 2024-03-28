@@ -98,4 +98,4 @@ terraform-apply:
       when: never
     - if: $CI_COMMIT_REF_NAME == "development"
     - if: $CI_COMMIT_REF_NAME == "production"
-    - if: $CI_COMMIT_REF_NAME == "non-production"
+    - if: $CI_COMMIT_REF_NAME == "nonproduction"

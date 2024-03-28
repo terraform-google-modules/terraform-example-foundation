@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 terraform {
   backend "gcs" {
-    bucket = "UPDATE_APP_INFRA_BUCKET"
-    prefix = "terraform/app-infra/business_unit_1/non-production"
+    bucket = "bkt-prj-b-seed-tfstate-8016"
+    prefix = "terraform/networks/nonproduction"
   }
 }

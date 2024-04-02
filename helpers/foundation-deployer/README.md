@@ -109,13 +109,13 @@ Change the two locals **before** starting the deployment to deploy in other regi
 For these extra check you need at least the roles *Security Center Notification Configurations Viewer* (`roles/securitycenter.notificationConfigViewer`) and *Tag Viewer* (`roles/resourcemanager.tagViewer`):
 
     ```bash
-    $HOME/go/bin/foundation-deployer -tfvars_file /home/mariamartins/repo-foundation/test-non-production/deploy-directory/global.tfvars -validate
+    $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE> -validate
     ```
 
 - Run the helper:
 
     ```bash
-    $HOME/go/bin/foundation-deployer -tfvars_file /home/mariamartins/repo-foundation/test-non-production/deploy-directory/global.tfvars
+    $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE>
     ```
 
 - To Suppress additional output use:

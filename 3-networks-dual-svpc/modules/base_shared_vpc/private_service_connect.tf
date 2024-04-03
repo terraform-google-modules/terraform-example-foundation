@@ -16,12 +16,21 @@
 
 
 module "private_service_connect" {
-  source  = "terraform-google-modules/network/google//modules/private-service-connect"
-  version = "~> 9.0"
+  # TODO: Update reference to module version when service_directory_registrations
+  # is officially released. Only 1 commit has been made to the private service connect
+  # submodule since v9.0.0. This commit adds var.service_directory_region which is required
+  # to use the default region from  data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  # https://github.com/terraform-google-modules/terraform-google-network/commits/d4855d6b82b7963e22ed0f05aa31900915cfb954/modules/private-service-connect
+
+  # Example update:
+  # source  = "terraform-google-modules/network/google//modules/private-service-connect?ref=d4855d6b82b7963e22ed0f05aa31900915cfb954"
+  # version = "~> 9.1"
+  source = "github.com/terraform-google-modules/terraform-google-network//modules/private-service-connect?ref=d4855d6b82b7963e22ed0f05aa31900915cfb954"
 
   project_id                 = var.project_id
   dns_code                   = "dz-${var.environment_code}-shared-base"
   network_self_link          = module.main.network_self_link
   private_service_connect_ip = var.private_service_connect_ip
   forwarding_rule_target     = "all-apis"
+  service_directory_region   = var.default_region1
 }

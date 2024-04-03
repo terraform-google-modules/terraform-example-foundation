@@ -26,6 +26,6 @@ module "env" {
   tfc_org_name                 = var.tfc_org_name
   peering_module_depends_on    = var.peering_module_depends_on
   peering_iap_fw_rules_enabled = true
-  subnet_region                = var.instance_region
+  subnet_region                = coalesce(var.instance_region, local.default_region)
   subnet_ip_range              = "10.3.128.0/21"
 }

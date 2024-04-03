@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-variable "instance_region" {
-  description = "The region where compute instance will be created. A subnetwork must exists in the instance region."
-  type        = string
-  default     = null
+locals {
+  default_region = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
 }
 
-variable "remote_state_bucket" {
-  description = "Backend bucket to load remote state information from previous steps."
-  type        = string
+data "terraform_remote_state" "bootstrap" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.remote_state_bucket
+    prefix = "terraform/bootstrap/state"
+  }
 }

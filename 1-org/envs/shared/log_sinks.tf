@@ -53,7 +53,7 @@ module "logs_export" {
     logging_sink_filter          = local.logs_filter
     logging_sink_name            = "sk-c-logging-bkt"
     storage_bucket_name          = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
-    location                     = var.log_export_storage_location
+    location                     = try(var.log_export_storage_location, local.default_region)
     retention_policy_enabled     = var.log_export_storage_retention_policy != null
     retention_policy_is_locked   = var.log_export_storage_retention_policy == null ? null : var.log_export_storage_retention_policy.is_locked
     retention_policy_period_days = var.log_export_storage_retention_policy == null ? null : var.log_export_storage_retention_policy.retention_period_days
@@ -79,7 +79,7 @@ module "logs_export" {
     logging_sink_filter        = local.logs_filter
     log_bucket_id              = "AggregatedLogs"
     log_bucket_description     = "Project destination log bucket for aggregated logs"
-    location                   = local.default_region
+    location                   = try(var.log_export_storage_location, local.default_region)
     linked_dataset_id          = "ds_c_prj_aggregated_logs_analytics"
     linked_dataset_description = "Project destination BigQuery Dataset for Logbucket analytics"
   }
@@ -93,5 +93,5 @@ resource "google_bigquery_dataset" "billing_dataset" {
   dataset_id    = "billing_data"
   project       = module.org_billing_logs.project_id
   friendly_name = "GCP Billing Data"
-  location      = var.billing_export_dataset_location
+  location      = try(var.billing_export_dataset_location, local.default_region)
 }

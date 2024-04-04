@@ -88,7 +88,7 @@ Set the variables in **terraform.tfvars** (`groups` block) to use the specific g
      ```bash
      # example:
      gcloud organizations add-iam-policy-binding ${ORG_ID}  --member=user:$SUPER_ADMIN_EMAIL --role=roles/securitycenter.admin --quiet > /dev/null 1>&1
-     ``` 
+     ```
 1. Enable the following additional services on your current bootstrap project:
      ```bash
      gcloud services enable cloudresourcemanager.googleapis.com
@@ -96,7 +96,7 @@ Set the variables in **terraform.tfvars** (`groups` block) to use the specific g
      gcloud services enable iam.googleapis.com
      gcloud services enable cloudkms.googleapis.com
      gcloud services enable servicenetworking.googleapis.com
-     ```  
+     ```
 
 ### Optional - Automatic creation of Google Cloud Identity groups
 

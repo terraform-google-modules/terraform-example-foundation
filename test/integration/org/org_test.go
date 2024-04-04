@@ -209,29 +209,41 @@ func TestOrg(t *testing.T) {
 			assert.Equal(billingDatasetFullName, billingDataset.Get("id").String(), fmt.Sprintf("dataset %s should exist", billingDatasetFullName))
 
 			auditLogsProjectID := org.GetStringOutput("org_audit_logs_project_id")
+			auditLogsProjectNumber := gcloud.Runf(t, "projects describe %s", auditLogsProjectID).Get("projectNumber").String()
 
+			// Bucket destination
 			logsExportStorageBucketName := org.GetStringOutput("logs_export_storage_bucket_name")
 			gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", auditLogsProjectID, "--json"})
 			bkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", logsExportStorageBucketName), gcAlphaOpts).Array()[0]
 			assert.Equal(logsExportStorageBucketName, bkt.Get("metadata.id").String(), fmt.Sprintf("Bucket %s should exist", logsExportStorageBucketName))
 
-			logsExportLogBktName := org.GetStringOutput("logs_export_logbucket_name")
-			defaultRegion := commonConfig["default_region"]
-			logBktFullName := fmt.Sprintf("projects/%s/locations/%s/buckets/%s", auditLogsProjectID, defaultRegion, logsExportLogBktName)
-			logBktDetails := gcloud.Runf(t, fmt.Sprintf("logging buckets describe %s --location=%s --project=%s", logsExportLogBktName, defaultRegion, auditLogsProjectID))
-			assert.Equal(logBktFullName, logBktDetails.Get("name").String(), "log bucket name should match")
-			linkedDatasetID := "ds_c_logbkt_analytics"
-			auditLogsProjectNumber := gcloud.Runf(t, "projects describe %s", auditLogsProjectID).Get("projectNumber").String()
-			linkedDsName := org.GetStringOutput("logs_export_logbucket_linked_dataset_name")
-			linkedDs := gcloud.Runf(t, "logging links describe %s --bucket=%s --location=%s --project=%s", linkedDatasetID, logsExportLogBktName, defaultRegion, auditLogsProjectID)
-			assert.Equal(linkedDsName, linkedDs.Get("name").String(), "log bucket linked dataset name should match")
-			bigqueryDatasetID := fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectNumber, linkedDatasetID)
-			assert.Equal(bigqueryDatasetID, linkedDs.Get("bigqueryDataset.datasetId").String(), "log bucket BigQuery dataset ID should match")
-
+			// Pub/Sub destination
 			logsExportTopicName := org.GetStringOutput("logs_export_pubsub_topic")
 			logsExportTopicFullName := fmt.Sprintf("projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName)
 			logsExportTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", logsExportTopicName, auditLogsProjectID)
 			assert.Equal(logsExportTopicFullName, logsExportTopic.Get("name").String(), fmt.Sprintf("topic %s should have been created", logsExportTopicName))
+
+			// Project destination
+			prjLogsExportLogBktName := org.GetStringOutput("logs_export_project_logbucket_name")
+			defaultRegion := commonConfig["default_region"]
+			prjLogBktFullName := fmt.Sprintf("projects/%s/locations/%s/buckets/%s", auditLogsProjectID, defaultRegion, prjLogsExportLogBktName)
+			prjLogBktDetails := gcloud.Runf(t, fmt.Sprintf("logging buckets describe %s --location=%s --project=%s", prjLogsExportLogBktName, defaultRegion, auditLogsProjectID))
+			assert.Equal(prjLogBktFullName, prjLogBktDetails.Get("name").String(), "log bucket name should match")
+
+			prjLinkedDatasetID := "ds_c_prj_aggregated_logs_analytics"
+			prjLinkedDsName := org.GetStringOutput("logs_export_project_linked_dataset_name")
+			prjLinkedDs := gcloud.Runf(t, "logging links describe %s --bucket=%s --location=%s --project=%s", prjLinkedDatasetID, prjLogsExportLogBktName, defaultRegion, auditLogsProjectID)
+			assert.Equal(prjLinkedDsName, prjLinkedDs.Get("name").String(), "log bucket linked dataset name should match")
+			prjBigqueryDatasetID := fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectNumber, prjLinkedDatasetID)
+			assert.Equal(prjBigqueryDatasetID, prjLinkedDs.Get("bigqueryDataset.datasetId").String(), "log bucket BigQuery dataset ID should match")
+
+			// add filter exclusion
+			prjLogsExportDefaultSink := gcloud.Runf(t, "logging sinks describe _Default --project=%s", auditLogsProjectID)
+			exclusions := prjLogsExportDefaultSink.Get("exclusions").Array()
+			assert.NotEmpty(exclusions, fmt.Sprintf("exclusion list for _Default sink in project %s must not be empty", auditLogsProjectID))
+			exclusionFilter := fmt.Sprintf("-logName : \"/%s/\"",auditLogsProjectID)
+			assert.Equal(exclusions[0].Get("filter").String(), exclusionFilter)
+
 
 			// logging sinks
 			logsFilter := []string{
@@ -243,6 +255,32 @@ func TestOrg(t *testing.T) {
 				"logName: /logs/compute.googleapis.com%2Fvpc_flows",
 				"logName: /logs/compute.googleapis.com%2Ffirewall",
 				"logName: /logs/dns.googleapis.com%2Fdns_queries",
+			}
+
+			// Log Sink
+			for _, sink := range []struct {
+				name        string
+				destination string
+			}{
+				{
+					name:        "sk-c-logging-bkt",
+					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
+				},
+				{
+					name:        "sk-c-logging-pub",
+					destination: fmt.Sprintf("pubsub.googleapis.com/projects/%s/topics/%s", auditLogsProjectID, logsExportTopicName),
+				},
+				{
+					name:        "sk-c-logging-prj",
+					destination: fmt.Sprintf("logging.googleapis.com/projects/%s", auditLogsProjectID),
+				},
+			} {
+				logSink := gcloud.Runf(t, "logging sinks describe %s --folder %s", sink.name, parentFolder)
+				assert.True(logSink.Get("includeChildren").Bool(), fmt.Sprintf("sink %s should include children", sink.name))
+				assert.Equal(sink.destination, logSink.Get("destination").String(), fmt.Sprintf("sink %s should have destination %s", sink.name, sink.destination))
+				for _, filter := range logsFilter {
+					assert.Contains(logSink.Get("filter").String(), filter, fmt.Sprintf("sink %s should include filter %s", sink.name, filter))
+				}
 			}
 
 			// CAI Monitoring
@@ -286,8 +324,8 @@ func TestOrg(t *testing.T) {
 					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
 				},
 				{
-					name:        "sk-c-logging-logbkt",
-					destination: fmt.Sprintf("logging.googleapis.com/%s", logBktFullName),
+					name:        "sk-c-logging-prj",
+					destination: fmt.Sprintf("logging.googleapis.com/projects/%s", auditLogsProjectID),
 				},
 				{
 					name:        "sk-c-logging-pub",
@@ -306,7 +344,7 @@ func TestOrg(t *testing.T) {
 			// Log Sink billing
 			billingAccount := org.GetTFSetupStringOutput("billing_account")
 			billingSinkNames := terraform.OutputMap(t, org.GetTFOptions(), "billing_sink_names")
-			billingLBKSinkName := billingSinkNames["lbk"]
+			billingPRJSinkName := billingSinkNames["prj"]
 			billingPUBSinkName := billingSinkNames["pub"]
 			billingSTOSinkName := billingSinkNames["sto"]
 
@@ -319,8 +357,8 @@ func TestOrg(t *testing.T) {
 					destination: fmt.Sprintf("storage.googleapis.com/%s", logsExportStorageBucketName),
 				},
 				{
-					name:        billingLBKSinkName,
-					destination: fmt.Sprintf("logging.googleapis.com/%s", logBktFullName),
+					name:        billingPRJSinkName,
+					destination: fmt.Sprintf("logging.googleapis.com/projects/%s", auditLogsProjectID),
 				},
 				{
 					name:        billingPUBSinkName,

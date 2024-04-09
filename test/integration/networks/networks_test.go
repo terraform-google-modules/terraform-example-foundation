@@ -237,7 +237,7 @@ func TestNetworks(t *testing.T) {
 			"base":       []string{"10.0.64.0/18", "10.1.64.0/18"},
 			"restricted": []string{"10.8.64.0/18", "10.9.64.0/18"},
 		},
-		"non-production": {
+		"nonproduction": {
 			"base":       []string{"10.0.128.0/18", "10.1.128.0/18"},
 			"restricted": []string{"10.8.128.0/18", "10.9.128.0/18"},
 		},
@@ -252,7 +252,7 @@ func TestNetworks(t *testing.T) {
 			"base":       "10.17.0.2",
 			"restricted": "10.17.0.6",
 		},
-		"non-production": {
+		"nonproduction": {
 			"base":       "10.17.0.3",
 			"restricted": "10.17.0.7",
 		},
@@ -307,7 +307,7 @@ func TestNetworks(t *testing.T) {
 
 	for _, envName := range []string{
 		"development",
-		"non-production",
+		"nonproduction",
 		"production",
 	} {
 		envName := envName

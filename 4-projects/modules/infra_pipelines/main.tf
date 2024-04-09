@@ -84,7 +84,7 @@ module "tf_workspace" {
     "_DOCKER_TAG_VERSION_TERRAFORM" = var.terraform_docker_tag_version
   }
 
-  tf_apply_branches = ["development", "non\\-production", "production"]
+  tf_apply_branches = ["development", "nonproduction", "production"]
 
   depends_on = [
     google_sourcerepo_repository.app_infra_repo,

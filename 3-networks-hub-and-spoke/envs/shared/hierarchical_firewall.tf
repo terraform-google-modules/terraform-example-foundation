@@ -25,7 +25,7 @@ module "hierarchical_firewall_policy" {
     local.bootstrap_folder_name,
     local.development_folder_name,
     local.production_folder_name,
-    local.non_production_folder_name,
+    local.nonproduction_folder_name,
   ]
   rules = {
     delegate-rfc1918-ingress = {

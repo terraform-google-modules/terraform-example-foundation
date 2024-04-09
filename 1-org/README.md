@@ -21,7 +21,7 @@ organizational policy.</td>
 </tr>
 <tr>
 <td><a href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
-<td>Sets up development, non-production, and production environments within the
+<td>Sets up development, nonproduction, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
@@ -107,7 +107,7 @@ This module creates and applies [tags](https://cloud.google.com/resource-manager
 | common | folder | 1-org | environment | production |
 | network | folder | 1-org | environment | production |
 | enviroment development | folder | [2-environments](../2-environments/README.md) | environment | development |
-| enviroment non-production | folder | [2-environments](../2-environments/README.md) | environment | non-production |
+| enviroment nonproduction | folder | [2-environments](../2-environments/README.md) | environment | nonproduction |
 | enviroment production | folder | [2-environments](../2-environments/README.md) | environment | production |
 
 ### Deploying with Cloud Build
@@ -126,7 +126,7 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
    **Note:** The message `warning: You appear to have cloned an empty repository.` is
    normal and can be ignored.
 
-1. Navigate into the repo, change to a non-production branch, and copy the contents of foundation to the new repo.
+1. Navigate into the repo, change to a nonproduction branch, and copy the contents of foundation to the new repo.
    All subsequent steps assume you are running them from the `gcp-org` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 

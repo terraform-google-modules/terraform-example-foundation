@@ -83,7 +83,7 @@ resource "random_string" "suffix" {
 
 module "log_export" {
   source  = "terraform-google-modules/log-export/google"
-  version = "~> 7.8"
+  version = "~> 8.0"
 
   for_each = local.log_exports
 
@@ -98,7 +98,7 @@ module "log_export" {
 
 module "log_export_billing" {
   source  = "terraform-google-modules/log-export/google"
-  version = "~> 7.4"
+  version = "~> 8.0"
 
   for_each = var.enable_billing_account_sink ? local.destination_resource_name : {}
 
@@ -123,7 +123,7 @@ resource "time_sleep" "wait_sa_iam_membership" {
 
 module "destination_project" {
   source  = "terraform-google-modules/log-export/google//modules/project"
-  version = "~> 7.8"
+  version = "~> 8.0"
   count   = var.project_options != null ? 1 : 0
 
   project_id               = var.logging_destination_project_id
@@ -151,7 +151,7 @@ resource "google_project_iam_member" "project_sink_member" {
 
 module "internal_project_log_export" {
   source  = "terraform-google-modules/log-export/google"
-  version = "~> 7.8"
+  version = "~> 8.0"
   count   = var.project_options != null ? 1 : 0
 
   destination_uri        = "logging.googleapis.com/projects/${var.logging_destination_project_id}/locations/${var.project_options.location}/buckets/${coalesce(var.project_options.log_bucket_id, "AggregatedLogs")}"
@@ -164,7 +164,7 @@ module "internal_project_log_export" {
 
 module "destination_aggregated_logs" {
   source  = "terraform-google-modules/log-export/google//modules/logbucket"
-  version = "~> 7.8"
+  version = "~> 8.0"
   count   = var.project_options != null ? 1 : 0
 
   project_id                    = var.logging_destination_project_id
@@ -238,7 +238,7 @@ resource "google_project_iam_member" "project_sink_member_billing" {
 #----------------------#
 module "destination_storage" {
   source  = "terraform-google-modules/log-export/google//modules/storage"
-  version = "~> 7.8"
+  version = "~> 8.0"
 
   count = var.storage_options != null ? 1 : 0
 
@@ -289,7 +289,7 @@ resource "google_storage_bucket_iam_member" "storage_sink_member_billing" {
 #----------------------#
 module "destination_pubsub" {
   source  = "terraform-google-modules/log-export/google//modules/pubsub"
-  version = "~> 7.8"
+  version = "~> 8.0"
 
   count = var.pubsub_options != null ? 1 : 0
 

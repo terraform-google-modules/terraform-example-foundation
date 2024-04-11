@@ -17,8 +17,8 @@
 locals {
   env              = "development"
   environment_code = substr(local.env, 0, 1)
-  default_region1  = "us-west1"
-  default_region2  = "us-central1"
+  default_region1  = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region2  = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
   /*
    * Base network ranges
    */

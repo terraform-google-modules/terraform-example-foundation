@@ -91,7 +91,7 @@ variable "project_budget" {
 variable "kms_prj_suffix" {
   description = "Name suffix to use for KMS project created."
   type        = string
-  default     = "env-kms"
+  default     = "kms"
 }
 
 variable "location_kms" {

@@ -58,7 +58,7 @@ variable "secondary_contact" {
 variable "business_code" {
   description = "The code that describes which business unit owns the project"
   type        = string
-  default     = "abcd"
+  default     = "shared"
 }
 
 variable "activate_apis" {
@@ -72,10 +72,15 @@ variable "environment" {
   type        = string
 }
 
-variable "vpc_type" {
-  description = "The type of VPC to attach the project to. Possible options are base or restricted."
+variable "vpc" {
+  description = "The type of VPC to attach the project to. Possible options are none, base, or restricted."
   type        = string
-  default     = null
+  default     = "none"
+
+  validation {
+    condition     = contains(["none", "base", "restricted"], var.vpc)
+    error_message = "For vpc, only `none`, `base`, or `restricted` are valid."
+  }
 }
 
 variable "shared_vpc_host_project_id" {

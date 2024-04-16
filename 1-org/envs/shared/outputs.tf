@@ -114,14 +114,19 @@ output "logs_export_storage_bucket_name" {
   description = "The storage bucket for destination of log exports"
 }
 
-output "logs_export_logbucket_name" {
-  value       = module.logs_export.logbucket_destination_name
-  description = "The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets ."
+output "logs_export_project_logbucket_name" {
+  description = "The resource name for the Log Bucket created for the project destination."
+  value       = module.logs_export.project_logbucket_name
 }
 
-output "logs_export_logbucket_linked_dataset_name" {
-  value       = module.logs_export.logbucket_linked_dataset_name
-  description = "The resource name of the Log Bucket linked BigQuery dataset created for Log Analytics. See https://cloud.google.com/logging/docs/log-analytics ."
+output "logs_export_project_linked_dataset_name" {
+  description = "The resource name of the Log Bucket linked BigQuery dataset for the project destination."
+  value       = module.logs_export.project_linked_dataset_name
+}
+
+output "billing_sink_names" {
+  value       = module.logs_export.billing_sink_names
+  description = "The name of the sinks under billing account level."
 }
 
 output "tags" {
@@ -131,7 +136,7 @@ output "tags" {
 
 output "shared_vpc_projects" {
   value       = { for k, v in module.base_restricted_environment_network : k => v }
-  description = "Base and restricted shared VPC Projects info grouped by environment (development, non-production, production)."
+  description = "Base and restricted shared VPC Projects info grouped by environment (development, nonproduction, production)."
 }
 
 output "cai_monitoring_artifact_registry" {

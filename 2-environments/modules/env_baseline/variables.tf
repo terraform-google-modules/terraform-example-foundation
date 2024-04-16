@@ -34,11 +34,6 @@ variable "tfc_org_name" {
   type        = string
 }
 
-variable "monitoring_workspace_users" {
-  description = "Google Workspace or Cloud Identity group that have access to Monitoring Workspaces."
-  type        = string
-}
-
 variable "project_budget" {
   description = <<EOT
   Budget configuration for projects.

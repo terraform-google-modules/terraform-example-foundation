@@ -64,16 +64,22 @@ resource "google_folder_iam_audit_config" "folder_config" {
   }
 }
 
+resource "google_project_iam_member" "audit_log_logging_viewer" {
+  project = module.org_audit_logs.project_id
+  role    = "roles/logging.viewer"
+  member  = "group:${local.required_groups["audit_data_users"]}"
+}
+
 resource "google_project_iam_member" "audit_log_bq_user" {
   project = module.org_audit_logs.project_id
   role    = "roles/bigquery.user"
-  member  = "group:${var.audit_data_users}"
+  member  = "group:${local.required_groups["audit_data_users"]}"
 }
 
 resource "google_project_iam_member" "audit_log_bq_data_viewer" {
   project = module.org_audit_logs.project_id
   role    = "roles/bigquery.dataViewer"
-  member  = "group:${var.audit_data_users}"
+  member  = "group:${local.required_groups["audit_data_users"]}"
 }
 
 /******************************************
@@ -83,13 +89,13 @@ resource "google_project_iam_member" "audit_log_bq_data_viewer" {
 resource "google_project_iam_member" "billing_bq_user" {
   project = module.org_billing_logs.project_id
   role    = "roles/bigquery.user"
-  member  = "group:${var.billing_data_users}"
+  member  = "group:${local.required_groups["billing_data_users"]}"
 }
 
 resource "google_project_iam_member" "billing_bq_viewer" {
   project = module.org_billing_logs.project_id
   role    = "roles/bigquery.dataViewer"
-  member  = "group:${var.billing_data_users}"
+  member  = "group:${local.required_groups["billing_data_users"]}"
 }
 
 /******************************************
@@ -99,26 +105,12 @@ resource "google_project_iam_member" "billing_bq_viewer" {
 resource "google_organization_iam_member" "billing_viewer" {
   org_id = local.org_id
   role   = "roles/billing.viewer"
-  member = "group:${var.billing_data_users}"
+  member = "group:${local.required_groups["billing_data_users"]}"
 }
 
 /******************************************
- Groups permissions according to SFB (Section 6.2 - Users and groups) - IAM
+ Groups permissions
 *****************************************/
-
-resource "google_organization_iam_member" "organization_viewer" {
-  count  = var.gcp_groups.platform_viewer != null && local.parent_folder == "" ? 1 : 0
-  org_id = local.org_id
-  role   = "roles/viewer"
-  member = "group:${var.gcp_groups.platform_viewer}"
-}
-
-resource "google_folder_iam_member" "organization_viewer" {
-  count  = var.gcp_groups.platform_viewer != null && local.parent_folder != "" ? 1 : 0
-  folder = "folders/${local.parent_folder}"
-  role   = "roles/viewer"
-  member = "group:${var.gcp_groups.platform_viewer}"
-}
 
 resource "google_organization_iam_member" "security_reviewer" {
   count  = var.gcp_groups.security_reviewer != null && local.parent_folder == "" ? 1 : 0
@@ -169,7 +161,14 @@ resource "google_project_iam_member" "audit_bq_data_viewer" {
   member  = "group:${var.gcp_groups.audit_viewer}"
 }
 
-resource "google_project_iam_member" "scc_admin" {
+resource "google_organization_iam_member" "org_scc_admin" {
+  count  = var.gcp_groups.scc_admin != null && local.parent_folder == "" ? 1 : 0
+  org_id = local.org_id
+  role   = "roles/securitycenter.adminEditor"
+  member = "group:${var.gcp_groups.scc_admin}"
+}
+
+resource "google_project_iam_member" "project_scc_admin" {
   count   = var.gcp_groups.scc_admin != null ? 1 : 0
   project = module.scc_notifications.project_id
   role    = "roles/securitycenter.adminEditor"
@@ -183,34 +182,9 @@ resource "google_project_iam_member" "global_secrets_admin" {
   member  = "group:${var.gcp_groups.global_secrets_admin}"
 }
 
-/******************************************
- Privileged accounts permissions according to SFB (Section 6.3 - Privileged identities)
-*****************************************/
-
-resource "google_organization_iam_member" "org_admin_user" {
-  count  = var.gcp_user.org_admin != null && local.parent_folder == "" ? 1 : 0
-  org_id = local.org_id
-  role   = "roles/resourcemanager.organizationAdmin"
-  member = "user:${var.gcp_user.org_admin}"
-}
-
-resource "google_folder_iam_member" "org_admin_user" {
-  count  = var.gcp_user.org_admin != null && local.parent_folder != "" ? 1 : 0
-  folder = "folders/${local.parent_folder}"
-  role   = "roles/resourcemanager.folderAdmin"
-  member = "user:${var.gcp_user.org_admin}"
-}
-
-resource "google_organization_iam_member" "billing_creator_user" {
-  count  = var.gcp_user.billing_creator != null && local.parent_folder == "" ? 1 : 0
-  org_id = local.org_id
-  role   = "roles/billing.creator"
-  member = "user:${var.gcp_user.billing_creator}"
-}
-
-resource "google_billing_account_iam_member" "billing_admin_user" {
-  count              = var.gcp_user.billing_admin != null ? 1 : 0
-  billing_account_id = local.billing_account
-  role               = "roles/billing.admin"
-  member             = "user:${var.gcp_user.billing_admin}"
+resource "google_project_iam_member" "kms_admin" {
+  count   = var.gcp_groups.kms_admin != null ? 1 : 0
+  project = module.org_kms.project_id
+  role    = "roles/cloudkms.viewer"
+  member  = "group:${var.gcp_groups.kms_admin}"
 }

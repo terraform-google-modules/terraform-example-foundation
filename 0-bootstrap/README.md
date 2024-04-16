@@ -21,7 +21,7 @@ organizational policy.</td>
 </tr>
 <tr>
 <td><a href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
-<td>Sets up development, non-production, and production environments within the
+<td>Sets up development, nonproduction, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
@@ -75,37 +75,26 @@ Also make sure that you've done the following:
    [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 1. Set up a Google Cloud
    [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
-1. Create Cloud Identity or Google Workspace groups for
-   organization and billing admins.
-1. Add the user who will use Terraform to the `group_org_admins` group.
-   They must be in this group, or they won't have
-   `roles/resourcemanager.projectCreator` access.
+1. Create Cloud Identity or Google Workspace groups as defined in [groups for access control](https://cloud.google.com/architecture/security-foundations/authentication-authorization#groups_for_access_control).
+Set the variables in **terraform.tfvars** (`groups` block) to use the specific group names you create.
 1. For the user who will run the procedures in this document, grant the following roles:
    - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
    - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
+   - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
    - The `roles/billing.admin` role on the billing account.
    - The `roles/resourcemanager.folderCreator` role.
-
-If other users need to be able to run these procedures, add them to the group
-represented by the `org_project_creators` variable.
-For more information about the permissions that are required, and the resources
-that are created, see the organization bootstrap module
-[documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
 
 ### Optional - Automatic creation of Google Cloud Identity groups
 
 In the foundation, Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) .
 
-To enable automatic creation of the [required groups](https://cloud.google.com/architecture/security-foundations/authentication-authorization#users_and_groups), complete the following actions:
+To enable automatic creation of the [groups](https://cloud.google.com/architecture/security-foundations/authentication-authorization#groups_for_access_control), complete the following actions:
 
 - Have an existing project for Cloud Identity API billing.
 - Enable the Cloud Identity API (`cloudidentity.googleapis.com`) on the billing project.
 - Grant role `roles/serviceusage.serviceUsageConsumer` to the user running Terraform on the billing project.
-- Provide values for the groups and billing project in the variable `groups`.
-
-All groups in the `groups.required_groups` are required.
-
-All groups in the `groups.optional_groups` are optional.
+- Change the field `groups.create_required_groups` to **true** to create the required groups.
+- Change the field `groups.create_optional_groups` to **true** and fill the `groups.optional_groups` with the emails to be created.
 
 ### Optional - Cloud Build access to on-prem
 
@@ -305,13 +294,10 @@ Each step has instructions for this change.
 | bucket\_tfstate\_kms\_force\_destroy | When deleting a bucket, this boolean option will delete the KMS keys used for the Terraform state bucket. | `bool` | `false` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
-| group\_billing\_admins | Google Group for GCP Billing Administrators | `string` | n/a | yes |
-| group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
-| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_groups   = bool<br>    billing_project = string<br>    required_groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = string<br>      audit_data_users           = string<br>      monitoring_workspace_users = string<br>    })<br>    optional_groups = object({<br>      gcp_platform_viewer      = string<br>      gcp_security_reviewer    = string<br>      gcp_network_viewer       = string<br>      gcp_scc_admin            = string<br>      gcp_global_secrets_admin = string<br>      gcp_audit_viewer         = string<br>    })<br>  })</pre> | <pre>{<br>  "billing_project": null,<br>  "create_groups": false,<br>  "optional_groups": {<br>    "gcp_audit_viewer": "",<br>    "gcp_global_secrets_admin": "",<br>    "gcp_network_viewer": "",<br>    "gcp_platform_viewer": "",<br>    "gcp_scc_admin": "",<br>    "gcp_security_reviewer": ""<br>  },<br>  "required_groups": {<br>    "audit_data_users": "",<br>    "billing_data_users": "",<br>    "group_billing_admins": "",<br>    "group_org_admins": "",<br>    "monitoring_workspace_users": ""<br>  }<br>}</pre> | no |
+| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = string<br>      audit_data_users           = string<br>      monitoring_workspace_users = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
 | initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
-| org\_project\_creators | Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required. | `list(string)` | `[]` | no |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. | `string` | `""` | no |
 | project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
 
@@ -332,8 +318,6 @@ Each step has instructions for this change.
 | gcs\_bucket\_cloudbuild\_artifacts | Bucket used to store Cloud Build artifacts in cicd project. |
 | gcs\_bucket\_cloudbuild\_logs | Bucket used to store Cloud Build logs in cicd project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for Foundations Pipelines in Seed Project. |
-| group\_billing\_admins | Google Group for GCP Billing Administrators. |
-| group\_org\_admins | Google Group for GCP Organization Administrators. |
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
 | optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |

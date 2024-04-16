@@ -32,10 +32,6 @@ output "terraform_service_account" {
   value = google_service_account.int_test.email
 }
 
-output "org_project_creators" {
-  value = ["serviceAccount:${google_service_account.int_test.email}"]
-}
-
 output "org_id" {
   value = var.org_id
 }
@@ -48,24 +44,16 @@ output "group_email" {
   value = var.group_email
 }
 
-output "group_org_admins" {
-  value = var.group_email
-}
-
-output "group_billing_admins" {
-  value = var.group_email
-}
-
-output "audit_data_users" {
-  value = var.group_email
-}
-
-output "billing_data_users" {
-  value = var.group_email
-}
-
-output "monitoring_workspace_users" {
-  value = var.group_email
+output "groups" {
+  value = {
+    required_groups = {
+      group_org_admins           = var.group_email
+      group_billing_admins       = var.group_email
+      billing_data_users         = var.group_email
+      audit_data_users           = var.group_email
+      monitoring_workspace_users = var.group_email
+    }
+  }
 }
 
 output "project_prefix" {

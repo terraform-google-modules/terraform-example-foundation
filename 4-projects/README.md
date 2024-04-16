@@ -21,7 +21,7 @@ organizational policy.</td>
 </tr>
 <tr>
 <td><a href="../2-environments"><span style="white-space: nowrap;">2-environments</span></a></td>
-<td>Sets up development, non-production, and production environments within the
+<td>Sets up development, nonproduction, and production environments within the
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
@@ -62,7 +62,7 @@ For each business unit, a shared `infra-pipeline` project is created along with 
 This step follows the same [conventions](https://github.com/terraform-google-modules/terraform-example-foundation#branching-strategy) as the Foundation pipeline deployed in [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md).
 A custom [workspace](https://github.com/terraform-google-modules/terraform-google-bootstrap/blob/master/modules/tf_cloudbuild_workspace/README.md) (`bu1-example-app`) is created by this pipeline and necessary roles are granted to the Terraform Service Account of this workspace by enabling variable `sa_roles` as shown in this [example](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/modules/base_env/example_base_shared_vpc_project.tf).
 
-This pipeline is utilized to deploy resources in projects across development/non-production/production in step [5-app-infra](../5-app-infra/README.md).
+This pipeline is utilized to deploy resources in projects across development/nonproduction/production in step [5-app-infra](../5-app-infra/README.md).
 Other Workspaces can also be created to isolate deployments if needed.
 
 ## Prerequisites
@@ -118,11 +118,11 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    mv common.auto.example.tfvars common.auto.tfvars
    mv shared.auto.example.tfvars shared.auto.tfvars
    mv development.auto.example.tfvars development.auto.tfvars
-   mv non-production.auto.example.tfvars non-production.auto.tfvars
+   mv nonproduction.auto.example.tfvars nonproduction.auto.tfvars
    mv production.auto.example.tfvars production.auto.tfvars
    ```
 
-1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
+1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `nonproduction.auto.tfvars`, and `production.auto.tfvars` files.
 1. See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
 
 1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
@@ -141,7 +141,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    git commit -m 'Initialize projects repo'
    ```
 
-1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
+1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `nonproduction`, and `production` depend on them.
 1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Use `terraform output` to get the Cloud Build project ID and the projects step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
@@ -197,13 +197,13 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    git push origin development
    ```
 
-1. After development has been applied, apply non-production.
-1. Merge changes to non-production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
+1. After development has been applied, apply nonproduction.
+1. Merge changes to nonproduction. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
-   git checkout -b non-production
-   git push origin non-production
+   git checkout -b nonproduction
+   git push origin nonproduction
    ```
 
 1. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
@@ -238,11 +238,11 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    mv common.auto.example.tfvars common.auto.tfvars
    mv shared.auto.example.tfvars shared.auto.tfvars
    mv development.auto.example.tfvars development.auto.tfvars
-   mv non-production.auto.example.tfvars non-production.auto.tfvars
+   mv nonproduction.auto.example.tfvars nonproduction.auto.tfvars
    mv production.auto.example.tfvars production.auto.tfvars
    ```
 
-1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
+1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `nonproduction.auto.tfvars`, and `production.auto.tfvars` files.
    See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
    Use `terraform output` to get the remote state bucket (the backend bucket used by previous steps) value from `0-bootstrap` output.
 
@@ -253,8 +253,8 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
-We will now deploy each of our environments(development/production/non-production) using the `tf-wrapper.sh` script.
-When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied. Environment shared must be applied first because development, non-production, and production depend on it.
+We will now deploy each of our environments(development/production/nonproduction) using the `tf-wrapper.sh` script.
+When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied. Environment shared must be applied first because development, nonproduction, and production depend on it.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
@@ -306,23 +306,23 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ./tf-wrapper.sh apply production
    ```
 
-1. Run `init` and `plan` and review output for environment non-production.
+1. Run `init` and `plan` and review output for environment nonproduction.
 
    ```bash
-   ./tf-wrapper.sh init non-production
-   ./tf-wrapper.sh plan non-production
+   ./tf-wrapper.sh init nonproduction
+   ./tf-wrapper.sh plan nonproduction
    ```
 
 1. Run `validate` and check for violations.
 
    ```bash
-   ./tf-wrapper.sh validate non-production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ./tf-wrapper.sh validate nonproduction $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
    ```
 
-1. Run `apply` non-production.
+1. Run `apply` nonproduction.
 
    ```bash
-   ./tf-wrapper.sh apply non-production
+   ./tf-wrapper.sh apply nonproduction
    ```
 
 1. Run `init` and `plan` and review output for environment development.

@@ -15,21 +15,21 @@
  */
 
 locals {
-  env                        = "common"
-  environment_code           = "c"
-  dns_bgp_asn_number         = var.enable_partner_interconnect ? "16550" : var.bgp_asn_dns
-  default_region1            = "us-west1"
-  default_region2            = "us-central1"
-  folder_prefix              = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  dns_hub_project_id         = data.terraform_remote_state.org.outputs.dns_hub_project_id
-  interconnect_project_id    = data.terraform_remote_state.org.outputs.interconnect_project_id
-  parent_id                  = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
-  bootstrap_folder_name      = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
-  common_folder_name         = data.terraform_remote_state.org.outputs.common_folder_name
-  network_folder_name        = data.terraform_remote_state.org.outputs.network_folder_name
-  development_folder_name    = data.terraform_remote_state.env_development.outputs.env_folder
-  non_production_folder_name = data.terraform_remote_state.env_non_production.outputs.env_folder
-  production_folder_name     = data.terraform_remote_state.env_production.outputs.env_folder
+  env                       = "common"
+  environment_code          = "c"
+  dns_bgp_asn_number        = var.enable_partner_interconnect ? "16550" : var.bgp_asn_dns
+  default_region1           = "us-west1"
+  default_region2           = "us-central1"
+  folder_prefix             = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
+  dns_hub_project_id        = data.terraform_remote_state.org.outputs.dns_hub_project_id
+  interconnect_project_id   = data.terraform_remote_state.org.outputs.interconnect_project_id
+  parent_id                 = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
+  bootstrap_folder_name     = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
+  common_folder_name        = data.terraform_remote_state.org.outputs.common_folder_name
+  network_folder_name       = data.terraform_remote_state.org.outputs.network_folder_name
+  development_folder_name   = data.terraform_remote_state.env_development.outputs.env_folder
+  nonproduction_folder_name = data.terraform_remote_state.env_nonproduction.outputs.env_folder
+  production_folder_name    = data.terraform_remote_state.env_production.outputs.env_folder
 }
 
 data "terraform_remote_state" "bootstrap" {
@@ -59,12 +59,12 @@ data "terraform_remote_state" "env_development" {
   }
 }
 
-data "terraform_remote_state" "env_non_production" {
+data "terraform_remote_state" "env_nonproduction" {
   backend = "gcs"
 
   config = {
     bucket = var.remote_state_bucket
-    prefix = "terraform/environments/non-production"
+    prefix = "terraform/environments/nonproduction"
   }
 }
 

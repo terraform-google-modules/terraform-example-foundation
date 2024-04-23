@@ -25,8 +25,8 @@ module "env" {
   location_gcs        = coalesce(var.location_gcs, local.default_region_gcs)
   gcs_custom_placement_config = {
     data_locations = [
-      local.default_region,
-      local.default_region_2,
+      upper(local.default_region),
+      upper(local.default_region_2),
     ]
   }
   tfc_org_name                 = var.tfc_org_name

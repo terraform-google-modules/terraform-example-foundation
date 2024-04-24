@@ -1,1 +1,1 @@
-../../terraform.example.tfvars
+../../terraform.tfvars

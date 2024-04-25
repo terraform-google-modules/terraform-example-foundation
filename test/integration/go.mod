@@ -1,6 +1,6 @@
 module github.com/terraform-google-modules/terraform-example-foundation/test/integration
 
-go 1.21
+go 1.21.0
 
 require (
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.12.1

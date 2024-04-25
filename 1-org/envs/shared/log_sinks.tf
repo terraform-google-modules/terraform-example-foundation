@@ -91,7 +91,7 @@ module "logs_export" {
 
 resource "google_bigquery_dataset" "billing_dataset" {
   dataset_id    = "billing_data"
-  project       = module.org_billing_logs.project_id
+  project       = module.org_billing_export.project_id
   friendly_name = "GCP Billing Data"
   location      = var.billing_export_dataset_location
 }

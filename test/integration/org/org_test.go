@@ -202,7 +202,7 @@ func TestOrg(t *testing.T) {
 			assert.Subset(listCategories, expectedCategories, "notification category subscriptions should be the same")
 
 			//logging
-			billingLogsProjectID := org.GetStringOutput("org_billing_logs_project_id")
+			billingLogsProjectID := org.GetStringOutput("org_billing_export_project_id")
 			billingDatasetName := "billing_data"
 			billingDatasetFullName := fmt.Sprintf("%s:%s", billingLogsProjectID, billingDatasetName)
 			billingDataset := gcloud.Runf(t, "alpha bq datasets describe %s --project %s", billingDatasetName, billingLogsProjectID)
@@ -398,7 +398,7 @@ func TestOrg(t *testing.T) {
 					},
 				},
 				{
-					output: "org_billing_logs_project_id",
+					output: "org_billing_export_project_id",
 					apis: []string{
 						"logging.googleapis.com",
 						"bigquery.googleapis.com",

@@ -64,7 +64,7 @@ This will create the following folder and project structure:
 example-organization
 └── fldr-common
     ├── prj-c-logging
-    ├── prj-c-billing-logs
+    ├── prj-c-billing-export
     ├── prj-c-scc
     ├── prj-c-kms
     └── prj-c-secrets
@@ -83,9 +83,9 @@ example-organization
 
 #### Logs
 
-Among the four projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
-The first one is for organization-wide audit logs, and the second one is for billing logs.
-In both cases, the logs are collected into BigQuery datasets which you can then use for general querying, dashboarding, and reporting. Logs are also exported to Pub/Sub, a Cloud Storage bucket, and a log bucket.
+Under the common folder, a project `prj-c-logging` is used as the destination for organization wide sinks. This includes admin activity audit logs from all projects in your organization and the billing account.
+
+Logs are collected into a logging bucket with a linked BigQuery dataset, which can be used for ad-hoc log investigations, querying, or reporting. Log sinks can also be configured to export to Pub/Sub for exporting to external systems or Cloud Storage for long-term storage.
 
 **Notes**:
 
@@ -257,7 +257,7 @@ After all steps above have been executed, your Google Cloud organization should 
 example-organization
 └── fldr-common
     ├── prj-c-logging
-    ├── prj-c-billing-logs
+    ├── prj-c-billing-export
     ├── prj-c-scc
     ├── prj-c-kms
     ├── prj-c-secrets

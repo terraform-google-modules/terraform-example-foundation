@@ -276,7 +276,7 @@ module "base_network_hub" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-base-net-hub"
+  name                     = "${local.project_prefix}-net-hub-base"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -293,7 +293,7 @@ module "base_network_hub" {
   labels = {
     environment       = "network"
     environment       = "production"
-    application_name  = "org-base-net-hub"
+    application_name  = "org-net-hub-base"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"

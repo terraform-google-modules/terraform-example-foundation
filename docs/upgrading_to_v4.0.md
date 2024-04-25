@@ -14,7 +14,7 @@ Before moving forward with adopting components of v4, review the list of breakin
   - A new Network folder was created be used as parent by network projects:
     - `prj-ENV-shared-base`
     - `prj-ENV-shared-restricted`
-    - `prj-c-base-net-hub`
+    - `prj-net-hub-base`
     - `prj-c-restricted-net-hub`
     - `prj-net-dns`
     - `prj-net-interconnect`

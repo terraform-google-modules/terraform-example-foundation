@@ -292,7 +292,6 @@ module "base_network_hub" {
 
   labels = {
     environment       = "network"
-    environment       = "production"
     application_name  = "org-net-hub-base"
     billing_code      = "1234"
     primary_contact   = "example1"

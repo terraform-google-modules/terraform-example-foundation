@@ -15,7 +15,7 @@ Before moving forward with adopting components of v4, review the list of breakin
     - `prj-ENV-shared-base`
     - `prj-ENV-shared-restricted`
     - `prj-net-hub-base`
-    - `prj-c-restricted-net-hub`
+    - `prj-net-hub-restricted`
     - `prj-net-dns`
     - `prj-net-interconnect`
 - Network Refactoring

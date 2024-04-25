@@ -17,7 +17,7 @@ Before moving forward with adopting components of v4, review the list of breakin
     - `prj-c-base-net-hub`
     - `prj-c-restricted-net-hub`
     - `prj-net-dns`
-    - `prj-c-interconnect`
+    - `prj-net-interconnect`
 - Network Refactoring
   - Network projects are now created under a new folder `network`
   - VPC firewall rules (`google_compute_firewall`) resources were replaced with Compute Network firewall policy (`google_compute_network_firewall_policy`) resources

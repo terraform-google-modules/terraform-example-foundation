@@ -168,7 +168,7 @@ module "interconnect" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-interconnect"
+  name                     = "${local.project_prefix}-net-interconnect"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id

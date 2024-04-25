@@ -16,7 +16,7 @@ Before moving forward with adopting components of v4, review the list of breakin
     - `prj-ENV-shared-restricted`
     - `prj-c-base-net-hub`
     - `prj-c-restricted-net-hub`
-    - `prj-c-dns-hub`
+    - `prj-net-dns`
     - `prj-c-interconnect`
 - Network Refactoring
   - Network projects are now created under a new folder `network`

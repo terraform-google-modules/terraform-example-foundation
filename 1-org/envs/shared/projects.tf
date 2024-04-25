@@ -234,7 +234,7 @@ module "dns_hub" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-dns-hub"
+  name                     = "${local.project_prefix}-net-dns"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id

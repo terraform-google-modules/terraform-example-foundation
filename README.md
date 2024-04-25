@@ -126,30 +126,21 @@ This stage only creates the projects and enables the correct APIs, the following
 
 ### [2. environments](./2-environments/)
 
-The purpose of this stage is to set up the environments folders used for projects that contain monitoring and secrets projects.
+The purpose of this stage is to set up the environments folders that contain shared projects for each environemnt.
 This will create the following folder and project structure:
 
 ```
 example-organization
 └── fldr-development
-    ├── prj-d-monitoring
     ├── prj-p-kms
     └── prj-d-secrets
 └── fldr-nonproduction
-    ├── prj-n-monitoring
     ├── prj-n-kms
     └── prj-n-secrets
 └── fldr-production
-    ├── prj-p-monitoring
     ├── prj-p-kms
     └── prj-p-secrets
 ```
-
-#### Monitoring
-
-Under the environment folder, a project is created per environment (`development`, `nonproduction`, and `production`), which is intended to be used as a [Cloud Monitoring workspace](https://cloud.google.com/monitoring/workspaces) for all projects in that environment.
-Please note that creating the [workspace and linking projects](https://cloud.google.com/monitoring/workspaces/create) can currently only be completed through the Cloud Console.
-If you have strong IAM requirements for these monitoring workspaces, it is worth considering creating these at a more granular level, such as per business unit or per application.
 
 #### KMS
 
@@ -275,7 +266,6 @@ example-organization
     ├── prj-p-shared-base
     └── prj-p-shared-restricted
 └── fldr-development
-    ├── prj-d-monitoring
     ├── prj-d-kms
     └── prj-d-secrets
     └── fldr-development-bu1
@@ -297,7 +287,6 @@ example-organization
         ├── prj-d-bu2-sample-restrict
         └── prj-d-bu2-sample-peering
 └── fldr-nonproduction
-    ├── prj-n-monitoring
     ├── prj-n-kms
     └── prj-n-secrets
     └── fldr-nonproduction-bu1
@@ -313,7 +302,6 @@ example-organization
         ├── prj-n-bu2-sample-restrict
         └── prj-n-bu2-sample-peering
 └── fldr-production
-    ├── prj-p-monitoring
     ├── prj-p-kms
     └── prj-p-secrets
     └── fldr-production-bu1

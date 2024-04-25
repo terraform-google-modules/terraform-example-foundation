@@ -15,7 +15,7 @@ stages.</td>
 </tr>
 <tr>
 <td><a href="../1-org">1-org</a></td>
-<td>Sets up top-level shared folders, monitoring and networking projects, and
+<td>Sets up top-level shared folders, networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>

@@ -82,18 +82,18 @@ variable "groups" {
     create_optional_groups = optional(bool, false)
     billing_project        = optional(string, null)
     required_groups = object({
-      group_org_admins           = string
-      group_billing_admins       = string
-      billing_data_users         = string
-      audit_data_users           = string
-      monitoring_workspace_users = string
+      group_org_admins     = string
+      group_billing_admins = string
+      billing_data_users   = string
+      audit_data_users     = string
     })
     optional_groups = optional(object({
-      gcp_security_reviewer    = optional(string, "")
-      gcp_network_viewer       = optional(string, "")
-      gcp_scc_admin            = optional(string, "")
-      gcp_global_secrets_admin = optional(string, "")
-      gcp_kms_admin            = optional(string, "")
+      monitoring_workspace_users = optional(string, "")
+      gcp_security_reviewer      = optional(string, "")
+      gcp_network_viewer         = optional(string, "")
+      gcp_scc_admin              = optional(string, "")
+      gcp_global_secrets_admin   = optional(string, "")
+      gcp_kms_admin              = optional(string, "")
     }), {})
   })
 
@@ -120,11 +120,6 @@ variable "groups" {
   validation {
     condition     = var.groups.required_groups.audit_data_users != ""
     error_message = "The group audit_data_users is invalid, it must be a valid email"
-  }
-
-  validation {
-    condition     = var.groups.required_groups.monitoring_workspace_users != ""
-    error_message = "The group monitoring_workspace_users is invalid, it must be a valid email"
   }
 }
 

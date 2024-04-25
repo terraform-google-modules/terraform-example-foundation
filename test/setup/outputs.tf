@@ -52,6 +52,15 @@ output "groups" {
       billing_data_users         = var.group_email
       audit_data_users           = var.group_email
       monitoring_workspace_users = var.group_email
+    },
+    optional_groups = {
+      monitoring_workspace_users = var.group_email
+      gcp_security_reviewer      = var.group_email
+      gcp_network_viewer         = var.group_email
+      gcp_scc_admin              = var.group_email
+      gcp_global_secrets_admin   = var.group_email
+      gcp_kms_admin              = var.group_email
+
     }
   }
 }

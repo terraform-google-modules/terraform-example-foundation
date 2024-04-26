@@ -55,12 +55,12 @@ func getNetworkResourceNames(envCode string, networkMode string, firewallMode st
 			"dns_zone_pkg_dev":      fmt.Sprintf("dz-%s-shared-base-pkg-dev", envCode),
 			"dns_zone_peering_zone": fmt.Sprintf("dz-%s-shared-base-to-dns-hub", envCode),
 			"dns_policy_name":       fmt.Sprintf("dp-%s-shared-base-default-policy", envCode),
-			"subnet_name1":          fmt.Sprintf("sb-%s-shared-base-us-west1", envCode),
-			"subnet_name2":          fmt.Sprintf("sb-%s-shared-base-us-central1", envCode),
-			"region1_router1":       fmt.Sprintf("cr-%s-shared-base%s-us-west1-cr1", envCode, networkMode),
-			"region1_router2":       fmt.Sprintf("cr-%s-shared-base%s-us-west1-cr2", envCode, networkMode),
-			"region2_router1":       fmt.Sprintf("cr-%s-shared-base%s-us-central1-cr3", envCode, networkMode),
-			"region2_router2":       fmt.Sprintf("cr-%s-shared-base%s-us-central1-cr4", envCode, networkMode),
+			"subnet_name1":          fmt.Sprintf("sb-%s-shared-base-us-central1", envCode),
+			"subnet_name2":          fmt.Sprintf("sb-%s-shared-base-us-west1", envCode),
+			"region1_router1":       fmt.Sprintf("cr-%s-shared-base%s-us-central1-cr1", envCode, networkMode),
+			"region1_router2":       fmt.Sprintf("cr-%s-shared-base%s-us-central1-cr2", envCode, networkMode),
+			"region2_router1":       fmt.Sprintf("cr-%s-shared-base%s-us-west1-cr3", envCode, networkMode),
+			"region2_router2":       fmt.Sprintf("cr-%s-shared-base%s-us-west1-cr4", envCode, networkMode),
 			"firewall_policy":       fmt.Sprintf("fp-%s-%s-base-firewalls", envCode, firewallMode),
 			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-base-65530-e-d-all-all-all", envCode),
 			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-base-1000-e-a-allow-google-apis-all-tcp-443", envCode),
@@ -73,12 +73,12 @@ func getNetworkResourceNames(envCode string, networkMode string, firewallMode st
 			"dns_zone_pkg_dev":      fmt.Sprintf("dz-%s-shared-restricted-pkg-dev", envCode),
 			"dns_zone_peering_zone": fmt.Sprintf("dz-%s-shared-restricted-to-dns-hub", envCode),
 			"dns_policy_name":       fmt.Sprintf("dp-%s-shared-restricted-default-policy", envCode),
-			"subnet_name1":          fmt.Sprintf("sb-%s-shared-restricted-us-west1", envCode),
-			"subnet_name2":          fmt.Sprintf("sb-%s-shared-restricted-us-central1", envCode),
-			"region1_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-west1-cr5", envCode, networkMode),
-			"region1_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-west1-cr6", envCode, networkMode),
-			"region2_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr7", envCode, networkMode),
-			"region2_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr8", envCode, networkMode),
+			"subnet_name1":          fmt.Sprintf("sb-%s-shared-restricted-us-central1", envCode),
+			"subnet_name2":          fmt.Sprintf("sb-%s-shared-restricted-us-west1", envCode),
+			"region1_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central-cr5", envCode, networkMode),
+			"region1_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr6", envCode, networkMode),
+			"region2_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-west1-cr7", envCode, networkMode),
+			"region2_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-west1-cr8", envCode, networkMode),
 			"firewall_policy":       fmt.Sprintf("fp-%s-%s-restricted-firewalls", envCode, firewallMode),
 			"fw_deny_all_egress":    fmt.Sprintf("fw-%s-shared-restricted-65530-e-d-all-all-all", envCode),
 			"fw_allow_api_egress":   fmt.Sprintf("fw-%s-shared-restricted-1000-e-a-allow-google-apis-all-tcp-443", envCode),
@@ -400,16 +400,16 @@ func TestNetworks(t *testing.T) {
 						assert.Equal(globalAddressName, globalAddress.Get("name").String(), fmt.Sprintf("global address %s should exist", globalAddressName))
 
 						subnetName1 := networkNames[networkType]["subnet_name1"]
-						usWest1Range := cidrRanges[envName][networkType][0]
-						subnet1 := gcloud.Runf(t, "compute networks subnets describe %s --region us-west1 --project %s --impersonate-service-account %s", subnetName1, projectID, terraformSA)
+						usCentral1Range := cidrRanges[envName][networkType][0]
+						subnet1 := gcloud.Runf(t, "compute networks subnets describe %s --region us-central1 --project %s --impersonate-service-account %s", subnetName1, projectID, terraformSA)
 						assert.Equal(subnetName1, subnet1.Get("name").String(), fmt.Sprintf("subnet %s should exist", subnetName1))
-						assert.Equal(usWest1Range, subnet1.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usWest1Range))
+						assert.Equal(usCentral1Range, subnet1.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usCentral1Range))
 
 						subnetName2 := networkNames[networkType]["subnet_name2"]
-						usCentral1Range := cidrRanges[envName][networkType][1]
-						subnet2 := gcloud.Runf(t, "compute networks subnets describe %s --region us-central1 --project %s --impersonate-service-account %s", subnetName2, projectID, terraformSA)
+						usWest1Range := cidrRanges[envName][networkType][1]
+						subnet2 := gcloud.Runf(t, "compute networks subnets describe %s --region us-west1 --project %s --impersonate-service-account %s", subnetName2, projectID, terraformSA)
 						assert.Equal(subnetName2, subnet2.Get("name").String(), fmt.Sprintf("subnet %s should exist", subnetName2))
-						assert.Equal(usCentral1Range, subnet2.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usCentral1Range))
+						assert.Equal(usWest1Range, subnet2.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", usWest1Range))
 
 						denyAllEgressName := networkNames[networkType]["fw_deny_all_egress"]
 						denyAllEgressRule := gcloud.Runf(t, "compute network-firewall-policies rules describe 65530 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", networkNames[networkType]["firewall_policy"], projectID, terraformSA).Array()[0]
@@ -434,19 +434,19 @@ func TestNetworks(t *testing.T) {
 							}{
 								{
 									router: "region1_router1",
-									region: "us-west1",
+									region: "us-central1",
 								},
 								{
 									router: "region1_router2",
-									region: "us-west1",
+									region: "us-central1",
 								},
 								{
 									router: "region2_router1",
-									region: "us-central1",
+									region: "us-west1",
 								},
 								{
 									router: "region2_router2",
-									region: "us-central1",
+									region: "us-west1",
 								},
 							} {
 

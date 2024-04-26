@@ -79,7 +79,7 @@ module "logs_export" {
     logging_sink_filter        = local.logs_filter
     log_bucket_id              = "AggregatedLogs"
     log_bucket_description     = "Project destination log bucket for aggregated logs"
-    location                   = try(var.log_export_storage_location, local.default_region)
+    location                   = coalesce(var.log_export_storage_location, local.default_region)
     linked_dataset_id          = "ds_c_prj_aggregated_logs_analytics"
     linked_dataset_description = "Project destination BigQuery Dataset for Logbucket analytics"
   }

@@ -55,7 +55,7 @@
 | restricted\_net\_hub\_project\_number | The Restricted Network hub project number |
 | scc\_notification\_name | Name of SCC Notification |
 | scc\_notifications\_project\_id | The SCC notifications project ID |
-| shared\_vpc\_projects | Base and restricted shared VPC Projects info grouped by environment (development, non-production, production). |
+| shared\_vpc\_projects | Base and restricted shared VPC Projects info grouped by environment (development, nonproduction, production). |
 | tags | Tag Values to be applied on next steps. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

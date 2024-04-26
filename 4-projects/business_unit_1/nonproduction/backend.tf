@@ -16,7 +16,7 @@
 
 terraform {
   backend "gcs" {
-    bucket = "UPDATE_APP_INFRA_BUCKET"
-    prefix = "terraform/app-infra/business_unit_1/non-production"
+    bucket = "UPDATE_PROJECTS_BACKEND"
+    prefix = "terraform/projects/business_unit_1/nonproduction"
   }
 }

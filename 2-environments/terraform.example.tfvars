@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 monitoring_workspace_users = "gcp-monitoring-admins@example.com"
 
 remote_state_bucket = "REMOTE_STATE_BUCKET"

@@ -85,7 +85,7 @@ func TestProjects(t *testing.T) {
 			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
-			name:              "bu1_non-production",
+			name:              "bu1_nonproduction",
 			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
 			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
@@ -106,7 +106,7 @@ func TestProjects(t *testing.T) {
 			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
 		},
 		{
-			name:              "bu2_non-production",
+			name:              "bu2_nonproduction",
 			repo:              "bu2-example-app",
 			baseDir:           "../../../4-projects/business_unit_2/%s",
 			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),

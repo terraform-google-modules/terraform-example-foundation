@@ -40,8 +40,9 @@ module "env_secrets" {
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
+    business_code     = "shared"
     env_code          = var.environment_code
+    vpc               = "none"
   }
   budget_alert_pubsub_topic   = var.project_budget.secret_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.secret_alert_spent_percents

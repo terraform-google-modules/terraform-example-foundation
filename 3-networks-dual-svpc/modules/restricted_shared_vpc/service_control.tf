@@ -66,14 +66,22 @@ module "regular_service_perimeter" {
   policy         = var.access_context_manager_policy_id
   perimeter_name = local.perimeter_name
   description    = "Default VPC Service Controls perimeter"
-  resources      = [var.project_number]
-  access_levels  = [module.access_level_members.name]
 
-  restricted_services     = var.restricted_services
-  vpc_accessible_services = ["RESTRICTED-SERVICES"]
+  # configurations for a perimeter in dry run mode.
+  resources_dry_run               = [var.project_number]
+  access_levels_dry_run           = [module.access_level_members.name]
+  restricted_services_dry_run     = var.restricted_services
+  vpc_accessible_services_dry_run = ["RESTRICTED-SERVICES"]
+  ingress_policies_dry_run        = var.ingress_policies
+  egress_policies_dry_run         = var.egress_policies
 
-  ingress_policies = var.ingress_policies
-  egress_policies  = var.egress_policies
+  # configurations for a perimeter in enforced mode. Uncomment these when you are ready to enforce VPCSC.
+  # resources      = [var.project_number]
+  # access_levels = [module.access_level_members.name]
+  # restricted_services     = var.restricted_services
+  # vpc_accessible_services = ["RESTRICTED-SERVICES"]
+  # ingress_policies        = var.ingress_policies
+  # egress_policies  = var.egress_policies
 
   depends_on = [
     time_sleep.wait_vpc_sc_propagation

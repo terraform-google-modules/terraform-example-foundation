@@ -1,1 +1,1 @@
-../../nonproduction.auto.example.tfvars
+../../nonproduction.auto.tfvars

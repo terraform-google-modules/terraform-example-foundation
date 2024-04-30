@@ -75,13 +75,13 @@ module "regular_service_perimeter" {
   ingress_policies_dry_run        = var.ingress_policies
   egress_policies_dry_run         = var.egress_policies
 
-  # configurations for a perimeter in enforced mode. Uncomment these when you are ready to enforce VPCSC.
-  # resources      = [var.project_number]
-  # access_levels = [module.access_level_members.name]
+  # configurations for a perimeter in enforced mode. Uncomment these when you are ready to enforce VPC-SC.
+  # resources               = [var.project_number]
+  # access_levels           = [module.access_level_members.name]
   # restricted_services     = var.restricted_services
   # vpc_accessible_services = ["RESTRICTED-SERVICES"]
   # ingress_policies        = var.ingress_policies
-  # egress_policies  = var.egress_policies
+  # egress_policies         = var.egress_policies
 
   depends_on = [
     time_sleep.wait_vpc_sc_propagation

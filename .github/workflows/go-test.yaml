@@ -44,8 +44,8 @@ jobs:
         go-version-file: ${{ matrix.folder }}/go.mod
         cache-dependency-path: ${{ matrix.folder }}/go.sum
     - run: |-
-        git config user.name 'Cloud Foundation Bot'
-        git config user.email 'cloud-foundation-bot@google.com'
+        git config --global user.name 'Cloud Foundation Bot'
+        git config --global user.email 'cloud-foundation-bot@google.com'
         go test ./... -v
       shell: bash
       working-directory: ${{ matrix.folder }}

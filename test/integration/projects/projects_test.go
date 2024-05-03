@@ -236,7 +236,7 @@ func TestProjects(t *testing.T) {
 							peering := gcloud.Runf(t, "compute networks peerings list --project %s", projectID).Array()[0]
 							assert.Contains(peering.Get("peerings.0.network").String(), tt.baseNetwork, "should have a peering network")
 
-							instanceRegion := utils.ValFromEnv(t, "TF_VAR_instance_region")
+							instanceRegion := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["default_region"]
 							peeringSubnetworkSelfLink := projects.GetStringOutput("peering_subnetwork_self_link")
 							peeringSubnetworkSelfLinkSplitted := strings.Split(peeringSubnetworkSelfLink, "/")
 							peering_subnetwork_name := peeringSubnetworkSelfLinkSplitted[len(peeringSubnetworkSelfLinkSplitted)-1]

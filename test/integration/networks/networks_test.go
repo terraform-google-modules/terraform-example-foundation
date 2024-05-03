@@ -75,7 +75,7 @@ func getNetworkResourceNames(envCode string, networkMode string, firewallMode st
 			"dns_policy_name":       fmt.Sprintf("dp-%s-shared-restricted-default-policy", envCode),
 			"subnet_name1":          fmt.Sprintf("sb-%s-shared-restricted-us-central1", envCode),
 			"subnet_name2":          fmt.Sprintf("sb-%s-shared-restricted-us-west1", envCode),
-			"region1_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central-cr5", envCode, networkMode),
+			"region1_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr5", envCode, networkMode),
 			"region1_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-central1-cr6", envCode, networkMode),
 			"region2_router1":       fmt.Sprintf("cr-%s-shared-restricted%s-us-west1-cr7", envCode, networkMode),
 			"region2_router2":       fmt.Sprintf("cr-%s-shared-restricted%s-us-west1-cr8", envCode, networkMode),

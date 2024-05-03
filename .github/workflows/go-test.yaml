@@ -16,8 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  gotest:
-    name: ${{ matrix.folder }} go test
+  go-test:
+    name: go-test
     runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false

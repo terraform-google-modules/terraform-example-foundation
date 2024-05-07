@@ -15,14 +15,14 @@
  */
 
 locals {
-  default_region = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region = data.terraform_remote_state.projects_env.outputs.default_region
 }
 
-data "terraform_remote_state" "bootstrap" {
+data "terraform_remote_state" "projects_env" {
   backend = "gcs"
 
   config = {
     bucket = var.remote_state_bucket
-    prefix = "terraform/bootstrap/state"
+    prefix = "terraform/projects/${local.business_unit}/${local.environment}"
   }
 }

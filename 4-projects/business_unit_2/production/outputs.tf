@@ -108,3 +108,8 @@ output "iap_firewall_tags" {
   description = "The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project."
   value       = module.env.iap_firewall_tags
 }
+
+output "default_region" {
+  description = "The default region for the project."
+  value       = local.default_region
+}

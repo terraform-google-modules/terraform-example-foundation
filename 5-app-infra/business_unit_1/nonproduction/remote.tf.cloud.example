@@ -15,10 +15,10 @@
  */
 
 locals {
-  default_region     = data.tfe_outputs.bootstrap.outputs.common_config.default_region
+  default_region     = data.tfe_outputs.projects.outputs.default_region
 }
 
-data "tfe_outputs" "bootstrap" {
+data "tfe_outputs" "projects" {
   organization = var.tfc_org_name
-  workspace    = "0-shared"
+  workspace    = "4-projects"
 }

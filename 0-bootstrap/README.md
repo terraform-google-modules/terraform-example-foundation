@@ -83,6 +83,20 @@ Set the variables in **terraform.tfvars** (`groups` block) to use the specific g
    - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
    - The `roles/billing.admin` role on the billing account.
    - The `roles/resourcemanager.folderCreator` role.
+   - The `roles/securitycenter.admin` role.
+
+     ```bash
+     # example:
+     gcloud organizations add-iam-policy-binding ${ORG_ID}  --member=user:$SUPER_ADMIN_EMAIL --role=roles/securitycenter.admin --quiet > /dev/null 1>&1
+     ```
+1. Enable the following additional services on your current bootstrap project:
+     ```bash
+     gcloud services enable cloudresourcemanager.googleapis.com
+     gcloud services enable cloudbilling.googleapis.com
+     gcloud services enable iam.googleapis.com
+     gcloud services enable cloudkms.googleapis.com
+     gcloud services enable servicenetworking.googleapis.com
+     ```
 
 ### Optional - Automatic creation of Google Cloud Identity groups
 

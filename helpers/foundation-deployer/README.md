@@ -6,7 +6,7 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 
 ## Requirements
 
-- [Go](https://go.dev/doc/install) 1.18+
+- [Go](https://go.dev/doc/install) 1.21+
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0+
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0+
 - [Terraform](https://www.terraform.io/downloads.html) version 1.3.0+
@@ -14,7 +14,7 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 
 ### Validate required tools
 
-- Check if required tools, Go 1.18+, Terraform 1.3.0+, gcloud 393.0.0+, and Git 2.28.0+, are installed:
+- Check if required tools, Go 1.21.0+, Terraform 1.3.0+, gcloud 393.0.0+, and Git 2.28.0+, are installed:
 
     ```bash
     go version

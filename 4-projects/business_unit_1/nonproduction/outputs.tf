@@ -113,8 +113,3 @@ output "default_region" {
   description = "The default region for the project."
   value       = local.default_region
 }
-
-output "default_region" {
-  description = "The default region for the project."
-  value       = local.default_region
-}

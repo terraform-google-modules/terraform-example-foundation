@@ -18,7 +18,7 @@
 module "dns_hub_interconnect" {
   source = "../../modules/partner_interconnect"
 
-  vpc_name              = "c-dns-hub"
+  vpc_name              = "net-dns"
   attachment_project_id = local.dns_hub_project_id
   preactivate           = var.preactivate_partner_interconnect
 

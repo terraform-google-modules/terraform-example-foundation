@@ -168,7 +168,7 @@ module "interconnect" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-interconnect"
+  name                     = "${local.project_prefix}-net-interconnect"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -234,7 +234,7 @@ module "dns_hub" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-dns-hub"
+  name                     = "${local.project_prefix}-net-dns"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -276,7 +276,7 @@ module "base_network_hub" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-base-net-hub"
+  name                     = "${local.project_prefix}-net-hub-base"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -292,8 +292,7 @@ module "base_network_hub" {
 
   labels = {
     environment       = "network"
-    environment       = "production"
-    application_name  = "org-base-net-hub"
+    application_name  = "org-net-hub-base"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
@@ -327,7 +326,7 @@ module "restricted_network_hub" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-restricted-net-hub"
+  name                     = "${local.project_prefix}-net-hub-restricted"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -343,7 +342,7 @@ module "restricted_network_hub" {
 
   labels = {
     environment       = "network"
-    application_name  = "org-restricted-net-hub"
+    application_name  = "org-net-hub-restricted"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"

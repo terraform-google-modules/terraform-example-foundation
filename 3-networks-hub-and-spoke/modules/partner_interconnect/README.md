@@ -4,7 +4,7 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 
 ## Prerequisites
 
-1. Provisioning of four [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/partner-overview) in the Hub project in the specified environment. That would be the `prj-c-{base|restricted}-net-hub` and  `prj-c-dns-hub` under the folder `fldr-common` in case of Hub and Spoke architecture.
+1. Provisioning of four [VLAN attachments](https://cloud.google.com/network-connectivity/docs/interconnect/concepts/partner-overview) in the Hub project in the specified environment. That would be the `prj-c-{base|restricted}-net-hub` and  `prj-net-dns` under the folder `fldr-common` in case of Hub and Spoke architecture.
 
 ## Usage
 

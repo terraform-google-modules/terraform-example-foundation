@@ -69,10 +69,10 @@ example-organization
     ├── prj-c-kms
     └── prj-c-secrets
 └── fldr-network
-    ├── prj-c-base-net-hub
-    ├── prj-c-dns-hub
-    ├── prj-c-interconnect
-    ├── prj-c-restricted-net-hub
+    ├── prj-net-hub-base
+    ├── prj-net-hub-restricted
+    ├── prj-net-dns
+    ├── prj-net-interconnect
     ├── prj-d-shared-base
     ├── prj-d-shared-restricted
     ├── prj-n-shared-base
@@ -255,10 +255,10 @@ example-organization
     ├── prj-c-bu1-infra-pipeline
     └── prj-c-bu2-infra-pipeline
 └── fldr-network
-    ├── prj-c-base-net-hub
-    ├── prj-c-dns-hub
-    ├── prj-c-interconnect
-    ├── prj-c-restricted-net-hub
+    ├── prj-net-hub-base
+    ├── prj-net-hub-restricted
+    ├── prj-net-dns
+    ├── prj-net-interconnect
     ├── prj-d-shared-base
     ├── prj-d-shared-restricted
     ├── prj-n-shared-base

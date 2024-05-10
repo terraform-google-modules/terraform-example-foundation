@@ -109,12 +109,12 @@ func TestShared(t *testing.T) {
 				region    string
 			}{
 				{
-					name:      "sb-net-dns-hub-us-west1",
+					name:      "sb-net-dns-us-west1",
 					cidrRange: "172.16.0.128/25",
 					region:    "us-west1",
 				},
 				{
-					name:      "sb-net-dns-hub-us-central1",
+					name:      "sb-net-dns-us-central1",
 					cidrRange: "172.16.0.0/25",
 					region:    "us-central1",
 				},

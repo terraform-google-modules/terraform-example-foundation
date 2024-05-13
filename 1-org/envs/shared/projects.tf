@@ -176,7 +176,7 @@ module "interconnect" {
 
   labels = {
     environment       = "network"
-    application_name  = "org-interconnect"
+    application_name  = "org-net-interconnect"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
@@ -250,7 +250,7 @@ module "dns_hub" {
 
   labels = {
     environment       = "network"
-    application_name  = "org-dns-hub"
+    application_name  = "org-net-dns"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"

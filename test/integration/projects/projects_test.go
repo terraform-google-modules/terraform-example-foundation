@@ -97,7 +97,7 @@ func TestProjects(t *testing.T) {
 			baseDir:           "../../../4-projects/business_unit_1/%s",
 			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
-		}
+		},
 	} {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {

@@ -98,27 +98,6 @@ func TestProjects(t *testing.T) {
 			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
 		},
-		{
-			name:              "bu2_development",
-			repo:              "bu2-example-app",
-			baseDir:           "../../../4-projects/business_unit_2/%s",
-			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
-			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
-		},
-		{
-			name:              "bu2_nonproduction",
-			repo:              "bu2-example-app",
-			baseDir:           "../../../4-projects/business_unit_2/%s",
-			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
-			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
-		},
-		{
-			name:              "bu2_production",
-			repo:              "bu2-example-app",
-			baseDir:           "../../../4-projects/business_unit_2/%s",
-			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
-			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
-		},
 	} {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {

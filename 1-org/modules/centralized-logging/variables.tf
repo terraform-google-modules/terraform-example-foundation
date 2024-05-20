@@ -34,6 +34,18 @@ variable "resource_type" {
   }
 }
 
+variable "billing_account" {
+  description = "Billing Account ID used in case sinks are under billing account level. Format 000000-000000-000000."
+  type        = string
+  default     = null
+}
+
+variable "enable_billing_account_sink" {
+  description = "If true, a log router sink will be created for the billing account. The billing_account variable cannot be null."
+  type        = bool
+  default     = false
+}
+
 variable "logging_project_key" {
   description = "(Optional) The key of logging destination project if it is inside resources map. It is mandatory when resource_type = project and logging_target_type = logbucket."
   type        = string
@@ -45,30 +57,29 @@ variable "logging_destination_project_id" {
   type        = string
 }
 
-#----------------------------- #
-# Logbucket specific variables #
-#----------------------------- #
-variable "logbucket_options" {
+variable "project_options" {
   description = <<EOT
-Destination LogBucket options:
-- name: The name of the log bucket to be created and used for log entries matching the filter.
+Destination Project options:
 - logging_sink_name: The name of the log sink to be created.
 - logging_sink_filter: The filter to apply when exporting logs. Only log entries that match the filter are exported. Default is "" which exports all logs.
+- log_bucket_id: Id of the log bucket create to store the logs exported to the project.
+- log_bucket_description: Description of the log bucket create to store the logs exported to the project.
 - location: The location of the log bucket. Default: global.
-- enable_analytics: Whether or not Log Analytics is enabled. A Log bucket with Log Analytics enabled can be queried in the Log Analytics page using SQL queries. Cannot be disabled once enabled.
-- linked_dataset_id: The ID of the linked BigQuery dataset. A valid link dataset ID must only have alphanumeric characters and underscores within it and have up to 100 characters.
-- linked_dataset_description: A use-friendly description of the linked BigQuery dataset. The maximum length of the description is 8000 characters.
-- retention_days: The number of days data should be retained for the log bucket. Default 30.
+- enable_analytics: Whether or not Log Analytics is enabled in the _Default log bucket. A Log bucket with Log Analytics enabled can be queried in the Log Analytics page using SQL queries. Cannot be disabled once enabled.
+- retention_days: The number of days data should be retained for the _Default log bucket. Default 30.
+- linked_dataset_id: The ID of the linked BigQuery dataset for the _Default log bucket. A valid link dataset ID must only have alphanumeric characters and underscores within it and have up to 100 characters.
+- linked_dataset_description: A use-friendly description of the linked BigQuery dataset for the _Default log bucket. The maximum length of the description is 8000 characters.
 EOT
   type = object({
-    name                       = optional(string, null)
     logging_sink_name          = optional(string, null)
     logging_sink_filter        = optional(string, "")
+    log_bucket_id              = optional(string, null)
+    log_bucket_description     = optional(string, null)
     location                   = optional(string, "global")
     enable_analytics           = optional(bool, true)
+    retention_days             = optional(number, 30)
     linked_dataset_id          = optional(string, null)
     linked_dataset_description = optional(string, null)
-    retention_days             = optional(number, 30)
   })
   default = null
 }

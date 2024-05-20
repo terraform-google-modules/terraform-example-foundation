@@ -18,7 +18,7 @@ on:
     branches:
       - 'development'
       - 'production'
-      - 'non-production'
+      - 'nonproduction'
 
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}

@@ -6,7 +6,7 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 
 ## Requirements
 
-- [Go](https://go.dev/doc/install) 1.18+
+- [Go](https://go.dev/doc/install) 1.21+
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0+
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0+
 - [Terraform](https://www.terraform.io/downloads.html) version 1.3.0+
@@ -14,7 +14,7 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 
 ### Validate required tools
 
-- Check if required tools, Go 1.18+, Terraform 1.3.0+, gcloud 393.0.0+, and Git 2.28.0+, are installed:
+- Check if required tools, Go 1.21.0+, Terraform 1.3.0+, gcloud 393.0.0+, and Git 2.28.0+, are installed:
 
     ```bash
     go version
@@ -69,7 +69,7 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 
 By default the foundation regional resources are deployed in `us-west1` and `us-central1` regions and multi-regional resources are deployed in the `US` multi-region.
 
-In addition to the variables declared in the file `global.tfvars` for configuring location, there are two locals, `default_region1` and `default_region2`, in each one of the environments (`production`, `non-production`, and `development`) in the network steps (`3-networks-dual-svpc` and `3-networks-hub-and-spoke`).
+In addition to the variables declared in the file `global.tfvars` for configuring location, there are two locals, `default_region1` and `default_region2`, in each one of the environments (`production`, `nonproduction`, and `development`) in the network steps (`3-networks-dual-svpc` and `3-networks-hub-and-spoke`).
 They are located in the [main.tf](../../3-networks-dual-svpc/envs/production/main.tf#L20-L21) files for each environments.
 Change the two locals **before** starting the deployment to deploy in other regions.
 

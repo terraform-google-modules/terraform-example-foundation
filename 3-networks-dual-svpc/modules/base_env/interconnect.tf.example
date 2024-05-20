@@ -27,7 +27,7 @@ locals {
       region2_interconnect2_candidate_subnets = ["169.254.0.216/29"]
       region2_interconnect2_vlan_tag8021q     = "3908"
     },
-    "non-production" = {
+    "nonproduction" = {
       region1_interconnect1_candidate_subnets = ["169.254.0.128/29"]
       region1_interconnect1_vlan_tag8021q     = "3915"
       region1_interconnect2_candidate_subnets = ["169.254.0.136/29"]
@@ -60,7 +60,7 @@ locals {
       region2_interconnect2_candidate_subnets = ["169.254.0.184/29"]
       region2_interconnect2_vlan_tag8021q     = "3904"
     },
-    "non-production" = {
+    "nonproduction" = {
       region1_interconnect1_candidate_subnets = ["169.254.0.96/29"]
       region1_interconnect1_vlan_tag8021q     = "3911"
       region1_interconnect2_candidate_subnets = ["169.254.0.104/29"]

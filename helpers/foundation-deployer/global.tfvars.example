@@ -35,10 +35,6 @@ org_id          = "REPLACE_ME" # format "000000000000"
 billing_account = "REPLACE_ME" # format "000000-000000-000000"
 default_region  = "us-central1"
 
-group_org_admins     = "REPLACE_ME" # "gcp-organization-admins@example.com"
-group_billing_admins = "REPLACE_ME" # "gcp-billing-admins@example.com"
-org_project_creators = [] # Optional - Additional list of members to have project creator role across the organization. Prefix of group: user: or serviceAccount: is required.
-
 bucket_force_destroy             = false
 bucket_tfstate_kms_force_destroy = false
 
@@ -53,8 +49,7 @@ folder_prefix  = "fldr"
 
 //parent_folder = "01234567890"
 
-// Optional - for enabling the automatic groups creation, uncomment the groups
-// variable and update the values with the desired group names
+// Optional - for enabling the automatic groups creation, update the empty values with the group names
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md#optional---automatic-creation-of-google-cloud-identity-groups
 
 // After deploy, the Bootstrap service account will need to be granted "Group Admin" role in the
@@ -62,33 +57,28 @@ folder_prefix  = "fldr"
 // https://github.com/terraform-google-modules/terraform-google-group/blob/main/README.md#google-workspace-formerly-known-as-g-suite-roles
 
 //initial_group_config = "WITH_INITIAL_OWNER"
-//groups = {
-//  create_groups   = true,
-//  billing_project = "BILLING-PROJECT",
-//  required_groups = {
-//    group_org_admins           = "group_org_admins_local_test@example.com"
-//    group_billing_admins       = "group_billing_admins_local_test@example.com"
-//    billing_data_users         = "billing_data_users_local_test@example.com"
-//    audit_data_users           = "audit_data_users_local_test@example.com"
-//    monitoring_workspace_users = "monitoring_workspace_users_local_test@example.com"
-//  },
-//  optional_groups = { # fill in only the groups to be created
-//    gcp_platform_viewer      = ""
-//    gcp_security_reviewer    = ""
-//    gcp_network_viewer       = ""
-//    gcp_scc_admin            = ""
-//    gcp_global_secrets_admin = ""
-//    gcp_audit_viewer         = ""
-//  }
-//}
-//
-
+groups = {
+  create_required_groups = false # Change to true to create the required_groups
+  create_optional_groups = false # Change to true to create the optional_groups
+  billing_project        = null  # Fill to create required or optional groups
+  required_groups = {
+    group_org_admins           = "REPLACE_ME" # "gcp-organization-admins@example.com"
+    group_billing_admins       = "REPLACE_ME" # "gcp-billing-admins@example.com"
+    billing_data_users         = "REPLACE_ME" #"billing_data_users_local_test@example.com"
+    audit_data_users           = "REPLACE_ME" #"audit_data_users_local_test@example.com"
+    monitoring_workspace_users = "REPLACE_ME" #"monitoring_workspace_users_local_test@example.com"
+  }
+  optional_groups = {
+    gcp_security_reviewer      = "" #"gcp_security_reviewer_local_test@example.com"
+    gcp_network_viewer         = "" #"gcp_network_viewer_local_test@example.com"
+    gcp_scc_admin              = "" #"gcp_scc_admin_local_test@example.com"
+    gcp_global_secrets_admin   = "" #"gcp_global_secrets_admin_local_test@example.com"
+    gcp_kms_admin              = "" #"gcp_kms_admin_local_test@example.com"
+  }
+}
 
 // 1-org inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/1-org/envs/shared/README.md#inputs
-
-audit_data_users   = "REPLACE_ME" # "gcp-security-admins@example.com"
-billing_data_users = "REPLACE_ME" # "gcp-billing-data-users@example.com"
 
 domains_to_allow                    = ["example.com"] # Must include the domain of the organization you are deploying the foundation.
 essential_contacts_domains_to_allow = ["@example.com"]
@@ -116,8 +106,6 @@ create_unique_tag_key = false
 
 // 2-environments inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/2-environments/envs/production/README.md#inputs
-
-monitoring_workspace_users = "REPLACE_ME" # "gcp-monitoring-admins@example.com"
 
 
 // 3-networks inputs

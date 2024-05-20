@@ -88,8 +88,8 @@ func TestShared(t *testing.T) {
 			// shared.DefaultVerify(assert)
 
 			projectID := shared.GetStringOutput("dns_hub_project_id")
-			networkName := "vpc-c-dns-hub"
-			dnsHubNetworkUrl := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/vpc-c-dns-hub", projectID)
+			networkName := "vpc-net-dns"
+			dnsHubNetworkUrl := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/vpc-net-dns", projectID)
 			dnsPolicyName := "dp-dns-hub-default-policy"
 
 			dnsPolicy := gcloud.Runf(t, "dns policies describe %s --project %s", dnsPolicyName, projectID)
@@ -109,12 +109,12 @@ func TestShared(t *testing.T) {
 				region    string
 			}{
 				{
-					name:      "sb-c-dns-hub-us-central1",
+					name:      "sb-net-dns-us-central1",
 					cidrRange: "172.16.0.128/25",
 					region:    "us-central1",
 				},
 				{
-					name:      "sb-c-dns-hub-us-west1",
+					name:      "sb-net-dns-us-west1",
 					cidrRange: "172.16.0.0/25",
 					region:    "us-west1",
 				},
@@ -131,19 +131,19 @@ func TestShared(t *testing.T) {
 				region string
 			}{
 				{
-					name:   "cr-c-dns-hub-us-west1-cr1",
+					name:   "cr-net-dns-us-west1-cr1",
 					region: "us-west1",
 				},
 				{
-					name:   "cr-c-dns-hub-us-west1-cr2",
+					name:   "cr-net-dns-us-west1-cr2",
 					region: "us-west1",
 				},
 				{
-					name:   "cr-c-dns-hub-us-central1-cr3",
+					name:   "cr-net-dns-us-central1-cr3",
 					region: "us-central1",
 				},
 				{
-					name:   "cr-c-dns-hub-us-central1-cr4",
+					name:   "cr-net-dns-us-central1-cr4",
 					region: "us-central1",
 				},
 			} {
@@ -152,7 +152,7 @@ func TestShared(t *testing.T) {
 				assert.Equal("64667", computeRouter.Get("bgp.asn").String(), fmt.Sprintf("router %s should have bgp asm 64667", router.name))
 				assert.Equal(1, len(computeRouter.Get("bgp.advertisedIpRanges").Array()), fmt.Sprintf("router %s should have only one advertised IP range", router.name))
 				assert.Equal(bgpAdvertisedIpRange, computeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have only range %s", router.name, bgpAdvertisedIpRange))
-				assert.Equal(dnsHubNetworkUrl, computeRouter.Get("network").String(), fmt.Sprintf("router %s should have be from network vpc-c-dns-hub", router.name))
+				assert.Equal(dnsHubNetworkUrl, computeRouter.Get("network").String(), fmt.Sprintf("router %s should have be from network vpc-net-dns", router.name))
 			}
 		})
 	shared.Test()

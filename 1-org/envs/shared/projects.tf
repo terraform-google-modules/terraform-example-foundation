@@ -23,7 +23,7 @@ locals {
   ]
   environments = {
     "development" : "d",
-    "non-production" : "n",
+    "nonproduction" : "n",
     "production" : "p"
   }
 }
@@ -46,13 +46,14 @@ module "org_audit_logs" {
   activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
-    environment       = "production"
+    environment       = "common"
     application_name  = "org-logging"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
+    business_code     = "shared"
+    env_code          = "c"
+    vpc               = "none"
   }
   budget_alert_pubsub_topic   = var.project_budget.org_audit_logs_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.org_audit_logs_alert_spent_percents
@@ -74,13 +75,14 @@ module "org_billing_logs" {
   activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
-    environment       = "production"
+    environment       = "common"
     application_name  = "org-billing-logs"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
+    business_code     = "shared"
+    env_code          = "c"
+    vpc               = "none"
   }
   budget_alert_pubsub_topic   = var.project_budget.org_billing_logs_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.org_billing_logs_alert_spent_percents
@@ -106,13 +108,14 @@ module "org_kms" {
   activate_apis            = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
-    environment       = "production"
+    environment       = "common"
     application_name  = "org-kms"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
+    business_code     = "shared"
+    env_code          = "c"
+    vpc               = "none"
   }
 
   budget_alert_pubsub_topic   = var.project_budget.org_kms_alert_pubsub_topic
@@ -139,13 +142,14 @@ module "org_secrets" {
   activate_apis            = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
-    environment       = "production"
+    environment       = "common"
     application_name  = "org-secrets"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
+    business_code     = "shared"
+    env_code          = "c"
+    vpc               = "none"
   }
   budget_alert_pubsub_topic   = var.project_budget.org_secrets_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.org_secrets_alert_spent_percents
@@ -164,20 +168,21 @@ module "interconnect" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-interconnect"
+  name                     = "${local.project_prefix}-net-interconnect"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
   activate_apis            = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
 
   labels = {
-    environment       = "production"
+    environment       = "network"
     application_name  = "org-interconnect"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
+    business_code     = "shared"
+    env_code          = "net"
+    vpc               = "none"
   }
   budget_alert_pubsub_topic   = var.project_budget.interconnect_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.interconnect_alert_spent_percents
@@ -203,13 +208,14 @@ module "scc_notifications" {
   activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com", "cloudkms.googleapis.com"]
 
   labels = {
-    environment       = "production"
+    environment       = "common"
     application_name  = "org-scc"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
+    business_code     = "shared"
+    env_code          = "c"
+    vpc               = "none"
   }
   budget_alert_pubsub_topic   = var.project_budget.scc_notifications_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.scc_notifications_alert_spent_percents
@@ -228,7 +234,7 @@ module "dns_hub" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-dns-hub"
+  name                     = "${local.project_prefix}-net-dns"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -243,13 +249,14 @@ module "dns_hub" {
   ]
 
   labels = {
-    environment       = "production"
+    environment       = "network"
     application_name  = "org-dns-hub"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
+    business_code     = "shared"
+    env_code          = "net"
+    vpc               = "none"
   }
   budget_alert_pubsub_topic   = var.project_budget.dns_hub_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.dns_hub_alert_spent_percents
@@ -269,7 +276,7 @@ module "base_network_hub" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-base-net-hub"
+  name                     = "${local.project_prefix}-net-hub-base"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -284,13 +291,14 @@ module "base_network_hub" {
   ]
 
   labels = {
-    environment       = "production"
-    application_name  = "org-base-net-hub"
+    environment       = "network"
+    application_name  = "org-net-hub-base"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
+    business_code     = "shared"
+    env_code          = "net"
+    vpc               = "base"
   }
   budget_alert_pubsub_topic   = var.project_budget.base_net_hub_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.base_net_hub_alert_spent_percents
@@ -318,7 +326,7 @@ module "restricted_network_hub" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-restricted-net-hub"
+  name                     = "${local.project_prefix}-net-hub-restricted"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -333,13 +341,14 @@ module "restricted_network_hub" {
   ]
 
   labels = {
-    environment       = "production"
-    application_name  = "org-restricted-net-hub"
+    environment       = "network"
+    application_name  = "org-net-hub-restricted"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
-    business_code     = "abcd"
-    env_code          = "p"
+    business_code     = "shared"
+    env_code          = "net"
+    vpc               = "restricted"
   }
   budget_alert_pubsub_topic   = var.project_budget.restricted_net_hub_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.restricted_net_hub_alert_spent_percents

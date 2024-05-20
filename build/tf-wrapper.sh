@@ -37,7 +37,7 @@ min_depth=1  # Must be configured based in your directory design
 # The regex to find folders that contains the Terraform configurations to apply.
 #
 # When using environments as leaf nodes (default) the regex contains the there
-# branches/environments development, non-production, and "production" and the
+# branches/environments development, nonproduction, and "production" and the
 # additional special value "shared"
 #
 # When using environments as root nodes the regex  contains the name of the
@@ -46,7 +46,7 @@ min_depth=1  # Must be configured based in your directory design
 #==============================================================================#
 
 # Environments as leaf nodes in source code case
-leaf_regex_plan="^(development|non-production|production|shared)$"
+leaf_regex_plan="^(development|nonproduction|production|shared)$"
 
 # Environments as root nodes in source code case
 # leaf_regex_plan="^(business_unit_1|business_unit_2)$"
@@ -71,11 +71,11 @@ do_plan() {
 #         git-repo
 #         └── business_unit_1
 #             ├── development
-#             ├── non-production
+#             ├── nonproduction
 #             └── production
 #         └── business_unit_2
 #             ├── development
-#             ├── non-production
+#             ├── nonproduction
 #             └── production
 #=========================================================#
 
@@ -98,7 +98,7 @@ do_action() {
 #         └── development
 #             ├── business_unit_1
 #             └── business_unit_2
-#         └── non-production
+#         └── nonproduction
 #             ├── business_unit_1
 #             └── business_unit_2
 #         └── production
@@ -139,7 +139,7 @@ convert_path() {
 ## Terraform apply for single environment.
 tf_apply() {
   local path=$1
-  local tf_env="${path#$base_dir/}"
+  local tf_env="${path#"$base_dir"/}"
   local tf_file
   tf_file="$(convert_path "$tf_env")"
   echo "*************** TERRAFORM APPLY *******************"
@@ -157,7 +157,7 @@ tf_apply() {
 ## terraform init for single environment.
 tf_init() {
   local path=$1
-  local tf_env="${path#$base_dir/}"
+  local tf_env="${path#"$base_dir"/}"
   echo "*************** TERRAFORM INIT *******************"
   echo "      At environment: ${tf_env} "
   echo "**************************************************"
@@ -173,7 +173,7 @@ tf_init() {
 ## terraform plan for single environment.
 tf_plan() {
   local path=$1
-  local tf_env="${path#$base_dir/}"
+  local tf_env="${path#"$base_dir"/}"
   local tf_file
   tf_file="$(convert_path "$tf_env")"
   echo "*************** TERRAFORM PLAN *******************"
@@ -206,7 +206,7 @@ tf_plan_validate_all() {
         tf_plan "$env_path"
         tf_validate "$env_path" "$policy_source"
       else
-        echo "${env_path#$base_dir/} doesn't match $leaf_regex_plan; skipping"
+        echo "${env_path#"$base_dir"/} doesn't match $leaf_regex_plan; skipping"
       fi
     done
   done
@@ -215,7 +215,7 @@ tf_plan_validate_all() {
 ## terraform show for single environment.
 tf_show() {
   local path=$1
-  local tf_env="${path#$base_dir/}"
+  local tf_env="${path#"$base_dir"/}"
   local tf_file
   tf_file="$(convert_path "$tf_env")"
   echo "*************** TERRAFORM SHOW *******************"
@@ -234,9 +234,9 @@ tf_show() {
 tf_validate() {
   local path=$1
   local policy_file_path=$2
-  local tf_env="${path#$base_dir/}"
+  local tf_env="${path#"$base_dir"/}"
   local tf_file
-  tf_file="$(convert_path "$tf_env")"
+  tf_file="${tmp_plan}/$(convert_path "$tf_env")"
   echo "*************** TERRAFORM VALIDATE ******************"
   echo "      At environment: ${tf_env} "
   echo "      Using policy from: ${policy_file_path} "
@@ -251,9 +251,11 @@ tf_validate() {
       # that prints the command 'terraform show' itself in the redirection to the json file, making
       # the json file to have an invalid format. 'terraform-bin' is the actual terraform binary.
       if [[ "$runner_env" == "GITHUB" ]]; then
-        terraform-bin show -no-color -json "${tmp_plan}/${tf_file}.tfplan" > "${tf_file}.json" || exit 32
+        terraform-bin show -no-color -json "${tf_file}.tfplan" > "${tf_file}.json" || exit 32
+        terraform-bin show -no-color "${tf_file}.tfplan" > "${tf_file}.txt" || exit 36
       else
-        terraform show -no-color -json "${tmp_plan}/${tf_file}.tfplan" > "${tf_file}.json" || exit 32
+        terraform show -no-color -json "${tf_file}.tfplan" > "${tf_file}.json" || exit 32
+        terraform show -no-color  "${tf_file}.tfplan" > "${tf_file}.txt" || exit 36
       fi
       if [[ "$policy_type" == "CLOUDSOURCE" ]]; then
         # Check if $policy_file_path is empty so we clone the policies repo only once
@@ -319,7 +321,7 @@ single_action_runner() {
             ;;
         esac
       else
-        echo "${env_path#$base_dir/}  doesn't match ${branch}; skipping"
+        echo "${env_path#"$base_dir"/}  doesn't match ${branch}; skipping"
       fi
     done
   done

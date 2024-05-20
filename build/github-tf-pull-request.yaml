@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: 'tf-pull-request'
+name: "tf-pull-request"
 on:
   pull_request:
     branches:
-      - 'development'
-      - 'production'
-      - 'non-production'
+      - "development"
+      - "production"
+      - "nonproduction"
 
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
@@ -28,30 +28,30 @@ env:
 
 jobs:
   run:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     permissions:
-      contents: 'read'
-      id-token: 'write'
-      issues: 'write'
-      pull-requests: 'write'
+      contents: "read"
+      id-token: "write"
+      issues: "write"
+      pull-requests: "write"
 
     steps:
-      - uses: 'actions/checkout@v3'
+      - uses: "actions/checkout@v3"
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v1'
+      - id: "auth"
+        uses: "google-github-actions/auth@v1"
         with:
-          token_format: 'access_token'
+          token_format: "access_token"
           workload_identity_provider: ${{ secrets.WIF_PROVIDER_NAME }}
           service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
 
-      - uses: 'google-github-actions/setup-gcloud@v1'
+      - uses: "google-github-actions/setup-gcloud@v1"
         with:
           install_components: "beta,terraform-tools"
 
-      - uses: 'hashicorp/setup-terraform@v2'
+      - uses: "hashicorp/setup-terraform@v2"
         with:
-          terraform_version: '1.3'
+          terraform_version: "1.3"
 
       - id: setup
         shell: bash
@@ -65,7 +65,7 @@ jobs:
 
       - id: plan-validate-all
         run: |
-          ${GITHUB_WORKSPACE}/tf-wrapper.sh plan_validate_all "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB" > ${GITHUB_WORKSPACE}/plan.out
+          ${GITHUB_WORKSPACE}/tf-wrapper.sh plan_validate_all "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
@@ -84,34 +84,41 @@ jobs:
             const run_url = process.env.GITHUB_SERVER_URL + '/' + process.env.GITHUB_REPOSITORY + '/actions/runs/' + process.env.GITHUB_RUN_ID
             const run_link = '<a href="' + run_url + '">Actions</a>.'
             const fs = require('fs')
-            const plan_file = fs.readFileSync('plan.out', 'utf8')
-            const plan = plan_file.length > 65000 ? plan_file.toString().substring(0, 65000) + " ..." : plan_file
-            const truncated_message = plan_file.length > 65000 ? "Output is too long and was truncated. You can read full Plan in " + run_link + "<br /><br />" : ""
-            const output = `
-            #### Terraform Plan Validate All 📖\`${{ steps.plan-validate-all.outcome }}\`
+            const plan_dir = 'tmp_plan'
+            const plan_dir_files = fs.readdirSync('tmp_plan')
+            const plan_files = plan_dir_files.filter(file => file.match(new RegExp(`.*\.(.txt)$`, 'ig')))
+            for (const file in plan_files) {
+              const plan_file_path = plan_dir.concat('/', plan_files[file])
+              const plan_file = fs.readFileSync(plan_file_path, 'utf8')
+              const plan = plan_file.length > 65000 ? plan_file.toString().substring(0, 65000) + " ..." : plan_file
+              const truncated_message = plan_file.length > 65000 ? "Output is too long and was truncated. You can read full Plan in " + run_link + "<br /><br />" : ""
+              const output = `
+              #### Terraform Plan Validate All 📖: \`${{ steps.plan-validate-all.outcome }}\`
+              Plan File: \`${plan_file_path.replace('.txt', '.plan')}\`
 
-            <details><summary>Show Plan</summary>
+              <details><summary>Show Plan</summary>
 
-            \`\`\`\n
-            ${plan}
-            \`\`\`
+              \`\`\`\n
+              ${plan}
+              \`\`\`
 
-            </details>
-            ${truncated_message}
-            `;
+              </details>
+              ${truncated_message}
+              `;
 
-            if (botComment) {
-              github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: output
-              })
-            } else {
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: output
-              })
+              if (botComment) {
+                github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: output
+                })
+              } else {
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: output
+                })
+              }
             }

@@ -36,5 +36,8 @@ var (
 
 		// Error code 13 during the creation of a Resource Manager Tag Value.
 		".*Error getting operation for committing purpose for TagValue.*": "Failed creating TagValue.",
+
+		// Error 403: Compute Engine API has not been used in project {} before or it is disabled.
+		".*Error 403.*Compute Engine API has not been used in project.*": "Compute Engine API not enabled",
 	}
 )

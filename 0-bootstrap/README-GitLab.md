@@ -37,19 +37,12 @@ Also make sure that you have the following:
 - A Google Cloud [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 - A Google Cloud [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
 - Cloud Identity or Google Workspace groups for organization and billing admins.
-- Add the Identity (user or Service Account) who will run Terraform to the `group_org_admins` group.
-They must be in this group, or they won't have `roles/resourcemanager.projectCreator` access.
-- For the Identity who will run the procedures in this document, grant the following roles:
-    - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
-    - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
-    - The `roles/billing.admin` role on the billing account.
-    - The `roles/resourcemanager.folderCreator` role.
-
-If other users need to be able to run these procedures, add them to the group
-represented by the `org_project_creators` variable.
-For more information about the permissions that are required, and the resources
-that are created, see the organization bootstrap module
-[documentation.](https://github.com/terraform-google-modules/terraform-google-bootstrap)
+- For the user who will run the procedures in this document, grant the following roles:
+   - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
+   - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
+   - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
+   - The `roles/billing.admin` role on the billing account.
+   - The `roles/resourcemanager.folderCreator` role.
 
 ## Instructions
 
@@ -103,9 +96,9 @@ You must have [SSH keys](https://docs.gitlab.com/ee/user/ssh.html) configured wi
    - CI/CD Runner: `image`
    - Bootstrap: `plan` and `production`
    - Organization: `plan` and `production`
-   - Environments: `plan`, `development`, `non-production`, and `production`
-   - Networks: `plan`, `development`, `non-production`, and `production`
-   - Projects: `plan`, `development`, `non-production`, and `production`
+   - Environments: `plan`, `development`, `nonproduction`, and `production`
+   - Networks: `plan`, `development`, `nonproduction`, and `production`
+   - Projects: `plan`, `development`, `nonproduction`, and `production`
 
 1. These branches must not be empty, so that they can be the target branch of a merge request.
 Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create these branches with a seed file for each repository automatically.
@@ -167,7 +160,7 @@ Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create the
    cd gcp-bootstrap
    ```
 
-1. change to a non-production branch.
+1. change to a nonproduction branch.
 
    ```bash
    git checkout plan
@@ -335,7 +328,7 @@ we recommend that you request 50 additional projects for the **projects step ser
    cd gcp-org
    ```
 
-1. change to a non-production branch.
+1. change to a nonproduction branch.
 
    ```bash
    git checkout plan
@@ -437,7 +430,7 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
    cd gcp-environments
    ```
 
-1. change to a non-production branch.
+1. change to a nonproduction branch.
 
    ```bash
    git checkout plan
@@ -488,15 +481,15 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
 
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
-1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `nonproduction` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `nonproduction` environment.
 1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
-1. If the GitLab pipelines is successful, merge the merge request in to the `non-production` branch.
-1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `non-production` environment.
+1. If the GitLab pipelines is successful, merge the merge request in to the `nonproduction` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `nonproduction` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
 
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `non-production` branch to the `production` branch and review the output.
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/merge_requests?scope=all&state=opened from the `nonproduction` branch to the `production` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
 1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-ENVIRONMENTS-REPO/-/pipelines.
 1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
@@ -522,7 +515,7 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    cd gcp-networks
    ```
 
-1. change to a non-production branch.
+1. change to a nonproduction branch.
 
    ```bash
    git checkout plan
@@ -580,7 +573,7 @@ See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/R
    git commit -m 'Initialize networks repo'
    ```
 
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `nonproduction` and `production` environments depend on it.
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
 1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
 
@@ -631,15 +624,15 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
 
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
-1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `nonproduction` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `nonproduction` environment.
 1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines.
-1. If the GitLab pipelines is successful, merge the merge request in to the `non-production` branch.
-1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `non-production` environment.
+1. If the GitLab pipelines is successful, merge the merge request in to the `nonproduction` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `nonproduction` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
 
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `non-production` branch to the `production` branch and review the output.
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `nonproduction` branch to the `production` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
 1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines.
 1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
@@ -669,7 +662,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    cd gcp-networks
    ```
 
-1. change to a non-production branch.
+1. change to a nonproduction branch.
 
    ```bash
    git checkout plan
@@ -714,7 +707,7 @@ See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/producti
    git commit -m 'Initialize networks repo'
    ```
 
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `non-production` and `production` environments depend on it.
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `nonproduction` and `production` environments depend on it.
 1. Use `terraform output` to get the CI/CD project ID and the networks step Terraform Service Account from gcp-bootstrap output.
 1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
 
@@ -765,15 +758,15 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
 
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
-1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `nonproduction` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `nonproduction` environment.
 1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines.
-1. If the GitLab pipelines is successful, merge the merge request in to the `non-production` branch.
-1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `non-production` environment.
+1. If the GitLab pipelines is successful, merge the merge request in to the `nonproduction` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `nonproduction` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
 
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `non-production` branch to the `production` branch and review the output.
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `nonproduction` branch to the `production` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
 1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines.
 1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
@@ -805,7 +798,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    cd gcp-projects
    ```
 
-1. change to a non-production branch.
+1. change to a nonproduction branch.
 
    ```bash
    git checkout plan
@@ -828,11 +821,11 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    mv common.auto.example.tfvars common.auto.tfvars
    mv shared.auto.example.tfvars shared.auto.tfvars
    mv development.auto.example.tfvars development.auto.tfvars
-   mv non-production.auto.example.tfvars non-production.auto.tfvars
+   mv nonproduction.auto.example.tfvars nonproduction.auto.tfvars
    mv production.auto.example.tfvars production.auto.tfvars
    ```
 
-1. See any of the envs folder [README.md](../4-projects/business_unit_1/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `non-production.auto.tfvars`, and `production.auto.tfvars` files.
+1. See any of the envs folder [README.md](../4-projects/business_unit_1/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `nonproduction.auto.tfvars`, and `production.auto.tfvars` files.
 1. See any of the shared folder [README.md](../4-projects/business_unit_1/shared/README.md#inputs) files for additional information on the values in the `shared.auto.tfvars` file.
 
 1. Use `terraform output` to get the backend bucket value from bootstrap output.
@@ -844,6 +837,20 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
+1. (Optional) If you want additional subfolders for separate business units or entities, make additional copies of the folder `business_unit_1` and modify any values that vary across business unit like `business_code`, `business_unit`, or `subnet_ip_range`.
+
+For example, to create a new business unit similar to business_unit_1, run the following:
+
+   ```bash
+   #copy the business_unit_1 folder and it's contents to a new folder business_unit_2
+   cp -r  business_unit_1 business_unit_2
+
+   # search all files under the folder `business_unit_2` and replace strings for business_unit_1 with strings for business_unit_2
+   grep -rl bu1 business_unit_2/ | xargs sed -i 's/bu1/bu2/g'
+   grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/business_unit_2/g'
+   ```
+
+
 1. Commit changes.
 
    ```bash
@@ -851,7 +858,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    git commit -m 'Initialize projects repo'
    ```
 
-1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `non-production`, and `production` depend on them.
+1. You need to manually plan and apply only once the `business_unit_1/shared` and `business_unit_2/shared` environments since `development`, `nonproduction`, and `production` depend on them.
 
 1. Use `terraform output` to get the CI/CD project ID and the projects step Terraform Service Account from gcp-bootstrap output.
 1. The CI/CD project ID will be used in the [validation](https://cloud.google.com/docs/terraform/policy-validation/quickstart) of the Terraform configuration
@@ -903,15 +910,15 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
 
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `non-production` branch and review the output.
-1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `non-production` environment.
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/merge_requests?scope=all&state=opened from the `development` branch to the `nonproduction` branch and review the output.
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `nonproduction` environment.
 1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/pipelines.
-1. If the GitLab pipelines is successful, merge the merge request in to the `non-production` branch.
-1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `non-production` environment.
+1. If the GitLab pipelines is successful, merge the merge request in to the `nonproduction` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `nonproduction` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
 
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/merge_requests?scope=all&state=opened from the `non-production` branch to the `production` branch and review the output.
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/merge_requests?scope=all&state=opened from the `nonproduction` branch to the `production` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
 1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-PROJECTS-REPO/-/pipelines.
 1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.

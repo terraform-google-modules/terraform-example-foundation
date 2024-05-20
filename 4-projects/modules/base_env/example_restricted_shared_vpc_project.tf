@@ -21,7 +21,7 @@ module "restricted_shared_vpc_project" {
   billing_account            = local.billing_account
   folder_id                  = google_folder.env_business_unit.name
   environment                = var.env
-  vpc_type                   = "restricted"
+  vpc                        = "restricted"
   shared_vpc_host_project_id = local.restricted_host_project_id
   shared_vpc_subnets         = local.restricted_subnets_self_links
   project_budget             = var.project_budget

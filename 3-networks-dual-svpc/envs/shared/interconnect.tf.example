@@ -17,7 +17,7 @@
 module "dns_hub_interconnect" {
   source = "../../modules/dedicated_interconnect"
 
-  vpc_name                = "c-dns-hub"
+  vpc_name                = "net-dns"
   interconnect_project_id = local.dns_hub_project_id
 
   region1                                 = local.default_region1

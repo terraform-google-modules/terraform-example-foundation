@@ -49,6 +49,12 @@ resource "google_billing_account_iam_member" "tf_billing_user" {
   member             = "serviceAccount:${google_service_account.int_test.email}"
 }
 
+resource "google_billing_account_iam_member" "billing_account_log_config" {
+  billing_account_id = var.billing_account
+  role               = "roles/logging.configWriter"
+  member             = "serviceAccount:${google_service_account.int_test.email}"
+}
+
 resource "google_service_account" "int_test" {
   project      = module.project.project_id
   account_id   = "ci-account"

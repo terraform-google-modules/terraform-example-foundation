@@ -107,7 +107,7 @@ func DestroyEnvStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c Co
 		Step:          EnvironmentsStep,
 		Repo:          EnvironmentsRepo,
 		GroupingUnits: []string{"envs"},
-		Envs:          []string{"development", "non-production", "production"},
+		Envs:          []string{"development", "nonproduction", "production"},
 	}
 	return destroyStage(t, stageConf, s, c)
 }
@@ -122,7 +122,7 @@ func DestroyNetworksStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		Repo:          NetworksRepo,
 		HasManualStep: true,
 		GroupingUnits: []string{"envs"},
-		Envs:          []string{"development", "non-production", "production"},
+		Envs:          []string{"development", "nonproduction", "production"},
 	}
 	return destroyStage(t, stageConf, s, c)
 }
@@ -135,8 +135,8 @@ func DestroyProjectsStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		Step:          ProjectsStep,
 		Repo:          ProjectsRepo,
 		HasManualStep: true,
-		GroupingUnits: []string{"business_unit_1", "business_unit_2"},
-		Envs:          []string{"development", "non-production", "production"},
+		GroupingUnits: []string{"business_unit_1"},
+		Envs:          []string{"development", "nonproduction", "production"},
 	}
 	return destroyStage(t, stageConf, s, c)
 }
@@ -149,7 +149,7 @@ func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOu
 		Step:          AppInfraStep,
 		Repo:          AppInfraRepo,
 		GroupingUnits: []string{"business_unit_1"},
-		Envs:          []string{"development", "non-production", "production"},
+		Envs:          []string{"development", "nonproduction", "production"},
 	}
 	return destroyStage(t, stageConf, s, c)
 }
@@ -194,9 +194,9 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 	for _, g := range groupingUnits {
 		err := s.RunDestroyStep(fmt.Sprintf("%s.%s.apply-shared", sc.Repo, g), func() error {
 			options := &terraform.Options{
-				TerraformDir: filepath.Join(gcpPath, g, "shared"),
-				Logger:       c.Logger,
-				NoColor:      true,
+				TerraformDir:             filepath.Join(gcpPath, g, "shared"),
+				Logger:                   c.Logger,
+				NoColor:                  true,
 				RetryableTerraformErrors: testutils.RetryableTransientErrors,
 				MaxRetries:               2,
 				TimeBetweenRetries:       2 * time.Minute,

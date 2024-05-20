@@ -12,7 +12,7 @@
 | key\_name | Name to be used for KMS Key | `string` | `"crypto-key-example"` | no |
 | key\_rotation\_period | Rotation period in seconds to be used for KMS Key | `string` | `"7776000s"` | no |
 | keyring\_name | Name to be used for KMS Keyring | `string` | `"sample-keyring"` | no |
-| kms\_prj\_suffix | Name suffix to use for KMS project created. | `string` | `"env-kms"` | no |
+| kms\_prj\_suffix | Name suffix to use for KMS project created. | `string` | `"kms"` | no |
 | location\_gcs | Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring) | `string` | `"US"` | no |
 | location\_kms | Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket) | `string` | `"us"` | no |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |

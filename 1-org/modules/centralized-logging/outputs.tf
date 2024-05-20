@@ -24,12 +24,20 @@ output "pubsub_destination_name" {
   value       = try(module.destination_pubsub[0].resource_name, "")
 }
 
-output "logbucket_destination_name" {
-  description = "The resource name for the destination Log Bucket."
-  value       = try(module.destination_logbucket[0].resource_name, "")
+output "project_logbucket_name" {
+  description = "The resource name for the Log Bucket created for the project destination."
+  value       = var.project_options != null ? module.destination_aggregated_logs[0].resource_name : ""
 }
 
-output "logbucket_linked_dataset_name" {
-  description = "The resource name of the Log Bucket linked BigQuery dataset."
-  value       = try(module.destination_logbucket[0].linked_dataset_name, "")
+output "project_linked_dataset_name" {
+  description = "The resource name of the Log Bucket linked BigQuery dataset for the project destination."
+  value       = var.project_options != null && var.project_options.enable_analytics ? module.destination_aggregated_logs[0].linked_dataset_name : ""
+}
+
+output "billing_sink_names" {
+  description = "Map of log sink names with billing suffix"
+  value = {
+    for key, options in local.destinations_options :
+    key => "${coalesce(options.logging_sink_name, local.logging_sink_name_map[key])}-billing-${random_string.suffix.result}"
+  }
 }

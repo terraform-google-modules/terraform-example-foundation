@@ -3,8 +3,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| audit\_data\_users | Google Workspace or Cloud Identity group that have access to audit logs. | `string` | n/a | yes |
-| billing\_data\_users | Google Workspace or Cloud Identity group that have access to billing data set. | `string` | n/a | yes |
 | billing\_export\_dataset\_location | The location of the dataset for billing data export. | `string` | `"US"` | no |
 | cai\_monitoring\_kms\_force\_destroy | If set to true, delete KMS keyring and keys when destroying the module; otherwise, destroying the module will fail if KMS keys are present. | `bool` | `false` | no |
 | create\_access\_context\_manager\_access\_policy | Whether to create access context manager access policy. | `bool` | `true` | no |
@@ -15,8 +13,7 @@
 | enforce\_allowed\_worker\_pools | Whether to enforce the organization policy restriction on allowed worker pools for Cloud Build. | `bool` | `false` | no |
 | essential\_contacts\_domains\_to\_allow | The list of domains that email addresses added to Essential Contacts can have. | `list(string)` | n/a | yes |
 | essential\_contacts\_language | Essential Contacts preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages. | `string` | `"en"` | no |
-| gcp\_groups | Groups to grant specific roles in the Organization.<br>  platform\_viewer: Google Workspace or Cloud Identity group that have the ability to view resource information across the Google Cloud organization.<br>  security\_reviewer: Google Workspace or Cloud Identity group that members are part of the security team responsible for reviewing cloud security<br>  network\_viewer: Google Workspace or Cloud Identity group that members are part of the networking team and review network configurations.<br>  scc\_admin: Google Workspace or Cloud Identity group that can administer Security Command Center.<br>  audit\_viewer: Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project.<br>  global\_secrets\_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Manage | <pre>object({<br>    platform_viewer      = optional(string, null)<br>    security_reviewer    = optional(string, null)<br>    network_viewer       = optional(string, null)<br>    scc_admin            = optional(string, null)<br>    audit_viewer         = optional(string, null)<br>    global_secrets_admin = optional(string, null)<br>  })</pre> | `{}` | no |
-| gcp\_user | Users to grant specific roles in the Organization.<br>  org\_admin: Identity that has organization administrator permissions.<br>  billing\_creator: Identity that can create billing accounts.<br>  billing\_admin: Identity that has billing administrator permissions. | <pre>object({<br>    org_admin       = optional(string, null)<br>    billing_creator = optional(string, null)<br>    billing_admin   = optional(string, null)<br>  })</pre> | `{}` | no |
+| gcp\_groups | Groups to grant specific roles in the Organization.<br>  platform\_viewer: Google Workspace or Cloud Identity group that have the ability to view resource information across the Google Cloud organization.<br>  security\_reviewer: Google Workspace or Cloud Identity group that members are part of the security team responsible for reviewing cloud security<br>  network\_viewer: Google Workspace or Cloud Identity group that members are part of the networking team and review network configurations.<br>  scc\_admin: Google Workspace or Cloud Identity group that can administer Security Command Center.<br>  audit\_viewer: Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project.<br>  global\_secrets\_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Manage | <pre>object({<br>    audit_viewer         = optional(string, null)<br>    security_reviewer    = optional(string, null)<br>    network_viewer       = optional(string, null)<br>    scc_admin            = optional(string, null)<br>    global_secrets_admin = optional(string, null)<br>    kms_admin            = optional(string, null)<br>  })</pre> | `{}` | no |
 | log\_export\_storage\_force\_destroy | (Optional) If set to true, delete all contents when destroying the resource; otherwise, destroying the resource will fail if contents are present. | `bool` | `false` | no |
 | log\_export\_storage\_location | The location of the storage bucket used to export logs. | `string` | `"US"` | no |
 | log\_export\_storage\_retention\_policy | Configuration of the bucket's data retention policy for how long objects in the bucket should be retained. | <pre>object({<br>    is_locked             = bool<br>    retention_period_days = number<br>  })</pre> | `null` | no |
@@ -32,6 +29,7 @@
 | Name | Description |
 |------|-------------|
 | base\_net\_hub\_project\_id | The Base Network hub project ID |
+| billing\_sink\_names | The name of the sinks under billing account level. |
 | cai\_monitoring\_artifact\_registry | CAI Monitoring Cloud Function Artifact Registry name. |
 | cai\_monitoring\_asset\_feed | CAI Monitoring Cloud Function Organization Asset Feed name. |
 | cai\_monitoring\_bucket | CAI Monitoring Cloud Function Source Bucket name. |
@@ -41,8 +39,8 @@
 | domains\_to\_allow | The list of domains to allow users from in IAM. |
 | interconnect\_project\_id | The Dedicated Interconnect project ID |
 | interconnect\_project\_number | The Dedicated Interconnect project number |
-| logs\_export\_logbucket\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset created for Log Analytics. See https://cloud.google.com/logging/docs/log-analytics . |
-| logs\_export\_logbucket\_name | The log bucket for destination of log exports. See https://cloud.google.com/logging/docs/routing/overview#buckets . |
+| logs\_export\_project\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset for the project destination. |
+| logs\_export\_project\_logbucket\_name | The resource name for the Log Bucket created for the project destination. |
 | logs\_export\_pubsub\_topic | The Pub/Sub topic for destination of log exports |
 | logs\_export\_storage\_bucket\_name | The storage bucket for destination of log exports |
 | network\_folder\_name | The network folder name. |
@@ -57,7 +55,7 @@
 | restricted\_net\_hub\_project\_number | The Restricted Network hub project number |
 | scc\_notification\_name | Name of SCC Notification |
 | scc\_notifications\_project\_id | The SCC notifications project ID |
-| shared\_vpc\_projects | Base and restricted shared VPC Projects info grouped by environment (development, non-production, production). |
+| shared\_vpc\_projects | Base and restricted shared VPC Projects info grouped by environment (development, nonproduction, production). |
 | tags | Tag Values to be applied on next steps. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

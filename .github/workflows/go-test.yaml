@@ -1,0 +1,51 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: go-test
+
+on:
+  pull_request:
+    branches:
+      - 'master'
+    paths:
+      - 'helpers/foundation-deployer/**'
+      - '.github/workflows/go-test.yaml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: '${{github.workflow}}-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  go-test:
+    name: go-test
+    runs-on: 'ubuntu-latest'
+    strategy:
+      fail-fast: false
+      matrix:
+        folder: [helpers/foundation-deployer]
+    steps:
+    - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
+    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7 # v5.0.1
+      with:
+        go-version-file: ${{ matrix.folder }}/go.mod
+        cache-dependency-path: ${{ matrix.folder }}/go.sum
+    - run: |-
+        git config --global user.name 'Cloud Foundation Bot'
+        git config --global user.email 'cloud-foundation-bot@google.com'
+        go test ./... -v
+      shell: bash
+      working-directory: ${{ matrix.folder }}

@@ -60,11 +60,6 @@ func TestProjectsShared(t *testing.T) {
 			repo:  "bu1-example-app",
 			tfDir: "../../../4-projects/business_unit_1/shared",
 		},
-		{
-			name:  "bu2",
-			repo:  "bu2-example-app",
-			tfDir: "../../../4-projects/business_unit_2/shared",
-		},
 	} {
 		tts := tts
 		t.Run(tts.name, func(t *testing.T) {

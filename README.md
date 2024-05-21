@@ -290,12 +290,6 @@ example-organization
         ├── prj-d-bu2-sample-base
         ├── prj-d-bu2-sample-restrict
         └── prj-d-bu2-sample-peering
-    └── fldr-development-bu2
-        ├── prj-d-bu2-kms
-        ├── prj-d-bu2-sample-floating
-        ├── prj-d-bu2-sample-base
-        ├── prj-d-bu2-sample-restrict
-        └── prj-d-bu2-sample-peering
 └── fldr-nonproduction
     ├── prj-n-monitoring
     ├── prj-n-kms

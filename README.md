@@ -69,10 +69,10 @@ example-organization
     ├── prj-c-kms
     └── prj-c-secrets
 └── fldr-network
-    ├── prj-c-base-net-hub
-    ├── prj-c-dns-hub
-    ├── prj-c-interconnect
-    ├── prj-c-restricted-net-hub
+    ├── prj-net-hub-base
+    ├── prj-net-hub-restricted
+    ├── prj-net-dns
+    ├── prj-net-interconnect
     ├── prj-d-shared-base
     ├── prj-d-shared-restricted
     ├── prj-n-shared-base
@@ -264,10 +264,10 @@ example-organization
     ├── prj-c-bu1-infra-pipeline
     └── prj-c-bu2-infra-pipeline
 └── fldr-network
-    ├── prj-c-base-net-hub
-    ├── prj-c-dns-hub
-    ├── prj-c-interconnect
-    ├── prj-c-restricted-net-hub
+    ├── prj-net-hub-base
+    ├── prj-net-hub-restricted
+    ├── prj-net-dns
+    ├── prj-net-interconnect
     ├── prj-d-shared-base
     ├── prj-d-shared-restricted
     ├── prj-n-shared-base
@@ -284,12 +284,6 @@ example-organization
         ├── prj-d-bu1-sample-base
         ├── prj-d-bu1-sample-restrict
         ├── prj-d-bu1-sample-peering
-    └── fldr-development-bu2
-        ├── prj-d-bu2-kms
-        ├── prj-d-bu2-sample-floating
-        ├── prj-d-bu2-sample-base
-        ├── prj-d-bu2-sample-restrict
-        └── prj-d-bu2-sample-peering
     └── fldr-development-bu2
         ├── prj-d-bu2-kms
         ├── prj-d-bu2-sample-floating

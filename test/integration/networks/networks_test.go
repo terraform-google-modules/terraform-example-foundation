@@ -289,6 +289,9 @@ func TestNetworks(t *testing.T) {
 	egressPolicies := []map[string]interface{}{
 		{
 			"from": map[string]interface{}{
+				"sources": map[string][]string{
+					"access_levels": {"*"},
+				},
 				"identity_type": "ANY_IDENTITY",
 			},
 			"to": map[string]interface{}{

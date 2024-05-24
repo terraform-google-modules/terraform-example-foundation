@@ -37,11 +37,14 @@ func TestOrg(t *testing.T) {
 	)
 
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
+	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
+	policyID := testutils.GetOrgACMPolicyID(t, orgID)
 
 	vars := map[string]interface{}{
 		"remote_state_bucket":              backend_bucket,
 		"log_export_storage_force_destroy": "true",
 		"cai_monitoring_kms_force_destroy": "true",
+		"create_access_context_manager_access_policy": strconv.FormatBool(policyID == ""),
 	}
 
 	backendConfig := map[string]interface{}{

@@ -46,7 +46,7 @@ locals {
 
 module "project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.1"
+  version = "~> 15.0"
 
   random_project_id        = true
   random_project_id_length = 4

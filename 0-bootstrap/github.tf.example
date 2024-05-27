@@ -42,7 +42,7 @@ locals {
     "PROJECT_ID" : module.gh_cicd.project_id,
     "WIF_PROVIDER_NAME" : module.gh_oidc.provider_name,
     "TF_BACKEND" : module.seed_bootstrap.gcs_bucket_tfstate,
-    "TF_VAR_gh_token": var.gh_token,
+    "TF_VAR_gh_token" : var.gh_token,
   }
 
   secrets_list = flatten([
@@ -90,7 +90,7 @@ module "gh_cicd" {
 }
 
 module "gh_oidc" {
-  source = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
+  source  = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
   version = "~> 3.1"
 
   project_id  = module.gh_cicd.project_id

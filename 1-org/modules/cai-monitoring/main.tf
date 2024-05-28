@@ -71,7 +71,7 @@ data "archive_file" "function_source_zip" {
 
 module "cloudfunction_source_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   project_id    = var.project_id
   name          = "bkt-cai-monitoring-${random_id.suffix.hex}-sources-${data.google_project.project.number}-${var.location}"
@@ -142,7 +142,7 @@ resource "google_scc_source" "cai_monitoring" {
 // Cloud Function
 module "cloud_function" {
   source  = "GoogleCloudPlatform/cloud-functions/google"
-  version = "0.4.1"
+  version = "~> 0.5"
 
   function_name     = "caiMonitoring"
   description       = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."

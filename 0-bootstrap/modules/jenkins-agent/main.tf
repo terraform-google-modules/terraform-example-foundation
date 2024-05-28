@@ -46,9 +46,10 @@ module "cicd_project" {
   Jenkins Agent GCE instance
 *******************************************/
 resource "google_service_account" "jenkins_agent_gce_sa" {
-  project      = module.cicd_project.project_id
-  account_id   = format("%s-%s", var.service_account_prefix, var.jenkins_agent_sa_email)
-  display_name = "Jenkins Agent (GCE instance) custom Service Account"
+  project                      = module.cicd_project.project_id
+  account_id                   = format("%s-%s", var.service_account_prefix, var.jenkins_agent_sa_email)
+  display_name                 = "Jenkins Agent (GCE instance) custom Service Account"
+  create_ignore_already_exists = true
 }
 
 data "template_file" "jenkins_agent_gce_startup_script" {

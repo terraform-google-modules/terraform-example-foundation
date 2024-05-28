@@ -82,10 +82,12 @@ module "network" {
  *****************************************/
 
 resource "google_service_account" "tfc_agent_service_account" {
-  count        = var.create_service_account ? 1 : 0
-  project      = var.project_id
-  account_id   = "tfc-agent-gke"
-  display_name = "Terraform Cloud agent GKE Service Account"
+  count = var.create_service_account ? 1 : 0
+
+  project                      = var.project_id
+  account_id                   = "tfc-agent-gke"
+  display_name                 = "Terraform Cloud agent GKE Service Account"
+  create_ignore_already_exists = true
 }
 
 /*****************************************

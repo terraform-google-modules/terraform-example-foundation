@@ -52,6 +52,18 @@ func TestOrg(t *testing.T) {
 	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
+	// Create Access Context Manager Policy ID if needed
+	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
+	policyID := testutils.GetOrgACMPolicyID(t, orgID)
+
+	if policyID == "" {
+		_, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager policies create --organization %s --title %s --impersonate-service-account %s", orgID, "defaultpolicy", terraformSA))
+		// ignore creation error and proceed with the test
+		if err != nil {
+			fmt.Printf("Ignore error in creation of access-context-manager policy ID for organization %s. Error: [%s]", orgID, err.Error())
+		}
+	}
+
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
 		tft.WithVars(vars),
@@ -241,9 +253,8 @@ func TestOrg(t *testing.T) {
 			prjLogsExportDefaultSink := gcloud.Runf(t, "logging sinks describe _Default --project=%s", auditLogsProjectID)
 			exclusions := prjLogsExportDefaultSink.Get("exclusions").Array()
 			assert.NotEmpty(exclusions, fmt.Sprintf("exclusion list for _Default sink in project %s must not be empty", auditLogsProjectID))
-			exclusionFilter := fmt.Sprintf("-logName : \"/%s/\"",auditLogsProjectID)
+			exclusionFilter := fmt.Sprintf("-logName : \"/%s/\"", auditLogsProjectID)
 			assert.Equal(exclusions[0].Get("filter").String(), exclusionFilter)
-
 
 			// logging sinks
 			logsFilter := []string{

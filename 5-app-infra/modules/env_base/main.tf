@@ -53,9 +53,10 @@ data "terraform_remote_state" "projects_env" {
 }
 
 resource "google_service_account" "compute_engine_service_account" {
-  project      = local.env_project_id
-  account_id   = "sa-example-app"
-  display_name = "Example app service Account"
+  project                      = local.env_project_id
+  account_id                   = "sa-example-app"
+  display_name                 = "Example app service Account"
+  create_ignore_already_exists = true
 }
 
 module "instance_template" {

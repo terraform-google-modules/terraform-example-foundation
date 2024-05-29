@@ -57,8 +57,9 @@ resource "google_kms_crypto_key_iam_member" "encrypter_decrypter" {
 
 // Cloud Function SA
 resource "google_service_account" "cloudfunction" {
-  account_id = "cai-monitoring"
-  project    = var.project_id
+  account_id                   = "cai-monitoring"
+  project                      = var.project_id
+  create_ignore_already_exists = true
 }
 
 resource "google_organization_iam_member" "cloudfunction_findings_editor" {

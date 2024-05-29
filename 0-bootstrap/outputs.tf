@@ -56,6 +56,9 @@ output "common_config" {
     parent_folder         = var.parent_folder,
     billing_account       = var.billing_account,
     default_region        = var.default_region,
+    default_region_2      = var.default_region_2,
+    default_region_gcs    = var.default_region_gcs,
+    default_region_kms    = var.default_region_kms,
     project_prefix        = var.project_prefix,
     folder_prefix         = var.folder_prefix
     parent_id             = local.parent

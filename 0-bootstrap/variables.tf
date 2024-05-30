@@ -30,6 +30,24 @@ variable "default_region" {
   default     = "us-central1"
 }
 
+variable "default_region_2" {
+  description = "Secondary default region to create resources where applicable."
+  type        = string
+  default     = "us-west1"
+}
+
+variable "default_region_gcs" {
+  description = "Case-Sensitive default region to create gcs resources where applicable."
+  type        = string
+  default     = "US"
+}
+
+variable "default_region_kms" {
+  description = "Secondary default region to create kms resources where applicable."
+  type        = string
+  default     = "us"
+}
+
 variable "parent_folder" {
   description = "Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist."
   type        = string

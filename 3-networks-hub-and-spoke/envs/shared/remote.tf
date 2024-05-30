@@ -22,6 +22,8 @@ locals {
   org_id                            = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
   billing_account                   = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
   default_region                    = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region1                   = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region2                   = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
   project_prefix                    = data.terraform_remote_state.bootstrap.outputs.common_config.project_prefix
   folder_prefix                     = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
   parent_id                         = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id

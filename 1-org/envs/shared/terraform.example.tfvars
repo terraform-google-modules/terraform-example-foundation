@@ -23,6 +23,10 @@ scc_notification_name = "scc-notify"
 
 remote_state_bucket = "REMOTE_STATE_BUCKET"
 
+log_export_storage_location = "US"
+
+billing_export_dataset_location = "US"
+
 //scc_notification_filter = "state=\\\"ACTIVE\\\""
 
 //enable_hub_and_spoke = true

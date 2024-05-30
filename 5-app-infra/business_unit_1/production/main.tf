@@ -25,7 +25,7 @@ module "base_shared_gce_instance" {
   environment         = local.environment
   business_unit       = local.business_unit
   project_suffix      = "sample-base"
-  region              = var.instance_region
+  region              = coalesce(var.instance_region, local.default_region)
   remote_state_bucket = var.remote_state_bucket
 }
 
@@ -35,6 +35,6 @@ module "peering_gce_instance" {
   environment         = local.environment
   business_unit       = local.business_unit
   project_suffix      = "sample-peering"
-  region              = var.instance_region
+  region              = coalesce(var.instance_region, local.default_region)
   remote_state_bucket = var.remote_state_bucket
 }

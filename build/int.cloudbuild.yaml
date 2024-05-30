@@ -171,11 +171,8 @@ options:
   - 'TF_VAR_log_export_storage_force_destroy=true'
   - 'TF_VAR_domain_to_allow=test.blueprints.joonix.net'
   - 'TF_VAR_domain=test.blueprints.joonix.net.'
-  - 'TF_VAR_default_region=us-west1'
-  - 'TF_VAR_default_region1=us-west1'
-  - 'TF_VAR_default_region2=us-central1'
-  - 'TF_VAR_instance_region=us-west1'
+  - 'TF_VAR_instance_region=us-central1'
   - 'TF_IN_AUTOMATION=true'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.20'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.21'

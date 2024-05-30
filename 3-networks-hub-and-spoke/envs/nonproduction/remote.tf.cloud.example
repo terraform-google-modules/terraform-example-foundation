@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-provider "google" {
-  impersonate_service_account = var.impersonate_sa_email
-  request_timeout             = "60s"
+locals {
+  default_region1  = data.tfe_outputs.bootstrap.outputs.common_config.default_region
+  default_region2  = data.tfe_outputs.bootstrap.outputs.common_config.default_region_2
 }
 
-provider "google-beta" {
-  impersonate_service_account = var.impersonate_sa_email
-  request_timeout             = "60s"
+data "tfe_outputs" "bootstrap" {
+  organization = var.tfc_org_name
+  workspace    = "0-shared"
 }

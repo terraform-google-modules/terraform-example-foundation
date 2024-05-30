@@ -32,7 +32,7 @@ resource "google_dns_policy" "default_policy" {
  Creates DNS Peering to DNS HUB
 *****************************************/
 data "google_compute_network" "vpc_dns_hub" {
-  name    = "vpc-c-dns-hub"
+  name    = "vpc-net-dns"
   project = var.dns_hub_project_id
 }
 

@@ -23,12 +23,12 @@ module "dns_hub_vpc" {
   version = "~> 9.0"
 
   project_id                             = local.dns_hub_project_id
-  network_name                           = "vpc-c-dns-hub"
+  network_name                           = "vpc-net-dns"
   shared_vpc_host                        = "false"
   delete_default_internet_gateway_routes = "true"
 
   subnets = [{
-    subnet_name                      = "sb-c-dns-hub-${local.default_region1}"
+    subnet_name                      = "sb-net-dns-${local.default_region1}"
     subnet_ip                        = "172.16.0.0/25"
     subnet_region                    = local.default_region1
     subnet_private_access            = "true"
@@ -40,7 +40,7 @@ module "dns_hub_vpc" {
     subnet_flow_logs_filter          = var.dns_vpc_flow_logs.filter_expr
     description                      = "DNS hub subnet for region 1."
     }, {
-    subnet_name                      = "sb-c-dns-hub-${local.default_region2}"
+    subnet_name                      = "sb-net-dns-${local.default_region2}"
     subnet_ip                        = "172.16.0.128/25"
     subnet_region                    = local.default_region2
     subnet_private_access            = "true"
@@ -54,7 +54,7 @@ module "dns_hub_vpc" {
   }]
 
   routes = [{
-    name              = "rt-c-dns-hub-1000-all-default-private-api"
+    name              = "rt-net-dns-1000-all-default-private-api"
     description       = "Route through IGW to allow private google api access."
     destination_range = "199.36.153.8/30"
     next_hop_internet = "true"
@@ -103,7 +103,7 @@ module "dns_hub_region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
 
-  name    = "cr-c-dns-hub-${local.default_region1}-cr1"
+  name    = "cr-net-dns-${local.default_region1}-cr1"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
   region  = local.default_region1
@@ -117,7 +117,7 @@ module "dns_hub_region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
 
-  name    = "cr-c-dns-hub-${local.default_region1}-cr2"
+  name    = "cr-net-dns-${local.default_region1}-cr2"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
   region  = local.default_region1
@@ -131,7 +131,7 @@ module "dns_hub_region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
 
-  name    = "cr-c-dns-hub-${local.default_region2}-cr3"
+  name    = "cr-net-dns-${local.default_region2}-cr3"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
   region  = local.default_region2
@@ -145,7 +145,7 @@ module "dns_hub_region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
 
-  name    = "cr-c-dns-hub-${local.default_region2}-cr4"
+  name    = "cr-net-dns-${local.default_region2}-cr4"
   project = local.dns_hub_project_id
   network = module.dns_hub_vpc.network_name
   region  = local.default_region2

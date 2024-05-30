@@ -34,7 +34,7 @@ locals {
 
 module "org_audit_logs" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.0"
+  version = "~> 15.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -67,7 +67,7 @@ module "org_audit_logs" {
 
 module "org_billing_export" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.0"
+  version = "~> 15.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -100,7 +100,7 @@ module "org_billing_export" {
 
 module "org_kms" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.0"
+  version = "~> 15.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -134,7 +134,7 @@ module "org_kms" {
 
 module "org_secrets" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.0"
+  version = "~> 15.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -167,12 +167,12 @@ module "org_secrets" {
 
 module "interconnect" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.0"
+  version = "~> 15.0"
 
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-interconnect"
+  name                     = "${local.project_prefix}-net-interconnect"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -200,7 +200,7 @@ module "interconnect" {
 
 module "scc_notifications" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.0"
+  version = "~> 15.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -233,12 +233,12 @@ module "scc_notifications" {
 
 module "dns_hub" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.0"
+  version = "~> 15.0"
 
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-dns-hub"
+  name                     = "${local.project_prefix}-net-dns"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -274,13 +274,13 @@ module "dns_hub" {
 
 module "base_network_hub" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.0"
+  version = "~> 15.0"
   count   = var.enable_hub_and_spoke ? 1 : 0
 
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-base-net-hub"
+  name                     = "${local.project_prefix}-net-hub-base"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -296,8 +296,7 @@ module "base_network_hub" {
 
   labels = {
     environment       = "network"
-    environment       = "production"
-    application_name  = "org-base-net-hub"
+    application_name  = "org-net-hub-base"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
@@ -325,13 +324,13 @@ resource "google_project_iam_member" "network_sa_base" {
 
 module "restricted_network_hub" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 14.0"
+  version = "~> 15.0"
   count   = var.enable_hub_and_spoke ? 1 : 0
 
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-restricted-net-hub"
+  name                     = "${local.project_prefix}-net-hub-restricted"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -347,7 +346,7 @@ module "restricted_network_hub" {
 
   labels = {
     environment       = "network"
-    application_name  = "org-restricted-net-hub"
+    application_name  = "org-net-hub-restricted"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"

@@ -57,13 +57,13 @@ variable "data_access_logs_enabled" {
 variable "log_export_storage_location" {
   description = "The location of the storage bucket used to export logs."
   type        = string
-  default     = "US"
+  default     = null
 }
 
 variable "billing_export_dataset_location" {
   description = "The location of the dataset for billing data export."
   type        = string
-  default     = "US"
+  default     = null
 }
 
 variable "log_export_storage_force_destroy" {

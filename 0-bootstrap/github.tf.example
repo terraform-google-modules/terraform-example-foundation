@@ -38,7 +38,7 @@ locals {
     }
   }
 
-  commom_secrets = {
+  common_secrets = {
     "PROJECT_ID" : module.gh_cicd.project_id,
     "WIF_PROVIDER_NAME" : module.gh_oidc.provider_name,
     "TF_BACKEND" : module.seed_bootstrap.gcs_bucket_tfstate,
@@ -47,7 +47,7 @@ locals {
 
   secrets_list = flatten([
     for k, v in local.gh_config : [
-      for secret, plaintext in local.commom_secrets : {
+      for secret, plaintext in local.common_secrets : {
         config          = k
         secret_name     = secret
         plaintext_value = plaintext

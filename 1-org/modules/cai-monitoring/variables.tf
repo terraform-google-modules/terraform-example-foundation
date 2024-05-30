@@ -53,11 +53,6 @@ variable "labels" {
   default     = {}
 }
 
-variable "impersonate_sa_email" {
-  description = "The Service Account email who will execute terraform code."
-  type        = string
-}
-
 variable "roles_to_monitor" {
   description = "List of roles that will save a SCC Finding if granted to any member (service account, user or group) on an update in the IAM Policy."
   type        = list(string)

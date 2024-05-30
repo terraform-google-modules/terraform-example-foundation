@@ -40,7 +40,10 @@ groups = {
   # }
 }
 
-default_region = "us-central1"
+default_region     = "us-central1"
+default_region_2   = "us-west1"
+default_region_gcs = "US"
+default_region_kms = "us"
 
 # Optional - for an organization with existing projects or for development/validation.
 # Uncomment this variable to place all the example foundation resources under

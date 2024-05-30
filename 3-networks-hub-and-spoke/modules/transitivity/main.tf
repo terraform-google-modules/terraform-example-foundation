@@ -37,7 +37,7 @@ module "service_account" {
 
 module "templates" {
   source   = "terraform-google-modules/vm/google//modules/instance_template"
-  version  = "~> 10.0"
+  version  = "~> 11.0"
   for_each = toset(var.regions)
 
   can_ip_forward = true
@@ -65,7 +65,7 @@ module "templates" {
 
 module "migs" {
   source   = "terraform-google-modules/vm/google//modules/mig"
-  version  = "~> 10.0"
+  version  = "~> 11.1"
   for_each = toset(var.regions)
 
   project_id        = var.project_id
@@ -75,22 +75,23 @@ module "migs" {
   instance_template = module.templates[each.key].self_link
   update_policy = [
     {
-      max_surge_fixed              = 4
-      max_surge_percent            = null
-      instance_redistribution_type = "NONE"
-      max_unavailable_fixed        = 4
-      max_unavailable_percent      = null
-      min_ready_sec                = 180
-      minimal_action               = "RESTART"
-      type                         = "OPPORTUNISTIC"
-      replacement_method           = "SUBSTITUTE"
+      max_surge_fixed                = 4
+      max_surge_percent              = null
+      instance_redistribution_type   = "NONE"
+      max_unavailable_fixed          = 4
+      max_unavailable_percent        = null
+      min_ready_sec                  = 180
+      minimal_action                 = "RESTART"
+      type                           = "OPPORTUNISTIC"
+      replacement_method             = "SUBSTITUTE"
+      most_disruptive_allowed_action = "REPLACE"
     }
   ]
 }
 
 module "ilbs" {
   source   = "GoogleCloudPlatform/lb-internal/google"
-  version  = "~> 5.0"
+  version  = "~> 6.0"
   for_each = toset(var.regions)
 
   region                  = each.key

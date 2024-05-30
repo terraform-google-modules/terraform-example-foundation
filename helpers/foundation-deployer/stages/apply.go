@@ -34,6 +34,9 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 	bootstrapTfvars := BootstrapTfvars{
 		OrgID:                        tfvars.OrgID,
 		DefaultRegion:                tfvars.DefaultRegion,
+		DefaultRegion2:               tfvars.DefaultRegion2,
+		DefaultRegionGCS:             tfvars.DefaultRegionGCS,
+		DefaultRegionKMS:             tfvars.DefaultRegionKMS,
 		BillingAccount:               tfvars.BillingAccount,
 		ParentFolder:                 tfvars.ParentFolder,
 		ProjectPrefix:                tfvars.ProjectPrefix,
@@ -359,7 +362,7 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		Repo:          ProjectsRepo,
 		GitConf:       conf,
 		HasManualStep: true,
-		GroupingUnits: []string{"business_unit_1", "business_unit_2"},
+		GroupingUnits: []string{"business_unit_1"},
 		Envs:          []string{"production", "nonproduction", "development"},
 	}
 

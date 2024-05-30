@@ -196,7 +196,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 ### II. Create the SEED and CI/CD projects using Terraform
 
 - Required information:
-  - Terraform version 1.3.0 - See [Requirements](#requirements) section for more details.
+  - Terraform version 1.3.10 - See [Requirements](#requirements) section for more details.
   - The `terraform.tfvars` file with all the necessary values.
 
 1. Get the appropriate credentials: run the following command with an account that has the [necessary permissions](./modules/jenkins-agent/README.md#permissions).
@@ -209,7 +209,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
 1. Run terraform commands.
    - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-b-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
-   - **Use Terraform 1.3.0** to run the terraform script with the commands below
+   - **Use Terraform 1.3.10** to run the terraform script with the commands below
 
    ```bash
    terraform init
@@ -885,6 +885,20 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    echo "remote_state_bucket = ${backend_bucket}"
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
+
+1. (Optional) If you want additional subfolders for separate business units or entities, make additional copies of the folder `business_unit_1` and modify any values that vary across business unit like `business_code`, `business_unit`, or `subnet_ip_range`.
+
+For example, to create a new business unit similar to business_unit_1, run the following:
+
+   ```bash
+   #copy the business_unit_1 folder and it's contents to a new folder business_unit_2
+   cp -r  business_unit_1 business_unit_2
+
+   # search all files under the folder `business_unit_2` and replace strings for business_unit_1 with strings for business_unit_2
+   grep -rl bu1 business_unit_2/ | xargs sed -i 's/bu1/bu2/g'
+   grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/business_unit_2/g'
+   ```
+
 
 1. Commit changes.
 

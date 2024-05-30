@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-terraform {
-  backend "gcs" {
-    bucket = "UPDATE_PROJECTS_BACKEND"
-    prefix = "terraform/projects/business_unit_2/production"
-  }
+locals {
+  default_region1  = data.tfe_outputs.bootstrap.outputs.common_config.default_region
+  default_region2  = data.tfe_outputs.bootstrap.outputs.common_config.default_region_2
+}
+
+data "tfe_outputs" "bootstrap" {
+  organization = var.tfc_org_name
+  workspace    = "0-shared"
 }

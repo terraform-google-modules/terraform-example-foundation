@@ -53,14 +53,15 @@ data "terraform_remote_state" "projects_env" {
 }
 
 resource "google_service_account" "compute_engine_service_account" {
-  project      = local.env_project_id
-  account_id   = "sa-example-app"
-  display_name = "Example app service Account"
+  project                      = local.env_project_id
+  account_id                   = "sa-example-app"
+  display_name                 = "Example app service Account"
+  create_ignore_already_exists = true
 }
 
 module "instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 10.0"
+  version = "~> 11.0"
 
   machine_type = var.machine_type
   region       = var.region
@@ -79,7 +80,7 @@ module "instance_template" {
 
 module "compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
-  version = "~> 10.0"
+  version = "~> 11.0"
 
   region                = var.region
   subnetwork            = local.subnetwork_self_link

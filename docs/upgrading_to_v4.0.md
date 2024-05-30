@@ -14,10 +14,10 @@ Before moving forward with adopting components of v4, review the list of breakin
   - A new Network folder was created be used as parent by network projects:
     - `prj-ENV-shared-base`
     - `prj-ENV-shared-restricted`
-    - `prj-c-base-net-hub`
-    - `prj-c-restricted-net-hub`
-    - `prj-c-dns-hub`
-    - `prj-c-interconnect`
+    - `prj-net-hub-base`
+    - `prj-net-hub-restricted`
+    - `prj-net-dns`
+    - `prj-net-interconnect`
 - Network Refactoring
   - Network projects are now created under a new folder `network`
   - VPC firewall rules (`google_compute_firewall`) resources were replaced with Compute Network firewall policy (`google_compute_network_firewall_policy`) resources

@@ -163,7 +163,8 @@ locals {
     "workstations.googleapis.com",
   ]
 
-  restricted_services = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
+  restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
+  restricted_services_dry_run = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services_dry_run : local.supported_restricted_service
 }
 
 /******************************************
@@ -256,7 +257,13 @@ module "restricted_shared_vpc" {
   private_service_connect_ip       = "10.17.0.5"
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services
+  restricted_services_dry_run      = local.restricted_services_dry_run
   members = distinct(concat([
+    "serviceAccount:${local.networks_service_account}",
+    "serviceAccount:${local.projects_service_account}",
+    "serviceAccount:${local.organization_service_account}",
+  ], var.perimeter_additional_members))
+  members_dry_run = distinct(concat([
     "serviceAccount:${local.networks_service_account}",
     "serviceAccount:${local.projects_service_account}",
     "serviceAccount:${local.organization_service_account}",

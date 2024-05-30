@@ -26,7 +26,7 @@ resource "random_id" "random_access_level_suffix" {
   byte_length = 2
 }
 
-module "access_level_members" {
+module "access_level" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
   version = "~> 6.0"
 

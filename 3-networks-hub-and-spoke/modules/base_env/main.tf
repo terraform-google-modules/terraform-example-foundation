@@ -172,6 +172,7 @@ module "restricted_shared_vpc" {
   environment_code                  = var.environment_code
   access_context_manager_policy_id  = var.access_context_manager_policy_id
   restricted_services               = local.restricted_services
+  restricted_services_dry_run       = local.restricted_services_dry_run
   members = distinct(concat([
     "serviceAccount:${local.networks_service_account}",
     "serviceAccount:${local.projects_service_account}",

@@ -97,13 +97,18 @@ variable "kms_prj_suffix" {
 variable "location_kms" {
   description = "Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket)"
   type        = string
-  default     = "us"
 }
 
 variable "location_gcs" {
   description = "Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring)"
   type        = string
-  default     = "US"
+}
+
+variable "gcs_custom_placement_config" {
+  description = "Configuration of the bucket's custom location in a dual-region bucket setup. If the bucket is designated a single or multi-region, the variable are null."
+  type = object({
+    data_locations = list(string)
+  })
 }
 
 variable "keyring_name" {

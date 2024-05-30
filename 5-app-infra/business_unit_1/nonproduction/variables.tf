@@ -17,6 +17,7 @@
 variable "instance_region" {
   description = "The region where compute instance will be created. A subnetwork must exists in the instance region."
   type        = string
+  default     = null
 }
 
 variable "remote_state_bucket" {

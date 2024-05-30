@@ -31,9 +31,12 @@ validator_project_id = "EXISTING_PROJECT_ID"
 // 0-bootstrap inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md#inputs
 
-org_id          = "REPLACE_ME" # format "000000000000"
-billing_account = "REPLACE_ME" # format "000000-000000-000000"
-default_region  = "us-central1"
+org_id             = "REPLACE_ME" # format "000000000000"
+billing_account    = "REPLACE_ME" # format "000000-000000-000000"
+default_region     = "us-central1"
+default_region_2   = "us-west1"
+default_region_gcs = "US"
+default_region_kms = "us"
 
 bucket_force_destroy             = false
 bucket_tfstate_kms_force_destroy = false
@@ -138,6 +141,8 @@ target_name_server_addresses = [
 
 // 4-projects inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/business_unit_1/production/README.md#inputs
+// Can be used to override the default region set in 0-bootstrap
+// See https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/business_unit_1/production/README.md#outputs
 
-projects_gcs_location = "US"
-projects_kms_location = "us"
+gcs_location = "US"
+kms_location = "us"

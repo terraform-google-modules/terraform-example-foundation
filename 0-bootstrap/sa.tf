@@ -140,9 +140,10 @@ locals {
 resource "google_service_account" "terraform-env-sa" {
   for_each = local.granular_sa
 
-  project      = module.seed_bootstrap.seed_project_id
-  account_id   = "sa-terraform-${each.key}"
-  display_name = each.value
+  project                      = module.seed_bootstrap.seed_project_id
+  account_id                   = "sa-terraform-${each.key}"
+  display_name                 = each.value
+  create_ignore_already_exists = true
 }
 
 module "org_iam_member" {

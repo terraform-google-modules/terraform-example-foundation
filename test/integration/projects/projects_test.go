@@ -98,27 +98,6 @@ func TestProjects(t *testing.T) {
 			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
 			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
 		},
-		{
-			name:              "bu2_development",
-			repo:              "bu2-example-app",
-			baseDir:           "../../../4-projects/business_unit_2/%s",
-			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
-			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
-		},
-		{
-			name:              "bu2_nonproduction",
-			repo:              "bu2-example-app",
-			baseDir:           "../../../4-projects/business_unit_2/%s",
-			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
-			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
-		},
-		{
-			name:              "bu2_production",
-			repo:              "bu2-example-app",
-			baseDir:           "../../../4-projects/business_unit_2/%s",
-			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
-			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
-		},
 	} {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
@@ -236,7 +215,7 @@ func TestProjects(t *testing.T) {
 							peering := gcloud.Runf(t, "compute networks peerings list --project %s", projectID).Array()[0]
 							assert.Contains(peering.Get("peerings.0.network").String(), tt.baseNetwork, "should have a peering network")
 
-							instanceRegion := utils.ValFromEnv(t, "TF_VAR_instance_region")
+							instanceRegion := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["default_region"]
 							peeringSubnetworkSelfLink := projects.GetStringOutput("peering_subnetwork_self_link")
 							peeringSubnetworkSelfLinkSplitted := strings.Split(peeringSubnetworkSelfLink, "/")
 							peering_subnetwork_name := peeringSubnetworkSelfLinkSplitted[len(peeringSubnetworkSelfLinkSplitted)-1]

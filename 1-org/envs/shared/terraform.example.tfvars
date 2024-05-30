@@ -19,13 +19,13 @@ domains_to_allow = ["example.com"]
 
 essential_contacts_domains_to_allow = ["@example.com"]
 
-billing_data_users = "gcp-billing-data-users@example.com"
-
-audit_data_users = "gcp-security-admins@example.com"
-
 scc_notification_name = "scc-notify"
 
 remote_state_bucket = "REMOTE_STATE_BUCKET"
+
+log_export_storage_location = "US"
+
+billing_export_dataset_location = "US"
 
 //scc_notification_filter = "state=\\\"ACTIVE\\\""
 

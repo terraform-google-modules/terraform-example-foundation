@@ -66,3 +66,13 @@ variable "bucket_prefix" {
   type        = string
   default     = "bkt"
 }
+
+variable "vpc_service_control_attach_enabled" {
+  description = "Whether the project will be attached to a VPC Service Control Perimeter in ENFORCED MODE."
+  type        = bool
+}
+
+variable "vpc_service_control_attach_dry_run" {
+  description = "Whether the project will be attached to a VPC Service Control Perimeter with an explicit dry run spec flag, which may use different values for the dry run perimeter compared to the ENFORCED perimeter."
+  type        = bool
+}

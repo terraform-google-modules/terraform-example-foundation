@@ -208,6 +208,11 @@ variable "custom_restricted_services_dry_run" {
   default     = []
 }
 
+variable "restricted_services_dry_run" {
+  type        = list(string)
+  description = "List of services to restrict in a dry-run perimeter."
+}
+
 variable "tfc_org_name" {
   description = "Name of the TFC organization"
   type        = string

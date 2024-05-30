@@ -28,6 +28,7 @@
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | restricted\_private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services in the Restricted Shared Vpc. | `string` | n/a | yes |
 | restricted\_private\_service\_connect\_ip | The base subnet internal IP to be used as the private service connect endpoint in the Restricted Shared VPC | `string` | n/a | yes |
+| restricted\_services\_dry\_run | List of services to restrict in a dry-run perimeter. | `list(string)` | n/a | yes |
 | restricted\_subnet\_primary\_ranges | The base subnet primary IPTs ranges to the Restricted Shared Vpc. | `map(string)` | n/a | yes |
 | restricted\_subnet\_proxy\_ranges | The base proxy-only subnet primary IPTs ranges to the Restricted Shared Vpc. | `map(string)` | n/a | yes |
 | restricted\_subnet\_secondary\_ranges | The base subnet secondary IPTs ranges to the Restricted Shared Vpc | `map(list(map(string)))` | n/a | yes |

@@ -164,7 +164,7 @@ locals {
   ]
 
   restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
-  restricted_services_dry_run = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services_dry_run : local.supported_restricted_service
+  restricted_services_dry_run = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
 }
 
 /******************************************

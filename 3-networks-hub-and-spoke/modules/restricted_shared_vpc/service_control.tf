@@ -109,6 +109,8 @@ resource "google_access_context_manager_service_perimeter" "bridge_to_network_hu
   name           = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${local.bridge_name}"
   title          = local.bridge_name
 
+  use_explicit_dry_run_spec = var.enforce_vpcsc
+
   status {
     resources = formatlist("projects/%s", [var.project_number, var.restricted_net_hub_project_number])
   }

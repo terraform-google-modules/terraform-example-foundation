@@ -1,14 +1,16 @@
 module github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer
 
-go 1.21.0
+go 1.22
+
+toolchain go1.22.3
 
 require (
-	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.15.0
+	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.15.1
 	github.com/gruntwork-io/terratest v0.46.15
 	github.com/hashicorp/hcl/v2 v2.20.1
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.9.0
-	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240523115242-f22eb6682512
+	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240530101341-20e72789e0ac
 	github.com/tidwall/gjson v1.17.1
 )
 

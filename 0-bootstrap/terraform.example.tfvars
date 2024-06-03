@@ -36,7 +36,6 @@ groups = {
   #   gcp_scc_admin              = "" #"gcp_scc_admin_local_test@example.com"
   #   gcp_global_secrets_admin   = "" #"gcp_global_secrets_admin_local_test@example.com"
   #   gcp_kms_admin              = "" #"gcp_kms_admin_local_test@example.com"
-  #   monitoring_workspace_users = "REPLACE_ME" # example "gcp-monitoring-workspace@example.com"
   # }
 }
 

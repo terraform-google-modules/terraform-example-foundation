@@ -47,19 +47,17 @@ output "group_email" {
 output "groups" {
   value = {
     required_groups = {
-      group_org_admins           = var.group_email
-      group_billing_admins       = var.group_email
-      billing_data_users         = var.group_email
-      audit_data_users           = var.group_email
-      monitoring_workspace_users = var.group_email
+      group_org_admins     = var.group_email
+      group_billing_admins = var.group_email
+      billing_data_users   = var.group_email
+      audit_data_users     = var.group_email
     },
     optional_groups = {
-      monitoring_workspace_users = var.group_email
-      gcp_security_reviewer      = var.group_email
-      gcp_network_viewer         = var.group_email
-      gcp_scc_admin              = var.group_email
-      gcp_global_secrets_admin   = var.group_email
-      gcp_kms_admin              = var.group_email
+      gcp_security_reviewer    = var.group_email
+      gcp_network_viewer       = var.group_email
+      gcp_scc_admin            = var.group_email
+      gcp_global_secrets_admin = var.group_email
+      gcp_kms_admin            = var.group_email
 
     }
   }

@@ -106,12 +106,11 @@ variable "groups" {
       audit_data_users     = string
     })
     optional_groups = optional(object({
-      monitoring_workspace_users = optional(string, "")
-      gcp_security_reviewer      = optional(string, "")
-      gcp_network_viewer         = optional(string, "")
-      gcp_scc_admin              = optional(string, "")
-      gcp_global_secrets_admin   = optional(string, "")
-      gcp_kms_admin              = optional(string, "")
+      gcp_security_reviewer    = optional(string, "")
+      gcp_network_viewer       = optional(string, "")
+      gcp_scc_admin            = optional(string, "")
+      gcp_global_secrets_admin = optional(string, "")
+      gcp_kms_admin            = optional(string, "")
     }), {})
   })
 

@@ -103,12 +103,11 @@ type RequiredGroups struct {
 }
 
 type OptionalGroups struct {
-	MonitoringWorkspaceUsers *string  `cty:"monitoring_workspace_users"`
-	GcpSecurityReviewer      *string `cty:"gcp_security_reviewer"`
-	GcpNetworkViewer         *string `cty:"gcp_network_viewer"`
-	GcpSccAdmin              *string `cty:"gcp_scc_admin"`
-	GcpGlobalSecretsAdmin    *string `cty:"gcp_global_secrets_admin"`
-	GcpKmsAdmin              *string `cty:"gcp_kms_admin"`
+	GcpSecurityReviewer   *string `cty:"gcp_security_reviewer"`
+	GcpNetworkViewer      *string `cty:"gcp_network_viewer"`
+	GcpSccAdmin           *string `cty:"gcp_scc_admin"`
+	GcpGlobalSecretsAdmin *string `cty:"gcp_global_secrets_admin"`
+	GcpKmsAdmin           *string `cty:"gcp_kms_admin"`
 }
 
 type Groups struct {

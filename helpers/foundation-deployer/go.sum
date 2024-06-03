@@ -185,8 +185,8 @@ cloud.google.com/go/workflows v1.7.0/go.mod h1:JhSrZuVZWuiDfKEFxU0/F1PQjmpnpcoIS
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.15.0 h1:zT+PND04OQ96kmnQorLFtuY4Ny3KZ4fqxdy9faxMS6A=
-github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.15.0/go.mod h1:Srfs5phdVU1kwoRWedu4hngTkwN3OILEWgUgE+IVp6s=
+github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.15.1 h1:c1tEK/Ma0NstqqkjS1tCClrFxIX1cNLdrM5cB03Sv24=
+github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.15.1/go.mod h1:bssUTs81Q0xIUg/dYT8/8fqEXOVB8GQVyngw9U79EN4=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/agext/levenshtein v1.2.3 h1:YB2fHEn0UJagG8T1rrWknE3ZQzWM06O8AMAatNn7lmo=
 github.com/agext/levenshtein v1.2.3/go.mod h1:JEDfjyjHDjOF/1e4FlBE/PkbqA9OfWu2ki2W0IB5558=
@@ -410,8 +410,8 @@ github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsTg=
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
-github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240523115242-f22eb6682512 h1:Mr9kG/uAMhoiqV0p502pOIgEkYZh6wExq5l+NLAD8SE=
-github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240523115242-f22eb6682512/go.mod h1:t7QOR6ESMhoI9kH7Q7CPL7wFKODRBmL5SMUGpwVL0eE=
+github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240530101341-20e72789e0ac h1:hKmWS3gfdchjfK1xC6z0Tll65D+Poxr0aBCgRgGoaNs=
+github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240530101341-20e72789e0ac/go.mod h1:tQ3UD4Hq6eDIfxNp5qKK6UVePeTc+fQBUqjx8jN/NyM=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/gjson v1.17.1 h1:wlYEnwqAHgzmhNUFfw7Xalt2JzQvsMx2Se4PcoFCT/U=
 github.com/tidwall/gjson v1.17.1/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=

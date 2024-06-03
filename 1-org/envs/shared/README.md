@@ -45,7 +45,7 @@
 | logs\_export\_storage\_bucket\_name | The storage bucket for destination of log exports |
 | network\_folder\_name | The network folder name. |
 | org\_audit\_logs\_project\_id | The org audit logs project ID. |
-| org\_billing\_export\_project\_id | The org billing logs project ID |
+| org\_billing\_export\_project\_id | The org billing export project ID |
 | org\_id | The organization id |
 | org\_kms\_project\_id | The org Cloud Key Management Service (KMS) project ID |
 | org\_secrets\_project\_id | The org secrets project ID |

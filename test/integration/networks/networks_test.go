@@ -350,7 +350,7 @@ func TestNetworks(t *testing.T) {
 					// networks.DefaultVerify(assert)
 
 					servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, networks.GetStringOutput("restricted_service_perimeter_name"))
-					accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, networks.GetStringOutput("restricted_access_level_name"))
+					accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, networks.GetStringOutput("access_level_name"))
 					networkNames := getNetworkResourceNames(envCode, networkMode, firewallMode)
 
 					servicePerimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)

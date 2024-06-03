@@ -16,17 +16,6 @@
 
 locals {
   /*
-   * Base network ranges
-   */
-  base_subnet_primary_ranges = {
-    (local.default_region1) = "10.0.0.0/18"
-    (local.default_region2) = "10.1.0.0/18"
-  }
-  base_subnet_proxy_ranges = {
-    (local.default_region1) = "10.18.0.0/23"
-    (local.default_region2) = "10.19.0.0/23"
-  }
-  /*
    * Restricted network ranges
    */
   restricted_subnet_primary_ranges = {
@@ -165,82 +154,6 @@ locals {
 
   restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
   restricted_services_dry_run = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
-}
-
-/******************************************
-  Base Network VPC
-*****************************************/
-
-module "base_shared_vpc" {
-  source = "../../modules/base_shared_vpc"
-
-  project_id                    = local.base_net_hub_project_id
-  dns_hub_project_id            = local.dns_hub_project_id
-  environment_code              = local.environment_code
-  private_service_connect_ip    = "10.17.0.1"
-  bgp_asn_subnet                = local.bgp_asn_number
-  default_region1               = local.default_region1
-  default_region2               = local.default_region2
-  domain                        = var.domain
-  dns_enable_inbound_forwarding = var.base_hub_dns_enable_inbound_forwarding
-  dns_enable_logging            = var.base_hub_dns_enable_logging
-  firewall_enable_logging       = var.base_hub_firewall_enable_logging
-  nat_enabled                   = var.base_hub_nat_enabled
-  nat_bgp_asn                   = var.base_hub_nat_bgp_asn
-  nat_num_addresses_region1     = var.base_hub_nat_num_addresses_region1
-  nat_num_addresses_region2     = var.base_hub_nat_num_addresses_region2
-  windows_activation_enabled    = var.base_hub_windows_activation_enabled
-  mode                          = "hub"
-
-  subnets = [
-    {
-      subnet_name                      = "sb-c-shared-base-hub-${local.default_region1}"
-      subnet_ip                        = local.base_subnet_primary_ranges[local.default_region1]
-      subnet_region                    = local.default_region1
-      subnet_private_access            = "true"
-      subnet_flow_logs                 = var.base_vpc_flow_logs.enable_logging
-      subnet_flow_logs_interval        = var.base_vpc_flow_logs.aggregation_interval
-      subnet_flow_logs_sampling        = var.base_vpc_flow_logs.flow_sampling
-      subnet_flow_logs_metadata        = var.base_vpc_flow_logs.metadata
-      subnet_flow_logs_metadata_fields = var.base_vpc_flow_logs.metadata_fields
-      subnet_flow_logs_filter          = var.base_vpc_flow_logs.filter_expr
-      description                      = "Base network hub subnet for ${local.default_region1}"
-    },
-    {
-      subnet_name                      = "sb-c-shared-base-hub-${local.default_region2}"
-      subnet_ip                        = local.base_subnet_primary_ranges[local.default_region2]
-      subnet_region                    = local.default_region2
-      subnet_private_access            = "true"
-      subnet_flow_logs                 = var.base_vpc_flow_logs.enable_logging
-      subnet_flow_logs_interval        = var.base_vpc_flow_logs.aggregation_interval
-      subnet_flow_logs_sampling        = var.base_vpc_flow_logs.flow_sampling
-      subnet_flow_logs_metadata        = var.base_vpc_flow_logs.metadata
-      subnet_flow_logs_metadata_fields = var.base_vpc_flow_logs.metadata_fields
-      subnet_flow_logs_filter          = var.base_vpc_flow_logs.filter_expr
-      description                      = "Base network hub subnet for ${local.default_region2}"
-    },
-    {
-      subnet_name      = "sb-c-shared-base-hub-${local.default_region1}-proxy"
-      subnet_ip        = local.base_subnet_proxy_ranges[local.default_region1]
-      subnet_region    = local.default_region1
-      subnet_flow_logs = false
-      description      = "Base network hub proxy-only subnet for ${local.default_region1}"
-      role             = "ACTIVE"
-      purpose          = "REGIONAL_MANAGED_PROXY"
-    },
-    {
-      subnet_name      = "sb-c-shared-base-hub-${local.default_region2}-proxy"
-      subnet_ip        = local.base_subnet_proxy_ranges[local.default_region2]
-      subnet_region    = local.default_region2
-      subnet_flow_logs = false
-      description      = "Base network hub proxy-only subnet for ${local.default_region2}"
-      role             = "ACTIVE"
-      purpose          = "REGIONAL_MANAGED_PROXY"
-    }
-  ]
-  secondary_ranges = {}
-
-  depends_on = [module.dns_hub_vpc]
 }
 
 /******************************************

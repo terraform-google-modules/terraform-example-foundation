@@ -17,9 +17,7 @@
 locals {
   restricted_project_id             = data.tfe_outputs.org.nonsensitive_values.shared_vpc_projects[var.env].restricted_shared_vpc_project_id
   restricted_project_number         = data.tfe_outputs.org.nonsensitive_values.shared_vpc_projects[var.env].restricted_shared_vpc_project_number
-  base_project_id                   = data.tfe_outputs.org.nonsensitive_values.shared_vpc_projects[var.env].base_shared_vpc_project_id
   dns_hub_project_id                = data.tfe_outputs.org.nonsensitive_values.dns_hub_project_id
-  base_net_hub_project_id           = data.tfe_outputs.org.nonsensitive_values.base_net_hub_project_id
   restricted_net_hub_project_id     = data.tfe_outputs.org.nonsensitive_values.restricted_net_hub_project_id
   restricted_net_hub_project_number = data.tfe_outputs.org.nonsensitive_values.restricted_net_hub_project_number
   organization_service_account      = data.tfe_outputs.bootstrap.nonsensitive_values.organization_step_terraform_service_account_email

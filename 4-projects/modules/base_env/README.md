@@ -34,9 +34,6 @@
 | Name | Description |
 |------|-------------|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
-| base\_shared\_vpc\_project | Project sample base project. |
-| base\_shared\_vpc\_project\_sa | Project sample base project SA. |
-| base\_subnets\_self\_links | The self-links of subnets from base environment. |
 | bucket | The created storage bucket. |
 | env\_kms\_project | Project sample for KMS usage project ID. |
 | floating\_project | Project sample floating project. |

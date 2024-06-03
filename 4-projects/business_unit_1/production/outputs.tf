@@ -14,21 +14,6 @@
  * limitations under the License.
  */
 
-output "base_shared_vpc_project" {
-  description = "Project sample base project."
-  value       = module.env.base_shared_vpc_project
-}
-
-output "base_shared_vpc_project_sa" {
-  description = "Project sample base project SA."
-  value       = module.env.base_shared_vpc_project_sa
-}
-
-output "base_subnets_self_links" {
-  value       = module.env.base_subnets_self_links
-  description = "The self-links of subnets from base environment."
-}
-
 output "floating_project" {
   description = "Project sample floating project."
   value       = module.env.floating_project

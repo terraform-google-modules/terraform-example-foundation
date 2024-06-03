@@ -33,7 +33,6 @@ locals {
   development_folder_name           = data.terraform_remote_state.env_development.outputs.env_folder
   nonproduction_folder_name         = data.terraform_remote_state.env_nonproduction.outputs.env_folder
   production_folder_name            = data.terraform_remote_state.env_production.outputs.env_folder
-  base_net_hub_project_id           = data.terraform_remote_state.org.outputs.base_net_hub_project_id
   restricted_net_hub_project_id     = data.terraform_remote_state.org.outputs.restricted_net_hub_project_id
   restricted_net_hub_project_number = data.terraform_remote_state.org.outputs.restricted_net_hub_project_number
   organization_service_account      = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email

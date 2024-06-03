@@ -475,17 +475,6 @@ func TestOrg(t *testing.T) {
 					apis          []string
 				}{
 					{
-						projectOutput: "base_shared_vpc_project_id",
-						apis: []string{
-							"compute.googleapis.com",
-							"dns.googleapis.com",
-							"servicenetworking.googleapis.com",
-							"container.googleapis.com",
-							"logging.googleapis.com",
-							"billingbudgets.googleapis.com",
-						},
-					},
-					{
 						projectOutput: "restricted_shared_vpc_project_id",
 						apis: []string{
 							"compute.googleapis.com",

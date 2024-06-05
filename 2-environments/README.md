@@ -15,7 +15,7 @@ stages.</td>
 </tr>
 <tr>
 <td><a href="../1-org">1-org</a></td>
-<td>Sets up top level shared folders, monitoring and networking projects, and
+<td>Sets up top level shared folders, networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
@@ -61,8 +61,6 @@ The purpose of this step is to setup development, nonproduction, and production 
 
 1. 0-bootstrap executed successfully.
 1. 1-org executed successfully.
-1. Cloud Identity / Google Workspace group for monitoring admins.
-1. Membership in the monitoring admins group for user running Terraform.
 
 ### Troubleshooting
 

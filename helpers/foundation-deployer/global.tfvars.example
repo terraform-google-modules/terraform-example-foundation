@@ -69,7 +69,6 @@ groups = {
     group_billing_admins       = "REPLACE_ME" # "gcp-billing-admins@example.com"
     billing_data_users         = "REPLACE_ME" #"billing_data_users_local_test@example.com"
     audit_data_users           = "REPLACE_ME" #"audit_data_users_local_test@example.com"
-    monitoring_workspace_users = "REPLACE_ME" #"monitoring_workspace_users_local_test@example.com"
   }
   optional_groups = {
     gcp_security_reviewer      = "" #"gcp_security_reviewer_local_test@example.com"

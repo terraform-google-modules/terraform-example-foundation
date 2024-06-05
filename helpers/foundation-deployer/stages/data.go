@@ -96,11 +96,10 @@ type ServerAddress struct {
 }
 
 type RequiredGroups struct {
-	GroupOrgAdmins           string `cty:"group_org_admins"`
-	GroupBillingAdmins       string `cty:"group_billing_admins"`
-	BillingDataUsers         string `cty:"billing_data_users"`
-	AuditDataUsers           string `cty:"audit_data_users"`
-	MonitoringWorkspaceUsers string `cty:"monitoring_workspace_users"`
+	GroupOrgAdmins     string `cty:"group_org_admins"`
+	GroupBillingAdmins string `cty:"group_billing_admins"`
+	BillingDataUsers   string `cty:"billing_data_users"`
+	AuditDataUsers     string `cty:"audit_data_users"`
 }
 
 type OptionalGroups struct {

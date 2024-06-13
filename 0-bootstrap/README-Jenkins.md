@@ -196,8 +196,42 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 ### II. Create the SEED and CI/CD projects using Terraform
 
 - Required information:
-  - Terraform version 1.3.10 - See [Requirements](#requirements) section for more details.
+  - Terraform version 1.5.7 - See [Requirements](#requirements) section for more details.
   - The `terraform.tfvars` file with all the necessary values.
+
+To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
+
+- 0-bootstrap/modules/jenkins-agent/variables.tf
+   ```
+   default     = "1.5.7"
+   ```
+
+- 0-bootstrap/cb.tf
+   ```
+   terraform_version = "1.5.7"
+   ```
+
+- scripts/validate-requirements.sh
+   ```
+   TF_VERSION="1.5.7"
+   ```
+
+- build/github-tf-apply.yaml
+   ```
+   terraform_version: '1.5.7'
+   ```
+
+- github-tf-pull-request.yaml
+
+   ```
+   terraform_version: "1.5.7"
+   ```
+
+- 0-bootstrap/Dockerfile
+   ```
+   ARG TERRAFORM_VERSION=1.5.7
+   ```
+
 
 1. Get the appropriate credentials: run the following command with an account that has the [necessary permissions](./modules/jenkins-agent/README.md#permissions).
 
@@ -209,7 +243,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
 
 1. Run terraform commands.
    - After the credentials are configured, we will create the `prj-b-seed` project (which contains the GCS state bucket and Terraform custom service account) and the `prj-b-cicd` project (which contains the Jenkins Agent, its custom service account and where we will add VPN configuration)
-   - **Use Terraform 1.3.10** to run the terraform script with the commands below
+   - **Use Terraform 1.5.7** to run the terraform script with the commands below
 
    ```bash
    terraform init

@@ -64,10 +64,43 @@ To run the commands described in this document, install the following:
 
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.3.10
+- [Terraform](https://www.terraform.io/downloads.html) version 1.5.7
 - [jq](https://jqlang.github.io/jq/download/) version 1.6.0 or later
 
-**Note:** Make sure that you use version 1.3.10 of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use version 1.5.7 of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+
+To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
+
+- 0-bootstrap/modules/jenkins-agent/variables.tf
+   ```
+   default     = "1.5.7"
+   ```
+
+- 0-bootstrap/cb.tf
+   ```
+   terraform_version = "1.5.7"
+   ```
+
+- scripts/validate-requirements.sh
+   ```
+   TF_VERSION="1.5.7"
+   ```
+
+- build/github-tf-apply.yaml
+   ```
+   terraform_version: '1.5.7'
+   ```
+
+- github-tf-pull-request.yaml
+
+   ```
+   terraform_version: "1.5.7"
+   ```
+
+- 0-bootstrap/Dockerfile
+   ```
+   ARG TERRAFORM_VERSION=1.5.7
+   ```
 
 Also make sure that you've done the following:
 

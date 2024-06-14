@@ -199,7 +199,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
   - Terraform version 1.5.7 - See [Requirements](#requirements) section for more details.
   - The `terraform.tfvars` file with all the necessary values.
 
-To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
+Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
 
 - 0-bootstrap/modules/jenkins-agent/variables.tf
    ```

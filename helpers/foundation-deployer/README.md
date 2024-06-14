@@ -12,7 +12,7 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 - [Terraform](https://www.terraform.io/downloads.html) version 1.5.7 or later
 - See `0-bootstrap` README for additional IAM [requirements](../../0-bootstrap/README.md#prerequisites) on the user deploying the Foundation.
 
-To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
+Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
 
 - 0-bootstrap/modules/jenkins-agent/variables.tf
    ```

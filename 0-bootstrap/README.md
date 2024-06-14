@@ -69,7 +69,7 @@ To run the commands described in this document, install the following:
 
 **Note:** Make sure that you use version 1.5.7 of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
-To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
+Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
 
 - 0-bootstrap/modules/jenkins-agent/variables.tf
    ```

@@ -17,6 +17,9 @@ To run the instructions described in this document, install the following:
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 1.5.7  or later
 
+For the manual steps described in this document, you need to use the same [Terraform](https://www.terraform.io/downloads.html) version used on the build pipeline.
+Otherwise, you might experience Terraform state snapshot lock errors.
+
 Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
 
 - 0-bootstrap/modules/jenkins-agent/variables.tf

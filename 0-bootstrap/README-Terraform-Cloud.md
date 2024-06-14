@@ -20,6 +20,9 @@ To run the instructions described in this document, install the following:
 - [Terraform](https://www.terraform.io/downloads.html) version 1.5.7 or later
 - [jq](https://jqlang.github.io/jq/download/) version 1.6.0 or later
 
+For the manual steps described in this document, you need to use the same [Terraform](https://www.terraform.io/downloads.html) version used on the build pipeline.
+Otherwise, you might experience Terraform state snapshot lock errors.
+
 Also make sure that you have the following:
 
 - A [Terraform Cloud account](https://developer.hashicorp.com/terraform/tutorials/cloud-get-started/cloud-sign-up#create-an-account) for your User or [Organization](https://developer.hashicorp.com/terraform/tutorials/cloud-get-started/cloud-sign-up#create-an-organization).

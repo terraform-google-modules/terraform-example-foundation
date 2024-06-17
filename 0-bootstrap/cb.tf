@@ -16,7 +16,7 @@
 
 locals {
   // terraform version image configuration
-  terraform_version = "1.3.10"
+  terraform_version = "1.5.7"
   // The version of the terraform docker image to be used in the workspace builds
   docker_tag_version_terraform = "v1"
 

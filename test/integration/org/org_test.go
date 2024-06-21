@@ -416,7 +416,7 @@ func TestOrg(t *testing.T) {
 					},
 				},
 				{
-					output: "org_kms_project_id",
+					output: "common_kms_project_id",
 					apis: []string{
 						"logging.googleapis.com",
 						"cloudkms.googleapis.com",

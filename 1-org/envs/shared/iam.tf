@@ -184,7 +184,7 @@ resource "google_project_iam_member" "global_secrets_admin" {
 
 resource "google_project_iam_member" "kms_admin" {
   count   = var.gcp_groups.kms_admin != null ? 1 : 0
-  project = module.org_kms.project_id
+  project = module.common_kms.project_id
   role    = "roles/cloudkms.viewer"
   member  = "group:${var.gcp_groups.kms_admin}"
 }

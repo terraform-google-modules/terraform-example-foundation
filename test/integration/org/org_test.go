@@ -300,7 +300,6 @@ func TestOrg(t *testing.T) {
 			caiTopic := org.GetStringOutput("cai_monitoring_topic")
 
 			caiSaEmail := fmt.Sprintf("cai-monitoring@%s.iam.gserviceaccount.com", sccProjectID)
-			caiKmsKey := fmt.Sprintf("projects/%s/locations/%s/keyRings/krg-cai-monitoring/cryptoKeys/key-cai-monitoring", sccProjectID, defaultRegion)
 			caiTopicFullName := fmt.Sprintf("projects/%s/topics/%s", sccProjectID, caiTopic)
 
 			// Cloud Function

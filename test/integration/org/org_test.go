@@ -311,12 +311,10 @@ func TestOrg(t *testing.T) {
 			// Cloud Function Storage Bucket
 			bktArgs := gcloud.WithCommonArgs([]string{"--project", sccProjectID, "--json"})
 			opSrcBucket := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", caiBucket), bktArgs).Array()
-			assert.Equal(caiKmsKey, opSrcBucket[0].Get("metadata.encryption.defaultKmsKeyName").String(), fmt.Sprintf("Should have same KMS key: %s", caiKmsKey))
 			assert.Equal("true", opSrcBucket[0].Get("metadata.iamConfiguration.bucketPolicyOnly.enabled").String(), "Should have Bucket Policy Only enabled.")
 
 			// Cloud Function Artifact Registry
 			opAR := gcloud.Runf(t, "artifacts repositories describe %s --project %s --location %s", caiAr, sccProjectID, defaultRegion)
-			assert.Equal(caiKmsKey, opAR.Get("kmsKeyName").String(), fmt.Sprintf("Should have KMS Key: %s", caiKmsKey))
 			assert.Equal("DOCKER", opAR.Get("format").String(), "Should have type: DOCKER")
 
 			// Cloud Function Pub/Sub

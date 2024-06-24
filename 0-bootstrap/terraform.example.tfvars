@@ -25,11 +25,10 @@ groups = {
   # create_optional_groups = false # Change to true to create the optional_groups
   # billing_project        = "REPLACE_ME"  # Fill to create required or optional groups
   required_groups = {
-    group_org_admins           = "REPLACE_ME" # example "gcp-organization-admins@example.com"
-    group_billing_admins       = "REPLACE_ME" # example "gcp-billing-admins@example.com"
-    billing_data_users         = "REPLACE_ME" # example "gcp-billing-data@example.com"
-    audit_data_users           = "REPLACE_ME" # example "gcp-audit-data@example.com"
-    monitoring_workspace_users = "REPLACE_ME" # example "gcp-monitoring-workspace@example.com"
+    group_org_admins     = "REPLACE_ME" # example "gcp-organization-admins@example.com"
+    group_billing_admins = "REPLACE_ME" # example "gcp-billing-admins@example.com"
+    billing_data_users   = "REPLACE_ME" # example "gcp-billing-data@example.com"
+    audit_data_users     = "REPLACE_ME" # example "gcp-audit-data@example.com"
   }
   # optional_groups = {
   #   gcp_security_reviewer      = "" #"gcp_security_reviewer_local_test@example.com"

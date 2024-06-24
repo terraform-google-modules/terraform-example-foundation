@@ -17,8 +17,11 @@ To run the instructions described in this document, install the following:
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
     - [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.3.10  or later
+- [Terraform](https://www.terraform.io/downloads.html) version 1.5.7 or later
 - [jq](https://jqlang.github.io/jq/download/) version 1.6.0 or later
+
+For the manual steps described in this document, you need to use the same [Terraform](https://www.terraform.io/downloads.html) version used on the build pipeline.
+Otherwise, you might experience Terraform state snapshot lock errors.
 
 Also make sure that you have the following:
 

@@ -15,7 +15,7 @@ stages.</td>
 </tr>
 <tr>
 <td><a href="../1-org">1-org</a></td>
-<td>Sets up top-level shared folders, monitoring and networking projects, and
+<td>Sets up top-level shared folders, networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
@@ -64,10 +64,43 @@ To run the commands described in this document, install the following:
 
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.3.10
+- [Terraform](https://www.terraform.io/downloads.html) version 1.5.7
 - [jq](https://jqlang.github.io/jq/download/) version 1.6.0 or later
 
-**Note:** Make sure that you use version 1.3.10 of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use the same version of [Terraform](https://www.terraform.io/downloads.html) throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+
+Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
+
+- 0-bootstrap/modules/jenkins-agent/variables.tf
+   ```
+   default     = "1.5.7"
+   ```
+
+- 0-bootstrap/cb.tf
+   ```
+   terraform_version = "1.5.7"
+   ```
+
+- scripts/validate-requirements.sh
+   ```
+   TF_VERSION="1.5.7"
+   ```
+
+- build/github-tf-apply.yaml
+   ```
+   terraform_version: '1.5.7'
+   ```
+
+- github-tf-pull-request.yaml
+
+   ```
+   terraform_version: "1.5.7"
+   ```
+
+- 0-bootstrap/Dockerfile
+   ```
+   ARG TERRAFORM_VERSION=1.5.7
+   ```
 
 Also make sure that you've done the following:
 
@@ -311,7 +344,7 @@ Each step has instructions for this change.
 | default\_region\_gcs | Case-Sensitive default region to create gcs resources where applicable. | `string` | `"US"` | no |
 | default\_region\_kms | Secondary default region to create kms resources where applicable. | `string` | `"us"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
-| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = string<br>      audit_data_users           = string<br>      monitoring_workspace_users = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
+| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins     = string<br>      group_billing_admins = string<br>      billing_data_users   = string<br>      audit_data_users     = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
 | initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |

@@ -64,7 +64,7 @@ This will create the following folder and project structure:
 example-organization
 └── fldr-common
     ├── prj-c-logging
-    ├── prj-c-billing-logs
+    ├── prj-c-billing-export
     ├── prj-c-scc
     ├── prj-c-kms
     └── prj-c-secrets
@@ -83,9 +83,9 @@ example-organization
 
 #### Logs
 
-Among the four projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
-The first one is for organization-wide audit logs, and the second one is for billing logs.
-In both cases, the logs are collected into BigQuery datasets which you can then use for general querying, dashboarding, and reporting. Logs are also exported to Pub/Sub, a Cloud Storage bucket, and a log bucket.
+Under the common folder, a project `prj-c-logging` is used as the destination for organization wide sinks. This includes admin activity audit logs from all projects in your organization and the billing account.
+
+Logs are collected into a logging bucket with a linked BigQuery dataset, which can be used for ad-hoc log investigations, querying, or reporting. Log sinks can also be configured to export to Pub/Sub for exporting to external systems or Cloud Storage for long-term storage.
 
 **Notes**:
 
@@ -126,30 +126,21 @@ This stage only creates the projects and enables the correct APIs, the following
 
 ### [2. environments](./2-environments/)
 
-The purpose of this stage is to set up the environments folders used for projects that contain monitoring and secrets projects.
+The purpose of this stage is to set up the environments folders that contain shared projects for each environemnt.
 This will create the following folder and project structure:
 
 ```
 example-organization
 └── fldr-development
-    ├── prj-d-monitoring
     ├── prj-p-kms
     └── prj-d-secrets
 └── fldr-nonproduction
-    ├── prj-n-monitoring
     ├── prj-n-kms
     └── prj-n-secrets
 └── fldr-production
-    ├── prj-p-monitoring
     ├── prj-p-kms
     └── prj-p-secrets
 ```
-
-#### Monitoring
-
-Under the environment folder, a project is created per environment (`development`, `nonproduction`, and `production`), which is intended to be used as a [Cloud Monitoring workspace](https://cloud.google.com/monitoring/workspaces) for all projects in that environment.
-Please note that creating the [workspace and linking projects](https://cloud.google.com/monitoring/workspaces/create) can currently only be completed through the Cloud Console.
-If you have strong IAM requirements for these monitoring workspaces, it is worth considering creating these at a more granular level, such as per business unit or per application.
 
 #### KMS
 
@@ -257,7 +248,7 @@ After all steps above have been executed, your Google Cloud organization should 
 example-organization
 └── fldr-common
     ├── prj-c-logging
-    ├── prj-c-billing-logs
+    ├── prj-c-billing-export
     ├── prj-c-scc
     ├── prj-c-kms
     ├── prj-c-secrets
@@ -275,7 +266,6 @@ example-organization
     ├── prj-p-shared-base
     └── prj-p-shared-restricted
 └── fldr-development
-    ├── prj-d-monitoring
     ├── prj-d-kms
     └── prj-d-secrets
     └── fldr-development-bu1
@@ -291,7 +281,6 @@ example-organization
         ├── prj-d-bu2-sample-restrict
         └── prj-d-bu2-sample-peering
 └── fldr-nonproduction
-    ├── prj-n-monitoring
     ├── prj-n-kms
     └── prj-n-secrets
     └── fldr-nonproduction-bu1
@@ -307,7 +296,6 @@ example-organization
         ├── prj-n-bu2-sample-restrict
         └── prj-n-bu2-sample-peering
 └── fldr-production
-    ├── prj-p-monitoring
     ├── prj-p-kms
     └── prj-p-secrets
     └── fldr-production-bu1

@@ -22,7 +22,7 @@ We will not support:
 ## Overview
 
 This repo contains several distinct Terraform projects, each within their own directory that must be applied separately, but in sequence.
-Stage 0 is manually executed, and subequent stages are executed using your preferred CI/CD tool.
+Stage `0-bootstrap` is manually executed, and subsequent stages are executed using your preferred CI/CD tool.
 
 Each of these Terraform projects are to be layered on top of each other, and run in the following order.
 

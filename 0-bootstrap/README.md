@@ -58,6 +58,20 @@ file.
 
 The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources and permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages. The [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
 
+## Intended usage and support
+
+This repository is intended as an example to be forked, tweaked, and maintained in the user's own version-control system; the modules within this repository are not intended for use as remote references.
+Though this blueprint can help accelerate your foundation design and build, we assume that you have the engineering skills and teams to deploy and customize your own foundation based on your own requirements.
+
+We will support:
+ - Code is semantically valid, pinned to known good versions, and passes terraform validate and lint checks
+ - All PR to this repo must pass integration tests to deploy all resources into a test environment before being merged
+ - Feature requests about ease of use of the code, or feature requests that generally apply to all users, are welcome
+
+We will not support:
+ - In-place upgrades from a foundation deployed with an earlier version to a more recent version, even for minor version changes, might not be feasible. Repository maintainers do not have visibility to what resources a user deploys on top of their foundation or how the foundation was customized in deployment, so we make no guarantee about avoiding breaking changes.
+ - Feature requests that are specific to a single user's requirement and not representative of general best practices
+
 ## Prerequisites
 
 To run the commands described in this document, install the following:
@@ -153,6 +167,8 @@ See [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during 
 
 ## Deploying with Jenkins
 
+*Warning: the guidance for deploying with Jenkins is no longer actively tested or maintained. While we have left the guidance available for users who prefer Jenkins, we make no guarantees about its quality, and you might be responsible for troubleshooting and modifying the directions.*
+
 If you are using the `jenkins_bootstrap` sub-module, see [README-Jenkins](./README-Jenkins.md)
 for requirements and instructions on how to run the 0-bootstrap step. Using
 Jenkins requires a few manual steps, including configuring connectivity with
@@ -178,7 +194,9 @@ Using Terraform Cloud requires manual creation of the GitHub repositories or Git
 
 ## Deploying with Cloud Build
 
-**Note:** When deploying with cloud build is also possible to use a [script helper](../helpers/foundation-deployer/README.md) to do the deploy.
+*Warning: This method has a dependency on Cloud Source Repositories, which is [no longer available to new customers](https://cloud.google.com/source-repositories/docs). If you have previously used the CSR API in your organization then you can use this method, but a newly created organization will not be able to enable CSR and cannot use this deployment method. In that case, we recommend that you follow the directions for deploying locally, Github, Gitlab, or Terraform Cloud instead.*
+
+The following steps introduce the steps to deploy with Cloud Build Alternatively, use the [helper script](../helpers/foundation-deployer/README.md) to automate all the stages of. Use the helper script when you want to rapidly create and destroy the entire organization for demonstration or testing purposes, without much customization at each stage.
 
 1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and navigate to the `0-bootstrap` folder.
 

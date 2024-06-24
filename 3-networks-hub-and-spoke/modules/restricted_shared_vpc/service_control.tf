@@ -112,7 +112,7 @@ resource "google_access_context_manager_service_perimeter" "bridge_to_network_hu
   use_explicit_dry_run_spec = var.enforce_vpcsc ? false : true
 
   status {
-    resources = formatlist("projects/%s", [var.project_number, var.restricted_net_hub_project_number])
+    resources = var.enforce_vpcsc ? formatlist("projects/%s", [var.project_number, var.restricted_net_hub_project_number]) : []
   }
 
   depends_on = [module.regular_service_perimeter]

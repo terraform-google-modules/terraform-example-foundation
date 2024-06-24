@@ -353,7 +353,7 @@ func TestNetworks(t *testing.T) {
 					accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, networks.GetStringOutput("access_level_name"))
 					networkNames := getNetworkResourceNames(envCode, networkMode, firewallMode)
 
-					servicePerimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
+					servicePerimeter := gcloud.Runf(t, "access-context-manager perimeters describe dry-run %s --policy %s", servicePerimeterLink, policyID)
 					assert.Equal(servicePerimeterLink, servicePerimeter.Get("name").String(), fmt.Sprintf("service perimeter %s should exist", servicePerimeterLink))
 					listLevels := utils.GetResultStrSlice(servicePerimeter.Get("status.accessLevels").Array())
 					assert.Contains(listLevels, accessLevel, fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))

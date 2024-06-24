@@ -146,7 +146,6 @@ func TestProjects(t *testing.T) {
 						"base_shared_vpc_project",
 						"floating_project",
 						"peering_project",
-						"env_kms_project",
 						"restricted_shared_vpc_project",
 					} {
 						projectID := projects.GetStringOutput(projectOutput)

@@ -82,10 +82,12 @@ module "network" {
  *****************************************/
 
 resource "google_service_account" "tfc_agent_service_account" {
-  count        = var.create_service_account ? 1 : 0
-  project      = var.project_id
-  account_id   = "tfc-agent-gke"
-  display_name = "Terraform Cloud agent GKE Service Account"
+  count = var.create_service_account ? 1 : 0
+
+  project                      = var.project_id
+  account_id                   = "tfc-agent-gke"
+  display_name                 = "Terraform Cloud agent GKE Service Account"
+  create_ignore_already_exists = true
 }
 
 /*****************************************
@@ -94,7 +96,7 @@ resource "google_service_account" "tfc_agent_service_account" {
 
 module "tfc_agent_cluster" {
   source  = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-private-cluster/"
-  version = "~> 30.0"
+  version = "~> 31.0"
 
   project_id         = var.project_id
   region             = var.region
@@ -370,7 +372,7 @@ resource "google_compute_firewall" "allow_private_api_egress" {
 
 module "private_service_connect" {
   source  = "terraform-google-modules/network/google//modules/private-service-connect"
-  version = "~> 9.0"
+  version = "~> 9.1"
 
   project_id                 = var.project_id
   dns_code                   = "dz-${local.vpc_name}"
@@ -392,7 +394,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "hub" {
   source  = "terraform-google-modules/kubernetes-engine/google//modules/fleet-membership"
-  version = "~> 30.0"
+  version = "~> 31.0"
 
   project_id   = var.project_id
   location     = var.region

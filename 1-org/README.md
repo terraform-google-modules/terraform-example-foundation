@@ -15,7 +15,7 @@ stages.</td>
 </tr>
 <tr>
 <td>1-org (this file)</td>
-<td>Sets up top-level shared folders, monitoring and networking projects, and
+<td>Sets up top-level shared folders, networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
@@ -55,7 +55,7 @@ For an overview of the architecture and the parts, see the
 
 ## Purpose
 
-The purpose of this step is to set up top-level shared folders, monitoring and networking projects, organization-level logging, and baseline security settings through organizational policies.
+The purpose of this step is to set up top-level shared folders, networking projects, organization-level logging, and baseline security settings through organizational policies.
 
 ## Prerequisites
 

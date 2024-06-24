@@ -56,9 +56,10 @@ resource "google_billing_account_iam_member" "billing_account_log_config" {
 }
 
 resource "google_service_account" "int_test" {
-  project      = module.project.project_id
-  account_id   = "ci-account"
-  display_name = "ci-account"
+  project                      = module.project.project_id
+  account_id                   = "ci-account"
+  display_name                 = "ci-account"
+  create_ignore_already_exists = true
 }
 
 resource "google_project_iam_member" "int_test" {

@@ -16,7 +16,7 @@
 
 locals {
   // terraform version image configuration
-  terraform_version = "1.3.0"
+  terraform_version = "1.5.7"
   // The version of the terraform docker image to be used in the workspace builds
   docker_tag_version_terraform = "v1"
 
@@ -70,7 +70,7 @@ resource "random_string" "suffix" {
 
 module "gcp_projects_state_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   name          = "${var.bucket_prefix}-${module.seed_bootstrap.seed_project_id}-gcp-projects-tfstate"
   project_id    = module.seed_bootstrap.seed_project_id
@@ -86,7 +86,7 @@ module "gcp_projects_state_bucket" {
 
 module "tf_source" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_source"
-  version = "~> 7.0"
+  version = "~> 8.0"
 
   org_id                = var.org_id
   folder_id             = google_folder.bootstrap.id
@@ -155,7 +155,7 @@ module "tf_private_pool" {
 
 module "tf_cloud_builder" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
-  version = "~> 7.0"
+  version = "~> 8.0"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
@@ -206,7 +206,7 @@ module "build_terraform_image" {
 
 module "tf_workspace" {
   source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 7.0"
+  version  = "~> 8.0"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id

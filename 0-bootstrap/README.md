@@ -58,6 +58,20 @@ file.
 
 The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources and permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages. The [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
 
+## Intended usage and support
+
+This repository is intended as an example to be forked, tweaked, and maintained in the user's own version-control system; the modules within this repository are not intended for use as remote references.
+Though this blueprint can help accelerate your foundation design and build, we assume that you have the engineering skills and teams to deploy and customize your own foundation based on your own requirements.
+
+We will support:
+ - Code is semantically valid, pinned to known good versions, and passes terraform validate and lint checks
+ - All PR to this repo must pass integration tests to deploy all resources into a test environment before being merged
+ - Feature requests about ease of use of the code, or feature requests that generally apply to all users, are welcome
+
+We will not support:
+ - In-place upgrades from a foundation deployed with an earlier version to a more recent version, even for minor version changes, might not be feasible. Repository maintainers do not have visibility to what resources a user deploys on top of their foundation or how the foundation was customized in deployment, so we make no guarantee about avoiding breaking changes.
+ - Feature requests that are specific to a single user's requirement and not representative of general best practices
+
 ## Prerequisites
 
 To run the commands described in this document, install the following:

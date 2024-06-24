@@ -1,13 +1,29 @@
 # terraform-example-foundation
 
 This example repository shows how the CFT Terraform modules can build a secure Google Cloud foundation, following the [Google Cloud Enterprise Foundations Blueprint](https://cloud.google.com/architecture/security-foundations) (previously called the _Security Foundations Guide_).
-The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults that you can customize to meet your own requirements. Currently, the step 0 is manually executed.
-From step 1 onwards, the Terraform code is deployed by using either Google Cloud Build (default) or Jenkins.
-Cloud Build has been chosen by default to allow you to quickly get started without having to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
+The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults that you can customize to meet your own requirements.
+
+The intended audience of this blueprint is large enterprise organizations with a dedicated platform team responsible for deploying and maintaining their GCP environment, who is commited to separation of duties across multiple teams and managing their environment solely through version-controlled Infrastructure as Code. Smaller organizations looking for a turnkey solution might prefer other options such as [Google Cloud Setup](https://console.cloud.google.com/cloud-setup/overview)
+
+## Intended usage and support
+
+This repository is intended as an example to be forked, tweaked, and maintained in the user's own version-control system; the modules within this repository are not intended for use as remote references.
+Though this blueprint can help accelerate your foundation design and build, we assume that you have the engineering skills and teams to deploy and customize your own foundation based on your own requirements.
+
+We will support:
+ - Code is semantically valid, pinned to known good versions, and passes terraform validate and lint checks
+ - All PR to this repo must pass integration tests to deploy all resources into a test environment before being merged
+ - Feature requests about ease of use of the code, or feature requests that generally apply to all users, are welcome
+
+We will not support:
+ - In-place upgrades from a foundation deployed with an earlier version to a more recent version, even for minor version changes, might not be feasible. Repository maintainers do not have visibility to what resources a user deploys on top of their foundation or how the foundation was customized in deployment, so we make no guarantee about avoiding breaking changes.
+ - Feature requests that are specific to a single user's requirement and not representative of general best practices
 
 ## Overview
 
 This repo contains several distinct Terraform projects, each within their own directory that must be applied separately, but in sequence.
+Stage 0 is manually executed, and subequent stages are executed using your preferred CI/CD tool.
+
 Each of these Terraform projects are to be layered on top of each other, and run in the following order.
 
 ### [0. bootstrap](./0-bootstrap/)

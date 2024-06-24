@@ -29,7 +29,7 @@ locals {
 }
 
 /******************************************
-  Projects for log sinks
+  Project for log sinks
 *****************************************/
 
 module "org_audit_logs" {
@@ -61,14 +61,18 @@ module "org_audit_logs" {
   budget_alert_spend_basis    = var.project_budget.org_audit_logs_budget_alert_spend_basis
 }
 
-module "org_billing_logs" {
+/******************************************
+  Project for billing export
+*****************************************/
+
+module "org_billing_export" {
   source  = "terraform-google-modules/project-factory/google"
   version = "~> 15.0"
 
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-c-billing-logs"
+  name                     = "${local.project_prefix}-c-billing-export"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
@@ -76,7 +80,7 @@ module "org_billing_logs" {
 
   labels = {
     environment       = "common"
-    application_name  = "org-billing-logs"
+    application_name  = "org-billing-export"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
@@ -84,10 +88,10 @@ module "org_billing_logs" {
     env_code          = "c"
     vpc               = "none"
   }
-  budget_alert_pubsub_topic   = var.project_budget.org_billing_logs_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.org_billing_logs_alert_spent_percents
-  budget_amount               = var.project_budget.org_billing_logs_budget_amount
-  budget_alert_spend_basis    = var.project_budget.org_billing_logs_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = var.project_budget.org_billing_export_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.org_billing_export_alert_spent_percents
+  budget_amount               = var.project_budget.org_billing_export_budget_amount
+  budget_alert_spend_basis    = var.project_budget.org_billing_export_budget_alert_spend_basis
 }
 
 /******************************************

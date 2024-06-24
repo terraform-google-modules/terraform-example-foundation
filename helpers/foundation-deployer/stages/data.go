@@ -96,11 +96,10 @@ type ServerAddress struct {
 }
 
 type RequiredGroups struct {
-	GroupOrgAdmins           string `cty:"group_org_admins"`
-	GroupBillingAdmins       string `cty:"group_billing_admins"`
-	BillingDataUsers         string `cty:"billing_data_users"`
-	AuditDataUsers           string `cty:"audit_data_users"`
-	MonitoringWorkspaceUsers string `cty:"monitoring_workspace_users"`
+	GroupOrgAdmins     string `cty:"group_org_admins"`
+	GroupBillingAdmins string `cty:"group_billing_admins"`
+	BillingDataUsers   string `cty:"billing_data_users"`
+	AuditDataUsers     string `cty:"audit_data_users"`
 }
 
 type OptionalGroups struct {
@@ -132,6 +131,9 @@ type GlobalTFVars struct {
 	OrgID                                 string          `hcl:"org_id"`
 	BillingAccount                        string          `hcl:"billing_account"`
 	DefaultRegion                         string          `hcl:"default_region"`
+	DefaultRegion2                        string          `hcl:"default_region_2"`
+	DefaultRegionGCS                      string          `hcl:"default_region_gcs"`
+	DefaultRegionKMS                      string          `hcl:"default_region_kms"`
 	ParentFolder                          *string         `hcl:"parent_folder"`
 	Domain                                string          `hcl:"domain"`
 	DomainsToAllow                        []string        `hcl:"domains_to_allow"`
@@ -194,6 +196,9 @@ type BootstrapTfvars struct {
 	OrgID                        string  `hcl:"org_id"`
 	BillingAccount               string  `hcl:"billing_account"`
 	DefaultRegion                string  `hcl:"default_region"`
+	DefaultRegion2               string  `hcl:"default_region_2"`
+	DefaultRegionGCS             string  `hcl:"default_region_gcs"`
+	DefaultRegionKMS             string  `hcl:"default_region_kms"`
 	ParentFolder                 *string `hcl:"parent_folder"`
 	ProjectPrefix                *string `hcl:"project_prefix"`
 	FolderPrefix                 *string `hcl:"folder_prefix"`

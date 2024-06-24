@@ -19,11 +19,6 @@ output "env_folder" {
   value       = google_folder.env.name
 }
 
-output "monitoring_project_id" {
-  description = "Project for monitoring infra."
-  value       = module.monitoring_project.project_id
-}
-
 output "env_secrets_project_id" {
   description = "Project for environment secrets."
   value       = module.env_secrets.project_id

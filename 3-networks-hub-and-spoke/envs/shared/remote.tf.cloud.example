@@ -21,7 +21,9 @@ locals {
   parent_folder                     = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.parent_folder
   org_id                            = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.org_id
   billing_account                   = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.billing_account
-  default_region                    = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.default_region
+  default_region                    = data.tfe_outputs.bootstrap.outputs.common_config.default_region
+  default_region1                   = data.tfe_outputs.bootstrap.outputs.common_config.default_region
+  default_region2                   = data.tfe_outputs.bootstrap.outputs.common_config.default_region_2
   project_prefix                    = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.project_prefix
   folder_prefix                     = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.folder_prefix
   parent_id                         = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.parent_id

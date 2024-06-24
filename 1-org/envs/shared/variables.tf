@@ -57,13 +57,13 @@ variable "data_access_logs_enabled" {
 variable "log_export_storage_location" {
   description = "The location of the storage bucket used to export logs."
   type        = string
-  default     = "US"
+  default     = null
 }
 
 variable "billing_export_dataset_location" {
   description = "The location of the dataset for billing data export."
   type        = string
-  default     = "US"
+  default     = null
 }
 
 variable "log_export_storage_force_destroy" {
@@ -125,10 +125,10 @@ variable "project_budget" {
     org_secrets_alert_spent_percents            = optional(list(number), [1.2])
     org_secrets_alert_pubsub_topic              = optional(string, null)
     org_secrets_budget_alert_spend_basis        = optional(string, "FORECASTED_SPEND")
-    org_billing_logs_budget_amount              = optional(number, 1000)
-    org_billing_logs_alert_spent_percents       = optional(list(number), [1.2])
-    org_billing_logs_alert_pubsub_topic         = optional(string, null)
-    org_billing_logs_budget_alert_spend_basis   = optional(string, "FORECASTED_SPEND")
+    org_billing_export_budget_amount            = optional(number, 1000)
+    org_billing_export_alert_spent_percents     = optional(list(number), [1.2])
+    org_billing_export_alert_pubsub_topic       = optional(string, null)
+    org_billing_export_budget_alert_spend_basis = optional(string, "FORECASTED_SPEND")
     org_audit_logs_budget_amount                = optional(number, 1000)
     org_audit_logs_alert_spent_percents         = optional(list(number), [1.2])
     org_audit_logs_alert_pubsub_topic           = optional(string, null)

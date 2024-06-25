@@ -41,7 +41,7 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | base\_subnets\_names | The names of the subnets being created |
 | base\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | base\_subnets\_self\_links | The self-links of subnets being created |
-| enforce\_vpcsc | Enable the enforced mode for VPC service controls. It is not recommended to enable VPCSC on the first run deploying your foundation. Review [best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable), then only enforce the perimeter after you have analyzed the access patterns in your dry-run perimeter and created the necessary exceptions for your use cases. |
+| enforce\_vpcsc | Enable the enforced mode for VPC Service Controls. It is not recommended to enable VPC-SC on the first run deploying your foundation. Review [best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable), then only enforce the perimeter after you have analyzed the access patterns in your dry-run perimeter and created the necessary exceptions for your use cases. |
 | restricted\_host\_project\_id | The restricted host project ID |
 | restricted\_network\_name | The name of the VPC being created |
 | restricted\_network\_self\_link | The URI of the VPC being created |

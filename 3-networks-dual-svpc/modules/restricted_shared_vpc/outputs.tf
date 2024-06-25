@@ -81,7 +81,7 @@ output "access_level_name_dry_run" {
 
 output "enforce_vpcsc" {
   value       = var.enforce_vpcsc
-  description = "Enable the enforced mode for VPC service controls. It is not recommended to enable VPCSC on the first run deploying your foundation. Review [best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable), then only enforce the perimeter after you have analyzed the access patterns in your dry-run perimeter and created the necessary exceptions for your use cases."
+  description = "Enable the enforced mode for VPC Service Controls. It is not recommended to enable VPC-SC on the first run deploying your foundation. Review [best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable), then only enforce the perimeter after you have analyzed the access patterns in your dry-run perimeter and created the necessary exceptions for your use cases."
 }
 
 output "service_perimeter_name" {

@@ -55,12 +55,11 @@ For an overview of the architecture and the parts, see the
 
 ## Purpose
 
-## Purpose
 
 The purpose of this step is to:
 
 - Set up the global [DNS Hub](https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones).
-- Set up base and restricted Hubs and it corresponding Spokes. With default DNS, NAT (optional), Private Service networking, VPC service controls (optional), on-premises Dedicated or Partner Interconnect, and baseline firewall rules for each environment.
+- Set up base and restricted Hubs and it corresponding Spokes. With default DNS, NAT (optional), Private Service networking, VPC Service Controls (optional), on-premises Dedicated or Partner Interconnect, and baseline firewall rules for each environment.
 
 ## Prerequisites
 
@@ -190,7 +189,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
-   **Note:** Make sure that you update the `perimeter_additional_members` variable with your user identity in order to be able to view/access resources in the project protected by the VPC service controls.
+   **Note:** Make sure that you update the `perimeter_additional_members` variable with your user identity in order to be able to view/access resources in the project protected by the VPC Service Controls.
 
 1. Commit changes
 
@@ -418,8 +417,8 @@ unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
 
 ### (Optional) Enforce VPC Service Controls
 
-Because enabling vpc service controls can be a disruptive process, this repo configures VPC service controls perimeters in dry run mode by default. This configuration will service traffic that crosses the security perimeter (API requests that originate from inside your perimeter communicating with external resources, or API requests from external resources communicating with resources inside your perimeter) but still allow service traffic normally.
+Because enabling VPC Service Controls can be a disruptive process, this repo configures VPC Service Controls perimeters in dry run mode by default. This configuration will service traffic that crosses the security perimeter (API requests that originate from inside your perimeter communicating with external resources, or API requests from external resources communicating with resources inside your perimeter) but still allow service traffic normally.
 
-When you are ready to enforce VPC service controls, we recommend that you review the guidance at [Best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable). After you have added the necessary exceptions and are confident that VPC service controls will not disrupt your intended operations, set the variable `enforce_vpcsc` under the module `restricted_shared_vpc` to `true` and re-apply this stage. Then re-apply the 4-projects stage, which will inherit the new setting and include those projects inside the enforced perimeter.
+When you are ready to enforce VPC Service Controls, we recommend that you review the guidance at [Best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable). After you have added the necessary exceptions and are confident that VPC Service Controls will not disrupt your intended operations, set the variable `enforce_vpcsc` under the module `restricted_shared_vpc` to `true` and re-apply this stage. Then re-apply the 4-projects stage, which will inherit the new setting and include those projects inside the enforced perimeter.
 
-When you need to make changes to an existing enforced perimeter, you can test safely by modifying the configuration of the dry run perimeter. This will log traffic denied by the dry run perimeter without impacting whether the enforced perimeter allows or denies traffic.
+When you need to make changes to an existing enforced perimeter, you can test safely by modifying the configuration of the [dry run perimeter](https://cloud.google.com/vpc-service-controls/docs/dry-run-mode). This will log traffic denied by the dry run perimeter without impacting whether the enforced perimeter allows or denies traffic.

@@ -62,6 +62,7 @@ locals {
       "roles/accesscontextmanager.policyAdmin",
       "roles/resourcemanager.organizationAdmin",
       "roles/serviceusage.serviceUsageConsumer",
+      "roles/cloudkms.admin",
     ], local.common_roles)),
   }
 

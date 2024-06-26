@@ -17,8 +17,11 @@ To run the instructions described in this document, install the following:
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
     - [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.3.0  or later
+- [Terraform](https://www.terraform.io/downloads.html) version 1.5.7 or later
 - [jq](https://jqlang.github.io/jq/download/) version 1.6.0 or later
+
+For the manual steps described in this document, you need to use the same [Terraform](https://www.terraform.io/downloads.html) version used on the build pipeline.
+Otherwise, you might experience Terraform state snapshot lock errors.
 
 Also make sure that you have the following:
 
@@ -861,6 +864,20 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    terraform -chdir="business_unit_1/shared/" init
    terraform -chdir="business_unit_2/shared/" init
    ```
+
+1. (Optional) If you want additional subfolders for separate business units or entities, make additional copies of the folder `business_unit_1` and modify any values that vary across business unit like `business_code`, `business_unit`, or `subnet_ip_range`.
+
+For example, to create a new business unit similar to business_unit_1, run the following:
+
+   ```bash
+   #copy the business_unit_1 folder and it's contents to a new folder business_unit_2
+   cp -r  business_unit_1 business_unit_2
+
+   # search all files under the folder `business_unit_2` and replace strings for business_unit_1 with strings for business_unit_2
+   grep -rl bu1 business_unit_2/ | xargs sed -i 's/bu1/bu2/g'
+   grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/business_unit_2/g'
+   ```
+
 
 1. Commit changes
 

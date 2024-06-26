@@ -46,19 +46,11 @@ data "google_storage_project_service_account" "gcs_sa" {
   project = var.project_id
 }
 
-// Encrypter/Decrypter role
-resource "google_kms_crypto_key_iam_member" "encrypter_decrypter" {
-  for_each = var.enable_cmek ? local.identities : {}
-
-  crypto_key_id = var.encryption_key
-  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-  member        = each.value
-}
-
 // Cloud Function SA
 resource "google_service_account" "cloudfunction" {
-  account_id = "cai-monitoring"
-  project    = var.project_id
+  account_id                   = "cai-monitoring"
+  project                      = var.project_id
+  create_ignore_already_exists = true
 }
 
 resource "google_organization_iam_member" "cloudfunction_findings_editor" {
@@ -79,7 +71,6 @@ resource "google_project_iam_member" "cloudfunction_iam" {
 resource "time_sleep" "wait_kms_iam" {
   create_duration = "60s"
   depends_on = [
-    google_kms_crypto_key_iam_member.encrypter_decrypter,
     google_organization_iam_member.cloudfunction_findings_editor,
     google_project_iam_member.cloudfunction_iam
   ]

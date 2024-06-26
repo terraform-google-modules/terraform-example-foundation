@@ -15,7 +15,7 @@ stages.</td>
 </tr>
 <tr>
 <td><a href="../1-org">1-org</a></td>
-<td>Sets up top-level shared folders, monitoring and networking projects, and
+<td>Sets up top-level shared folders, networking projects, and
 organization-level logging, and sets baseline security settings through
 organizational policy.</td>
 </tr>
@@ -58,16 +58,63 @@ file.
 
 The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources and permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages. The [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
 
+## Intended usage and support
+
+This repository is intended as an example to be forked, tweaked, and maintained in the user's own version-control system; the modules within this repository are not intended for use as remote references.
+Though this blueprint can help accelerate your foundation design and build, we assume that you have the engineering skills and teams to deploy and customize your own foundation based on your own requirements.
+
+We will support:
+ - Code is semantically valid, pinned to known good versions, and passes terraform validate and lint checks
+ - All PR to this repo must pass integration tests to deploy all resources into a test environment before being merged
+ - Feature requests about ease of use of the code, or feature requests that generally apply to all users, are welcome
+
+We will not support:
+ - In-place upgrades from a foundation deployed with an earlier version to a more recent version, even for minor version changes, might not be feasible. Repository maintainers do not have visibility to what resources a user deploys on top of their foundation or how the foundation was customized in deployment, so we make no guarantee about avoiding breaking changes.
+ - Feature requests that are specific to a single user's requirement and not representative of general best practices
+
 ## Prerequisites
 
 To run the commands described in this document, install the following:
 
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.3.0
+- [Terraform](https://www.terraform.io/downloads.html) version 1.5.7
 - [jq](https://jqlang.github.io/jq/download/) version 1.6.0 or later
 
-**Note:** Make sure that you use version 1.3.0 of Terraform throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+**Note:** Make sure that you use the same version of [Terraform](https://www.terraform.io/downloads.html) throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
+
+Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
+
+- 0-bootstrap/modules/jenkins-agent/variables.tf
+   ```
+   default     = "1.5.7"
+   ```
+
+- 0-bootstrap/cb.tf
+   ```
+   terraform_version = "1.5.7"
+   ```
+
+- scripts/validate-requirements.sh
+   ```
+   TF_VERSION="1.5.7"
+   ```
+
+- build/github-tf-apply.yaml
+   ```
+   terraform_version: '1.5.7'
+   ```
+
+- github-tf-pull-request.yaml
+
+   ```
+   terraform_version: "1.5.7"
+   ```
+
+- 0-bootstrap/Dockerfile
+   ```
+   ARG TERRAFORM_VERSION=1.5.7
+   ```
 
 Also make sure that you've done the following:
 
@@ -83,6 +130,20 @@ Set the variables in **terraform.tfvars** (`groups` block) to use the specific g
    - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
    - The `roles/billing.admin` role on the billing account.
    - The `roles/resourcemanager.folderCreator` role.
+   - The `roles/securitycenter.admin` role.
+
+     ```bash
+     # example:
+     gcloud organizations add-iam-policy-binding ${ORG_ID}  --member=user:$SUPER_ADMIN_EMAIL --role=roles/securitycenter.admin --quiet > /dev/null 1>&1
+     ```
+1. Enable the following additional services on your current bootstrap project:
+     ```bash
+     gcloud services enable cloudresourcemanager.googleapis.com
+     gcloud services enable cloudbilling.googleapis.com
+     gcloud services enable iam.googleapis.com
+     gcloud services enable cloudkms.googleapis.com
+     gcloud services enable servicenetworking.googleapis.com
+     ```
 
 ### Optional - Automatic creation of Google Cloud Identity groups
 
@@ -105,6 +166,8 @@ See [onprem](./onprem.md) for instructions on how to configure Cloud Build acces
 See [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
 ## Deploying with Jenkins
+
+*Warning: the guidance for deploying with Jenkins is no longer actively tested or maintained. While we have left the guidance available for users who prefer Jenkins, we make no guarantees about its quality, and you might be responsible for troubleshooting and modifying the directions.*
 
 If you are using the `jenkins_bootstrap` sub-module, see [README-Jenkins](./README-Jenkins.md)
 for requirements and instructions on how to run the 0-bootstrap step. Using
@@ -131,7 +194,9 @@ Using Terraform Cloud requires manual creation of the GitHub repositories or Git
 
 ## Deploying with Cloud Build
 
-**Note:** When deploying with cloud build is also possible to use a [script helper](../helpers/foundation-deployer/README.md) to do the deploy.
+*Warning: This method has a dependency on Cloud Source Repositories, which is [no longer available to new customers](https://cloud.google.com/source-repositories/docs). If you have previously used the CSR API in your organization then you can use this method, but a newly created organization will not be able to enable CSR and cannot use this deployment method. In that case, we recommend that you follow the directions for deploying locally, Github, Gitlab, or Terraform Cloud instead.*
+
+The following steps introduce the steps to deploy with Cloud Build Alternatively, use the [helper script](../helpers/foundation-deployer/README.md) to automate all the stages of. Use the helper script when you want to rapidly create and destroy the entire organization for demonstration or testing purposes, without much customization at each stage.
 
 1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and navigate to the `0-bootstrap` folder.
 
@@ -293,8 +358,11 @@ Each step has instructions for this change.
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | bucket\_tfstate\_kms\_force\_destroy | When deleting a bucket, this boolean option will delete the KMS keys used for the Terraform state bucket. | `bool` | `false` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
+| default\_region\_2 | Secondary default region to create resources where applicable. | `string` | `"us-west1"` | no |
+| default\_region\_gcs | Case-Sensitive default region to create gcs resources where applicable. | `string` | `"US"` | no |
+| default\_region\_kms | Secondary default region to create kms resources where applicable. | `string` | `"us"` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
-| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins           = string<br>      group_billing_admins       = string<br>      billing_data_users         = string<br>      audit_data_users           = string<br>      monitoring_workspace_users = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
+| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins     = string<br>      group_billing_admins = string<br>      billing_data_users   = string<br>      audit_data_users     = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
 | initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |

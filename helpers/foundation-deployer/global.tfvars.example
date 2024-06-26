@@ -31,9 +31,12 @@ validator_project_id = "EXISTING_PROJECT_ID"
 // 0-bootstrap inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md#inputs
 
-org_id          = "REPLACE_ME" # format "000000000000"
-billing_account = "REPLACE_ME" # format "000000-000000-000000"
-default_region  = "us-central1"
+org_id             = "REPLACE_ME" # format "000000000000"
+billing_account    = "REPLACE_ME" # format "000000-000000-000000"
+default_region     = "us-central1"
+default_region_2   = "us-west1"
+default_region_gcs = "US"
+default_region_kms = "us"
 
 bucket_force_destroy             = false
 bucket_tfstate_kms_force_destroy = false
@@ -66,7 +69,6 @@ groups = {
     group_billing_admins       = "REPLACE_ME" # "gcp-billing-admins@example.com"
     billing_data_users         = "REPLACE_ME" #"billing_data_users_local_test@example.com"
     audit_data_users           = "REPLACE_ME" #"audit_data_users_local_test@example.com"
-    monitoring_workspace_users = "REPLACE_ME" #"monitoring_workspace_users_local_test@example.com"
   }
   optional_groups = {
     gcp_security_reviewer      = "" #"gcp_security_reviewer_local_test@example.com"
@@ -84,7 +86,6 @@ domains_to_allow                    = ["example.com"] # Must include the domain 
 essential_contacts_domains_to_allow = ["@example.com"]
 
 scc_notification_name                       = "scc-notify"
-cai_monitoring_kms_force_destroy            = false
 audit_logs_table_delete_contents_on_destroy = false
 log_export_storage_force_destroy            = false
 log_export_storage_location                 = "US"
@@ -138,6 +139,8 @@ target_name_server_addresses = [
 
 // 4-projects inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/business_unit_1/production/README.md#inputs
+// Can be used to override the default region set in 0-bootstrap
+// See https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/business_unit_1/production/README.md#outputs
 
-projects_gcs_location = "US"
-projects_kms_location = "us"
+gcs_location = "US"
+kms_location = "us"

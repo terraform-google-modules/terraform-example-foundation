@@ -9,12 +9,13 @@
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
 | gcs\_bucket\_prefix | Name prefix to be used for GCS Bucket | `string` | `"bkt"` | no |
+| gcs\_custom\_placement\_config | Configuration of the bucket's custom location in a dual-region bucket setup. If the bucket is designated a single or multi-region, the variable are null. | <pre>object({<br>    data_locations = list(string)<br>  })</pre> | n/a | yes |
 | key\_name | Name to be used for KMS Key | `string` | `"crypto-key-example"` | no |
 | key\_rotation\_period | Rotation period in seconds to be used for KMS Key | `string` | `"7776000s"` | no |
 | keyring\_name | Name to be used for KMS Keyring | `string` | `"sample-keyring"` | no |
 | kms\_prj\_suffix | Name suffix to use for KMS project created. | `string` | `"kms"` | no |
-| location\_gcs | Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring) | `string` | `"US"` | no |
-| location\_kms | Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket) | `string` | `"us"` | no |
+| location\_gcs | Case-Sensitive Location for GCS Bucket (Should be same region as the KMS Keyring) | `string` | n/a | yes |
+| location\_kms | Case-Sensitive Location for KMS Keyring (Should be same region as the GCS Bucket) | `string` | n/a | yes |
 | optional\_fw\_rules\_enabled | Toggle creation of optional firewall rules: Internal & Global load balancing health check and load balancing IP ranges. | `bool` | `false` | no |
 | peering\_iap\_fw\_rules\_enabled | Toggle creation of optional IAP firewall rules: SSH, RDP. | `bool` | `false` | no |
 | peering\_module\_depends\_on | List of modules or resources peering module depends on. | `list(any)` | `[]` | no |
@@ -35,7 +36,6 @@
 | base\_shared\_vpc\_project\_sa | Project sample base project SA. |
 | base\_subnets\_self\_links | The self-links of subnets from base environment. |
 | bucket | The created storage bucket. |
-| env\_kms\_project | Project sample for KMS usage project ID. |
 | floating\_project | Project sample floating project. |
 | iap\_firewall\_tags | The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project. |
 | keyring | The name of the keyring. |

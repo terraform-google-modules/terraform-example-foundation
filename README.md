@@ -1,13 +1,29 @@
 # terraform-example-foundation
 
-This example repository shows how the CFT Terraform modules can build a secure Google Cloud foundation, following the [Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations).
-The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults that you can customize to meet your own requirements. Currently, the step 0 is manually executed.
-From step 1 onwards, the Terraform code is deployed by using either Google Cloud Build (default) or Jenkins.
-Cloud Build has been chosen by default to allow you to quickly get started without having to deploy a CI/CD tool, although it is worth noting the code can easily be executed by your preferred tool.
+This example repository shows how the CFT Terraform modules can build a secure Google Cloud foundation, following the [Google Cloud Enterprise Foundations Blueprint](https://cloud.google.com/architecture/security-foundations) (previously called the _Security Foundations Guide_).
+The supplied structure and code is intended to form a starting point for building your own foundation with pragmatic defaults that you can customize to meet your own requirements.
+
+The intended audience of this blueprint is large enterprise organizations with a dedicated platform team responsible for deploying and maintaining their GCP environment, who is commited to separation of duties across multiple teams and managing their environment solely through version-controlled Infrastructure as Code. Smaller organizations looking for a turnkey solution might prefer other options such as [Google Cloud Setup](https://console.cloud.google.com/cloud-setup/overview)
+
+## Intended usage and support
+
+This repository is intended as an example to be forked, tweaked, and maintained in the user's own version-control system; the modules within this repository are not intended for use as remote references.
+Though this blueprint can help accelerate your foundation design and build, we assume that you have the engineering skills and teams to deploy and customize your own foundation based on your own requirements.
+
+We will support:
+ - Code is semantically valid, pinned to known good versions, and passes terraform validate and lint checks
+ - All PR to this repo must pass integration tests to deploy all resources into a test environment before being merged
+ - Feature requests about ease of use of the code, or feature requests that generally apply to all users, are welcome
+
+We will not support:
+ - In-place upgrades from a foundation deployed with an earlier version to a more recent version, even for minor version changes, might not be feasible. Repository maintainers do not have visibility to what resources a user deploys on top of their foundation or how the foundation was customized in deployment, so we make no guarantee about avoiding breaking changes.
+ - Feature requests that are specific to a single user's requirement and not representative of general best practices
 
 ## Overview
 
 This repo contains several distinct Terraform projects, each within their own directory that must be applied separately, but in sequence.
+Stage `0-bootstrap` is manually executed, and subsequent stages are executed using your preferred CI/CD tool.
+
 Each of these Terraform projects are to be layered on top of each other, and run in the following order.
 
 ### [0. bootstrap](./0-bootstrap/)
@@ -64,15 +80,15 @@ This will create the following folder and project structure:
 example-organization
 └── fldr-common
     ├── prj-c-logging
-    ├── prj-c-billing-logs
+    ├── prj-c-billing-export
     ├── prj-c-scc
     ├── prj-c-kms
     └── prj-c-secrets
 └── fldr-network
-    ├── prj-c-base-net-hub
-    ├── prj-c-dns-hub
-    ├── prj-c-interconnect
-    ├── prj-c-restricted-net-hub
+    ├── prj-net-hub-base
+    ├── prj-net-hub-restricted
+    ├── prj-net-dns
+    ├── prj-net-interconnect
     ├── prj-d-shared-base
     ├── prj-d-shared-restricted
     ├── prj-n-shared-base
@@ -83,9 +99,9 @@ example-organization
 
 #### Logs
 
-Among the four projects created under the common folder, two projects (`prj-c-logging`, `prj-c-billing-logs`) are used for logging.
-The first one is for organization-wide audit logs, and the second one is for billing logs.
-In both cases, the logs are collected into BigQuery datasets which you can then use for general querying, dashboarding, and reporting. Logs are also exported to Pub/Sub, a Cloud Storage bucket, and a log bucket.
+Under the common folder, a project `prj-c-logging` is used as the destination for organization wide sinks. This includes admin activity audit logs from all projects in your organization and the billing account.
+
+Logs are collected into a logging bucket with a linked BigQuery dataset, which can be used for ad-hoc log investigations, querying, or reporting. Log sinks can also be configured to export to Pub/Sub for exporting to external systems or Cloud Storage for long-term storage.
 
 **Notes**:
 
@@ -126,30 +142,21 @@ This stage only creates the projects and enables the correct APIs, the following
 
 ### [2. environments](./2-environments/)
 
-The purpose of this stage is to set up the environments folders used for projects that contain monitoring and secrets projects.
+The purpose of this stage is to set up the environments folders that contain shared projects for each environemnt.
 This will create the following folder and project structure:
 
 ```
 example-organization
 └── fldr-development
-    ├── prj-d-monitoring
-    ├── prj-p-kms
+    ├── prj-d-kms
     └── prj-d-secrets
 └── fldr-nonproduction
-    ├── prj-n-monitoring
     ├── prj-n-kms
     └── prj-n-secrets
 └── fldr-production
-    ├── prj-p-monitoring
     ├── prj-p-kms
     └── prj-p-secrets
 ```
-
-#### Monitoring
-
-Under the environment folder, a project is created per environment (`development`, `nonproduction`, and `production`), which is intended to be used as a [Cloud Monitoring workspace](https://cloud.google.com/monitoring/workspaces) for all projects in that environment.
-Please note that creating the [workspace and linking projects](https://cloud.google.com/monitoring/workspaces/create) can currently only be completed through the Cloud Console.
-If you have strong IAM requirements for these monitoring workspaces, it is worth considering creating these at a more granular level, such as per business unit or per application.
 
 #### KMS
 
@@ -195,39 +202,33 @@ Running this code as-is should generate a structure as shown below:
 example-organization/
 └── fldr-development
     └── fldr-development-bu1
-        ├── prj-d-bu1-kms
         ├── prj-d-bu1-sample-floating
         ├── prj-d-bu1-sample-base
         ├── prj-d-bu1-sample-restrict
         ├── prj-d-bu1-sample-peering
     └── fldr-development-bu2
-        ├── prj-d-bu2-kms
         ├── prj-d-bu2-sample-floating
         ├── prj-d-bu2-sample-base
         ├── prj-d-bu2-sample-restrict
         └── prj-d-bu2-sample-peering
 └── fldr-nonproduction
     └── fldr-nonproduction-bu1
-        ├── prj-n-bu1-kms
         ├── prj-n-bu1-sample-floating
         ├── prj-n-bu1-sample-base
         ├── prj-n-bu1-sample-restrict
         ├── prj-n-bu1-sample-peering
     └── fldr-nonproduction-bu2
-        ├── prj-n-bu2-kms
         ├── prj-n-bu2-sample-floating
         ├── prj-n-bu2-sample-base
         ├── prj-n-bu2-sample-restrict
         └── prj-n-bu2-sample-peering
 └── fldr-production
     └── fldr-production-bu1
-        ├── prj-p-bu1-kms
         ├── prj-p-bu1-sample-floating
         ├── prj-p-bu1-sample-base
         ├── prj-p-bu1-sample-restrict
         ├── prj-p-bu1-sample-peering
     └── fldr-production-bu2
-        ├── prj-p-bu2-kms
         ├── prj-p-bu2-sample-floating
         ├── prj-p-bu2-sample-base
         ├── prj-p-bu2-sample-restrict
@@ -257,17 +258,17 @@ After all steps above have been executed, your Google Cloud organization should 
 example-organization
 └── fldr-common
     ├── prj-c-logging
-    ├── prj-c-billing-logs
+    ├── prj-c-billing-export
     ├── prj-c-scc
     ├── prj-c-kms
     ├── prj-c-secrets
     ├── prj-c-bu1-infra-pipeline
     └── prj-c-bu2-infra-pipeline
 └── fldr-network
-    ├── prj-c-base-net-hub
-    ├── prj-c-dns-hub
-    ├── prj-c-interconnect
-    ├── prj-c-restricted-net-hub
+    ├── prj-net-hub-base
+    ├── prj-net-hub-restricted
+    ├── prj-net-dns
+    ├── prj-net-interconnect
     ├── prj-d-shared-base
     ├── prj-d-shared-restricted
     ├── prj-n-shared-base
@@ -275,55 +276,46 @@ example-organization
     ├── prj-p-shared-base
     └── prj-p-shared-restricted
 └── fldr-development
-    ├── prj-d-monitoring
     ├── prj-d-kms
     └── prj-d-secrets
     └── fldr-development-bu1
-        ├── prj-d-bu1-kms
+
         ├── prj-d-bu1-sample-floating
         ├── prj-d-bu1-sample-base
         ├── prj-d-bu1-sample-restrict
         ├── prj-d-bu1-sample-peering
     └── fldr-development-bu2
-        ├── prj-d-bu2-kms
-        ├── prj-d-bu2-sample-floating
-        ├── prj-d-bu2-sample-base
-        ├── prj-d-bu2-sample-restrict
-        └── prj-d-bu2-sample-peering
-    └── fldr-development-bu2
-        ├── prj-d-bu2-kms
+
         ├── prj-d-bu2-sample-floating
         ├── prj-d-bu2-sample-base
         ├── prj-d-bu2-sample-restrict
         └── prj-d-bu2-sample-peering
 └── fldr-nonproduction
-    ├── prj-n-monitoring
     ├── prj-n-kms
     └── prj-n-secrets
     └── fldr-nonproduction-bu1
-        ├── prj-n-bu1-kms
+
         ├── prj-n-bu1-sample-floating
         ├── prj-n-bu1-sample-base
         ├── prj-n-bu1-sample-restrict
         ├── prj-n-bu1-sample-peering
     └── fldr-nonproduction-bu2
-        ├── prj-n-bu2-kms
+
         ├── prj-n-bu2-sample-floating
         ├── prj-n-bu2-sample-base
         ├── prj-n-bu2-sample-restrict
         └── prj-n-bu2-sample-peering
 └── fldr-production
-    ├── prj-p-monitoring
     ├── prj-p-kms
     └── prj-p-secrets
     └── fldr-production-bu1
-        ├── prj-p-bu1-kms
+
         ├── prj-p-bu1-sample-floating
         ├── prj-p-bu1-sample-base
         ├── prj-p-bu1-sample-restrict
         ├── prj-p-bu1-sample-peering
     └── fldr-production-bu2
-        ├── prj-p-bu2-kms
+
         ├── prj-p-bu2-sample-floating
         ├── prj-p-bu2-sample-base
         ├── prj-p-bu2-sample-restrict

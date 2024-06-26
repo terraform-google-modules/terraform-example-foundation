@@ -17,15 +17,21 @@
 module "env" {
   source = "../../modules/base_env"
 
-  env                          = "production"
-  business_code                = "bu1"
-  business_unit                = "business_unit_1"
-  remote_state_bucket          = var.remote_state_bucket
-  location_kms                 = var.location_kms
-  location_gcs                 = var.location_gcs
+  env                 = "production"
+  business_code       = "bu1"
+  business_unit       = "business_unit_1"
+  remote_state_bucket = var.remote_state_bucket
+  location_kms        = coalesce(var.location_kms, local.default_region_kms)
+  location_gcs        = coalesce(var.location_gcs, local.default_region_gcs)
+  gcs_custom_placement_config = {
+    data_locations = [
+      upper(local.default_region),
+      upper(local.default_region_2),
+    ]
+  }
   tfc_org_name                 = var.tfc_org_name
   peering_module_depends_on    = var.peering_module_depends_on
   peering_iap_fw_rules_enabled = true
-  subnet_region                = var.instance_region
+  subnet_region                = coalesce(var.instance_region, local.default_region)
   subnet_ip_range              = "10.3.192.0/21"
 }

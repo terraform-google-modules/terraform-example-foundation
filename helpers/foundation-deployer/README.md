@@ -6,15 +6,51 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 
 ## Requirements
 
-- [Go](https://go.dev/doc/install) 1.18+
-- [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0+
-- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0+
-- [Terraform](https://www.terraform.io/downloads.html) version 1.3.0+
+- [Go](https://go.dev/doc/install) 1.22 or later
+- [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
+- [Terraform](https://www.terraform.io/downloads.html) version 1.5.7 or later
 - See `0-bootstrap` README for additional IAM [requirements](../../0-bootstrap/README.md#prerequisites) on the user deploying the Foundation.
+
+Your environment need to use the same [Terraform](https://www.terraform.io/downloads.html) version used on the build pipeline.
+Otherwise, you might experience Terraform state snapshot lock errors.
+
+Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
+
+- 0-bootstrap/modules/jenkins-agent/variables.tf
+   ```
+   default     = "1.5.7"
+   ```
+
+- 0-bootstrap/cb.tf
+   ```
+   terraform_version = "1.5.7"
+   ```
+
+- scripts/validate-requirements.sh
+   ```
+   TF_VERSION="1.5.7"
+   ```
+
+- build/github-tf-apply.yaml
+   ```
+   terraform_version: '1.5.7'
+   ```
+
+- github-tf-pull-request.yaml
+
+   ```
+   terraform_version: "1.5.7"
+   ```
+
+- 0-bootstrap/Dockerfile
+   ```
+   ARG TERRAFORM_VERSION=1.5.7
+   ```
 
 ### Validate required tools
 
-- Check if required tools, Go 1.18+, Terraform 1.3.0+, gcloud 393.0.0+, and Git 2.28.0+, are installed:
+- Check if required tools, Go 1.22.0+, Terraform 1.5.7+, gcloud 393.0.0+, and Git 2.28.0+, are installed:
 
     ```bash
     go version

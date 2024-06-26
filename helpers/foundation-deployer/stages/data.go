@@ -96,11 +96,10 @@ type ServerAddress struct {
 }
 
 type RequiredGroups struct {
-	GroupOrgAdmins           string `cty:"group_org_admins"`
-	GroupBillingAdmins       string `cty:"group_billing_admins"`
-	BillingDataUsers         string `cty:"billing_data_users"`
-	AuditDataUsers           string `cty:"audit_data_users"`
-	MonitoringWorkspaceUsers string `cty:"monitoring_workspace_users"`
+	GroupOrgAdmins     string `cty:"group_org_admins"`
+	GroupBillingAdmins string `cty:"group_billing_admins"`
+	BillingDataUsers   string `cty:"billing_data_users"`
+	AuditDataUsers     string `cty:"audit_data_users"`
 }
 
 type OptionalGroups struct {
@@ -132,6 +131,9 @@ type GlobalTFVars struct {
 	OrgID                                 string          `hcl:"org_id"`
 	BillingAccount                        string          `hcl:"billing_account"`
 	DefaultRegion                         string          `hcl:"default_region"`
+	DefaultRegion2                        string          `hcl:"default_region_2"`
+	DefaultRegionGCS                      string          `hcl:"default_region_gcs"`
+	DefaultRegionKMS                      string          `hcl:"default_region_kms"`
 	ParentFolder                          *string         `hcl:"parent_folder"`
 	Domain                                string          `hcl:"domain"`
 	DomainsToAllow                        []string        `hcl:"domains_to_allow"`
@@ -141,7 +143,6 @@ type GlobalTFVars struct {
 	SccNotificationName                   string          `hcl:"scc_notification_name"`
 	ProjectPrefix                         *string         `hcl:"project_prefix"`
 	FolderPrefix                          *string         `hcl:"folder_prefix"`
-	CaiMonitoringKmsForceDestroy          *bool           `hcl:"cai_monitoring_kms_force_destroy"`
 	BucketForceDestroy                    *bool           `hcl:"bucket_force_destroy"`
 	BucketTfstateKmsForceDestroy          *bool           `hcl:"bucket_tfstate_kms_force_destroy"`
 	AuditLogsTableDeleteContentsOnDestroy *bool           `hcl:"audit_logs_table_delete_contents_on_destroy"`
@@ -194,6 +195,9 @@ type BootstrapTfvars struct {
 	OrgID                        string  `hcl:"org_id"`
 	BillingAccount               string  `hcl:"billing_account"`
 	DefaultRegion                string  `hcl:"default_region"`
+	DefaultRegion2               string  `hcl:"default_region_2"`
+	DefaultRegionGCS             string  `hcl:"default_region_gcs"`
+	DefaultRegionKMS             string  `hcl:"default_region_kms"`
 	ParentFolder                 *string `hcl:"parent_folder"`
 	ProjectPrefix                *string `hcl:"project_prefix"`
 	FolderPrefix                 *string `hcl:"folder_prefix"`
@@ -211,7 +215,6 @@ type OrgTfvars struct {
 	EnableHubAndSpoke                     bool      `hcl:"enable_hub_and_spoke"`
 	CreateACMAPolicy                      bool      `hcl:"create_access_context_manager_access_policy"`
 	CreateUniqueTagKey                    bool      `hcl:"create_unique_tag_key"`
-	CaiMonitoringKmsForceDestroy          *bool     `hcl:"cai_monitoring_kms_force_destroy"`
 	AuditLogsTableDeleteContentsOnDestroy *bool     `hcl:"audit_logs_table_delete_contents_on_destroy"`
 	LogExportStorageForceDestroy          *bool     `hcl:"log_export_storage_force_destroy"`
 	LogExportStorageLocation              string    `hcl:"log_export_storage_location"`

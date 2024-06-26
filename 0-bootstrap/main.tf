@@ -41,7 +41,7 @@ resource "google_folder" "bootstrap" {
 
 module "seed_bootstrap" {
   source  = "terraform-google-modules/bootstrap/google"
-  version = "~> 7.0"
+  version = "~> 8.0"
 
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
@@ -98,5 +98,7 @@ module "seed_bootstrap" {
   ]
 
   sa_org_iam_permissions = []
+
+  depends_on = [module.required_group]
 }
 

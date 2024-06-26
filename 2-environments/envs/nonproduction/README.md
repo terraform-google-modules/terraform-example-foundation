@@ -13,6 +13,5 @@
 | env\_folder | Environment folder created under parent. |
 | env\_kms\_project\_id | Project for environment Cloud Key Management Service (KMS). |
 | env\_secrets\_project\_id | Project for environment related secrets. |
-| monitoring\_project\_id | Project for monitoring infra. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -49,9 +49,9 @@ output "org_audit_logs_project_id" {
   description = "The org audit logs project ID."
 }
 
-output "org_billing_logs_project_id" {
-  value       = module.org_billing_logs.project_id
-  description = "The org billing logs project ID"
+output "org_billing_export_project_id" {
+  value       = module.org_billing_export.project_id
+  description = "The org billing export project ID"
 }
 
 output "org_secrets_project_id" {
@@ -59,8 +59,8 @@ output "org_secrets_project_id" {
   description = "The org secrets project ID"
 }
 
-output "org_kms_project_id" {
-  value       = module.org_kms.project_id
+output "common_kms_project_id" {
+  value       = module.common_kms.project_id
   description = "The org Cloud Key Management Service (KMS) project ID"
 }
 

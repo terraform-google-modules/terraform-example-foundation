@@ -14,27 +14,6 @@
  * limitations under the License.
  */
 
-module "env_kms_project" {
-  source = "../single_project"
-
-  org_id          = local.org_id
-  billing_account = local.billing_account
-  folder_id       = google_folder.env_business_unit.name
-  environment     = var.env
-  project_budget  = var.project_budget
-  project_suffix  = var.kms_prj_suffix
-  project_prefix  = local.project_prefix
-
-  activate_apis = ["logging.googleapis.com", "secretmanager.googleapis.com", "cloudkms.googleapis.com"]
-
-  # Metadata
-  application_name  = "${var.business_code}-sample-application"
-  billing_code      = "1234"
-  primary_contact   = "example@example.com"
-  secondary_contact = "example2@example.com"
-  business_code     = var.business_code
-}
-
 data "google_storage_project_service_account" "gcs_account" {
   project = module.base_shared_vpc_project.project_id
 }
@@ -43,7 +22,7 @@ module "kms" {
   source  = "terraform-google-modules/kms/google"
   version = "~> 2.1"
 
-  project_id          = module.env_kms_project.project_id
+  project_id          = local.kms_project_id
   keyring             = var.keyring_name
   location            = var.location_kms
   keys                = [var.key_name]
@@ -65,12 +44,13 @@ resource "random_string" "bucket_name" {
 
 module "gcs_buckets" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
-  project_id         = module.base_shared_vpc_project.project_id
-  location           = var.location_gcs
-  name               = "${var.gcs_bucket_prefix}-${module.base_shared_vpc_project.project_id}-${lower(var.location_gcs)}-cmek-encrypted-${random_string.bucket_name.result}"
-  bucket_policy_only = true
+  project_id              = module.base_shared_vpc_project.project_id
+  location                = var.location_gcs
+  name                    = "${var.gcs_bucket_prefix}-${module.base_shared_vpc_project.project_id}-${lower(var.location_gcs)}-cmek-encrypted-${random_string.bucket_name.result}"
+  bucket_policy_only      = true
+  custom_placement_config = var.gcs_custom_placement_config
 
   encryption = {
     default_kms_key_name = module.kms.keys[var.key_name]

@@ -201,7 +201,6 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		EnableHubAndSpoke:                     tfvars.EnableHubAndSpoke,
 		CreateACMAPolicy:                      createACMAPolicy,
 		CreateUniqueTagKey:                    tfvars.CreateUniqueTagKey,
-		CaiMonitoringKmsForceDestroy:          tfvars.CaiMonitoringKmsForceDestroy,
 		AuditLogsTableDeleteContentsOnDestroy: tfvars.AuditLogsTableDeleteContentsOnDestroy,
 		LogExportStorageForceDestroy:          tfvars.LogExportStorageForceDestroy,
 		LogExportStorageLocation:              tfvars.LogExportStorageLocation,

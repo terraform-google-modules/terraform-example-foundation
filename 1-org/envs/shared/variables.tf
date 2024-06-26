@@ -133,10 +133,10 @@ variable "project_budget" {
     org_audit_logs_alert_spent_percents         = optional(list(number), [1.2])
     org_audit_logs_alert_pubsub_topic           = optional(string, null)
     org_audit_logs_budget_alert_spend_basis     = optional(string, "FORECASTED_SPEND")
-    org_kms_budget_amount                       = optional(number, 1000)
-    org_kms_alert_spent_percents                = optional(list(number), [1.2])
-    org_kms_alert_pubsub_topic                  = optional(string, null)
-    org_kms_budget_alert_spend_basis            = optional(string, "FORECASTED_SPEND")
+    common_kms_budget_amount                    = optional(number, 1000)
+    common_kms_alert_spent_percents             = optional(list(number), [1.2])
+    common_kms_alert_pubsub_topic               = optional(string, null)
+    common_kms_budget_alert_spend_basis         = optional(string, "FORECASTED_SPEND")
     scc_notifications_budget_amount             = optional(number, 1000)
     scc_notifications_alert_spent_percents      = optional(list(number), [1.2])
     scc_notifications_alert_pubsub_topic        = optional(string, null)
@@ -184,11 +184,6 @@ variable "essential_contacts_domains_to_allow" {
 
 variable "create_unique_tag_key" {
   description = "Creates unique organization-wide tag keys by adding a random suffix to each key."
-  type        = bool
-  default     = false
-}
-variable "cai_monitoring_kms_force_destroy" {
-  description = "If set to true, delete KMS keyring and keys when destroying the module; otherwise, destroying the module will fail if KMS keys are present."
   type        = bool
   default     = false
 }

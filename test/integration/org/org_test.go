@@ -41,7 +41,6 @@ func TestOrg(t *testing.T) {
 	vars := map[string]interface{}{
 		"remote_state_bucket":              backend_bucket,
 		"log_export_storage_force_destroy": "true",
-		"cai_monitoring_kms_force_destroy": "true",
 	}
 
 	backendConfig := map[string]interface{}{
@@ -301,7 +300,6 @@ func TestOrg(t *testing.T) {
 			caiTopic := org.GetStringOutput("cai_monitoring_topic")
 
 			caiSaEmail := fmt.Sprintf("cai-monitoring@%s.iam.gserviceaccount.com", sccProjectID)
-			caiKmsKey := fmt.Sprintf("projects/%s/locations/%s/keyRings/krg-cai-monitoring/cryptoKeys/key-cai-monitoring", sccProjectID, defaultRegion)
 			caiTopicFullName := fmt.Sprintf("projects/%s/topics/%s", sccProjectID, caiTopic)
 
 			// Cloud Function
@@ -313,12 +311,10 @@ func TestOrg(t *testing.T) {
 			// Cloud Function Storage Bucket
 			bktArgs := gcloud.WithCommonArgs([]string{"--project", sccProjectID, "--json"})
 			opSrcBucket := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", caiBucket), bktArgs).Array()
-			assert.Equal(caiKmsKey, opSrcBucket[0].Get("metadata.encryption.defaultKmsKeyName").String(), fmt.Sprintf("Should have same KMS key: %s", caiKmsKey))
 			assert.Equal("true", opSrcBucket[0].Get("metadata.iamConfiguration.bucketPolicyOnly.enabled").String(), "Should have Bucket Policy Only enabled.")
 
 			// Cloud Function Artifact Registry
 			opAR := gcloud.Runf(t, "artifacts repositories describe %s --project %s --location %s", caiAr, sccProjectID, defaultRegion)
-			assert.Equal(caiKmsKey, opAR.Get("kmsKeyName").String(), fmt.Sprintf("Should have KMS Key: %s", caiKmsKey))
 			assert.Equal("DOCKER", opAR.Get("format").String(), "Should have type: DOCKER")
 
 			// Cloud Function Pub/Sub
@@ -417,7 +413,7 @@ func TestOrg(t *testing.T) {
 					},
 				},
 				{
-					output: "org_kms_project_id",
+					output: "common_kms_project_id",
 					apis: []string{
 						"logging.googleapis.com",
 						"cloudkms.googleapis.com",

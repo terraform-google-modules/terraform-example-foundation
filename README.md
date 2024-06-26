@@ -148,7 +148,7 @@ This will create the following folder and project structure:
 ```
 example-organization
 └── fldr-development
-    ├── prj-p-kms
+    ├── prj-d-kms
     └── prj-d-secrets
 └── fldr-nonproduction
     ├── prj-n-kms
@@ -202,39 +202,33 @@ Running this code as-is should generate a structure as shown below:
 example-organization/
 └── fldr-development
     └── fldr-development-bu1
-        ├── prj-d-bu1-kms
         ├── prj-d-bu1-sample-floating
         ├── prj-d-bu1-sample-base
         ├── prj-d-bu1-sample-restrict
         ├── prj-d-bu1-sample-peering
     └── fldr-development-bu2
-        ├── prj-d-bu2-kms
         ├── prj-d-bu2-sample-floating
         ├── prj-d-bu2-sample-base
         ├── prj-d-bu2-sample-restrict
         └── prj-d-bu2-sample-peering
 └── fldr-nonproduction
     └── fldr-nonproduction-bu1
-        ├── prj-n-bu1-kms
         ├── prj-n-bu1-sample-floating
         ├── prj-n-bu1-sample-base
         ├── prj-n-bu1-sample-restrict
         ├── prj-n-bu1-sample-peering
     └── fldr-nonproduction-bu2
-        ├── prj-n-bu2-kms
         ├── prj-n-bu2-sample-floating
         ├── prj-n-bu2-sample-base
         ├── prj-n-bu2-sample-restrict
         └── prj-n-bu2-sample-peering
 └── fldr-production
     └── fldr-production-bu1
-        ├── prj-p-bu1-kms
         ├── prj-p-bu1-sample-floating
         ├── prj-p-bu1-sample-base
         ├── prj-p-bu1-sample-restrict
         ├── prj-p-bu1-sample-peering
     └── fldr-production-bu2
-        ├── prj-p-bu2-kms
         ├── prj-p-bu2-sample-floating
         ├── prj-p-bu2-sample-base
         ├── prj-p-bu2-sample-restrict
@@ -285,13 +279,13 @@ example-organization
     ├── prj-d-kms
     └── prj-d-secrets
     └── fldr-development-bu1
-        ├── prj-d-bu1-kms
+
         ├── prj-d-bu1-sample-floating
         ├── prj-d-bu1-sample-base
         ├── prj-d-bu1-sample-restrict
         ├── prj-d-bu1-sample-peering
     └── fldr-development-bu2
-        ├── prj-d-bu2-kms
+
         ├── prj-d-bu2-sample-floating
         ├── prj-d-bu2-sample-base
         ├── prj-d-bu2-sample-restrict
@@ -300,13 +294,13 @@ example-organization
     ├── prj-n-kms
     └── prj-n-secrets
     └── fldr-nonproduction-bu1
-        ├── prj-n-bu1-kms
+
         ├── prj-n-bu1-sample-floating
         ├── prj-n-bu1-sample-base
         ├── prj-n-bu1-sample-restrict
         ├── prj-n-bu1-sample-peering
     └── fldr-nonproduction-bu2
-        ├── prj-n-bu2-kms
+
         ├── prj-n-bu2-sample-floating
         ├── prj-n-bu2-sample-base
         ├── prj-n-bu2-sample-restrict
@@ -315,13 +309,13 @@ example-organization
     ├── prj-p-kms
     └── prj-p-secrets
     └── fldr-production-bu1
-        ├── prj-p-bu1-kms
+
         ├── prj-p-bu1-sample-floating
         ├── prj-p-bu1-sample-base
         ├── prj-p-bu1-sample-restrict
         ├── prj-p-bu1-sample-peering
     └── fldr-production-bu2
-        ├── prj-p-bu2-kms
+
         ├── prj-p-bu2-sample-floating
         ├── prj-p-bu2-sample-base
         ├── prj-p-bu2-sample-restrict

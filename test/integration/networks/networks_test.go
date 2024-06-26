@@ -358,7 +358,7 @@ func TestNetworks(t *testing.T) {
 					listLevels := utils.GetResultStrSlice(servicePerimeter.Get("status.accessLevels").Array())
 					assert.Contains(listLevels, accessLevel, fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
 					listServices := utils.GetResultStrSlice(servicePerimeter.Get("status.restrictedServices").Array())
-					assert.Subset(listServices, restrictedServices, fmt.Sprintf("service perimeter %s should restrict all supported services", servicePerimeterLink))
+					assert.Containsf(t, listServices, restrictedServices, fmt.Sprintf("service perimeter %s should restrict all supported services", servicePerimeterLink))
 
 					listIngressPolicies := servicePerimeter.Get("status.ingressPolicies").Array()
 					assert.Equal(len(listIngressPolicies), len(ingressPolicies), fmt.Sprintf("service perimeter %s should have the same number of input ingress policies (%d)", servicePerimeterLink, len(ingressPolicies)))

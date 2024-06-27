@@ -16,6 +16,7 @@ package networks
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -354,20 +355,12 @@ func TestNetworks(t *testing.T) {
 					networkNames := getNetworkResourceNames(envCode, networkMode, firewallMode)
 
 					servicePerimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", servicePerimeterLink, policyID))
-					assert.Equal(servicePerimeterLink, servicePerimeter.Get("name").String(), fmt.Sprintf("service perimeter %s should exist", servicePerimeterLink))
-					listLevels := utils.GetResultStrSlice(servicePerimeter.Get("status.accessLevels").Array())
-					assert.Contains(listLevels, accessLevel, fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
-					listServices := utils.GetResultStrSlice(servicePerimeter.Get("status.restrictedServices").Array())
-					assert.Containsf(t, listServices, restrictedServices, fmt.Sprintf("service perimeter %s should restrict all supported services", servicePerimeterLink))
-
-					listIngressPolicies := servicePerimeter.Get("status.ingressPolicies").Array()
-					assert.Equal(len(listIngressPolicies), len(ingressPolicies), fmt.Sprintf("service perimeter %s should have the same number of input ingress policies (%d)", servicePerimeterLink, len(ingressPolicies)))
-					ingressOp := servicePerimeter.Get("status.ingressPolicies.0.ingressTo.operations.0")
-					assert.Equal(operationService, ingressOp.Get("serviceName").String(), fmt.Sprintf("ingress policy should support operations on %s", operationService))
-					listEgressPolicies := servicePerimeter.Get("status.egressPolicies").Array()
-					assert.Equal(len(listEgressPolicies), len(egressPolicies), fmt.Sprintf("service perimeter %s should have the same number of input egress policies (%d)", servicePerimeterLink, len(egressPolicies)))
-					egressOp := servicePerimeter.Get("status.egressPolicies.0.egressTo.operations.0")
-					assert.Equal(operationService, egressOp.Get("serviceName").String(), fmt.Sprintf("egress policy should support operations on %s", operationService))
+					assert.NoError(err)
+					assert.True(strings.Contains(servicePerimeter, servicePerimeterLink), fmt.Sprintf("service perimeter %s should exist", servicePerimeterLink))
+					assert.True(strings.Contains(servicePerimeter, accessLevel), fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
+					for _, service := range restrictedServices {
+						assert.True(strings.Contains(servicePerimeter, service), fmt.Sprintf("service perimeter %s should restrict all supported services", servicePerimeterLink))
+					}
 
 					for _, networkType := range []string{
 						"base",

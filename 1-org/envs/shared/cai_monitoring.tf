@@ -17,8 +17,9 @@
 module "cai_monitoring" {
   source = "../../modules/cai-monitoring"
 
-  org_id          = local.org_id
-  billing_account = local.billing_account
-  project_id      = module.scc_notifications.project_id
-  location        = local.default_region
+  org_id                = local.org_id
+  billing_account       = local.billing_account
+  project_id            = module.scc_notifications.project_id
+  location              = local.default_region
+  build_service_account = local.organization_step_terraform_service_account_email
 }

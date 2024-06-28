@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-module "cai_monitoring" {
-  source = "../../modules/cai-monitoring"
-
-  org_id                = local.org_id
-  billing_account       = local.billing_account
-  project_id            = module.scc_notifications.project_id
-  location              = local.default_region
-  build_service_account = "projects/${module.scc_notifications.project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder}"
+resource "google_service_account" "cai_monitoring_builder" {
+  project                      = module.scc_notifications.project_id
+  account_id                   = "cai-monitoring-functions-builder"
+  description                  = "Cloud Functions v2 has an underlying dependency on Cloud Build and other services. This service account allows Cloud Build to provision the necessary resources for Cloud Functions."
+  create_ignore_already_exists = true
 }

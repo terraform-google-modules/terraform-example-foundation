@@ -72,9 +72,6 @@ locals {
     ],
     "org" = [
       "roles/resourcemanager.folderAdmin",
-      "roles/logging.logWriter",
-      "roles/storage.objectViewer",
-      "roles/artifactregistry.writer",
     ],
     "env" = [
       "roles/resourcemanager.folderAdmin"

@@ -197,5 +197,5 @@ resource "google_project_iam_member" "cai_monitoring_builder" {
     "roles/artifactregistry.writer",
   ])
   role   = each.key
-  member = "serviceAccount:${google_service_account.cai_monitoring_builder}"
+  member = "serviceAccount:${google_service_account.cai_monitoring_builder.email}"
 }

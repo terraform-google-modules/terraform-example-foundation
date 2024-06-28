@@ -95,10 +95,10 @@ module "org_billing_export" {
 }
 
 /******************************************
-  Project for Org-wide KMS
+  Project for Common-folder KMS
 *****************************************/
 
-module "org_kms" {
+module "common_kms" {
   source  = "terraform-google-modules/project-factory/google"
   version = "~> 15.0"
 
@@ -122,10 +122,10 @@ module "org_kms" {
     vpc               = "none"
   }
 
-  budget_alert_pubsub_topic   = var.project_budget.org_kms_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.org_kms_alert_spent_percents
-  budget_amount               = var.project_budget.org_kms_budget_amount
-  budget_alert_spend_basis    = var.project_budget.org_kms_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = var.project_budget.common_kms_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.common_kms_alert_spent_percents
+  budget_amount               = var.project_budget.common_kms_budget_amount
+  budget_alert_spend_basis    = var.project_budget.common_kms_budget_alert_spend_basis
 }
 
 /******************************************

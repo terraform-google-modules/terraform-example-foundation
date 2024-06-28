@@ -30,6 +30,7 @@ locals {
   env_folder_name                     = data.terraform_remote_state.environments_env.outputs.env_folder
   app_infra_pipeline_service_accounts = data.terraform_remote_state.business_unit_shared.outputs.terraform_service_accounts
   enable_cloudbuild_deploy            = data.terraform_remote_state.business_unit_shared.outputs.enable_cloudbuild_deploy
+  kms_project_id                      = data.terraform_remote_state.environments_env.outputs.env_kms_project_id
 }
 
 data "terraform_remote_state" "bootstrap" {

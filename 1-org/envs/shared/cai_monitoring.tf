@@ -21,5 +21,6 @@ module "cai_monitoring" {
   billing_account       = local.billing_account
   project_id            = module.scc_notifications.project_id
   location              = local.default_region
-  build_service_account = local.organization_step_terraform_service_account_email
+  build_service_account = local.org_step_terraform_service_account_email
+  build_service_account = "projects/${local.seed_project_id}/serviceAccounts/${local.organization_step_terraform_service_account_email}"
 }

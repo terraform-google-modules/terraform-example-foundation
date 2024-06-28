@@ -70,3 +70,10 @@ variable "random_suffix" {
   type        = bool
   default     = true
 }
+
+variable "build_service_account" {
+  description = "Cloud Function Build Service Account Id. This is The fully-qualified name of the service account to be used for building the container."
+  type        = string
+}
+
+

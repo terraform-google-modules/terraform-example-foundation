@@ -23,6 +23,7 @@ module "secure_cai_notification" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| build\_service\_account | Cloud Function Build Service Account Id. This is The fully-qualified name of the service account to be used for building the container. | `string` | n/a | yes |
 | enable\_cmek | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `bool` | `false` | no |
 | encryption\_key | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `string` | `null` | no |
 | labels | Labels to be assigned to resources. | `map(any)` | `{}` | no |

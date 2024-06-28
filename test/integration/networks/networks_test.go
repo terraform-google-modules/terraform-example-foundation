@@ -263,8 +263,6 @@ func TestNetworks(t *testing.T) {
 		},
 	}
 
-	operationService := "storage.googleapis.com"
-
 	ingressPolicies := []map[string]interface{}{
 		{
 			"from": map[string]interface{}{

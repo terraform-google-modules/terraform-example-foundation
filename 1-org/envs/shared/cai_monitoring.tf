@@ -21,5 +21,5 @@ module "cai_monitoring" {
   billing_account       = local.billing_account
   project_id            = module.scc_notifications.project_id
   location              = local.default_region
-  build_service_account = "projects/${module.scc_notifications.project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder}"
+  build_service_account = "projects/${module.scc_notifications.project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder.email}"
 }

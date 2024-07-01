@@ -163,6 +163,7 @@ module "cloud_function" {
     runtime_env_variables = {
       ROLES     = join(",", var.roles_to_monitor)
       SOURCE_ID = google_scc_source.cai_monitoring.id
+      LOG_EXECUTION_ID = "true"
     }
   }
 

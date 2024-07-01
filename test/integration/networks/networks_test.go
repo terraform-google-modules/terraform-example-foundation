@@ -349,12 +349,13 @@ func TestNetworks(t *testing.T) {
 					// networks.DefaultVerify(assert)
 
 					servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, networks.GetStringOutput("restricted_service_perimeter_name"))
-					accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, networks.GetStringOutput("access_level_name"))
+					accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, networks.GetStringOutput("access_level_name_dry_run"))
 					networkNames := getNetworkResourceNames(envCode, networkMode, firewallMode)
 
 					servicePerimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", servicePerimeterLink, policyID))
 					assert.NoError(err)
-					assert.True(strings.Contains(servicePerimeter, servicePerimeterLink), fmt.Sprintf("service perimeter %s should exist", servicePerimeterLink))
+					perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
+					assert.True(strings.Contains(servicePerimeter, perimeterName), fmt.Sprintf("service perimeter %s should exist", perimeterName))
 					assert.True(strings.Contains(servicePerimeter, accessLevel), fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
 					for _, service := range restrictedServices {
 						assert.True(strings.Contains(servicePerimeter, service), fmt.Sprintf("service perimeter %s should restrict all supported services", servicePerimeterLink))

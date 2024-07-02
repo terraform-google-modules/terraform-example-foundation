@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@
  */
 
 locals {
-  prefix            = "${var.environment_code}_shared_restricted"
-  access_level_name = "alp_${local.prefix}_members_${random_id.random_access_level_suffix.hex}"
-  perimeter_name    = "sp_${local.prefix}_default_perimeter_${random_id.random_access_level_suffix.hex}"
-  bridge_name       = "spb_c_to_${local.prefix}_bridge_${random_id.random_access_level_suffix.hex}"
+  prefix                    = "${var.environment_code}_shared_restricted"
+  access_level_name         = "alp_${local.prefix}_members_${random_id.random_access_level_suffix.hex}"
+  access_level_name_dry_run = "alp_${local.prefix}_members_dry_run_${random_id.random_access_level_suffix.hex}"
+  perimeter_name            = "sp_${local.prefix}_default_perimeter_${random_id.random_access_level_suffix.hex}"
+  bridge_name               = "spb_c_to_${local.prefix}_bridge_${random_id.random_access_level_suffix.hex}"
 }
 
 resource "random_id" "random_access_level_suffix" {
   byte_length = 2
 }
 
-module "access_level_members" {
+module "access_level" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
   version = "~> 6.0"
 
@@ -33,6 +34,16 @@ module "access_level_members" {
   policy      = var.access_context_manager_policy_id
   name        = local.access_level_name
   members     = var.members
+}
+
+module "access_level_dry_run" {
+  source  = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
+  version = "~> 5.0"
+
+  description = "${local.prefix} Access Level for testing with a dry run perimeter"
+  policy      = var.access_context_manager_policy_id
+  name        = local.access_level_name_dry_run
+  members     = var.members_dry_run
 }
 
 resource "time_sleep" "wait_vpc_sc_propagation" {
@@ -68,14 +79,22 @@ module "regular_service_perimeter" {
   policy         = var.access_context_manager_policy_id
   perimeter_name = local.perimeter_name
   description    = "Default VPC Service Controls perimeter"
-  resources      = [var.project_number]
-  access_levels  = [module.access_level_members.name]
 
-  restricted_services     = var.restricted_services
-  vpc_accessible_services = ["RESTRICTED-SERVICES"]
+  # configurations for a perimeter in enforced mode.
+  resources               = var.enforce_vpcsc ? [var.project_number] : []
+  access_levels           = var.enforce_vpcsc ? [module.access_level.name] : []
+  restricted_services     = var.enforce_vpcsc ? var.restricted_services : []
+  vpc_accessible_services = var.enforce_vpcsc ? ["RESTRICTED-SERVICES"] : []
+  ingress_policies        = var.enforce_vpcsc ? var.ingress_policies : []
+  egress_policies         = var.enforce_vpcsc ? var.egress_policies : []
 
-  ingress_policies = var.ingress_policies
-  egress_policies  = var.egress_policies
+  # configurations for a perimeter in dry run mode.
+  resources_dry_run               = [var.project_number]
+  access_levels_dry_run           = [module.access_level_dry_run.name]
+  restricted_services_dry_run     = var.restricted_services_dry_run
+  vpc_accessible_services_dry_run = ["RESTRICTED-SERVICES"]
+  ingress_policies_dry_run        = var.ingress_policies_dry_run
+  egress_policies_dry_run         = var.egress_policies_dry_run
 
   depends_on = [
     time_sleep.wait_vpc_sc_propagation
@@ -90,8 +109,10 @@ resource "google_access_context_manager_service_perimeter" "bridge_to_network_hu
   name           = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${local.bridge_name}"
   title          = local.bridge_name
 
+  use_explicit_dry_run_spec = var.enforce_vpcsc ? false : true
+
   status {
-    resources = formatlist("projects/%s", [var.project_number, var.restricted_net_hub_project_number])
+    resources = var.enforce_vpcsc ? formatlist("projects/%s", [var.project_number, var.restricted_net_hub_project_number]) : []
   }
 
   depends_on = [module.regular_service_perimeter]

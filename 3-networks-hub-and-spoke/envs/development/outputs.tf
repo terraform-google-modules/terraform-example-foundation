@@ -58,9 +58,19 @@ output "restricted_subnets_secondary_ranges" {
   description = "The secondary ranges associated with these subnets"
 }
 
-output "restricted_access_level_name" {
-  value       = module.base_env.restricted_access_level_name
+output "access_level_name" {
+  value       = module.base_env.access_level_name
   description = "Access context manager access level name"
+}
+
+output "access_level_name_dry_run" {
+  value       = module.base_env.access_level_name_dry_run
+  description = "Access context manager access level name for the dry-run perimeter"
+}
+
+output "enforce_vpcsc" {
+  value       = module.base_env.enforce_vpcsc
+  description = "Enable the enforced mode for VPC Service Controls. It is not recommended to enable VPC-SC on the first run deploying your foundation. Review [best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable), then only enforce the perimeter after you have analyzed the access patterns in your dry-run perimeter and created the necessary exceptions for your use cases."
 }
 
 output "restricted_service_perimeter_name" {

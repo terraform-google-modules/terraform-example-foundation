@@ -159,7 +159,8 @@ locals {
     "workstations.googleapis.com",
   ]
 
-  restricted_services = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
+  restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
+  restricted_services_dry_run = length(var.custom_restricted_services_dry_run) != 0 ? var.custom_restricted_services : local.supported_restricted_service
 }
 
 /******************************************
@@ -174,7 +175,13 @@ module "restricted_shared_vpc" {
   environment_code                 = var.environment_code
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services
+  restricted_services_dry_run      = local.restricted_services_dry_run
   members = distinct(concat([
+    "serviceAccount:${local.networks_service_account}",
+    "serviceAccount:${local.projects_service_account}",
+    "serviceAccount:${local.organization_service_account}",
+  ], var.perimeter_additional_members))
+  members_dry_run = distinct(concat([
     "serviceAccount:${local.networks_service_account}",
     "serviceAccount:${local.projects_service_account}",
     "serviceAccount:${local.organization_service_account}",
@@ -186,11 +193,16 @@ module "restricted_shared_vpc" {
   default_region2            = var.default_region2
   domain                     = var.domain
   ingress_policies           = var.ingress_policies
-
+  ingress_policies_dry_run   = var.ingress_policies_dry_run
   egress_policies = distinct(concat(
     local.dedicated_interconnect_egress_policy,
     var.egress_policies
   ))
+  egress_policies_dry_run = distinct(concat(
+    local.dedicated_interconnect_egress_policy,
+    var.egress_policies_dry_run
+  ))
+
 
   subnets = [
     {

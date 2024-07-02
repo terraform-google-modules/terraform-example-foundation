@@ -160,7 +160,8 @@ func TestProjects(t *testing.T) {
 
 							restrictedProjectNumber := projects.GetStringOutput("restricted_shared_vpc_project_number")
 							perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", perimeterName, policyID))
-							assert.True(strings.Contains(perimeter, restrictedProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, restrictedProjectNumber)
+							assert.NoError(err)
+							assert.True(strings.Contains(perimeter, restrictedProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, restrictedProjectNumber))
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s --impersonate-service-account %s", projectID, terraformSA)
 							assert.NotEmpty(sharedVPC.Map())

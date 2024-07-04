@@ -60,6 +60,7 @@ module "project" {
   shared_vpc_subnets   = var.shared_vpc_subnets # Optional: To enable subnetting, replace to "module.networking_project.subnetwork_self_link"
 
   vpc_service_control_attach_enabled = var.vpc_service_control_attach_enabled
+  vpc_service_control_attach_dry_run = var.vpc_service_control_attach_dry_run
   vpc_service_control_perimeter_name = var.vpc_service_control_perimeter_name
   vpc_service_control_sleep_duration = var.vpc_service_control_sleep_duration
 

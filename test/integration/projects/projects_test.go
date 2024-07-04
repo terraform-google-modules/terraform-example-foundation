@@ -159,9 +159,9 @@ func TestProjects(t *testing.T) {
 							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
 
 							restrictedProjectNumber := projects.GetStringOutput("restricted_shared_vpc_project_number")
-							perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", perimeterName, policyID)
-							listResources := utils.GetResultStrSlice(perimeter.Get("status.resources").Array())
-							assert.Contains(listResources, fmt.Sprintf("projects/%s", restrictedProjectNumber), "restricted project should be in the perimeter")
+							perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", perimeterName, policyID))
+							assert.NoError(err)
+							assert.True(strings.Contains(perimeter, restrictedProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, restrictedProjectNumber))
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s --impersonate-service-account %s", projectID, terraformSA)
 							assert.NotEmpty(sharedVPC.Map())

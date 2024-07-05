@@ -146,6 +146,78 @@ variable "initial_group_config" {
   default     = "WITH_INITIAL_OWNER"
 }
 
+variable "cloudbuildv2_repository_config" {
+  description = "Object structure to bring your own repositories to Foundation."
+  type = object({
+    repo_type = string # Supported values are: GITHUBv2 and CSR
+    # repositories to be created
+    repositories = object({
+      bootstrap = object({
+        repo_name = optional(string, "gcp-bootstrap")
+        repo_url  = string
+      }),
+      org = object({
+        repo_name = optional(string, "gcp-org")
+        repo_url  = string
+      }),
+      env = object({
+        repo_name = optional(string, "gcp-environments")
+        repo_url  = string
+      }),
+      net = object({
+        repo_name = optional(string, "gcp-networks")
+        repo_url  = string
+      }),
+      proj = object({
+        repo_name = optional(string, "gcp-projects")
+        repo_url  = string
+      }),
+      tf_cloud_builder = object({
+        repo_name = optional(string, "tf-cloud-builder")
+        repo_url  = string
+      }),
+    })
+    # Credential Config for each repository type
+    github_pat    = optional(string, "")
+    github_app_id = optional(string, "")
+  })
+
+  # If cloudbuildv2 is not configured, then auto-creation with CSR will be used
+  default = {
+    repo_type = "CSR"
+    repositories = {
+      bootstrap = {
+        repo_url = ""
+      },
+      env = {
+        repo_url = ""
+      }
+      net = {
+        repo_url = ""
+      }
+      org = {
+        repo_url = ""
+      }
+      proj = {
+        repo_url = ""
+      }
+      tf_cloud_builder = {
+        repo_url = ""
+      }
+    }
+  }
+  validation {
+    condition     = var.cloudbuildv2_repository_config.repo_type != "GITHUBv2" || (var.cloudbuildv2_repository_config.repo_type == "GITHUBv2" && var.cloudbuildv2_repository_config.github_pat != "")
+    error_message = "The github_pat must be defined when using GITHUBv2 as repo type"
+  }
+
+  validation {
+    condition     = var.cloudbuildv2_repository_config.repo_type != "GITHUBv2" || (var.cloudbuildv2_repository_config.repo_type == "GITHUBv2" && var.cloudbuildv2_repository_config.github_app_id != "")
+    error_message = "The github_app_id must be defined when using GITHUBv2 as repo type"
+  }
+
+}
+
 /* ----------------------------------------
     Specific to github_bootstrap
    ---------------------------------------- */

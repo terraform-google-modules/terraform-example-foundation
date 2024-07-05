@@ -60,6 +60,19 @@ locals {
   ]
   gar_repository           = split("/", module.tf_cloud_builder.artifact_repo)[length(split("/", module.tf_cloud_builder.artifact_repo)) - 1]
   cloud_builder_trigger_id = element(split("/", module.tf_cloud_builder.cloudbuild_trigger_id), index(split("/", module.tf_cloud_builder.cloudbuild_trigger_id), "triggers") + 1, )
+
+  # If user is not bringing its own repositories, will create CSR
+  create_cloud_source_repos = var.cloudbuildv2_repository_config.repo_type == "CSR" ? distinct(concat(local.base_cloud_source_repos, local.cloud_source_repos)) : []
+  # Used for backwards compatibility on conditional permission assignment
+  cloud_source_repos_granular_sa = var.cloudbuildv2_repository_config.repo_type == "CSR" ? local.granular_sa : {}
+  create_cloudbuildv2_connection = var.cloudbuildv2_repository_config.repo_type != "CSR"
+  # If user is bringing its own repositories, will create cloudbuildv2_repos
+  cloudbuildv2_repos   = var.cloudbuildv2_repository_config.repo_type != "CSR" ? var.cloudbuildv2_repository_config.repositories : {}
+  is_github_connection = var.cloudbuildv2_repository_config.repo_type == "GITHUBv2"
+
+  bootstrap_csr_repo_id = length(local.create_cloud_source_repos) == 0 ? "" : (
+    contains(keys(module.tf_source.csr_repos), local.cloudbuilder_repo) ? split("/", module.tf_source.csr_repos[local.cloudbuilder_repo].id)[3] : ""
+  )
 }
 
 resource "random_string" "suffix" {
@@ -115,9 +128,10 @@ module "tf_source" {
     "storage-api.googleapis.com",
     "billingbudgets.googleapis.com",
     "dns.googleapis.com",
+    "secretmanager.googleapis.com"
   ]
 
-  cloud_source_repos = distinct(concat(local.base_cloud_source_repos, local.cloud_source_repos))
+  cloud_source_repos = local.create_cloud_source_repos
 
   project_labels = {
     environment       = "bootstrap"
@@ -154,14 +168,15 @@ module "tf_private_pool" {
 }
 
 module "tf_cloud_builder" {
-  source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
-  version = "~> 8.0"
+  source = "../../terraform-google-bootstrap/modules/tf_cloudbuild_builder"
 
   project_id                   = module.tf_source.cloudbuild_project_id
-  dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
+  dockerfile_repo_uri          = local.create_cloud_source_repos == [] ? module.tf_source.csr_repos[local.cloudbuilder_repo].url : ""
+  dockerfile_repo_id           = local.cloudbuildv2_repos != {} ? google_cloudbuildv2_repository.repositories["tf_cloud_builder"].id : ""
   gar_repo_location            = var.default_region
   workflow_region              = var.default_region
   terraform_version            = local.terraform_version
+  dockerfile_repo_type         = local.is_github_connection ? "GITHUB" : "CLOUD_SOURCE_REPOSITORIES"
   build_timeout                = "1200s"
   cb_logs_bucket_force_destroy = var.bucket_force_destroy
   trigger_location             = var.default_region
@@ -172,11 +187,24 @@ module "tf_cloud_builder" {
 
 module "bootstrap_csr_repo" {
   source  = "terraform-google-modules/gcloud/google"
+  # only run bootstrap_csr_repo if CSR were created
+  count   = length(local.create_cloud_source_repos) == 0 ? 0 : 1
   version = "~> 3.1"
   upgrade = false
 
   create_cmd_entrypoint = "${path.module}/scripts/push-to-repo.sh"
-  create_cmd_body       = "${module.tf_source.cloudbuild_project_id} ${split("/", module.tf_source.csr_repos[local.cloudbuilder_repo].id)[3]} ${path.module}/Dockerfile"
+  create_cmd_body       = "${module.tf_source.cloudbuild_project_id} ${local.bootstrap_csr_repo_id} ${path.module}/Dockerfile"
+}
+
+module "bootstrap_github_repo" {
+  source  = "terraform-google-modules/gcloud/google"
+  # only run bootstrap_github_repo if user is using github
+  count   = local.is_github_connection ? 1 : 0
+  version = "~> 3.1"
+  upgrade = false
+
+  create_cmd_entrypoint = "${path.module}/scripts/github-bootstrap-builder-repo.sh"
+  create_cmd_body       = "${var.cloudbuildv2_repository_config.github_pat} ${var.cloudbuildv2_repository_config.repositories.tf_cloud_builder.repo_url} ${path.module}/Dockerfile"
 }
 
 resource "time_sleep" "cloud_builder" {
@@ -185,6 +213,7 @@ resource "time_sleep" "cloud_builder" {
   depends_on = [
     module.tf_cloud_builder,
     module.bootstrap_csr_repo,
+    module.bootstrap_github_repo
   ]
 }
 
@@ -204,27 +233,64 @@ module "build_terraform_image" {
   ]
 }
 
+module "github_secret" {
+  count  = local.is_github_connection ? 1 : 0
+  source = "./modules/cb-v2-github-secret"
+
+  project_id = module.tf_source.cloudbuild_project_id
+  github_pat = var.cloudbuildv2_repository_config.github_pat
+}
+
+resource "google_cloudbuildv2_connection" "connection" {
+  count    = local.create_cloudbuildv2_connection ? 1 : 0
+  project  = module.tf_source.cloudbuild_project_id
+  location = var.default_region
+  name     = "generic-cloudbuild-connection"
+
+  dynamic "github_config" {
+    for_each = local.is_github_connection ? [1] : []
+    content {
+      app_installation_id = var.cloudbuildv2_repository_config.github_app_id
+      authorizer_credential {
+        oauth_token_secret_version = module.github_secret[0].secret_id
+      }
+    }
+  }
+  # TODO: gitlab and bitbucket here
+}
+
+resource "google_cloudbuildv2_repository" "repositories" {
+  for_each = local.cloudbuildv2_repos
+
+  project           = module.tf_source.cloudbuild_project_id
+  location          = var.default_region
+  name              = each.value.repo_name
+  remote_uri        = each.value.repo_url
+  parent_connection = google_cloudbuildv2_connection.connection[0].name
+}
+
 module "tf_workspace" {
-  source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 8.0"
+  source   = "../../terraform-google-bootstrap/modules/tf_cloudbuild_workspace"
   for_each = local.granular_sa
 
-  project_id                = module.tf_source.cloudbuild_project_id
-  location                  = var.default_region
-  trigger_location          = var.default_region
-  enable_worker_pool        = true
-  worker_pool_id            = module.tf_private_pool.private_worker_pool_id
-  state_bucket_self_link    = local.cb_config[each.key].state_bucket
-  log_bucket_name           = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-${local.cb_config[each.key].source}-build-logs"
-  artifacts_bucket_name     = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-${local.cb_config[each.key].source}-build-artifacts"
-  cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
-  cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
-  tf_repo_uri               = module.tf_source.csr_repos[local.cb_config[each.key].source].url
-  cloudbuild_sa             = google_service_account.terraform-env-sa[each.key].id
-  create_cloudbuild_sa      = false
-  diff_sa_project           = true
-  create_state_bucket       = false
-  buckets_force_destroy     = var.bucket_force_destroy
+  project_id                 = module.tf_source.cloudbuild_project_id
+  location                   = var.default_region
+  trigger_location           = var.default_region
+  enable_worker_pool         = true
+  worker_pool_id             = module.tf_private_pool.private_worker_pool_id
+  state_bucket_self_link     = local.cb_config[each.key].state_bucket
+  log_bucket_name            = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-${local.cb_config[each.key].source}-build-logs"
+  artifacts_bucket_name      = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-${local.cb_config[each.key].source}-build-artifacts"
+  cloudbuild_plan_filename   = "cloudbuild-tf-plan.yaml"
+  cloudbuild_apply_filename  = "cloudbuild-tf-apply.yaml"
+  tf_repo_uri                = local.cloudbuildv2_repos != {} ? var.cloudbuildv2_repository_config.repositories[each.key].repo_url : module.tf_source.csr_repos[local.cb_config[each.key].source].url
+  cloudbuildv2_repository_id = local.cloudbuildv2_repos != {} ? google_cloudbuildv2_repository.repositories[each.key].id : ""
+  tf_repo_type               = local.cloudbuildv2_repos != {} ? "CLOUDBUILD_V2_REPOSITORY" : "CLOUD_SOURCE_REPOSITORIES"
+  cloudbuild_sa              = google_service_account.terraform-env-sa[each.key].id
+  create_cloudbuild_sa       = false
+  diff_sa_project            = true
+  create_state_bucket        = false
+  buckets_force_destroy      = var.bucket_force_destroy
 
   substitutions = {
     "_ORG_ID"                       = var.org_id
@@ -255,7 +321,7 @@ resource "google_artifact_registry_repository_iam_member" "terraform_sa_artifact
 }
 
 resource "google_sourcerepo_repository_iam_member" "member" {
-  for_each = local.granular_sa
+  for_each = local.cloud_source_repos_granular_sa
 
   project    = module.tf_source.cloudbuild_project_id
   repository = module.tf_source.csr_repos["gcp-policies"].name

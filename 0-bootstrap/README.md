@@ -194,9 +194,15 @@ Using Terraform Cloud requires manual creation of the GitHub repositories or Git
 
 ## Deploying with Cloud Build
 
-*Warning: This method has a dependency on Cloud Source Repositories, which is [no longer available to new customers](https://cloud.google.com/source-repositories/docs). If you have previously used the CSR API in your organization then you can use this method, but a newly created organization will not be able to enable CSR and cannot use this deployment method. In that case, we recommend that you follow the directions for deploying locally, Github, Gitlab, or Terraform Cloud instead.*
+### Cloudbuild with Github Pre-requisites
 
-The following steps introduce the steps to deploy with Cloud Build Alternatively, use the [helper script](../helpers/foundation-deployer/README.md) to automate all the stages of. Use the helper script when you want to rapidly create and destroy the entire organization for demonstration or testing purposes, without much customization at each stage.
+To proceed with this method you will need:
+
+- [Install Cloud Build App on Github](https://github.com/apps/google-cloud-build). After the installation, take note of the application id, it will be used in `terraform.tfvars`.
+- [Create Personal Access Token on Github with `repo` and `read:user` (or if app is installed in org use `read:org`)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) - After creating the token, it will be inserted into `terraform.tfvars`.
+- **OPTIONAL**: Install [Github CLI](https://github.com/cli/cli/blob/trunk/docs/install_linux.md) and run `gh auth login`. This is required only if you want to auto-create the required repositories instead of manually creating and copying its URL into `terraform.tfvars`.
+
+#### Step-by-Step
 
 1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and navigate to the `0-bootstrap` folder.
 
@@ -211,6 +217,40 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
    ```bash
    mv terraform.example.tfvars terraform.tfvars
    ```
+
+   1. (CSR-Only) When using Cloud Source Repositories (Deprecated), proceed with the next steps.
+
+   1. (Github Only) When bringing your own Github Repositories to Cloud Build you will need to create a variable under `terraform.tfvars` with the following format:
+
+      ```terraform
+      cloudbuildv2_repository_config = {
+         repo_type = "GITHUBv2"
+         repositories = {
+            bootstrap = {
+               repo_url = "https://github.com/example-account/gcp-bootstrap.git"
+            },
+            env = {
+               repo_url = "https://github.com/example-account/gcp-environments.git"
+            }
+            net = {
+               repo_url = "https://github.com/example-account/gcp-networks.git"
+            }
+            org = {
+               repo_url = "https://github.com/example-account/gcp-org.git"
+            }
+            proj = {
+               repo_url = "https://github.com/example-account/gcp-projects.git"
+            }
+            tf_cloud_builder = {
+               repo_url = "https://github.com/example-account/tf-cloud-builder.git"
+            }
+         }
+         github_app_id = "your-github-cloud-build-app-id"
+         github_pat = "your-github-access-token"
+      }
+      ```
+
+      > **IMPORTANT**: Take note that on your environment, you will need to update the URL's, github_pat and github_app_id variables.
 
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
@@ -289,50 +329,78 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
    ```
 
 1. (Optional) Run `terraform plan` to verify that state is configured correctly. You should see no changes from the previous state.
-1. Clone the policy repo and copy contents of policy-library to new repo. Clone the repo at the same level of the `terraform-example-foundation` folder.
 
-   ```bash
-   cd ../..
+1. (CSR-Only) When using Cloud Source Repo, clone the policy repo and copy contents of policy-library to new repo. Clone the repo at the same level of the `terraform-example-foundation` folder. Otherwise, skip this step.
 
-   gcloud source repos clone gcp-policies --project=${cloudbuild_project_id}
+   1. Clone and navigate to repository.
 
-   cd gcp-policies
-   git checkout -b main
-   cp -RT ../terraform-example-foundation/policy-library/ .
-   ```
+      ```bash
+      cd ../..
 
-1. Commit changes and push your main branch to the policy repo.
+      gcloud source repos clone gcp-policies --project=${cloudbuild_project_id}
 
-   ```bash
-   git add .
-   git commit -m 'Initialize policy library repo'
-   git push --set-upstream origin main
-   ```
+      cd gcp-policies
+      git checkout -b main
+      cp -RT ../terraform-example-foundation/policy-library/ .
+      ```
 
-1. Navigate out of the repo.
+   1. Commit changes and push your main branch to the policy repo.
 
-   ```bash
-   cd ..
-   ```
+      ```bash
+      git add .
+      git commit -m 'Initialize policy library repo'
+      git push --set-upstream origin main
+      ```
 
-1. Save `0-bootstrap` Terraform configuration to `gcp-bootstrap` source repository:
+   1. Navigate out of the repo.
 
-   ```bash
-   gcloud source repos clone gcp-bootstrap --project=${cloudbuild_project_id}
+      ```bash
+      cd ..
+      ```
 
-   cd gcp-bootstrap
-   git checkout -b plan
-   mkdir -p envs/shared
+1. Save `0-bootstrap` Terraform configuration to `gcp-bootstrap` git repository:
 
-   cp -RT ../terraform-example-foundation/0-bootstrap/ ./envs/shared
-   cp ../terraform-example-foundation/build/cloudbuild-tf-* .
-   cp ../terraform-example-foundation/build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
+   1. Cloning the `gcp-bootstrap` repository:
+   
+      1. (CSR-Only) When using Cloud Source Repositories.
 
-   git add .
-   git commit -m 'Initialize bootstrap repo'
-   git push --set-upstream origin plan
-   ```
+         ```bash
+         gcloud source repos clone gcp-bootstrap --project=${cloudbuild_project_id}
+         ```
+
+      1. (Github Only) When using Github with Cloudbuild.
+
+         ```bash
+         git clone git@github.com:<GITHUB-OWNER>/gcp-bootstrap.git 
+         ```
+
+   1. Navigate to the repository and copy files:
+
+      ```bash
+      cd gcp-bootstrap
+      git checkout -b plan
+      mkdir -p envs/shared
+
+      cp -RT ../terraform-example-foundation/0-bootstrap/ ./envs/shared
+      cp ../terraform-example-foundation/build/cloudbuild-tf-* .
+      cp ../terraform-example-foundation/build/tf-wrapper.sh .
+      chmod 755 ./tf-wrapper.sh
+      ```
+
+      1. (Github Only) When using Github with Cloudbuild, copy the `policy-library` to the repository and update validation from CLOUDSOURCE to FILESYSTEM:
+
+         ```bash
+         cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+         sed -i 's/CLOUDSOURCE/FILESYSTEM/g'
+         ```
+
+   1. Commit the result:
+
+      ```bash
+      git add .
+      git commit -m 'Initialize bootstrap repo'
+      git push --set-upstream origin plan
+      ```
 
 1. Continue with the instructions in the [1-org](../1-org/README.md) step.
 

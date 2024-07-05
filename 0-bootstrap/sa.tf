@@ -129,6 +129,7 @@ locals {
       "roles/resourcemanager.projectDeleter",
       "roles/dns.admin",
       "roles/iam.workloadIdentityPoolAdmin",
+      "roles/secretmanager.secretAccessor"
     ],
   }
 

@@ -188,3 +188,14 @@ resource "google_project_iam_member" "kms_admin" {
   role    = "roles/cloudkms.viewer"
   member  = "group:${var.gcp_groups.kms_admin}"
 }
+
+resource "google_project_iam_member" "cai_monitoring_builder" {
+  project = module.scc_notifications.project_id
+  for_each = toset([
+    "roles/logging.logWriter",
+    "roles/storage.objectViewer",
+    "roles/artifactregistry.writer",
+  ])
+  role   = each.key
+  member = "serviceAccount:${google_service_account.cai_monitoring_builder.email}"
+}

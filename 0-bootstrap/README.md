@@ -361,20 +361,20 @@ To proceed with this method you will need:
 1. Save `0-bootstrap` Terraform configuration to `gcp-bootstrap` git repository:
 
    1. Cloning the `gcp-bootstrap` repository:
-   
-      1. (CSR-Only) When using Cloud Source Repositories.
+
+      1. (CSR-Only) When using Cloud Source Repositories, clone the repository using the following command.
 
          ```bash
          gcloud source repos clone gcp-bootstrap --project=${cloudbuild_project_id}
          ```
 
-      1. (Github Only) When using Github with Cloudbuild.
+      1. (Github Only) When using Github with Cloudbuild, clone the repository with the following command.
 
          ```bash
          git clone git@github.com:<GITHUB-OWNER>/gcp-bootstrap.git 
          ```
 
-   1. Navigate to the repository and copy files:
+   1. Navigate to the repository and copy required files to it:
 
       ```bash
       cd gcp-bootstrap
@@ -387,7 +387,7 @@ To proceed with this method you will need:
       chmod 755 ./tf-wrapper.sh
       ```
 
-      1. (Github Only) When using Github with Cloudbuild, copy the `policy-library` to the repository and update validation from CLOUDSOURCE to FILESYSTEM:
+      1. (Github Only) When using Github with Cloudbuild, copy the `policy-library` from the `terraform-example-foundation` to the `gcp-bootstrap` repository and update validation mode from `CLOUDSOURCE` to `FILESYSTEM`:
 
          ```bash
          cp -RT ../terraform-example-foundation/policy-library/ ./policy-library

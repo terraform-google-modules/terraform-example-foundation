@@ -142,16 +142,17 @@ resource "google_scc_source" "cai_monitoring" {
 // Cloud Function
 module "cloud_function" {
   source  = "GoogleCloudPlatform/cloud-functions/google"
-  version = "~> 0.5"
+  version = "~> 0.6"
 
-  function_name     = "caiMonitoring"
-  description       = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."
-  project_id        = var.project_id
-  labels            = var.labels
-  function_location = var.location
-  runtime           = "nodejs20"
-  entrypoint        = "caiMonitoring"
-  docker_repository = google_artifact_registry_repository.cloudfunction.id
+  function_name         = "caiMonitoring"
+  description           = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."
+  project_id            = var.project_id
+  labels                = var.labels
+  function_location     = var.location
+  runtime               = "nodejs20"
+  entrypoint            = "caiMonitoring"
+  docker_repository     = google_artifact_registry_repository.cloudfunction.id
+  build_service_account = var.build_service_account
 
   storage_source = {
     bucket = module.cloudfunction_source_bucket.name
@@ -161,8 +162,9 @@ module "cloud_function" {
   service_config = {
     service_account_email = google_service_account.cloudfunction.email
     runtime_env_variables = {
-      ROLES     = join(",", var.roles_to_monitor)
-      SOURCE_ID = google_scc_source.cai_monitoring.id
+      ROLES            = join(",", var.roles_to_monitor)
+      SOURCE_ID        = google_scc_source.cai_monitoring.id
+      LOG_EXECUTION_ID = "true"
     }
   }
 

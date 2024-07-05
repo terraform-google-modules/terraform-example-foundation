@@ -401,7 +401,7 @@ To proceed with this method you will need:
 
          ```bash
          cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-         sed -i 's/CLOUDSOURCE/FILESYSTEM/g'
+         sed -i 's/CLOUDSOURCE/FILESYSTEM/g' cloudbuild-tf-*
          ```
 
    1. Commit the result:

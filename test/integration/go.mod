@@ -5,8 +5,8 @@ go 1.22
 toolchain go1.22.4
 
 require (
-	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.15.1
-	github.com/gruntwork-io/terratest v0.46.15
+	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.16.0
+	github.com/gruntwork-io/terratest v0.46.16
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.9.0
 	github.com/tidwall/gjson v1.17.1
@@ -38,13 +38,13 @@ require (
 	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-getter v1.7.4 // indirect
+	github.com/hashicorp/go-getter v1.7.5 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/hashicorp/hcl v0.0.0-20170504190234-a4b07c25de5f // indirect
 	github.com/hashicorp/hcl/v2 v2.20.1 // indirect
-	github.com/hashicorp/terraform-config-inspect v0.0.0-20240509232506-4708120f8f30 // indirect
+	github.com/hashicorp/terraform-config-inspect v0.0.0-20240607080351-271db412dbcb // indirect
 	github.com/hashicorp/terraform-json v0.22.1 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
@@ -63,7 +63,7 @@ require (
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.21.0 // indirect
-	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/sync v0.4.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect

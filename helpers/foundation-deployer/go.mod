@@ -5,8 +5,8 @@ go 1.22
 toolchain go1.22.4
 
 require (
-	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.15.1
-	github.com/gruntwork-io/terratest v0.46.15
+	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.16.0
+	github.com/gruntwork-io/terratest v0.46.16
 	github.com/hashicorp/hcl/v2 v2.21.0
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.9.0
@@ -53,7 +53,7 @@ require (
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.21.0 // indirect
-	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/oauth2 v0.20.0 // indirect
 	golang.org/x/sync v0.4.0 // indirect

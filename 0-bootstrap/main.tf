@@ -102,3 +102,34 @@ module "seed_bootstrap" {
   depends_on = [module.required_group]
 }
 
+# Fix for Issue #1206 with Groups vs. Terraform SA vs. Owner
+locals {
+  required_groups_keys = [
+    for key, value in var.groups.required_groups : key
+    if var.groups.create_required_groups == true
+  ]
+  required_group_to_step_terraform_sa = setproduct(local.required_groups_keys, local.step_terraform_sa)
+}
+resource "google_cloud_identity_group_membership" "required_group_sa" {
+  provider   = google-beta
+  depends_on = [module.seed_bootstrap, google_service_account.terraform-env-sa, module.required_group]
+  for_each = {
+    for q in local.required_group_to_step_terraform_sa : "${q[0]}-${q[1]}" => {
+      group = q[0]
+      sa    = q[1]
+    }
+  }
+  group = module.required_group[each.value.group].id
+
+  preferred_member_key {
+    id = each.value.sa
+  }
+
+  roles {
+    name = "OWNER"
+  }
+
+  roles {
+    name = "MEMBER"
+  }
+}

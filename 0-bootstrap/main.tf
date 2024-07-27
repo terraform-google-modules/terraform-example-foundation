@@ -103,13 +103,6 @@ module "seed_bootstrap" {
 }
 
 # Fix for Issue #1206 with Groups vs. Terraform SA vs. Owner
-# Because terraform-google-modules/group/google
-data "google_cloud_identity_group_lookup" "group" {
-  group_key {
-    id = "my-group@example.com"
-  }
-}
-
 resource "google_cloud_identity_group_membership" "required_group_sa" {
   # works only with google-beta
   provider   = google-beta

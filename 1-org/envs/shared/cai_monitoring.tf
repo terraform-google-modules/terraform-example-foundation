@@ -15,11 +15,11 @@
  */
 
 module "cai_monitoring" {
-  source = "../../modules/cai-monitoring"
-
+  source                = "../../modules/cai-monitoring"
+  count                 = var.enable_scc_notifications ? 1 : 0
   org_id                = local.org_id
   billing_account       = local.billing_account
-  project_id            = module.scc_notifications.project_id
+  project_id            = module.scc_notifications[0].project_id
   location              = local.default_region
-  build_service_account = "projects/${module.scc_notifications.project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder.email}"
+  build_service_account = "projects/${module.scc_notifications[0].project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder[0].email}"
 }

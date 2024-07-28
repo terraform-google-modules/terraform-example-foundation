@@ -199,9 +199,9 @@ module "interconnect" {
 *****************************************/
 
 module "scc_notifications" {
-  source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
-
+  source                   = "terraform-google-modules/project-factory/google"
+  version                  = "~> 15.0"
+  count                    = var.enable_scc_notifications ? 1 : 0
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"

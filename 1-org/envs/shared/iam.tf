@@ -162,21 +162,21 @@ resource "google_project_iam_member" "audit_bq_data_viewer" {
 }
 
 resource "google_organization_iam_member" "org_scc_admin" {
-  count  = var.gcp_groups.scc_admin != null && local.parent_folder == "" ? 1 : 0
+  count  = var.gcp_groups.scc_admin != null && local.parent_folder == "" && var.enable_scc_notifications ? 1 : 0
   org_id = local.org_id
   role   = "roles/securitycenter.adminEditor"
   member = "group:${var.gcp_groups.scc_admin}"
 }
 
 resource "google_project_iam_member" "project_scc_admin" {
-  count   = var.gcp_groups.scc_admin != null ? 1 : 0
+  count   = var.gcp_groups.scc_admin != null && var.enable_scc_notifications ? 1 : 0
   project = module.scc_notifications.project_id
   role    = "roles/securitycenter.adminEditor"
   member  = "group:${var.gcp_groups.scc_admin}"
 }
 
 resource "google_project_iam_member" "global_secrets_admin" {
-  count   = var.gcp_groups.global_secrets_admin != null ? 1 : 0
+  count   = var.gcp_groups.global_secrets_admin && var.enable_scc_notifications != null ? 1 : 0
   project = module.org_secrets.project_id
   role    = "roles/secretmanager.admin"
   member  = "group:${var.gcp_groups.global_secrets_admin}"
@@ -191,11 +191,12 @@ resource "google_project_iam_member" "kms_admin" {
 
 resource "google_project_iam_member" "cai_monitoring_builder" {
   project = module.scc_notifications.project_id
-  for_each = toset([
-    "roles/logging.logWriter",
-    "roles/storage.objectViewer",
-    "roles/artifactregistry.writer",
-  ])
+  for_each = toset(var.enable_scc_notifications ?
+    [
+      "roles/logging.logWriter",
+      "roles/storage.objectViewer",
+      "roles/artifactregistry.writer",
+  ] : [])
   role   = each.key
   member = "serviceAccount:${google_service_account.cai_monitoring_builder.email}"
 }

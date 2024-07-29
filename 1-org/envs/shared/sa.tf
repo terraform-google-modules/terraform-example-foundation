@@ -15,7 +15,7 @@
  */
 
 resource "google_service_account" "cai_monitoring_builder" {
-  project                      = module.scc_notifications.project_id
+  project                      = module.scc_notifications[0].project_id
   count                        = var.enable_scc_notifications ? 1 : 0
   account_id                   = "cai-monitoring-builder"
   description                  = "Cloud Functions has an underlying dependency on Cloud Build and other services. This service account allows Cloud Build to provision the necessary resources for Cloud Functions."

@@ -170,7 +170,7 @@ resource "google_organization_iam_member" "org_scc_admin" {
 
 resource "google_project_iam_member" "project_scc_admin" {
   count   = var.gcp_groups.scc_admin != null && var.enable_scc_notifications ? 1 : 0
-  project = module.scc_notifications.project_id
+  project = module.scc_notifications[0].project_id
   role    = "roles/securitycenter.adminEditor"
   member  = "group:${var.gcp_groups.scc_admin}"
 }
@@ -190,7 +190,7 @@ resource "google_project_iam_member" "kms_admin" {
 }
 
 resource "google_project_iam_member" "cai_monitoring_builder" {
-  project = module.scc_notifications.project_id
+  project = module.scc_notifications[0].project_id
   for_each = toset(var.enable_scc_notifications ?
     [
       "roles/logging.logWriter",
@@ -198,5 +198,5 @@ resource "google_project_iam_member" "cai_monitoring_builder" {
       "roles/artifactregistry.writer",
   ] : [])
   role   = each.key
-  member = "serviceAccount:${google_service_account.cai_monitoring_builder.email}"
+  member = "serviceAccount:${google_service_account.cai_monitoring_builder[0].email}"
 }

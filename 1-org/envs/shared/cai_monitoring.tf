@@ -16,7 +16,7 @@
 
 module "cai_monitoring" {
   source                = "../../modules/cai-monitoring"
-  count                 = var.enable_scc_notifications ? 1 : 0
+  count                 = var.enable_scc_resources_in_terraform ? 1 : 0
   org_id                = local.org_id
   billing_account       = local.billing_account
   project_id            = module.scc_notifications[0].project_id

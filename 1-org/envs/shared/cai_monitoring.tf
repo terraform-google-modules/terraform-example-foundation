@@ -19,7 +19,7 @@ module "cai_monitoring" {
   count                 = var.enable_scc_resources_in_terraform ? 1 : 0
   org_id                = local.org_id
   billing_account       = local.billing_account
-  project_id            = module.scc_notifications[0].project_id
+  project_id            = module.scc_notifications.project_id
   location              = local.default_region
-  build_service_account = "projects/${module.scc_notifications[0].project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder[0].email}"
+  build_service_account = "projects/${module.scc_notifications.project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder[0].email}"
 }

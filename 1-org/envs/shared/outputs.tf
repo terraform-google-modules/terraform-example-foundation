@@ -140,7 +140,7 @@ output "shared_vpc_projects" {
 }
 
 output "cai_monitoring_artifact_registry" {
-  value       = module.cai_monitoring[0].artifact_registry_name
+  value       = try(module.cai_monitoring[0].artifact_registry_name, null)
   description = "CAI Monitoring Cloud Function Artifact Registry name."
 }
 

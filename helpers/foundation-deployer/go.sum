@@ -187,6 +187,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.16.0 h1:1rjUGjXuTnVp/RANDMfCRnDsUi0lIFJUQf4K1aPf5YE=
 github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.16.0/go.mod h1:EJ+GwRNr/M3wZmmsaBpoUYgQ31+IO+y3sOtKIxw48PI=
+github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.16.1 h1:IfsF5yta+pslEAWF1QYFSP/3obWsjLQzFyEKJYAhzos=
+github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.16.1/go.mod h1:Bop47HzdH60K1rPgNRNqBHrBWhhmqCBG9Y4Y5PEn9fE=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/agext/levenshtein v1.2.3 h1:YB2fHEn0UJagG8T1rrWknE3ZQzWM06O8AMAatNn7lmo=
 github.com/agext/levenshtein v1.2.3/go.mod h1:JEDfjyjHDjOF/1e4FlBE/PkbqA9OfWu2ki2W0IB5558=
@@ -338,6 +340,8 @@ github.com/googleapis/go-type-adapters v1.0.0/go.mod h1:zHW75FOG2aur7gAO2B+MLby+
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
 github.com/gruntwork-io/terratest v0.46.16 h1:l+HHuU7lNLwoAl2sP8zkYJy0uoE2Mwha2nw+rim+OhQ=
 github.com/gruntwork-io/terratest v0.46.16/go.mod h1:oywHw1cFKXSYvKPm27U7quZVzDUlA22H2xUrKCe26xM=
+github.com/gruntwork-io/terratest v0.47.0 h1:xIy1pT7NbGVlMLDZEHl3+3iSnvffh8tN2pL6idn448c=
+github.com/gruntwork-io/terratest v0.47.0/go.mod h1:oywHw1cFKXSYvKPm27U7quZVzDUlA22H2xUrKCe26xM=
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
 github.com/hashicorp/errwrap v1.1.0 h1:OxrOeh75EUXMY8TBjag2fzXGZ40LB6IKw45YeGUDY2I=
 github.com/hashicorp/errwrap v1.1.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
@@ -493,6 +497,8 @@ golang.org/x/mod v0.4.2/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
 golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4/go.mod h1:jJ57K6gSWd91VN4djpZkiMVwK6gcyfeH4XE8wZrZaV4=
 golang.org/x/mod v0.18.0 h1:5+9lSbEzPSdWkH32vYPBwEpX8KwDbM52Ud9xBUvNlb0=
 golang.org/x/mod v0.18.0/go.mod h1:hTbmBsO62+eylJbnUtE2MGJUyE7QWk4xUqPFrRgJ+7c=
+golang.org/x/mod v0.19.0 h1:fEdghXQSo20giMthA7cd28ZC+jts4amQ3YMXiP5oMQ8=
+golang.org/x/mod v0.19.0/go.mod h1:hTbmBsO62+eylJbnUtE2MGJUyE7QWk4xUqPFrRgJ+7c=
 golang.org/x/net v0.0.0-20180724234803-3673e40ba225/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20180826012351-8a410e7b638d/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20190108225652-1e06a53dbb7e/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=

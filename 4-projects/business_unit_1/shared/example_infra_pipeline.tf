@@ -30,7 +30,7 @@ module "app_infra_cloudbuild_project" {
   project_prefix  = local.project_prefix
   activate_apis = [
     "cloudbuild.googleapis.com",
-    // "sourcerepo.googleapis.com",
+    // "sourcerepo.googleapis.com", // issue #1309: Docker tests fail due to CSR dependency
     "cloudkms.googleapis.com",
     "iam.googleapis.com",
     "artifactregistry.googleapis.com",

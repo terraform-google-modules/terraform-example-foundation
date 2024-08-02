@@ -46,7 +46,7 @@ func TestProjectsShared(t *testing.T) {
 
 	var sharedApisEnabled = []string{
 		"cloudbuild.googleapis.com",
-		// "sourcerepo.googleapis.com",
+		// "sourcerepo.googleapis.com", // issue #1309: Docker tests fail due to CSR dependency
 		"cloudkms.googleapis.com",
 	}
 

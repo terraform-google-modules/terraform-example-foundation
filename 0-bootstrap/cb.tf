@@ -103,7 +103,7 @@ module "tf_source" {
     "logging.googleapis.com",
     "iam.googleapis.com",
     "admin.googleapis.com",
-    "sourcerepo.googleapis.com",
+    // "sourcerepo.googleapis.com", // issue #1309: Docker tests fail due to CSR dependency
     "workflows.googleapis.com",
     "artifactregistry.googleapis.com",
     "cloudbuild.googleapis.com",

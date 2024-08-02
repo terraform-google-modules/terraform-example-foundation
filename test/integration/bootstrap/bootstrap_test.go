@@ -62,15 +62,16 @@ func TestBootstrap(t *testing.T) {
 		tft.WithPolicyLibraryPath("/workspace/policy-library", temp.GetTFSetupStringOutput("project_id")),
 	)
 
-	cloudSourceRepos := []string{
-		"gcp-org",
-		"gcp-environments",
-		"gcp-networks",
-		"gcp-projects",
-		"gcp-policies",
-		"tf-cloudbuilder",
-		"gcp-bootstrap",
-	}
+	// issue #1309: Docker tests fail due to CSR dependency
+	// cloudSourceRepos := []string{
+	// 	"gcp-org",
+	// 	"gcp-environments",
+	// 	"gcp-networks",
+	// 	"gcp-projects",
+	// 	"gcp-policies",
+	// 	"tf-cloudbuilder",
+	// 	"gcp-bootstrap",
+	// }
 
 	triggerRepos := []string{
 		"gcp-bootstrap",
@@ -111,7 +112,7 @@ func TestBootstrap(t *testing.T) {
 				"storage-api.googleapis.com",
 				"serviceusage.googleapis.com",
 				"cloudbuild.googleapis.com",
-				"sourcerepo.googleapis.com",
+				// "sourcerepo.googleapis.com", // issue #1309: Docker tests fail due to CSR dependency
 				"cloudkms.googleapis.com",
 				"bigquery.googleapis.com",
 				"accesscontextmanager.googleapis.com",
@@ -207,11 +208,12 @@ func TestBootstrap(t *testing.T) {
 				assert.Equal(logsBktName[bkts.env], fmt.Sprintf("bkt-%s-%s-build-logs", cbProjectID, bkts.repo))
 			}
 
-			for _, repo := range cloudSourceRepos {
-				sourceRepoFullName := fmt.Sprintf("projects/%s/repos/%s", cbProjectID, repo)
-				sourceRepo := gcloud.Runf(t, "source repos describe %s --project %s", repo, cbProjectID)
-				assert.Equal(sourceRepoFullName, sourceRepo.Get("name").String(), fmt.Sprintf("repository %s should exist", repo))
-			}
+			// issue #1309: Docker tests fail due to CSR dependency
+			// for _, repo := range cloudSourceRepos {
+			// 	sourceRepoFullName := fmt.Sprintf("projects/%s/repos/%s", cbProjectID, repo)
+			// 	sourceRepo := gcloud.Runf(t, "source repos describe %s --project %s", repo, cbProjectID)
+			// 	assert.Equal(sourceRepoFullName, sourceRepo.Get("name").String(), fmt.Sprintf("repository %s should exist", repo))
+			// }
 
 			for _, triggerRepo := range triggerRepos {
 				for _, filter := range []string{

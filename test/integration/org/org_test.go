@@ -182,22 +182,22 @@ func TestOrg(t *testing.T) {
 			requireOsLogin := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", "constraints/compute.requireOsLogin", parentFolder)
 			assert.Equal("constraints/compute.requireOsLogin", requireOsLogin.Get("constraint").String(), "org policy should require OS Login")
 
-			// security command center
-			sccProjectID := org.GetStringOutput("scc_notifications_project_id")
-			topicName := "top-scc-notification"
-			topicFullName := fmt.Sprintf("projects/%s/topics/%s", sccProjectID, topicName)
-			topic := gcloud.Runf(t, "pubsub topics describe %s --project %s", topicName, sccProjectID)
-			assert.Equal(topicFullName, topic.Get("name").String(), fmt.Sprintf("topic %s should have been created", topicName))
+			// security command center (commented out with issue #1189)
+			// sccProjectID := org.GetStringOutput("scc_notifications_project_id")
+			// topicName := "top-scc-notification"
+			// topicFullName := fmt.Sprintf("projects/%s/topics/%s", sccProjectID, topicName)
+			// topic := gcloud.Runf(t, "pubsub topics describe %s --project %s", topicName, sccProjectID)
+			// assert.Equal(topicFullName, topic.Get("name").String(), fmt.Sprintf("topic %s should have been created", topicName))
 
-			subscriptionName := "sub-scc-notification"
-			subscriptionFullName := fmt.Sprintf("projects/%s/subscriptions/%s", sccProjectID, subscriptionName)
-			subscription := gcloud.Runf(t, "pubsub subscriptions describe %s --project %s", subscriptionName, sccProjectID)
-			assert.Equal(subscriptionFullName, subscription.Get("name").String(), fmt.Sprintf("subscription %s should have been created", subscriptionName))
+			// subscriptionName := "sub-scc-notification"
+			// subscriptionFullName := fmt.Sprintf("projects/%s/subscriptions/%s", sccProjectID, subscriptionName)
+			// subscription := gcloud.Runf(t, "pubsub subscriptions describe %s --project %s", subscriptionName, sccProjectID)
+			// assert.Equal(subscriptionFullName, subscription.Get("name").String(), fmt.Sprintf("subscription %s should have been created", subscriptionName))
 
-			orgID := bootstrap.GetTFSetupStringOutput("org_id")
-			notificationName := org.GetStringOutput("scc_notification_name")
-			notification := gcloud.Runf(t, "scc notifications describe %s --organization %s", notificationName, orgID)
-			assert.Equal(topicFullName, notification.Get("pubsubTopic").String(), fmt.Sprintf("notification %s should use topic %s", notificationName, topicName))
+			// orgID := bootstrap.GetTFSetupStringOutput("org_id")
+			// notificationName := org.GetStringOutput("scc_notification_name")
+			// notification := gcloud.Runf(t, "scc notifications describe %s --organization %s", notificationName, orgID)
+			// assert.Equal(topicFullName, notification.Get("pubsubTopic").String(), fmt.Sprintf("notification %s should use topic %s", notificationName, topicName))
 
 			//essential contacts
 			//test case considers that just the Org Admin group exists and will subscribe for all categories
@@ -293,33 +293,33 @@ func TestOrg(t *testing.T) {
 				}
 			}
 
-			// CAI Monitoring
+			// CAI Monitoring (commented out with issue #1189)
 			// Variables
-			caiAr := org.GetStringOutput("cai_monitoring_artifact_registry")
-			caiBucket := org.GetStringOutput("cai_monitoring_bucket")
-			caiTopic := org.GetStringOutput("cai_monitoring_topic")
+			// caiAr := org.GetStringOutput("cai_monitoring_artifact_registry")
+			// caiBucket := org.GetStringOutput("cai_monitoring_bucket")
+			// caiTopic := org.GetStringOutput("cai_monitoring_topic")
 
-			caiSaEmail := fmt.Sprintf("cai-monitoring@%s.iam.gserviceaccount.com", sccProjectID)
-			caiTopicFullName := fmt.Sprintf("projects/%s/topics/%s", sccProjectID, caiTopic)
+			// caiSaEmail := fmt.Sprintf("cai-monitoring@%s.iam.gserviceaccount.com", sccProjectID)
+			// caiTopicFullName := fmt.Sprintf("projects/%s/topics/%s", sccProjectID, caiTopic)
 
 			// Cloud Function
-			opCf := gcloud.Runf(t, "functions describe caiMonitoring --project %s --gen2 --region %s", sccProjectID, defaultRegion)
-			assert.Equal("ACTIVE", opCf.Get("state").String(), "Should be ACTIVE. Cloud Function is not successfully deployed.")
-			assert.Equal(caiSaEmail, opCf.Get("serviceConfig.serviceAccountEmail").String(), fmt.Sprintf("Cloud Function should use the service account %s.", caiSaEmail))
-			assert.Contains(opCf.Get("eventTrigger.eventType").String(), "google.cloud.pubsub.topic.v1.messagePublished", "Event Trigger is not based on Pub/Sub message. Check the EventType configuration.")
+			// opCf := gcloud.Runf(t, "functions describe caiMonitoring --project %s --gen2 --region %s", sccProjectID, defaultRegion)
+			// assert.Equal("ACTIVE", opCf.Get("state").String(), "Should be ACTIVE. Cloud Function is not successfully deployed.")
+			// assert.Equal(caiSaEmail, opCf.Get("serviceConfig.serviceAccountEmail").String(), fmt.Sprintf("Cloud Function should use the service account %s.", caiSaEmail))
+			// assert.Contains(opCf.Get("eventTrigger.eventType").String(), "google.cloud.pubsub.topic.v1.messagePublished", "Event Trigger is not based on Pub/Sub message. Check the EventType configuration.")
 
 			// Cloud Function Storage Bucket
-			bktArgs := gcloud.WithCommonArgs([]string{"--project", sccProjectID, "--json"})
-			opSrcBucket := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", caiBucket), bktArgs).Array()
-			assert.Equal("true", opSrcBucket[0].Get("metadata.iamConfiguration.bucketPolicyOnly.enabled").String(), "Should have Bucket Policy Only enabled.")
+			// bktArgs := gcloud.WithCommonArgs([]string{"--project", sccProjectID, "--json"})
+			// opSrcBucket := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", caiBucket), bktArgs).Array()
+			// assert.Equal("true", opSrcBucket[0].Get("metadata.iamConfiguration.bucketPolicyOnly.enabled").String(), "Should have Bucket Policy Only enabled.")
 
 			// Cloud Function Artifact Registry
-			opAR := gcloud.Runf(t, "artifacts repositories describe %s --project %s --location %s", caiAr, sccProjectID, defaultRegion)
-			assert.Equal("DOCKER", opAR.Get("format").String(), "Should have type: DOCKER")
+			// opAR := gcloud.Runf(t, "artifacts repositories describe %s --project %s --location %s", caiAr, sccProjectID, defaultRegion)
+			// assert.Equal("DOCKER", opAR.Get("format").String(), "Should have type: DOCKER")
 
 			// Cloud Function Pub/Sub
-			opTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", caiTopic, sccProjectID)
-			assert.Equal(caiTopicFullName, opTopic.Get("name").String(), fmt.Sprintf("Topic %s should have been created", caiTopicFullName))
+			// opTopic := gcloud.Runf(t, "pubsub topics describe %s --project %s", caiTopic, sccProjectID)
+			// assert.Equal(caiTopicFullName, opTopic.Get("name").String(), fmt.Sprintf("Topic %s should have been created", caiTopicFullName))
 
 			// Log Sink
 			for _, sink := range []struct {

@@ -34,6 +34,7 @@ END_USER_CREDENTIAL=""
 ORGANIZATION_ID=""
 BILLING_ACCOUNT=""
 EXTERNAL_REPO="false"
+INSTALL_PATH=../../gcp-bootstrap/envs/shared/
 
 # Collect the errors
 ERRORS=""
@@ -217,7 +218,7 @@ function check_billing_account_roles(){
 # Checks if initial config was done for 0-bootstrap step
 function validate_bootstrap_step(){
     SCRIPTS_DIR="$( dirname -- "$0"; )"
-    FILE="$SCRIPTS_DIR/../0-bootstrap/terraform.tfvars"
+    FILE="$SCRIPTS_DIR/$INSTALL_PATH/terraform.tfvars"
     if [ ! -f "$FILE" ]; then
         echo "  Rename the file 0-bootstrap/terraform.example.tfvars to 0-bootstrap/terraform.tfvars"
         ERRORS+=$'  terraform.tfvars file must exist for 0-bootstrap step.\n'
@@ -232,13 +233,13 @@ function validate_bootstrap_step(){
 # Checks if initial config was done for 0-bootstrap step using external repository
 function validate_bootstrap_step_external_repo(){
     SCRIPTS_DIR="$( dirname -- "$0"; )"
-    FILE="$SCRIPTS_DIR/../../gcp-bootstrap/envs/shared/terraform.tfvars"
+    FILE="$SCRIPTS_DIR/$INSTALL_PATH/terraform.tfvars"
     if [ ! -f "$FILE" ]; then
-        echo "  Rename the file gcp-bootstrap/envs/shared/terraform.example.tfvars to gcp-bootstrap/envs/shared/terraform.tfvars"
+        echo "  Rename the file gcp-bootstrap/env/shared/terraform.example.tfvars to gcp-bootstrap/env/shared/terraform.tfvars"
         ERRORS+=$'  terraform.tfvars file must exist for gcp-bootstrap step.\n'
     else
 	if [ "$(grep -v '^#' "$FILE" |grep -c 'REPLACE_ME')" != 0 ]; then
-            echo "  gcp-bootstrap/envs/shared/terraform.tfvars must have required values fulfilled."
+            echo "  gcp-bootstrap/env/shared/terraform.tfvars must have required values fulfilled."
             ERRORS+=$'  terraform.tfvars file must be correctly fulfilled for gcp-bootstrap step.\n'
         fi
     fi

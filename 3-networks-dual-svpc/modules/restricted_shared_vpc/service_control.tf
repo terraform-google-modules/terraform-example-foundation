@@ -37,7 +37,7 @@ module "access_level" {
 
 module "access_level_dry_run" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   description = "${local.prefix} Access Level for testing with a dry run perimeter"
   policy      = var.access_context_manager_policy_id

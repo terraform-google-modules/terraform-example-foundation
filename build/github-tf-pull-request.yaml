@@ -36,20 +36,20 @@ jobs:
       pull-requests: "write"
 
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
 
       - id: "auth"
-        uses: "google-github-actions/auth@v1"
+        uses: "google-github-actions/auth@v2"
         with:
           token_format: "access_token"
           workload_identity_provider: ${{ secrets.WIF_PROVIDER_NAME }}
           service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
 
-      - uses: "google-github-actions/setup-gcloud@v1"
+      - uses: "google-github-actions/setup-gcloud@v2"
         with:
           install_components: "beta,terraform-tools"
 
-      - uses: "hashicorp/setup-terraform@v2"
+      - uses: "hashicorp/setup-terraform@v3"
         with:
           terraform_version: "1.5.7"
 

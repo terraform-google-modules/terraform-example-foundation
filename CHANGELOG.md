@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.1.1](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v4.1.0...v4.1.1) (2024-08-08)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency @google-cloud/security-center to v8.11.0 ([#1319](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1319)) ([028f85f](https://github.com/terraform-google-modules/terraform-example-foundation/commit/028f85f51dcc06a879a07f1f88758d139d10287b))
+* **deps:** update dependency @google-cloud/security-center to v8.9.0 ([#1289](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1289)) ([f67b8b1](https://github.com/terraform-google-modules/terraform-example-foundation/commit/f67b8b1174a0329c6acf28ce1065835e5d27160b))
+
 ## [4.1.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v4.0.0...v4.1.0) (2024-08-01)
 
 

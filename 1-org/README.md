@@ -112,19 +112,24 @@ This module creates and applies [tags](https://cloud.google.com/resource-manager
 
 ### Deploying with Cloud Build
 
-1. Clone the `gcp-org` repo based on the Terraform output from the `0-bootstrap` step.
-Clone the repo at the same level of the `terraform-example-foundation` folder.
-If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get the Cloud Build Project ID.
+1. Clone the `gcp-org` repo.
 
-   ```bash
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
-   echo ${CLOUD_BUILD_PROJECT_ID}
+   1. (CSR-Only) When using Cloud Source Repositories, retrieve values from the Terraform output from the `0-bootstrap` step. Clone the repo at the same level of the `terraform-example-foundation` folder. If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get the Cloud Build Project ID.
 
-   gcloud source repos clone gcp-org --project=${CLOUD_BUILD_PROJECT_ID}
-   ```
+      ```bash
+      export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
+      echo ${CLOUD_BUILD_PROJECT_ID}
 
-   **Note:** The message `warning: You appear to have cloned an empty repository.` is
-   normal and can be ignored.
+      gcloud source repos clone gcp-org --project=${CLOUD_BUILD_PROJECT_ID}
+      ```
+
+      **Note:** The message `warning: You appear to have cloned an empty repository.` is normal and can be ignored.
+
+   1. (Github Only) When using Github with Cloudbuild, clone the repository with the following command.
+
+      ```bash
+      git clone git@github.com:<GITHUB-OWNER>/gcp-org.git 
+      ```
 
 1. Navigate into the repo, change to a nonproduction branch, and copy the contents of foundation to the new repo.
    All subsequent steps assume you are running them from the `gcp-org` directory.
@@ -139,6 +144,13 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    ```
+
+   1. (Github Only) When using Github with Cloudbuild, copy the `policy-library` from the `terraform-example-foundation` to the `gcp-bootstrap` repository and update validation mode from `CLOUDSOURCE` to `FILESYSTEM`:
+
+      ```bash
+      cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+      sed -i 's/CLOUDSOURCE/FILESYSTEM/g' cloudbuild-tf-*
+      ```
 
 1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`
 

@@ -200,12 +200,12 @@ To proceed with this method you will need:
 
 - A authenticated GitHub account. The steps in this documentation assumes you have a configured SSH key for cloning and modifying repositories.
 - A **private** [GitHub repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) for each one of the stages of Foundation and one for maintaining the Cloud Build Pipeline Docker Image:
-  - Bootstrap
-  - Organization
-  - Environments
-  - Networks
-  - Projects
-  - Terraform Cloud Builder
+  - Bootstrap (`gcp-bootstrap`)
+  - Organization (`gcp-org`)
+  - Environments (`gcp-environment`)
+  - Networks (`gcp-networks`)
+  - Projects (`gcp-projects`)
+  - Terraform Cloud Builder (`tf-cloud-builder`)
 
    > Note: Recommended names for the repositories are, in sequence: `gcp-bootstrap`, `gcp-org`, `gcp-environments`, `gcp-networks`, `gcp-projects` and `tf-cloud-builder`; If you choose other names for your repository make sure you update `terraform.tfvars` the repository names under `cloudbuildv2_repository_config` variable.
 

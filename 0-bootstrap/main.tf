@@ -102,3 +102,24 @@ module "seed_bootstrap" {
   depends_on = [module.required_group]
 }
 
+# Fix for Issue #1206 with Groups vs. Terraform SA vs. Owner
+resource "google_cloud_identity_group_membership" "required_group_sa" {
+  # works only with google-beta
+  provider   = google-beta
+  depends_on = [module.seed_bootstrap, google_service_account.terraform-env-sa, module.required_group]
+  for_each   = local.required_groups_to_create
+  group      = module.required_group[each.key].resource_name
+
+  preferred_member_key {
+    id = google_service_account.terraform-env-sa["bootstrap"].email
+  }
+
+  roles {
+    name = "MEMBER"
+  }
+
+  roles {
+    name = "OWNER"
+  }
+
+}

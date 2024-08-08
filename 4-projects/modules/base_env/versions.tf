@@ -24,10 +24,10 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:projects/v4.1.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:projects/v4.1.1"
   }
 
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:projects/v4.1.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:projects/v4.1.1"
   }
 }

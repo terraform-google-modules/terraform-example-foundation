@@ -9,7 +9,7 @@ require (
 	github.com/gruntwork-io/terratest v0.47.0
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.9.0
-	github.com/tidwall/gjson v1.17.1
+	github.com/tidwall/gjson v1.17.3
 	golang.org/x/oauth2 v0.22.0
 )
 

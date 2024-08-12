@@ -146,7 +146,6 @@ For example, to create a new business unit similar to business_unit_1, run the f
    grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/business_unit_2/g'
    ```
 
-
 1. Commit changes.
 
    ```bash
@@ -187,14 +186,14 @@ For example, to create a new business unit similar to business_unit_1, run the f
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch)), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
 
    ```bash
    git push --set-upstream origin plan
    ```
 
 1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
 
    ```bash
    git checkout -b production
@@ -203,7 +202,7 @@ For example, to create a new business unit similar to business_unit_1, run the f
 
 1. After production has been applied, apply development.
 1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
 
    ```bash
    git checkout -b development
@@ -212,7 +211,7 @@ For example, to create a new business unit similar to business_unit_1, run the f
 
 1. After development has been applied, apply nonproduction.
 1. Merge changes to nonproduction. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
 
    ```bash
    git checkout -b nonproduction
@@ -237,12 +236,25 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 
 ### Run Terraform locally
 
-1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder. Change into `4-projects` folder, copy the Terraform wrapper script and ensure it can be executed.
+1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder. Create and change into `gcp-projects` folder, copy the code, Terraform wrapper script and ensure it can be executed.
 
    ```bash
-   cd terraform-example-foundation/4-projects
-   cp ../build/tf-wrapper.sh .
-   chmod 755 ./tf-wrapper.sh
+   mkdir gcp-projects
+   cp -R  terraform-example-foundation/4-projects/* gcp-projects
+   cp terraform-example-foundation/build/tf-wrapper.sh gcp-projects/
+   cp terraform-example-foundation/.gitignore gcp-projects
+   chmod 755 ./gcp-environments/tf-wrapper.sh
+   ```
+
+1. Navigate to `gcp-projects` and initialize a local git repository, so you can manage versions locally. Create the environment branches.
+
+   ```bash
+   cd gcp-projects
+   git init
+   git checkout -b shared
+   git checkout -b development
+   git checkout -b nonproduction
+   git checkout -b production
    ```
 
 1. Rename `auto.example.tfvars` files to `auto.tfvars`.
@@ -257,47 +269,33 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 
 1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `nonproduction.auto.tfvars`, and `production.auto.tfvars` files.
    See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
-   Use `terraform output` to get the remote state bucket (the backend bucket used by previous steps) value from `0-bootstrap` output.
+   Use `terraform output` to get the remote state bucket (the backend bucket used by previous steps) value from `gcp-bootstrap` output.
 
    ```bash
-   export remote_state_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${remote_state_bucket}"
 
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
 We will now deploy each of our environments(development/production/nonproduction) using the `tf-wrapper.sh` script.
-When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch is the repository for 4-projects step and only the corresponding environment is applied. Environment shared must be applied first because development, nonproduction, and production depend on it.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
-1. Use `terraform output` to get the Cloud Build Project ID and the environment step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
-   echo ${CLOUD_BUILD_PROJECT_ID}
+   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/" output -raw seed_project_id)
+   echo ${SEED_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw projects_step_terraform_service_account_email)
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/" output -raw projects_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
-1. (Optional) If you want additional subfolders for separate business units or entities, make additional copies of the folder `business_unit_1` and modify any values that vary across business unit like `business_code`, `business_unit`, or `subnet_ip_range`.
-
-For example, to create a new business unit similar to business_unit_1, run the following:
+1. Checkout `shared` branch. Run `init` and `plan` and review output for environment shared.
 
    ```bash
-   #copy the business_unit_1 folder and it's contents to a new folder business_unit_2
-   cp -r  business_unit_1 business_unit_2
-
-   # search all files under the folder `business_unit_2` and replace strings for business_unit_1 with strings for business_unit_2
-   grep -rl bu1 business_unit_2/ | xargs sed -i 's/bu1/bu2/g'
-   grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/business_unit_2/g'
-   ```
-
-
-1. Run `init` and `plan` and review output for environment shared.
-
-   ```bash
+   git checkout shared
    ./tf-wrapper.sh init shared
    ./tf-wrapper.sh plan shared
    ```
@@ -305,56 +303,22 @@ For example, to create a new business unit similar to business_unit_1, run the f
 1. Run `validate` and check for violations.
 
    ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ./tf-wrapper.sh validate shared $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
 1. Run `apply` shared.
 
    ```bash
    ./tf-wrapper.sh apply shared
+   git add .
+   git commit -m "Initial shared commit."
    ```
 
-1. Run `init` and `plan` and review output for environment production.
+1. Checkout `development` branch and merge `shared` into it. Run `init` and `plan` and review output for environment production.
 
    ```bash
-   ./tf-wrapper.sh init production
-   ./tf-wrapper.sh plan production
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
-   ```
-
-1. Run `apply` production.
-
-   ```bash
-   ./tf-wrapper.sh apply production
-   ```
-
-1. Run `init` and `plan` and review output for environment nonproduction.
-
-   ```bash
-   ./tf-wrapper.sh init nonproduction
-   ./tf-wrapper.sh plan nonproduction
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate nonproduction $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
-   ```
-
-1. Run `apply` nonproduction.
-
-   ```bash
-   ./tf-wrapper.sh apply nonproduction
-   ```
-
-1. Run `init` and `plan` and review output for environment development.
-
-   ```bash
+   git checkout development
+   git merge shared
    ./tf-wrapper.sh init development
    ./tf-wrapper.sh plan development
    ```
@@ -362,16 +326,65 @@ For example, to create a new business unit similar to business_unit_1, run the f
 1. Run `validate` and check for violations.
 
    ```bash
-   ./tf-wrapper.sh validate development $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ./tf-wrapper.sh validate development $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
 1. Run `apply` development.
 
    ```bash
    ./tf-wrapper.sh apply development
+   git add .
+   git commit -m "Initial development commit."
    ```
 
-If you received any errors or made any changes to the Terraform config or any `.tfvars`, you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.
+1. Checkout `nonproduction` and merge `development` into it. Run `init` and `plan` and review output for environment nonproduction.
+
+   ```bash
+   git checkout nonproduction
+   git merge development
+   ./tf-wrapper.sh init nonproduction
+   ./tf-wrapper.sh plan nonproduction
+   ```
+
+1. Run `validate` and check for violations.
+
+   ```bash
+   ./tf-wrapper.sh validate nonproduction $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
+   ```
+
+1. Run `apply` nonproduction.
+
+   ```bash
+   ./tf-wrapper.sh apply nonproduction
+   git add .
+   git commit -m "Initial nonproduction commit."
+   ```
+
+1. Checkout shared `production`. Run `init` and `plan` and review output for environment development.
+
+   ```bash
+   git checkout production
+   git merge nonproduction
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+
+1. Run `validate` and check for violations.
+
+   ```bash
+   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
+   ```
+
+1. Run `apply` production.
+
+   ```bash
+   ./tf-wrapper.sh apply production
+   git add .
+   git commit -m "Initial production commit."
+   cd ../
+   ```
+
+If you received any errors or made any changes to the Terraform config or any `.tfvars`, you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.
 
 Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 

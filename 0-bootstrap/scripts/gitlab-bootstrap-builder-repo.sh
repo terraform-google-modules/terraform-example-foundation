@@ -20,7 +20,7 @@ if [ "$#" -lt 3 ]; then
     exit 1
 fi
 
-GITHUB_TOKEN=$1
+GITLAB_TOKEN=$1
 REPO_URL=$2
 DOCKERFILE_PATH=$3
 
@@ -28,7 +28,7 @@ DOCKERFILE_PATH=$3
 # extract portion after https:// from URL
 URL_PARTS=($(echo $REPO_URL | awk -F/ '{print $3, $4, $5}'))
 # construct the new authenticated URL
-AUTH_REPO_URL="https://${GITHUB_TOKEN}:@${URL_PARTS[0]}/${URL_PARTS[1]}/${URL_PARTS[2]}"
+AUTH_REPO_URL="https://oauth2:${GITLAB_TOKEN}@${URL_PARTS[0]}/${URL_PARTS[1]}/${URL_PARTS[2]}"
 
 tmp_dir=$(mktemp -d)
 git clone "${AUTH_REPO_URL}" "${tmp_dir}"

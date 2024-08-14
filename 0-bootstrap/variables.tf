@@ -149,7 +149,7 @@ variable "initial_group_config" {
 variable "cloudbuildv2_repository_config" {
   description = "Object structure to bring your own repositories to Foundation."
   type = object({
-    repo_type = string # Supported values are: GITHUBv2 and CSR
+    repo_type = string # Supported values are: GITHUBv2, GITLABv2 and CSR
     # repositories to be created
     repositories = object({
       bootstrap = object({
@@ -178,8 +178,10 @@ variable "cloudbuildv2_repository_config" {
       }),
     })
     # Credential Config for each repository type
-    github_pat    = optional(string, "")
-    github_app_id = optional(string, "")
+    github_pat                        = optional(string)
+    github_app_id                     = optional(string)
+    gitlab_read_authorizer_credential = optional(string)
+    gitlab_authorizer_credential      = optional(string)
   })
 
   # If cloudbuildv2 is not configured, then auto-creation with CSR will be used
@@ -207,13 +209,20 @@ variable "cloudbuildv2_repository_config" {
     }
   }
   validation {
-    condition     = var.cloudbuildv2_repository_config.repo_type != "GITHUBv2" || (var.cloudbuildv2_repository_config.repo_type == "GITHUBv2" && var.cloudbuildv2_repository_config.github_pat != "")
-    error_message = "The github_pat must be defined when using GITHUBv2 as repo type"
-  }
-
-  validation {
-    condition     = var.cloudbuildv2_repository_config.repo_type != "GITHUBv2" || (var.cloudbuildv2_repository_config.repo_type == "GITHUBv2" && var.cloudbuildv2_repository_config.github_app_id != "")
-    error_message = "The github_app_id must be defined when using GITHUBv2 as repo type"
+    condition = (
+      var.cloudbuildv2_repository_config.repo_type == "GITHUBv2" ? (
+        var.cloudbuildv2_repository_config.github_pat != null &&
+        var.cloudbuildv2_repository_config.github_app_id != null &&
+        var.cloudbuildv2_repository_config.gitlab_read_authorizer_credential == null &&
+        var.cloudbuildv2_repository_config.gitlab_authorizer_credential == null
+        ) : var.cloudbuildv2_repository_config.repo_type == "GITLABv2" ? (
+        var.cloudbuildv2_repository_config.github_pat == null &&
+        var.cloudbuildv2_repository_config.github_app_id == null &&
+        var.cloudbuildv2_repository_config.gitlab_read_authorizer_credential != null &&
+        var.cloudbuildv2_repository_config.gitlab_authorizer_credential != null
+      ) : var.cloudbuildv2_repository_config.repo_type == "CSR" ? true : false
+    )
+    error_message = "You must specify a valid repo_type ('GITHUBv2', 'GITLABv2', or 'CSR'). For 'GITHUBv2', all 'github_' prefixed variables must be defined and no 'gitlab_' prefixed variables should be defined. For 'GITLABv2', all 'gitlab_' prefixed variables must be defined and no 'github_' prefixed variables should be defined."
   }
 
 }

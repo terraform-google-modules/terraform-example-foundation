@@ -196,7 +196,7 @@ Using Terraform Cloud requires manual creation of the GitHub repositories or Git
 
 ### Cloudbuild with Github Pre-requisites
 
-To proceed with this method you will need:
+To proceed with github as your git provider you will need:
 
 - A authenticated GitHub account. The steps in this documentation assumes you have a configured SSH key for cloning and modifying repositories.
 - A **private** [GitHub repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) for each one of the stages of Foundation and one for maintaining the Cloud Build Pipeline Docker Image:
@@ -211,6 +211,25 @@ To proceed with this method you will need:
 
 - [Install Cloud Build App on Github](https://github.com/apps/google-cloud-build). After the installation, take note of the application id, it will be used in `terraform.tfvars`.
 - [Create Personal Access Token on Github with `repo` and `read:user` (or if app is installed in org use `read:org`)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) - After creating the token, it will be inserted into `terraform.tfvars`.
+
+### Cloudbuild with Gitlab Pre-requisites
+
+To proceed with gitlab as your git provider you will need:
+
+- A authenticated Gitlab account. The steps in this documentation assumes you have a configured SSH key for cloning and modifying repositories.
+- A **private** GitLab repository for each one of the stages of Foundation and one for maintaining the Cloud Build Pipeline Docker Image:
+  - Bootstrap (`gcp-bootstrap`)
+  - Organization (`gcp-org`)
+  - Environments (`gcp-environment`)
+  - Networks (`gcp-networks`)
+  - Projects (`gcp-projects`)
+  - Terraform Cloud Builder (`tf-cloud-builder`)
+
+   > Note: Recommended names for the repositories are, in sequence: `gcp-bootstrap`, `gcp-org`, `gcp-environments`, `gcp-networks`, `gcp-projects` and `tf-cloud-builder`; If you choose other names for your repository make sure you update `terraform.tfvars` the repository names under `cloudbuildv2_repository_config` variable.
+
+- An access token with the `api` scope to use for connecting and disconnecting repositories.
+
+- An access token with the `read_api` scope to ensure Cloud Build repositories can access source code in repositories.
 
 #### Step-by-Step
 
@@ -261,6 +280,38 @@ To proceed with this method you will need:
       ```
 
       > **IMPORTANT**: Take note that on your environment, you will need to update the URL's, github_pat and github_app_id variables.
+
+   1. (Gitlab Only) When bringing your own Gitlab Repositories to Cloud Build you will need to create a variable under `terraform.tfvars` with the following format:
+
+      ```terraform
+      cloudbuildv2_repository_config = {
+         repo_type = "GITLABv2"
+         repositories = {
+            bootstrap = {
+               repo_url = "https://gitlab.com/example-account/gcp-bootstrap.git"
+            },
+            env = {
+               repo_url = "https://gitlab.com/example-account/gcp-environments.git"
+            }
+            net = {
+               repo_url = "https://gitlab.com/example-account/gcp-networks.git"
+            }
+            org = {
+               repo_url = "https://gitlab.com/example-account/gcp-org.git"
+            }
+            proj = {
+               repo_url = "https://gitlab.com/example-account/gcp-projects.git"
+            }
+            tf_cloud_builder = {
+               repo_url = "https://gitlab.com/example-account/tf-cloud-builder.git"
+            }
+         }
+         gitlab_authorizer_credential = "your-gitlab-api-access-token"
+         gitlab_read_authorizer_credential = "your-gitlab-read-api-access-token"
+      }
+      ```
+
+      > **IMPORTANT**: Take note that on your environment, you will need to update the URL's, and the gitlab_ prefixed variables.
 
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
@@ -338,6 +389,12 @@ To proceed with this method you will need:
    terraform init
    ```
 
+1. Navigate out of the repository:
+
+   ```bash
+   cd ../..
+   ```
+
 1. (Optional) Run `terraform plan` to verify that state is configured correctly. You should see no changes from the previous state.
 
 1. (CSR-Only) When using Cloud Source Repo, clone the policy repo and copy contents of policy-library to new repo. Clone the repo at the same level of the `terraform-example-foundation` folder. Otherwise, skip this step.
@@ -345,8 +402,6 @@ To proceed with this method you will need:
    1. Clone and navigate to repository.
 
       ```bash
-      cd ../..
-
       gcloud source repos clone gcp-policies --project=${cloudbuild_project_id}
 
       cd gcp-policies
@@ -381,7 +436,13 @@ To proceed with this method you will need:
       1. (Github Only) When using Github with Cloudbuild, clone the repository with the following command.
 
          ```bash
-         git clone git@github.com:<GITHUB-OWNER>/gcp-bootstrap.git 
+         git clone git@github.com:<GITHUB-OWNER or ORGANIZATION>/gcp-bootstrap.git
+         ```
+
+      1. (Gitlab Only) When using Gitlab with Cloudbuild, clone the repository with the following command.
+
+         ```bash
+         git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-bootstrap.git 
          ```
 
    1. Navigate to the repository and copy required files to it:
@@ -397,7 +458,7 @@ To proceed with this method you will need:
       chmod 755 ./tf-wrapper.sh
       ```
 
-      1. (Github Only) When using Github with Cloudbuild, copy the `policy-library` from the `terraform-example-foundation` to the `gcp-bootstrap` repository and update validation mode from `CLOUDSOURCE` to `FILESYSTEM`:
+      1. (Github/Gitlab Only) When using Github with Cloudbuild, copy the `policy-library` from the `terraform-example-foundation` to the `gcp-bootstrap` repository and update validation mode from `CLOUDSOURCE` to `FILESYSTEM`:
 
          ```bash
          cp -RT ../terraform-example-foundation/policy-library/ ./policy-library

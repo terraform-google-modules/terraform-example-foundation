@@ -291,7 +291,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    chmod 755 ./gcp-environments/tf-wrapper.sh
    ```
 
-1. Navigate to `gcp-network` and initialize a local git repository, so you can manage versions locally. Create the environment branches.
+1. Navigate to `gcp-network` and initialize a local Git repository to manage versions locally. Then, create the environment branches.
 
    ```bash
    cd gcp-network

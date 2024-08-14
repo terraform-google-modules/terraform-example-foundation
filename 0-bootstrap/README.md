@@ -351,7 +351,7 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
 
 ## Running Terraform locally
 
-The following steps introduce the steps to deploy without Cloud Build.
+The following steps will guide you through deploying without using Cloud Build.
 
 1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and create to the `gcp-bootstrap` folder at the same level. Copy the `0-bootstrap` content and `.gitignore` to `gcp-bootstrap`.
 
@@ -365,7 +365,7 @@ The following steps introduce the steps to deploy without Cloud Build.
    cp terraform-example-foundation/.gitignore gcp-bootstrap
    ```
 
-1. Navigate to `gcp-bootstrap` and initialize a local git repository, so you can manage versions locally. Create the environment branches.
+1. Navigate to `gcp-bootstrap` and initialize a local Git repository to manage versions locally. Then, Create the environment branches.
 
    ```bash
    cd gcp-bootstrap
@@ -382,15 +382,15 @@ The following steps introduce the steps to deploy without Cloud Build.
    mv terraform.example.tfvars terraform.tfvars
    ```
 
-1. Rename `cb.tf` to `cb.tf.example` and update the file with values from your environment:
+1. Rename `cb.tf` to `cb.tf.example`:
 
    ```bash
    mv cb.tf cb.tf.example
    ```
 
-1. Comment Cloud Build outputs related at `outputs.tf`.
+1. Comment Cloud Build related outputs at `outputs.tf`.
 
-1. Comment lines related to Cloud Build at `sa.tf`. Search for `cicd_project_iam_member` and comment the module and the depends_on.
+1. In `sa.tf` file, comment out lines related to Cloud Build. Specifically, search for `cicd_project_iam_member` and comment out the corresponding module, as well as the "depends_on" meta-argument in any modules that depend on the commented module.
 
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
@@ -408,7 +408,7 @@ The following steps introduce the steps to deploy without Cloud Build.
    terraform plan -input=false -out bootstrap.tfplan
    ```
 
-1. Copy policy repo and copy contents of policy-library to new folder. Create it the folder at the same level of the `terraform-example-foundation` folder.
+1. Create a new folder called gcp-policies at the same directory level as the `terraform-example-foundation` folder. Initialize a Git repository, create a branch called `main`, and copy the contents of the `policy-library` directory from the `terraform-example-foundation` folder into the gcp-policies folder.
 
    ```bash
    cd ../
@@ -421,7 +421,7 @@ The following steps introduce the steps to deploy without Cloud Build.
    cp -RT ../terraform-example-foundation/policy-library/ .
    ```
 
-1. Commit changes at your main branch to the policy repo. This way you can manage versions locally.
+1. Commit changes to the main branch of the policy repo. This way you can manage versions locally.
 
    ```bash
    git add .
@@ -453,7 +453,7 @@ The following steps introduce the steps to deploy without Cloud Build.
    git commit -m "Initial version os gcp-bootstrap."
    ```
 
-1. Checkout `shared` branch and merge plan into it. Run `terraform apply`.
+1. Checkout `shared` branch and merge the `plan` branch into it. Then, Run `terraform apply`.
 
    ```bash
    git checkout shared
@@ -499,7 +499,7 @@ The following steps introduce the steps to deploy without Cloud Build.
    terraform init
    ```
 
-1. Commit the applied code, so you can manage versions locally.
+1. Commit the new code version, so you can manage versions locally.
 
    ```sh
    git commit -m "Init gcs backend."

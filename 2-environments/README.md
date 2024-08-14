@@ -189,7 +189,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    chmod 755 ./gcp-environments/tf-wrapper.sh
    ```
 
-1. Navigate to `gcp-environments` and initialize a local git repository, so you can manage versions locally. Create the environment branches.
+1. Navigate to `gcp-environments` and initialize a local Git repository to manage versions locally. Then, create the environment branches.
 
    ```bash
    cd gcp-environments
@@ -229,7 +229,7 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
-1. Checkout development branch. Run `init` and `plan` and review output for environment development.
+1. Checkout `development` branch. Run `init` and `plan` and review output for environment development.
 
    ```bash
    git checkout development
@@ -243,7 +243,7 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ./tf-wrapper.sh validate development $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
-1. Run `apply` development and commit initial version of development.
+1. Run `apply` development and commit the initial version of `development` branch.
 
    ```bash
    ./tf-wrapper.sh apply development
@@ -251,7 +251,7 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    git commit -m "Development initial commit."
    ```
 
-1. Checkout nonproduction branch and merge development into it. Run `init` and `plan` and review output for environment nonproduction.
+1. Checkout `nonproduction` branch and merge `development` branch into it. Run `init` and `plan` and review output for environment nonproduction.
 
    ```bash
    git checkout nonproduction
@@ -274,7 +274,7 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    git commit -m "Nonproduction initial commit."
    ```
 
-1. Checkout production branch and merge nonproduction into it. Run `init` and `plan` and review output for environment production.
+1. Checkout `production` branch and merge `nonproduction` branch into it. Run `init` and `plan` and review output for environment production.
 
    ```bash
    git checkout production

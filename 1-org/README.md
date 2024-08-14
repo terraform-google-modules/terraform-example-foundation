@@ -225,7 +225,7 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
    chmod 755 ./tf-wrapper.sh
    ```
 
-1. Initialize a local git repository, so you can manage versions locally. Create the environment branches.
+1. Initialize a local Git repository to manage versions locally. Then, create the environment branches.
 
    ```bash
       git init

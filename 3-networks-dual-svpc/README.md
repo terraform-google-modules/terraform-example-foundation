@@ -288,7 +288,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    cp -R terraform-example-foundation/3-networks-dual-svpc/* gcp-network
    cp terraform-example-foundation/build/tf-wrapper.sh gcp-network/
    cp terraform-example-foundation/.gitignore gcp-network
-   chmod 755 ./gcp-environments/tf-wrapper.sh
+   chmod 755 ./gcp-network/tf-wrapper.sh
    ```
 
 1. Navigate to `gcp-network` and initialize a local Git repository to manage versions locally. Then, create the environment branches.
@@ -296,6 +296,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    ```bash
    cd gcp-network
    git init
+   git commit -m "initialize empty directory" --allow-empty
    git checkout -b shared
    git checkout -b development
    git checkout -b nonproduction

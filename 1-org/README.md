@@ -229,6 +229,7 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
 
    ```bash
       git init
+      git commit -m "initialize empty directory" --allow-empty
       git checkout -b plan
       git checkout -b production
    ```

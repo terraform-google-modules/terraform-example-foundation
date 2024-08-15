@@ -194,6 +194,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    ```bash
    cd gcp-environments
    git init
+   git commit -m "initialize empty directory" --allow-empty
    git checkout -b production
    git checkout -b nonproduction
    git checkout -b development

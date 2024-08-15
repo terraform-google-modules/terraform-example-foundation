@@ -371,6 +371,7 @@ The following steps will guide you through deploying without using Cloud Build.
    cd gcp-bootstrap
 
    git init
+   git commit -m "initialize empty directory" --allow-empty
    git checkout -b plan
 
    git checkout -b shared
@@ -428,10 +429,10 @@ The following steps will guide you through deploying without using Cloud Build.
    git commit -m 'Initialize policy library repo'
    ```
 
-1. Navigate out of the policies repo.
+1. Navigate back to `gcp-bootstrap` repo.
 
    ```bash
-   cd ..
+   cd ../gcp-bootstrap
    ```
 
 1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Install Google Cloud CLI](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install).
@@ -439,7 +440,7 @@ The following steps will guide you through deploying without using Cloud Build.
 1. Run the following commands and check for violations:
 
    ```bash
-   export VET_PROJECT_ID=pjr-seed-serverless-test
+   export VET_PROJECT_ID=A-VALID-PROJECT-ID
    terraform show -json bootstrap.tfplan > bootstrap.json
    gcloud beta terraform vet bootstrap.json --policy-library="../terraform-example-foundation/policy-library" --project ${VET_PROJECT_ID}
    ```
@@ -502,6 +503,7 @@ The following steps will guide you through deploying without using Cloud Build.
 1. Commit the new code version, so you can manage versions locally.
 
    ```sh
+   git add backend.tf
    git commit -m "Init gcs backend."
    cd ../
    ```

@@ -23,6 +23,7 @@ module "env" {
   remote_state_bucket = var.remote_state_bucket
   location_kms        = coalesce(var.location_kms, local.default_region_kms)
   location_gcs        = coalesce(var.location_gcs, local.default_region_gcs)
+  keyring_name        = "bu1-sample-keyring"
   gcs_custom_placement_config = {
     data_locations = [
       upper(local.default_region),

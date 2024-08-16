@@ -144,8 +144,9 @@ For example, to create a new business unit similar to business_unit_1, run the f
    # search all files under the folder `business_unit_2` and replace strings for business_unit_1 with strings for business_unit_2
    grep -rl bu1 business_unit_2/ | xargs sed -i 's/bu1/bu2/g'
    grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/business_unit_2/g'
+   # search subnet_ip_range 10.3.64.0 and replace for the new range 10.4.64.0
+   grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    ```
-
 
 1. Commit changes.
 
@@ -187,14 +188,14 @@ For example, to create a new business unit similar to business_unit_1, run the f
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch)), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
 
    ```bash
    git push --set-upstream origin plan
    ```
 
 1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
 
    ```bash
    git checkout -b production
@@ -203,7 +204,7 @@ For example, to create a new business unit similar to business_unit_1, run the f
 
 1. After production has been applied, apply development.
 1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
 
    ```bash
    git checkout -b development
@@ -212,7 +213,7 @@ For example, to create a new business unit similar to business_unit_1, run the f
 
 1. After development has been applied, apply nonproduction.
 1. Merge changes to nonproduction. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
 
    ```bash
    git checkout -b nonproduction
@@ -292,8 +293,9 @@ For example, to create a new business unit similar to business_unit_1, run the f
    # search all files under the folder `business_unit_2` and replace strings for business_unit_1 with strings for business_unit_2
    grep -rl bu1 business_unit_2/ | xargs sed -i 's/bu1/bu2/g'
    grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/business_unit_2/g'
+   # search subnet_ip_range 10.3.64.0 and replace for the new range 10.4.64.0
+   grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    ```
-
 
 1. Run `init` and `plan` and review output for environment shared.
 

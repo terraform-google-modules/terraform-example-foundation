@@ -231,14 +231,14 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git push --set-upstream origin plan
    ```
 
 1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git checkout -b production
@@ -247,7 +247,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 
 1. After production has been applied, apply development.
 1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git checkout -b development
@@ -256,7 +256,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 
 1. After development has been applied, apply nonproduction.
 1. Merge changes to nonproduction. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project <https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID>
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
    ```bash
    git checkout -b nonproduction

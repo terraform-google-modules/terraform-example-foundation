@@ -442,7 +442,7 @@ The following steps will guide you through deploying without using Cloud Build.
    ```bash
    export VET_PROJECT_ID=A-VALID-PROJECT-ID
    terraform show -json bootstrap.tfplan > bootstrap.json
-   gcloud beta terraform vet bootstrap.json --policy-library="../terraform-example-foundation/policy-library" --project ${VET_PROJECT_ID}
+   gcloud beta terraform vet bootstrap.json --policy-library="$(pwd)/../gcp-policies" --project ${VET_PROJECT_ID}
    ```
 
    *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because `gcloud beta terraform vet` needs to link resources to a valid Google Cloud Platform project.

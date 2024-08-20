@@ -393,6 +393,8 @@ The following steps will guide you through deploying without using Cloud Build.
 
 1. In `sa.tf` file, comment out lines related to Cloud Build. Specifically, search for `cicd_project_iam_member` and comment out the corresponding module, as well as the "depends_on" meta-argument in any modules that depend on the commented module.
 
+1. In `sa.tf` file, search for `local.cicd_project_id` and comment out the corresponding code.
+
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
    ```bash

@@ -103,7 +103,7 @@ func TestProcessSteps(t *testing.T) {
 	assert.NoError(t, err)
 	assert.False(t, s.IsStepDestroyed("destroy"), "check if 'destroy' is 'DESTROYED' should be false")
 	err = s.RunDestroyStep("destroy", func() error {
-		return fmt.Errorf(badStepMsg)
+		return fmt.Errorf("%s", badStepMsg)
 	})
 	assert.Error(t, err)
 	assert.False(t, s.IsStepDestroyed("destroy"), "check if 'destroy' is 'DESTROYED' should be false")
@@ -113,7 +113,7 @@ func TestProcessSteps(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, s.IsStepDestroyed("gone"), "check if 'gone' is 'DESTROYED' should be true")
 	err = s.RunDestroyStep("gone", func() error {
-		return fmt.Errorf("will fail if executed")
+		return fmt.Errorf("%s", "will fail if executed")
 	})
 	assert.NoError(t, err)
 	assert.True(t, s.IsStepDestroyed("gone"), "check if 'gone' is 'DESTROYED' should be true")

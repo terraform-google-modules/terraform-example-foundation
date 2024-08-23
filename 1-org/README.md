@@ -128,7 +128,13 @@ This module creates and applies [tags](https://cloud.google.com/resource-manager
    1. (Github Only) When using Github with Cloudbuild, clone the repository with the following command.
 
       ```bash
-      git clone git@github.com:<GITHUB-OWNER>/gcp-org.git 
+      git clone git@github.com:<GITHUB-OWNER or ORGANIZATION>/gcp-org.git
+      ```
+
+   1. (Gitlab Only) When using Gitlab with Cloudbuild, clone the repository with the following command.
+
+      ```bash
+      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-org.git 
       ```
 
 1. Navigate into the repo, change to a nonproduction branch, and copy the contents of foundation to the new repo.
@@ -145,7 +151,7 @@ This module creates and applies [tags](https://cloud.google.com/resource-manager
    chmod 755 ./tf-wrapper.sh
    ```
 
-   1. (Github Only) When using Github with Cloudbuild, copy the `policy-library` from the `terraform-example-foundation` to the `gcp-bootstrap` repository and update validation mode from `CLOUDSOURCE` to `FILESYSTEM`:
+   1. (Github/Gitlab Only) When using Github with Cloudbuild, copy the `policy-library` from the `terraform-example-foundation` to the `gcp-org` repository and update validation mode from `CLOUDSOURCE` to `FILESYSTEM`:
 
       ```bash
       cp -RT ../terraform-example-foundation/policy-library/ ./policy-library

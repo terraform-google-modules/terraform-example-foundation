@@ -47,3 +47,42 @@ variable "tfc_org_name" {
   type        = string
   default     = ""
 }
+
+variable "cloudbuildv2_repository_config" {
+  description = "Object structure to bring your own repositories to Foundation."
+  type = object({
+    repo_type = string # Supported values are: GITHUBv2, GITLABv2 and CSR
+    # repositories to be created
+    repositories = map(object({
+      repository_name = string,
+      repository_url  = string,
+    }))
+    # Credential Config for each repository type
+    github_pat                        = optional(string)
+    github_app_id                     = optional(string)
+    gitlab_read_authorizer_credential = optional(string)
+    gitlab_authorizer_credential      = optional(string)
+  })
+
+  # If cloudbuildv2 is not configured, then auto-creation with CSR will be used
+  default = {
+    repo_type = "CSR"
+    repositories = {}
+  }
+  validation {
+    condition = (
+      var.cloudbuildv2_repository_config.repo_type == "GITHUBv2" ? (
+        var.cloudbuildv2_repository_config.github_pat != null &&
+        var.cloudbuildv2_repository_config.github_app_id != null &&
+        var.cloudbuildv2_repository_config.gitlab_read_authorizer_credential == null &&
+        var.cloudbuildv2_repository_config.gitlab_authorizer_credential == null
+        ) : var.cloudbuildv2_repository_config.repo_type == "GITLABv2" ? (
+        var.cloudbuildv2_repository_config.github_pat == null &&
+        var.cloudbuildv2_repository_config.github_app_id == null &&
+        var.cloudbuildv2_repository_config.gitlab_read_authorizer_credential != null &&
+        var.cloudbuildv2_repository_config.gitlab_authorizer_credential != null
+      ) : var.cloudbuildv2_repository_config.repo_type == "CSR" ? true : false
+    )
+    error_message = "You must specify a valid repo_type ('GITHUBv2', 'GITLABv2', or 'CSR'). For 'GITHUBv2', all 'github_' prefixed variables must be defined and no 'gitlab_' prefixed variables should be defined. For 'GITLABv2', all 'gitlab_' prefixed variables must be defined and no 'github_' prefixed variables should be defined."
+  }
+}

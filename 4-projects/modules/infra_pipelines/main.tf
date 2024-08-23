@@ -20,20 +20,23 @@ locals {
   gar_project_id         = split("/", var.cloud_builder_artifact_repo)[1]
   gar_region             = split("/", var.cloud_builder_artifact_repo)[3]
   gar_name               = split("/", var.cloud_builder_artifact_repo)[length(split("/", var.cloud_builder_artifact_repo)) - 1]
-  created_csrs           = toset([for repo in google_sourcerepo_repository.app_infra_repo : repo.name])
+  created_repos           = local.use_csr ? { for k,v in google_sourcerepo_repository.app_infra_repo : k => v.name } : module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories
   artifact_buckets       = { for k, ws in module.tf_workspace : k => split("/", ws.artifacts_bucket)[length(split("/", ws.artifacts_bucket)) - 1] }
   state_buckets          = { for k, ws in module.tf_workspace : k => split("/", ws.state_bucket)[length(split("/", ws.state_bucket)) - 1] }
   log_buckets            = { for k, ws in module.tf_workspace : k => split("/", ws.logs_bucket)[length(split("/", ws.logs_bucket)) - 1] }
   plan_triggers_id       = [for ws in module.tf_workspace : ws.cloudbuild_plan_trigger_id]
   apply_triggers_id      = [for ws in module.tf_workspace : ws.cloudbuild_apply_trigger_id]
+  use_csr                = var.cloudbuildv2_repository_config.repo_type == "CSR" ? true : false
+  cloudbuildv2_repos     = local.use_csr ? {} : var.cloudbuildv2_repository_config.repositories
+  csr_repos              = local.use_csr ? var.cloudbuildv2_repository_config.repositories : {}
 }
 
-# Create CSRs
+# Create CSRs if the user did not specify a Cloud Build Repository (2nd Gen)
 resource "google_sourcerepo_repository" "app_infra_repo" {
-  for_each = toset(var.app_infra_repos)
+  for_each = local.csr_repos
 
   project = var.cloudbuild_project_id
-  name    = each.value
+  name    = each.value.repository_name
 }
 
 resource "google_sourcerepo_repository" "gcp_policies" {
@@ -53,29 +56,45 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
   }
 }
 
+module "cloudbuild_repositories" {
+  count  = local.cloudbuildv2_repos != {} ? 1 : 0
+  source = "../cloudbuild_repo_connection"
+
+  project_id = var.cloudbuild_project_id
+
+  credential_config = {
+    credential_type                   = var.cloudbuildv2_repository_config.repo_type
+    gitlab_authorizer_credential      = var.cloudbuildv2_repository_config.gitlab_authorizer_credential
+    gitlab_read_authorizer_credential = var.cloudbuildv2_repository_config.gitlab_read_authorizer_credential
+    github_pat                        = var.cloudbuildv2_repository_config.github_pat
+    github_app_id                     = var.cloudbuildv2_repository_config.github_app_id
+  }
+  cloud_build_repositories = var.cloudbuildv2_repository_config.repositories
+}
+
 module "tf_workspace" {
-  source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 8.0"
-  for_each = toset(var.app_infra_repos)
+  source   = "../tf_cloudbuild_workspace"
+  # version  = "~> 8.0"
+  for_each = var.cloudbuildv2_repository_config.repositories
 
   project_id = var.cloudbuild_project_id
   location   = var.default_region
 
   # using bucket custom names for compliance with bucket naming conventions
   create_state_bucket       = true
-  create_state_bucket_name  = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-state"
-  log_bucket_name           = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-logs"
-  artifacts_bucket_name     = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.key}-artifacts"
+  create_state_bucket_name  = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.value.repository_name}-state"
+  log_bucket_name           = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.value.repository_name}-logs"
+  artifacts_bucket_name     = "${var.bucket_prefix}-${var.cloudbuild_project_id}-${each.value.repository_name}-artifacts"
   cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
   enable_worker_pool        = true
   worker_pool_id            = var.private_worker_pool_id
-  tf_repo_uri               = google_sourcerepo_repository.app_infra_repo[each.key].url
   create_cloudbuild_sa      = true
-  create_cloudbuild_sa_name = "sa-tf-cb-${each.key}"
+  create_cloudbuild_sa_name = "sa-tf-cb-${each.value.repository_name}"
   diff_sa_project           = true
   buckets_force_destroy     = true
-
+  tf_repo_uri               = local.cloudbuildv2_repos != {} ? module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories[each.key].id : google_sourcerepo_repository.app_infra_repo[each.key].url
+  tf_repo_type              = local.cloudbuildv2_repos != {} ? "CLOUDBUILD_V2_REPOSITORY" : "CLOUD_SOURCE_REPOSITORIES"
   substitutions = {
     "_BILLING_ID"                   = var.billing_account
     "_GAR_REGION"                   = local.gar_region
@@ -89,7 +108,7 @@ module "tf_workspace" {
   depends_on = [
     google_sourcerepo_repository.app_infra_repo,
   ]
-
+  trigger_location = var.default_region
 }
 
 /***********************************************
@@ -98,7 +117,7 @@ module "tf_workspace" {
 
 resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" {
   provider = google-beta
-  for_each = toset(var.app_infra_repos)
+  for_each = var.cloudbuildv2_repository_config.repositories
 
   project    = local.gar_project_id
   location   = local.gar_region
@@ -108,7 +127,7 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
 }
 
 resource "google_storage_bucket_iam_member" "tf_state" {
-  for_each = toset(var.app_infra_repos)
+  for_each = var.cloudbuildv2_repository_config.repositories
 
   bucket = var.remote_tfstate_bucket
   role   = "roles/storage.objectViewer"
@@ -117,7 +136,7 @@ resource "google_storage_bucket_iam_member" "tf_state" {
 
 // Required by gcloud beta terraform vet
 resource "google_organization_iam_member" "browser" {
-  for_each = toset(var.app_infra_repos)
+  for_each = var.cloudbuildv2_repository_config.repositories
 
   org_id = var.org_id
   role   = "roles/browser"
@@ -125,10 +144,10 @@ resource "google_organization_iam_member" "browser" {
 }
 
 resource "google_sourcerepo_repository_iam_member" "member" {
-  for_each = toset(var.app_infra_repos)
+  for_each = local.csr_repos
 
   project    = google_sourcerepo_repository.gcp_policies.project
   repository = google_sourcerepo_repository.gcp_policies.name
   role       = "roles/viewer"
-  member     = "serviceAccount:${local.workspace_sa_email[each.key]}"
+  member     = "serviceAccount:${local.workspace_sa_email[each.value.repository_name]}"
 }

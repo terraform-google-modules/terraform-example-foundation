@@ -194,6 +194,10 @@ Using Terraform Cloud requires manual creation of the GitHub repositories or Git
 
 ## Deploying with Cloud Build
 
+When deploying with Cloud Build, you can choose GitHub, GitLab, or Cloud Source Repositories as your Git provider.
+
+Please note that some steps in this documentation are specific to the selected Git provider. These steps are clearly marked at the beginning of each instruction. For example, if a step applies only to GitHub users, it will be labeled with "(GitHub only)."
+
 ### Cloudbuild with Github Pre-requisites
 
 To proceed with github as your git provider you will need:
@@ -231,7 +235,7 @@ To proceed with gitlab as your git provider you will need:
 
 - An access token with the `read_api` scope to ensure Cloud Build repositories can access source code in repositories.
 
-#### Step-by-Step
+### Step-by-Step
 
 1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and navigate to the `0-bootstrap` folder.
 
@@ -256,22 +260,22 @@ To proceed with gitlab as your git provider you will need:
          repo_type = "GITHUBv2"
          repositories = {
             bootstrap = {
-               repo_url = "https://github.com/example-account/gcp-bootstrap.git"
+               repository_url = "https://github.com/example-account/gcp-bootstrap.git"
             },
             env = {
-               repo_url = "https://github.com/example-account/gcp-environments.git"
+               repository_url = "https://github.com/example-account/gcp-environments.git"
             }
             net = {
-               repo_url = "https://github.com/example-account/gcp-networks.git"
+               repository_url = "https://github.com/example-account/gcp-networks.git"
             }
             org = {
-               repo_url = "https://github.com/example-account/gcp-org.git"
+               repository_url = "https://github.com/example-account/gcp-org.git"
             }
             proj = {
-               repo_url = "https://github.com/example-account/gcp-projects.git"
+               repository_url = "https://github.com/example-account/gcp-projects.git"
             }
             tf_cloud_builder = {
-               repo_url = "https://github.com/example-account/tf-cloud-builder.git"
+               repository_url = "https://github.com/example-account/tf-cloud-builder.git"
             }
          }
          github_app_id = "your-github-cloud-build-app-id"
@@ -288,22 +292,22 @@ To proceed with gitlab as your git provider you will need:
          repo_type = "GITLABv2"
          repositories = {
             bootstrap = {
-               repo_url = "https://gitlab.com/example-account/gcp-bootstrap.git"
+               repository_url = "https://gitlab.com/example-account/gcp-bootstrap.git"
             },
             env = {
-               repo_url = "https://gitlab.com/example-account/gcp-environments.git"
+               repository_url = "https://gitlab.com/example-account/gcp-environments.git"
             }
             net = {
-               repo_url = "https://gitlab.com/example-account/gcp-networks.git"
+               repository_url = "https://gitlab.com/example-account/gcp-networks.git"
             }
             org = {
-               repo_url = "https://gitlab.com/example-account/gcp-org.git"
+               repository_url = "https://gitlab.com/example-account/gcp-org.git"
             }
             proj = {
-               repo_url = "https://gitlab.com/example-account/gcp-projects.git"
+               repository_url = "https://gitlab.com/example-account/gcp-projects.git"
             }
             tf_cloud_builder = {
-               repo_url = "https://gitlab.com/example-account/tf-cloud-builder.git"
+               repository_url = "https://gitlab.com/example-account/tf-cloud-builder.git"
             }
          }
          gitlab_authorizer_credential = "your-gitlab-api-access-token"

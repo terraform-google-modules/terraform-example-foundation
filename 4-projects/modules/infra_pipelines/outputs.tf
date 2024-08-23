@@ -30,8 +30,8 @@ output "gar_name" {
 }
 
 output "repos" {
-  description = "CSRs to store source code"
-  value       = local.created_csrs
+  description = "Created repos"
+  value       = local.created_repos
 }
 
 output "artifact_buckets" {

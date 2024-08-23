@@ -171,8 +171,7 @@ module "tf_cloud_builder" {
   source = "../../terraform-google-bootstrap/modules/tf_cloudbuild_builder"
 
   project_id                   = module.tf_source.cloudbuild_project_id
-  dockerfile_repo_uri          = local.create_cloud_source_repos == [] ? module.tf_source.csr_repos[local.cloudbuilder_repo].url : ""
-  dockerfile_repo_id           = local.cloudbuildv2_repos != {} ? module.cloudbuild_repositories[0].cloudbuild_2nd_gen_repositories["tf_cloud_builder"].id : ""
+  dockerfile_repo_uri          = local.create_cloud_source_repos == [] ? module.tf_source.csr_repos[local.cloudbuilder_repo].url : module.cloudbuild_repositories[0].cloudbuild_2nd_gen_repositories["tf_cloud_builder"].id
   use_cloudbuildv2_repository  = local.cloudbuildv2_repos != {} ? true : false
   dockerfile_repo_type         = local.is_github_connection ? "GITHUB" : (local.is_gitlab_connection ? "UNKNOWN" : "CLOUD_SOURCE_REPOSITORIES")
   gar_repo_location            = var.default_region
@@ -209,7 +208,7 @@ module "bootstrap_github_repo" {
 }
 
 module "bootstrap_gitlab_repo" {
-  source = "terraform-google-modules/gcloud/google"
+  source  = "terraform-google-modules/gcloud/google"
   count   = local.is_gitlab_connection ? 1 : 0
   version = "~> 3.1"
   upgrade = false
@@ -257,7 +256,7 @@ module "cloudbuild_repositories" {
     github_pat                        = var.cloudbuildv2_repository_config.github_pat
     github_app_id                     = var.cloudbuildv2_repository_config.github_app_id
   }
-  cloudbuild_repos = var.cloudbuildv2_repository_config.repositories
+  cloud_build_repositories = var.cloudbuildv2_repository_config.repositories
 }
 
 module "tf_workspace" {
@@ -274,8 +273,7 @@ module "tf_workspace" {
   artifacts_bucket_name      = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-${local.cb_config[each.key].source}-build-artifacts"
   cloudbuild_plan_filename   = "cloudbuild-tf-plan.yaml"
   cloudbuild_apply_filename  = "cloudbuild-tf-apply.yaml"
-  tf_repo_uri                = local.cloudbuildv2_repos != {} ? var.cloudbuildv2_repository_config.repositories[each.key].repo_url : module.tf_source.csr_repos[local.cb_config[each.key].source].url
-  cloudbuildv2_repository_id = local.cloudbuildv2_repos != {} ? module.cloudbuild_repositories[0].cloudbuild_2nd_gen_repositories[each.key].id : ""
+  tf_repo_uri                = local.cloudbuildv2_repos != {} ? module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories[each.key].id : module.tf_source.csr_repos[local.cb_config[each.key].source].url
 
   tf_repo_type          = local.cloudbuildv2_repos != {} ? "CLOUDBUILD_V2_REPOSITORY" : "CLOUD_SOURCE_REPOSITORIES"
   cloudbuild_sa         = google_service_account.terraform-env-sa[each.key].id

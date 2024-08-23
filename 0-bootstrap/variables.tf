@@ -153,28 +153,28 @@ variable "cloudbuildv2_repository_config" {
     # repositories to be created
     repositories = object({
       bootstrap = object({
-        repo_name = optional(string, "gcp-bootstrap")
-        repo_url  = string
+        repository_name = optional(string, "gcp-bootstrap")
+        repository_url  = string
       }),
       org = object({
-        repo_name = optional(string, "gcp-org")
-        repo_url  = string
+        repository_name = optional(string, "gcp-org")
+        repository_url  = string
       }),
       env = object({
-        repo_name = optional(string, "gcp-environments")
-        repo_url  = string
+        repository_name = optional(string, "gcp-environments")
+        repository_url  = string
       }),
       net = object({
-        repo_name = optional(string, "gcp-networks")
-        repo_url  = string
+        repository_name = optional(string, "gcp-networks")
+        repository_url  = string
       }),
       proj = object({
-        repo_name = optional(string, "gcp-projects")
-        repo_url  = string
+        repository_name = optional(string, "gcp-projects")
+        repository_url  = string
       }),
       tf_cloud_builder = object({
-        repo_name = optional(string, "tf-cloud-builder")
-        repo_url  = string
+        repository_name = optional(string, "tf-cloud-builder")
+        repository_url  = string
       }),
     })
     # Credential Config for each repository type
@@ -189,22 +189,22 @@ variable "cloudbuildv2_repository_config" {
     repo_type = "CSR"
     repositories = {
       bootstrap = {
-        repo_url = ""
+        repository_url = ""
       },
       env = {
-        repo_url = ""
+        repository_url = ""
       }
       net = {
-        repo_url = ""
+        repository_url = ""
       }
       org = {
-        repo_url = ""
+        repository_url = ""
       }
       proj = {
-        repo_url = ""
+        repository_url = ""
       }
       tf_cloud_builder = {
-        repo_url = ""
+        repository_url = ""
       }
     }
   }

@@ -189,6 +189,7 @@ To proceed with gitlab as your git provider you will need:
       ```
 
       > **IMPORTANT**: Take note that on your environment, you will need to update the URL's, github_pat and github_app_id variables.
+      > **IMPORTANT**: The key name must be exactly the same as the repository_name
 
    1. (Gitlab Only) When bringing your own Gitlab Repositories to Cloud Build you will need to create a variable under `shared.auto.tfvars` with the following format:
 
@@ -206,8 +207,9 @@ To proceed with gitlab as your git provider you will need:
       }
       ```
 
-      > **IMPORTANT**: Take note that on your environment, you will need to update the URL's, and the gitlab_ prefixed variables.
-
+      > **IMPORTANT**: Take note that on your environment, you will need to update the URL's, and the gitlab_prefixed variables.
+      > **IMPORTANT**: The key name must be exactly the same as the repository_name
+   
 1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `nonproduction.auto.tfvars`, and `production.auto.tfvars` files.
 1. See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
 

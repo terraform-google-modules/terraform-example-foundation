@@ -147,7 +147,21 @@ variable "initial_group_config" {
 }
 
 variable "cloudbuildv2_repository_config" {
-  description = "Object structure to bring your own repositories to Foundation."
+  description = <<-EOT
+  Configuration for integrating repositories with Cloud Build v2:
+    - repo_type: Specifies the type of repository. Supported types are 'GITHUBv2', 'GITLABv2', and 'CSR'.
+    - repositories: A map of repositories to be created. The key must match the exact name of the repository. Each repository is defined by:
+        - repository_name: The name of the repository.
+        - repository_url: The URL of the repository.
+    - github_pat: (Optional) The personal access token for GitHub authentication.
+    - github_app_id: (Optional) The application ID for a GitHub App used for authentication.
+    - gitlab_read_authorizer_credential: (Optional) The read authorizer credential for GitLab access.
+    - gitlab_authorizer_credential: (Optional) The authorizer credential for GitLab access.
+  
+  Note: When using GITLABv2, specify `gitlab_read_authorizer_credential` and `gitlab_authorizer_credential`.
+  Note: When using GITHUBv2, specify `github_pat` and `github_app_id`.
+  Note: If 'cloudbuildv2' is not configured, CSR (Cloud Source Repositories) will be used by default.
+  EOT
   type = object({
     repo_type = string # Supported values are: GITHUBv2, GITLABv2 and CSR
     # repositories to be created

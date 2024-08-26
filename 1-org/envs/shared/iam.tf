@@ -23,11 +23,8 @@ resource "google_organization_iam_audit_config" "org_config" {
   org_id  = local.org_id
   service = "allServices"
 
-  dynamic "audit_log_config" {
-    for_each = ["ADMIN_READ"]
-    content {
-      log_type = audit_log_config.key
-    }
+  audit_log_config {
+    log_type = "ADMIN_READ"
   }
 }
 
@@ -36,11 +33,8 @@ resource "google_folder_iam_audit_config" "folder_config" {
   folder  = "folders/${local.parent_folder}"
   service = "allServices"
 
-  dynamic "audit_log_config" {
-    for_each = ["ADMIN_READ"]
-    content {
-      log_type = audit_log_config.key
-    }
+  audit_log_config {
+    log_type = "ADMIN_READ"
   }
 }
 

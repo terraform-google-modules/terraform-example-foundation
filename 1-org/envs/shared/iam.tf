@@ -18,26 +18,6 @@
   Audit Logs - IAM
 *****************************************/
 
-resource "google_organization_iam_audit_config" "org_config" {
-  count   = local.parent_folder == "" ? 1 : 0
-  org_id  = local.org_id
-  service = "allServices"
-
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
-}
-
-resource "google_folder_iam_audit_config" "folder_config" {
-  count   = local.parent_folder != "" ? 1 : 0
-  folder  = "folders/${local.parent_folder}"
-  service = "allServices"
-
-  audit_log_config {
-    log_type = "ADMIN_READ"
-  }
-}
-
 resource "google_project_iam_member" "audit_log_logging_viewer" {
   project = module.org_audit_logs.project_id
   role    = "roles/logging.viewer"

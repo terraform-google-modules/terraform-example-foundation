@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/security-center": "8.8.0",
+    "@google-cloud/security-center": "8.11.0",
     "uuid4": "2.0.3",
     "moment": "2.30.1"
   }

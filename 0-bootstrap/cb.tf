@@ -171,7 +171,7 @@ module "tf_cloud_builder" {
   source = "git::https://github.com/terraform-google-modules/terraform-google-bootstrap.git//modules/tf_cloudbuild_builder?ref=f79bbc53f0593882e552ee0e1ca4019a4db88ac7"
 
   project_id                   = module.tf_source.cloudbuild_project_id
-  dockerfile_repo_uri          = local.create_cloud_source_repos == [] ? module.tf_source.csr_repos[local.cloudbuilder_repo].url : module.cloudbuild_repositories[0].cloudbuild_2nd_gen_repositories["tf_cloud_builder"].id
+  dockerfile_repo_uri          = local.create_cloud_source_repos == [] ? module.tf_source.csr_repos[local.cloudbuilder_repo].url : module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories["tf_cloud_builder"].id
   use_cloudbuildv2_repository  = local.cloudbuildv2_repos != {} ? true : false
   dockerfile_repo_type         = local.is_github_connection ? "GITHUB" : (local.is_gitlab_connection ? "UNKNOWN" : "CLOUD_SOURCE_REPOSITORIES")
   gar_repo_location            = var.default_region
@@ -204,7 +204,7 @@ module "bootstrap_github_repo" {
   upgrade = false
 
   create_cmd_entrypoint = "${path.module}/scripts/github-bootstrap-builder-repo.sh"
-  create_cmd_body       = "${var.cloudbuildv2_repository_config.github_pat} ${var.cloudbuildv2_repository_config.repositories.tf_cloud_builder.repo_url} ${path.module}/Dockerfile"
+  create_cmd_body       = "${var.cloudbuildv2_repository_config.github_pat} ${var.cloudbuildv2_repository_config.repositories.tf_cloud_builder.repository_url} ${path.module}/Dockerfile"
 }
 
 module "bootstrap_gitlab_repo" {
@@ -214,7 +214,7 @@ module "bootstrap_gitlab_repo" {
   upgrade = false
 
   create_cmd_entrypoint = "${path.module}/scripts/gitlab-bootstrap-builder-repo.sh"
-  create_cmd_body       = "${var.cloudbuildv2_repository_config.gitlab_authorizer_credential} ${var.cloudbuildv2_repository_config.repositories.tf_cloud_builder.repo_url} ${path.module}/Dockerfile"
+  create_cmd_body       = "${var.cloudbuildv2_repository_config.gitlab_authorizer_credential} ${var.cloudbuildv2_repository_config.repositories.tf_cloud_builder.repository_url} ${path.module}/Dockerfile"
 }
 
 resource "time_sleep" "cloud_builder" {

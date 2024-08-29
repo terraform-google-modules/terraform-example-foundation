@@ -58,7 +58,7 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
 
 module "cloudbuild_repositories" {
   count  = local.cloudbuildv2_repos != {} ? 1 : 0
-  source = "../cloudbuild_repo_connection"
+  source = "git::https://github.com/terraform-google-modules/terraform-google-bootstrap.git//modules/cloudbuild_repo_connection?ref=f79bbc53f0593882e552ee0e1ca4019a4db88ac7"
 
   project_id = var.cloudbuild_project_id
 

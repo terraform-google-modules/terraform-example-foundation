@@ -263,17 +263,17 @@ module "tf_workspace" {
   source   = "../../terraform-google-bootstrap/modules/tf_cloudbuild_workspace"
   for_each = local.granular_sa
 
-  project_id                 = module.tf_source.cloudbuild_project_id
-  location                   = var.default_region
-  trigger_location           = var.default_region
-  enable_worker_pool         = true
-  worker_pool_id             = module.tf_private_pool.private_worker_pool_id
-  state_bucket_self_link     = local.cb_config[each.key].state_bucket
-  log_bucket_name            = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-${local.cb_config[each.key].source}-build-logs"
-  artifacts_bucket_name      = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-${local.cb_config[each.key].source}-build-artifacts"
-  cloudbuild_plan_filename   = "cloudbuild-tf-plan.yaml"
-  cloudbuild_apply_filename  = "cloudbuild-tf-apply.yaml"
-  tf_repo_uri                = local.cloudbuildv2_repos != {} ? module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories[each.key].id : module.tf_source.csr_repos[local.cb_config[each.key].source].url
+  project_id                = module.tf_source.cloudbuild_project_id
+  location                  = var.default_region
+  trigger_location          = var.default_region
+  enable_worker_pool        = true
+  worker_pool_id            = module.tf_private_pool.private_worker_pool_id
+  state_bucket_self_link    = local.cb_config[each.key].state_bucket
+  log_bucket_name           = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-${local.cb_config[each.key].source}-build-logs"
+  artifacts_bucket_name     = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-${local.cb_config[each.key].source}-build-artifacts"
+  cloudbuild_plan_filename  = "cloudbuild-tf-plan.yaml"
+  cloudbuild_apply_filename = "cloudbuild-tf-apply.yaml"
+  tf_repo_uri               = local.cloudbuildv2_repos != {} ? module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories[each.key].id : module.tf_source.csr_repos[local.cb_config[each.key].source].url
 
   tf_repo_type          = local.cloudbuildv2_repos != {} ? "CLOUDBUILD_V2_REPOSITORY" : "CLOUD_SOURCE_REPOSITORIES"
   cloudbuild_sa         = google_service_account.terraform-env-sa[each.key].id

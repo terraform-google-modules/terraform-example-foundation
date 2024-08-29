@@ -109,7 +109,7 @@ commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
    1. (Gitlab Only) When using Gitlab with Cloudbuild, clone the repository with the following command.
 
       ```bash
-      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-environments.git 
+      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-environments.git
       ```
 
 1. Navigate into the repo, change to the non-main branch and copy contents of foundation to new repo.

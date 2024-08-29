@@ -20,7 +20,7 @@ locals {
   gar_project_id         = split("/", var.cloud_builder_artifact_repo)[1]
   gar_region             = split("/", var.cloud_builder_artifact_repo)[3]
   gar_name               = split("/", var.cloud_builder_artifact_repo)[length(split("/", var.cloud_builder_artifact_repo)) - 1]
-  created_repos           = local.use_csr ? { for k,v in google_sourcerepo_repository.app_infra_repo : k => v.name } : module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories
+  created_repos          = local.use_csr ? { for k, v in google_sourcerepo_repository.app_infra_repo : k => v.name } : module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories
   artifact_buckets       = { for k, ws in module.tf_workspace : k => split("/", ws.artifacts_bucket)[length(split("/", ws.artifacts_bucket)) - 1] }
   state_buckets          = { for k, ws in module.tf_workspace : k => split("/", ws.state_bucket)[length(split("/", ws.state_bucket)) - 1] }
   log_buckets            = { for k, ws in module.tf_workspace : k => split("/", ws.logs_bucket)[length(split("/", ws.logs_bucket)) - 1] }
@@ -73,7 +73,7 @@ module "cloudbuild_repositories" {
 }
 
 module "tf_workspace" {
-  source   = "../tf_cloudbuild_workspace"
+  source = "../tf_cloudbuild_workspace"
   # version  = "~> 8.0"
   for_each = var.cloudbuildv2_repository_config.repositories
 

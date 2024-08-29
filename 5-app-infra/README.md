@@ -139,7 +139,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    1. (Gitlab Only) When using Gitlab with Cloudbuild, clone the repository with the following command.
 
       ```bash
-      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/bu1-example-app.git 
+      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/bu1-example-app.git
       ```
 
 1. Navigate into the repo, change to non-main branch and copy contents of foundation to new repo.

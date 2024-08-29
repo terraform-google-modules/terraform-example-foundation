@@ -15,7 +15,7 @@
  */
 
 locals {
-  use_csr    = var.cloudbuildv2_repository_config.repo_type == "CSR" ? true : false
+  use_csr = var.cloudbuildv2_repository_config.repo_type == "CSR" ? true : false
 }
 
 module "app_infra_cloudbuild_project" {

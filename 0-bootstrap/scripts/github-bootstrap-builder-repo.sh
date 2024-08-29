@@ -26,7 +26,8 @@ DOCKERFILE_PATH=$3
 
 
 # extract portion after https:// from URL
-URL_PARTS=($(echo $REPO_URL | awk -F/ '{print $3, $4, $5}'))
+read -ra URL_PARTS <<< "$(echo "$REPO_URL" | awk -F/ '{print $3, $4, $5}')"
+
 # construct the new authenticated URL
 AUTH_REPO_URL="https://${GITHUB_TOKEN}:@${URL_PARTS[0]}/${URL_PARTS[1]}/${URL_PARTS[2]}"
 

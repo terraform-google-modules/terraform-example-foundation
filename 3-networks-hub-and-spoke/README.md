@@ -166,7 +166,7 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
    1. (Gitlab Only) When using Gitlab with Cloudbuild, clone the repository with the following command.
 
       ```bash
-      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-networks.git 
+      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-networks.git
       ```
 
 1. Change to the freshly cloned repo, change to the non-main branch and copy contents of foundation to new repo.

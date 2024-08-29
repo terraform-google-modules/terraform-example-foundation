@@ -86,7 +86,7 @@ variable "cloudbuildv2_repository_config" {
     - github_app_id: (Optional) The application ID for a GitHub App used for authentication.
     - gitlab_read_authorizer_credential: (Optional) The read authorizer credential for GitLab access.
     - gitlab_authorizer_credential: (Optional) The authorizer credential for GitLab access.
-  
+
   Note: If 'cloudbuildv2' is not configured, CSR (Cloud Source Repositories) will be used by default.
   EOT
   type = object({

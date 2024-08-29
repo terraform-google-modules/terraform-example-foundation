@@ -3,11 +3,11 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| app\_infra\_repos | A list of Cloud Source Repos to be created to hold app infra Terraform configs. | `list(string)` | n/a | yes |
 | billing\_account | The ID of the billing account to associated this project with. | `string` | n/a | yes |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | cloud\_builder\_artifact\_repo | Artifact Registry (AR) repository that stores TF Cloud Builder images. | `string` | n/a | yes |
 | cloudbuild\_project\_id | The project id where the pipelines and repos should be created. | `string` | n/a | yes |
+| cloudbuildv2\_repository\_config | Configuration for integrating repositories with Cloud Build v2:<br>  - repo\_type: Specifies the type of repository. Supported types are 'GITHUBv2', 'GITLABv2', and 'CSR'.<br>  - repositories: A map of repositories to be created. The key must match the exact name of the repository. Each repository is defined by:<br>      - repository\_name: The name of the repository.<br>      - repository\_url: The HTTPS clone URL of the repository ending in `.git`.<br>  - github\_pat: (Optional) The personal access token for GitHub authentication.<br>  - github\_app\_id: (Optional) The application ID for a GitHub App used for authentication.<br>  - gitlab\_read\_authorizer\_credential: (Optional) The read authorizer credential for GitLab access.<br>  - gitlab\_authorizer\_credential: (Optional) The authorizer credential for GitLab access.<br><br>Note: If 'cloudbuildv2' is not configured, CSR (Cloud Source Repositories) will be used by default. | <pre>object({<br>    repo_type = string # Supported values are: GITHUBv2, GITLABv2 and CSR<br>    # repositories to be created, the key name must be exactly the same as the repository name<br>    repositories = map(object({<br>      repository_name = string,<br>      repository_url  = string,<br>    }))<br>    # Credential Config for each repository type<br>    github_pat                        = optional(string)<br>    github_app_id                     = optional(string)<br>    gitlab_read_authorizer_credential = optional(string)<br>    gitlab_authorizer_credential      = optional(string)<br>  })</pre> | <pre>{<br>  "repo_type": "CSR",<br>  "repositories": {}<br>}</pre> | no |
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | private\_worker\_pool\_id | ID of the Cloud Build private worker pool. | `string` | n/a | yes |
@@ -26,7 +26,7 @@
 | gar\_name | Artifact Registry (AR) repository name created to store runner images |
 | log\_buckets | GCS Buckets to store Cloud Build logs |
 | plan\_triggers\_id | CB plan triggers |
-| repos | CSRs to store source code |
+| repos | Created repos |
 | state\_buckets | GCS Buckets to store TF state |
 | terraform\_service\_accounts | App Infra Pipeline Terraform SA mapped to source repos as keys |
 

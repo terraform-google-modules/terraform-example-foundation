@@ -136,7 +136,7 @@ To proceed with gitlab as your git provider you will need:
    1. (Gitlab Only) When using Gitlab with Cloudbuild, clone the repository with the following command.
 
       ```bash
-      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-projects.git 
+      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-projects.git
       ```
 
 1. Change to the freshly cloned repo, change to the non-main branch and copy contents of foundation to new repo.
@@ -209,7 +209,7 @@ To proceed with gitlab as your git provider you will need:
 
       > **IMPORTANT**: Take note that on your environment, you will need to update the URL's, and the gitlab_prefixed variables.
       > **IMPORTANT**: The key name must be exactly the same as the repository_name
-   
+
 1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `nonproduction.auto.tfvars`, and `production.auto.tfvars` files.
 1. See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
 

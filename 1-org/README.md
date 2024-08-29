@@ -134,7 +134,7 @@ This module creates and applies [tags](https://cloud.google.com/resource-manager
    1. (Gitlab Only) When using Gitlab with Cloudbuild, clone the repository with the following command.
 
       ```bash
-      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-org.git 
+      git clone git@gitlab.com:<GITLAB-GROUP or ACCOUNT>/gcp-org.git
       ```
 
 1. Navigate into the repo, change to a nonproduction branch, and copy the contents of foundation to the new repo.

@@ -214,8 +214,8 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
    ```bash
    mkdir gcp-org
    cp -R terraform-example-foundation/1-org/* gcp-org/
-   cp terraform-example-foundation//build/tf-wrapper.sh gcp-org/
-   cp terraform-example-foundation/.gitignore gcp-org
+   cp terraform-example-foundation/build/tf-wrapper.sh gcp-org/
+   cp terraform-example-foundation/.gitignore gcp-org/
    cd gcp-org
    chmod 755 ./tf-wrapper.sh
    ```

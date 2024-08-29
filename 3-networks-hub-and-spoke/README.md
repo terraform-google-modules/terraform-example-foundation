@@ -289,9 +289,9 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 
    ```bash
    mkdir gcp-network
-   cp -R terraform-example-foundation/3-networks-hub-and-spoke/* gcp-network
+   cp -R terraform-example-foundation/3-networks-hub-and-spoke/* gcp-network/
    cp terraform-example-foundation/build/tf-wrapper.sh gcp-network/
-   cp terraform-example-foundation/.gitignore gcp-network
+   cp terraform-example-foundation/.gitignore gcp-network/
    chmod 755 ./gcp-environments/tf-wrapper.sh
    ```
 

@@ -185,7 +185,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    mkdir gcp-environments
    cp -R terraform-example-foundation/2-environments/* gcp-environments/
    cp terraform-example-foundation/build/tf-wrapper.sh gcp-environments/
-   cp terraform-example-foundation/.gitignore gcp-environments
+   cp terraform-example-foundation/.gitignore gcp-environments/
    chmod 755 ./gcp-environments/tf-wrapper.sh
    ```
 

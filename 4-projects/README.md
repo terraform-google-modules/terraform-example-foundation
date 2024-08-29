@@ -242,9 +242,9 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 
    ```bash
    mkdir gcp-projects
-   cp -R  terraform-example-foundation/4-projects/* gcp-projects
+   cp -R  terraform-example-foundation/4-projects/* gcp-projects/
    cp terraform-example-foundation/build/tf-wrapper.sh gcp-projects/
-   cp terraform-example-foundation/.gitignore gcp-projects
+   cp terraform-example-foundation/.gitignore gcp-projects/
    chmod 755 ./gcp-projects/tf-wrapper.sh
    ```
 

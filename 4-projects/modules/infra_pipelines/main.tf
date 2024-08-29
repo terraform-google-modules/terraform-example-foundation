@@ -73,7 +73,7 @@ module "cloudbuild_repositories" {
 }
 
 module "tf_workspace" {
-  source = "../tf_cloudbuild_workspace"
+  source = "git::https://github.com/terraform-google-modules/terraform-google-bootstrap.git//modules/tf_cloudbuild_workspace?ref=f79bbc53f0593882e552ee0e1ca4019a4db88ac7"
   # version  = "~> 8.0"
   for_each = var.cloudbuildv2_repository_config.repositories
 

@@ -168,7 +168,7 @@ module "tf_private_pool" {
 }
 
 module "tf_cloud_builder" {
-  source = "../../terraform-google-bootstrap/modules/tf_cloudbuild_builder"
+  source = "git::https://github.com/terraform-google-modules/terraform-google-bootstrap.git//modules/tf_cloudbuild_builder?ref=f79bbc53f0593882e552ee0e1ca4019a4db88ac7"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = local.create_cloud_source_repos == [] ? module.tf_source.csr_repos[local.cloudbuilder_repo].url : module.cloudbuild_repositories[0].cloudbuild_2nd_gen_repositories["tf_cloud_builder"].id
@@ -245,7 +245,7 @@ module "build_terraform_image" {
 
 module "cloudbuild_repositories" {
   count  = local.cloudbuildv2_repos != {} ? 1 : 0
-  source = "/home/ccolin/foundation-bootstrap-2/terraform-google-bootstrap/modules/cloudbuild_repo_connection"
+  source = "git::https://github.com/terraform-google-modules/terraform-google-bootstrap.git//modules/cloudbuild_repo_connection?ref=f79bbc53f0593882e552ee0e1ca4019a4db88ac7"
 
   project_id = module.tf_source.cloudbuild_project_id
 
@@ -260,7 +260,7 @@ module "cloudbuild_repositories" {
 }
 
 module "tf_workspace" {
-  source   = "../../terraform-google-bootstrap/modules/tf_cloudbuild_workspace"
+  source   = "git::https://github.com/terraform-google-modules/terraform-google-bootstrap.git//modules/tf_cloudbuild_workspace?ref=f79bbc53f0593882e552ee0e1ca4019a4db88ac7"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id

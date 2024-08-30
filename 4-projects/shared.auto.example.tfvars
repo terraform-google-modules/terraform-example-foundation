@@ -16,13 +16,3 @@
 
 # We suggest you to use the same region from the 0-bootstrap step
 default_region = "us-central1"
-
-cloudbuildv2_repository_config = {
-  repo_type = "CSR"
-  repositories = {
-    "bu1-example-app" = {
-      repository_name = "bu1-example-app"
-      repository_url  = ""
-    }
-  }
-}

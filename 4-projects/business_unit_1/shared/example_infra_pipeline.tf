@@ -18,12 +18,12 @@ locals {
   use_csr = var.cloudbuildv2_repository_config.repo_type == "CSR"
   csr_repo_config = {
     repo_type = "CSR"
-    repositories = {
+    repositories = tomap({
       "bu1-example-app" = {
         repository_name = "bu1-example-app"
         repository_url  = ""
       }
-    }
+    })
   }
 }
 

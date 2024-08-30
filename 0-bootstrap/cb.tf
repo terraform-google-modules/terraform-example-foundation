@@ -171,7 +171,7 @@ module "tf_cloud_builder" {
   source = "git::https://github.com/terraform-google-modules/terraform-google-bootstrap.git//modules/tf_cloudbuild_builder?ref=f79bbc53f0593882e552ee0e1ca4019a4db88ac7"
 
   project_id                   = module.tf_source.cloudbuild_project_id
-  dockerfile_repo_uri          = local.create_cloud_source_repos == [] ? module.tf_source.csr_repos[local.cloudbuilder_repo].url : module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories["tf_cloud_builder"].id
+  dockerfile_repo_uri          = local.use_csr ? module.tf_source.csr_repos[local.cloudbuilder_repo].url : module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories["tf_cloud_builder"].id
   use_cloudbuildv2_repository  = !local.use_csr
   dockerfile_repo_type         = local.is_github_connection ? "GITHUB" : (local.is_gitlab_connection ? "UNKNOWN" : "CLOUD_SOURCE_REPOSITORIES")
   gar_repo_location            = var.default_region
@@ -188,7 +188,8 @@ module "tf_cloud_builder" {
 module "bootstrap_csr_repo" {
   source = "terraform-google-modules/gcloud/google"
   # only run bootstrap_csr_repo if CSR were created
-  count   = length(local.create_cloud_source_repos) == 0 ? 0 : 1
+  count = local.use_csr ? 1 : 0
+
   version = "~> 3.1"
   upgrade = false
 

@@ -24,6 +24,10 @@ locals {
         repository_url  = ""
       }
     })
+    github_pat                        = null
+    github_app_id                     = null
+    gitlab_read_authorizer_credential = null
+    gitlab_authorizer_credential      = null
   }
 }
 

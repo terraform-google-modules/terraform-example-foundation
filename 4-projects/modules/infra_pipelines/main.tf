@@ -57,7 +57,7 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
 }
 
 module "cloudbuild_repositories" {
-  count  = local.cloudbuildv2_repos != {} ? 1 : 0
+  count  = local.use_csr ? 0 : 1
   source = "git::https://github.com/terraform-google-modules/terraform-google-bootstrap.git//modules/cloudbuild_repo_connection?ref=f79bbc53f0593882e552ee0e1ca4019a4db88ac7"
 
   project_id = var.cloudbuild_project_id
@@ -93,8 +93,8 @@ module "tf_workspace" {
   create_cloudbuild_sa_name = "sa-tf-cb-${each.value.repository_name}"
   diff_sa_project           = true
   buckets_force_destroy     = true
-  tf_repo_uri               = local.cloudbuildv2_repos != {} ? module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories[each.key].id : google_sourcerepo_repository.app_infra_repo[each.key].url
-  tf_repo_type              = local.cloudbuildv2_repos != {} ? "CLOUDBUILD_V2_REPOSITORY" : "CLOUD_SOURCE_REPOSITORIES"
+  tf_repo_uri               = local.use_csr ? google_sourcerepo_repository.app_infra_repo[each.key].url : module.cloudbuild_repositories[0].cloud_build_repositories_2nd_gen_repositories[each.key].id
+  tf_repo_type              = local.use_csr ? "CLOUD_SOURCE_REPOSITORIES" : "CLOUDBUILD_V2_REPOSITORY"
   substitutions = {
     "_BILLING_ID"                   = var.billing_account
     "_GAR_REGION"                   = local.gar_region

@@ -15,7 +15,16 @@
  */
 
 locals {
-  use_csr = var.cloudbuildv2_repository_config.repo_type == "CSR" ? true : false
+  use_csr = var.cloudbuildv2_repository_config.repo_type == "CSR"
+  csr_repo_config = {
+    repo_type = "CSR"
+    repositories = {
+      "bu1-example-app" = {
+        repository_name = "bu1-example-app"
+        repository_url  = ""
+      }
+    }
+  }
 }
 
 module "app_infra_cloudbuild_project" {
@@ -56,7 +65,7 @@ module "infra_pipelines" {
   remote_tfstate_bucket          = local.projects_remote_bucket_tfstate
   billing_account                = local.billing_account
   default_region                 = var.default_region
-  cloudbuildv2_repository_config = var.cloudbuildv2_repository_config
+  cloudbuildv2_repository_config = local.use_csr ? local.csr_repo_config : var.cloudbuildv2_repository_config
   private_worker_pool_id         = local.cloud_build_private_worker_pool_id
 }
 

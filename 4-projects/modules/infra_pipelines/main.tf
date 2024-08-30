@@ -26,20 +26,21 @@ locals {
   log_buckets            = { for k, ws in module.tf_workspace : k => split("/", ws.logs_bucket)[length(split("/", ws.logs_bucket)) - 1] }
   plan_triggers_id       = [for ws in module.tf_workspace : ws.cloudbuild_plan_trigger_id]
   apply_triggers_id      = [for ws in module.tf_workspace : ws.cloudbuild_apply_trigger_id]
-  use_csr                = var.cloudbuildv2_repository_config.repo_type == "CSR" ? true : false
-  cloudbuildv2_repos     = local.use_csr ? {} : var.cloudbuildv2_repository_config.repositories
-  csr_repos              = local.use_csr ? var.cloudbuildv2_repository_config.repositories : {}
+  use_csr                = var.cloudbuildv2_repository_config.repo_type == "CSR"
+  csr_repos              = local.use_csr ? [for k, v in var.cloudbuildv2_repository_config.repositories : v.repository_name] : []
 }
 
 # Create CSRs if the user did not specify a Cloud Build Repository (2nd Gen)
 resource "google_sourcerepo_repository" "app_infra_repo" {
-  for_each = local.csr_repos
+  for_each = toset(local.csr_repos)
 
   project = var.cloudbuild_project_id
   name    = each.value.repository_name
 }
 
 resource "google_sourcerepo_repository" "gcp_policies" {
+  count = local.use_csr ? 1 : 0
+
   project = var.cloudbuild_project_id
   name    = "gcp-policies"
 }
@@ -144,10 +145,10 @@ resource "google_organization_iam_member" "browser" {
 }
 
 resource "google_sourcerepo_repository_iam_member" "member" {
-  for_each = local.csr_repos
+  for_each = toset(local.csr_repos)
 
-  project    = google_sourcerepo_repository.gcp_policies.project
-  repository = google_sourcerepo_repository.gcp_policies.name
+  project    = google_sourcerepo_repository.gcp_policies[0].project
+  repository = google_sourcerepo_repository.gcp_policies[0].name
   role       = "roles/viewer"
   member     = "serviceAccount:${local.workspace_sa_email[each.value.repository_name]}"
 }

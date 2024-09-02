@@ -35,7 +35,7 @@ resource "google_sourcerepo_repository" "app_infra_repo" {
   for_each = toset(local.csr_repos)
 
   project = var.cloudbuild_project_id
-  name    = each.value.repository_name
+  name    = each.value
 }
 
 resource "google_sourcerepo_repository" "gcp_policies" {
@@ -150,5 +150,5 @@ resource "google_sourcerepo_repository_iam_member" "member" {
   project    = google_sourcerepo_repository.gcp_policies[0].project
   repository = google_sourcerepo_repository.gcp_policies[0].name
   role       = "roles/viewer"
-  member     = "serviceAccount:${local.workspace_sa_email[each.value.repository_name]}"
+  member     = "serviceAccount:${local.workspace_sa_email[each.value]}"
 }

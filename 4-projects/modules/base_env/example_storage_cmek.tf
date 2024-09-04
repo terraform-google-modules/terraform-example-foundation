@@ -44,7 +44,8 @@ resource "random_string" "bucket_name" {
 
 module "gcs_buckets" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 6.0"
+  # Open Issue on version 6.1.0: https://github.com/terraform-google-modules/terraform-google-cloud-storage/issues/339
+  version = "~> 6.0.0"
 
   project_id              = module.base_shared_vpc_project.project_id
   location                = var.location_gcs

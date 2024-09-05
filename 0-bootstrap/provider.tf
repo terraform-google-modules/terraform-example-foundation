@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+provider "google" {
+  request_timeout = "5m"
+}
+
 provider "google-beta" {
   user_project_override = true
   billing_project       = var.groups.billing_project
+  request_timeout       = "5m"
 }
 
 # If you are using Terraform Cloud Agents, un-comment this block after the first apply according README instructions

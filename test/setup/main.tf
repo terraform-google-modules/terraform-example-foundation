@@ -62,7 +62,7 @@ module "project" {
     "storage-api.googleapis.com",
     "serviceusage.googleapis.com",
     "cloudbuild.googleapis.com",
-    "sourcerepo.googleapis.com",
+    // "sourcerepo.googleapis.com", // issue #1309: Docker tests fail due to CSR dependency
     "cloudkms.googleapis.com",
     "bigquery.googleapis.com",
     "accesscontextmanager.googleapis.com",

@@ -28,6 +28,7 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Error: Gitlab pipelines access denied](#gitlab-pipelines-access-denied)
 - [Error: Unknown project id on 4-project step context](#error-unknown-project-id-on-4-project-step-context)
 - [Error: Error getting operation for committing purpose for TagValue](#error-error-getting-operation-for-committing-purpose-for-tagvalue)
+- [The user does not have permission to access Project or it may not exist](#the-user-does-not-have-permission-to-access-project-or-it-may-not-exist)
 - - -
 
 ### Project quota exceeded
@@ -531,3 +532,44 @@ The cause of this message is that the CI/CD repository has "Limit access to this
 
 Add all the projects/repositories to be used in the Terraform Example Foundation to the allow list available in
 `CI/CD Repo -> Settings -> CI/CD -> Token Access -> Allow CI job tokens from the following projects to access this project`.
+
+### The user does not have permission to access Project or it may not exist
+
+**Error message:**
+
+```text
+Error when reading or editing GCS service account not found: googleapi: Error 400: Unknown project id: <PROJECT-ID>, invalid.
+The user does not have permission to access Project <PROJECT-ID> or it may not exist.
+```
+
+**Cause:**
+
+Terraform is trying to fetch or manipulate resources associated with the given project **PROJECT-ID** but the project was not created in the first execution.
+
+What was created in the first execution was the project id that will be used to create the project. The project id is a composition of a fixed prefix and a random suffix.
+
+Possible causes of the project creation failure in the first execution are:
+
+- The user does not have Billing Account User role in the billing account
+- The user does not have Project Creator role in the Google Cloud organization
+- The user has reached the project creation quota
+- Terraform apply failed midway due to a timeout or an interruption, leaving the project ID generated in the state but not creating the project itself
+
+**Solution:**
+
+If the cause is the project creation quota issue. Follow instruction in the Terraform Example Foundation [troubleshooting](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/TROUBLESHOOTING.md#billing-quota-exceeded)
+
+After doing this fixes you need to force the recreation of the random suffix used in the project ID.
+To force the creation run
+
+```bash
+terraform taint <RESOURCE-ID>
+```
+
+For example
+
+```
+terraform taint module.seed_bootstrap.module.seed_project.module.project-factory.random_id.random_project_id_suffix
+```
+
+And try again to do the deployment.

@@ -33,7 +33,7 @@ module "env_kms" {
   disable_services_on_destroy = false
   depends_on                  = [time_sleep.wait_60_seconds]
   activate_apis               = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
-  auto_create_network         = var.auto_create_network
+  auto_create_network         = true
 
   labels = {
     environment       = var.env

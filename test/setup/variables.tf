@@ -37,9 +37,3 @@ variable "example_foundations_mode" {
 variable "domain_to_allow" {
   description = "The test domain_to_allow allow users from in IAM."
 }
-
-variable "auto_create_network" {
-  description = "Control whether the 'default' network will be created in the project."
-  type        = bool
-  default     = true
-}

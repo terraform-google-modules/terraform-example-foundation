@@ -64,9 +64,3 @@ variable "project_budget" {
   })
   default = {}
 }
-
-variable "auto_create_network" {
-  description = "Control whether the 'default' network will be created in the project."
-  type        = bool
-  default     = true
-}

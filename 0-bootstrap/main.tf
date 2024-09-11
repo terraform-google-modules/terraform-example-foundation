@@ -99,6 +99,5 @@ module "seed_bootstrap" {
 
   sa_org_iam_permissions = []
 
-  depends_on = [module.required_group]
+  depends_on = [module.required_group, module.organization_policies_type_boolean]
 }
-

@@ -29,7 +29,7 @@ module "base_shared_vpc_host_project" {
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
   disable_services_on_destroy = false
-  auto_create_network         = var.auto_create_network
+  auto_create_network         = true
 
   activate_apis = [
     "compute.googleapis.com",
@@ -66,7 +66,7 @@ module "restricted_shared_vpc_host_project" {
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
   disable_services_on_destroy = false
-  auto_create_network         = var.auto_create_network
+  auto_create_network         = true
 
   activate_apis = [
     "compute.googleapis.com",

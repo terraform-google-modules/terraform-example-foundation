@@ -6,7 +6,6 @@
 | activate\_apis | The api to activate for the GCP project | `list(string)` | `[]` | no |
 | app\_infra\_pipeline\_service\_accounts | The Service Accounts from App Infra Pipeline. | `map(string)` | `{}` | no |
 | application\_name | The name of application where GCP resources relate | `string` | n/a | yes |
-| auto\_create\_network | Control whether the 'default' network will be created in the project. | `bool` | `true` | no |
 | billing\_account | The ID of the billing account to associated this project with | `string` | n/a | yes |
 | billing\_code | The code that's used to provide chargeback information | `string` | n/a | yes |
 | business\_code | The code that describes which business unit owns the project | `string` | `"shared"` | no |

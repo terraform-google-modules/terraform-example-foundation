@@ -196,5 +196,5 @@ variable "tfc_org_name" {
 
 variable "auto_create_network" {
   description = "Control whether the 'default' network will be created in the project."
-  default = true
+  default     = true
 }

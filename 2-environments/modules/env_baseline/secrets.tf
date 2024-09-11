@@ -33,7 +33,7 @@ module "env_secrets" {
   disable_services_on_destroy = false
   depends_on                  = [time_sleep.wait_60_seconds]
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
-  auto_create_network         = "true"
+  auto_create_network         = var.auto_create_network
 
   labels = {
     environment       = var.env

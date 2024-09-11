@@ -54,7 +54,7 @@ module "project" {
   org_id                   = var.org_id
   folder_id                = var.folder_id
   billing_account          = var.billing_account
-  auto_create_network      = "true"
+  auto_create_network      = var.auto_create_network
 
   activate_apis = [
     "cloudresourcemanager.googleapis.com",

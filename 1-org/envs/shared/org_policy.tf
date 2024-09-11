@@ -27,7 +27,6 @@ locals {
   boolean_type_organization_policies = toset([
     "compute.disableNestedVirtualization",
     "compute.disableSerialPortAccess",
-    "compute.skipDefaultNetworkCreation",
     "compute.restrictXpnProjectLienRemoval",
     "compute.disableVpcExternalIpv6",
     "compute.setNewProjectDefaultToZonalDNSOnly",
@@ -35,7 +34,6 @@ locals {
     "sql.restrictPublicIp",
     "sql.restrictAuthorizedNetworks",
     "iam.disableServiceAccountKeyCreation",
-    "iam.automaticIamGrantsForDefaultServiceAccounts",
     "iam.disableServiceAccountKeyUpload",
     "storage.uniformBucketLevelAccess",
     "storage.publicAccessPrevention"

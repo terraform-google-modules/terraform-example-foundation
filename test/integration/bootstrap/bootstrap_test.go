@@ -306,6 +306,16 @@ func TestBootstrap(t *testing.T) {
 			}
 		})
 
+		// boolean organization policies
+		for _, booleanConstraint := range []string{
+			"constraints/compute.skipDefaultNetworkCreation",
+			"constraints/iam.disableServiceAccountKeyCreation",
+
+		} {
+			orgPolicy := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", booleanConstraint, parentFolder)
+			assert.True(orgPolicy.Get("booleanPolicy.enforced").Bool(), fmt.Sprintf("org policy %s should be enforced", booleanConstraint))
+		}
+
 	bootstrap.DefineTeardown(func(assert *assert.Assertions) {
 		// configure options to pull state from GCS bucket
 		cwd, err := os.Getwd()

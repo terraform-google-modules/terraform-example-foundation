@@ -37,3 +37,10 @@ module "organization_policies_type_boolean" {
   enforce         = "true"
   constraint      = "constraints/${each.value}"
 }
+
+resource "time_sleep" "wait_organization_policies" {
+  create_duration = "30s"
+  depends_on = [
+    module.organization_policies_type_boolean
+  ]
+}

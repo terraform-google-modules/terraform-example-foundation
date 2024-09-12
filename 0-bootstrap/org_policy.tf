@@ -39,7 +39,7 @@ module "organization_policies_type_boolean" {
 }
 
 resource "time_sleep" "wait_organization_policies" {
-  create_duration = "30s"
+  create_duration = "60s"
   depends_on = [
     module.organization_policies_type_boolean
   ]

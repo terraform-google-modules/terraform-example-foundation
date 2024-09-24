@@ -147,6 +147,8 @@ func TestBootstrap(t *testing.T) {
 	bootstrap.DefineVerify(
 		func(assert *assert.Assertions) {
 
+			parentFolder := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["parent_folder"]
+
 			// cloud build project
 			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
 			artifactsBktName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_artifacts")
@@ -304,17 +306,17 @@ func TestBootstrap(t *testing.T) {
 					assert.Subset(listRoles, sa.orgRoles, fmt.Sprintf("service account %s should have organization level roles", terraformSAEmail))
 				}
 			}
+			// boolean organization policies
+			for _, booleanConstraint := range []string{
+				"constraints/compute.skipDefaultNetworkCreation",
+				"constraints/iam.automaticIamGrantsForDefaultServiceAccounts",
+			} {
+				orgPolicy := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", booleanConstraint, parentFolder)
+				assert.True(orgPolicy.Get("booleanPolicy.enforced").Bool(), fmt.Sprintf("org policy %s should be enforced", booleanConstraint))
+			}
 		})
 
-		// boolean organization policies
-		for _, booleanConstraint := range []string{
-			"constraints/compute.skipDefaultNetworkCreation",
-			"constraints/iam.disableServiceAccountKeyCreation",
 
-		} {
-			orgPolicy := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", booleanConstraint, parentFolder)
-			assert.True(orgPolicy.Get("booleanPolicy.enforced").Bool(), fmt.Sprintf("org policy %s should be enforced", booleanConstraint))
-		}
 
 	bootstrap.DefineTeardown(func(assert *assert.Assertions) {
 		// configure options to pull state from GCS bucket

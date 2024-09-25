@@ -86,6 +86,8 @@ resource "google_compute_network_peering_routes_config" "peering_routes" {
 
   import_custom_routes = true
   export_custom_routes = true
+
+  depends_on = [google_service_networking_connection.worker_pool_conn]
 }
 
 module "firewall_rules" {

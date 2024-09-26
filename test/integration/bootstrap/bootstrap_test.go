@@ -147,7 +147,7 @@ func TestBootstrap(t *testing.T) {
 	bootstrap.DefineVerify(
 		func(assert *assert.Assertions) {
 
-			parentFolder := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["parent_folder"]
+			parentFolder := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["parent_id"]
 
 			// cloud build project
 			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")

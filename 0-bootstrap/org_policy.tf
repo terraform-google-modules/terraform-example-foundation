@@ -20,8 +20,7 @@ locals {
   policy_for      = var.parent_folder != "" ? "folder" : "organization"
 
   boolean_type_organization_policies = toset([
-    "compute.skipDefaultNetworkCreation",
-    "iam.automaticIamGrantsForDefaultServiceAccounts"
+    "compute.skipDefaultNetworkCreation"
   ])
 }
 

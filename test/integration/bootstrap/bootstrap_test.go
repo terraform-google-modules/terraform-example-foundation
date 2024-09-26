@@ -309,7 +309,6 @@ func TestBootstrap(t *testing.T) {
 			// boolean organization policies
 			for _, booleanConstraint := range []string{
 				"constraints/compute.skipDefaultNetworkCreation",
-				"constraints/iam.automaticIamGrantsForDefaultServiceAccounts",
 			} {
 				orgPolicy := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", booleanConstraint, parentFolder)
 				assert.True(orgPolicy.Get("booleanPolicy.enforced").Bool(), fmt.Sprintf("org policy %s should be enforced", booleanConstraint))

@@ -164,6 +164,7 @@ func TestOrg(t *testing.T) {
 				"constraints/iam.disableServiceAccountKeyCreation",
 				"constraints/storage.uniformBucketLevelAccess",
 				"constraints/storage.publicAccessPrevention",
+				"constraints/iam.automaticIamGrantsForDefaultServiceAccounts",
 			} {
 				orgPolicy := gcloud.Runf(t, "resource-manager org-policies describe %s --folder %s", booleanConstraint, parentFolder)
 				assert.True(orgPolicy.Get("booleanPolicy.enforced").Bool(), fmt.Sprintf("org policy %s should be enforced", booleanConstraint))

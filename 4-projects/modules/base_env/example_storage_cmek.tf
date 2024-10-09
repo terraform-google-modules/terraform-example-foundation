@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-locals {
-  cmek_bucket_prefix = "${var.gcs_bucket_prefix}-cmek-encrypted"
-  cmek_bucket_suffix = "${module.base_shared_vpc_project.project_id}-${lower(var.location_gcs)}-${random_string.bucket_name.result}"
-}
-
 data "google_storage_project_service_account" "gcs_account" {
   project = module.base_shared_vpc_project.project_id
 }
@@ -53,7 +48,7 @@ module "gcs_buckets" {
 
   project_id              = module.base_shared_vpc_project.project_id
   location                = var.location_gcs
-  name                    = "${local.cmek_bucket_prefix}-${md5(local.cmek_bucket_suffix)}"
+  name                    = "${var.gcs_bucket_prefix}-${module.base_shared_vpc_project.project_id}-cmek-encrypted-${random_string.bucket_name.result}"
   bucket_policy_only      = true
   custom_placement_config = var.gcs_custom_placement_config
 

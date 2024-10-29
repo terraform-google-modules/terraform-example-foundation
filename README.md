@@ -11,13 +11,15 @@ This repository is intended as an example to be forked, tweaked, and maintained 
 Though this blueprint can help accelerate your foundation design and build, we assume that you have the engineering skills and teams to deploy and customize your own foundation based on your own requirements.
 
 We will support:
- - Code is semantically valid, pinned to known good versions, and passes terraform validate and lint checks
- - All PR to this repo must pass integration tests to deploy all resources into a test environment before being merged
- - Feature requests about ease of use of the code, or feature requests that generally apply to all users, are welcome
+
+- Code is semantically valid, pinned to known good versions, and passes terraform validate and lint checks
+- All PR to this repo must pass integration tests to deploy all resources into a test environment before being merged
+- Feature requests about ease of use of the code, or feature requests that generally apply to all users, are welcome
 
 We will not support:
- - In-place upgrades from a foundation deployed with an earlier version to a more recent version, even for minor version changes, might not be feasible. Repository maintainers do not have visibility to what resources a user deploys on top of their foundation or how the foundation was customized in deployment, so we make no guarantee about avoiding breaking changes.
- - Feature requests that are specific to a single user's requirement and not representative of general best practices
+
+- In-place upgrades from a foundation deployed with an earlier version to a more recent version, even for minor version changes, might not be feasible. Repository maintainers do not have visibility to what resources a user deploys on top of their foundation or how the foundation was customized in deployment, so we make no guarantee about avoiding breaking changes.
+- Feature requests that are specific to a single user's requirement and not representative of general best practices
 
 ## Overview
 
@@ -47,8 +49,9 @@ The bootstrap step includes:
     - VPN connection with on-prem (or wherever your Jenkins Controller is located)
 
 It is a best practice to separate concerns by having two projects here: one for the Terraform state and one for the CI/CD tool.
-  - The `prj-b-seed` project stores Terraform state and has the service accounts that can create or modify infrastructure.
-  - The `prj-b-cicd` project holds the CI/CD tool (either Cloud Build or Jenkins) that coordinates the infrastructure deployment.
+
+- The `prj-b-seed` project stores Terraform state and has the service accounts that can create or modify infrastructure.
+- The `prj-b-cicd` project holds the CI/CD tool (either Cloud Build or Jenkins) that coordinates the infrastructure deployment.
 
 To further separate the concerns at the IAM level as well, a distinct service account is created for each stage. The Terraform custom service accounts are granted the IAM permissions required to build the foundation.
 If using Cloud Build as the CI/CD tool, these service accounts are used directly in the pipeline to execute the pipeline steps (`plan` or `apply`).
@@ -73,7 +76,7 @@ Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/READM
 ### [1. org](./1-org/)
 
 The purpose of this stage is to set up the common folder used to house projects that contain shared resources such as Security Command Center notification, Cloud Key Management Service (KMS), org level secrets, and org level logging.
-This stage also sets up the network folder used to house network related projects such as DNS Hub, Interconnect, network hub, and base and restricted projects for each environment  (`development`, `nonproduction` or `production`).
+This stage also sets up the network folder used to house network related projects such as DNS Hub, Interconnect, network hub, and base and restricted projects for each environment (`development`, `nonproduction` or `production`).
 This will create the following folder and project structure:
 
 ```

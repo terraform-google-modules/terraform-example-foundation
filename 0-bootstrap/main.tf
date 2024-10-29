@@ -38,7 +38,7 @@ resource "google_folder" "bootstrap" {
   display_name = "${var.folder_prefix}-bootstrap"
   parent       = local.parent
 }
-
+# arbitrary change to force build
 module "seed_bootstrap" {
   source  = "terraform-google-modules/bootstrap/google"
   version = "~> 8.0"

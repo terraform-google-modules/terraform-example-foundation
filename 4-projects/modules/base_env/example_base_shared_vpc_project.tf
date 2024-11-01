@@ -29,6 +29,8 @@ module "base_shared_vpc_project" {
   enable_cloudbuild_deploy            = local.enable_cloudbuild_deploy
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
 
+  project_deletion_policy = var.project_deletion_policy
+
   // The roles defined in "sa_roles" will be used to grant the necessary permissions
   // to deploy the resources, a Compute Engine instance for each environment, defined
   // in 5-app-infra step (5-app-infra/modules/env_base/main.tf).

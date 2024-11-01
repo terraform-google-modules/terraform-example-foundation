@@ -90,6 +90,12 @@ variable "bucket_tfstate_kms_force_destroy" {
   default     = false
 }
 
+variable "project_deletion_policy" {
+  description = "The deletion policy for the project created."
+  type        = string
+  default     = "PREVENT"
+}
+
 /* ----------------------------------------
     Specific to Groups creation
    ---------------------------------------- */

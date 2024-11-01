@@ -86,7 +86,7 @@ module "gcp_projects_state_bucket" {
 
 module "tf_source" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_source"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   org_id                = var.org_id
   folder_id             = google_folder.bootstrap.id
@@ -95,6 +95,9 @@ module "tf_source" {
   billing_account       = var.billing_account
   group_org_admins      = var.groups.required_groups.group_org_admins
   buckets_force_destroy = var.bucket_force_destroy
+
+  project_deletion_policy = var.project_deletion_policy
+
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -155,7 +158,7 @@ module "tf_private_pool" {
 
 module "tf_cloud_builder" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
@@ -206,7 +209,7 @@ module "build_terraform_image" {
 
 module "tf_workspace" {
   source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 8.0"
+  version  = "~> 9.0"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id

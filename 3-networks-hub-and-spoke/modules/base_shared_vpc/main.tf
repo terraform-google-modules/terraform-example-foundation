@@ -126,7 +126,10 @@ module "region1_router1" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = [
+      { range = local.private_googleapis_cidr },
+      { range = "35.199.192.0/19" }
+    ]
   }
 }
 
@@ -142,7 +145,10 @@ module "region1_router2" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = [
+      { range = local.private_googleapis_cidr },
+      { range = "35.199.192.0/19" }
+    ]
   }
 }
 
@@ -158,7 +164,10 @@ module "region2_router1" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = [
+      { range = local.private_googleapis_cidr },
+      { range = "35.199.192.0/19" }
+    ]
   }
 }
 
@@ -174,6 +183,9 @@ module "region2_router2" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = [
+      { range = local.private_googleapis_cidr },
+      { range = "35.199.192.0/19" }
+    ]
   }
 }

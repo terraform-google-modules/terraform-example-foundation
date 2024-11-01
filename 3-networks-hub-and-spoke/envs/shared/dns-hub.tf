@@ -18,7 +18,7 @@
   DNS Hub VPC
 *****************************************/
 
-module "dns_hub_vpc" {
+module "dns_hub_vpc" { ///cria rede vpc
   source  = "terraform-google-modules/network/google"
   version = "~> 9.0"
 
@@ -99,7 +99,7 @@ module "dns-forwarding-zone" {
   Routers to advertise DNS proxy range "35.199.192.0/19"
 *********************************************************/
 
-module "dns_hub_region1_router1" {
+module "dns_hub_region1_router1" { //roteadores bgp
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
 

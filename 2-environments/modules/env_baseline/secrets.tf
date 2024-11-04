@@ -21,7 +21,7 @@
 
 module "env_secrets" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   random_project_id           = true
   random_project_id_length    = 4
@@ -33,6 +33,7 @@ module "env_secrets" {
   disable_services_on_destroy = false
   depends_on                  = [time_sleep.wait_60_seconds]
   activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
+  deletion_policy             = var.project_deletion_policy
 
   labels = {
     environment       = var.env

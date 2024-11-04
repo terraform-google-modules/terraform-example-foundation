@@ -22,6 +22,8 @@ module "env" {
   remote_state_bucket = var.remote_state_bucket
   tfc_org_name        = var.tfc_org_name
 
+  project_deletion_policy = var.project_deletion_policy
+
   assured_workload_configuration = {
     enabled           = false
     location          = "us-central1"

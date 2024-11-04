@@ -46,7 +46,7 @@ resource "google_folder" "test_folder" {
 
 module "project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   name                     = "ci-foundation-${random_string.suffix.result}"
   random_project_id        = true
@@ -54,6 +54,7 @@ module "project" {
   org_id                   = var.org_id
   folder_id                = var.folder_id
   billing_account          = var.billing_account
+  deletion_policy          = "DELETE"
 
   activate_apis = [
     "cloudresourcemanager.googleapis.com",

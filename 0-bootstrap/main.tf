@@ -35,8 +35,9 @@ locals {
 }
 
 resource "google_folder" "bootstrap" {
-  display_name = "${var.folder_prefix}-bootstrap"
-  parent       = local.parent
+  display_name        = "${var.folder_prefix}-bootstrap"
+  parent              = local.parent
+  deletion_protection = var.folder_deletion_protection
 }
 
 module "seed_bootstrap" {

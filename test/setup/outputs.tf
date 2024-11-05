@@ -114,3 +114,9 @@ output "project_deletion_policy" {
   description = "The deletion policy for the project created. Set to `DELETE` during integrated tests so that projects can be destroyed."
   value       = "DELETE"
 }
+
+variable "folder_deletion_protection" {
+  description = "Prevent Terraform from destroying or recreating the folder. Set to `false` during integrated tests so that folders can be destroyed."
+  type        = string
+  default     = false
+}

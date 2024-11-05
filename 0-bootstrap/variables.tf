@@ -96,6 +96,12 @@ variable "project_deletion_policy" {
   default     = "PREVENT"
 }
 
+variable "folder_deletion_protection" {
+  description = "Prevent Terraform from destroying or recreating the folder."
+  type        = string
+  default     = true
+}
+
 /* ----------------------------------------
     Specific to Groups creation
    ---------------------------------------- */

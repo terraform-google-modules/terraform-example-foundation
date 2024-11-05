@@ -19,11 +19,13 @@
  *****************************************/
 
 resource "google_folder" "common" {
-  display_name = "${local.folder_prefix}-common"
-  parent       = local.parent
+  display_name        = "${local.folder_prefix}-common"
+  parent              = local.parent
+  deletion_protection = var.folder_deletion_protection
 }
 
 resource "google_folder" "network" {
-  display_name = "${local.folder_prefix}-network"
-  parent       = local.parent
+  display_name        = "${local.folder_prefix}-network"
+  parent              = local.parent
+  deletion_protection = var.folder_deletion_protection
 }

@@ -199,3 +199,9 @@ variable "project_deletion_policy" {
   type        = string
   default     = "PREVENT"
 }
+
+variable "folder_deletion_protection" {
+  description = "Prevent Terraform from destroying or recreating the folder."
+  type        = string
+  default     = true
+}

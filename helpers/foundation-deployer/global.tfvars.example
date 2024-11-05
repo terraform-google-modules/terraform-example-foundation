@@ -27,6 +27,8 @@ foundation_code_path = "FULL_PATH_TO_FOLDER_WHERE_THE_EXAMPLE_FOUNDATION_CODE_WA
 // See https://cloud.google.com/sdk/gcloud/reference/config/set#EXAMPLES
 validator_project_id = "EXISTING_PROJECT_ID"
 
+project_deletion_policy    = "DELETE"
+folder_deletion_protection = false
 
 // 0-bootstrap inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md#inputs

@@ -108,7 +108,11 @@ module "ilbs" {
   target_tags             = null
   create_backend_firewall = false
   backends = [
-    { group = module.migs[each.key].instance_group, description = "" },
+    {
+      group          = module.migs[each.key].instance_group,
+      description    = "",
+      balancing_mode = "CONNECTION"
+    },
   ]
 
   health_check = {

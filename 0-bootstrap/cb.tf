@@ -137,6 +137,15 @@ module "tf_source" {
   depends_on = [module.seed_bootstrap]
 }
 
+resource "google_project_service_identity" "workflows_identity" {
+  provider = google-beta
+
+  project = module.tf_source.cloudbuild_project_id
+  service = "workflows.googleapis.com"
+
+  depends_on = [module.tf_source]
+}
+
 module "tf_private_pool" {
   source = "./modules/cb-private-pool"
 

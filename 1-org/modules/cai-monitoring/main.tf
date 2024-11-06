@@ -74,7 +74,7 @@ module "cloudfunction_source_bucket" {
   version = "~> 6.0"
 
   project_id    = var.project_id
-  name          = "bkt-cai-monitoring-${random_id.suffix.hex}-sources-${data.google_project.project.number}-${var.location}"
+  name          = "bkt-cai-monitoring-${random_id.suffix.hex}-sources-${data.google_project.project.number}"
   location      = var.location
   storage_class = "REGIONAL"
   force_destroy = true

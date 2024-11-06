@@ -49,7 +49,8 @@ module "base_shared_vpc_project" {
 
   activate_apis = [
     "iam.googleapis.com",
-    "cloudresourcemanager.googleapis.com"
+    "cloudresourcemanager.googleapis.com",
+    "storage.googleapis.com"
   ]
 
   # Metadata
@@ -60,5 +61,3 @@ module "base_shared_vpc_project" {
   secondary_contact = "example2@example.com"
   business_code     = var.business_code
 }
-
-

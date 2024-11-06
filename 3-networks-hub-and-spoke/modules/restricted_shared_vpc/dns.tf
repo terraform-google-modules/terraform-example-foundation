@@ -57,11 +57,11 @@ module "peering_zone" {
 /******************************************
  DNS Forwarding
 *****************************************/
-module "dns-forwarding-zone" {
+module "dns_forwarding_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
   version = "~> 5.0"
 
-  count   = var.mode != "spoke" ? 1 : 0
+  count = var.mode != "spoke" ? 1 : 0
 
   project_id = var.project_id
   type       = "forwarding"
@@ -69,7 +69,7 @@ module "dns-forwarding-zone" {
   domain     = var.domain
 
   private_visibility_config_networks = [
-    module.dns_hub_vpc.network_self_link
+    module.main.network_self_link
   ]
-  target_name_server_addresses = data.google_compute_network.vpc_dns_hub.self_link
+  target_network = data.google_compute_network.vpc_dns_hub.self_link
 }

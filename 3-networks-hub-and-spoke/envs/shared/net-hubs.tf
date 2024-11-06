@@ -240,7 +240,6 @@ module "base_shared_vpc" {
   ]
   secondary_ranges = {}
 
-  depends_on = [module.dns_hub_vpc]
 }
 
 /******************************************
@@ -337,5 +336,4 @@ module "restricted_shared_vpc" {
 
   ingress_policies = var.ingress_policies
 
-  depends_on = [module.dns_hub_vpc]
 }

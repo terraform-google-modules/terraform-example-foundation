@@ -128,12 +128,12 @@ module "region1_router1" {
   network = module.main.network_name
   region  = var.default_region1
   bgp = {
-    asn                  = var.bgp_asn_subnet
-    advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [
-      { range = local.restricted_googleapis_cidr },
-      { range = "35.199.192.0/19" }
-    ]
+    asn               = var.bgp_asn_subnet
+    advertised_groups = ["ALL_SUBNETS"]
+    advertised_ip_ranges = concat(
+      [{ range = local.restricted_googleapis_cidr }],
+      var.private_service_cidr != null ? [{ range = "35.199.192.0/19" }] : []
+    )
   }
 }
 
@@ -147,12 +147,12 @@ module "region1_router2" {
   network = module.main.network_name
   region  = var.default_region1
   bgp = {
-    asn                  = var.bgp_asn_subnet
-    advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [
-      { range = local.restricted_googleapis_cidr },
-      { range = "35.199.192.0/19" }
-    ]
+    asn               = var.bgp_asn_subnet
+    advertised_groups = ["ALL_SUBNETS"]
+    advertised_ip_ranges = concat(
+      [{ range = local.restricted_googleapis_cidr }],
+      var.private_service_cidr != null ? [{ range = "35.199.192.0/19" }] : []
+    )
   }
 }
 
@@ -166,12 +166,12 @@ module "region2_router1" {
   network = module.main.network_name
   region  = var.default_region2
   bgp = {
-    asn                  = var.bgp_asn_subnet
-    advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [
-      { range = local.restricted_googleapis_cidr },
-      { range = "35.199.192.0/19" }
-    ]
+    asn               = var.bgp_asn_subnet
+    advertised_groups = ["ALL_SUBNETS"]
+    advertised_ip_ranges = concat(
+      [{ range = local.restricted_googleapis_cidr }],
+      var.private_service_cidr != null ? [{ range = "35.199.192.0/19" }] : []
+    )
   }
 }
 
@@ -185,11 +185,11 @@ module "region2_router2" {
   network = module.main.network_name
   region  = var.default_region2
   bgp = {
-    asn                  = var.bgp_asn_subnet
-    advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [
-      { range = local.restricted_googleapis_cidr },
-      { range = "35.199.192.0/19" }
-    ]
+    asn               = var.bgp_asn_subnet
+    advertised_groups = ["ALL_SUBNETS"]
+    advertised_ip_ranges = concat(
+      [{ range = local.restricted_googleapis_cidr }],
+      var.private_service_cidr != null ? [{ range = "35.199.192.0/19" }] : []
+    )
   }
 }

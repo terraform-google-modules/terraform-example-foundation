@@ -344,8 +344,8 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	}
 	//for each environment
 	envTfvars := ProjEnvTfvars{
-		ProjectsKMSLocation:      tfvars.ProjectsKMSLocation,
-		ProjectsGCSLocation:      tfvars.ProjectsGCSLocation,
+		LocationKMS:              tfvars.LocationKMS,
+		LocationGCS:              tfvars.LocationGCS,
 		FolderDeletionProtection: tfvars.FolderDeletionProtection,
 		ProjectDeletionPolicy:    tfvars.ProjectDeletionPolicy,
 	}

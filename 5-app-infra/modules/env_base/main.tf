@@ -61,7 +61,7 @@ resource "google_service_account" "compute_engine_service_account" {
 
 module "instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 11.0"
+  version = "~> 12.0"
 
   machine_type = var.machine_type
   region       = var.region
@@ -80,7 +80,7 @@ module "instance_template" {
 
 module "compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
-  version = "~> 11.0"
+  version = "~> 12.0"
 
   region                = var.region
   subnetwork            = local.subnetwork_self_link

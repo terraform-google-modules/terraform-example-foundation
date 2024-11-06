@@ -91,7 +91,7 @@ module "migs" {
 
 module "ilbs" {
   source   = "GoogleCloudPlatform/lb-internal/google"
-  version  = "~> 6.0"
+  version  = "~> 7.0"
   for_each = toset(var.regions)
 
   region                  = each.key
@@ -110,8 +110,7 @@ module "ilbs" {
   backends = [
     {
       group          = module.migs[each.key].instance_group,
-      description    = "",
-      balancing_mode = "CONNECTION"
+      description    = ""
     },
   ]
 

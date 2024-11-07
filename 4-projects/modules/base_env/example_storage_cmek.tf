@@ -44,11 +44,11 @@ resource "random_string" "bucket_name" {
 
 module "gcs_buckets" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 6.0"
+  version = "~> 6.0.0"
 
   project_id              = module.base_shared_vpc_project.project_id
   location                = var.location_gcs
-  name                    = "${var.gcs_bucket_prefix}-${module.base_shared_vpc_project.project_id}-${lower(var.location_gcs)}-cmek-encrypted-${random_string.bucket_name.result}"
+  name                    = "${var.gcs_bucket_prefix}-${module.base_shared_vpc_project.project_id}-cmek-encrypted-${random_string.bucket_name.result}"
   bucket_policy_only      = true
   custom_placement_config = var.gcs_custom_placement_config
 

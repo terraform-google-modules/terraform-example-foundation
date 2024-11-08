@@ -39,6 +39,7 @@ locals {
 
   env_project_id        = local.env_project_ids[var.project_suffix]
   subnetwork_self_link  = local.env_project_subnets[var.project_suffix]
+  subnetwork_project    = element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1, )
   resource_manager_tags = local.env_project_resource_manager_tags[var.project_suffix]
 }
 
@@ -84,6 +85,7 @@ module "compute_instance" {
 
   region                = var.region
   subnetwork            = local.subnetwork_self_link
+  subnetwork_project    = local.subnetwork_project
   num_instances         = var.num_instances
   hostname              = var.hostname
   instance_template     = module.instance_template.self_link

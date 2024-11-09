@@ -39,6 +39,12 @@ variable "default_region" {
   default     = "us-central1"
 }
 
+variable "project_deletion_policy" {
+  description = "The deletion policy for the project created."
+  type        = string
+  default     = "PREVENT"
+}
+
 /* ----------------------------------------
     Specific to CICD Project
    ---------------------------------------- */

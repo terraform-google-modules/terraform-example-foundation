@@ -41,6 +41,8 @@ func TestOrg(t *testing.T) {
 	vars := map[string]interface{}{
 		"remote_state_bucket":              backend_bucket,
 		"log_export_storage_force_destroy": "true",
+		"folder_deletion_protection":       false,
+		"project_deletion_policy":          "DELETE",
 	}
 
 	backendConfig := map[string]interface{}{

@@ -29,7 +29,7 @@ resource "random_id" "suffix" {
 *******************************************/
 module "cicd_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   name                        = local.cicd_project_name
   random_project_id           = true
@@ -40,6 +40,8 @@ module "cicd_project" {
   billing_account             = var.billing_account
   activate_apis               = local.activate_apis
   labels                      = var.project_labels
+
+  deletion_policy = var.project_deletion_policy
 }
 
 /******************************************

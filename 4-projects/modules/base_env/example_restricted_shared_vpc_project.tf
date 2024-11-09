@@ -27,6 +27,7 @@ module "restricted_shared_vpc_project" {
   project_budget             = var.project_budget
   project_prefix             = local.project_prefix
 
+  project_deletion_policy = var.project_deletion_policy
 
   activate_apis                      = ["accesscontextmanager.googleapis.com"]
   vpc_service_control_attach_enabled = local.enforce_vpcsc ? "true" : "false"

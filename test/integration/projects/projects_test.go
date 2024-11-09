@@ -128,7 +128,9 @@ func TestProjects(t *testing.T) {
 			sharedCloudBuildSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")[tt.repo]
 
 			vars := map[string]interface{}{
-				"remote_state_bucket": backend_bucket,
+				"remote_state_bucket":        backend_bucket,
+				"folder_deletion_protection": false,
+				"project_deletion_policy":    "DELETE",
 			}
 
 			projects := tft.NewTFBlueprintTest(t,

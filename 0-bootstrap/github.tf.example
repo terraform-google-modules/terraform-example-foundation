@@ -70,7 +70,7 @@ locals {
 
 module "gh_cicd" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   name              = "${var.project_prefix}-b-cicd-wif-gh"
   random_project_id = true
@@ -87,6 +87,8 @@ module "gh_cicd" {
     "cloudresourcemanager.googleapis.com",
     "iamcredentials.googleapis.com",
   ]
+
+  deletion_policy = var.project_deletion_policy
 }
 
 module "gh_oidc" {

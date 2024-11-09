@@ -34,4 +34,6 @@ module "env" {
   peering_iap_fw_rules_enabled = true
   subnet_region                = coalesce(var.instance_region, local.default_region)
   subnet_ip_range              = "10.3.128.0/21"
+  project_deletion_policy      = var.project_deletion_policy
+  folder_deletion_protection   = var.folder_deletion_protection
 }

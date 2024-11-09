@@ -46,6 +46,7 @@ module "jenkins_bootstrap" {
   tunnel0_bgp_session_range                = var.tunnel0_bgp_session_range
   tunnel1_bgp_peer_address                 = var.tunnel1_bgp_peer_address
   tunnel1_bgp_session_range                = var.tunnel1_bgp_session_range
+  project_deletion_policy                  = var.project_deletion_policy
 }
 
 resource "google_organization_iam_member" "org_jenkins_sa_browser" {

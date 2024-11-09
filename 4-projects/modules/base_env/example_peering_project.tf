@@ -40,6 +40,8 @@ module "peering_project" {
   project_budget  = var.project_budget
   project_prefix  = local.project_prefix
 
+  project_deletion_policy = var.project_deletion_policy
+
   // Enabling Cloud Build Deploy to use Service Accounts during the build and give permissions to the SA.
   // The permissions will be the ones necessary for the deployment of the step 5-app-infra
   enable_cloudbuild_deploy = local.enable_cloudbuild_deploy

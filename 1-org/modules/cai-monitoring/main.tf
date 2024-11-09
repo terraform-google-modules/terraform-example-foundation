@@ -71,7 +71,7 @@ data "archive_file" "function_source_zip" {
 
 module "cloudfunction_source_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 6.0"
+  version = "~> 8.0"
 
   project_id    = var.project_id
   name          = "bkt-cai-monitoring-${random_id.suffix.hex}-sources-${data.google_project.project.number}"
@@ -121,7 +121,7 @@ resource "google_cloud_asset_organization_feed" "organization_feed" {
 
 module "pubsub_cai_feed" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "~> 6.0"
+  version = "~> 7.0"
 
   topic              = "top-cai-monitoring-${random_id.suffix.hex}-event"
   project_id         = var.project_id

@@ -98,7 +98,6 @@ module "tf_source" {
 
   project_deletion_policy = var.project_deletion_policy
 
-
   activate_apis = [
     "serviceusage.googleapis.com",
     "servicenetworking.googleapis.com",

@@ -142,5 +142,5 @@ target_name_server_addresses = [
 // Can be used to override the default region set in 0-bootstrap
 // See https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/business_unit_1/production/README.md#outputs
 
-gcs_location = "US"
-kms_location = "us"
+location_kms = "us"
+location_gcs = "US"

@@ -21,4 +21,7 @@ module "env" {
   environment_code    = "n"
   remote_state_bucket = var.remote_state_bucket
   tfc_org_name        = var.tfc_org_name
+
+  project_deletion_policy    = var.project_deletion_policy
+  folder_deletion_protection = var.folder_deletion_protection
 }

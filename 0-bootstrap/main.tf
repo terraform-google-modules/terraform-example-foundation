@@ -38,13 +38,14 @@ locals {
 }
 
 resource "google_folder" "bootstrap" {
-  display_name = "${var.folder_prefix}-bootstrap"
-  parent       = local.parent
+  display_name        = "${var.folder_prefix}-bootstrap"
+  parent              = local.parent
+  deletion_protection = var.folder_deletion_protection
 }
 
 module "seed_bootstrap" {
   source  = "terraform-google-modules/bootstrap/google"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
@@ -64,6 +65,7 @@ module "seed_bootstrap" {
   encrypt_gcs_bucket_tfstate     = true
   key_rotation_period            = "7776000s"
   kms_prevent_destroy            = !var.bucket_tfstate_kms_force_destroy
+  project_deletion_policy        = var.project_deletion_policy
 
   project_labels = {
     environment       = "bootstrap"
@@ -103,20 +105,4 @@ module "seed_bootstrap" {
   sa_org_iam_permissions = []
 
   depends_on = [module.required_group]
-}
-
-module "gcp_projects_state_bucket" {
-  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 6.0"
-
-  name          = "${var.bucket_prefix}-${module.seed_bootstrap.seed_project_id}-gcp-projects-tfstate"
-  project_id    = module.seed_bootstrap.seed_project_id
-  location      = var.default_region
-  force_destroy = var.bucket_force_destroy
-
-  encryption = {
-    default_kms_key_name = local.state_bucket_kms_key
-  }
-
-  depends_on = [module.seed_bootstrap.gcs_bucket_tfstate]
 }

@@ -34,7 +34,7 @@ locals {
 
 module "org_audit_logs" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -43,6 +43,7 @@ module "org_audit_logs" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
+  deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
@@ -67,7 +68,7 @@ module "org_audit_logs" {
 
 module "org_billing_export" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -76,6 +77,7 @@ module "org_billing_export" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
+  deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
@@ -100,7 +102,7 @@ module "org_billing_export" {
 
 module "common_kms" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -109,6 +111,7 @@ module "common_kms" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
+  deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
@@ -134,7 +137,7 @@ module "common_kms" {
 
 module "org_secrets" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -143,6 +146,7 @@ module "org_secrets" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
+  deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
 
   labels = {
@@ -167,7 +171,7 @@ module "org_secrets" {
 
 module "interconnect" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -176,6 +180,7 @@ module "interconnect" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
+  deletion_policy          = var.project_deletion_policy
   activate_apis            = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
 
   labels = {
@@ -200,7 +205,7 @@ module "interconnect" {
 
 module "scc_notifications" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -209,6 +214,7 @@ module "scc_notifications" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
+  deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com", "cloudkms.googleapis.com"]
 
   labels = {
@@ -233,7 +239,7 @@ module "scc_notifications" {
 
 module "dns_hub" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -242,6 +248,7 @@ module "dns_hub" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
+  deletion_policy          = var.project_deletion_policy
 
   activate_apis = [
     "compute.googleapis.com",
@@ -274,7 +281,7 @@ module "dns_hub" {
 
 module "base_network_hub" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
   count   = var.enable_hub_and_spoke ? 1 : 0
 
   random_project_id        = true
@@ -284,6 +291,7 @@ module "base_network_hub" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
+  deletion_policy          = var.project_deletion_policy
 
   activate_apis = [
     "compute.googleapis.com",
@@ -324,7 +332,7 @@ resource "google_project_iam_member" "network_sa_base" {
 
 module "restricted_network_hub" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
   count   = var.enable_hub_and_spoke ? 1 : 0
 
   random_project_id        = true
@@ -334,6 +342,7 @@ module "restricted_network_hub" {
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
+  deletion_policy          = var.project_deletion_policy
 
   activate_apis = [
     "compute.googleapis.com",
@@ -372,6 +381,8 @@ module "base_restricted_environment_network" {
   billing_account = local.billing_account
   project_prefix  = local.project_prefix
   folder_id       = google_folder.network.id
+
+  project_deletion_policy = var.project_deletion_policy
 
   env      = each.key
   env_code = each.value

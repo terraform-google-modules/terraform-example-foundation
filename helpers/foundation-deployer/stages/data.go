@@ -152,13 +152,15 @@ type GlobalTFVars struct {
 	EnableHubAndSpoke                     bool            `hcl:"enable_hub_and_spoke"`
 	EnableHubAndSpokeTransitivity         bool            `hcl:"enable_hub_and_spoke_transitivity"`
 	CreateUniqueTagKey                    bool            `hcl:"create_unique_tag_key"`
-	ProjectsKMSLocation                   string          `hcl:"projects_kms_location"`
-	ProjectsGCSLocation                   string          `hcl:"projects_gcs_location"`
+	LocationKMS                           string          `hcl:"location_kms"`
+	LocationGCS                           string          `hcl:"location_gcs"`
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
 	ValidatorProjectId                    *string         `hcl:"validator_project_id"`
 	Groups                                Groups          `hcl:"groups"`
 	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
+	FolderDeletionProtection              bool            `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy                 string          `hcl:"project_deletion_policy"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
@@ -205,6 +207,8 @@ type BootstrapTfvars struct {
 	BucketTfstateKmsForceDestroy *bool   `hcl:"bucket_tfstate_kms_force_destroy"`
 	Groups                       Groups  `hcl:"groups"`
 	InitialGroupConfig           *string `hcl:"initial_group_config"`
+	FolderDeletionProtection     bool    `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy        string  `hcl:"project_deletion_policy"`
 }
 
 type OrgTfvars struct {
@@ -220,10 +224,14 @@ type OrgTfvars struct {
 	LogExportStorageLocation              string    `hcl:"log_export_storage_location"`
 	BillingExportDatasetLocation          string    `hcl:"billing_export_dataset_location"`
 	GcpGroups                             GcpGroups `hcl:"gcp_groups"`
+	FolderDeletionProtection              bool      `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy                 string    `hcl:"project_deletion_policy"`
 }
 
 type EnvsTfvars struct {
-	RemoteStateBucket string `hcl:"remote_state_bucket"`
+	RemoteStateBucket        string `hcl:"remote_state_bucket"`
+	FolderDeletionProtection bool   `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy    string `hcl:"project_deletion_policy"`
 }
 
 type NetCommonTfvars struct {
@@ -250,8 +258,10 @@ type ProjSharedTfvars struct {
 }
 
 type ProjEnvTfvars struct {
-	ProjectsKMSLocation string `hcl:"projects_kms_location"`
-	ProjectsGCSLocation string `hcl:"projects_gcs_location"`
+	LocationKMS              string `hcl:"location_kms"`
+	LocationGCS              string `hcl:"location_gcs"`
+	FolderDeletionProtection bool   `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy    string `hcl:"project_deletion_policy"`
 }
 
 type AppInfraCommonTfvars struct {

@@ -66,9 +66,25 @@ resource "random_string" "suffix" {
   upper   = false
 }
 
+module "gcp_projects_state_bucket" {
+  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
+  version = "~> 8.0"
+
+  name          = "${var.bucket_prefix}-${module.seed_bootstrap.seed_project_id}-gcp-projects-tfstate"
+  project_id    = module.seed_bootstrap.seed_project_id
+  location      = var.default_region
+  force_destroy = var.bucket_force_destroy
+
+  encryption = {
+    default_kms_key_name = local.state_bucket_kms_key
+  }
+
+  depends_on = [module.seed_bootstrap.gcs_bucket_tfstate]
+}
+
 module "tf_source" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_source"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   org_id                = var.org_id
   folder_id             = google_folder.bootstrap.id
@@ -77,6 +93,8 @@ module "tf_source" {
   billing_account       = var.billing_account
   group_org_admins      = var.groups.required_groups.group_org_admins
   buckets_force_destroy = var.bucket_force_destroy
+
+  project_deletion_policy = var.project_deletion_policy
 
   activate_apis = [
     "serviceusage.googleapis.com",
@@ -116,6 +134,15 @@ module "tf_source" {
   depends_on = [module.seed_bootstrap]
 }
 
+resource "google_project_service_identity" "workflows_identity" {
+  provider = google-beta
+
+  project = module.tf_source.cloudbuild_project_id
+  service = "workflows.googleapis.com"
+
+  depends_on = [module.tf_source]
+}
+
 module "tf_private_pool" {
   source = "./modules/cb-private-pool"
 
@@ -137,7 +164,7 @@ module "tf_private_pool" {
 
 module "tf_cloud_builder" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
@@ -188,7 +215,7 @@ module "build_terraform_image" {
 
 module "tf_workspace" {
   source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 8.0"
+  version  = "~> 9.0"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id

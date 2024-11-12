@@ -45,6 +45,8 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		BucketTfstateKmsForceDestroy: tfvars.BucketTfstateKmsForceDestroy,
 		Groups:                       tfvars.Groups,
 		InitialGroupConfig:           tfvars.InitialGroupConfig,
+		FolderDeletionProtection:     tfvars.FolderDeletionProtection,
+		ProjectDeletionPolicy:        tfvars.ProjectDeletionPolicy,
 	}
 
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, BootstrapStep, "terraform.tfvars"), bootstrapTfvars)
@@ -205,6 +207,8 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		LogExportStorageForceDestroy:          tfvars.LogExportStorageForceDestroy,
 		LogExportStorageLocation:              tfvars.LogExportStorageLocation,
 		BillingExportDatasetLocation:          tfvars.BillingExportDatasetLocation,
+		FolderDeletionProtection:              tfvars.FolderDeletionProtection,
+		ProjectDeletionPolicy:                 tfvars.ProjectDeletionPolicy,
 	}
 	orgTfvars.GcpGroups = GcpGroups{}
 	if tfvars.HasOptionalGroupsCreation() {
@@ -247,7 +251,9 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 func DeployEnvStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf) error {
 
 	envsTfvars := EnvsTfvars{
-		RemoteStateBucket: outputs.RemoteStateBucket,
+		RemoteStateBucket:        outputs.RemoteStateBucket,
+		FolderDeletionProtection: tfvars.FolderDeletionProtection,
+		ProjectDeletionPolicy:    tfvars.ProjectDeletionPolicy,
 	}
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, EnvironmentsStep, "terraform.tfvars"), envsTfvars)
 	if err != nil {
@@ -338,8 +344,10 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	}
 	//for each environment
 	envTfvars := ProjEnvTfvars{
-		ProjectsKMSLocation: tfvars.ProjectsKMSLocation,
-		ProjectsGCSLocation: tfvars.ProjectsGCSLocation,
+		LocationKMS:              tfvars.LocationKMS,
+		LocationGCS:              tfvars.LocationGCS,
+		FolderDeletionProtection: tfvars.FolderDeletionProtection,
+		ProjectDeletionPolicy:    tfvars.ProjectDeletionPolicy,
 	}
 	for _, envfile := range []string{
 		"development.auto.tfvars",

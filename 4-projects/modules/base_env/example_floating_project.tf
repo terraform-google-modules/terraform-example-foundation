@@ -24,6 +24,8 @@ module "floating_project" {
   project_budget  = var.project_budget
   project_prefix  = local.project_prefix
 
+  project_deletion_policy = var.project_deletion_policy
+
   # Metadata
   project_suffix    = "sample-floating"
   application_name  = "${var.business_code}-sample-application"

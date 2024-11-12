@@ -28,6 +28,9 @@ module "app_infra_cloudbuild_project" {
   environment     = "common"
   project_budget  = var.project_budget
   project_prefix  = local.project_prefix
+
+  project_deletion_policy = var.project_deletion_policy
+
   activate_apis = [
     "cloudbuild.googleapis.com",
     "sourcerepo.googleapis.com",

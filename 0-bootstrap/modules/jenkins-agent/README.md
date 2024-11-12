@@ -68,6 +68,7 @@ module "jenkins_bootstrap" {
 | on\_prem\_vpn\_public\_ip\_address | The public IP Address of the Jenkins Controller. | `string` | n/a | yes |
 | on\_prem\_vpn\_public\_ip\_address2 | The secondpublic IP Address of the Jenkins Controller. | `string` | n/a | yes |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
+| project\_deletion\_policy | The deletion policy for the project created. | `string` | `"PREVENT"` | no |
 | project\_labels | Labels to apply to the project. | `map(string)` | `{}` | no |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | router\_asn | BGP ASN for cloud routes. | `number` | `"64515"` | no |

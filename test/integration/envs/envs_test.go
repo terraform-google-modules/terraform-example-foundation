@@ -40,7 +40,9 @@ func TestEnvs(t *testing.T) {
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
 	vars := map[string]interface{}{
-		"remote_state_bucket": backend_bucket,
+		"remote_state_bucket":        backend_bucket,
+		"folder_deletion_protection": false,
+		"project_deletion_policy":    "DELETE",
 	}
 
 	backendConfig := map[string]interface{}{

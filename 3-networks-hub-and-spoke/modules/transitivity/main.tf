@@ -37,7 +37,7 @@ module "service_account" {
 
 module "templates" {
   source   = "terraform-google-modules/vm/google//modules/instance_template"
-  version  = "~> 11.0"
+  version  = "~> 12.0"
   for_each = toset(var.regions)
 
   can_ip_forward = true
@@ -65,7 +65,7 @@ module "templates" {
 
 module "migs" {
   source   = "terraform-google-modules/vm/google//modules/mig"
-  version  = "~> 11.1"
+  version  = "~> 12.1"
   for_each = toset(var.regions)
 
   project_id        = var.project_id
@@ -91,7 +91,7 @@ module "migs" {
 
 module "ilbs" {
   source   = "GoogleCloudPlatform/lb-internal/google"
-  version  = "~> 6.0"
+  version  = "~> 7.0"
   for_each = toset(var.regions)
 
   region                  = each.key
@@ -108,7 +108,10 @@ module "ilbs" {
   target_tags             = null
   create_backend_firewall = false
   backends = [
-    { group = module.migs[each.key].instance_group, description = "" },
+    {
+      group       = module.migs[each.key].instance_group,
+      description = ""
+    },
   ]
 
   health_check = {

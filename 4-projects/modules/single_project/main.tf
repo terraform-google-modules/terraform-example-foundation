@@ -46,7 +46,7 @@ locals {
 
 module "project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 17.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -56,6 +56,7 @@ module "project" {
   billing_account          = var.billing_account
   folder_id                = var.folder_id
   auto_create_network      = true
+  deletion_policy          = var.project_deletion_policy
 
   svpc_host_project_id = var.shared_vpc_host_project_id
   shared_vpc_subnets   = var.shared_vpc_subnets # Optional: To enable subnetting, replace to "module.networking_project.subnetwork_self_link"

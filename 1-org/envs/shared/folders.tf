@@ -21,9 +21,11 @@
 resource "google_folder" "common" {
   display_name = "${local.folder_prefix}-common"
   parent       = local.parent
+  # deletion_protection = var.folder_deletion_protection // uncommnet after updating "GoogleCloudPlatform/cloud-functions/google" to provider v6
 }
 
 resource "google_folder" "network" {
   display_name = "${local.folder_prefix}-network"
   parent       = local.parent
+  # deletion_protection = var.folder_deletion_protection // uncommnet after updating "GoogleCloudPlatform/cloud-functions/google" to provider v6
 }

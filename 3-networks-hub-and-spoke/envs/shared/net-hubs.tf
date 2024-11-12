@@ -175,7 +175,6 @@ module "base_shared_vpc" {
   source = "../../modules/base_shared_vpc"
 
   project_id                    = local.base_net_hub_project_id
-  dns_hub_project_id            = local.dns_hub_project_id
   environment_code              = local.environment_code
   private_service_connect_ip    = "10.17.0.1"
   bgp_asn_subnet                = local.bgp_asn_number
@@ -190,6 +189,7 @@ module "base_shared_vpc" {
   nat_num_addresses_region1     = var.base_hub_nat_num_addresses_region1
   nat_num_addresses_region2     = var.base_hub_nat_num_addresses_region2
   windows_activation_enabled    = var.base_hub_windows_activation_enabled
+  target_name_server_addresses  = var.target_name_server_addresses
   mode                          = "hub"
 
   subnets = [
@@ -251,7 +251,6 @@ module "restricted_shared_vpc" {
 
   project_id                       = local.restricted_net_hub_project_id
   project_number                   = local.restricted_net_hub_project_number
-  dns_hub_project_id               = local.dns_hub_project_id
   environment_code                 = local.environment_code
   private_service_connect_ip       = "10.17.0.5"
   access_context_manager_policy_id = var.access_context_manager_policy_id
@@ -279,6 +278,7 @@ module "restricted_shared_vpc" {
   nat_num_addresses_region1     = var.restricted_hub_nat_num_addresses_region1
   nat_num_addresses_region2     = var.restricted_hub_nat_num_addresses_region2
   windows_activation_enabled    = var.restricted_hub_windows_activation_enabled
+  target_name_server_addresses  = var.target_name_server_addresses
   mode                          = "hub"
 
   subnets = [

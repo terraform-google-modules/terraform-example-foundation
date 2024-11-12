@@ -50,8 +50,6 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| dns\_hub\_project\_id | The DNS hub project ID |
+No outputs.
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

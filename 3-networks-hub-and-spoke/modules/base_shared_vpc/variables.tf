@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
+variable "target_name_server_addresses" {
+  description = "List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones."
+  type        = list(map(any))
+}
+
 variable "project_id" {
   type        = string
   description = "Project ID for Private Shared VPC."
-}
-
-variable "dns_hub_project_id" {
-  type        = string
-  description = "The DNS hub project ID"
 }
 
 variable "base_net_hub_project_id" {

@@ -32,8 +32,8 @@ resource "google_dns_policy" "default_policy" {
  Creates DNS Peering to DNS HUB
 *****************************************/
 data "google_compute_network" "vpc_dns_hub" {
-  name    = "vpc-net-dns"
-  project = var.dns_hub_project_id
+  name    = module.main.network_name
+  project = var.project_id
 }
 
 module "peering_zone" {
@@ -71,5 +71,5 @@ module "dns_forwarding_zone" {
   private_visibility_config_networks = [
     module.main.network_self_link
   ]
-  target_network = data.google_compute_network.vpc_dns_hub.self_link
+  target_name_server_addresses = var.target_name_server_addresses
 }

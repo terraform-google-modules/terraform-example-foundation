@@ -35,7 +35,7 @@ data "google_compute_network" "vpc_dns_hub" {
   count = var.mode == "spoke" ? 1 : 0
 
   name    = data.google_compute_network.vpc_base_net_hub[0].name
-  project = var.restricted_net_hub_project_id
+  project = var.base_net_hub_project_id
 }
 
 module "peering_zone" {

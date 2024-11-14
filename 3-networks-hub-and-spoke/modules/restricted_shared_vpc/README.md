@@ -49,6 +49,7 @@
 | firewall\_policy | Policy created for firewall policy rules. |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
+| project | Project name |
 | region1\_router1 | Router 1 for Region 1 |
 | region1\_router2 | Router 2 for Region 1 |
 | region2\_router1 | Router 1 for Region 2 |

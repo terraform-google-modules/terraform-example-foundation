@@ -58,5 +58,6 @@
 | restricted\_subnets\_names | The names of the subnets being created |
 | restricted\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | restricted\_subnets\_self\_links | The self-links of subnets being created |
+| target\_name\_server\_addresses | List of IPv4 address of target name servers for the forwarding zone configuration |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

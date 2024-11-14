@@ -14,3 +14,8 @@
  * limitations under the License.
  */
 
+output "project" {
+  value       = local.restricted_net_hub_project_id
+  description = "Project name"
+}
+

@@ -129,12 +129,9 @@ module "region1_router1" {
   network = module.main.network_name
   region  = var.default_region1
   bgp = {
-    asn               = var.bgp_asn_subnet
-    advertised_groups = ["ALL_SUBNETS"]
-    advertised_ip_ranges = concat(
-      [{ range = local.restricted_googleapis_cidr }],
-      var.private_service_cidr != null ? [{ range = local.google_private_service_range }] : []
-    )
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = var.private_service_cidr == null ? [{ range = local.google_private_service_range }] : [{ range = local.private_googleapis_cidr }]
   }
 }
 
@@ -148,12 +145,9 @@ module "region1_router2" {
   network = module.main.network_name
   region  = var.default_region1
   bgp = {
-    asn               = var.bgp_asn_subnet
-    advertised_groups = ["ALL_SUBNETS"]
-    advertised_ip_ranges = concat(
-      [{ range = local.restricted_googleapis_cidr }],
-      var.private_service_cidr != null ? [{ range = local.google_private_service_range }] : []
-    )
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = var.private_service_cidr == null ? [{ range = local.google_private_service_range }] : [{ range = local.private_googleapis_cidr }]
   }
 }
 
@@ -167,12 +161,9 @@ module "region2_router1" {
   network = module.main.network_name
   region  = var.default_region2
   bgp = {
-    asn               = var.bgp_asn_subnet
-    advertised_groups = ["ALL_SUBNETS"]
-    advertised_ip_ranges = concat(
-      [{ range = local.restricted_googleapis_cidr }],
-      var.private_service_cidr != null ? [{ range = local.google_private_service_range }] : []
-    )
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = var.private_service_cidr == null ? [{ range = local.google_private_service_range }] : [{ range = local.private_googleapis_cidr }]
   }
 }
 
@@ -186,11 +177,8 @@ module "region2_router2" {
   network = module.main.network_name
   region  = var.default_region2
   bgp = {
-    asn               = var.bgp_asn_subnet
-    advertised_groups = ["ALL_SUBNETS"]
-    advertised_ip_ranges = concat(
-      [{ range = local.restricted_googleapis_cidr }],
-      var.private_service_cidr != null ? [{ range = local.google_private_service_range }] : []
-    )
+    asn                  = var.bgp_asn_subnet
+    advertised_groups    = ["ALL_SUBNETS"]
+    advertised_ip_ranges = var.private_service_cidr == null ? [{ range = local.google_private_service_range }] : [{ range = local.private_googleapis_cidr }]
   }
 }

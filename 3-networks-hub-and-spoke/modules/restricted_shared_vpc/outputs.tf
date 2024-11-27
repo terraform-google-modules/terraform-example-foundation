@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-output "project" {
-  value       = var.project_id
-  description = "Project name"
-}
-
 output "network_name" {
   value       = module.main.network_name
   description = "The name of the VPC being created"

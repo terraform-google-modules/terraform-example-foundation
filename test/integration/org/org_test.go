@@ -247,7 +247,7 @@ func TestOrg(t *testing.T) {
 			prjLinkedDsName := org.GetStringOutput("logs_export_project_linked_dataset_name")
 			prjLinkedDs := gcloud.Runf(t, "logging links describe %s --bucket=%s --location=%s --project=%s", prjLinkedDatasetID, prjLogsExportLogBktName, defaultRegion, auditLogsProjectID)
 			assert.Equal(prjLinkedDsName, prjLinkedDs.Get("name").String(), "log bucket linked dataset name should match")
-			prjBigqueryDatasetID := fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectNumber, prjLinkedDatasetID)
+			prjBigqueryDatasetID := fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectID, prjLinkedDatasetID)
 			assert.Equal(prjBigqueryDatasetID, prjLinkedDs.Get("bigqueryDataset.datasetId").String(), "log bucket BigQuery dataset ID should match")
 
 			// add filter exclusion

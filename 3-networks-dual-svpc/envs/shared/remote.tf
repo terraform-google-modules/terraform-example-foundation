@@ -21,7 +21,6 @@ locals {
   default_region1           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   default_region2           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
   folder_prefix             = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  dns_hub_project_id        = data.terraform_remote_state.org.outputs.dns_hub_project_id
   interconnect_project_id   = data.terraform_remote_state.org.outputs.interconnect_project_id
   parent_id                 = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   bootstrap_folder_name     = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name

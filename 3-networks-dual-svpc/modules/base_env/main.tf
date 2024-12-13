@@ -169,7 +169,8 @@ locals {
 module "restricted_shared_vpc" {
   source = "../restricted_shared_vpc"
 
-  project_id                       = local.restricted_project_id
+  project_id = local.restricted_project_id
+  #dns_hub_project_id               = local.dns_hub_project_id
   project_number                   = local.restricted_project_number
   environment_code                 = var.environment_code
   access_context_manager_policy_id = var.access_context_manager_policy_id
@@ -185,15 +186,14 @@ module "restricted_shared_vpc" {
     "serviceAccount:${local.projects_service_account}",
     "serviceAccount:${local.organization_service_account}",
   ], var.perimeter_additional_members))
-  private_service_cidr         = var.restricted_private_service_cidr
-  private_service_connect_ip   = var.restricted_private_service_connect_ip
-  bgp_asn_subnet               = local.bgp_asn_number
-  default_region1              = var.default_region1
-  default_region2              = var.default_region2
-  domain                       = var.domain
-  target_name_server_addresses = var.target_name_server_addresses
-  ingress_policies             = var.ingress_policies
-  ingress_policies_dry_run     = var.ingress_policies_dry_run
+  private_service_cidr       = var.restricted_private_service_cidr
+  private_service_connect_ip = var.restricted_private_service_connect_ip
+  bgp_asn_subnet             = local.bgp_asn_number
+  default_region1            = var.default_region1
+  default_region2            = var.default_region2
+  domain                     = var.domain
+  ingress_policies           = var.ingress_policies
+  ingress_policies_dry_run   = var.ingress_policies_dry_run
   egress_policies = distinct(concat(
     local.dedicated_interconnect_egress_policy,
     var.egress_policies
@@ -202,6 +202,8 @@ module "restricted_shared_vpc" {
     local.dedicated_interconnect_egress_policy,
     var.egress_policies_dry_run
   ))
+  target_name_server_addresses = var.target_name_server_addresses
+
 
 
   subnets = [
@@ -262,7 +264,8 @@ module "restricted_shared_vpc" {
 module "base_shared_vpc" {
   source = "../base_shared_vpc"
 
-  project_id                   = local.base_project_id
+  project_id = local.base_project_id
+  #dns_hub_project_id         = local.dns_hub_project_id
   environment_code             = var.environment_code
   private_service_cidr         = var.base_private_service_cidr
   private_service_connect_ip   = var.base_private_service_connect_ip

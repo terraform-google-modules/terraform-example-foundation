@@ -14,6 +14,126 @@
  * limitations under the License.
  */
 
+variable "enable_partner_interconnect" {
+  description = "Enable Partner Interconnect in the environment."
+  type        = bool
+  default     = false
+}
+
+variable "enable_dedicated_interconnect" {
+  description = "Enable Dedicated Interconnect in the environment."
+  type        = bool
+  default     = false
+}
+
+variable "custom_restricted_services" {
+  description = "List of custom services to be protected by the VPC-SC perimeter. If empty, all supported services (https://cloud.google.com/vpc-service-controls/docs/supported-products) will be protected."
+  type        = list(string)
+  default     = []
+}
+
+variable "restricted_hub_dns_enable_inbound_forwarding" {
+  type        = bool
+  description = "Toggle inbound query forwarding for Restricted Hub VPC DNS."
+  default     = true
+}
+
+variable "restricted_hub_firewall_enable_logging" {
+  type        = bool
+  description = "Toggle firewall logging for VPC Firewalls in Restricted Hub VPC."
+  default     = true
+}
+
+variable "restricted_hub_dns_enable_logging" {
+  type        = bool
+  description = "Toggle DNS logging for Restricted Hub VPC DNS."
+  default     = true
+}
+
+variable "restricted_hub_nat_enabled" {
+  type        = bool
+  description = "Toggle creation of NAT cloud router in Restricted Hub."
+  default     = false
+}
+
+variable "restricted_hub_nat_bgp_asn" {
+  type        = number
+  description = "BGP ASN for first NAT cloud routes in Restricted Hub."
+  default     = 64514
+}
+
+variable "restricted_hub_nat_num_addresses_region1" {
+  type        = number
+  description = "Number of external IPs to reserve for first Cloud NAT in Restricted Hub."
+  default     = 2
+}
+
+variable "restricted_hub_nat_num_addresses_region2" {
+  type        = number
+  description = "Number of external IPs to reserve for second Cloud NAT in Restricted Hub."
+  default     = 2
+}
+
+variable "restricted_hub_windows_activation_enabled" {
+  type        = bool
+  description = "Enable Windows license activation for Windows workloads in Restricted Hub."
+  default     = false
+}
+
+variable "base_hub_dns_enable_inbound_forwarding" {
+  type        = bool
+  description = "Toggle inbound query forwarding for Base Hub VPC DNS."
+  default     = true
+}
+
+variable "base_hub_dns_enable_logging" {
+  type        = bool
+  description = "Toggle DNS logging for Base Hub VPC DNS."
+  default     = true
+}
+
+variable "base_hub_firewall_enable_logging" {
+  type        = bool
+  description = "Toggle firewall logging for VPC Firewalls in Base Hub VPC."
+  default     = true
+}
+
+variable "base_hub_nat_enabled" {
+  type        = bool
+  description = "Toggle creation of NAT cloud router in Base Hub."
+  default     = false
+}
+
+variable "base_hub_nat_bgp_asn" {
+  type        = number
+  description = "BGP ASN for first NAT cloud routes in Base Hub."
+  default     = 64514
+}
+
+variable "base_hub_nat_num_addresses_region1" {
+  type        = number
+  description = "Number of external IPs to reserve for first Cloud NAT in Base Hub."
+  default     = 2
+}
+
+variable "base_hub_nat_num_addresses_region2" {
+  type        = number
+  description = "Number of external IPs to reserve for second Cloud NAT in Base Hub."
+  default     = 2
+}
+
+variable "base_hub_windows_activation_enabled" {
+  type        = bool
+  description = "Enable Windows license activation for Windows workloads in Base Hub"
+  default     = false
+}
+
+variable "target_name_server_addresses" {
+  description = "List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones."
+  type        = list(map(any))
+}
+
+##############################
 variable "remote_state_bucket" {
   description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string
@@ -82,3 +202,4 @@ variable "tfc_org_name" {
   type        = string
   default     = ""
 }
+

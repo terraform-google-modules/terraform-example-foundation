@@ -34,7 +34,7 @@ resource "google_dns_policy" "default_policy" {
 data "google_compute_network" "vpc_dns_hub" {
   count = local.environment == "production" ? 1 : 0
 
-  name    = data.google_compute_network.vpc_base_net_hub[0].name
+  name    = var.base_network_name
   project = var.base_net_hub_project_id
 }
 
@@ -62,6 +62,8 @@ module "peering_zone" {
 module "dns_forwarding_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
   version = "~> 5.0"
+
+  count = local.environment == "production" ? 1 : 0
 
   project_id = var.project_id
   type       = "forwarding"

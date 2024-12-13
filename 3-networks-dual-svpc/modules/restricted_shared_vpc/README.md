@@ -29,6 +29,7 @@
 | project\_id | Project ID for Restricted Shared VPC. | `string` | n/a | yes |
 | project\_number | Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter. | `number` | n/a | yes |
 | restricted\_net\_hub\_project\_id | The restricted net hub project ID | `string` | `""` | no |
+| restricted\_network\_name | The name of the VPC being created | `string` | `""` | no |
 | restricted\_services | List of services to restrict in an enforced perimeter. | `list(string)` | n/a | yes |
 | restricted\_services\_dry\_run | List of services to restrict in a dry-run perimeter. | `list(string)` | n/a | yes |
 | secondary\_ranges | Secondary ranges that will be used in some of the subnets | `map(list(object({ range_name = string, ip_cidr_range = string })))` | `{}` | no |

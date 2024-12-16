@@ -22,8 +22,6 @@ locals {
 
   cicd_project_id = module.tf_source.cloudbuild_project_id
 
-  state_bucket_kms_key = "projects/${module.seed_bootstrap.seed_project_id}/locations/${var.default_region}/keyRings/${var.project_prefix}-keyring/cryptoKeys/${var.project_prefix}-key"
-
   bucket_self_link_prefix             = "https://www.googleapis.com/storage/v1/b/"
   default_state_bucket_self_link      = "${local.bucket_self_link_prefix}${module.seed_bootstrap.gcs_bucket_tfstate}"
   gcp_projects_state_bucket_self_link = module.gcp_projects_state_bucket.bucket.self_link

@@ -20,7 +20,7 @@
 
 module "dns_hub_vpc" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 9.0"
+  version = "~> 10.0"
 
   project_id                             = local.dns_hub_project_id
   network_name                           = "vpc-net-dns"

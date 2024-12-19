@@ -222,7 +222,6 @@ func TestOrg(t *testing.T) {
 			assert.Equal(billingDatasetFullName, billingDataset.Get("id").String(), fmt.Sprintf("dataset %s should exist", billingDatasetFullName))
 
 			auditLogsProjectID := org.GetStringOutput("org_audit_logs_project_id")
-			auditLogsProjectNumber := gcloud.Runf(t, "projects describe %s", auditLogsProjectID).Get("projectNumber").String()
 
 			// Bucket destination
 			logsExportStorageBucketName := org.GetStringOutput("logs_export_storage_bucket_name")
@@ -247,7 +246,7 @@ func TestOrg(t *testing.T) {
 			prjLinkedDsName := org.GetStringOutput("logs_export_project_linked_dataset_name")
 			prjLinkedDs := gcloud.Runf(t, "logging links describe %s --bucket=%s --location=%s --project=%s", prjLinkedDatasetID, prjLogsExportLogBktName, defaultRegion, auditLogsProjectID)
 			assert.Equal(prjLinkedDsName, prjLinkedDs.Get("name").String(), "log bucket linked dataset name should match")
-			prjBigqueryDatasetID := fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectNumber, prjLinkedDatasetID)
+			prjBigqueryDatasetID := fmt.Sprintf("bigquery.googleapis.com/projects/%s/datasets/%s", auditLogsProjectID, prjLinkedDatasetID)
 			assert.Equal(prjBigqueryDatasetID, prjLinkedDs.Get("bigqueryDataset.datasetId").String(), "log bucket BigQuery dataset ID should match")
 
 			// add filter exclusion

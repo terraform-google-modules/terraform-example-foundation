@@ -66,32 +66,32 @@ locals {
     ]
   }
 
-##############################
+  ##############################
 
-    restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
-    restricted_services_dry_run = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
+  restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
+  restricted_services_dry_run = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
 
-    bgp_asn_number     = var.enable_partner_interconnect ? "16550" : "64514"
-   # dns_bgp_asn_number = var.enable_partner_interconnect ? "16550" : var.bgp_asn_dns
+  bgp_asn_number = var.enable_partner_interconnect ? "16550" : "64514"
+  # dns_bgp_asn_number = var.enable_partner_interconnect ? "16550" : var.bgp_asn_dns
 
-#   dedicated_interconnect_egress_policy = var.enable_dedicated_interconnect ? [
-#     {
-#       "from" = {
-#         "identity_type" = ""
-#         "identities"    = ["serviceAccount:${local.networks_service_account}"]
-#       },
-#       "to" = {
-#         "resources" = ["projects/${local.interconnect_project_number}"]
-#         "operations" = {
-#           "compute.googleapis.com" = {
-#             "methods" = ["*"]
-#           }
-#         }
-#       }
-#     },
-#   ] : []
+  #   dedicated_interconnect_egress_policy = var.enable_dedicated_interconnect ? [
+  #     {
+  #       "from" = {
+  #         "identity_type" = ""
+  #         "identities"    = ["serviceAccount:${local.networks_service_account}"]
+  #       },
+  #       "to" = {
+  #         "resources" = ["projects/${local.interconnect_project_number}"]
+  #         "operations" = {
+  #           "compute.googleapis.com" = {
+  #             "methods" = ["*"]
+  #           }
+  #         }
+  #       }
+  #     },
+  #   ] : []
 
-supported_restricted_service = [
+  supported_restricted_service = [
     "accessapproval.googleapis.com",
     "adsdatahub.googleapis.com",
     "aiplatform.googleapis.com",
@@ -216,7 +216,7 @@ supported_restricted_service = [
     "workstations.googleapis.com",
   ]
 
-######################################
+  ######################################
 }
 
 module "base_env" {
@@ -247,7 +247,7 @@ module "base_env" {
   restricted_private_service_connect_ip = "10.17.0.8"
   remote_state_bucket                   = var.remote_state_bucket
   tfc_org_name                          = var.tfc_org_name
-  target_name_server_addresses  = var.target_name_server_addresses
+  target_name_server_addresses          = var.target_name_server_addresses
 }
 #################### net_hub below
 

@@ -15,9 +15,9 @@
  */
 
 locals {
-  vpc_name                     = "${var.environment_code}-shared-base"
-  network_name                 = "vpc-${local.vpc_name}"
-  private_googleapis_cidr      = module.private_service_connect.private_service_connect_ip
+  vpc_name                = "${var.environment_code}-shared-base"
+  network_name            = "vpc-${local.vpc_name}"
+  private_googleapis_cidr = module.private_service_connect.private_service_connect_ip
   #environment                 = "production"
   #environment                  = var.environment_code == "production" ? "production" : var.environment_code == "shared" ? "shared" : var.environment_code == "development" ? "development" : "nonproduction"
   #environment = var.environment_code == "production" ? "production" : null
@@ -99,7 +99,7 @@ module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
 
- #count = local.environment == "production" ? 1 : 0
+  #count = local.environment == "production" ? 1 : 0
 
   name    = "cr-${local.vpc_name}-${var.default_region1}-cr1"
   project = var.project_id

@@ -18,7 +18,9 @@ locals {
   vpc_name                     = "${var.environment_code}-shared-restricted"
   network_name                 = "vpc-${local.vpc_name}"
   restricted_googleapis_cidr   = module.private_service_connect.private_service_connect_ip
-  environment                  = var.environment_code == "plan" ? "plan" : var.environment_code == "production" ? "production" : var.environment_code == "development" ? "development" : "nonproduction"
+  environment                  = var.environment_code == "production" ? "production" : var.environment_code == "shared" ? "shared" : var.environment_code == "development" ? "development" : "nonproduction"
+  #environment = var.environment_code == "production" ? "production" : null
+  #environment                  = var.environment_code == "shared" ? "shared" : var.environment_code == "production" ? "production" : var.environment_code == "development" ? "development" : "nonproduction"
   google_private_service_range = "35.199.192.0/19"
   advertised_ip                = var.private_service_cidr == null ? [{ range = local.google_private_service_range }] : [{ range = local.restricted_googleapis_cidr }]
 }

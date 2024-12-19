@@ -34,7 +34,8 @@ resource "google_dns_policy" "default_policy" {
 data "google_compute_network" "vpc_dns_hub" {
   count = local.environment == "production" ? 1 : 0
 
-  name    = data.google_compute_network.vpc_restricted_net_hub[0].name
+  #name    = data.google_compute_network.vpc_restricted_net_hub[0].name
+  name    = var.restricted_network_name
   project = var.restricted_net_hub_project_id
 }
 

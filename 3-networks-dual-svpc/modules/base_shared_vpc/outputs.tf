@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 output "network_name" {
   value       = module.main.network_name
   description = "The name of the VPC being created"
@@ -78,3 +79,4 @@ output "region2_router2" {
   value       = module.region2_router2
   description = "Router 2 for Region 2"
 }
+

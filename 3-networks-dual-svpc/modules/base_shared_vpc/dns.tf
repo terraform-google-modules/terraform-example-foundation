@@ -32,17 +32,18 @@ resource "google_dns_policy" "default_policy" {
  Creates DNS Peering to DNS HUB
 *****************************************/
 data "google_compute_network" "vpc_dns_hub" {
-  count = local.environment == "production" ? 1 : 0
 
-  name    = var.base_network_name
-  project = var.base_net_hub_project_id
+  #count = local.environment == "production" ? 1 : 0
+
+  name    = local.network_name
+  project = var.project_id
 }
 
 module "peering_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
   version = "~> 5.0"
 
-  count = local.environment == "production" ? 1 : 0
+  #count = local.environment == "production" ? 1 : 0
 
   project_id  = var.project_id
   type        = "peering"
@@ -53,7 +54,8 @@ module "peering_zone" {
   private_visibility_config_networks = [
     module.main.network_self_link
   ]
-  target_network = data.google_compute_network.vpc_dns_hub[0].self_link
+  #target_network = data.google_compute_network.vpc_dns_hub[0].self_link
+  target_network = data.google_compute_network.vpc_dns_hub.self_link
 }
 
 /******************************************
@@ -63,7 +65,7 @@ module "dns_forwarding_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
   version = "~> 5.0"
 
-  count = local.environment == "production" ? 1 : 0
+  #count = local.environment == "production" ? 1 : 0
 
   project_id = var.project_id
   type       = "forwarding"
@@ -75,4 +77,3 @@ module "dns_forwarding_zone" {
   ]
   target_name_server_addresses = var.target_name_server_addresses
 }
-

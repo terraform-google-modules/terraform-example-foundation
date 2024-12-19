@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
+
 variable "target_name_server_addresses" {
   description = "List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones."
   type        = list(map(any))
 }
 
-variable "base_net_hub_project_id" {
+variable "base_network_name" {
   type        = string
-  description = "The base net hub project ID"
+  description = "The name of the VPC being created"
+  default     = ""
+}
+
+variable "base_project_id" {
+  type        = string
+  description = "The base project ID"
   default     = ""
 }
 
@@ -29,6 +36,7 @@ variable "project_id" {
   type        = string
   description = "Project ID for Private Shared VPC."
 }
+
 
 variable "environment_code" {
   type        = string
@@ -148,3 +156,4 @@ variable "enable_all_vpc_internal_traffic" {
   description = "Enable firewall policy rule to allow internal traffic (ingress and egress)."
   default     = false
 }
+

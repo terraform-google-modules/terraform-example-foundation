@@ -175,14 +175,14 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
 
 1. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
-   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project.
 
    ```bash
    git push --set-upstream origin plan
    ```
 
 1. Merge changes to the production branch. Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project. https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project.
 
    ```bash
    git checkout -b production
@@ -209,12 +209,24 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 ### Running Terraform locally
 
 1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder.
-Change into the `1-org` folder, copy the Terraform wrapper script, and ensure it can be executed.
+Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensure it can be executed.
 
    ```bash
-   cd terraform-example-foundation/1-org
-   cp ../build/tf-wrapper.sh .
+   mkdir gcp-org
+   cp -R terraform-example-foundation/1-org/* gcp-org/
+   cp terraform-example-foundation/build/tf-wrapper.sh gcp-org/
+   cp terraform-example-foundation/.gitignore gcp-org/
+   cd gcp-org
    chmod 755 ./tf-wrapper.sh
+   ```
+
+1. Initialize a local Git repository to manage versions locally. Then, create the environment branches.
+
+   ```bash
+      git init
+      git commit -m "initialize empty directory" --allow-empty
+      git checkout -b plan
+      git checkout -b production
    ```
 
 1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`.
@@ -226,7 +238,7 @@ Change into the `1-org` folder, copy the Terraform wrapper script, and ensure it
 1. Check if a Security Command Center notification with the default name, **scc-notify**, already exists. If it exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
 
    ```bash
-   export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
+   export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
    gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID}
    ```
 
@@ -237,10 +249,10 @@ Change into the `1-org` folder, copy the Terraform wrapper script, and ensure it
    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
    ```
 
-1. Update the `envs/shared/terraform.tfvars` file with values from your environment and 0-bootstrap step. If the previous step showed a numeric value, un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
+1. Update the `envs/shared/terraform.tfvars` file with values from your environment and `gcp-bootstrap` step. If the previous step showed a numeric value, un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
 
    ```bash
-   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
 
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
@@ -249,23 +261,23 @@ Change into the `1-org` folder, copy the Terraform wrapper script, and ensure it
    ```
 
 You can now deploy your environment (production) using this script.
-When using Cloud Build or Jenkins as your CI/CD tool, each environment corresponding to a branch is the repository for 1-org step and only the corresponding environment is applied.
 
 To use the `validate` option of the `tf-wrapper.sh` script, follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
-1. Use `terraform output` to get the Cloud Build project ID and the organization step Terraform service account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
-   export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw cloudbuild_project_id)
-   echo ${CLOUD_BUILD_PROJECT_ID}
+   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/" output -raw seed_project_id)
+   echo ${SEED_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw organization_step_terraform_service_account_email)
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/" output -raw organization_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
 1. Run `init` and `plan` and review the output.
 
    ```bash
+   git checkout plan
    ./tf-wrapper.sh init production
    ./tf-wrapper.sh plan production
    ```
@@ -273,12 +285,21 @@ To use the `validate` option of the `tf-wrapper.sh` script, follow the [instruct
 1. Run `validate` and resolve any violations.
 
    ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${CLOUD_BUILD_PROJECT_ID}
+   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
-1. Run `apply production`.
+1. Commit validated code in plan branch.
 
    ```bash
+   git add .
+   git commit -m "Initial version of gcp-org."
+   ```
+
+1. Checkout `production` branch and merge plan into it. Run `apply production`.
+
+   ```bash
+   git checkout production
+   git merge plan
    ./tf-wrapper.sh apply production
    ```
 

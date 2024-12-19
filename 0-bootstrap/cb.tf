@@ -133,7 +133,7 @@ module "tf_source" {
   }
 
   # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
-  depends_on = [module.seed_bootstrap]
+  depends_on = [module.seed_bootstrap, time_sleep.wait_organization_policies]
 }
 
 resource "google_project_service_identity" "workflows_identity" {

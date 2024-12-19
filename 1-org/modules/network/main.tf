@@ -30,6 +30,7 @@ module "base_shared_vpc_host_project" {
   folder_id                   = var.folder_id
   disable_services_on_destroy = false
   deletion_policy             = var.project_deletion_policy
+  auto_create_network         = true
 
   activate_apis = [
     "compute.googleapis.com",
@@ -67,6 +68,7 @@ module "restricted_shared_vpc_host_project" {
   folder_id                   = var.folder_id
   disable_services_on_destroy = false
   deletion_policy             = var.project_deletion_policy
+  auto_create_network         = true
 
   activate_apis = [
     "compute.googleapis.com",

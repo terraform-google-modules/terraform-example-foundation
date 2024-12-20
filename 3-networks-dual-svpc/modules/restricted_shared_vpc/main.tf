@@ -15,12 +15,9 @@
  */
 
 locals {
-  vpc_name                   = "${var.environment_code}-shared-restricted"
-  network_name               = "vpc-${local.vpc_name}"
-  restricted_googleapis_cidr = module.private_service_connect.private_service_connect_ip
-  environment                = var.environment_code == "production" ? "production" : var.environment_code == "shared" ? "shared" : var.environment_code == "development" ? "development" : "nonproduction"
-  #environment = var.environment_code == "production" ? "production" : null
-  #environment                  = var.environment_code == "shared" ? "shared" : var.environment_code == "production" ? "production" : var.environment_code == "development" ? "development" : "nonproduction"
+  vpc_name                     = "${var.environment_code}-shared-restricted"
+  network_name                 = "vpc-${local.vpc_name}"
+  restricted_googleapis_cidr   = module.private_service_connect.private_service_connect_ip
   google_private_service_range = "35.199.192.0/19"
   advertised_ip                = var.private_service_cidr == null ? [{ range = local.google_private_service_range }] : [{ range = local.restricted_googleapis_cidr }]
 }
@@ -68,6 +65,7 @@ module "main" {
   )
 }
 
+
 /***************************************************************
   Configure Service Networking for Cloud SQL & future services.
  **************************************************************/
@@ -103,8 +101,6 @@ module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
 
-  count = local.environment == "production" ? 1 : 0
-
   name    = "cr-${local.vpc_name}-${var.default_region1}-cr5"
   project = var.project_id
   network = module.main.network_name
@@ -119,8 +115,6 @@ module "region1_router1" {
 module "region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
-
-  count = local.environment == "production" ? 1 : 0
 
   name    = "cr-${local.vpc_name}-${var.default_region1}-cr6"
   project = var.project_id
@@ -137,8 +131,6 @@ module "region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
 
-  count = local.environment == "production" ? 1 : 0
-
   name    = "cr-${local.vpc_name}-${var.default_region2}-cr7"
   project = var.project_id
   network = module.main.network_name
@@ -153,8 +145,6 @@ module "region2_router1" {
 module "region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
-
-  count = local.environment == "production" ? 1 : 0
 
   name    = "cr-${local.vpc_name}-${var.default_region2}-cr8"
   project = var.project_id

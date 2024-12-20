@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 variable "base_vpc_flow_logs" {
   description = <<EOT
   enable_logging: set to true to enable VPC flow logging for the subnetworks.
@@ -174,7 +173,6 @@ variable "target_name_server_addresses" {
   type        = list(map(any))
 }
 
-##############################
 variable "remote_state_bucket" {
   description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string

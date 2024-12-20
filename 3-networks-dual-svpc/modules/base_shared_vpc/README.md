@@ -4,7 +4,6 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | base\_network\_name | The name of the VPC being created | `string` | `""` | no |
-| base\_project\_id | The base project ID | `string` | `""` | no |
 | bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | `number` | n/a | yes |
 | default\_region1 | Default region 1 for subnets and Cloud Routers | `string` | n/a | yes |
 | default\_region2 | Default region 2 for subnets and Cloud Routers | `string` | n/a | yes |
@@ -20,6 +19,7 @@
 | nat\_num\_addresses\_region2 | Number of external IPs to reserve for second Cloud NAT. | `number` | `2` | no |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services. | `string` | `null` | no |
 | private\_service\_connect\_ip | Internal IP to be used as the private service connect endpoint | `string` | n/a | yes |
+| production\_project\_id | Production Project ID | `string` | `""` | no |
 | project\_id | Project ID for Private Shared VPC. | `string` | n/a | yes |
 | secondary\_ranges | Secondary ranges that will be used in some of the subnets | `map(list(object({ range_name = string, ip_cidr_range = string })))` | `{}` | no |
 | subnets | The list of subnets being created | <pre>list(object({<br>    subnet_name                      = string<br>    subnet_ip                        = string<br>    subnet_region                    = string<br>    subnet_private_access            = optional(string, "false")<br>    subnet_private_ipv6_access       = optional(string)<br>    subnet_flow_logs                 = optional(string, "false")<br>    subnet_flow_logs_interval        = optional(string, "INTERVAL_5_SEC")<br>    subnet_flow_logs_sampling        = optional(string, "0.5")<br>    subnet_flow_logs_metadata        = optional(string, "INCLUDE_ALL_METADATA")<br>    subnet_flow_logs_filter          = optional(string, "true")<br>    subnet_flow_logs_metadata_fields = optional(list(string), [])<br>    description                      = optional(string)<br>    purpose                          = optional(string)<br>    role                             = optional(string)<br>    stack_type                       = optional(string)<br>    ipv6_access_type                 = optional(string)<br>  }))</pre> | `[]` | no |

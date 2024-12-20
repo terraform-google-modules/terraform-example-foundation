@@ -169,8 +169,9 @@ locals {
 module "restricted_shared_vpc" {
   source = "../restricted_shared_vpc"
 
-  project_id     = local.restricted_project_id
-  project_number = local.restricted_project_number
+  project_id                 = local.restricted_project_id
+  project_number             = local.restricted_project_number
+  prod_restricted_project_id = local.prod_restricted_project_id
 
 
   environment_code                 = var.environment_code
@@ -266,6 +267,7 @@ module "base_shared_vpc" {
   source = "../base_shared_vpc"
 
   project_id                   = local.base_project_id
+  production_project_id        = local.prod_base_project_id
   environment_code             = var.environment_code
   private_service_cidr         = var.base_private_service_cidr
   private_service_connect_ip   = var.base_private_service_connect_ip

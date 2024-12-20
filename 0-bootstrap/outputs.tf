@@ -49,6 +49,11 @@ output "gcs_bucket_tfstate" {
   value       = module.seed_bootstrap.gcs_bucket_tfstate
 }
 
+output "projects_gcs_bucket_tfstate" {
+  description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
+  value       = module.gcp_projects_state_bucket.bucket.name
+}
+
 output "common_config" {
   description = "Common configuration data to be used in other steps."
   value = {
@@ -96,11 +101,6 @@ output "gcs_bucket_cloudbuild_logs" {
   value       = { for key, value in module.tf_workspace : key => replace(value.logs_bucket, local.bucket_self_link_prefix, "") }
 }
 
-output "projects_gcs_bucket_tfstate" {
-  description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
-  value       = module.gcp_projects_state_bucket.bucket.name
-}
-
 output "cloud_builder_artifact_repo" {
   description = "Artifact Registry (AR) Repository created to store TF Cloud Builder images."
   value       = "projects/${module.tf_source.cloudbuild_project_id}/locations/${var.default_region}/repositories/${module.tf_cloud_builder.artifact_repo}"
@@ -146,11 +146,6 @@ output "cloud_build_peered_network_id" {
 #   value       = module.gh_cicd.project_id
 # }
 
-# output "projects_gcs_bucket_tfstate" {
-#   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
-#   value       = module.seed_bootstrap.gcs_bucket_tfstate
-# }
-
 /* ----------------------------------------
     Specific to jenkins_bootstrap module
    ---------------------------------------- */
@@ -168,11 +163,6 @@ output "cloud_build_peered_network_id" {
 # output "jenkins_agent_vpc_id" {
 #   description = "Jenkins Agent VPC name."
 #   value       = module.jenkins_bootstrap.jenkins_agent_vpc_id
-# }
-
-# output "projects_gcs_bucket_tfstate" {
-#   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
-#   value       = module.seed_bootstrap.gcs_bucket_tfstate
 # }
 
 # output "jenkins_agent_sa_email" {
@@ -197,11 +187,6 @@ output "cloud_build_peered_network_id" {
 # output "cicd_project_id" {
 #   description = "Project where the CI/CD infrastructure for GitLab CI/CD resides."
 #   value       = module.gitlab_cicd.project_id
-# }
-
-# output "projects_gcs_bucket_tfstate" {
-#   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
-#   value       = module.seed_bootstrap.gcs_bucket_tfstate
 # }
 
 /* ----------------------------------------

@@ -64,7 +64,7 @@ module "dns_forwarding_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
   version = "~> 5.0"
 
-  count = var.environment_code == "p" ? 1 : 0
+  count = var.environment_code == "p" ? 1 : 0 ####added
 
   project_id = var.project_id
   type       = "forwarding"

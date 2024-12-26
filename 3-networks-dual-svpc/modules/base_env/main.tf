@@ -197,11 +197,11 @@ module "restricted_shared_vpc" {
   ingress_policies           = var.ingress_policies
   ingress_policies_dry_run   = var.ingress_policies_dry_run
   egress_policies = distinct(concat(
-    #local.dedicated_interconnect_egress_policy,
+    local.dedicated_interconnect_egress_policy,
     var.egress_policies
   ))
   egress_policies_dry_run = distinct(concat(
-    #local.dedicated_interconnect_egress_policy,
+    local.dedicated_interconnect_egress_policy,
     var.egress_policies_dry_run
   ))
   target_name_server_addresses = var.target_name_server_addresses

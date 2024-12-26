@@ -15,13 +15,14 @@
  */
 
 locals {
-  env                = "common"
-  environment_code   = "c"
-  dns_bgp_asn_number = var.enable_partner_interconnect ? "16550" : var.bgp_asn_dns
-  default_region1    = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region2    = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
-  folder_prefix      = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  #interconnect_project_id   = data.terraform_remote_state.org.outputs.interconnect_project_id
+  env                       = "common"
+  environment_code          = "c"
+  dns_bgp_asn_number        = var.enable_partner_interconnect ? "16550" : var.bgp_asn_dns
+  default_region1           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region2           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
+  folder_prefix             = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
+  interconnect_project_id   = data.terraform_remote_state.org.outputs.interconnect_project_id
+  restricted_project_id     = data.terraform_remote_state.org.outputs.shared_vpc_projects[local.env].restricted_shared_vpc_project_id
   parent_id                 = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   bootstrap_folder_name     = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
   common_folder_name        = data.terraform_remote_state.org.outputs.common_folder_name

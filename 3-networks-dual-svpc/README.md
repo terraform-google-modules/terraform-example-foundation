@@ -240,6 +240,8 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
+*Note:** The Production envrionment must be the next branch to be merged as it includes the DNS Hub communication that will be used by other environments.
+
    ```bash
    git checkout -b production
    git push origin production

@@ -96,4 +96,3 @@ module "base_env" {
   remote_state_bucket                   = var.remote_state_bucket
   tfc_org_name                          = var.tfc_org_name
 }
-

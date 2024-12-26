@@ -15,14 +15,8 @@
  */
 
 locals {
-  default_region1              = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region2              = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
-  organization_service_account = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
-  networks_service_account     = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
-  projects_service_account     = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
-  restricted_project_id        = data.terraform_remote_state.org.outputs.shared_vpc_projects[local.env].restricted_shared_vpc_project_id
-  restricted_project_number    = data.terraform_remote_state.org.outputs.shared_vpc_projects[local.env].restricted_shared_vpc_project_number
-  base_project_id              = data.terraform_remote_state.org.outputs.shared_vpc_projects[local.env].base_shared_vpc_project_id
+  default_region1 = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region2 = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
 }
 
 data "terraform_remote_state" "bootstrap" {
@@ -33,42 +27,3 @@ data "terraform_remote_state" "bootstrap" {
     prefix = "terraform/bootstrap/state"
   }
 }
-
-
-
-data "terraform_remote_state" "org" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/org/state"
-  }
-}
-
-data "terraform_remote_state" "env_development" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/development"
-  }
-}
-
-data "terraform_remote_state" "env_nonproduction" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/nonproduction"
-  }
-}
-
-data "terraform_remote_state" "env_production" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/production"
-  }
-}
-

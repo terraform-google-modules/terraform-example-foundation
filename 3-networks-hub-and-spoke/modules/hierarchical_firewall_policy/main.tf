@@ -15,7 +15,7 @@
  */
 
 locals {
-  policy_id = google_compute_organization_security_policy.policy.id
+  policy_id = google_compute_firewall_policy.policy.id
 }
 
 resource "random_string" "suffix" {
@@ -24,17 +24,15 @@ resource "random_string" "suffix" {
   special = false
 }
 
-resource "google_compute_organization_security_policy" "policy" {
-  provider     = google-beta
-  display_name = "${var.name}-${random_string.suffix.result}"
-  parent       = var.parent
+resource "google_compute_firewall_policy" "policy" {
+  short_name = "${var.name}-${random_string.suffix.result}"
+  parent     = var.parent
 }
 
-resource "google_compute_organization_security_policy_rule" "rule" {
-  provider = google-beta
+resource "google_compute_firewall_policy_rule" "rule" {
   for_each = var.rules
 
-  policy_id               = google_compute_organization_security_policy.policy.id
+  firewall_policy         = google_compute_firewall_policy.policy.id
   action                  = each.value.action
   direction               = each.value.direction
   priority                = each.value.priority
@@ -44,25 +42,24 @@ resource "google_compute_organization_security_policy_rule" "rule" {
   # preview                 = each.value.preview
   match {
     # description = each.value.description
-    config {
-      src_ip_ranges  = each.value.direction == "INGRESS" ? each.value.ranges : null
-      dest_ip_ranges = each.value.direction == "EGRESS" ? each.value.ranges : null
-      dynamic "layer4_config" {
-        for_each = each.value.ports
-        iterator = port
-        content {
-          ip_protocol = port.key
-          ports       = port.value
-        }
+
+    src_ip_ranges  = each.value.direction == "INGRESS" ? each.value.ranges : null
+    dest_ip_ranges = each.value.direction == "EGRESS" ? each.value.ranges : null
+    dynamic "layer4_configs" {
+      for_each = each.value.ports
+      iterator = port
+      content {
+        ip_protocol = port.key
+        ports       = port.value
       }
     }
   }
 }
 
-resource "google_compute_organization_security_policy_association" "association" {
-  provider      = google-beta
-  for_each      = toset(var.associations)
-  name          = "${local.policy_id}-${each.value}"
-  policy_id     = local.policy_id
-  attachment_id = each.value
+resource "google_compute_firewall_policy_association" "association" {
+  for_each = toset(var.associations)
+
+  name              = replace("${local.policy_id}-${each.value}", "/", "-")
+  firewall_policy   = google_compute_firewall_policy.policy.id
+  attachment_target = each.value
 }

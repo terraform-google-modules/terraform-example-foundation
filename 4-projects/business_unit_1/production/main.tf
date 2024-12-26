@@ -22,6 +22,7 @@ module "env" {
   business_unit       = "business_unit_1"
   remote_state_bucket = var.remote_state_bucket
   location_kms        = coalesce(var.location_kms, local.default_region_kms)
+  keyring_name        = "bu1-sample-keyring"
   location_gcs        = coalesce(var.location_gcs, local.default_region_gcs)
   gcs_custom_placement_config = {
     data_locations = [
@@ -34,4 +35,6 @@ module "env" {
   peering_iap_fw_rules_enabled = true
   subnet_region                = coalesce(var.instance_region, local.default_region)
   subnet_ip_range              = "10.3.192.0/21"
+  project_deletion_policy      = var.project_deletion_policy
+  folder_deletion_protection   = var.folder_deletion_protection
 }

@@ -26,7 +26,7 @@ variable "base_network_name" {
 }
 
 variable "production_project_id" {
-  description = "production project"
+  description = "Project ID for Base Shared."
   type        = string
   default     = ""
 }

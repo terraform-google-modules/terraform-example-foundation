@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-variable "prod_restricted_project_id" {
-  description = "production project"
+variable "production_restricted_project_id" {
+  description = "Project ID for Restricted Shared."
   type        = string
   default     = ""
 }
@@ -35,7 +35,6 @@ variable "restricted_network_name" {
   type        = string
   description = "The name of the VPC being created"
   default     = ""
-  #default     = module.base_shared_vpc.network_name
 }
 
 variable "access_context_manager_policy_id" {

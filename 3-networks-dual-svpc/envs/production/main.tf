@@ -15,7 +15,7 @@
  */
 
 locals {
-  env              = "nonproduction"
+  env              = "production"
   environment_code = substr(local.env, 0, 1)
   /*
    * Base network ranges

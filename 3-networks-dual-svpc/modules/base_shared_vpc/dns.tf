@@ -44,7 +44,6 @@ module "peering_zone" {
   version = "~> 5.0"
 
   count = var.environment_code != "p" ? 1 : 0
-  #count = var.environment_code != "d" ? 1 : 0
 
   project_id  = var.project_id
   type        = "peering"
@@ -56,7 +55,6 @@ module "peering_zone" {
     module.main.network_self_link
   ]
   target_network = data.google_compute_network.vpc_dns_hub[0].self_link
-  #target_network = data.google_compute_network.vpc_dns_hub.self_link
 }
 
 /******************************************
@@ -66,7 +64,7 @@ module "dns_forwarding_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
   version = "~> 5.0"
 
-  count = var.environment_code == "p" ? 1 : 0 ####added
+  count = var.environment_code == "p" ? 1 : 0
 
   project_id = var.project_id
   type       = "forwarding"

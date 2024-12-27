@@ -16,7 +16,7 @@
 
 output "target_name_server_addresses" {
   value       = var.target_name_server_addresses
-  description = "List of IPv4 address of target name servers for the forwarding zone configuration"
+  description = "List of IPv4 addresses of the target name servers for the forwarding zone configuration. These IP addresses should point to the name server responsible for replying to DNS queries."
 }
 
 

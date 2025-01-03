@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - master
+      - main
 
 concurrency:
   group: '${{ github.workflow }}-${{ github.head_ref || github.ref }}'

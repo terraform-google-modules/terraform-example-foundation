@@ -18,7 +18,7 @@
 # Make will use bash instead of sh
 SHELL := /usr/bin/env bash
 
-DOCKER_TAG_VERSION_DEVELOPER_TOOLS := 1.22
+DOCKER_TAG_VERSION_DEVELOPER_TOOLS := 1.23
 DOCKER_IMAGE_DEVELOPER_TOOLS := cft/developer-tools
 REGISTRY_URL := gcr.io/cloud-foundation-cicd
 

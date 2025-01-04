@@ -71,7 +71,7 @@ data "archive_file" "function_source_zip" {
 
 module "cloudfunction_source_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   project_id    = var.project_id
   name          = "bkt-cai-monitoring-${random_id.suffix.hex}-sources-${data.google_project.project.number}"

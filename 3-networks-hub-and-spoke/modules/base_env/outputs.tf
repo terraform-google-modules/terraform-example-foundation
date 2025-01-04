@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+output "target_name_server_addresses" {
+  value       = var.target_name_server_addresses
+  description = "List of IPv4 address of target name servers for the forwarding zone configuration"
+}
+
 /*********************
  Restricted Outputs
 *********************/

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-output "dns_hub_project_id" {
-  value       = local.dns_hub_project_id
-  description = "The DNS hub project ID"
+output "project" {
+  value       = local.restricted_net_hub_project_id
+  description = "Project name"
 }
+

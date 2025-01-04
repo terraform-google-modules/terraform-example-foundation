@@ -17,8 +17,8 @@
 module "dns_hub_interconnect" {
   source = "../../modules/partner_interconnect"
 
-  vpc_name              = "net-dns"
-  attachment_project_id = local.dns_hub_project_id
+  vpc_name                = "vpc-p-shared-restricted"
+  attachment_project_id = local.restricted_project_id
   preactivate           = var.preactivate_partner_interconnect
 
   region1                         = local.default_region1

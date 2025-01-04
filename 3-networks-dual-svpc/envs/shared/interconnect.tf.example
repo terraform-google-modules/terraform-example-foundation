@@ -17,8 +17,8 @@
 module "dns_hub_interconnect" {
   source = "../../modules/dedicated_interconnect"
 
-  vpc_name                = "net-dns"
-  interconnect_project_id = local.dns_hub_project_id
+  vpc_name                = "vpc-p-shared-restricted"
+  interconnect_project_id = local.restricted_project_id
 
   region1                                 = local.default_region1
   region1_router1_name                    = module.dns_hub_region1_router1.router.name

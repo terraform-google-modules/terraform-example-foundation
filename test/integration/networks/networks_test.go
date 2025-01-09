@@ -38,6 +38,14 @@ func getNetworkMode(t *testing.T) string {
 	return ""
 }
 
+func getFirewallMode(t *testing.T) string {
+	mode := utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
+	if mode == "HubAndSpoke" {
+		return "hub-and-spoke"
+	}
+	return "dual-svpc"
+}
+
 func getNetworkResourceNames(envCode string, networkMode string, firewallMode string) map[string]map[string]string {
 	return map[string]map[string]string{
 		"base": {

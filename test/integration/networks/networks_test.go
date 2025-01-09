@@ -38,14 +38,6 @@ func getNetworkMode(t *testing.T) string {
 	return ""
 }
 
-func getFirewallMode(t *testing.T) string {
-	mode := utils.ValFromEnv(t, "TF_VAR_example_foundations_mode")
-	if mode == "HubAndSpoke" {
-		return "hub-and-spoke"
-	}
-	return "dual-svpc"
-}
-
 func getNetworkResourceNames(envCode string, networkMode string, firewallMode string) map[string]map[string]string {
 	return map[string]map[string]string{
 		"base": {
@@ -331,9 +323,17 @@ func TestNetworks(t *testing.T) {
 				tfdDir = "../../../3-networks-hub-and-spoke/envs/%s"
 			}
 
+			var tfdDirDNS string
+			if networkMode == "" {
+				tfdDirDNS = "../../../3-networks-dual-svpc/envs/production"
+			} else {
+				tfdDirDNS = "../../../3-networks-hub-and-spoke/envs/shared"
+			}
+
 			envCode := string(envName[0:1])
 			networks := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tfdDir, envName)),
+				tft.WithTFDir(fmt.Sprintf(tfdDirDNS)),
 				tft.WithVars(vars),
 				tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 10, 2*time.Minute),
 				tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
@@ -377,6 +377,16 @@ func TestNetworks(t *testing.T) {
 							dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsName, projectID, terraformSA)
 							assert.Equal(dnsName, dnsZone.Get("name").String(), fmt.Sprintf("dnsZone %s should exist", dnsName))
 						}
+
+						baseSharedProjectID := networks.GetStringOutput("base_host_project_id")
+						dnsFwZoneName := "fz-dns-hub"
+						dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsFwZoneName, baseSharedProjectID, terraformSA)
+						assert.Equal(dnsFwZoneName, dnsZone.Get("name").String(), fmt.Sprintf("dnsZone %s should exist", dnsFwZoneName))
+
+						restrictedProjectID := networks.GetStringOutput("restricted_host_project_id")
+						dnsFwZoneName := "fz-dns-hub"
+						dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsFwZoneName, restrictedProjectID, terraformSA)
+						assert.Equal(dnsFwZoneName, dnsZone.Get("name").String(), fmt.Sprintf("dnsZone %s should exist", dnsFwZoneName))
 
 						networkName := networkNames[networkType]["network_name"]
 						networkUrl := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectID, networkName)
@@ -453,6 +463,16 @@ func TestNetworks(t *testing.T) {
 								assert.Equal(1, len(computeRouter.Get("bgp.advertisedIpRanges").Array()), fmt.Sprintf("router %s should have only one advertised IP range", routerName))
 								assert.Equal(googleapisCIDR[envName][networkType], computeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have only range %s", routerName, googleapisCIDR[envName][networkType]))
 								assert.Equal(networkSelfLink, computeRouter.Get("network").String(), fmt.Sprintf("router %s should have be from network %s", routerName, networkNames[networkType]["network_name"]))
+
+								baseSharedProjectID := networks.GetStringOutput("base_host_project_id")
+								dnsFwZoneName := "fz-dns-hub"
+								dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsFwZoneName, baseSharedProjectID, terraformSA)
+								assert.Equal(dnsFwZoneName, dnsZone.Get("name").String(), fmt.Sprintf("dnsZone %s should exist", dnsFwZoneName))
+
+								restrictedProjectID := networks.GetStringOutput("restricted_host_project_id")
+								dnsFwZoneName := "fz-dns-hub"
+								dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsFwZoneName, restrictedProjectID, terraformSA)
+								assert.Equal(dnsFwZoneName, dnsZone.Get("name").String(), fmt.Sprintf("dnsZone %s should exist", dnsFwZoneName))
 							}
 						}
 					}

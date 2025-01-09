@@ -97,10 +97,6 @@ variable "project_budget" {
   alert_spend_basis: The type of basis used to determine if spend has passed the threshold. Possible choices are `CURRENT_SPEND` or `FORECASTED_SPEND` (default).
   EOT
   type = object({
-    dns_hub_budget_amount                       = optional(number, 1000)
-    dns_hub_alert_spent_percents                = optional(list(number), [1.2])
-    dns_hub_alert_pubsub_topic                  = optional(string, null)
-    dns_hub_budget_alert_spend_basis            = optional(string, "FORECASTED_SPEND")
     base_net_hub_budget_amount                  = optional(number, 1000)
     base_net_hub_alert_spent_percents           = optional(list(number), [1.2])
     base_net_hub_alert_pubsub_topic             = optional(string, null)

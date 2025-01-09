@@ -442,16 +442,6 @@ func TestOrg(t *testing.T) {
 						"securitycenter.googleapis.com",
 					},
 				},
-				{
-					output: "dns_hub_project_id",
-					apis: []string{
-						"compute.googleapis.com",
-						"dns.googleapis.com",
-						"servicenetworking.googleapis.com",
-						"logging.googleapis.com",
-						"cloudresourcemanager.googleapis.com",
-					},
-				},
 			} {
 				projectID := org.GetStringOutput(projectOutput.output)
 				prj := gcloud.Runf(t, "projects describe %s", projectID)

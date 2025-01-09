@@ -52,6 +52,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 
 | Name | Description |
 |------|-------------|
-| project | Project name |
+| base\_host\_project\_id | The base host project ID |
+| restricted\_host\_project\_id | The restricted host project ID |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

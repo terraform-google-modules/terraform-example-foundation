@@ -515,6 +515,7 @@ The following steps will guide you through deploying without using Cloud Build.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| attribute\_condition | Workload Identity Pool Provider attribute condition expression. [More info](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool_provider#attribute_condition) | `string` | `null` | no |
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
 | bucket\_force\_destroy | When deleting a bucket, this boolean option will delete all contained objects. If false, Terraform will fail to delete buckets which contain objects. | `bool` | `false` | no |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |

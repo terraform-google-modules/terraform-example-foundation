@@ -26,14 +26,19 @@ function networks(){
     fi
 
     # disable access_context.auto.tfvars in main module
+    mv $network_dir/envs/shared/access_context.auto.tfvars $network_dir/envs/shared/access_context.auto.tfvars.disabled #
     mv $network_dir/envs/development/access_context.auto.tfvars  $network_dir/envs/development/access_context.auto.tfvars.disabled
     mv $network_dir/envs/nonproduction/access_context.auto.tfvars  $network_dir/envs/nonproduction/access_context.auto.tfvars.disabled
     mv $network_dir/envs/production/access_context.auto.tfvars  $network_dir/envs/production/access_context.auto.tfvars.disabled
 
     # disable common.auto.tfvars in main module
+    mv $network_dir/envs/shared/common.auto.tfvars  $network_dir/envs/shared/common.auto.tfvars.disabled #
     mv $network_dir/envs/development/common.auto.tfvars $network_dir/envs/development/common.auto.tfvars.disabled
     mv $network_dir/envs/nonproduction/common.auto.tfvars  $network_dir/envs/nonproduction/common.auto.tfvars.disabled
     mv $network_dir/envs/production/common.auto.tfvars  $network_dir/envs/production/common.auto.tfvars.disabled
+
+    # disable shared.auto.tfvars in main module #
+    mv $network_dir/envs/shared/shared.auto.tfvars  $network_dir/envs/shared/shared.auto.tfvars.disabled
 }
 
 # function shared(){

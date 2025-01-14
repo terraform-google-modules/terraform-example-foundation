@@ -38,19 +38,25 @@ function networks(){
     fi
 
     # restore backend configs in main module
+    mv $network_dir/envs/shared/backend.tf.disabled  $network_dir/envs/shared/backend.tf #
     mv $network_dir/envs/development/backend.tf.disabled  $network_dir/envs/development/backend.tf
     mv $network_dir/envs/nonproduction/backend.tf.disabled  $network_dir/envs/nonproduction/backend.tf
     mv $network_dir/envs/production/backend.tf.disabled  $network_dir/envs/production/backend.tf
 
     # restore access_context.auto.tfvars in main module
+    mv $network_dir/envs/shared/access_context.auto.tfvars.disabled  $network_dir/envs/shared/access_context.auto.tfvars #
     mv $network_dir/envs/development/access_context.auto.tfvars.disabled  $network_dir/envs/development/access_context.auto.tfvars
     mv $network_dir/envs/nonproduction/access_context.auto.tfvars.disabled  $network_dir/envs/nonproduction/access_context.auto.tfvars
     mv $network_dir/envs/production/access_context.auto.tfvars.disabled  $network_dir/envs/production/access_context.auto.tfvars
 
     # restore common.auto.tfvars in main module
+    mv $network_dir/envs/shared/common.auto.tfvars.disabled  $network_dir/envs/shared/common.auto.tfvars #
     mv $network_dir/envs/development/common.auto.tfvars.disabled  $network_dir/envs/development/common.auto.tfvars
     mv $network_dir/envs/nonproduction/common.auto.tfvars.disabled  $network_dir/envs/nonproduction/common.auto.tfvars
     mv $network_dir/envs/production/common.auto.tfvars.disabled  $network_dir/envs/production/common.auto.tfvars
+
+    # restore shared.auto.tfvars in main module #
+    mv $network_dir/envs/shared/shared.auto.tfvars.disabled  $network_dir/envs/shared/shared.auto.tfvars
 }
 
 # function shared(){

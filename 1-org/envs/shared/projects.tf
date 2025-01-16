@@ -34,7 +34,7 @@ locals {
 
 module "org_audit_logs" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -68,7 +68,7 @@ module "org_audit_logs" {
 
 module "org_billing_export" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -102,7 +102,7 @@ module "org_billing_export" {
 
 module "common_kms" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -137,7 +137,7 @@ module "common_kms" {
 
 module "org_secrets" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -171,7 +171,7 @@ module "org_secrets" {
 
 module "interconnect" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -205,7 +205,7 @@ module "interconnect" {
 
 module "scc_notifications" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -239,7 +239,7 @@ module "scc_notifications" {
 
 module "dns_hub" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
 
   random_project_id        = true
   random_project_id_length = 4
@@ -281,7 +281,7 @@ module "dns_hub" {
 
 module "base_network_hub" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
   count   = var.enable_hub_and_spoke ? 1 : 0
 
   random_project_id        = true
@@ -332,7 +332,7 @@ resource "google_project_iam_member" "network_sa_base" {
 
 module "restricted_network_hub" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
   count   = var.enable_hub_and_spoke ? 1 : 0
 
   random_project_id        = true

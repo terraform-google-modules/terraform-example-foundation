@@ -62,18 +62,6 @@ variable "firewall_policies_enable_logging" {
   default     = true
 }
 
-variable "enable_partner_interconnect" {
-  description = "Enable Partner Interconnect in the environment."
-  type        = bool
-  default     = false
-}
-
-variable "preactivate_partner_interconnect" {
-  description = "Preactivate Partner Interconnect VLAN attachment in the environment."
-  type        = bool
-  default     = false
-}
-
 variable "tfc_org_name" {
   description = "Name of the TFC organization"
   type        = string

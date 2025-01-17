@@ -31,12 +31,6 @@ resource "google_dns_policy" "default_policy" {
 /******************************************
  Creates DNS Peering to DNS HUB
 *****************************************/
-data "google_compute_network" "vpc_dns_hub" {
-  count = var.mode == "spoke" ? 1 : 0
-
-  name    = data.google_compute_network.vpc_restricted_net_hub[0].name
-  project = var.restricted_net_hub_project_id
-}
 
 module "peering_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
@@ -53,7 +47,7 @@ module "peering_zone" {
   private_visibility_config_networks = [
     module.main.network_self_link
   ]
-  target_network = data.google_compute_network.vpc_dns_hub[0].self_link
+  target_network = data.google_compute_network.vpc_restricted_net_hub[0].self_link
 }
 
 /******************************************

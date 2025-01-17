@@ -15,11 +15,11 @@
  */
 
 locals {
-  vpc_name                     = "${var.environment_code}-shared-restricted"
-  network_name                 = "vpc-${local.vpc_name}"
-  restricted_googleapis_cidr   = module.private_service_connect.private_service_connect_ip
-  google_private_service_range = "35.199.192.0/19"
-  advertised_ip                = var.private_service_cidr == null ? [{ range = local.google_private_service_range }] : [{ range = local.restricted_googleapis_cidr }]
+  vpc_name                    = "${var.environment_code}-shared-restricted"
+  network_name                = "vpc-${local.vpc_name}"
+  restricted_googleapis_cidr  = module.private_service_connect.private_service_connect_ip
+  google_forward_source_range = "35.199.192.0/19"
+  advertised_ip               = var.private_service_cidr == "p" ? [{ range = local.google_forward_source_range }, { range = local.restricted_googleapis_cidr }] : [{ range = local.restricted_googleapis_cidr }]
 }
 
 /******************************************

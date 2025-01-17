@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-variable "production_restricted_project_id" {
-  description = "Project ID for Restricted Shared."
+variable "restricted_dns_project_id" {
+  description = "Project ID for DNS Restricted Shared."
   type        = string
   default     = ""
 }
@@ -23,18 +23,6 @@ variable "production_restricted_project_id" {
 variable "target_name_server_addresses" {
   description = "List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones."
   type        = list(map(any))
-}
-
-variable "restricted_net_hub_project_id" {
-  type        = string
-  description = "The restricted net hub project ID"
-  default     = ""
-}
-
-variable "restricted_network_name" {
-  type        = string
-  description = "The name of the VPC being created"
-  default     = ""
 }
 
 variable "access_context_manager_policy_id" {

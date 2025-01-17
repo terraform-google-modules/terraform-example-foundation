@@ -35,50 +35,47 @@ function networks(){
         network_dir="3-networks-hub-and-spoke"
     else
         network_dir="3-networks-dual-svpc"
+
+        # disable shared.auto.tfvars in main module #
+        mv $network_dir/envs/production/production.auto.tfvars.disabled  $network_dir/envs/production/production.auto.tfvars
     fi
 
     # restore backend configs in main module
-    mv $network_dir/envs/shared/backend.tf.disabled  $network_dir/envs/shared/backend.tf #
     mv $network_dir/envs/development/backend.tf.disabled  $network_dir/envs/development/backend.tf
     mv $network_dir/envs/nonproduction/backend.tf.disabled  $network_dir/envs/nonproduction/backend.tf
     mv $network_dir/envs/production/backend.tf.disabled  $network_dir/envs/production/backend.tf
 
     # restore access_context.auto.tfvars in main module
-    mv $network_dir/envs/shared/access_context.auto.tfvars.disabled  $network_dir/envs/shared/access_context.auto.tfvars #
     mv $network_dir/envs/development/access_context.auto.tfvars.disabled  $network_dir/envs/development/access_context.auto.tfvars
     mv $network_dir/envs/nonproduction/access_context.auto.tfvars.disabled  $network_dir/envs/nonproduction/access_context.auto.tfvars
     mv $network_dir/envs/production/access_context.auto.tfvars.disabled  $network_dir/envs/production/access_context.auto.tfvars
 
     # restore common.auto.tfvars in main module
-    mv $network_dir/envs/shared/common.auto.tfvars.disabled  $network_dir/envs/shared/common.auto.tfvars #
     mv $network_dir/envs/development/common.auto.tfvars.disabled  $network_dir/envs/development/common.auto.tfvars
     mv $network_dir/envs/nonproduction/common.auto.tfvars.disabled  $network_dir/envs/nonproduction/common.auto.tfvars
     mv $network_dir/envs/production/common.auto.tfvars.disabled  $network_dir/envs/production/common.auto.tfvars
-
-    # restore shared.auto.tfvars in main module #
-    mv $network_dir/envs/shared/shared.auto.tfvars.disabled  $network_dir/envs/shared/shared.auto.tfvars
 }
 
-# function shared(){
+function shared(){
 
-#     if [ "$TF_VAR_example_foundations_mode" == "HubAndSpoke" ]; then
-#         network_dir="3-networks-hub-and-spoke"
-#     else
-#         network_dir="3-networks-dual-svpc"
-#     fi
+    if [ "$TF_VAR_example_foundations_mode" == "HubAndSpoke" ]; then
+        network_dir="3-networks-hub-and-spoke"
 
-#     # restore backend configs in main module
-#     mv $network_dir/envs/shared/backend.tf.disabled  $network_dir/envs/shared/backend.tf
+        # restore shared.auto.tfvars in main module
+        mv $network_dir/envs/shared/shared.auto.tfvars.disabled  $network_dir/envs/shared/shared.auto.tfvars
+    else
+        network_dir="3-networks-dual-svpc"
+    fi
 
-#     # restore access_context.auto.tfvars in main module
-#     mv $network_dir/envs/shared/access_context.auto.tfvars.disabled  $network_dir/envs/shared/access_context.auto.tfvars
+    # restore backend configs in main module
+    mv $network_dir/envs/shared/backend.tf.disabled  $network_dir/envs/shared/backend.tf
 
-#     # restore common.auto.tfvars in main module
-#     mv $network_dir/envs/shared/common.auto.tfvars.disabled  $network_dir/envs/shared/common.auto.tfvars
+    # restore access_context.auto.tfvars in main module
+    mv $network_dir/envs/shared/access_context.auto.tfvars.disabled  $network_dir/envs/shared/access_context.auto.tfvars
 
-#     # restore shared.auto.tfvars in main module
-#     mv $network_dir/envs/shared/shared.auto.tfvars.disabled  $network_dir/envs/shared/shared.auto.tfvars
-# }
+    # restore common.auto.tfvars in main module
+    mv $network_dir/envs/shared/common.auto.tfvars.disabled  $network_dir/envs/shared/common.auto.tfvars
+}
 
 function projects(){
     # restore backend configs in main module
@@ -137,10 +134,10 @@ do
       networks
       shift
       ;;
-    # -s|--shared)
-    #   shared
-    #   shift
-    #   ;;
+    -s|--shared)
+      shared
+      shift
+      ;;
     -o|--org)
       org
       shift

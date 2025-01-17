@@ -20,48 +20,48 @@ locals {
   /*
    * Base network ranges
    */
-  base_private_service_cidr = "10.16.16.0/21"
+  base_private_service_cidr = "10.16.24.0/21"
   base_subnet_primary_ranges = {
-    (local.default_region1) = "10.0.128.0/18"
-    (local.default_region2) = "10.1.128.0/18"
+    (local.default_region1) = "10.0.192.0/18"
+    (local.default_region2) = "10.1.192.0/18"
   }
   base_subnet_proxy_ranges = {
-    (local.default_region1) = "10.18.4.0/23"
-    (local.default_region2) = "10.19.4.0/23"
+    (local.default_region1) = "10.18.6.0/23"
+    (local.default_region2) = "10.19.6.0/23"
   }
   base_subnet_secondary_ranges = {
     (local.default_region1) = [
       {
         range_name    = "rn-${local.environment_code}-shared-base-${local.default_region1}-gke-pod"
-        ip_cidr_range = "100.64.128.0/18"
+        ip_cidr_range = "100.64.192.0/18"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-base-${local.default_region1}-gke-svc"
-        ip_cidr_range = "100.65.128.0/18"
+        ip_cidr_range = "100.65.192.0/18"
       }
     ]
   }
   /*
    * Restricted network ranges
    */
-  restricted_private_service_cidr = "10.16.48.0/21"
+  restricted_private_service_cidr = "10.16.56.0/21"
   restricted_subnet_primary_ranges = {
-    (local.default_region1) = "10.8.128.0/18"
-    (local.default_region2) = "10.9.128.0/18"
+    (local.default_region1) = "10.8.192.0/18"
+    (local.default_region2) = "10.9.192.0/18"
   }
   restricted_subnet_proxy_ranges = {
-    (local.default_region1) = "10.26.4.0/23"
-    (local.default_region2) = "10.27.4.0/23"
+    (local.default_region1) = "10.26.6.0/23"
+    (local.default_region2) = "10.27.6.0/23"
   }
   restricted_subnet_secondary_ranges = {
     (local.default_region1) = [
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${local.default_region1}-gke-pod"
-        ip_cidr_range = "100.72.128.0/18"
+        ip_cidr_range = "100.72.192.0/18"
       },
       {
         range_name    = "rn-${local.environment_code}-shared-restricted-${local.default_region1}-gke-svc"
-        ip_cidr_range = "100.73.128.0/18"
+        ip_cidr_range = "100.73.192.0/18"
       }
     ]
   }

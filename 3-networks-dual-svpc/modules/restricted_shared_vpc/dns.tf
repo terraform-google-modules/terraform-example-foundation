@@ -36,7 +36,7 @@ data "google_compute_network" "vpc_dns_hub" {
   count = var.environment_code != "p" ? 1 : 0
 
   name    = "vpc-p-shared-restricted"
-  project = var.production_restricted_project_id
+  project = var.restricted_dns_project_id
 }
 
 module "peering_zone" {

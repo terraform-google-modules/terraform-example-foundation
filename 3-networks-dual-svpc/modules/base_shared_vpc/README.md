@@ -3,6 +3,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| base\_dns\_project\_id | Project ID for DNS Base Shared. | `string` | `""` | no |
 | base\_network\_name | The name of the VPC being created | `string` | `""` | no |
 | bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | `number` | n/a | yes |
 | default\_region1 | Default region 1 for subnets and Cloud Routers | `string` | n/a | yes |

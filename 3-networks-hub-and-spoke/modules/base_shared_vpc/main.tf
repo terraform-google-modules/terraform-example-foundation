@@ -20,7 +20,7 @@ locals {
   network_name                = "vpc-${local.vpc_name}"
   private_googleapis_cidr     = module.private_service_connect.private_service_connect_ip
   google_forward_source_range = "35.199.192.0/19"
-  advertised_ip               = var.private_service_cidr == null ? [{ range = local.google_forward_source_range }] : [{ range = local.private_googleapis_cidr }]
+  advertised_ip               = var.environment_code == "p" ? [{ range = local.google_forward_source_range }, { range = local.private_googleapis_cidr }] : [{ range = local.private_googleapis_cidr }]
 }
 
 /******************************************

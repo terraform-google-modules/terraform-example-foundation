@@ -26,7 +26,6 @@ locals {
   production_base_project_id       = data.terraform_remote_state.org.outputs.shared_vpc_projects["production"].base_shared_vpc_project_id
 }
 
-
 data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 

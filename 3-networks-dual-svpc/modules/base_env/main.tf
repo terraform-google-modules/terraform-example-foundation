@@ -171,7 +171,7 @@ module "restricted_shared_vpc" {
 
   project_id                       = local.restricted_project_id
   project_number                   = local.restricted_project_number
-  production_restricted_project_id = local.production_restricted_project_id
+  production_project_id            = local.production_restricted_project_id
   environment_code                 = var.environment_code
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services

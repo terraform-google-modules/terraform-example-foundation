@@ -171,7 +171,7 @@ module "restricted_shared_vpc" {
 
   project_id                       = local.restricted_project_id
   project_number                   = local.restricted_project_number
-  production_project_id            = local.production_restricted_project_id
+  restricted_dns_project_id        = local.restricted_dns_project_id
   environment_code                 = var.environment_code
   access_context_manager_policy_id = var.access_context_manager_policy_id
   restricted_services              = local.restricted_services
@@ -265,7 +265,7 @@ module "base_shared_vpc" {
   source = "../base_shared_vpc"
 
   project_id                   = local.base_project_id
-  production_project_id        = local.production_base_project_id
+  base_dns_project_id          = local.base_dns_project_id
   environment_code             = var.environment_code
   private_service_cidr         = var.base_private_service_cidr
   private_service_connect_ip   = var.base_private_service_connect_ip

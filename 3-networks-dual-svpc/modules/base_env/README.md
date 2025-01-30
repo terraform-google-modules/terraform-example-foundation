@@ -41,6 +41,7 @@
 |------|-------------|
 | access\_level\_name | Access context manager access level name for the enforced perimeter |
 | access\_level\_name\_dry\_run | Access context manager access level name for the dry-run perimeter |
+| base\_dns\_project\_id | The base DNS project ID |
 | base\_host\_project\_id | The base host project ID |
 | base\_network\_name | The name of the VPC being created |
 | base\_network\_self\_link | The URI of the VPC being created |
@@ -49,6 +50,7 @@
 | base\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | base\_subnets\_self\_links | The self-links of subnets being created |
 | enforce\_vpcsc | Enable the enforced mode for VPC Service Controls. It is not recommended to enable VPC-SC on the first run deploying your foundation. Review [best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable), then only enforce the perimeter after you have analyzed the access patterns in your dry-run perimeter and created the necessary exceptions for your use cases. |
+| restricted\_dns\_project\_id | The restricted DNS project ID |
 | restricted\_host\_project\_id | The restricted host project ID |
 | restricted\_network\_name | The name of the VPC being created |
 | restricted\_network\_self\_link | The URI of the VPC being created |

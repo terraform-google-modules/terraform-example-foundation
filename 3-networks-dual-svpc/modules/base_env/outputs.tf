@@ -24,6 +24,11 @@ output "target_name_server_addresses" {
  Restricted Outputs
 *********************/
 
+output "restricted_dns_project_id" {
+  value       = local.restricted_dns_project_id
+  description = "The restricted DNS project ID"
+}
+
 output "restricted_host_project_id" {
   value       = local.restricted_project_id
   description = "The restricted host project ID"
@@ -84,6 +89,11 @@ output "restricted_service_perimeter_name" {
 /******************************************
  Private Outputs
 *****************************************/
+
+output "base_dns_project_id" {
+  value       = local.base_dns_project_id
+  description = "The base DNS project ID"
+}
 
 output "base_host_project_id" {
   value       = local.base_project_id

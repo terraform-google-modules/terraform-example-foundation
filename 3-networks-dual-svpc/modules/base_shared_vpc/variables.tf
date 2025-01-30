@@ -31,12 +31,6 @@ variable "base_network_name" {
   default     = ""
 }
 
-variable "production_project_id" {
-  description = "Project ID for Base Shared."
-  type        = string
-  default     = ""
-}
-
 variable "project_id" {
   type        = string
   description = "Project ID for Private Shared VPC."

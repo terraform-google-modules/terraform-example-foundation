@@ -20,6 +20,9 @@
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| base\_host\_project\_id | The base host project ID |
+| restricted\_host\_project\_id | The restricted host project ID |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-
-output "restricted_host_project_id" {
-  value       = local.restricted_net_hub_project_id
-  description = "The restricted host project ID"
-}
-
-output "base_host_project_id" {
-  value       = local.base_net_hub_project_id
-  description = "The base host project ID"
-}
+// List of IPv4 address of target name servers for the forwarding zone configuration.
+// See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones
+target_name_server_addresses = [
+  {
+    ipv4_address    = "192.168.0.1",
+    forwarding_path = "default"
+  },
+  {
+    ipv4_address    = "192.168.0.2",
+    forwarding_path = "default"
+  }
+]
 

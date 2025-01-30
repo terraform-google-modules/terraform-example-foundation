@@ -52,7 +52,11 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 
 | Name | Description |
 |------|-------------|
+| base\_dns\_policy | The name of the DNS policy being created |
 | base\_host\_project\_id | The base host project ID |
+| base\_network\_name | The name of the VPC being created |
+| restricted\_dns\_policy | The name of the DNS policy being created |
 | restricted\_host\_project\_id | The restricted host project ID |
+| restricted\_network\_name | The name of the VPC being created |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

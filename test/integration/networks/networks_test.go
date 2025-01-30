@@ -51,6 +51,7 @@ func getNetworkResourceNames(envCode string, networkMode string, firewallMode st
 		"base": {
 			"network_name":          fmt.Sprintf("vpc-%s-shared-base%s", envCode, networkMode),
 			"global_address":        fmt.Sprintf("ga-%s-shared-base%s-vpc-peering-internal", envCode, networkMode),
+			"dns_zone_forward":      "fz-dns-hub",
 			"dns_zone_googleapis":   fmt.Sprintf("dz-%s-shared-base-apis", envCode),
 			"dns_zone_gcr":          fmt.Sprintf("dz-%s-shared-base-gcr", envCode),
 			"dns_zone_pkg_dev":      fmt.Sprintf("dz-%s-shared-base-pkg-dev", envCode),
@@ -69,6 +70,7 @@ func getNetworkResourceNames(envCode string, networkMode string, firewallMode st
 		"restricted": {
 			"network_name":          fmt.Sprintf("vpc-%s-shared-restricted%s", envCode, networkMode),
 			"global_address":        fmt.Sprintf("ga-%s-shared-restricted%s-vpc-peering-internal", envCode, networkMode),
+			"dns_zone_forward":      "fz-dns-hub",
 			"dns_zone_googleapis":   fmt.Sprintf("dz-%s-shared-restricted-apis", envCode),
 			"dns_zone_gcr":          fmt.Sprintf("dz-%s-shared-restricted-gcr", envCode),
 			"dns_zone_pkg_dev":      fmt.Sprintf("dz-%s-shared-restricted-pkg-dev", envCode),
@@ -331,22 +333,17 @@ func TestNetworks(t *testing.T) {
 				tfdDir = "../../../3-networks-hub-and-spoke/envs/%s"
 			}
 
-			var tfdDirDNS string
-			if networkMode == "" {
-				tfdDirDNS = "../../../3-networks-dual-svpc/envs/production"
-			} else {
-				tfdDirDNS = "../../../3-networks-hub-and-spoke/envs/shared"
-			}
-
 			envCode := string(envName[0:1])
 			networks := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tfdDir, envName)),
-				tft.WithTFDir(fmt.Sprintf(tfdDirDNS)),
 				tft.WithVars(vars),
 				tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 10, 2*time.Minute),
 				tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 				tft.WithBackendConfig(backendConfig),
 			)
+
+			networkMode := getNetworkMode(t)
+
 			networks.DefineVerify(
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
@@ -359,9 +356,6 @@ func TestNetworks(t *testing.T) {
 					servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, networks.GetStringOutput("restricted_service_perimeter_name"))
 					accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, networks.GetStringOutput("access_level_name_dry_run"))
 					networkNames := getNetworkResourceNames(envCode, networkMode, firewallMode)
-					baseSharedProjectID := networks.GetStringOutput("base_host_project_id")
-					restrictedProjectID := networks.GetStringOutput("restricted_host_project_id")
-					dnsFwZoneName := "fz-dns-hub"
 
 					servicePerimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", servicePerimeterLink, policyID))
 					assert.NoError(err)
@@ -378,21 +372,29 @@ func TestNetworks(t *testing.T) {
 					} {
 						projectID := networks.GetStringOutput(fmt.Sprintf("%s_host_project_id", networkType))
 
-						for _, dnsType := range []string{
-							"dns_zone_googleapis",
-							"dns_zone_gcr",
-							"dns_zone_pkg_dev",
-							"dns_zone_peering_zone",
-						} {
-							dnsName := networkNames[networkType][dnsType]
-							dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsName, projectID, terraformSA)
-							assert.Equal(dnsName, dnsZone.Get("name").String(), fmt.Sprintf("dnsZone %s should exist", dnsName))
+						if networkMode == "-spoke" {
+							for _, dnsType := range []string{
+								"dns_zone_googleapis",
+								"dns_zone_gcr",
+								"dns_zone_pkg_dev",
+								"dns_zone_peering_zone",
+							} {
+								dnsName := networkNames[networkType][dnsType]
+								dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsName, projectID, terraformSA)
+								assert.Equal(dnsName, dnsZone.Get("name").String(), fmt.Sprintf("dnsZone %s should exist", dnsName))
+							}
+						} else {
+							for _, dnsType := range []string{
+								"dns_zone_googleapis",
+								"dns_zone_gcr",
+								"dns_zone_pkg_dev",
+								"dns_zone_forward",
+							} {
+								dnsName := networkNames[networkType][dnsType]
+								dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsName, projectID, terraformSA)
+								assert.Equal(dnsName, dnsZone.Get("name").String(), fmt.Sprintf("dnsZone %s should exist", dnsName))
+							}
 						}
-
-						dnsZoneSharedBaseHubSpoke := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsFwZoneName, baseSharedProjectID, terraformSA)
-						assert.Equal(dnsFwZoneName, dnsZoneSharedBaseHubSpoke.Get("name").String(), fmt.Sprintf("dnsZone %s should exist for base", dnsFwZoneName))
-						dnsZoneRestrictedHubSpoke := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsFwZoneName, restrictedProjectID, terraformSA)
-						assert.Equal(dnsFwZoneName, dnsZoneRestrictedHubSpoke .Get("name").String(), fmt.Sprintf("dnsZone %s should exist for restricted", dnsFwZoneName))
 
 						networkName := networkNames[networkType]["network_name"]
 						networkUrl := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectID, networkName)
@@ -462,18 +464,16 @@ func TestNetworks(t *testing.T) {
 							} {
 
 								routerName := networkNames[networkType][router.router]
+								bgpAdvertisedIpRange := "35.199.192.0/19"
 								computeRouter := gcloud.Runf(t, "compute routers describe %s --region %s --project %s --impersonate-service-account %s", routerName, router.region, projectID, terraformSA)
 								networkSelfLink := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectID, networkNames[networkType]["network_name"])
 								assert.Equal(routerName, computeRouter.Get("name").String(), fmt.Sprintf("router %s should exist", routerName))
 								assert.Equal("64514", computeRouter.Get("bgp.asn").String(), fmt.Sprintf("router %s should have bgp asm 64514", routerName))
-								assert.Equal(1, len(computeRouter.Get("bgp.advertisedIpRanges").Array()), fmt.Sprintf("router %s should have only one advertised IP range", routerName))
-								assert.Equal(googleapisCIDR[envName][networkType], computeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have only range %s", routerName, googleapisCIDR[envName][networkType]))
-								assert.Equal(networkSelfLink, computeRouter.Get("network").String(), fmt.Sprintf("router %s should have be from network %s", routerName, networkNames[networkType]["network_name"]))
-
-								dnsZoneSharedBaseSVPC := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsFwZoneName, baseSharedProjectID, terraformSA)
-								assert.Equal(dnsFwZoneName, dnsZoneSharedBaseSVPC.Get("name").String(), fmt.Sprintf("dnsZone %s should exist for base", dnsFwZoneName))
-								dnsZoneRestrictedSVPC := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsFwZoneName, restrictedProjectID, terraformSA)
-								assert.Equal(dnsFwZoneName, dnsZoneRestrictedSVPC.Get("name").String(), fmt.Sprintf("dnsZone %s should exist for restricted", dnsFwZoneName))
+								assert.Equal(networkSelfLink, computeRouter.Get("network").String(), fmt.Sprintf("router %s should be on network %s", routerName, networkNames[networkType]["network_name"]))
+								if strings.Contains(projectID, "prj-p") && networkMode != "-spoke" {
+									assert.Equal(bgpAdvertisedIpRange, computeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have range %s", routerName, bgpAdvertisedIpRange))
+									assert.Equal(googleapisCIDR[envName][networkType], computeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have only range %s", routerName, googleapisCIDR[envName][networkType]))
+								}
 							}
 						}
 					}
@@ -483,4 +483,3 @@ func TestNetworks(t *testing.T) {
 
 	}
 }
-

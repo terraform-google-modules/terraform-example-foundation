@@ -23,3 +23,23 @@ output "base_host_project_id" {
   value       = local.base_net_hub_project_id
   description = "The base host project ID"
 }
+
+output "base_network_name" {
+  value       = module.base_shared_vpc.network_name
+  description = "The name of the VPC being created"
+}
+
+output "restricted_network_name" {
+  value       = module.restricted_shared_vpc.network_name
+  description = "The name of the VPC being created"
+}
+
+output "base_dns_policy" {
+  value       = module.base_shared_vpc.base_dns_policy
+  description = "The name of the DNS policy being created"
+}
+
+output "restricted_dns_policy" {
+  value       = module.restricted_shared_vpc.restricted_dns_policy
+  description = "The name of the DNS policy being created"
+}

@@ -53,6 +53,7 @@
 | region1\_router2 | Router 2 for Region 1 |
 | region2\_router1 | Router 1 for Region 2 |
 | region2\_router2 | Router 2 for Region 2 |
+| restricted\_dns\_policy | The name of the DNS policy being created |
 | service\_perimeter\_name | Access context manager service perimeter name for the enforced perimeter |
 | subnets\_ips | The IPs and CIDRs of the subnets being created |
 | subnets\_names | The names of the subnets being created |

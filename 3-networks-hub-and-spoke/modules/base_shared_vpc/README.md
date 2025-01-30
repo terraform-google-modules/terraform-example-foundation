@@ -31,6 +31,7 @@
 
 | Name | Description |
 |------|-------------|
+| base\_dns\_policy | The name of the DNS policy being created |
 | firewall\_policy | Policy created for firewall policy rules. |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |

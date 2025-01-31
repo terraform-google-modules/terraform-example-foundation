@@ -15,7 +15,6 @@
  */
 
 locals {
-  dns_hub_project_id                = data.terraform_remote_state.org.outputs.dns_hub_project_id
   interconnect_project_id           = data.terraform_remote_state.org.outputs.interconnect_project_id
   interconnect_project_number       = data.terraform_remote_state.org.outputs.interconnect_project_number
   parent_folder                     = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder

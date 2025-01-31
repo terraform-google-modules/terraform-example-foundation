@@ -163,16 +163,16 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    chmod 755 ./tf-wrapper.sh
    ```
 
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `production.auto.example.tfvars` to `production.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
 
    ```bash
    mv common.auto.example.tfvars common.auto.tfvars
-   mv shared.auto.example.tfvars shared.auto.tfvars
+   mv production.auto.example.tfvars production.auto.tfvars
    mv access_context.auto.example.tfvars access_context.auto.tfvars
    ```
 
 1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
-   Update `shared.auto.tfvars` file with the `target_name_server_addresses`.
+   Update `production.auto.tfvars` file with the `target_name_server_addresses`.
    Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
    Use `terraform output` to get the backend bucket value from 0-bootstrap output.
 
@@ -195,10 +195,15 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 
    ```bash
    git add .
-   git commit -m 'Initialize networks repo'
+   git commit -m 'Initialize networks repo - plan'
    ```
 
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `nonproduction` and `production` environments depend on it.
+1. You must manually plan and apply the `production` environment since the `development`, `nonproduction` and `plan` environments depend on it.
+
+   ```bash
+   git checkout -b production
+   ```
+
 1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Use `terraform output` to get the Cloud Build project ID and the networks step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
@@ -209,6 +214,36 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
+
+1. Run `init` and `plan` and review output for environment production.
+
+   ```bash
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+
+1. Run `validate` and check for violations.
+
+   ```bash
+   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${CLOUD_BUILD_PROJECT_ID}
+   ```
+
+1. Run `apply` production.
+
+   ```bash
+   ./tf-wrapper.sh apply production
+   ```
+
+   1. Push your production branch since development and nonproduction depends it.  Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+
+*Note:** The Production envrionment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
+
+   ```bash
+   git push --set-upstream origin production
+   ```
+
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `nonproduction` and `production` environments depend on it.
 
 1. Run `init` and `plan` and review output for environment shared.
 
@@ -237,15 +272,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    git push --set-upstream origin plan
    ```
 
-1. Merge changes to production. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
-
-   ```bash
-   git checkout -b production
-   git push origin production
-   ```
-
-1. After production has been applied, apply development.
+1. After plan has been applied, apply development.
 1. Merge changes to development. Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
@@ -303,16 +330,16 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    git checkout -b production
    ```
 
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `production.auto.example.tfvars` to `production.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
 
    ```bash
    mv common.auto.example.tfvars common.auto.tfvars
-   mv shared.auto.example.tfvars shared.auto.tfvars
+   mv production.auto.example.tfvars production.auto.tfvars
    mv access_context.auto.example.tfvars access_context.auto.tfvars
    ```
 
 1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
-1. Update `shared.auto.tfvars` file with the `target_name_server_addresses`.
+1. Update `production.auto.tfvars` file with the `target_name_server_addresses`.
 1. Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
 1. Use `terraform output` to get the backend bucket value from gcp-bootstrap output.
 

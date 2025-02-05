@@ -278,13 +278,24 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 
 	step := GetNetworkStep(c.EnableHubAndSpoke)
 
-	// shared
-	sharedTfvars := NetSharedTfvars{
-		TargetNameServerAddresses: tfvars.TargetNameServerAddresses,
-	}
-	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "shared.auto.tfvars"), sharedTfvars)
-	if err != nil {
-		return err
+	if c.EnableHubAndSpoke {
+		// shared
+		sharedTfvars := NetSharedTfvars{
+			TargetNameServerAddresses: tfvars.TargetNameServerAddresses,
+		}
+		err := utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "shared.auto.tfvars"), sharedTfvars)
+		if err != nil {
+			return err
+		}
+
+	} else {
+		productionTfvars := NetSharedTfvars{
+			TargetNameServerAddresses: tfvars.TargetNameServerAddresses,
+		}
+		err := utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "production.auto.tfvars"), productionTfvars)
+		if err != nil {
+			return err
+		}
 	}
 	// common
 	commonTfvars := NetCommonTfvars{
@@ -295,7 +306,7 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	if tfvars.EnableHubAndSpoke {
 		commonTfvars.EnableHubAndSpokeTransitivity = &tfvars.EnableHubAndSpokeTransitivity
 	}
-	err = utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "common.auto.tfvars"), commonTfvars)
+	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "common.auto.tfvars"), commonTfvars)
 	if err != nil {
 		return err
 	}
@@ -308,37 +319,67 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		return err
 	}
 
-	conf := utils.CloneCSR(t, NetworksRepo, filepath.Join(c.CheckoutPath, NetworksRepo), outputs.CICDProject, c.Logger)
-	stageConf := StageConf{
-		Stage:         NetworksRepo,
-		StageSA:       outputs.NetworkSA,
-		CICDProject:   outputs.CICDProject,
-		DefaultRegion: outputs.DefaultRegion,
-		Step:          step,
-		Repo:          NetworksRepo,
-		GitConf:       conf,
-		HasManualStep: true,
-		GroupingUnits: []string{"envs"},
-		Envs:          []string{"production", "nonproduction", "development"},
-	}
+	if c.EnableHubAndSpoke {
 
-	return deployStage(t, stageConf, s, c)
+		conf := utils.CloneCSR(t, NetworksRepo, filepath.Join(c.CheckoutPath, NetworksRepo), outputs.CICDProject, c.Logger)
+		stageConf := StageConf{
+			Stage:         NetworksRepo,
+			StageSA:       outputs.NetworkSA,
+			CICDProject:   outputs.CICDProject,
+			DefaultRegion: outputs.DefaultRegion,
+			Step:          step,
+			Repo:          NetworksRepo,
+			GitConf:       conf,
+			HasLocalStep:  true,
+			LocalSteps:    []string{"shared"},
+			GroupingUnits: []string{"envs"},
+			Envs:          []string{"production", "nonproduction", "development"},
+		}
+		return deployStage(t, stageConf, s, c)
+	} else {
+		conf := utils.CloneCSR(t, NetworksRepo, filepath.Join(c.CheckoutPath, NetworksRepo), outputs.CICDProject, c.Logger)
+		stageConf := StageConf{
+			Stage:         NetworksRepo,
+			StageSA:       outputs.NetworkSA,
+			CICDProject:   outputs.CICDProject,
+			DefaultRegion: outputs.DefaultRegion,
+			Step:          step,
+			Repo:          NetworksRepo,
+			GitConf:       conf,
+			HasLocalStep:  true,
+			LocalSteps:    []string{"production", "shared"},
+			GroupingUnits: []string{"envs"},
+			Envs:          []string{"nonproduction", "development"},
+		}
+		return deployStage(t, stageConf, s, c)
+	}
 }
 
 func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf) error {
-	// shared
-	sharedTfvars := ProjSharedTfvars{
-		DefaultRegion: tfvars.DefaultRegion,
-	}
-	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, ProjectsStep, "shared.auto.tfvars"), sharedTfvars)
-	if err != nil {
-		return err
+
+	if c.EnableHubAndSpoke {
+		// shared
+		sharedTfvars := ProjSharedTfvars{
+			DefaultRegion: tfvars.DefaultRegion,
+		}
+		err := utils.WriteTfvars(filepath.Join(c.FoundationPath, ProjectsStep, "shared.auto.tfvars"), sharedTfvars)
+		if err != nil {
+			return err
+		}
+	} else {
+		productionTfvars := ProjSharedTfvars{
+			DefaultRegion: tfvars.DefaultRegion,
+		}
+		err := utils.WriteTfvars(filepath.Join(c.FoundationPath, ProjectsStep, "production.auto.tfvars"), productionTfvars)
+		if err != nil {
+			return err
+		}
 	}
 	// common
 	commonTfvars := ProjCommonTfvars{
 		RemoteStateBucket: outputs.RemoteStateBucket,
 	}
-	err = utils.WriteTfvars(filepath.Join(c.FoundationPath, ProjectsStep, "common.auto.tfvars"), commonTfvars)
+	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, ProjectsStep, "common.auto.tfvars"), commonTfvars)
 	if err != nil {
 		return err
 	}
@@ -359,22 +400,40 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		}
 	}
 
-	conf := utils.CloneCSR(t, ProjectsRepo, filepath.Join(c.CheckoutPath, ProjectsRepo), outputs.CICDProject, c.Logger)
-	stageConf := StageConf{
-		Stage:         ProjectsRepo,
-		StageSA:       outputs.ProjectsSA,
-		CICDProject:   outputs.CICDProject,
-		DefaultRegion: outputs.DefaultRegion,
-		Step:          ProjectsStep,
-		Repo:          ProjectsRepo,
-		GitConf:       conf,
-		HasManualStep: true,
-		GroupingUnits: []string{"business_unit_1"},
-		Envs:          []string{"production", "nonproduction", "development"},
+	if c.EnableHubAndSpoke {
+
+		conf := utils.CloneCSR(t, ProjectsRepo, filepath.Join(c.CheckoutPath, ProjectsRepo), outputs.CICDProject, c.Logger)
+		stageConf := StageConf{
+			Stage:         ProjectsRepo,
+			StageSA:       outputs.ProjectsSA,
+			CICDProject:   outputs.CICDProject,
+			DefaultRegion: outputs.DefaultRegion,
+			Step:          ProjectsStep,
+			Repo:          ProjectsRepo,
+			GitConf:       conf,
+			HasLocalStep:  true,
+			LocalSteps:    []string{"shared"},
+			GroupingUnits: []string{"business_unit_1"},
+			Envs:          []string{"production", "nonproduction", "development"},
+		}
+		return deployStage(t, stageConf, s, c)
+	} else {
+		conf := utils.CloneCSR(t, ProjectsRepo, filepath.Join(c.CheckoutPath, ProjectsRepo), outputs.CICDProject, c.Logger)
+		stageConf := StageConf{
+			Stage:         ProjectsRepo,
+			StageSA:       outputs.ProjectsSA,
+			CICDProject:   outputs.CICDProject,
+			DefaultRegion: outputs.DefaultRegion,
+			Step:          ProjectsStep,
+			Repo:          ProjectsRepo,
+			GitConf:       conf,
+			HasLocalStep:  true,
+			LocalSteps:    []string{"production", "shared"},
+			GroupingUnits: []string{"business_unit_1"},
+			Envs:          []string{"nonproduction", "development"},
+		}
+		return deployStage(t, stageConf, s, c)
 	}
-
-	return deployStage(t, stageConf, s, c)
-
 }
 
 func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs InfraPipelineOutputs, c CommonConf) error {
@@ -433,22 +492,25 @@ func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error 
 		return err
 	}
 
-	shared := []string{}
-	if sc.HasManualStep {
-		shared = sc.GroupingUnits
+	groupunit := []string{}
+	if sc.HasLocalStep {
+		groupunit = sc.GroupingUnits
 	}
-	for _, bu := range shared {
-		buOptions := &terraform.Options{
-			TerraformDir: filepath.Join(filepath.Join(c.CheckoutPath, sc.Repo), bu, "shared"),
-			Logger:       c.Logger,
-			NoColor:      true,
-		}
 
-		err := s.RunStep(fmt.Sprintf("%s.%s.apply-shared", sc.Stage, bu), func() error {
-			return applyLocal(t, buOptions, sc.StageSA, c.PolicyPath, c.ValidatorProject)
-		})
-		if err != nil {
-			return err
+	for _, bu := range groupunit {
+		for _, localStep := range sc.LocalSteps {
+			buOptions := &terraform.Options{
+				TerraformDir: filepath.Join(filepath.Join(c.CheckoutPath, sc.Repo), bu, localStep),
+				Logger:       c.Logger,
+				NoColor:      true,
+			}
+
+			err := s.RunStep(fmt.Sprintf("%s.%s.apply-shared", sc.Stage, bu), func() error {
+				return applyLocal(t, buOptions, sc.StageSA, c.PolicyPath, c.ValidatorProject)
+			})
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -514,6 +576,7 @@ func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath
 }
 
 func planStage(t testing.TB, conf utils.GitRepo, project, region, repo string) error {
+
 	err := conf.CommitFiles(fmt.Sprintf("Initialize %s repo", repo))
 	if err != nil {
 		return err

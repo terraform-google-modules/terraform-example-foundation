@@ -278,12 +278,12 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 
 	step := GetNetworkStep(c.EnableHubAndSpoke)
 
-	var localStep string
+	var localStep []string
 
 	if c.EnableHubAndSpoke {
-		localStep = "shared"
+		localStep = []string{"shared"}
 	} else {
-		localStep = "production"
+		localStep = []string{"shared", "production"}
 	}
 
 	// shared
@@ -326,7 +326,7 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		Repo:          NetworksRepo,
 		GitConf:       conf,
 		HasLocalStep:  true,
-		LocalSteps:    []string{localStep},
+		LocalSteps:    localStep,
 		GroupingUnits: []string{"envs"},
 		Envs:          []string{"production", "nonproduction", "development"},
 	}
@@ -378,7 +378,7 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		Repo:          ProjectsRepo,
 		GitConf:       conf,
 		HasLocalStep:  true,
-		LocalSteps:    []string{"shared", "production"},
+		LocalSteps:    []string{"shared"},
 		GroupingUnits: []string{"business_unit_1"},
 		Envs:          []string{"production", "nonproduction", "development"},
 	}

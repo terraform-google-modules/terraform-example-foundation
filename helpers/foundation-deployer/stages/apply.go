@@ -294,6 +294,14 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	if err != nil {
 		return err
 	}
+	// production
+	productionTfvars := NetProductionTfvars{
+		TargetNameServerAddresses: tfvars.TargetNameServerAddresses,
+	}
+	err = utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "production.auto.tfvars"), productionTfvars)
+	if err != nil {
+		return err
+	}
 	// common
 	commonTfvars := NetCommonTfvars{
 		Domain:                     tfvars.Domain,

@@ -246,6 +246,10 @@ type NetSharedTfvars struct {
 	TargetNameServerAddresses []ServerAddress `hcl:"target_name_server_addresses"`
 }
 
+type NetProductionTfvars struct {
+	TargetNameServerAddresses []ServerAddress `hcl:"target_name_server_addresses"`
+}
+
 type NetAccessContextTfvars struct {
 	AccessContextManagerPolicyID string `hcl:"access_context_manager_policy_id"`
 }

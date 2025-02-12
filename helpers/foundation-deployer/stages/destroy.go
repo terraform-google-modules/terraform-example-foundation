@@ -120,7 +120,7 @@ func DestroyNetworksStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		CICDProject:   outputs.CICDProject,
 		Step:          step,
 		Repo:          NetworksRepo,
-		HasManualStep: true,
+		HasLocalStep:  true,
 		GroupingUnits: []string{"envs"},
 		Envs:          []string{"development", "nonproduction", "production"},
 	}
@@ -134,7 +134,7 @@ func DestroyProjectsStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		CICDProject:   outputs.CICDProject,
 		Step:          ProjectsStep,
 		Repo:          ProjectsRepo,
-		HasManualStep: true,
+		HasLocalStep:  true,
 		GroupingUnits: []string{"business_unit_1"},
 		Envs:          []string{"development", "nonproduction", "production"},
 	}
@@ -188,7 +188,7 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 		}
 	}
 	groupingUnits := []string{}
-	if sc.HasManualStep {
+	if sc.HasLocalStep {
 		groupingUnits = sc.GroupingUnits
 	}
 	for _, g := range groupingUnits {

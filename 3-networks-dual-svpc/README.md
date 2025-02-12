@@ -195,15 +195,10 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 
    ```bash
    git add .
-   git commit -m 'Initialize networks repo - plan'
+   git commit -m 'Initialize networks repo'
    ```
 
-1. You must manually plan and apply the `production` environment since the `development`, `nonproduction` and `plan` environments depend on it.
-
-   ```bash
-   git checkout -b production
-   ```
-
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `nonproduction` and `production` environments depend on it.
 1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 1. Use `terraform output` to get the Cloud Build project ID and the networks step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
@@ -214,36 +209,6 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw networks_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
-
-1. Run `init` and `plan` and review output for environment production.
-
-   ```bash
-   ./tf-wrapper.sh init production
-   ./tf-wrapper.sh plan production
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${CLOUD_BUILD_PROJECT_ID}
-   ```
-
-1. Run `apply` production.
-
-   ```bash
-   ./tf-wrapper.sh apply production
-   ```
-
-   1. Push your production branch since development and nonproduction depends it.  Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
-   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
-
-*Note:** The Production envrionment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
-
-   ```bash
-   git push --set-upstream origin production
-   ```
-
-1. You must manually plan and apply the `shared` environment (only once) since the `development`, `nonproduction` and `production` environments depend on it.
 
 1. Run `init` and `plan` and review output for environment shared.
 
@@ -262,6 +227,34 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 
    ```bash
    ./tf-wrapper.sh apply shared
+   ```
+
+1. You must manually plan and apply the `production` environment since the `development`, `nonproduction` and `plan` environments depend on it.
+
+   ```bash
+   git checkout -b production
+   ```
+
+1. Run `init` and `plan` and review output for environment production.
+
+   ```bash
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+
+1. Run `apply` production.
+
+   ```bash
+   ./tf-wrapper.sh apply production
+   ```
+
+   1. Push your production branch since development and nonproduction depends it.  Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
+   pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
+
+*Note:** The Production envrionment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
+
+   ```bash
+   git push --set-upstream origin production
    ```
 
 1. Push your plan branch to trigger a plan for all environments. Because the
@@ -325,9 +318,9 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    git init
    git commit -m "initialize empty directory" --allow-empty
    git checkout -b shared
+   git checkout -b production
    git checkout -b development
    git checkout -b nonproduction
-   git checkout -b production
    ```
 
 1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `production.auto.example.tfvars` to `production.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
@@ -388,6 +381,36 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 
    ```bash
    ./tf-wrapper.sh apply shared
+   ```
+
+1. Checkout shared `production`. Run `init` and `plan` and review output for environment production.
+
+   ```bash
+   git checkout production
+   git merge shared
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+
+1. Run `validate` and check for violations.
+
+   ```bash
+   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
+   ```
+
+1. Run `apply` production.
+
+   ```bash
+   ./tf-wrapper.sh apply production
+   git add .
+   git commit -m "Initial production commit."
+   cd ../
+   ```
+
+1. Run `git commit` shared.
+
+   ```bash
+   git checkout shared
    git add .
    git commit -m "Initial shared commit."
    ```
@@ -436,30 +459,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ./tf-wrapper.sh apply nonproduction
    git add .
    git commit -m "Initial nonproduction commit."
-   ```
-
-1. Checkout shared `production`. Run `init` and `plan` and review output for environment development.
-
-   ```bash
-   git checkout production
-   git merge nonproduction
-   ./tf-wrapper.sh init production
-   ./tf-wrapper.sh plan production
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
-1. Run `apply` production.
-
-   ```bash
-   ./tf-wrapper.sh apply production
-   git add .
-   git commit -m "Initial production commit."
-   cd ../
    ```
 
 If you received any errors or made any changes to the Terraform config or any `.tfvars`, you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.

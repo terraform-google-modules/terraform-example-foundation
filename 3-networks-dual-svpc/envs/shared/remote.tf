@@ -17,7 +17,6 @@
 locals {
   env                       = "common"
   environment_code          = "c"
-  dns_bgp_asn_number        = var.bgp_asn_dns
   default_region1           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   default_region2           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
   folder_prefix             = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix

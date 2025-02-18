@@ -87,12 +87,12 @@ module "base_env" {
   base_subnet_primary_ranges            = local.base_subnet_primary_ranges
   base_subnet_proxy_ranges              = local.base_subnet_proxy_ranges
   base_subnet_secondary_ranges          = local.base_subnet_secondary_ranges
-  base_private_service_connect_ip       = "10.17.0.3"
+  base_private_service_connect_ip       = "10.17.0.4"
   restricted_private_service_cidr       = local.restricted_private_service_cidr
   restricted_subnet_proxy_ranges        = local.restricted_subnet_proxy_ranges
   restricted_subnet_primary_ranges      = local.restricted_subnet_primary_ranges
   restricted_subnet_secondary_ranges    = local.restricted_subnet_secondary_ranges
-  restricted_private_service_connect_ip = "10.17.0.7"
+  restricted_private_service_connect_ip = "10.17.0.8"
   remote_state_bucket                   = var.remote_state_bucket
   tfc_org_name                          = var.tfc_org_name
   target_name_server_addresses          = var.target_name_server_addresses

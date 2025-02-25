@@ -371,12 +371,12 @@ func TestNetworks(t *testing.T) {
 					} {
 						projectID := networks.GetStringOutput(fmt.Sprintf("%s_host_project_id", networkType))
 
-						if networkMode == "-spoke" {
+						if strings.Contains(projectID, "prj-p") && networkMode != "-spoke" {
 							for _, dnsType := range []string{
 								"dns_zone_googleapis",
 								"dns_zone_gcr",
 								"dns_zone_pkg_dev",
-								"dns_zone_peering_zone",
+								"dns_zone_forward",
 							} {
 								dnsName := networkNames[networkType][dnsType]
 								dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsName, projectID, terraformSA)
@@ -387,7 +387,7 @@ func TestNetworks(t *testing.T) {
 								"dns_zone_googleapis",
 								"dns_zone_gcr",
 								"dns_zone_pkg_dev",
-								"dns_zone_forward",
+								"dns_zone_peering_zone",
 							} {
 								dnsName := networkNames[networkType][dnsType]
 								dnsZone := gcloud.Runf(t, "dns managed-zones describe %s --project %s --impersonate-service-account %s", dnsName, projectID, terraformSA)
@@ -469,10 +469,21 @@ func TestNetworks(t *testing.T) {
 								assert.Equal(routerName, computeRouter.Get("name").String(), fmt.Sprintf("router %s should exist", routerName))
 								assert.Equal("64514", computeRouter.Get("bgp.asn").String(), fmt.Sprintf("router %s should have bgp asm 64514", routerName))
 								assert.Equal(networkSelfLink, computeRouter.Get("network").String(), fmt.Sprintf("router %s should be on network %s", routerName, networkNames[networkType]["network_name"]))
+								assert.Contains(googleapisCIDR[envName][networkType], computeRouter.Get("bgp.advertisedIpRanges.1.range").String(), fmt.Sprintf("router %s should have range %s", routerName, googleapisCIDR[envName][networkType]))
+
 								if strings.Contains(projectID, "prj-p") && networkMode != "-spoke" {
-									assert.Equal(bgpAdvertisedIpRange, computeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have range %s", routerName, bgpAdvertisedIpRange))
-									assert.Equal(googleapisCIDR[envName][networkType], computeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have only range %s", routerName, googleapisCIDR[envName][networkType]))
+									advertisedIpRanges := computeRouter.Get("bgp.advertisedIpRanges").Array()
+									found := false
+									for _, ipRange := range advertisedIpRanges {
+										if ipRange.Get("range").String() == bgpAdvertisedIpRange {
+											found = true
+											break
+										}
+									}
+									assert.True(found, fmt.Sprintf("router %s should have range %s", routerName, bgpAdvertisedIpRange))
+									assert.True(found, fmt.Sprintf("router %s should have range %s", routerName, googleapisCIDR[envName][networkType]))
 								}
+
 							}
 						}
 					}

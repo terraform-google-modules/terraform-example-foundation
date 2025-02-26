@@ -42,5 +42,8 @@ var (
 
 		// Error 400: Service account {} does not exist.
 		".*Error 400.*Service account.*does not exist*": "Error setting IAM policy",
+
+		// Error waiting for creating service network connection. This happens randomly for development, production and non-production environments
+		".*Error code 16.*Error waiting for Create Service Networking Connection*": "Request had invalid authentication credentials",
 	}
 )

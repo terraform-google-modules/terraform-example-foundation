@@ -84,7 +84,7 @@ module "gcp_projects_state_bucket" {
 
 module "tf_source" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_source"
-  version = "~> 9.0"
+  version = "~> 11.0"
 
   org_id                = var.org_id
   folder_id             = google_folder.bootstrap.id
@@ -164,7 +164,7 @@ module "tf_private_pool" {
 
 module "tf_cloud_builder" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
-  version = "~> 9.0"
+  version = "~> 11.0"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
@@ -177,6 +177,7 @@ module "tf_cloud_builder" {
   enable_worker_pool           = true
   worker_pool_id               = module.tf_private_pool.private_worker_pool_id
   bucket_name                  = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-tf-cloudbuilder-build-logs"
+  workflow_deletion_protection = var.workflow_deletion_protection
 }
 
 module "bootstrap_csr_repo" {
@@ -215,7 +216,7 @@ module "build_terraform_image" {
 
 module "tf_workspace" {
   source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 9.0"
+  version  = "~> 11.0"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id

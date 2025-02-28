@@ -94,24 +94,42 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 
 // ValidateDestroyFlags checks if the flags to allow the destruction of the infrastructure are enabled
 func ValidateDestroyFlags(t testing.TB, g GlobalTFVars) {
-	flags := []string{}
+	trueFlags := []string{}
+	falseFlags := []string{}
+	projectDeletion := false
 
 	if g.BucketForceDestroy == nil || !*g.BucketForceDestroy {
-		flags = append(flags, "bucket_force_destroy")
+		trueFlags = append(trueFlags, "bucket_force_destroy")
 	}
 	if g.AuditLogsTableDeleteContentsOnDestroy == nil || !*g.AuditLogsTableDeleteContentsOnDestroy {
-		flags = append(flags, "audit_logs_table_delete_contents_on_destroy")
+		trueFlags = append(trueFlags, "audit_logs_table_delete_contents_on_destroy")
 	}
 	if g.LogExportStorageForceDestroy == nil || !*g.LogExportStorageForceDestroy {
-		flags = append(flags, "log_export_storage_force_destroy")
+		trueFlags = append(trueFlags, "log_export_storage_force_destroy")
 	}
 	if g.BucketTfstateKmsForceDestroy == nil || !*g.BucketTfstateKmsForceDestroy {
-		flags = append(flags, "bucket_tfstate_kms_force_destroy")
+		trueFlags = append(trueFlags, "bucket_tfstate_kms_force_destroy")
 	}
+	if g.FolderDeletionProtection != nil && *g.FolderDeletionProtection {
+		falseFlags = append(falseFlags, "folder_deletion_protection")
+	}
+	if g.WorkflowDeletionProtection != nil && *g.WorkflowDeletionProtection {
+		falseFlags = append(falseFlags, "workflow_deletion_protection")
+	}
+	projectDeletion = g.ProjectDeletionPolicy != "DELETE"
 
-	if len(flags) > 0 {
+	if len(trueFlags) > 0 || len(falseFlags) > 0 || projectDeletion {
 		fmt.Println("# To use the feature to destroy the deployment created by this helper,")
-		fmt.Println("# please set the following flags to 'true' in the tfvars file:")
-		fmt.Printf("# %s\n", strings.Join(flags, ", "))
+		if len(trueFlags) > 0 {
+			fmt.Println("# please set the following flags to 'true' in the tfvars file:")
+			fmt.Printf("# %s\n", strings.Join(trueFlags, ", "))
+		}
+		if len(falseFlags) > 0 {
+			fmt.Println("# please set the following flags to 'false' in the tfvars file:")
+			fmt.Printf("# %s\n", strings.Join(falseFlags, ", "))
+		}
+		if projectDeletion {
+			fmt.Println("# please set the project_deletion_policy input to 'DELETE' in the tfvars file")
+		}
 	}
 }

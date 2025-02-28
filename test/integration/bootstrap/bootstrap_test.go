@@ -50,6 +50,7 @@ func TestBootstrap(t *testing.T) {
 		"bucket_force_destroy":             true,
 		"bucket_tfstate_kms_force_destroy": true,
 		"folder_deletion_protection":       false,
+		"workflow_deletion_protection":     false,
 		"project_deletion_policy":          "DELETE",
 	}
 

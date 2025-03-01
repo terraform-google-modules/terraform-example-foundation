@@ -63,9 +63,10 @@ type StageConf struct {
 	Repo                string
 	CustomTargetDirPath string
 	GitConf             utils.GitRepo
-	HasManualStep       bool
+	HasLocalStep        bool
 	GroupingUnits       []string
 	Envs                []string
+	LocalSteps          []string
 }
 
 type BootstrapOutputs struct {
@@ -245,6 +246,10 @@ type NetSharedTfvars struct {
 	TargetNameServerAddresses []ServerAddress `hcl:"target_name_server_addresses"`
 }
 
+type NetProductionTfvars struct {
+	TargetNameServerAddresses []ServerAddress `hcl:"target_name_server_addresses"`
+}
+
 type NetAccessContextTfvars struct {
 	AccessContextManagerPolicyID string `hcl:"access_context_manager_policy_id"`
 }
@@ -307,7 +312,7 @@ func GetInfraPipelineOutputs(t testing.TB, checkoutPath, workspace string) Infra
 func ReadGlobalTFVars(file string) (GlobalTFVars, error) {
 	var globalTfvars GlobalTFVars
 	if file == "" {
-		return globalTfvars, fmt.Errorf("tfvars file is required.")
+		return globalTfvars, fmt.Errorf("tfvars file is required")
 	}
 	_, err := os.Stat(file)
 	if os.IsNotExist(err) {

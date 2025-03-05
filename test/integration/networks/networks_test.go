@@ -371,7 +371,7 @@ func TestNetworks(t *testing.T) {
 					} {
 						projectID := networks.GetStringOutput(fmt.Sprintf("%s_host_project_id", networkType))
 
-						if strings.Contains(projectID, "prj-p") && networkMode != "-spoke" {
+						if strings.Contains(projectID, "-p-") && networkMode != "-spoke" {
 							for _, dnsType := range []string{
 								"dns_zone_googleapis",
 								"dns_zone_gcr",

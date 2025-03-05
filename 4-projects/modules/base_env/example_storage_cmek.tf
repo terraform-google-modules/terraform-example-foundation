@@ -20,7 +20,7 @@ data "google_storage_project_service_account" "gcs_account" {
 
 module "kms" {
   source  = "terraform-google-modules/kms/google"
-  version = "~> 3.2"
+  version = "~> 4.0"
 
   project_id          = local.kms_project_id
   keyring             = var.keyring_name

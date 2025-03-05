@@ -20,7 +20,7 @@ data "google_storage_project_service_account" "gcs_account" {
 
 module "kms" {
   source  = "terraform-google-modules/kms/google"
-  version = "~> 3.2"
+  version = "~> 4.0"
 
   project_id          = local.kms_project_id
   keyring             = var.keyring_name
@@ -44,7 +44,7 @@ resource "random_string" "bucket_name" {
 
 module "gcs_buckets" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   project_id              = module.base_shared_vpc_project.project_id
   location                = var.location_gcs

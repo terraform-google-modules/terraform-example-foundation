@@ -55,6 +55,7 @@ module "project" {
   org_id                   = var.org_id
   billing_account          = var.billing_account
   folder_id                = var.folder_id
+  auto_create_network      = true
   deletion_policy          = var.project_deletion_policy
 
   svpc_host_project_id = var.shared_vpc_host_project_id

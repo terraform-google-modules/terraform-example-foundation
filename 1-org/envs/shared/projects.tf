@@ -45,6 +45,7 @@ module "org_audit_logs" {
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
+  auto_create_network      = true
 
   labels = {
     environment       = "common"
@@ -79,6 +80,7 @@ module "org_billing_export" {
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
+  auto_create_network      = true
 
   labels = {
     environment       = "common"
@@ -113,6 +115,8 @@ module "common_kms" {
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
+  auto_create_network      = true
+
 
   labels = {
     environment       = "common"
@@ -148,6 +152,8 @@ module "org_secrets" {
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
+  auto_create_network      = true
+
 
   labels = {
     environment       = "common"
@@ -182,6 +188,8 @@ module "interconnect" {
   folder_id                = google_folder.network.id
   deletion_policy          = var.project_deletion_policy
   activate_apis            = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
+  auto_create_network      = true
+
 
   labels = {
     environment       = "network"
@@ -216,6 +224,8 @@ module "scc_notifications" {
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com", "cloudkms.googleapis.com"]
+  auto_create_network      = true
+
 
   labels = {
     environment       = "common"
@@ -249,6 +259,8 @@ module "dns_hub" {
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
   deletion_policy          = var.project_deletion_policy
+  auto_create_network      = true
+
 
   activate_apis = [
     "compute.googleapis.com",
@@ -292,6 +304,8 @@ module "base_network_hub" {
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
   deletion_policy          = var.project_deletion_policy
+  auto_create_network      = true
+
 
   activate_apis = [
     "compute.googleapis.com",
@@ -343,6 +357,8 @@ module "restricted_network_hub" {
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
   deletion_policy          = var.project_deletion_policy
+  auto_create_network      = true
+
 
   activate_apis = [
     "compute.googleapis.com",

@@ -56,6 +56,7 @@ module "project" {
   folder_id                = var.folder_id
   billing_account          = var.billing_account
   deletion_policy          = "DELETE"
+  auto_create_network      = true
 
   activate_apis = [
     "cloudresourcemanager.googleapis.com",

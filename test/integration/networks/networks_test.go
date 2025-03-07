@@ -16,6 +16,7 @@ package networks
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -309,11 +310,24 @@ func TestNetworks(t *testing.T) {
 		},
 	}
 
-	for _, envName := range []string{
-		"production",
-		"development",
-		"nonproduction",
-	} {
+	envStage := os.Getenv(utils.RUN_STAGE_ENV_VAR)
+	var envNames []string
+
+	if strings.Contains(envStage, "teardown") {
+		envNames = []string{
+			"nonproduction",
+			"development",
+			"production",
+		}
+	} else {
+		envNames = []string{
+			"production",
+			"development",
+			"nonproduction",
+		}
+	}
+
+	for _, envName := range envNames {
 		envName := envName
 		t.Run(envName, func(t *testing.T) {
 

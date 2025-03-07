@@ -34,7 +34,7 @@ resource "random_string" "suffix" {
 
 module "network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 9.0"
+  version = "~> 10.0"
 
   project_id                             = var.project_id
   network_name                           = var.network_name
@@ -96,7 +96,7 @@ resource "google_service_account" "tfc_agent_service_account" {
 
 module "tfc_agent_cluster" {
   source  = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-private-cluster/"
-  version = "~> 34.0"
+  version = "~> 36.0"
 
   project_id         = var.project_id
   region             = var.region
@@ -372,7 +372,7 @@ resource "google_compute_firewall" "allow_private_api_egress" {
 
 module "private_service_connect" {
   source  = "terraform-google-modules/network/google//modules/private-service-connect"
-  version = "~> 9.1"
+  version = "~> 10.0"
 
   project_id                 = var.project_id
   dns_code                   = "dz-${local.vpc_name}"
@@ -394,7 +394,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "hub" {
   source  = "terraform-google-modules/kubernetes-engine/google//modules/fleet-membership"
-  version = "~> 34.0"
+  version = "~> 36.0"
 
   project_id   = var.project_id
   location     = var.region

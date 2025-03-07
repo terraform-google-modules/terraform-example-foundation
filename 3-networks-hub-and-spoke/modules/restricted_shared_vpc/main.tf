@@ -29,7 +29,7 @@ locals {
 
 module "main" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 9.0"
+  version = "~> 10.0"
 
   project_id                             = var.project_id
   network_name                           = local.network_name
@@ -78,7 +78,7 @@ data "google_compute_network" "vpc_restricted_net_hub" {
 
 module "peering" {
   source  = "terraform-google-modules/network/google//modules/network-peering"
-  version = "~> 9.0"
+  version = "~> 10.0"
   count   = var.mode == "spoke" ? 1 : 0
 
   prefix                    = "np"

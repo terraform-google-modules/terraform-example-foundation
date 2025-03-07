@@ -43,6 +43,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		FolderPrefix:                 tfvars.FolderPrefix,
 		BucketForceDestroy:           tfvars.BucketForceDestroy,
 		BucketTfstateKmsForceDestroy: tfvars.BucketTfstateKmsForceDestroy,
+		WorkflowDeletionProtection:   tfvars.WorkflowDeletionProtection,
 		Groups:                       tfvars.Groups,
 		InitialGroupConfig:           tfvars.InitialGroupConfig,
 		FolderDeletionProtection:     tfvars.FolderDeletionProtection,

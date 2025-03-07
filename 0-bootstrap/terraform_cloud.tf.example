@@ -230,7 +230,7 @@ resource "tfe_run_trigger" "projects_bu2_shared_production" {
 
 module "tfc_cicd" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
 
   name              = "${var.project_prefix}-b-cicd-wif-tfc"
   random_project_id = true

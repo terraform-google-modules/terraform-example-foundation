@@ -19,8 +19,9 @@
   Mandatory and optional firewall rules
  *****************************************/
 module "firewall_rules" {
-  source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version     = "~> 9.0"
+  source  = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version = "~> 10.0"
+
   project_id  = var.project_id
   policy_name = "fp-${var.environment_code}-hub-and-spoke-restricted-firewalls"
   description = "Firewall rules for restricted hub and spoke shared vpc: ${module.main.network_name}."

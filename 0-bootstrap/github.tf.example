@@ -70,7 +70,7 @@ locals {
 
 module "gh_cicd" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 17.0"
+  version = "~> 18.0"
 
   name              = "${var.project_prefix}-b-cicd-wif-gh"
   random_project_id = true
@@ -120,7 +120,7 @@ resource "google_service_account_iam_member" "self_impersonate" {
 
 module "gcp_projects_state_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 8.0"
+  version = "~> 9.0"
 
   name          = "${var.bucket_prefix}-${module.seed_bootstrap.seed_project_id}-gcp-projects-tfstate"
   project_id    = module.seed_bootstrap.seed_project_id

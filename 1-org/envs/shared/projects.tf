@@ -234,48 +234,6 @@ module "scc_notifications" {
 }
 
 /******************************************
-  Project for DNS Hub
-*****************************************/
-
-module "dns_hub" {
-  source  = "terraform-google-modules/project-factory/google"
-  version = "~> 18.0"
-
-  random_project_id        = true
-  random_project_id_length = 4
-  default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-net-dns"
-  org_id                   = local.org_id
-  billing_account          = local.billing_account
-  folder_id                = google_folder.network.id
-  deletion_policy          = var.project_deletion_policy
-
-  activate_apis = [
-    "compute.googleapis.com",
-    "dns.googleapis.com",
-    "servicenetworking.googleapis.com",
-    "logging.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "billingbudgets.googleapis.com"
-  ]
-
-  labels = {
-    environment       = "network"
-    application_name  = "org-dns-hub"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "shared"
-    env_code          = "net"
-    vpc               = "none"
-  }
-  budget_alert_pubsub_topic   = var.project_budget.dns_hub_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.dns_hub_alert_spent_percents
-  budget_amount               = var.project_budget.dns_hub_budget_amount
-  budget_alert_spend_basis    = var.project_budget.dns_hub_budget_alert_spend_basis
-}
-
-/******************************************
   Project for Base Network Hub
 *****************************************/
 

@@ -15,10 +15,12 @@
  */
 
 locals {
-  mode                       = var.mode == null ? "" : var.mode == "hub" ? "-hub" : "-spoke"
-  vpc_name                   = "${var.environment_code}-shared-restricted${local.mode}"
-  network_name               = "vpc-${local.vpc_name}"
-  restricted_googleapis_cidr = module.private_service_connect.private_service_connect_ip
+  mode                        = var.mode == null ? "" : var.mode == "hub" ? "-hub" : "-spoke"
+  vpc_name                    = "${var.environment_code}-shared-restricted${local.mode}"
+  network_name                = "vpc-${local.vpc_name}"
+  restricted_googleapis_cidr  = module.private_service_connect.private_service_connect_ip
+  google_forward_source_range = "35.199.192.0/19"
+  advertised_ip               = var.environment_code == "c" ? [{ range = local.google_forward_source_range }, { range = local.restricted_googleapis_cidr }] : [{ range = local.restricted_googleapis_cidr }]
 }
 
 /******************************************
@@ -130,7 +132,7 @@ module "region1_router1" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
+    advertised_ip_ranges = local.advertised_ip
   }
 }
 
@@ -146,7 +148,7 @@ module "region1_router2" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
+    advertised_ip_ranges = local.advertised_ip
   }
 }
 
@@ -162,7 +164,7 @@ module "region2_router1" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
+    advertised_ip_ranges = local.advertised_ip
   }
 }
 
@@ -178,6 +180,6 @@ module "region2_router2" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.restricted_googleapis_cidr }]
+    advertised_ip_ranges = local.advertised_ip
   }
 }

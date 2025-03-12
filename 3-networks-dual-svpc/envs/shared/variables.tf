@@ -56,27 +56,10 @@ variable "bgp_asn_dns" {
   default     = 64667
 }
 
-variable "target_name_server_addresses" {
-  description = "List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones."
-  type        = list(map(any))
-}
-
 variable "firewall_policies_enable_logging" {
   type        = bool
   description = "Toggle hierarchical firewall logging."
   default     = true
-}
-
-variable "enable_partner_interconnect" {
-  description = "Enable Partner Interconnect in the environment."
-  type        = bool
-  default     = false
-}
-
-variable "preactivate_partner_interconnect" {
-  description = "Preactivate Partner Interconnect VLAN attachment in the environment."
-  type        = bool
-  default     = false
 }
 
 variable "tfc_org_name" {

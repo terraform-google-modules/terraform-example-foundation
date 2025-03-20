@@ -1,5 +1,35 @@
 # Changelog
 
+## [5.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v4.1.0...v5.0.0) (2025-03-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* Network dns refactory ([#1365](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1365))
+* **deps:** Update Terraform module dependencies ([#1384](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1384))
+* Fix for hierarchical firewall policy ([#1354](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1354))
+
+### Features
+
+* upgrade module version to allow Terraform Google provider v6 ([#1350](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1350)) ([72e227c](https://github.com/terraform-google-modules/terraform-example-foundation/commit/72e227c0c6be877f46a18cdc940d6ee5cf56f9d9))
+
+
+### Bug Fixes
+
+* bucket name length exceeds 63 characters with non-US region deployment ([#1347](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1347)) ([d295755](https://github.com/terraform-google-modules/terraform-example-foundation/commit/d29575562a6bed8ed477c30d43a788ca51af13ca))
+* bump version of terraform provider on cai-monitoring module ([#1328](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1328)) ([4dbe0f8](https://github.com/terraform-google-modules/terraform-example-foundation/commit/4dbe0f8da555e82999eeca045af5633844e0a4e9))
+* **deps:** Update dependency @google-cloud/security-center to v8.11.0 ([#1319](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1319)) ([028f85f](https://github.com/terraform-google-modules/terraform-example-foundation/commit/028f85f51dcc06a879a07f1f88758d139d10287b))
+* **deps:** update dependency @google-cloud/security-center to v8.9.0 ([#1289](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1289)) ([f67b8b1](https://github.com/terraform-google-modules/terraform-example-foundation/commit/f67b8b1174a0329c6acf28ce1065835e5d27160b))
+* **deps:** Update go modules ([#1323](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1323)) ([105a0db](https://github.com/terraform-google-modules/terraform-example-foundation/commit/105a0dbd63f83f2d4abbf875a1873ec75521a839))
+* **deps:** Update go modules and/or dev-tools ([#1333](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1333)) ([c415f8f](https://github.com/terraform-google-modules/terraform-example-foundation/commit/c415f8f3e7072d3b96fbca0082c785613a059de1))
+* **deps:** Update Terraform module dependencies ([#1384](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1384)) ([56ba738](https://github.com/terraform-google-modules/terraform-example-foundation/commit/56ba738cbeb28d418c2b7fbf9712605b9f7f449f))
+* **docs:** update procedures deployment order after DNS refactoring ([#1389](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1389)) ([39db506](https://github.com/terraform-google-modules/terraform-example-foundation/commit/39db5069964d337ca112ec147d5075fb54c3a0aa))
+* Fix for hierarchical firewall policy ([#1354](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1354)) ([a07e6a0](https://github.com/terraform-google-modules/terraform-example-foundation/commit/a07e6a0db5895b28ed83ecf9293badf57947eaf6))
+* fix location variables for step 4-projects in deploy helper ([#1334](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1334)) ([aca3400](https://github.com/terraform-google-modules/terraform-example-foundation/commit/aca34008b41e4dc16977c22130b785f015f4c9ca))
+* Fixes for Github deploy ([#1367](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1367)) ([113c142](https://github.com/terraform-google-modules/terraform-example-foundation/commit/113c1428dcd9b57094cb924ed365c626e770f3fc))
+* Network dns refactory ([#1365](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1365)) ([02a8051](https://github.com/terraform-google-modules/terraform-example-foundation/commit/02a8051b1c7f6e4271da7dc2112f70aeba328499))
+* Retries exceeded in 1-org destroy step ([#1380](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1380)) ([bb60a47](https://github.com/terraform-google-modules/terraform-example-foundation/commit/bb60a478472f403b7d88942a3425f4c2f2a0c3b6))
+
 ## [4.1.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v4.0.0...v4.1.0) (2024-08-01)
 
 

@@ -19,12 +19,12 @@ locals {
   environment   = "production"
 }
 
-module "base_shared_gce_instance" {
+module "shared_gce_instance" {
   source = "../../modules/env_base"
 
   environment         = local.environment
   business_unit       = local.business_unit
-  project_suffix      = "sample-base"
+  project_suffix      = "sample-svpc"
   region              = coalesce(var.instance_region, local.default_region)
   remote_state_bucket = var.remote_state_bucket
 }

@@ -215,7 +215,7 @@ export the GitHub fine grained access token as an environment variable:
    terraform apply bootstrap.tfplan
    ```
 
-1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
+1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
 
    ```bash
    export network_step_sa=$(terraform output -raw networks_step_terraform_service_account_email)
@@ -508,7 +508,7 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
 
 1. You can now move to the instructions in the network stage.
-To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc),
+To use the [Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-svpc](#deploying-step-3-networks-svpc),
 or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
 
 1. Before moving to the next step, go back to the parent directory.
@@ -517,9 +517,9 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    cd ..
    ```
 
-## Deploying step 3-networks-dual-svpc
+## Deploying step 3-networks-svpc
 
-1. Clone the repository you created to host the `3-networks-dual-svpc` terraform configuration at the same level of the `terraform-example-foundation` folder.
+1. Clone the repository you created to host the `3-networks-svpc` terraform configuration at the same level of the `terraform-example-foundation` folder.
 
    ```bash
    git clone git@github.com:<GITHUB-OWNER>/<GITHUB-NETWORKS-REPO>.git gcp-networks
@@ -557,7 +557,7 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 1. Copy contents of foundation to new repo.
 
    ```bash
-   cp -RT ../terraform-example-foundation/3-networks-dual-svpc/ .
+   cp -RT ../terraform-example-foundation/3-networks-svpc/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    mkdir -p .github/workflows
    cp ../terraform-example-foundation/build/github-tf-* ./.github/workflows/
@@ -587,8 +587,8 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    ```
 
 1. Update `common.auto.tfvars` file with values from your GCP environment.
-See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
-1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+See any of the envs folder [README.md](../3-networks-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the project.
 1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
 
    ```bash
@@ -748,7 +748,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 1. Update `common.auto.tfvars` file with values from your GCP environment.
 See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
-1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the project.
 1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
 
    ```bash

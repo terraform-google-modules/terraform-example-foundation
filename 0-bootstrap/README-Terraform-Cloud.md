@@ -213,7 +213,7 @@ export the OAuth Token ID as an environment variable:
     1. Run `terraform plan -input=false -out bootstrap_2.tfplan`
     1. Run `terraform apply bootstrap_2.tfplan`
 
-1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
+1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
 
    ```bash
    export network_step_sa=$(terraform output -raw networks_step_terraform_service_account_email)
@@ -230,7 +230,7 @@ export the OAuth Token ID as an environment variable:
    echo "CI/CD Project ID = ${cicd_project_id}"
    ```
 
-1. Run `terraform output` to get the name of the TFC organization and export it as environment variables. `TF_CLOUD_ORGANIZATION` variable will be used by the `cloud` block in order to move the local Terraform's state to TFC and `TF_VAR_tfc_org_name` will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`
+1. Run `terraform output` to get the name of the TFC organization and export it as environment variables. `TF_CLOUD_ORGANIZATION` variable will be used by the `cloud` block in order to move the local Terraform's state to TFC and `TF_VAR_tfc_org_name` will be used to run manual steps for `shared` environments in steps `3-networks-svpc`, `3-networks-hub-and-spoke`, and `4-projects`
 
    ```bash
    export TF_CLOUD_ORGANIZATION=$(terraform output -raw tfc_org_name)
@@ -441,7 +441,7 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
 1. Review apply output in Terraform Cloud https://app.terraform.io/app/TFC-ORGANIZATION-NAME/workspaces/2-production/runs under `Run List` item.
 
 1. You can now move to the instructions in the network stage.
-To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc),
+To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-svpc](#deploying-step-3-networks-svpc),
 or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
 
 1. Before moving to the next step, go back to the parent directory.
@@ -450,7 +450,7 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    cd ..
    ```
 
-## Deploying step 3-networks-dual-svpc
+## Deploying step 3-networks-svpc
 
 **Note:** For all purposes we treat `shared` environment as `production` environment due to the possible impacts into `production`. So `3-production` TFC workspace have a [Run Trigger](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers) sourcing `3-shared` TFC workspace, which means that every time you successfully run an apply job in `3-shared` TFC workspace, a `Plan and apply` job will be triggered automatically for `3-production` TFC workspace. (All the applies will continue requiring manual approvals in TFC console).
 
@@ -470,7 +470,7 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 1. Copy contents of foundation to new repo.
 
    ```bash
-   cp -RT ../terraform-example-foundation/3-networks-dual-svpc/ .
+   cp -RT ../terraform-example-foundation/3-networks-svpc/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
@@ -498,8 +498,8 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    ```
 
 1. Update `common.auto.tfvars` file with values from your GCP environment.
-See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
-1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+See any of the envs folder [README.md](../3-networks-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the project.
 
 1. You must manually plan and apply the `shared` environment from your (only once) since the `development`, `nonproduction` and `production` environments depend on it.
 
@@ -649,7 +649,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 1. Update `common.auto.tfvars` file with values from your GCP environment.
 See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
-1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the project.
 
 1. You must manually plan and apply the `shared` environment (only once) since the `development`, `nonproduction` and `production` environments depend on it.
 

@@ -234,10 +234,10 @@ module "scc_notifications" {
 }
 
 /******************************************
-  Project for Base Network Hub
+  Project for Network Hub
 *****************************************/
 
-module "base_network_hub" {
+module "network_hub" {
   source  = "terraform-google-modules/project-factory/google"
   version = "~> 18.0"
   count   = var.enable_hub_and_spoke ? 1 : 0
@@ -245,7 +245,7 @@ module "base_network_hub" {
   random_project_id        = true
   random_project_id_length = 4
   default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-net-hub-base"
+  name                     = "${local.project_prefix}-net-hub"
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
@@ -262,76 +262,25 @@ module "base_network_hub" {
 
   labels = {
     environment       = "network"
-    application_name  = "org-net-hub-base"
+    application_name  = "org-net-hub"
     billing_code      = "1234"
     primary_contact   = "example1"
     secondary_contact = "example2"
     business_code     = "shared"
     env_code          = "net"
-    vpc               = "base"
+    vpc               = "svpc"
   }
-  budget_alert_pubsub_topic   = var.project_budget.base_net_hub_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.base_net_hub_alert_spent_percents
-  budget_amount               = var.project_budget.base_net_hub_budget_amount
-  budget_alert_spend_basis    = var.project_budget.base_net_hub_budget_alert_spend_basis
-}
-
-resource "google_project_iam_member" "network_sa_base" {
-  for_each = toset(var.enable_hub_and_spoke ? local.hub_and_spoke_roles : [])
-
-  project = module.base_network_hub[0].project_id
-  role    = each.key
-  member  = "serviceAccount:${local.networks_step_terraform_service_account_email}"
-}
-
-/******************************************
-  Project for Restricted Network Hub
-*****************************************/
-
-module "restricted_network_hub" {
-  source  = "terraform-google-modules/project-factory/google"
-  version = "~> 18.0"
-  count   = var.enable_hub_and_spoke ? 1 : 0
-
-  random_project_id        = true
-  random_project_id_length = 4
-  default_service_account  = "deprivilege"
-  name                     = "${local.project_prefix}-net-hub-restricted"
-  org_id                   = local.org_id
-  billing_account          = local.billing_account
-  folder_id                = google_folder.network.id
-  deletion_policy          = var.project_deletion_policy
-
-  activate_apis = [
-    "compute.googleapis.com",
-    "dns.googleapis.com",
-    "servicenetworking.googleapis.com",
-    "logging.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "billingbudgets.googleapis.com"
-  ]
-
-  labels = {
-    environment       = "network"
-    application_name  = "org-net-hub-restricted"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
-    business_code     = "shared"
-    env_code          = "net"
-    vpc               = "restricted"
-  }
-  budget_alert_pubsub_topic   = var.project_budget.restricted_net_hub_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.restricted_net_hub_alert_spent_percents
-  budget_amount               = var.project_budget.restricted_net_hub_budget_amount
-  budget_alert_spend_basis    = var.project_budget.restricted_net_hub_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = var.project_budget.net_hub_alert_pubsub_topic
+  budget_alert_spent_percents = var.project_budget.net_hub_alert_spent_percents
+  budget_amount               = var.project_budget.net_hub_budget_amount
+  budget_alert_spend_basis    = var.project_budget.net_hub_budget_alert_spend_basis
 }
 
 /************************************************************
-  Base and Restricted Network Projects for each Environment
+Network Project for each Environment
 ************************************************************/
 
-module "base_restricted_environment_network" {
+module "environment_network" {
   source   = "../../modules/network"
   for_each = local.environments
 
@@ -346,14 +295,10 @@ module "base_restricted_environment_network" {
   env_code = each.value
 
   project_budget = {
-    base_network_budget_amount                  = var.project_budget.base_network_budget_amount
-    base_network_alert_spent_percents           = var.project_budget.base_network_alert_spent_percents
-    base_network_alert_pubsub_topic             = var.project_budget.base_network_alert_pubsub_topic
-    base_network_budget_alert_spend_basis       = var.project_budget.base_network_budget_alert_spend_basis
-    restricted_network_budget_amount            = var.project_budget.restricted_network_budget_amount
-    restricted_network_alert_spent_percents     = var.project_budget.restricted_network_alert_spent_percents
-    restricted_network_alert_pubsub_topic       = var.project_budget.restricted_network_alert_pubsub_topic
-    restricted_network_budget_alert_spend_basis = var.project_budget.restricted_network_budget_alert_spend_basis
+    network_budget_amount            = var.project_budget.shared_network_budget_amount
+    network_alert_spent_percents     = var.project_budget.shared_network_alert_spent_percents
+    network_alert_pubsub_topic       = var.project_budget.shared_network_alert_pubsub_topic
+    network_budget_alert_spend_basis = var.project_budget.shared_network_budget_alert_spend_basis
   }
 }
 
@@ -361,10 +306,10 @@ module "base_restricted_environment_network" {
   Roles granted to the networks SA for Hub and Spoke network topology
 *********************************************************************/
 
-resource "google_project_iam_member" "network_sa_restricted" {
+resource "google_project_iam_member" "network_sa" {
   for_each = toset(var.enable_hub_and_spoke ? local.hub_and_spoke_roles : [])
 
-  project = module.restricted_network_hub[0].project_id
+  project = module.network_hub[0].project_id
   role    = each.key
   member  = "serviceAccount:${local.networks_step_terraform_service_account_email}"
 }

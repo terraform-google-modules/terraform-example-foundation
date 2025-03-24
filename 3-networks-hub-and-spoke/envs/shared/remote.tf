@@ -15,29 +15,28 @@
  */
 
 locals {
-  interconnect_project_id           = data.terraform_remote_state.org.outputs.interconnect_project_id
-  interconnect_project_number       = data.terraform_remote_state.org.outputs.interconnect_project_number
-  parent_folder                     = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
-  org_id                            = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
-  billing_account                   = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
-  default_region                    = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region1                   = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region2                   = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
-  project_prefix                    = data.terraform_remote_state.bootstrap.outputs.common_config.project_prefix
-  folder_prefix                     = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  parent_id                         = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
-  bootstrap_folder_name             = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
-  common_folder_name                = data.terraform_remote_state.org.outputs.common_folder_name
-  network_folder_name               = data.terraform_remote_state.org.outputs.network_folder_name
-  development_folder_name           = data.terraform_remote_state.env_development.outputs.env_folder
-  nonproduction_folder_name         = data.terraform_remote_state.env_nonproduction.outputs.env_folder
-  production_folder_name            = data.terraform_remote_state.env_production.outputs.env_folder
-  base_net_hub_project_id           = data.terraform_remote_state.org.outputs.base_net_hub_project_id
-  restricted_net_hub_project_id     = data.terraform_remote_state.org.outputs.restricted_net_hub_project_id
-  restricted_net_hub_project_number = data.terraform_remote_state.org.outputs.restricted_net_hub_project_number
-  organization_service_account      = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
-  networks_service_account          = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
-  projects_service_account          = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+  interconnect_project_id      = data.terraform_remote_state.org.outputs.interconnect_project_id
+  interconnect_project_number  = data.terraform_remote_state.org.outputs.interconnect_project_number
+  parent_folder                = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
+  org_id                       = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
+  billing_account              = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
+  default_region               = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region1              = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region2              = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
+  project_prefix               = data.terraform_remote_state.bootstrap.outputs.common_config.project_prefix
+  folder_prefix                = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
+  parent_id                    = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
+  bootstrap_folder_name        = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
+  common_folder_name           = data.terraform_remote_state.org.outputs.common_folder_name
+  network_folder_name          = data.terraform_remote_state.org.outputs.network_folder_name
+  development_folder_name      = data.terraform_remote_state.env_development.outputs.env_folder
+  nonproduction_folder_name    = data.terraform_remote_state.env_nonproduction.outputs.env_folder
+  production_folder_name       = data.terraform_remote_state.env_production.outputs.env_folder
+  net_hub_project_id           = data.terraform_remote_state.org.outputs.net_hub_project_id
+  net_hub_project_number       = data.terraform_remote_state.org.outputs.net_hub_project_number
+  organization_service_account = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
+  networks_service_account     = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
+  projects_service_account     = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
 }
 
 data "terraform_remote_state" "bootstrap" {

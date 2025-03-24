@@ -246,7 +246,7 @@ Details:
 
 **Cause:**
 
-In a deploy using the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode, an error occurs when adding the network peering between the restricted Hub network and the restricted Spoke network or the base Hub network and the base Spoke network due to too many peering operations.
+In a deploy using the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode, an error occurs when adding the network peering between the Hub network and the Spoke network due to too many peering operations.
 
 **Solution:**
 
@@ -258,7 +258,7 @@ This is a transient error and the deploy can be retried. Wait for at least a min
 **Error message:**
 
 ```text
-Error 400: Unknown project id: 'prj-<business-unity>-<environment>-sample-base-<random-suffix>', invalid
+Error 400: Unknown project id: 'prj-<business-unity>-<environment>-svpc-<random-suffix>', invalid
 ```
 
 **Cause:**
@@ -273,7 +273,7 @@ You will need to mark some Terraform resources as **tainted** in order to trigge
 
 1. In a terminal, navigate to the path where the error is being reported.
 
-   For example, if the unknown project ID is `prj-bu1-p-sample-base-shared`, you should go to ./gcp-projects/business_unit_1/production (`business_unit_1` due to `bu1` and `production` due to `p`, see [naming conventions](https://cloud.google.com/architecture/security-foundations/using-example-terraform#naming_conventions) for more information on the projects naming guideline).
+   For example, if the unknown project ID is `prj-bu1-p-svpc`, you should go to ./gcp-projects/business_unit_1/production (`business_unit_1` due to `bu1` and `production` due to `p`, see [naming conventions](https://cloud.google.com/architecture/security-foundations/using-example-terraform#naming_conventions) for more information on the projects naming guideline).
 
    ```bash
    cd ./gcp-projects/<business_unit>/<environment>

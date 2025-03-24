@@ -25,16 +25,16 @@ organizational policy.</td>
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
-<td><a href="../3-networks-dual-svpc">3-networks-dual-svpc</a></td>
-<td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
+<td><a href="../3-networks-svpc">3-networks-svpc</a></td>
+<td>Sets shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
 Interconnect, and baseline firewall rules for each environment. It also sets
 up the global DNS hub.</td>
 </tr>
 <tr>
 <td><a href="../3-networks-hub-and-spoke">3-networks-hub-and-spoke</a></td>
-<td>Sets up base and restricted shared VPCs with all the default configuration
-found on step 3-networks-dual-svpc, but here the architecture will be based on the
+<td>Sets up shared VPCs with all the default configuration
+found on step 3-networks-svpc, but here the architecture will be based on the
 Hub and Spoke network model. It also sets up the global DNS hub</td>
 </tr>
 </tr>
@@ -167,7 +167,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    git push origin production
    ```
 
-1. You can now move to the instructions in the network step. To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [3-networks-dual-svpc](../3-networks-dual-svpc/README.md), or go to [3-networks-hub-and-spoke](../3-networks-hub-and-spoke/README.md) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
+1. You can now move to the instructions in the network step. To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [3-networks-svpc](../3-networks-svpc/README.md), or go to [3-networks-hub-and-spoke](../3-networks-hub-and-spoke/README.md) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
 
 ### Deploying with Jenkins
 

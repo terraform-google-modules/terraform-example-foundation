@@ -283,7 +283,7 @@ export the GitLab personal or group access token as an environment variable:
    terraform apply bootstrap.tfplan
    ```
 
-1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-dual-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
+1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run manual steps for `shared` environments in steps `3-networks-svpc`, `3-networks-hub-and-spoke`, and `4-projects`.
 
    ```bash
    export network_step_sa=$(terraform output -raw networks_step_terraform_service_account_email)
@@ -539,10 +539,10 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
    ```
 
 1. You can now move to the instructions in the network stage.
-To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc),
+To use the [Dual Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-svpc](#deploying-step-3-networks-svpc),
 or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
 
-## Deploying step 3-networks-dual-svpc
+## Deploying step 3-networks-svpc
 
 1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-networks` directory.
    If you run them from another directory, adjust your copy paths accordingly.
@@ -560,7 +560,7 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
 1. Copy contents of foundation to new repo.
 
    ```bash
-   cp -RT ../terraform-example-foundation/3-networks-dual-svpc/ .
+   cp -RT ../terraform-example-foundation/3-networks-svpc/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
    cp ../terraform-example-foundation/build/run_gcp_auth.sh .
@@ -590,8 +590,8 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    ```
 
 1. Update `common.auto.tfvars` file with values from your GCP environment.
-See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
-1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+See any of the envs folder [README.md](../3-networks-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the project.
 1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
 
    ```bash
@@ -728,7 +728,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 1. Update `common.auto.tfvars` file with values from your GCP environment.
 See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
-1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the restricted project.
+1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the project.
 1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
 
    ```bash

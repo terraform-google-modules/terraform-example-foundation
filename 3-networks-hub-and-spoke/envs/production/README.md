@@ -1,6 +1,6 @@
 # 3-networks-hub-and-spoke/production
 
-The purpose of this step is to set up base and restricted shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated Interconnect, onprem VPN and baseline firewall rules for environment nonproduction. This version of the Network step will makes usage of the Hub and Spoke network architecture.
+The purpose of this step is to set up shared VPCs with default DNS, NAT (optional), Private Service networking, VPC service controls, onprem Dedicated Interconnect, onprem VPN and baseline firewall rules for environment nonproduction. This version of the Network step will makes usage of the Hub and Spoke network architecture.
 
 ## Prerequisites
 
@@ -34,21 +34,14 @@ The purpose of this step is to set up base and restricted shared VPCs with defau
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | access\_level\_name | Access context manager access level name |
 | access\_level\_name\_dry\_run | Access context manager access level name for the dry-run perimeter |
-| base\_host\_project\_id | The base host project ID |
-| base\_network\_name | The name of the VPC being created |
-| base\_network\_self\_link | The URI of the VPC being created |
-| base\_subnets\_ips | The IPs and CIDRs of the subnets being created |
-| base\_subnets\_names | The names of the subnets being created |
-| base\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
-| base\_subnets\_self\_links | The self-links of subnets being created |
 | enforce\_vpcsc | Enable the enforced mode for VPC Service Controls. It is not recommended to enable VPC-SC on the first run deploying your foundation. Review [best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable), then only enforce the perimeter after you have analyzed the access patterns in your dry-run perimeter and created the necessary exceptions for your use cases. |
-| restricted\_host\_project\_id | The restricted host project ID |
-| restricted\_network\_name | The name of the VPC being created |
-| restricted\_network\_self\_link | The URI of the VPC being created |
-| restricted\_service\_perimeter\_name | Access context manager service perimeter name |
-| restricted\_subnets\_ips | The IPs and CIDRs of the subnets being created |
-| restricted\_subnets\_names | The names of the subnets being created |
-| restricted\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
-| restricted\_subnets\_self\_links | The self-links of subnets being created |
+| network\_name | The name of the VPC being created |
+| network\_self\_link | The URI of the VPC being created |
+| service\_perimeter\_name | Access context manager service perimeter name |
+| shared\_vpc\_host\_project\_id | The shared vpc host project ID |
+| subnets\_ips | The IPs and CIDRs of the subnets being created |
+| subnets\_names | The names of the subnets being created |
+| subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
+| subnets\_self\_links | The self-links of subnets being created |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

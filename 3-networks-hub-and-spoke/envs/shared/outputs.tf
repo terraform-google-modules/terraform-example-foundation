@@ -14,32 +14,17 @@
  * limitations under the License.
  */
 
-output "restricted_host_project_id" {
-  value       = local.restricted_net_hub_project_id
-  description = "The restricted host project ID"
+output "shared_vpc_host_project_id" {
+  value       = local.net_hub_project_id
+  description = "The host project ID"
 }
 
-output "base_host_project_id" {
-  value       = local.base_net_hub_project_id
-  description = "The base host project ID"
+output "network_name" {
+  value       = module.shared_vpc.network_name
+  description = "The name of the Shared VPC being created"
 }
 
-output "base_network_name" {
-  value       = module.base_shared_vpc.network_name
-  description = "The name of the VPC being created"
-}
-
-output "restricted_network_name" {
-  value       = module.restricted_shared_vpc.network_name
-  description = "The name of the VPC being created"
-}
-
-output "base_dns_policy" {
-  value       = module.base_shared_vpc.base_dns_policy
-  description = "The name of the DNS policy being created"
-}
-
-output "restricted_dns_policy" {
-  value       = module.restricted_shared_vpc.restricted_dns_policy
+output "dns_policy" {
+  value       = module.shared_vpc.dns_policy
   description = "The name of the DNS policy being created"
 }

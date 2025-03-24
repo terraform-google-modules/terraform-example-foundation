@@ -73,13 +73,13 @@ variable "environment" {
 }
 
 variable "vpc" {
-  description = "The type of VPC to attach the project to. Possible options are none, base, or restricted."
+  description = "The type of VPC to attach the project to. Possible options are none, or svpc."
   type        = string
   default     = "none"
 
   validation {
-    condition     = contains(["none", "base", "restricted"], var.vpc)
-    error_message = "For vpc, only `none`, `base`, or `restricted` are valid."
+    condition     = contains(["none", "svpc"], var.vpc)
+    error_message = "For vpc, only `none` or `svpc` are valid."
   }
 }
 

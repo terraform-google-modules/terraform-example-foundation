@@ -18,9 +18,6 @@
 | Name | Description |
 |------|-------------|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
-| base\_shared\_vpc\_project | Project sample base project. |
-| base\_shared\_vpc\_project\_sa | Project sample base project SA. |
-| base\_subnets\_self\_links | The self-links of subnets from base environment. |
 | bucket | The created storage bucket. |
 | default\_region | The default region for the project. |
 | floating\_project | Project sample floating project. |
@@ -32,9 +29,9 @@
 | peering\_project | Project sample peering project id. |
 | peering\_subnetwork\_self\_link | The subnetwork self link of the peering network. |
 | restricted\_enabled\_apis | Activated APIs. |
-| restricted\_shared\_vpc\_project | Project sample restricted project id. |
-| restricted\_shared\_vpc\_project\_number | Project sample restricted project. |
-| restricted\_subnets\_self\_links | The self-links of subnets from restricted environment. |
+| shared\_vpc\_project | Project sample shared vpc project id. |
+| shared\_vpc\_project\_number | Project sample shared vpc project. |
+| subnets\_self\_links | The self-links of subnets from shared vpc environment. |
 | vpc\_service\_control\_perimeter\_name | VPC Service Control name. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

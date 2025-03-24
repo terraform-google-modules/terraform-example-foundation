@@ -95,7 +95,7 @@ log_export_storage_location                 = "US"
 billing_export_dataset_location             = "US"
 
 // Choose witch network architecture to use:
-// Dual Shared VPC: https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/3-networks-dual-svpc/README.md
+// Shared VPC: https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/3-networks-svpc/README.md
 // Hub And Spoke: https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/3-networks-hub-and-spoke/README.md
 
 enable_hub_and_spoke = false

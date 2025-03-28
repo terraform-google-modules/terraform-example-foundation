@@ -19,7 +19,7 @@ locals {
   environment   = "production"
 }
 
-module "shared_gce_instance" {
+module "gce_instance" {
   source = "../../modules/env_base"
 
   environment         = local.environment

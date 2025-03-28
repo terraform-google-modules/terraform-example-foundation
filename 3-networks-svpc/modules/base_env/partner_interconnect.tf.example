@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-module "shared_interconnect" {
+module "interconnect" {
   source = "../partner_interconnect"
 
   attachment_project_id = local.shared_vpc_project_id

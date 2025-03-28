@@ -37,7 +37,7 @@ variable "project_id" {
 
 variable "project_number" {
   type        = number
-  description = "Project number for Shared VPC. It is the project INSIDE the regular service perimeter."
+  description = "Project number for Shared VPC."
 }
 
 variable "environment_code" {

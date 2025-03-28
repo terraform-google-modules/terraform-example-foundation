@@ -15,7 +15,7 @@
  */
 
 
-module "shared_interconnect" {
+module "interconnect" {
   source = "../../modules/partner_interconnect"
 
   attachment_project_id = local.net_hub_project_id

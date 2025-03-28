@@ -16,38 +16,38 @@
 
 output "instances_self_links" {
   description = "List of self-links for compute instances"
-  value       = module.shared_gce_instance.instances_self_links
+  value       = module.gce_instance.instances_self_links
 }
 
 output "instances_names" {
   description = "List of names for compute instances"
-  value       = [for u in module.shared_gce_instance.instances_details : u.name]
+  value       = [for u in module.gce_instance.instances_details : u.name]
   sensitive   = true
 }
 
 output "instances_zones" {
   description = "List of zone for compute instances"
-  value       = [for u in module.shared_gce_instance.instances_details : u.zone]
+  value       = [for u in module.gce_instance.instances_details : u.zone]
   sensitive   = true
 }
 
 output "instances_details" {
   description = "List of details for compute instances"
-  value       = module.shared_gce_instance.instances_details
+  value       = module.gce_instance.instances_details
   sensitive   = true
 }
 
 output "available_zones" {
   description = "List of available zones in region"
-  value       = module.shared_gce_instance.available_zones
+  value       = module.gce_instance.available_zones
 }
 
 output "project_id" {
   description = "Project where compute instance was created"
-  value       = module.shared_gce_instance.project_id
+  value       = module.gce_instance.project_id
 }
 
 output "region" {
   description = "Region where compute instance was created"
-  value       = module.shared_gce_instance.region
+  value       = module.gce_instance.region
 }

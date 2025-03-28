@@ -70,7 +70,7 @@ locals {
 
 module "gh_cicd" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 18.0"
 
   name              = "${var.project_prefix}-b-cicd-wif-gh"
   random_project_id = true
@@ -87,16 +87,19 @@ module "gh_cicd" {
     "cloudresourcemanager.googleapis.com",
     "iamcredentials.googleapis.com",
   ]
+
+  deletion_policy = var.project_deletion_policy
 }
 
 module "gh_oidc" {
   source  = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
-  version = "~> 3.1"
+  version = "~> 4.0"
 
   project_id  = module.gh_cicd.project_id
   pool_id     = "foundation-pool"
   provider_id = "foundation-gh-provider"
   sa_mapping  = local.sa_mapping
+  attribute_condition = "assertion.repository_owner=='${var.gh_repos.owner}'"
 }
 
 resource "github_actions_secret" "secrets" {
@@ -114,3 +117,20 @@ resource "google_service_account_iam_member" "self_impersonate" {
   role               = "roles/iam.serviceAccountTokenCreator"
   member             = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
 }
+
+module "gcp_projects_state_bucket" {
+  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
+  version = "~> 9.0"
+
+  name          = "${var.bucket_prefix}-${module.seed_bootstrap.seed_project_id}-gcp-projects-tfstate"
+  project_id    = module.seed_bootstrap.seed_project_id
+  location      = var.default_region
+  force_destroy = var.bucket_force_destroy
+
+  encryption = {
+    default_kms_key_name = local.state_bucket_kms_key
+  }
+
+  depends_on = [module.seed_bootstrap.gcs_bucket_tfstate]
+}
+

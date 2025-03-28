@@ -15,9 +15,12 @@
  */
 
 locals {
-  vpc_name                = "${var.environment_code}-shared-base"
-  network_name            = "vpc-${local.vpc_name}"
-  private_googleapis_cidr = module.private_service_connect.private_service_connect_ip
+  vpc_name                    = "${var.environment_code}-shared-base"
+  network_name                = "vpc-${local.vpc_name}"
+  private_googleapis_cidr     = module.private_service_connect.private_service_connect_ip
+  google_forward_source_range = "35.199.192.0/19"
+  advertised_ip               = var.environment_code == "p" ? [{ range = local.google_forward_source_range }, { range = local.private_googleapis_cidr }] : [{ range = local.private_googleapis_cidr }]
+
 }
 
 /******************************************
@@ -26,7 +29,7 @@ locals {
 
 module "main" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 9.0"
+  version = "~> 10.0"
 
   project_id                             = var.project_id
   network_name                           = local.network_name
@@ -61,6 +64,7 @@ module "main" {
     : []
   )
 }
+
 
 /***************************************************************
   Configure Service Networking for Cloud SQL & future services.
@@ -101,7 +105,7 @@ module "region1_router1" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = local.advertised_ip
   }
 }
 
@@ -116,7 +120,7 @@ module "region1_router2" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = local.advertised_ip
   }
 }
 
@@ -131,7 +135,7 @@ module "region2_router1" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = local.advertised_ip
   }
 }
 
@@ -146,6 +150,7 @@ module "region2_router2" {
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = [{ range = local.private_googleapis_cidr }]
+    advertised_ip_ranges = local.advertised_ip
   }
 }
+

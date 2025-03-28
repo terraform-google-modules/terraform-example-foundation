@@ -21,7 +21,7 @@
 
 module "env_kms" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 18.0"
 
   random_project_id           = true
   random_project_id_length    = 4
@@ -33,6 +33,7 @@ module "env_kms" {
   disable_services_on_destroy = false
   depends_on                  = [time_sleep.wait_60_seconds]
   activate_apis               = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
+  deletion_policy             = var.project_deletion_policy
 
   labels = {
     environment       = var.env

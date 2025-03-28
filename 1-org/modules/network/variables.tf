@@ -45,6 +45,12 @@ variable "env_code" {
   description = "A short form of the environment to prepare within the Google Cloud organization (ex. d)."
 }
 
+variable "project_deletion_policy" {
+  description = "The deletion policy for the project created."
+  type        = string
+  default     = "PREVENT"
+}
+
 variable "project_budget" {
   description = <<EOT
   Budget configuration for projects.

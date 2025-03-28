@@ -46,7 +46,7 @@ locals {
 
 module "organization_policies_type_boolean" {
   source   = "terraform-google-modules/org-policy/google"
-  version  = "~> 5.1"
+  version  = "~> 7.0"
   for_each = local.boolean_type_organization_policies
 
   organization_id = local.organization_id
@@ -63,7 +63,7 @@ module "organization_policies_type_boolean" {
 
 module "org_vm_external_ip_access" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1"
+  version = "~> 7.0"
 
   organization_id = local.organization_id
   folder_id       = local.folder_id
@@ -75,7 +75,7 @@ module "org_vm_external_ip_access" {
 
 module "restrict_protocol_fowarding" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1"
+  version = "~> 7.0"
 
   organization_id   = local.organization_id
   folder_id         = local.folder_id
@@ -99,7 +99,7 @@ resource "time_sleep" "wait_logs_export" {
 
 module "org_domain_restricted_sharing" {
   source  = "terraform-google-modules/org-policy/google//modules/domain_restricted_sharing"
-  version = "~> 5.1"
+  version = "~> 7.0"
 
   organization_id  = local.organization_id
   folder_id        = local.folder_id
@@ -117,7 +117,7 @@ module "org_domain_restricted_sharing" {
 
 module "domain_restricted_contacts" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1"
+  version = "~> 7.0"
 
   organization_id   = local.organization_id
   folder_id         = local.folder_id
@@ -134,7 +134,7 @@ module "domain_restricted_contacts" {
 
 module "allowed_worker_pools" {
   source  = "terraform-google-modules/org-policy/google"
-  version = "~> 5.1"
+  version = "~> 7.0"
   count   = var.enforce_allowed_worker_pools && local.cloud_build_private_worker_pool_id != "" ? 1 : 0
 
   organization_id   = local.organization_id

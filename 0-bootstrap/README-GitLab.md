@@ -568,15 +568,15 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    chmod 755 ./*.sh
    ```
 
-1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `shared.auto.example.tfvars` to `shared.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `production.auto.example.tfvars` to `production.auto.tfvars` and rename `access_context.auto.example.tfvars` to `access_context.auto.tfvars`.
 
    ```bash
    mv common.auto.example.tfvars common.auto.tfvars
-   mv shared.auto.example.tfvars shared.auto.tfvars
+   mv production.auto.example.tfvars production.auto.tfvars
    mv access_context.auto.example.tfvars access_context.auto.tfvars
    ```
 
-1. Update the file `shared.auto.tfvars` with the values for the `target_name_server_addresses`.
+1. Update the file `production.auto.tfvars` with the values for the `target_name_server_addresses`.
 1. Update the file `access_context.auto.tfvars` with the organization's `access_context_manager_policy_id`.
 
    ```bash
@@ -652,6 +652,16 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    git push
    ```
 
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `production` branch and review the output.
+
+   > NOTE: Development and Non-production branches depends on the production branch to be deployed first, for the `3-networks-dual-svpc`.
+
+1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
+1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines.
+1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
+1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `production` environment.
+1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines under `tf-apply`.
+
 1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
 1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `development` environment.
 1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines.
@@ -667,13 +677,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `nonproduction` environment.
 1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines under `tf-apply`.
 1. If the GitLab pipelines is successful, apply the next environment.
-
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `nonproduction` branch to the `production` branch and review the output.
-1. The merge request will trigger a GitLab pipelines that will run Terraform `init`/`plan`/`validate` in the `production` environment.
-1. Review the GitLab pipelines output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines.
-1. If the GitLab pipelines is successful, merge the merge request in to the `production` branch.
-1. The merge will trigger a GitLab pipelines that will apply the terraform configuration for the `production` environment.
-1. Review merge output in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/pipelines under `tf-apply`.
 
 1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 

@@ -15,7 +15,6 @@
  */
 
 locals {
-  dns_hub_project_id                = data.tfe_outputs.org.nonsensitive_values.dns_hub_project_id
   interconnect_project_id           = data.tfe_outputs.org.nonsensitive_values.interconnect_project_id
   interconnect_project_number       = data.tfe_outputs.org.nonsensitive_values.interconnect_project_number
   parent_folder                     = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.parent_folder

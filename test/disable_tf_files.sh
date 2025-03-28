@@ -23,6 +23,9 @@ function networks(){
         network_dir="3-networks-hub-and-spoke"
     else
         network_dir="3-networks-dual-svpc"
+
+        # disable production.auto.tfvars in main module #
+        mv $network_dir/envs/production/production.auto.tfvars  $network_dir/envs/production/production.auto.tfvars.disabled
     fi
 
     # disable access_context.auto.tfvars in main module
@@ -40,6 +43,9 @@ function shared(){
 
     if [ "$TF_VAR_example_foundations_mode" == "HubAndSpoke" ]; then
         network_dir="3-networks-hub-and-spoke"
+
+        # disable shared.auto.tfvars in main module
+        mv $network_dir/envs/shared/shared.auto.tfvars  $network_dir/envs/shared/shared.auto.tfvars.disabled
     else
         network_dir="3-networks-dual-svpc"
     fi
@@ -49,9 +55,6 @@ function shared(){
 
     # disable common.auto.tfvars in main module
     mv $network_dir/envs/shared/common.auto.tfvars  $network_dir/envs/shared/common.auto.tfvars.disabled
-
-    # disable shared.auto.tfvars in main module
-    mv $network_dir/envs/shared/shared.auto.tfvars  $network_dir/envs/shared/shared.auto.tfvars.disabled
 }
 
 function projectsshared(){

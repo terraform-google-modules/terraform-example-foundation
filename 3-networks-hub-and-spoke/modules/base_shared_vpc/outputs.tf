@@ -19,6 +19,11 @@ output "network_name" {
   description = "The name of the VPC being created"
 }
 
+output "base_dns_policy" {
+  value       = google_dns_policy.default_policy.name
+  description = "The name of the DNS policy being created"
+}
+
 output "network_self_link" {
   value       = module.main.network_self_link
   description = "The URI of the VPC being created"

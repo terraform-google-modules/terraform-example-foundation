@@ -29,7 +29,7 @@ resource "random_id" "suffix" {
 *******************************************/
 module "cicd_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 18.0"
 
   name                        = local.cicd_project_name
   random_project_id           = true
@@ -40,6 +40,8 @@ module "cicd_project" {
   billing_account             = var.billing_account
   activate_apis               = local.activate_apis
   labels                      = var.project_labels
+
+  deletion_policy = var.project_deletion_policy
 }
 
 /******************************************
@@ -128,8 +130,9 @@ resource "google_tags_tag_value" "jenkins_agents" {
 }
 
 module "jenkins_firewall_rules" {
-  source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version     = "~> 9.0"
+  source  = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version = "~> 10.0"
+
   project_id  = module.cicd_project.project_id
   policy_name = "fp-${google_compute_network.jenkins_agents.name}-jenkins-firewall"
   description = "Jenkins Agent GCE network firewall rules."

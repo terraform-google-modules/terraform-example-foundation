@@ -16,6 +16,7 @@
 
 resource "google_service_account" "cai_monitoring_builder" {
   project                      = module.scc_notifications.project_id
+  count                        = var.enable_scc_resources_in_terraform ? 1 : 0
   account_id                   = "cai-monitoring-builder"
   description                  = "Cloud Functions has an underlying dependency on Cloud Build and other services. This service account allows Cloud Build to provision the necessary resources for Cloud Functions."
   create_ignore_already_exists = true

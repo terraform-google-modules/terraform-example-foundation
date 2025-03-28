@@ -40,6 +40,8 @@ module "peering_project" {
   project_budget  = var.project_budget
   project_prefix  = local.project_prefix
 
+  project_deletion_policy = var.project_deletion_policy
+
   // Enabling Cloud Build Deploy to use Service Accounts during the build and give permissions to the SA.
   // The permissions will be the ones necessary for the deployment of the step 5-app-infra
   enable_cloudbuild_deploy = local.enable_cloudbuild_deploy
@@ -74,7 +76,7 @@ module "peering_project" {
 
 module "peering_network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 9.0"
+  version = "~> 10.0"
 
   project_id                             = module.peering_project.project_id
   network_name                           = "vpc-${local.env_code}-peering-base"
@@ -110,7 +112,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "peering" {
   source  = "terraform-google-modules/network/google//modules/network-peering"
-  version = "~> 9.0"
+  version = "~> 10.0"
 
   prefix            = "${var.business_code}-${local.env_code}"
   local_network     = module.peering_network.network_self_link
@@ -122,8 +124,9 @@ module "peering" {
   Mandatory and optional firewall rules
  *****************************************/
 module "firewall_rules" {
-  source      = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version     = "~> 9.0"
+  source  = "terraform-google-modules/network/google//modules/network-firewall-policy"
+  version = "~> 10.0"
+
   project_id  = module.peering_project.project_id
   policy_name = "fp-${local.env_code}-peering-project-firewalls"
   description = "Firewall rules for Peering Network: ${module.peering_network.network_name}."

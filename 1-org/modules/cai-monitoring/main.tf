@@ -71,10 +71,10 @@ data "archive_file" "function_source_zip" {
 
 module "cloudfunction_source_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 6.0"
+  version = "~> 9.0"
 
   project_id    = var.project_id
-  name          = "bkt-cai-monitoring-${random_id.suffix.hex}-sources-${data.google_project.project.number}-${var.location}"
+  name          = "bkt-cai-monitoring-${random_id.suffix.hex}-sources-${data.google_project.project.number}"
   location      = var.location
   storage_class = "REGIONAL"
   force_destroy = true
@@ -121,7 +121,7 @@ resource "google_cloud_asset_organization_feed" "organization_feed" {
 
 module "pubsub_cai_feed" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "~> 6.0"
+  version = "~> 7.0"
 
   topic              = "top-cai-monitoring-${random_id.suffix.hex}-event"
   project_id         = var.project_id
@@ -162,9 +162,8 @@ module "cloud_function" {
   service_config = {
     service_account_email = google_service_account.cloudfunction.email
     runtime_env_variables = {
-      ROLES            = join(",", var.roles_to_monitor)
-      SOURCE_ID        = google_scc_source.cai_monitoring.id
-      LOG_EXECUTION_ID = "true"
+      ROLES     = join(",", var.roles_to_monitor)
+      SOURCE_ID = google_scc_source.cai_monitoring.id
     }
   }
 

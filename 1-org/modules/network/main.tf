@@ -20,7 +20,7 @@
 
 module "base_shared_vpc_host_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 18.0"
 
   random_project_id           = true
   random_project_id_length    = 4
@@ -29,6 +29,7 @@ module "base_shared_vpc_host_project" {
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
   disable_services_on_destroy = false
+  deletion_policy             = var.project_deletion_policy
 
   activate_apis = [
     "compute.googleapis.com",
@@ -56,7 +57,7 @@ module "base_shared_vpc_host_project" {
 
 module "restricted_shared_vpc_host_project" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 18.0"
 
   random_project_id           = true
   random_project_id_length    = 4
@@ -65,6 +66,7 @@ module "restricted_shared_vpc_host_project" {
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
   disable_services_on_destroy = false
+  deletion_policy             = var.project_deletion_policy
 
   activate_apis = [
     "compute.googleapis.com",

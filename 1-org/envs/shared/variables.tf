@@ -20,6 +20,12 @@ variable "enable_hub_and_spoke" {
   default     = false
 }
 
+variable "enable_scc_resources_in_terraform" {
+  description = "Create Security Command Center resources in Terraform. If your organization has newly enabled any preview features for SCC and get an error related to the v2 API, you must set this variable to false because the v2 API does not yet support Terraform resources. See [issue 1189](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1189) for context."
+  type        = bool
+  default     = false
+}
+
 variable "domains_to_allow" {
   description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the Terraform Service Account used in the deploy."
   type        = list(string)
@@ -44,12 +50,6 @@ variable "scc_notification_filter" {
 
 variable "enforce_allowed_worker_pools" {
   description = "Whether to enforce the organization policy restriction on allowed worker pools for Cloud Build."
-  type        = bool
-  default     = false
-}
-
-variable "data_access_logs_enabled" {
-  description = "Enable Data Access logs of types DATA_READ, DATA_WRITE for all GCP services. Enabling Data Access logs might result in your organization being charged for the additional logs usage. See https://cloud.google.com/logging/docs/audit#data-access The ADMIN_READ logs are enabled by default."
   type        = bool
   default     = false
 }
@@ -97,10 +97,6 @@ variable "project_budget" {
   alert_spend_basis: The type of basis used to determine if spend has passed the threshold. Possible choices are `CURRENT_SPEND` or `FORECASTED_SPEND` (default).
   EOT
   type = object({
-    dns_hub_budget_amount                       = optional(number, 1000)
-    dns_hub_alert_spent_percents                = optional(list(number), [1.2])
-    dns_hub_alert_pubsub_topic                  = optional(string, null)
-    dns_hub_budget_alert_spend_basis            = optional(string, "FORECASTED_SPEND")
     base_net_hub_budget_amount                  = optional(number, 1000)
     base_net_hub_alert_spent_percents           = optional(list(number), [1.2])
     base_net_hub_alert_pubsub_topic             = optional(string, null)
@@ -192,4 +188,16 @@ variable "tfc_org_name" {
   description = "Name of the TFC organization"
   type        = string
   default     = ""
+}
+
+variable "project_deletion_policy" {
+  description = "The deletion policy for the project created."
+  type        = string
+  default     = "PREVENT"
+}
+
+variable "folder_deletion_protection" {
+  description = "Prevent Terraform from destroying or recreating the folder."
+  type        = string
+  default     = true
 }

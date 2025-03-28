@@ -63,9 +63,10 @@ type StageConf struct {
 	Repo                string
 	CustomTargetDirPath string
 	GitConf             utils.GitRepo
-	HasManualStep       bool
+	HasLocalStep        bool
 	GroupingUnits       []string
 	Envs                []string
+	LocalSteps          []string
 }
 
 type BootstrapOutputs struct {
@@ -145,6 +146,7 @@ type GlobalTFVars struct {
 	FolderPrefix                          *string         `hcl:"folder_prefix"`
 	BucketForceDestroy                    *bool           `hcl:"bucket_force_destroy"`
 	BucketTfstateKmsForceDestroy          *bool           `hcl:"bucket_tfstate_kms_force_destroy"`
+	WorkflowDeletionProtection            *bool           `hcl:"workflow_deletion_protection"`
 	AuditLogsTableDeleteContentsOnDestroy *bool           `hcl:"audit_logs_table_delete_contents_on_destroy"`
 	LogExportStorageForceDestroy          *bool           `hcl:"log_export_storage_force_destroy"`
 	LogExportStorageLocation              string          `hcl:"log_export_storage_location"`
@@ -152,13 +154,15 @@ type GlobalTFVars struct {
 	EnableHubAndSpoke                     bool            `hcl:"enable_hub_and_spoke"`
 	EnableHubAndSpokeTransitivity         bool            `hcl:"enable_hub_and_spoke_transitivity"`
 	CreateUniqueTagKey                    bool            `hcl:"create_unique_tag_key"`
-	ProjectsKMSLocation                   string          `hcl:"projects_kms_location"`
-	ProjectsGCSLocation                   string          `hcl:"projects_gcs_location"`
+	LocationKMS                           string          `hcl:"location_kms"`
+	LocationGCS                           string          `hcl:"location_gcs"`
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
 	ValidatorProjectId                    *string         `hcl:"validator_project_id"`
 	Groups                                Groups          `hcl:"groups"`
 	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
+	FolderDeletionProtection              *bool           `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy                 string          `hcl:"project_deletion_policy"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
@@ -203,8 +207,11 @@ type BootstrapTfvars struct {
 	FolderPrefix                 *string `hcl:"folder_prefix"`
 	BucketForceDestroy           *bool   `hcl:"bucket_force_destroy"`
 	BucketTfstateKmsForceDestroy *bool   `hcl:"bucket_tfstate_kms_force_destroy"`
+	WorkflowDeletionProtection   *bool   `hcl:"workflow_deletion_protection"`
 	Groups                       Groups  `hcl:"groups"`
 	InitialGroupConfig           *string `hcl:"initial_group_config"`
+	FolderDeletionProtection     *bool   `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy        string  `hcl:"project_deletion_policy"`
 }
 
 type OrgTfvars struct {
@@ -220,10 +227,14 @@ type OrgTfvars struct {
 	LogExportStorageLocation              string    `hcl:"log_export_storage_location"`
 	BillingExportDatasetLocation          string    `hcl:"billing_export_dataset_location"`
 	GcpGroups                             GcpGroups `hcl:"gcp_groups"`
+	FolderDeletionProtection              *bool     `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy                 string    `hcl:"project_deletion_policy"`
 }
 
 type EnvsTfvars struct {
-	RemoteStateBucket string `hcl:"remote_state_bucket"`
+	RemoteStateBucket        string `hcl:"remote_state_bucket"`
+	FolderDeletionProtection *bool  `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy    string `hcl:"project_deletion_policy"`
 }
 
 type NetCommonTfvars struct {
@@ -234,6 +245,10 @@ type NetCommonTfvars struct {
 }
 
 type NetSharedTfvars struct {
+	TargetNameServerAddresses []ServerAddress `hcl:"target_name_server_addresses"`
+}
+
+type NetProductionTfvars struct {
 	TargetNameServerAddresses []ServerAddress `hcl:"target_name_server_addresses"`
 }
 
@@ -250,8 +265,10 @@ type ProjSharedTfvars struct {
 }
 
 type ProjEnvTfvars struct {
-	ProjectsKMSLocation string `hcl:"projects_kms_location"`
-	ProjectsGCSLocation string `hcl:"projects_gcs_location"`
+	LocationKMS              string `hcl:"location_kms"`
+	LocationGCS              string `hcl:"location_gcs"`
+	FolderDeletionProtection *bool  `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy    string `hcl:"project_deletion_policy"`
 }
 
 type AppInfraCommonTfvars struct {
@@ -297,7 +314,7 @@ func GetInfraPipelineOutputs(t testing.TB, checkoutPath, workspace string) Infra
 func ReadGlobalTFVars(file string) (GlobalTFVars, error) {
 	var globalTfvars GlobalTFVars
 	if file == "" {
-		return globalTfvars, fmt.Errorf("tfvars file is required.")
+		return globalTfvars, fmt.Errorf("tfvars file is required")
 	}
 	_, err := os.Stat(file)
 	if os.IsNotExist(err) {

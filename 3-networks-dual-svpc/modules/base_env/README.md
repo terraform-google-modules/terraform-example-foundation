@@ -32,6 +32,7 @@
 | restricted\_subnet\_proxy\_ranges | The base proxy-only subnet primary IPTs ranges to the Restricted Shared Vpc. | `map(string)` | n/a | yes |
 | restricted\_subnet\_secondary\_ranges | The base subnet secondary IPTs ranges to the Restricted Shared Vpc | `map(list(map(string)))` | n/a | yes |
 | restricted\_vpc\_flow\_logs | aggregation\_interval: Toggles the aggregation interval for collecting flow logs. Increasing the interval time will reduce the amount of generated flow logs for long lasting connections. Possible values are: INTERVAL\_5\_SEC, INTERVAL\_30\_SEC, INTERVAL\_1\_MIN, INTERVAL\_5\_MIN, INTERVAL\_10\_MIN, INTERVAL\_15\_MIN.<br>  flow\_sampling: Set the sampling rate of VPC flow logs within the subnetwork where 1.0 means all collected logs are reported and 0.0 means no logs are reported. The value of the field must be in [0, 1].<br>  metadata: Configures whether metadata fields should be added to the reported VPC flow logs. Possible values are: EXCLUDE\_ALL\_METADATA, INCLUDE\_ALL\_METADATA, CUSTOM\_METADATA.<br>  metadata\_fields: ist of metadata fields that should be added to reported logs. Can only be specified if VPC flow logs for this subnetwork is enabled and "metadata" is set to CUSTOM\_METADATA.<br>  filter\_expr: Export filter used to define which VPC flow logs should be logged, as as CEL expression. See https://cloud.google.com/vpc/docs/flow-logs#filtering for details on how to format this field. | <pre>object({<br>    aggregation_interval = optional(string, "INTERVAL_5_SEC")<br>    flow_sampling        = optional(string, "0.5")<br>    metadata             = optional(string, "INCLUDE_ALL_METADATA")<br>    metadata_fields      = optional(list(string), [])<br>    filter_expr          = optional(string, "true")<br>  })</pre> | `{}` | no |
+| target\_name\_server\_addresses | List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones. | `list(map(any))` | `[]` | no |
 | tfc\_org\_name | Name of the TFC organization | `string` | n/a | yes |
 
 ## Outputs
@@ -40,6 +41,7 @@
 |------|-------------|
 | access\_level\_name | Access context manager access level name for the enforced perimeter |
 | access\_level\_name\_dry\_run | Access context manager access level name for the dry-run perimeter |
+| base\_dns\_project\_id | The base DNS project ID |
 | base\_host\_project\_id | The base host project ID |
 | base\_network\_name | The name of the VPC being created |
 | base\_network\_self\_link | The URI of the VPC being created |
@@ -48,6 +50,7 @@
 | base\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | base\_subnets\_self\_links | The self-links of subnets being created |
 | enforce\_vpcsc | Enable the enforced mode for VPC Service Controls. It is not recommended to enable VPC-SC on the first run deploying your foundation. Review [best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable), then only enforce the perimeter after you have analyzed the access patterns in your dry-run perimeter and created the necessary exceptions for your use cases. |
+| restricted\_dns\_project\_id | The restricted DNS project ID |
 | restricted\_host\_project\_id | The restricted host project ID |
 | restricted\_network\_name | The name of the VPC being created |
 | restricted\_network\_self\_link | The URI of the VPC being created |
@@ -56,5 +59,6 @@
 | restricted\_subnets\_names | The names of the subnets being created |
 | restricted\_subnets\_secondary\_ranges | The secondary ranges associated with these subnets |
 | restricted\_subnets\_self\_links | The self-links of subnets being created |
+| target\_name\_server\_addresses | List of IPv4 addresses of the target name servers for the forwarding zone configuration. These IP addresses should point to the name server responsible for replying to DNS queries. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

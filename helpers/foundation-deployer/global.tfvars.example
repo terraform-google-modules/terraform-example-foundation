@@ -27,6 +27,8 @@ foundation_code_path = "FULL_PATH_TO_FOLDER_WHERE_THE_EXAMPLE_FOUNDATION_CODE_WA
 // See https://cloud.google.com/sdk/gcloud/reference/config/set#EXAMPLES
 validator_project_id = "EXISTING_PROJECT_ID"
 
+project_deletion_policy    = "PREVENT" # Use "DELETE" to allow deletion of the projects
+folder_deletion_protection = true
 
 // 0-bootstrap inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md#inputs
@@ -40,6 +42,7 @@ default_region_kms = "us"
 
 bucket_force_destroy             = false
 bucket_tfstate_kms_force_destroy = false
+workflow_deletion_protection     = true
 
 project_prefix = "prj"
 folder_prefix  = "fldr"
@@ -142,5 +145,5 @@ target_name_server_addresses = [
 // Can be used to override the default region set in 0-bootstrap
 // See https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects/business_unit_1/production/README.md#outputs
 
-gcs_location = "US"
-kms_location = "us"
+location_kms = "us"
+location_gcs = "US"

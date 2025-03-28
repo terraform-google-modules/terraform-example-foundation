@@ -81,7 +81,7 @@ provider "gitlab" {
 
 module "gitlab_cicd" {
   source  = "terraform-google-modules/project-factory/google"
-  version = "~> 15.0"
+  version = "~> 18.0"
 
   name              = "${var.project_prefix}-b-cicd-wif-gl"
   random_project_id = true
@@ -100,8 +100,9 @@ module "gitlab_cicd" {
     "sts.googleapis.com",
     "dns.googleapis.com",
     "secretmanager.googleapis.com",
-
   ]
+
+  deletion_policy = var.project_deletion_policy
 }
 
 module "gitlab_oidc" {

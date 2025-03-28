@@ -19,11 +19,11 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 3.50"
+      version = ">= 3.82"
     }
     google-beta = {
       source  = "hashicorp/google-beta"
-      version = ">= 3.50"
+      version = ">= 3.82"
     }
     random = {
       source = "hashicorp/random"
@@ -31,10 +31,10 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:hierarchical_firewall_policy/v4.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:hierarchical_firewall_policy/v4.1.0"
   }
 
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:hierarchical_firewall_policy/v4.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:hierarchical_firewall_policy/v4.1.0"
   }
 }

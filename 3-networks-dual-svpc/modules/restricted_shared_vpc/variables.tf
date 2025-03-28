@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+variable "restricted_dns_project_id" {
+  description = "Project ID for DNS Restricted Shared."
+  type        = string
+  default     = ""
+}
+
+variable "target_name_server_addresses" {
+  description = "List of IPv4 address of target name servers for the forwarding zone configuration. See https://cloud.google.com/dns/docs/overview#dns-forwarding-zones for details on target name servers in the context of Cloud DNS forwarding zones."
+  type        = list(map(any))
+}
+
 variable "access_context_manager_policy_id" {
   type        = number
   description = "The id of the default Access Context Manager policy. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format=\"value(name)\"`."
@@ -27,11 +38,6 @@ variable "project_id" {
 variable "project_number" {
   type        = number
   description = "Project number for Restricted Shared VPC. It is the project INSIDE the regular service perimeter."
-}
-
-variable "dns_hub_project_id" {
-  type        = string
-  description = "The DNS hub project ID"
 }
 
 variable "environment_code" {
@@ -214,3 +220,4 @@ variable "ingress_policies_dry_run" {
   }))
   default = []
 }
+

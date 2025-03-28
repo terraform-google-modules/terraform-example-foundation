@@ -73,7 +73,7 @@ module "org_vm_external_ip_access" {
   constraint      = "constraints/compute.vmExternalIpAccess"
 }
 
-module "restrict_protocol_fowarding" {
+module "restrict_protocol_forwarding" {
   source  = "terraform-google-modules/org-policy/google"
   version = "~> 7.0"
 

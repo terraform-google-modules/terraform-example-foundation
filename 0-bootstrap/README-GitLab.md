@@ -184,7 +184,7 @@ Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create the
 
 1. Go to https://gitlab.com/GITLAB-OWNER/GITLAB-RUNNER-REPO/-/settings/ci_cd#js-token-access
 1. Add all the repositories: Bootstrap, Organization, Environments, Networks, and Projects to the allow list tha allow access to the CI/CD runner image.
-1. In "Allow CI job tokens from the following projects to access this project" add the other projects/repositories. Format is <GITLAB-OWNER>/<GITLAB-REPO>
+1. In "Allow CI job tokens from the following projects to access this project" add the other projects/repositories. Format is `<GITLAB-OWNER>/<GITLAB-REPO>`
 
 ### Deploying step 0-bootstrap
 

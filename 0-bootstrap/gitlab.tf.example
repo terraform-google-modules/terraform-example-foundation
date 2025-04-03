@@ -112,6 +112,7 @@ module "gitlab_oidc" {
   pool_id     = "foundation-pool"
   provider_id = "foundation-gl-provider"
   sa_mapping  = local.sa_mapping
+  attribute_condition = "assertion.user_login=='${var.gl_repos.owner}'"
 }
 
 resource "gitlab_project_variable" "variables" {
@@ -174,3 +175,20 @@ resource "google_service_account_iam_member" "self_impersonate" {
   role               = "roles/iam.serviceAccountTokenCreator"
   member             = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
 }
+
+module "gcp_projects_state_bucket" {
+  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
+  version = "~> 9.0"
+
+  name          = "${var.bucket_prefix}-${module.seed_bootstrap.seed_project_id}-gcp-projects-tfstate"
+  project_id    = module.seed_bootstrap.seed_project_id
+  location      = var.default_region
+  force_destroy = var.bucket_force_destroy
+
+  encryption = {
+    default_kms_key_name = local.state_bucket_kms_key
+  }
+
+  depends_on = [module.seed_bootstrap.gcs_bucket_tfstate]
+}
+

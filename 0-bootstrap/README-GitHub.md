@@ -643,24 +643,48 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ./tf-wrapper.sh apply shared
    ```
 
+1. You must manually plan and apply the `production` environment since the `development`, `nonproduction` and `plan` environments depend on it.
+
+   ```bash
+   git checkout production
+   git merge plan
+   ```
+
+1. Run `init` and `plan` and review output for environment production.
+
+   ```bash
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+
+1. Run `apply` production.
+
+   ```bash
+   ./tf-wrapper.sh apply production
+   ```
+
+1. Push your production branch since development and nonproduction depends it.
+
+*Note:** The Production envrionment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
+
+   ```bash
+   git add .
+   git commit -m 'Initialize networks repo - production'
+   git push --set-upstream origin production
+   ```
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `production` branch to the `plan` branch and review the output.
+
+> NOTE: Development and Non-production branches depends on the production branch to be deployed first, for the `3-networks-dual-svpc`.
+
 1. Push your plan branch.
 
    ```bash
-   git push --set-upstream origin plan
+   git checkout plan --set-upstream origin plan
+   git push
    ```
 
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `plan` branch to the `production` branch and review the output.
-
-   > NOTE: Development and Non-production branches depends on the production branch to be deployed first, for the `3-networks-dual-svpc`.
-
-1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `production` environment.
-1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
-1. If the GitHub action is successful, merge the pull request in to the `production` branch.
-1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
-1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
-1. If the GitHub action is successful, apply the next environment.
-
-1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `plan` branch to the `development` branch and review the output.
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `production` branch to the `development` branch and review the output.
 1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
 1. Review the GitHub Action output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-pull-request`.
 1. If the GitHub action is successful, merge the pull request in to the `development` branch.

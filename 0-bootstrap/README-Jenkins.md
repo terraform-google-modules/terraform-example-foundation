@@ -546,9 +546,9 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    ```
 
 1. Review the apply output in your Controller's web UI (you might want to use the option to "Scan Multibranch Pipeline Now" in your Jenkins Controller UI).
-1. You can now move to the instructions in the next step, go to [Deploying step 3-networks-dual-svpc](#deploying-step-3-networks-dual-svpc) to use the Dual Shared VPC mode, or go to [Deploying step  3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the Hub and Spoke network mode.
+1. You can now move to the instructions in the next step, go to [Deploying step 3-networks-svpc](#deploying-step-3-networks-svpc) to use the Dual Shared VPC mode, or go to [Deploying step  3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the Hub and Spoke network mode.
 
-## Deploying step 3-networks-dual-svpc
+## Deploying step 3-networks-svpc
 
 1. Clone the repo you created manually in 0-bootstrap.
 
@@ -568,7 +568,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 1. Copy contents of foundation to new repo.
 
    ```bash
-   cp -RT ../terraform-example-foundation/3-networks-dual-svpc/ .
+   cp -RT ../terraform-example-foundation/3-networks-svpc/ .
    cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
    cp ../terraform-example-foundation/build/Jenkinsfile .
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
@@ -607,7 +607,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
    mv access_context.auto.example.tfvars access_context.auto.tfvars
    ```
 
-1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](../3-networks-dual-svpc/envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
+1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](../3-networks-svpc/envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
 1. Update `production.auto.tfvars` file with the `target_name_server_addresses`.
 1. Update `access_context.auto.tfvars` file with the `access_context_manager_policy_id`.
 1. Use `terraform output` to get the backend bucket and networks step Terraform Service Account values from gcp-bootstrap output.

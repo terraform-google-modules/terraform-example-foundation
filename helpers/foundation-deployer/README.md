@@ -97,7 +97,7 @@ Version 1.5.7 is the last version before the license model change. To use a late
   - [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md)
   - [1-org](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/1-org/README.md)
   - [2-environments](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/2-environments/README.md)
-  - [3-networks-dual-svpc](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/3-networks-dual-svpc)
+  - [3-networks-svpc](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/3-networks-svpc)
   - [3-networks-hub-and-spoke](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/3-networks-hub-and-spoke)
   - [4-projects](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/4-projects)
   - [5-app-infra](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/5-app-infra)
@@ -106,8 +106,8 @@ Version 1.5.7 is the last version before the license model change. To use a late
 
 By default the foundation regional resources are deployed in `us-west1` and `us-central1` regions and multi-regional resources are deployed in the `US` multi-region.
 
-In addition to the variables declared in the file `global.tfvars` for configuring location, there are two locals, `default_region1` and `default_region2`, in each one of the environments (`production`, `nonproduction`, and `development`) in the network steps (`3-networks-dual-svpc` and `3-networks-hub-and-spoke`).
-They are located in the [main.tf](../../3-networks-dual-svpc/envs/production/main.tf#L20-L21) files for each environments.
+In addition to the variables declared in the file `global.tfvars` for configuring location, there are two locals, `default_region1` and `default_region2`, in each one of the environments (`production`, `nonproduction`, and `development`) in the network steps (`3-networks-svpc` and `3-networks-hub-and-spoke`).
+They are located in the [main.tf](../../3-networks-svpc/envs/production/main.tf#L20-L21) files for each environments.
 Change the two locals **before** starting the deployment to deploy in other regions.
 
 **Note:** the region used for the variable `default_region` in the file `global.tfvars` **MUST** be one of the regions used for the `default_region1` and `default_region2` locals.

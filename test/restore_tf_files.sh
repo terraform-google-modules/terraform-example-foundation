@@ -64,7 +64,7 @@ function shared(){
         # restore shared.auto.tfvars in main module
         mv $network_dir/envs/shared/shared.auto.tfvars.disabled  $network_dir/envs/shared/shared.auto.tfvars
     else
-        network_dir="3-networks-dual-svpc"
+        network_dir="3-networks-svpc"
     fi
 
     # restore backend configs in main module

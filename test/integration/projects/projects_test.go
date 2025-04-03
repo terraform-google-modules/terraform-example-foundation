@@ -74,29 +74,25 @@ func TestProjects(t *testing.T) {
 		name              string
 		repo              string
 		baseDir           string
-		baseNetwork       string
-		restrictedNetwork string
+		sharedNetwork string
 	}{
 		{
 			name:              "bu1_development",
 			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
-			baseNetwork:       fmt.Sprintf("vpc-d-shared-base%s", networkMode),
-			restrictedNetwork: fmt.Sprintf("vpc-d-shared-restricted%s", networkMode),
+			sharedNetwork: fmt.Sprintf("vpc-d-svpc%s", networkMode),
 		},
 		{
 			name:              "bu1_nonproduction",
 			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
-			baseNetwork:       fmt.Sprintf("vpc-n-shared-base%s", networkMode),
-			restrictedNetwork: fmt.Sprintf("vpc-n-shared-restricted%s", networkMode),
+			sharedNetwork: fmt.Sprintf("vpc-n-svpc%s", networkMode),
 		},
 		{
 			name:              "bu1_production",
 			repo:              "bu1-example-app",
 			baseDir:           "../../../4-projects/business_unit_1/%s",
-			baseNetwork:       fmt.Sprintf("vpc-p-shared-base%s", networkMode),
-			restrictedNetwork: fmt.Sprintf("vpc-p-shared-restricted%s", networkMode),
+			sharedNetwork: fmt.Sprintf("vpc-p-svpc%s", networkMode),
 		},
 	} {
 		tt := tt
@@ -111,7 +107,7 @@ func TestProjects(t *testing.T) {
 			// networks created to retrieve output from the network step for this environment
 			var networkTFDir string
 			if networkMode == "" {
-				networkTFDir = "../../../3-networks-dual-svpc/envs/%s"
+				networkTFDir = "../../../3-networks-svpc/envs/%s"
 			} else {
 				networkTFDir = "../../../3-networks-hub-and-spoke/envs/%s"
 			}
@@ -120,7 +116,7 @@ func TestProjects(t *testing.T) {
 				tft.WithTFDir(fmt.Sprintf(networkTFDir, env)),
 				tft.WithVars(netVars),
 			)
-			perimeterName := networks.GetStringOutput("restricted_service_perimeter_name")
+			perimeterName := networks.GetStringOutput("service_perimeter_name")
 
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, "shared")),
@@ -145,57 +141,35 @@ func TestProjects(t *testing.T) {
 				func(assert *assert.Assertions) {
 
 					for _, projectOutput := range []string{
-						"base_shared_vpc_project",
 						"floating_project",
 						"peering_project",
-						"restricted_shared_vpc_project",
+						"shared_vpc_project",
 					} {
 						projectID := projects.GetStringOutput(projectOutput)
 						prj := gcloud.Runf(t, "projects describe %s", projectID)
 						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
-						if projectOutput == "restricted_shared_vpc_project" {
+						if projectOutput == "shared_vpc_project" {
 
 							enabledAPIS := gcloud.Runf(t, "services list --project %s --impersonate-service-account %s", projectID, terraformSA).Array()
 							listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
 
-							restrictedProjectNumber := projects.GetStringOutput("restricted_shared_vpc_project_number")
+							sharedProjectNumber := projects.GetStringOutput("shared_vpc_project_number")
 							perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", perimeterName, policyID))
 							assert.NoError(err)
-							assert.True(strings.Contains(perimeter, restrictedProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, restrictedProjectNumber))
+							assert.True(strings.Contains(perimeter, sharedProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, sharedProjectNumber))
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s --impersonate-service-account %s", projectID, terraformSA)
 							assert.NotEmpty(sharedVPC.Map())
 
 							hostProjectID := sharedVPC.Get("name").String()
 							hostProject := gcloud.Runf(t, "projects describe %s --impersonate-service-account %s", hostProjectID, terraformSA)
-							assert.Equal("restricted-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
+							assert.Equal("shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to shared-vpc-host")
 							assert.Equal(env, hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env))
 
 							hostNetwork := gcloud.Runf(t, "compute networks list --project %s --impersonate-service-account %s", hostProjectID, terraformSA).Array()[0]
-							assert.Equal(tt.restrictedNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
-
-						}
-
-						if projectOutput == "base_shared_vpc_project" {
-
-							iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", sharedCloudBuildSA)
-							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
-							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()
-							listRoles := testutils.GetResultFieldStrSlice(projectPolicy, "bindings.role")
-							assert.Subset(listRoles, project_sa_roles, fmt.Sprintf("service account %s should have project level roles", sharedCloudBuildSA))
-
-							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
-							assert.NotEmpty(sharedVPC.Map())
-
-							hostProjectID := sharedVPC.Get("name").String()
-							hostProject := gcloud.Runf(t, "projects describe %s", hostProjectID)
-							assert.Equal("base-shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to base-shared-vpc-host")
-							assert.Equal(env, hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env))
-
-							hostNetwork := gcloud.Runf(t, "compute networks list --project %s", hostProjectID).Array()[0]
-							assert.Equal(tt.baseNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
+							assert.Equal(tt.sharedNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
 
 						}
 
@@ -214,7 +188,7 @@ func TestProjects(t *testing.T) {
 							assert.Subset(listRoles, peeringProjectSaRoles, fmt.Sprintf("service account %s should have project level roles", sharedCloudBuildSA))
 
 							peering := gcloud.Runf(t, "compute networks peerings list --project %s", projectID).Array()[0]
-							assert.Contains(peering.Get("peerings.0.network").String(), tt.baseNetwork, "should have a peering network")
+							assert.Contains(peering.Get("peerings.0.network").String(), tt.sharedNetwork, "should have a peering network")
 
 							instanceRegion := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["default_region"]
 							peeringSubnetworkSelfLink := projects.GetStringOutput("peering_subnetwork_self_link")

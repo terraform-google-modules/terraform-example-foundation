@@ -25,16 +25,16 @@ organizational policy.</td>
 Google Cloud organization that you've created.</td>
 </tr>
 <tr>
-<td><a href="../3-networks-dual-svpc">3-networks-dual-svpc</a></td>
-<td>Sets up base and restricted shared VPCs with default DNS, NAT (optional),
+<td><a href="../3-networks-svpc">3-networks-svpc</a></td>
+<td>Sets up shared VPCs with default DNS, NAT (optional),
 Private Service networking, VPC service controls, on-premises Dedicated
 Interconnect, and baseline firewall rules for each environment. It also sets
 up the global DNS hub.</td>
 </tr>
 <tr>
 <td><a>3-networks-hub-and-spoke (this file)</a></td>
-<td>Sets up base and restricted shared VPCs with all the default configuration
-found on step 3-networks-dual-svpc, but here the architecture will be based on the
+<td>Sets up shared VPCs with all the default configuration
+found on step 3-networks-svpc, but here the architecture will be based on the
 Hub and Spoke network model. It also sets up the global DNS hub</td>
 </tr>
 </tr>
@@ -58,7 +58,7 @@ For an overview of the architecture and the parts, see the
 The purpose of this step is to:
 
 - Set up the global [DNS Hub](https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones).
-- Set up base and restricted Hubs and it corresponding Spokes. With default DNS, NAT (optional), Private Service networking, VPC Service Controls (optional), on-premises Dedicated or Partner Interconnect, and baseline firewall rules for each environment.
+- Set up the Hub and it corresponding Spokes. With default DNS, NAT (optional), Private Service networking, VPC Service Controls (optional), on-premises Dedicated or Partner Interconnect, and baseline firewall rules for each environment.
 
 ## Prerequisites
 
@@ -96,7 +96,7 @@ To enable **Hub and Spoke** transitivity set the variable `enable_hub_and_spoke_
 **Note:** The default `allow-transitivity-ingress` firewall rule will create Security Command Center (SCC) findings because it allows ingress for all ports and protocols in the [Shared Address Space CIDR Block](https://en.wikipedia.org/wiki/IPv4_shared_address_space) set in this rule.
 Because of this, you should update the implemented network access controls between spokes with valid values for your environment through the [firewall functionality](./modules/transitivity/main.tf#L142) of the corresponding NVAs to make them more restrictive.
 
-To see the version that makes use of the **Dual Shared VPC** architecture mode check the step [3-networks-dual-svpc](../3-networks-dual-svpc).
+To see the version that makes use of the **Dual Shared VPC** architecture mode check the step [3-networks-svpc](../3-networks-svpc).
 
 ### Using Dedicated Interconnect
 
@@ -133,10 +133,10 @@ If you are not able to use Dedicated or Partner Interconnect, you can also use a
 1. Create secret for VPN restricted pre-shared key and grant required roles to Networks terraform service account.
 
    ```bash
-   echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_RESTRICTED_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-
+   echo '<YOUR-PRESHARED-KEY-SECRET>' | gcloud secrets create <VPN_PSK_SECRET_NAME> --project <ENV_SECRETS_PROJECT> --replication-policy=automatic --data-file=-
 
-   gcloud secrets add-iam-policy-binding <VPN_RESTRICTED_PSK_SECRET_NAME> --member='serviceAccount:<NETWORKS_TERRAFORM_SERVICE_ACCOUNT>' --role='roles/secretmanager.viewer' --project <ENV_SECRETS_PROJECT>
-   gcloud secrets add-iam-policy-binding <VPN_RESTRICTED_PSK_SECRET_NAME> --member='serviceAccount:<NETWORKS_TERRAFORM_SERVICE_ACCOUNT>' --role='roles/secretmanager.secretAccessor' --project <ENV_SECRETS_PROJECT>
+   gcloud secrets add-iam-policy-binding <VPN_PSK_SECRET_NAME> --member='serviceAccount:<NETWORKS_TERRAFORM_SERVICE_ACCOUNT>' --role='roles/secretmanager.viewer' --project <ENV_SECRETS_PROJECT>
+   gcloud secrets add-iam-policy-binding <VPN_PSK_SECRET_NAME> --member='serviceAccount:<NETWORKS_TERRAFORM_SERVICE_ACCOUNT>' --role='roles/secretmanager.secretAccessor' --project <ENV_SECRETS_PROJECT>
    ```
 
 1. In the file `vpn.tf`, update the values for `environment`, `vpn_psk_secret_name`, `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
@@ -450,6 +450,6 @@ unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
 
 Because enabling VPC Service Controls can be a disruptive process, this repo configures VPC Service Controls perimeters in dry run mode by default. This configuration will service traffic that crosses the security perimeter (API requests that originate from inside your perimeter communicating with external resources, or API requests from external resources communicating with resources inside your perimeter) but still allow service traffic normally.
 
-When you are ready to enforce VPC Service Controls, we recommend that you review the guidance at [Best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable). After you have added the necessary exceptions and are confident that VPC Service Controls will not disrupt your intended operations, set the variable `enforce_vpcsc` under the module `restricted_shared_vpc` to `true` and re-apply this stage. Then re-apply the 4-projects stage, which will inherit the new setting and include those projects inside the enforced perimeter.
+When you are ready to enforce VPC Service Controls, we recommend that you review the guidance at [Best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable). After you have added the necessary exceptions and are confident that VPC Service Controls will not disrupt your intended operations, set the variable `enforce_vpcsc` under the module `shared_vpc` to `true` and re-apply this stage. Then re-apply the 4-projects stage, which will inherit the new setting and include those projects inside the enforced perimeter.
 
 When you need to make changes to an existing enforced perimeter, you can test safely by modifying the configuration of the dry run perimeter. This will log traffic denied by the dry run perimeter without impacting whether the enforced perimeter allows or denies traffic.

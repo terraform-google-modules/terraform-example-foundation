@@ -73,7 +73,7 @@ Usage instructions are available in the 0-bootstrap [README](./0-bootstrap/READM
 ### [1. org](./1-org/)
 
 The purpose of this stage is to set up the common folder used to house projects that contain shared resources such as Security Command Center notification, Cloud Key Management Service (KMS), org level secrets, and org level logging.
-This stage also sets up the network folder used to house network related projects such as DNS Hub, Interconnect, network hub, and base and restricted projects for each environment  (`development`, `nonproduction` or `production`).
+This stage also sets up the network folder used to house network related projects such as DNS Hub, Interconnect, network hub and projects for each environment  (`development`, `nonproduction` or `production`).
 This will create the following folder and project structure:
 
 ```
@@ -85,16 +85,12 @@ example-organization
     ├── prj-c-kms
     └── prj-c-secrets
 └── fldr-network
-    ├── prj-net-hub-base
-    ├── prj-net-hub-restricted
+    ├── prj-net-hub-svpc
     ├── prj-net-dns
     ├── prj-net-interconnect
-    ├── prj-d-shared-base
-    ├── prj-d-shared-restricted
-    ├── prj-n-shared-base
-    ├── prj-n-shared-restricted
-    ├── prj-p-shared-base
-    └── prj-p-shared-restricted
+    ├── prj-d-svpc
+    ├── prj-n-svpc
+    └── prj-p-svpc
 ```
 
 #### Logs
@@ -137,8 +133,8 @@ Another project created under the network folder. This project will host the Ded
 
 #### Networking
 
-Under the network folder, two projects, one for base and another for restricted network, are created per environment (`development`, `nonproduction`, and `production`) which is intended to be used as a [Shared VPC host project](https://cloud.google.com/vpc/docs/shared-vpc) for all projects in that environment.
-This stage only creates the projects and enables the correct APIs, the following networks stages, [3-networks-dual-svpc](./3-networks-dual-svpc/) and [3-networks-hub-and-spoke](./3-networks-hub-and-spoke/), create the actual Shared VPC networks.
+Under the network folder, one project for shared vpc network, are created per environment (`development`, `nonproduction`, and `production`) which is intended to be used as a [Shared VPC host project](https://cloud.google.com/vpc/docs/shared-vpc) for all projects in that environment.
+This stage only creates the projects and enables the correct APIs, the following networks stages, [3-networks-svpc](./3-networks-svpc/) and [3-networks-hub-and-spoke](./3-networks-hub-and-spoke/), create the actual Shared VPC networks.
 
 ### [2. environments](./2-environments/)
 
@@ -170,7 +166,7 @@ Under the environment folder, a project is created per environment (`development
 
 Usage instructions are available for the environments step in the [README](./2-environments/README.md).
 
-### [3. networks-dual-svpc](./3-networks-dual-svpc/)
+### [3. networks-svpc](./3-networks-svpc/)
 
 This step focuses on creating a [Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) per environment (`development`, `nonproduction`, and `production`) in a standard configuration with a reasonable security baseline. Currently, this includes:
 
@@ -179,17 +175,16 @@ This step focuses on creating a [Shared VPC](https://cloud.google.com/architectu
 - Hierarchical firewall policy created to allow for [load balancing health checks](https://cloud.google.com/load-balancing/docs/health-checks#firewall_rules).
 - Hierarchical firewall policy created to allow [Windows KMS activation](https://cloud.google.com/compute/docs/instances/windows/creating-managing-windows-instances#kms-server).
 - [Private service networking](https://cloud.google.com/vpc/docs/configure-private-services-access) configured to enable workload dependant resources like Cloud SQL.
-- Base Shared VPC with [private.googleapis.com](https://cloud.google.com/vpc/docs/configure-private-google-access#private-domains) configured for base access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
-- Restricted Shared VPC with [restricted.googleapis.com](https://cloud.google.com/vpc-service-controls/docs/supported-products) configured for restricted access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
+- Shared VPC with [restricted.googleapis.com](https://cloud.google.com/vpc-service-controls/docs/supported-products) configured for restricted access to googleapis.com and gcr.io. Route added for VIP so no internet access is required to access APIs.
 - Default routes to internet removed, with tag based route `egress-internet` required on VMs in order to reach the internet.
 - (Optional) Cloud NAT configured for all subnets with logging and static outbound IPs.
 - Default Cloud DNS policy applied, with DNS logging and [inbound query forwarding](https://cloud.google.com/dns/docs/overview#dns-server-policy-in) turned on.
 
-Usage instructions are available for the networks step in the [README](./3-networks-dual-svpc/README.md).
+Usage instructions are available for the networks step in the [README](./3-networks-svpc/README.md).
 
 ### [3. networks-hub-and-spoke](./3-networks-hub-and-spoke/)
 
-This step configures the same network resources that the step 3-networks-dual-svpc does, but this time it makes use of the architecture based on the [hub-and-spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) reference network model.
+This step configures the same network resources that the step 3-networks-svpc does, but this time it makes use of the architecture based on the [hub-and-spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) reference network model.
 
 Usage instructions are available for the networks step in the [README](./3-networks-hub-and-spoke/README.md).
 
@@ -203,35 +198,29 @@ example-organization/
 └── fldr-development
     └── fldr-development-bu1
         ├── prj-d-bu1-sample-floating
-        ├── prj-d-bu1-sample-base
-        ├── prj-d-bu1-sample-restrict
+        ├── prj-d-bu1-sample-svpc
         ├── prj-d-bu1-sample-peering
     └── fldr-development-bu2
         ├── prj-d-bu2-sample-floating
-        ├── prj-d-bu2-sample-base
-        ├── prj-d-bu2-sample-restrict
+        ├── prj-d-bu2-sample-svpc
         └── prj-d-bu2-sample-peering
 └── fldr-nonproduction
     └── fldr-nonproduction-bu1
         ├── prj-n-bu1-sample-floating
-        ├── prj-n-bu1-sample-base
-        ├── prj-n-bu1-sample-restrict
+        ├── prj-n-bu1-sample-svpc
         ├── prj-n-bu1-sample-peering
     └── fldr-nonproduction-bu2
         ├── prj-n-bu2-sample-floating
-        ├── prj-n-bu2-sample-base
-        ├── prj-n-bu2-sample-restrict
+        ├── prj-n-bu2-sample-svpc
         └── prj-n-bu2-sample-peering
 └── fldr-production
     └── fldr-production-bu1
         ├── prj-p-bu1-sample-floating
-        ├── prj-p-bu1-sample-base
-        ├── prj-p-bu1-sample-restrict
+        ├── prj-p-bu1-sample-svpc
         ├── prj-p-bu1-sample-peering
     └── fldr-production-bu2
         ├── prj-p-bu2-sample-floating
-        ├── prj-p-bu2-sample-base
-        ├── prj-p-bu2-sample-restrict
+        ├── prj-p-bu2-sample-svpc
         └── prj-p-bu2-sample-peering
 └── fldr-common
     ├── prj-c-bu1-infra-pipeline
@@ -265,60 +254,44 @@ example-organization
     ├── prj-c-bu1-infra-pipeline
     └── prj-c-bu2-infra-pipeline
 └── fldr-network
-    ├── prj-net-hub-base
-    ├── prj-net-hub-restricted
+    ├── prj-net-hub-svpc
     ├── prj-net-dns
     ├── prj-net-interconnect
-    ├── prj-d-shared-base
-    ├── prj-d-shared-restricted
-    ├── prj-n-shared-base
-    ├── prj-n-shared-restricted
-    ├── prj-p-shared-base
-    └── prj-p-shared-restricted
+    ├── prj-d-svpc
+    ├── prj-n-svpc
+    └── prj-p-svpc
 └── fldr-development
     ├── prj-d-kms
     └── prj-d-secrets
     └── fldr-development-bu1
-
         ├── prj-d-bu1-sample-floating
-        ├── prj-d-bu1-sample-base
-        ├── prj-d-bu1-sample-restrict
+        ├── prj-d-bu1-sample-svpc
         ├── prj-d-bu1-sample-peering
     └── fldr-development-bu2
-
         ├── prj-d-bu2-sample-floating
-        ├── prj-d-bu2-sample-base
-        ├── prj-d-bu2-sample-restrict
+        ├── prj-d-bu2-sample-svpc
         └── prj-d-bu2-sample-peering
 └── fldr-nonproduction
     ├── prj-n-kms
     └── prj-n-secrets
     └── fldr-nonproduction-bu1
-
         ├── prj-n-bu1-sample-floating
-        ├── prj-n-bu1-sample-base
-        ├── prj-n-bu1-sample-restrict
+        ├── prj-n-bu1-sample-svpc
         ├── prj-n-bu1-sample-peering
     └── fldr-nonproduction-bu2
-
         ├── prj-n-bu2-sample-floating
-        ├── prj-n-bu2-sample-base
-        ├── prj-n-bu2-sample-restrict
+        ├── prj-n-bu2-sample-svpc
         └── prj-n-bu2-sample-peering
 └── fldr-production
     ├── prj-p-kms
     └── prj-p-secrets
     └── fldr-production-bu1
-
         ├── prj-p-bu1-sample-floating
-        ├── prj-p-bu1-sample-base
-        ├── prj-p-bu1-sample-restrict
+        ├── prj-p-bu1-sample-svpc
         ├── prj-p-bu1-sample-peering
     └── fldr-production-bu2
-
         ├── prj-p-bu2-sample-floating
-        ├── prj-p-bu2-sample-base
-        ├── prj-p-bu2-sample-restrict
+        ├── prj-p-bu2-sample-svpc
         └── prj-p-bu2-sample-peering
 └── fldr-bootstrap
     ├── prj-b-cicd
@@ -350,7 +323,7 @@ Some variables used to deploy the steps have default values, check those **befor
 - Step 0-bootstrap: If you are using Cloud Build in the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline), check the main [README](./0-bootstrap/README.md#Inputs) of the step. If you are using Jenkins, check the [README](./0-bootstrap/modules/jenkins-agent/README.md#Inputs) of the module `jenkins-agent`.
 - Step 1-org: The [README](./1-org/envs/shared/README.md#Inputs) of the environment `shared`.
 - Step 2-environments: The READMEs of the environments [development](./2-environments/envs/development/README.md#Inputs), [nonproduction](./2-environments/envs/nonproduction/README.md#Inputs), and [production](./2-environments/envs/production/README.md#Inputs)
-- Step 3-networks-dual-svpc: The READMEs of the environments [shared](./3-networks-dual-svpc/envs/shared/README.md#inputs), [development](./3-networks-dual-svpc/envs/development/README.md#Inputs), [nonproduction](./3-networks/envs/nonproduction/README.md#Inputs), and [production](./3-networks/envs/production/README.md#Inputs)
+- Step 3-networks-svpc: The READMEs of the environments [shared](./3-networks-svpc/envs/shared/README.md#inputs), [development](./3-networks-svpc/envs/development/README.md#Inputs), [nonproduction](./3-networks/envs/nonproduction/README.md#Inputs), and [production](./3-networks/envs/production/README.md#Inputs)
 - Step 3-networks-hub-and-spoke: The READMEs of the environments [shared](./3-networks-hub-and-spoke/envs/shared/README.md#inputs), [development](./3-networks-hub-and-spoke/envs/development/README.md#Inputs), [nonproduction](./3-networks/envs/nonproduction/README.md#Inputs), and [production](./3-networks/envs/production/README.md#Inputs)
 - Step 4-projects: The READMEs of the environments [shared](./4-projects/business_unit_1/shared/README.md#inputs), [development](./4-projects/business_unit_1/development/README.md#Inputs), [nonproduction](./4-projects/business_unit_1/nonproduction/README.md#Inputs), and [production](./4-projects/business_unit_1/production/README.md#Inputs)
 

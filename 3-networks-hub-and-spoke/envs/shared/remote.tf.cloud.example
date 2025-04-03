@@ -30,11 +30,10 @@ locals {
   common_folder_name                = data.tfe_outputs.org.nonsensitive_values.common_folder_name
   network_folder_name               = data.tfe_outputs.org.nonsensitive_values.network_folder_name
   development_folder_name           = data.tfe_outputs.env_development.nonsensitive_values.env_folder
-  nonproduction_folder_name        = data.tfe_outputs.env_nonproduction.nonsensitive_values.env_folder
+  nonproduction_folder_name         = data.tfe_outputs.env_nonproduction.nonsensitive_values.env_folder
   production_folder_name            = data.tfe_outputs.env_production.nonsensitive_values.env_folder
-  base_net_hub_project_id           = data.tfe_outputs.org.nonsensitive_values.base_net_hub_project_id
-  restricted_net_hub_project_id     = data.tfe_outputs.org.nonsensitive_values.restricted_net_hub_project_id
-  restricted_net_hub_project_number = data.tfe_outputs.org.nonsensitive_values.restricted_net_hub_project_number
+  net_hub_project_id                = data.tfe_outputs.org.nonsensitive_values.net_hub_project_id
+  net_hub_project_number            = data.tfe_outputs.org.nonsensitive_values.net_hub_project_number
   organization_service_account      = data.tfe_outputs.bootstrap.nonsensitive_values.organization_step_terraform_service_account_email
   networks_service_account          = data.tfe_outputs.bootstrap.nonsensitive_values.networks_step_terraform_service_account_email
   projects_service_account          = data.tfe_outputs.bootstrap.nonsensitive_values.projects_step_terraform_service_account_email

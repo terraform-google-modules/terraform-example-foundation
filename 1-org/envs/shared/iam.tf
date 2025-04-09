@@ -63,6 +63,18 @@ resource "google_organization_iam_member" "billing_viewer" {
 }
 
 /******************************************
+  Enable KMS Usage Tracking
+*****************************************/
+
+resource "google_organization_iam_member" "kms_usage_tracking" {
+  count = var.enable_kms_key_usage_tracking ? 1 : 0
+
+  org_id = local.org_id
+  role   = "roles/cloudkms.orgServiceAgent"
+  member = "serviceAccount:service-org-${local.org_id}@gcp-sa-cloudkms.iam.gserviceaccount.com"
+}
+
+/******************************************
  Groups permissions
 *****************************************/
 

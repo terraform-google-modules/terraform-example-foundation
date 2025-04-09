@@ -147,15 +147,17 @@ variable "gcp_groups" {
   network_viewer: Google Workspace or Cloud Identity group that members are part of the networking team and review network configurations.
   scc_admin: Google Workspace or Cloud Identity group that can administer Security Command Center.
   audit_viewer: Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project.
-  global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Manage
+  global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Management.
+  kms_protected_resources_viewer: Google Workspace or Cloud Identity group that can search for kms protected resources.
   EOT
   type = object({
-    audit_viewer         = optional(string, null)
-    security_reviewer    = optional(string, null)
-    network_viewer       = optional(string, null)
-    scc_admin            = optional(string, null)
-    global_secrets_admin = optional(string, null)
-    kms_admin            = optional(string, null)
+    audit_viewer                   = optional(string, null)
+    security_reviewer              = optional(string, null)
+    network_viewer                 = optional(string, null)
+    scc_admin                      = optional(string, null)
+    global_secrets_admin           = optional(string, null)
+    kms_admin                      = optional(string, null)
+    kms_protected_resources_viewer = optional(string, null)
   })
   default = {}
 }

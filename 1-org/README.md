@@ -82,6 +82,8 @@ to Bigquery and Pub/Sub. This will result in additional charges for those copies
 
 - To use the **hub-and-spoke** architecture described in the **Networking** section of the [Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke), set the `enable_hub_and_spoke` variable to `true`.
 
+- To identify witch resources are protected by a key, use the [view key usage](https://cloud.google.com/kms/docs/view-key-usage) by setting the `enable_kms_key_usage_tracking` variable to true.
+
 - If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is required for Linux, but causes problems for MacOS.
 

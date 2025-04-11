@@ -26,6 +26,12 @@ variable "enable_scc_resources_in_terraform" {
   default     = false
 }
 
+variable "enable_kms_key_usage_tracking" {
+  description = "Enable KMS centralized key usage tracking system."
+  type        = bool
+  default     = false
+}
+
 variable "domains_to_allow" {
   description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the Terraform Service Account used in the deploy."
   type        = list(string)
@@ -141,15 +147,17 @@ variable "gcp_groups" {
   network_viewer: Google Workspace or Cloud Identity group that members are part of the networking team and review network configurations.
   scc_admin: Google Workspace or Cloud Identity group that can administer Security Command Center.
   audit_viewer: Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project.
-  global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Manage
+  global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Management.
+  kms_protected_resources_viewer: Google Workspace or Cloud Identity group that can search for kms protected resources.
   EOT
   type = object({
-    audit_viewer         = optional(string, null)
-    security_reviewer    = optional(string, null)
-    network_viewer       = optional(string, null)
-    scc_admin            = optional(string, null)
-    global_secrets_admin = optional(string, null)
-    kms_admin            = optional(string, null)
+    audit_viewer                   = optional(string, null)
+    security_reviewer              = optional(string, null)
+    network_viewer                 = optional(string, null)
+    scc_admin                      = optional(string, null)
+    global_secrets_admin           = optional(string, null)
+    kms_admin                      = optional(string, null)
+    kms_protected_resources_viewer = optional(string, null)
   })
   default = {}
 }

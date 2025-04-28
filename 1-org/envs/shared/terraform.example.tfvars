@@ -30,7 +30,6 @@ billing_export_dataset_location = "US"
 //scc_notification_filter = "state=\\\"ACTIVE\\\""
 
 //enable_hub_and_spoke = true
-//enable_kms_key_usage_tracking = true
 
 //create_access_context_manager_access_policy = false
 

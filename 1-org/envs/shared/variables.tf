@@ -29,7 +29,7 @@ variable "enable_scc_resources_in_terraform" {
 variable "enable_kms_key_usage_tracking" {
   description = "Enable KMS centralized key usage tracking system."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "domains_to_allow" {
@@ -148,16 +148,14 @@ variable "gcp_groups" {
   scc_admin: Google Workspace or Cloud Identity group that can administer Security Command Center.
   audit_viewer: Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project.
   global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Management.
-  kms_protected_resources_viewer: Google Workspace or Cloud Identity group that can search for kms protected resources.
   EOT
   type = object({
-    audit_viewer                   = optional(string, null)
-    security_reviewer              = optional(string, null)
-    network_viewer                 = optional(string, null)
-    scc_admin                      = optional(string, null)
-    global_secrets_admin           = optional(string, null)
-    kms_admin                      = optional(string, null)
-    kms_protected_resources_viewer = optional(string, null)
+    audit_viewer         = optional(string, null)
+    security_reviewer    = optional(string, null)
+    network_viewer       = optional(string, null)
+    scc_admin            = optional(string, null)
+    global_secrets_admin = optional(string, null)
+    kms_admin            = optional(string, null)
   })
   default = {}
 }

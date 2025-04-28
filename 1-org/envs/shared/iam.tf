@@ -155,6 +155,13 @@ resource "google_project_iam_member" "kms_admin" {
   member  = "group:${var.gcp_groups.kms_admin}"
 }
 
+resource "google_organization_iam_member" "kms_protected_resources_viewer" {
+  count  = var.gcp_groups.kms_admin != null && var.enable_kms_key_usage_tracking ? 1 : 0
+  org_id = local.org_id
+  role   = "roles/cloudkms.protectedResourcesViewer"
+  member = "group:${var.gcp_groups.kms_admin}"
+}
+
 resource "google_project_iam_member" "cai_monitoring_builder" {
   project = module.scc_notifications.project_id
   for_each = toset(var.enable_scc_resources_in_terraform ?
@@ -165,11 +172,4 @@ resource "google_project_iam_member" "cai_monitoring_builder" {
   ] : [])
   role   = each.key
   member = "serviceAccount:${google_service_account.cai_monitoring_builder[0].email}"
-}
-
-resource "google_organization_iam_member" "kms_protected_resources_viewer" {
-  count  = var.gcp_groups.kms_protected_resources_viewer != null && var.enable_kms_key_usage_tracking ? 1 : 0
-  org_id = local.org_id
-  role   = "roles/cloudkms.protectedResourcesViewer"
-  member = "group:${var.gcp_groups.kms_protected_resources_viewer}"
 }

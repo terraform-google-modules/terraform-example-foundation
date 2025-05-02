@@ -66,8 +66,23 @@ resource "google_organization_iam_member" "billing_viewer" {
   Enable KMS Usage Tracking
 *****************************************/
 
+module "create_kms_organization_service_agent" {
+  source = "terraform-google-modules/gcloud/google"
+  version = "~> 3.1"
+  upgrade = false
+
+  create_cmd_triggers = {
+    org_id = local.org_id
+  }
+
+  create_cmd_body = "beta services identity create --service cloudkms.googleapis.com --organization ${local.org_id}"
+}
+
 resource "google_organization_iam_member" "kms_usage_tracking" {
   count = var.enable_kms_key_usage_tracking ? 1 : 0
+  depends_on = [
+    module.create_kms_organization_service_agent,
+  ]
 
   org_id = local.org_id
   role   = "roles/cloudkms.orgServiceAgent"

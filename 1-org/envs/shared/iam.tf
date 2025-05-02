@@ -67,7 +67,7 @@ resource "google_organization_iam_member" "billing_viewer" {
 *****************************************/
 
 module "create_kms_organization_service_agent" {
-  source = "terraform-google-modules/gcloud/google"
+  source  = "terraform-google-modules/gcloud/google"
   version = "~> 3.1"
   upgrade = false
 
@@ -80,6 +80,7 @@ module "create_kms_organization_service_agent" {
 
 resource "google_organization_iam_member" "kms_usage_tracking" {
   count = var.enable_kms_key_usage_tracking ? 1 : 0
+
   depends_on = [
     module.create_kms_organization_service_agent,
   ]

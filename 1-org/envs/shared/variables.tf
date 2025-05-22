@@ -26,6 +26,12 @@ variable "enable_scc_resources_in_terraform" {
   default     = false
 }
 
+variable "enable_kms_key_usage_tracking" {
+  description = "Enable KMS centralized key usage tracking system."
+  type        = bool
+  default     = true
+}
+
 variable "domains_to_allow" {
   description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the Terraform Service Account used in the deploy."
   type        = list(string)
@@ -141,7 +147,7 @@ variable "gcp_groups" {
   network_viewer: Google Workspace or Cloud Identity group that members are part of the networking team and review network configurations.
   scc_admin: Google Workspace or Cloud Identity group that can administer Security Command Center.
   audit_viewer: Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project.
-  global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Manage
+  global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Management.
   EOT
   type = object({
     audit_viewer         = optional(string, null)

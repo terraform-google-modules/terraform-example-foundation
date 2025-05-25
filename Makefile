@@ -18,9 +18,22 @@
 # Make will use bash instead of sh
 SHELL := /usr/bin/env bash
 
+# Checks the Google Cloud SDK config envvar and if not set uses the default value.
+CLOUDSDK_CONFIG ?= $(HOME)/.config/gcloud
+
 DOCKER_TAG_VERSION_DEVELOPER_TOOLS := 1.23
 DOCKER_IMAGE_DEVELOPER_TOOLS := cft/developer-tools
 REGISTRY_URL := gcr.io/cloud-foundation-cicd
+
+DEVELOPER_TOOLS_IMAGE_REFERENCE := $(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS}
+
+# Mount the user's gcloud SDK inside the docker container.
+AUTHENTICATED_DEVELOPER_TOOLS_IMAGE_REFERENCE := -v "$(CLOUDSDK_CONFIG):/gcp/config" \
+	-e "CLOUDSDK_CONFIG=/gcp/config" \
+	-e "CFT_DISABLE_INIT_CREDENTIALS=yes" \
+	-e "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(GOOGLE_IMPERSONATE_SERVICE_ACCOUNT)" \
+	-e "GOOGLE_APPLICATION_CREDENTIALS=/gcp/config/application_default_credentials.json" \
+	$(DEVELOPER_TOOLS_IMAGE_REFERENCE)
 
 # Execute lint tests within the docker container
 .PHONY: docker_test_lint
@@ -30,7 +43,7 @@ docker_test_lint:
 		-e DISABLE_TFLINT=1 \
 		-e EXCLUDE_LINT_DIRS \
 		-v $(CURDIR):/workspace \
-		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
+		$(DEVELOPER_TOOLS_IMAGE_REFERENCE) \
 		/usr/local/bin/test_lint.sh
 
 # Generate documentation
@@ -38,7 +51,7 @@ docker_test_lint:
 docker_generate_docs:
 	docker run --rm -it \
 		-v $(CURDIR):/workspace \
-		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
+		$(DEVELOPER_TOOLS_IMAGE_REFERENCE) \
 		/bin/bash -c 'source /usr/local/bin/task_helper_functions.sh && generate_docs'
 
 # Alias for backwards compatibility
@@ -49,7 +62,6 @@ generate_docs: docker_generate_docs
 .PHONY: docker_run
 docker_run:
 	docker run --rm -it \
-		-e SERVICE_ACCOUNT_JSON \
 		-e TF_VAR_org_id \
 		-e TF_VAR_folder_id \
 		-e TF_VAR_billing_account \
@@ -57,14 +69,12 @@ docker_run:
 		-e TF_VAR_domain_to_allow \
 		-e TF_VAR_example_foundations_mode \
 		-v "$(CURDIR)":/workspace \
-		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
-		/bin/bash
+		$(AUTHENTICATED_DEVELOPER_TOOLS_IMAGE_REFERENCE)
 
 # Execute prepare tests within the docker container
 .PHONY: docker_test_prepare
 docker_test_prepare:
 	docker run --rm -it \
-		-e SERVICE_ACCOUNT_JSON \
 		-e TF_VAR_org_id \
 		-e TF_VAR_folder_id \
 		-e TF_VAR_billing_account \
@@ -72,14 +82,13 @@ docker_test_prepare:
 		-e TF_VAR_domain_to_allow \
 		-e TF_VAR_example_foundations_mode \
 		-v "$(CURDIR)":/workspace \
-		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
+		$(AUTHENTICATED_DEVELOPER_TOOLS_IMAGE_REFERENCE) \
 		/usr/local/bin/execute_with_credentials.sh prepare_environment
 
 # Clean up test environment within the docker container
 .PHONY: docker_test_cleanup
 docker_test_cleanup:
 	docker run --rm -it \
-		-e SERVICE_ACCOUNT_JSON \
 		-e TF_VAR_org_id \
 		-e TF_VAR_folder_id \
 		-e TF_VAR_billing_account \
@@ -87,14 +96,13 @@ docker_test_cleanup:
 		-e TF_VAR_domain_to_allow \
 		-e TF_VAR_example_foundations_mode \
 		-v "$(CURDIR)":/workspace \
-		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
+		$(AUTHENTICATED_DEVELOPER_TOOLS_IMAGE_REFERENCE) \
 		/usr/local/bin/execute_with_credentials.sh cleanup_environment
 
 # Execute integration tests within the docker container
 .PHONY: docker_test_integration
 docker_test_integration:
 	docker run --rm -it \
-		-e SERVICE_ACCOUNT_JSON \
 		-v "$(CURDIR)":/workspace \
-		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
+		$(AUTHENTICATED_DEVELOPER_TOOLS_IMAGE_REFERENCE) \
 		/usr/local/bin/test_integration.sh

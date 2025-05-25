@@ -49,10 +49,10 @@ To use this setup, you need a service account with:
 - Folder Creator and Project Creator within a folder/organization.
 - Billing Account Administrator on a billing account
 
-Export the Service Account credentials to your environment like so:
+Export the Service Account email to your environment like so:
 
 ```bash
-export SERVICE_ACCOUNT_JSON=$(< credentials.json)
+export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=account-id@my-project-id.iam.gserviceaccount.com
 ```
 
 You will also need to set a few environment variables:

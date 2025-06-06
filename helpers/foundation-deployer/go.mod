@@ -1,15 +1,16 @@
 module github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer
 
-go 1.22.7
-toolchain go1.24.1
+go 1.23.0
+
+toolchain go1.24.4
 
 require (
-	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.17.3
-	github.com/gruntwork-io/terratest v0.48.1
+	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.17.6
+	github.com/gruntwork-io/terratest v0.49.0
 	github.com/hashicorp/hcl/v2 v2.23.0
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.10.0
-	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240808135927-5f1fd0f4104a
+	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20250523204443-6ee7a6ac7006
 	github.com/tidwall/gjson v1.18.0
 )
 
@@ -26,7 +27,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
-	github.com/hashicorp/terraform-json v0.23.0 // indirect
+	github.com/hashicorp/terraform-json v0.24.0 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
@@ -40,15 +41,15 @@ require (
 	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/tmccombs/hcl2json v0.6.4 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
-	github.com/zclconf/go-cty v1.15.0 // indirect
+	github.com/zclconf/go-cty v1.15.1 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
-	golang.org/x/mod v0.22.0 // indirect
+	golang.org/x/mod v0.23.0 // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/oauth2 v0.24.0 // indirect
 	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
-	golang.org/x/tools v0.22.0 // indirect
+	golang.org/x/tools v0.26.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

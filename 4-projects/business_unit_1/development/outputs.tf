@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+output "confidential_space_project" { ///added
+  description = "Confidential Space project id."
+  value       = module.env.confidential_space_project
+}
+
+output "confidential_space_project_number" { ///added
+  description = "Confidential Space project number."
+  value       = module.env.confidential_space_project_number
+}
+
 output "floating_project" {
   description = "Project sample floating project."
   value       = module.env.floating_project

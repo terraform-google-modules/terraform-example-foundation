@@ -16,26 +16,26 @@
 
 locals {
   default_tee_image_reference = "us-central1-docker.pkg.dev/${local.env_project_id}/${google_artifact_registry_repository.ar_confidential_space.repository_id}/workload-confidential-space:latest"
-  source_image_project = "ubuntu-os-cloud"
-  source_image_family = "ubuntu-2204-lts"
+  source_image_project        = "ubuntu-os-cloud"
+  source_image_family         = "ubuntu-2204-lts"
 
   env_project_ids = {
     "sample-floating" = data.terraform_remote_state.projects_env.outputs.floating_project,
     "sample-peering"  = data.terraform_remote_state.projects_env.outputs.peering_project,
     "sample-svpc"     = data.terraform_remote_state.projects_env.outputs.shared_vpc_project,
-    "conf-space"     = data.terraform_remote_state.projects_env.outputs.confidential_space_project,
+    "conf-space"      = data.terraform_remote_state.projects_env.outputs.confidential_space_project,
   }
   env_project_subnets = {
     "sample-floating" = local.svpc_subnetwork_self_link,
     "sample-peering"  = data.terraform_remote_state.projects_env.outputs.peering_subnetwork_self_link,
     "sample-svpc"     = local.svpc_subnetwork_self_link,
-    "conf-space"     = local.svpc_subnetwork_self_link,
+    "conf-space"      = local.svpc_subnetwork_self_link,
   }
   env_project_resource_manager_tags = {
     "sample-floating" = null,
     "sample-peering"  = data.terraform_remote_state.projects_env.outputs.iap_firewall_tags,
     "sample-svpc"     = null,
-    "conf-space"     = null,
+    "conf-space"      = null,
   }
 
   subnetwork_self_links     = data.terraform_remote_state.projects_env.outputs.subnets_self_links
@@ -166,10 +166,10 @@ resource "google_project_iam_member" "workload_sa_logging_writer" {
 }
 
 resource "google_artifact_registry_repository" "ar_confidential_space" {
-  repository_id   = "ar-confidential-space"
-  format          = "DOCKER"
-  location        = var.artifact_registry_location
-  project         = local.env_project_id
+  repository_id = "ar-confidential-space"
+  format        = "DOCKER"
+  location      = var.artifact_registry_location
+  project       = local.env_project_id
 }
 
 resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
@@ -179,25 +179,30 @@ resource "google_artifact_registry_repository_iam_member" "artifact_registry_rea
   member     = "serviceAccount:${google_service_account.workload_sa.email}"
 }
 
-resource "google_kms_key_ring" "workload_keyring" {
-  name     = "workload-key-ring"
-  location = "global"
-  project  = local.env_project_id
+module "kms_confidential_space" {
+  source  = "terraform-google-modules/kms/google"
+  version = "~> 4.0"
+
+  project_id          = local.env_project_id
+  keyring             = var.confidential_space_keyring_name
+  location            = var.confidential_space_location_kms
+  keys                = [var.confidential_space_key_name]
+  key_rotation_period = var.key_rotation_period
+  encrypters          = ["serviceAccount:${google_service_account.workload_sa.email}"]
+  set_encrypters_for  = [var.confidential_space_key_name]
+  decrypters          = ["serviceAccount:${google_service_account.workload_sa.email}"]
+  set_decrypters_for  = [var.confidential_space_key_name]
+  prevent_destroy     = "false"
 }
 
-resource "google_kms_crypto_key" "workload_key" {
-  name     = "workload-key"
-  key_ring = google_kms_key_ring.workload_keyring.id
-  purpose  = "ENCRYPT_DECRYPT"
-}
-
+// Using resource since the KMS module doesn't support condition attribute
 resource "google_kms_crypto_key_iam_member" "key_decrypter" {
-  crypto_key_id = google_kms_crypto_key.workload_key.id
+  crypto_key_id = module.kms_confidential_space.keys[0]
   role          = "roles/cloudkms.cryptoKeyDecrypter"
   member        = "serviceAccount:${google_service_account.workload_sa.email}"
 
   condition {
-    expression  = "request.auth.claims.google.container.image_digest == 'sha256:HASH-GERADO-PELO-DIGEST'"
+    expression  = "request.auth.claims.google.container.image_digest == '${var.image_digest}'"
     title       = "RequireAttestedImage"
     description = "OnlyAllowTrustedImage"
   }

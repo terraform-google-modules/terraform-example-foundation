@@ -104,3 +104,32 @@ variable "docker_image_reference" {
   default     = ""
 }
 
+variable "confidential_space_keyring_name" {
+  description = "Name to be used for KMS Keyring confidential space."
+  type        = string
+  default     = "workload-key-ring"
+}
+
+variable "confidential_space_key_name" {
+  description = "Name to be used for KMS Key in confidential space."
+  type        = string
+  default     = "workload-key"
+}
+
+variable "key_rotation_period" {
+  description = "Rotation period in seconds to be used for KMS Key."
+  type        = string
+  default     = "7776000s"
+}
+
+variable "confidential_space_location_kms" {
+  description = "Case-Sensitive Location for KMS Keyring."
+  type        = string
+  default     = "us"
+}
+
+variable "image_digest" {
+  description = "SHA256 digest of the Docker image."
+  type        = string
+}
+

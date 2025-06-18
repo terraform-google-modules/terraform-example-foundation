@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,15 @@ module "confidential_space_project" {
     ]
   }
 
-  activate_apis                      = ["accesscontextmanager.googleapis.com"]
+  activate_apis = [
+    "accesscontextmanager.googleapis.com",
+    "cloudkms.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "iamcredentials.googleapis.com",
+    "compute.googleapis.com",
+    "confidentialcomputing.googleapis.com",
+    "cloudkms.googleapis.com"
+    ]
   vpc_service_control_attach_enabled = local.enforce_vpcsc ? "true" : "false"
   vpc_service_control_attach_dry_run = !local.enforce_vpcsc ? "true" : "false"
   vpc_service_control_perimeter_name = "accessPolicies/${local.access_context_manager_policy_id}/servicePerimeters/${local.perimeter_name}"

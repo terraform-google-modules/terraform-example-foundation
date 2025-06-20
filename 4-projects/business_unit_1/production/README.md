@@ -19,6 +19,8 @@
 |------|-------------|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | bucket | The created storage bucket. |
+| confidential\_space\_project | Confidential Space project id. |
+| confidential\_space\_project\_number | Confidential Space project number. |
 | default\_region | The default region for the project. |
 | floating\_project | Project sample floating project. |
 | iap\_firewall\_tags | The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project. |

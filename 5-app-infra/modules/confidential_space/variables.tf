@@ -47,19 +47,16 @@ variable "remote_state_bucket" {
   type        = string
 }
 
-
-//
-
 variable "source_image_family" {
-  description = "Source image family used for confidential instance. If none source_image_family is specified, defaults to ubuntu-2204-lts."
+  description = "Source image family used for confidential instance. The default is confidential-space."
   type        = string
-  default     = ""
+  default     = "confidential-space"
 }
 
 variable "source_image_project" {
-  description = "Project where the source image comes from. The default project contains ubuntu-os-cloud images."
+  description = "Project where the source image comes from. The default project contains confidential-space-images images."
   type        = string
-  default     = ""
+  default     = "confidential-space-images"
 }
 
 variable "confidential_machine_type" {

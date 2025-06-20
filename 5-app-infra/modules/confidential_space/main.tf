@@ -16,8 +16,6 @@
 
 locals {
   default_tee_image_reference = "${var.artifact_registry_location}-docker.pkg.dev/${local.env_project_id}/${google_artifact_registry_repository.ar_confidential_space.repository_id}/workload-confidential-space:latest"
-  source_image_project        = "ubuntu-os-cloud"
-  source_image_family         = "ubuntu-2204-lts"
 
   env_project_ids = {
     "conf-space" = data.terraform_remote_state.projects_env.outputs.confidential_space_project,
@@ -38,7 +36,6 @@ locals {
   resource_manager_tags = local.env_project_resource_manager_tags[var.project_suffix]
 }
 
-
 data "terraform_remote_state" "projects_env" {
   backend = "gcs"
 
@@ -55,7 +52,6 @@ resource "google_service_account" "confidential_compute_engine_service_account" 
   create_ignore_already_exists = true
 }
 
-
 module "confidential_instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
   version = "~> 13.0"
@@ -64,8 +60,8 @@ module "confidential_instance_template" {
   project_id = local.env_project_id
   subnetwork = local.subnetwork_self_link
 
-  source_image_project       = var.source_image_project != "" ? var.source_image_project : local.source_image_project
-  source_image               = var.source_image_family != "" ? var.source_image_family : local.source_image_family
+  source_image_project       = var.source_image_project
+  source_image               = var.source_image_family
   machine_type               = var.confidential_machine_type
   min_cpu_platform           = var.cpu_platform
   enable_confidential_vm     = true
@@ -85,7 +81,6 @@ module "confidential_instance_template" {
     email  = google_service_account.confidential_compute_engine_service_account.email
     scopes = ["cloud-platform"]
   }
-
 }
 
 module "confidential_compute_instance" {
@@ -138,7 +133,6 @@ resource "google_artifact_registry_repository_iam_member" "artifact_registry_rea
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.workload_sa.email}"
 }
-
 
 module "kms_confidential_space" {
   source  = "terraform-google-modules/kms/google"

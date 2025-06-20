@@ -21,8 +21,8 @@
 | project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
 | region | The GCP region to create and test resources in | `string` | `"us-central1"` | no |
 | remote\_state\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
-| source\_image\_family | Source image family used for confidential instance. If none source\_image\_family is specified, defaults to ubuntu-2204-lts. | `string` | `""` | no |
-| source\_image\_project | Project where the source image comes from. The default project contains ubuntu-os-cloud images. | `string` | `""` | no |
+| source\_image\_family | Source image family used for confidential instance. The default is confidential-space. | `string` | `"confidential-space"` | no |
+| source\_image\_project | Project where the source image comes from. The default project contains confidential-space-images images. | `string` | `"confidential-space-images"` | no |
 
 ## Outputs
 
@@ -32,7 +32,7 @@
 | instances\_details | List of details for compute instances |
 | instances\_self\_links | List of self-links for compute instances |
 | project\_id | Project where compute instance was created |
-| region | Region where compute instance was created |
+| workload\_service\_account\_email | Workload SA email |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

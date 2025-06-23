@@ -15,7 +15,6 @@
  */
 
 locals {
-  #artifact_registry_repository_ids = { for k, m in module.infra_pipelines : k => m.artifact_registry_repository_id }
   repo_names                       = ["bu1-example-app"]
   cmd_prompt                       = "gcloud builds submit confidential-space-attestation/. --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id}  --service-account=${module.infra_pipelines[0].terraform_service_accounts} --gcs-log-dir=${module.infra_pipelines[0].log_buckets} --worker-pool=${module.infra_pipelines[0].worker_pool_id}  || ( sleep 45 && gcloud builds submit --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id} --service-account=${module.infra_pipelines[0].terraform_service_accounts} --gcs-log-dir=${module.infra_pipelines[0].log_buckets} --worker-pool=${module.infra_pipelines[0].worker_pool_id}  )"
   confidential_space_image_version = "latest"

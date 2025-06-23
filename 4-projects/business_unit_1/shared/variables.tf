@@ -53,3 +53,10 @@ variable "project_deletion_policy" {
   type        = string
   default     = "PREVENT"
 }
+
+variable "artifact_registry_location" {
+  description = "The location to create the Artifact Registry used by confidential space."
+  type        = string
+  default     = "us-central1"
+}
+

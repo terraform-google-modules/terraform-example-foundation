@@ -34,8 +34,3 @@ output "project_id" {
   value       = local.env_project_id
 }
 
-output "workload_service_account_email" {
-  description = "Workload SA email"
-  value       = google_service_account.workload_sa.email
-}
-

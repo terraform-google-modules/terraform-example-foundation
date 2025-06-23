@@ -17,6 +17,11 @@
 locals {
   repo_names              = ["bu1-example-app"]
   confidential_repo_names = ["bu1-confidential-space"]
+
+  cmd_prompt = "gcloud builds submit confidential-space-attestation/. --tag ${local.binary_auth_image_tag} --project=${module.confidential_space_cloudbuild_project[0].project_id}  --service-account=${google_service_account.workload_sa.email} --gcs-log-dir=${module.confidential_space_infra_pipelines[0].log_buckets} --worker-pool=${module.confidential_space_infra_pipelines[0].worker_pool_id}  || ( sleep 45 && gcloud builds submit --tag ${local.binary_auth_image_tag} --project=${module.confidential_space_cloudbuild_project[0].project_id} --service-account=${google_service_account.workload_sa.email} --gcs-log-dir=${module.confidential_space_infra_pipelines[0].log_buckets} --worker-pool=${module.confidential_space_infra_pipelines[0].worker_pool_id}  )"
+
+  binary_auth_image_version = "latest"
+  binary_auth_image_tag     = "${var.artifact_registry_location}-docker.pkg.dev/${module.confidential_space_cloudbuild_project[0].project_id}/${google_artifact_registry_repository.ar_confidential_space.repository_id}/workload-confidential-space:${local.binary_auth_image_version}"
 }
 
 module "app_infra_cloudbuild_project" {
@@ -49,6 +54,40 @@ module "app_infra_cloudbuild_project" {
   business_code     = "bu1"
 }
 
+module "infra_pipelines" {
+  source = "../../modules/infra_pipelines"
+  count  = local.enable_cloudbuild_deploy ? 1 : 0
+
+  org_id                      = local.org_id
+  cloudbuild_project_id       = module.app_infra_cloudbuild_project[0].project_id
+  cloud_builder_artifact_repo = local.cloud_builder_artifact_repo
+  remote_tfstate_bucket       = local.projects_remote_bucket_tfstate
+  billing_account             = local.billing_account
+  default_region              = var.default_region
+  app_infra_repos             = local.repo_names
+  private_worker_pool_id      = local.cloud_build_private_worker_pool_id
+}
+
+resource "google_service_account" "workload_sa" {
+  account_id   = "confidential-space-workload-sa"
+  display_name = "Workload Service Account for confidential space"
+  project      = module.confidential_space_cloudbuild_project[0].project_id
+}
+
+resource "google_artifact_registry_repository" "ar_confidential_space" {
+  repository_id = "ar-confidential-space"
+  format        = "DOCKER"
+  location      = var.default_region
+  project       = module.app_infra_cloudbuild_project[0].project_id
+}
+
+resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
+  repository = google_artifact_registry_repository.ar_confidential_space.id
+  location   = google_artifact_registry_repository.ar_confidential_space.location
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${google_service_account.workload_sa.email}"
+}
+
 module "confidential_space_cloudbuild_project" {
   source = "../../modules/single_project"
   count  = local.enable_cloudbuild_deploy ? 1 : 0
@@ -77,20 +116,6 @@ module "confidential_space_cloudbuild_project" {
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"
   business_code     = "bu1"
-}
-
-module "infra_pipelines" {
-  source = "../../modules/infra_pipelines"
-  count  = local.enable_cloudbuild_deploy ? 1 : 0
-
-  org_id                      = local.org_id
-  cloudbuild_project_id       = module.app_infra_cloudbuild_project[0].project_id
-  cloud_builder_artifact_repo = local.cloud_builder_artifact_repo
-  remote_tfstate_bucket       = local.projects_remote_bucket_tfstate
-  billing_account             = local.billing_account
-  default_region              = var.default_region
-  app_infra_repos             = local.repo_names
-  private_worker_pool_id      = local.cloud_build_private_worker_pool_id
 }
 
 module "confidential_space_infra_pipelines" {

@@ -130,3 +130,4 @@ variable "confidential_space_workload_operator" {
   type        = string
   default     = null
 }
+

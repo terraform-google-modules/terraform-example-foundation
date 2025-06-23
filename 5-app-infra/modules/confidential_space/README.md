@@ -32,7 +32,6 @@
 | instances\_details | List of details for compute instances |
 | instances\_self\_links | List of self-links for compute instances |
 | project\_id | Project where compute instance was created |
-| workload\_service\_account\_email | Workload SA email |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

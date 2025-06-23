@@ -62,3 +62,14 @@ output "enable_cloudbuild_deploy" {
   description = "Enable infra deployment using Cloud Build."
   value       = local.enable_cloudbuild_deploy
 }
+
+output "artifact_registry_repository_id" {
+  description = "Artifact Registry ID."
+  value       = google_artifact_registry_repository.ar_confidential_space.id
+}
+
+output "workload_service_account_email" {
+  description = "Workload SA email."
+  value       = google_service_account.workload_sa.email
+}
+

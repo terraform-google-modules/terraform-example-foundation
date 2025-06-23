@@ -58,3 +58,9 @@ output "apply_triggers_id" {
   description = "CB apply triggers"
   value       = local.apply_triggers_id
 }
+
+output "worker_pool_id" {
+  description = "ID of the Cloud Build private worker pool."
+  value       = module.tf_workspace.worker_pool_id
+}
+

@@ -25,6 +25,5 @@
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |
 | terraform\_service\_accounts | APP Infra Pipeline Terraform Accounts. |
-| workload\_service\_account\_email | Workload SA email. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

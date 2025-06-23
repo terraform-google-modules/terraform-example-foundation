@@ -35,7 +35,7 @@ locals {
   subnetwork_project           = element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1, )
   resource_manager_tags        = local.env_project_resource_manager_tags[var.project_suffix]
   artifact_registry_repository = data.terraform_remote_state.projects_env.outputs.artifact_registry_repository_id
-  workload_sa_email            = data.terraform_remote_state.projects_env.outputs.workload_service_account_email
+  app_infra_cloudbuild_project = data.terraform_remote_state.projects_env.outputs.app_infra_cloudbuild_project[0].project_id
 }
 
 data "terraform_remote_state" "projects_env" {
@@ -45,6 +45,19 @@ data "terraform_remote_state" "projects_env" {
     bucket = var.remote_state_bucket
     prefix = "terraform/projects/${var.business_unit}/${var.environment}"
   }
+}
+
+resource "google_service_account" "workload_sa" {
+  account_id   = "confidential-space-workload-sa"
+  display_name = "Workload Service Account for confidential space"
+  project      = local.app_infra_cloudbuild_project
+}
+
+resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
+  repository = local.artifact_registry_repository
+  location   = var.artifact_registry_location
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${google_service_account.workload_sa.email}"
 }
 
 resource "google_service_account" "confidential_compute_engine_service_account" {
@@ -107,13 +120,13 @@ resource "google_project_iam_member" "workload_sa_user" {
 resource "google_project_iam_member" "workload_sa_confidential_user" {
   project = local.env_project_id
   role    = "roles/confidentialcomputing.workloadUser"
-  member  = "serviceAccount:${local.workload_sa_email}"
+  member  = "serviceAccount:${google_service_account.workload_sa.email}"
 }
 
 resource "google_project_iam_member" "workload_sa_logging_writer" {
   project = local.env_project_id
   role    = "roles/logging.logWriter"
-  member  = "serviceAccount:${local.workload_sa_email}"
+  member  = "serviceAccount:${google_service_account.workload_sa.email}"
 }
 
 module "kms_confidential_space" {
@@ -125,9 +138,9 @@ module "kms_confidential_space" {
   location            = var.confidential_space_location_kms
   keys                = [var.confidential_space_key_name]
   key_rotation_period = var.key_rotation_period
-  encrypters          = ["serviceAccount:${local.workload_sa_email}"]
+  encrypters          = ["serviceAccount:${google_service_account.workload_sa.email}"]
   set_encrypters_for  = [var.confidential_space_key_name]
-  decrypters          = ["serviceAccount:${local.workload_sa_email}"]
+  decrypters          = ["serviceAccount:${google_service_account.workload_sa.email}"]
   set_decrypters_for  = [var.confidential_space_key_name]
   prevent_destroy     = "false"
 }
@@ -136,7 +149,7 @@ module "kms_confidential_space" {
 resource "google_kms_crypto_key_iam_member" "key_decrypter" {
   crypto_key_id = module.kms_confidential_space.keys[0]
   role          = "roles/cloudkms.cryptoKeyDecrypter"
-  member        = "serviceAccount:${local.workload_sa_email}"
+  member        = "serviceAccount:${google_service_account.workload_sa.email}"
 
   condition {
     expression  = "request.auth.claims.google.container.image_digest == '${var.image_digest}'"

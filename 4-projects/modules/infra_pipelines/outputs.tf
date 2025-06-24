@@ -59,11 +59,6 @@ output "apply_triggers_id" {
   value       = local.apply_triggers_id
 }
 
-output "worker_pool_id" {
-  description = "ID of the Cloud Build private worker pool."
-  value       = module.tf_workspace.worker_pool_id
-}
-
 output "artifact_registry_repository_id" {
   description = "Artifact Registry ID."
   value       = local.gar_project_id

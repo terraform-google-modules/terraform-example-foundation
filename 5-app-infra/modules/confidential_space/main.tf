@@ -60,13 +60,6 @@ resource "google_artifact_registry_repository_iam_member" "artifact_registry_rea
   member     = "serviceAccount:${google_service_account.workload_sa.email}"
 }
 
-resource "google_service_account" "confidential_compute_engine_service_account" {
-  project                      = local.env_project_id
-  account_id                   = "sa-confidential-space"
-  display_name                 = "Confidential Space example service Account"
-  create_ignore_already_exists = true
-}
-
 module "confidential_instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
   version = "~> 13.0"
@@ -93,7 +86,7 @@ module "confidential_instance_template" {
   }
 
   service_account = {
-    email  = google_service_account.confidential_compute_engine_service_account.email
+    email  = google_service_account.workload_sa.email
     scopes = ["cloud-platform"]
   }
 }

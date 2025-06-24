@@ -30,6 +30,5 @@
 | repos | CSRs to store source code |
 | state\_buckets | GCS Buckets to store TF state |
 | terraform\_service\_accounts | App Infra Pipeline Terraform SA mapped to source repos as keys |
-| worker\_pool\_id | ID of the Cloud Build private worker pool. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

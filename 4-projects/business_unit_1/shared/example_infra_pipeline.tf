@@ -16,7 +16,7 @@
 
 locals {
   repo_names                       = ["bu1-example-app"]
-  cmd_prompt                       = "gcloud builds submit confidential-space-attestation/. --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id}  --service-account=${module.infra_pipelines[0].terraform_service_accounts} --gcs-log-dir=${module.infra_pipelines[0].log_buckets} --worker-pool=${local.cloud_build_private_worker_pool_id}  || ( sleep 45 && gcloud builds submit --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id} --service-account=${module.infra_pipelines[0].terraform_service_accounts} --gcs-log-dir=${module.infra_pipelines[0].log_buckets} --worker-pool=${local.cloud_build_private_worker_pool_id}  )"
+  cmd_prompt                       = "gcloud builds submit confidential-space-attestation/. --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id}  --service-account=${module.app_infra_cloudbuild_project[0].sa} --gcs-log-dir=${module.infra_pipelines[0].log_buckets["bu1-example-app"]} --worker-pool=${local.cloud_build_private_worker_pool_id}  || ( sleep 45 && gcloud builds submit --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id} --service-account=${module.app_infra_cloudbuild_project[0].sa} --gcs-log-dir=${module.infra_pipelines[0].log_buckets["bu1-example-app"]} --worker-pool=${local.cloud_build_private_worker_pool_id}  )"
   confidential_space_image_version = "latest"
   confidential_space_image_tag     = "${var.artifact_registry_location}-docker.pkg.dev/${module.app_infra_cloudbuild_project[0].project_id}/${module.infra_pipelines[0].artifact_registry_repository_id}/workload-confidential-space:${local.confidential_space_image_version}"
 }
@@ -67,6 +67,11 @@ module "infra_pipelines" {
 
 resource "time_sleep" "wait_iam_propagation" {
   create_duration = "60s"
+
+  depends_on = [
+    module.infra_pipelines,
+    module.app_infra_cloudbuild_project,
+  ]
 }
 
 module "build_confidential_space_image" {

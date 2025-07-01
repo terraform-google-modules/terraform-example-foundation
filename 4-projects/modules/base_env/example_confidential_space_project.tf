@@ -54,7 +54,7 @@ module "confidential_space_project" {
   vpc_service_control_sleep_duration = "60s"
 
   # Metadata
-  project_suffix    = "conf-space" //add
+  project_suffix    = "conf-space"
   application_name  = "${var.business_code}-sample-instance"
   billing_code      = "1234"
   primary_contact   = "example@example.com"

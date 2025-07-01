@@ -66,6 +66,12 @@ resource "google_artifact_registry_repository_iam_member" "builder_on_artifact_r
   member     = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
 }
 
+resource "google_project_iam_member" "allow_workerpool_use" {
+  project = local.cloudbuild_project_id
+  role    = "roles/cloudbuild.builds.builder"
+  member  = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
 module "infra_pipelines" {
   source = "../../modules/infra_pipelines"
   count  = local.enable_cloudbuild_deploy ? 1 : 0

@@ -45,6 +45,7 @@ spec:
     - "cloudscheduler.googleapis.com"
     - "cloudtrace.googleapis.com"
     - "compute.googleapis.com"
+    - "confidentialcomputing.googleapis.com"
     - "container.googleapis.com"
     - "datastore.googleapis.com"
     - "dns.googleapis.com"

@@ -40,7 +40,8 @@ module "app_infra_cloudbuild_project" {
     "cloudkms.googleapis.com",
     "iam.googleapis.com",
     "artifactregistry.googleapis.com",
-    "cloudresourcemanager.googleapis.com"
+    "cloudresourcemanager.googleapis.com",
+    "confidentialcomputing.googleapis.com"
   ]
   # Metadata
   project_suffix    = "infra-pipeline"

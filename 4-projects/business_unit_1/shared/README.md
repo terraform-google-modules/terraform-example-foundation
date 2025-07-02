@@ -16,6 +16,7 @@
 |------|-------------|
 | apply\_triggers\_id | CB apply triggers |
 | artifact\_buckets | GCS Buckets to store Cloud Build Artifacts |
+| artifact\_registry\_location | Artifact Registry location. |
 | artifact\_registry\_repository\_id | Artifact Registry ID. |
 | cloudbuild\_project\_id | n/a |
 | default\_region | Default region to create resources where applicable. |

@@ -26,16 +26,20 @@ locals {
     "conf-space" = null,
   }
 
-
   subnetwork_self_links     = data.terraform_remote_state.projects_env.outputs.subnets_self_links
   svpc_subnetwork_self_link = [for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
 
-  env_project_id               = local.env_project_ids[var.project_suffix]
-  subnetwork_self_link         = local.env_project_subnets[var.project_suffix]
-  subnetwork_project           = element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1, )
-  resource_manager_tags        = local.env_project_resource_manager_tags[var.project_suffix]
-  artifact_registry_repository = data.terraform_remote_state.projects_env.outputs.artifact_registry_repository_id
-  app_infra_cloudbuild_project = data.terraform_remote_state.projects_env.outputs.app_infra_cloudbuild_project[0].project_id
+  env_project_id                    = local.env_project_ids[var.project_suffix]
+  subnetwork_self_link              = local.env_project_subnets[var.project_suffix]
+  subnetwork_project                = element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1, )
+  resource_manager_tags             = local.env_project_resource_manager_tags[var.project_suffix]
+  artifact_registry_repository      = data.terraform_remote_state.projects_env.outputs.artifact_registry_repository_id
+  app_infra_cloudbuild_project      = data.terraform_remote_state.projects_env.outputs.app_infra_cloudbuild_project[0].project_id
+  confidential_space_project_number = data.terraform_remote_state.projects_env.outputs.confidential_space_project_number
+  cloudbuild_project_id             = data.terraform_remote_state.projects_env.outputs.cloudbuild_project[0].project_id
+  confidential_space_project_id     = data.terraform_remote_state.projects_env.outputs.confidential_space_project
+  confidential_space_image          = "${local.confidential_space_ar_location}docker.pkg.dev/${local.cloudbuild_project_id}/tf-runners/confidential_space_image:latest"
+  confidential_space_ar_location    = data.terraform_remote_state.projects_env.outputs.artifact_registry_location
 }
 
 data "terraform_remote_state" "projects_env" {
@@ -46,6 +50,37 @@ data "terraform_remote_state" "projects_env" {
     prefix = "terraform/projects/${var.business_unit}/${var.environment}"
   }
 }
+
+resource "google_iam_workload_identity_pool" "confidential_space_pool" {
+  workload_identity_pool_id = "confidential-space-pool"
+  disabled                  = false
+  project                   = local.env_project_id
+}
+
+resource "google_iam_workload_identity_pool_provider" "attestation_verifier" {
+  workload_identity_pool_id          = google_iam_workload_identity_pool.confidential_space_pool
+  workload_identity_pool_provider_id = "attestation-verifier"
+  display_name                       = "attestation-verifier"
+  description                        = "OIDC provider for confidential computing attestation"
+  project                            = local.env_project_id
+
+  oidc {
+    issuer_uri        = "https://confidentialcomputing.googleapis.com/"
+    allowed_audiences = ["https://sts.googleapis.com"]
+  }
+
+  attribute_mapping = {
+    "google.subject" = "assertion.sub"
+  }
+
+  attribute_condition = <<EOT
+assertion.submods.container.image_digest == '${var.image_digest}' &&
+${google_service_account.workload_sa.email}" in assertion.google_service_accounts &&
+assertion.swname == "CONFIDENTIAL_SPACE" &&
+"STABLE" in assertion.submods.confidential_space.support_attributes
+EOT
+}
+
 
 resource "google_service_account" "workload_sa" {
   account_id   = "confidential-space-workload-sa"
@@ -68,7 +103,7 @@ module "confidential_instance_template" {
   project_id = local.env_project_id
   subnetwork = local.subnetwork_self_link
 
-  source_image_project       = var.source_image_project
+  source_image_project       = local.cloudbuild_project_id
   source_image               = var.source_image_family
   machine_type               = var.confidential_machine_type
   min_cpu_platform           = var.cpu_platform
@@ -149,5 +184,56 @@ resource "google_kms_crypto_key_iam_member" "key_decrypter" {
     title       = "RequireAttestedImage"
     description = "OnlyAllowTrustedImage"
   }
+}
+
+resource "google_kms_crypto_key_iam_member" "encrypter_binding" {
+  crypto_key_id = module.kms_confidential_space.keys[0]
+  role          = "roles/cloudkms.cryptoKeyEncrypter"
+  member        = "serviceAccount:${google_service_account.workload_sa.email}"
+}
+
+
+resource "google_service_account_iam_member" "workload_identity_binding" {
+  service_account_id = "projects/${local.env_project_id}/serviceAccounts/${google_service_account.workload_sa.email}"
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/projects/${local.confidential_space_project_number}/locations/${var.confidential_space_location_kms}/workloadIdentityPools/confidential-space-pool/*"
+}
+
+
+resource "random_string" "bucket_name" {
+  length  = 5
+  upper   = false
+  numeric = true
+  lower   = true
+  special = false
+}
+
+module "gcs_buckets" {
+  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
+  version = "~> 9.0"
+
+  project_id              = local.confidential_space_project_id
+  location                = var.location_gcs
+  name                    = "${var.gcs_bucket_prefix}-${local.confidential_space_project_id}-cmek-encrypted-${random_string.bucket_name.result}"
+  bucket_policy_only      = true
+  custom_placement_config = var.gcs_custom_placement_config
+
+  encryption = {
+    default_kms_key_name = module.kms_confidential_space.keys[0]
+  }
+
+  depends_on = [local.confidential_space_project_id]
+}
+
+resource "google_storage_bucket_iam_member" "object_viewer" {
+  bucket = module.gcs_buckets.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.workload_sa.email}"
+}
+
+resource "google_storage_bucket_iam_member" "results_bucket_object_admin" {
+  bucket = module.gcs_buckets.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.workload_sa.email}"
 }
 

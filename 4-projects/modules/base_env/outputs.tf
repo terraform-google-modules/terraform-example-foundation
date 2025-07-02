@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-output "confidential_space_project" { ///added
+output "confidential_space_project" {
   description = "Confidential Space project id."
   value       = module.confidential_space_project.project_id
 }
 
-output "confidential_space_project_number" { ///added
+output "confidential_space_project_number" {
   description = "Confidential Space project number."
   value       = module.confidential_space_project.project_number
 }

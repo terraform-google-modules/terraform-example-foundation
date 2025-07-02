@@ -67,3 +67,8 @@ output "artifact_registry_repository_id" {
   description = "Artifact Registry ID."
   value       = module.infra_pipelines[0].artifact_registry_repository_id
 }
+
+output "artifact_registry_location" {
+  description = "Artifact Registry location."
+  value       = var.artifact_registry_location
+}

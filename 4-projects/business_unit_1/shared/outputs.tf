@@ -65,10 +65,10 @@ output "enable_cloudbuild_deploy" {
 
 output "artifact_registry_repository_id" {
   description = "Artifact Registry ID."
-  value       = module.infra_pipelines[0].artifact_registry_repository_id
+  value       = local.cloud_builder_artifact_repo
 }
 
-output "artifact_registry_location" {
-  description = "Artifact Registry location."
-  value       = var.artifact_registry_location
+output "bootstrap_cloudbuild_project_id" {
+  description = "Cloudbuild project ID."
+  value       = local.cloudbuild_project_id
 }

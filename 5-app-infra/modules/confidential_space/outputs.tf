@@ -34,3 +34,8 @@ output "project_id" {
   value       = local.env_project_id
 }
 
+output "image_digest" {
+  description = "SHA256 digest of the Docker image."
+  value       = var.image_digest
+}
+

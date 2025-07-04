@@ -15,7 +15,7 @@
  */
 
 locals {
-  default_tee_image_reference = "${var.artifact_registry_location}-docker.pkg.dev/${local.env_project_id}/${local.artifact_registry_repository}/workload-confidential-space:latest"
+  default_tee_image_reference = "${local.default_region}-docker.pkg.dev/${local.cloudbuild_project_id}/${local.artifact_registry_repository}/confidential_space_image:latest"
   env_project_ids = {
     "conf-space" = data.terraform_remote_state.projects_env.outputs.confidential_space_project,
   }
@@ -29,17 +29,16 @@ locals {
   subnetwork_self_links     = data.terraform_remote_state.projects_env.outputs.subnets_self_links
   svpc_subnetwork_self_link = [for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
 
+  cloudbuild_project_id             = data.terraform_remote_state.projects_env.outputs.bootstrap_cloudbuild_project_id
+  default_region                    = data.terraform_remote_state.projects_env.outputs.default_region
   env_project_id                    = local.env_project_ids[var.project_suffix]
   subnetwork_self_link              = local.env_project_subnets[var.project_suffix]
   subnetwork_project                = element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1, )
   resource_manager_tags             = local.env_project_resource_manager_tags[var.project_suffix]
-  artifact_registry_repository      = data.terraform_remote_state.projects_env.outputs.artifact_registry_repository_id
-  app_infra_cloudbuild_project      = data.terraform_remote_state.projects_env.outputs.app_infra_cloudbuild_project[0].project_id
+  artifact_registry_repository      = "tf-runners"
+  app_infra_cloudbuild_project      = data.terraform_remote_state.projects_env.outputs.confidential_space_project
   confidential_space_project_number = data.terraform_remote_state.projects_env.outputs.confidential_space_project_number
-  cloudbuild_project_id             = data.terraform_remote_state.projects_env.outputs.cloudbuild_project[0].project_id
   confidential_space_project_id     = data.terraform_remote_state.projects_env.outputs.confidential_space_project
-  confidential_space_image          = "${local.confidential_space_ar_location}docker.pkg.dev/${local.cloudbuild_project_id}/tf-runners/confidential_space_image:latest"
-  confidential_space_ar_location    = data.terraform_remote_state.projects_env.outputs.artifact_registry_location
 }
 
 data "terraform_remote_state" "projects_env" {
@@ -58,7 +57,7 @@ resource "google_iam_workload_identity_pool" "confidential_space_pool" {
 }
 
 resource "google_iam_workload_identity_pool_provider" "attestation_verifier" {
-  workload_identity_pool_id          = google_iam_workload_identity_pool.confidential_space_pool
+  workload_identity_pool_id          = google_iam_workload_identity_pool.confidential_space_pool.workload_identity_pool_id
   workload_identity_pool_provider_id = "attestation-verifier"
   display_name                       = "attestation-verifier"
   description                        = "OIDC provider for confidential computing attestation"
@@ -81,7 +80,6 @@ assertion.swname == "CONFIDENTIAL_SPACE" &&
 EOT
 }
 
-
 resource "google_service_account" "workload_sa" {
   account_id   = "confidential-space-workload-sa"
   display_name = "Workload Service Account for confidential space"
@@ -90,7 +88,7 @@ resource "google_service_account" "workload_sa" {
 
 resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
   repository = local.artifact_registry_repository
-  location   = var.artifact_registry_location
+  location   = local.default_region
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.workload_sa.email}"
 }
@@ -103,7 +101,7 @@ module "confidential_instance_template" {
   project_id = local.env_project_id
   subnetwork = local.subnetwork_self_link
 
-  source_image_project       = local.cloudbuild_project_id
+  source_image_project       = var.source_image_project
   source_image               = var.source_image_family
   machine_type               = var.confidential_machine_type
   min_cpu_platform           = var.cpu_platform
@@ -175,7 +173,7 @@ module "kms_confidential_space" {
 
 // Using resource since the KMS module doesn't support condition attribute
 resource "google_kms_crypto_key_iam_member" "key_decrypter" {
-  crypto_key_id = module.kms_confidential_space.keys[0]
+  crypto_key_id = module.kms_confidential_space.keys["workload-key"]
   role          = "roles/cloudkms.cryptoKeyDecrypter"
   member        = "serviceAccount:${google_service_account.workload_sa.email}"
 
@@ -187,7 +185,7 @@ resource "google_kms_crypto_key_iam_member" "key_decrypter" {
 }
 
 resource "google_kms_crypto_key_iam_member" "encrypter_binding" {
-  crypto_key_id = module.kms_confidential_space.keys[0]
+  crypto_key_id = module.kms_confidential_space.keys["workload-key"]
   role          = "roles/cloudkms.cryptoKeyEncrypter"
   member        = "serviceAccount:${google_service_account.workload_sa.email}"
 }
@@ -212,14 +210,13 @@ module "gcs_buckets" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
   version = "~> 9.0"
 
-  project_id              = local.confidential_space_project_id
-  location                = var.location_gcs
-  name                    = "${var.gcs_bucket_prefix}-${local.confidential_space_project_id}-cmek-encrypted-${random_string.bucket_name.result}"
-  bucket_policy_only      = true
-  custom_placement_config = var.gcs_custom_placement_config
+  project_id         = local.confidential_space_project_id
+  location           = var.location_gcs
+  name               = "${var.gcs_bucket_prefix}-${local.confidential_space_project_id}-cmek-encrypted-${random_string.bucket_name.result}"
+  bucket_policy_only = true
 
   encryption = {
-    default_kms_key_name = module.kms_confidential_space.keys[0]
+    default_kms_key_name = module.kms_confidential_space.keys["workload-key"]
   }
 
   depends_on = [local.confidential_space_project_id]

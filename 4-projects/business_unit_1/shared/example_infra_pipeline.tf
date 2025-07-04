@@ -18,7 +18,8 @@ locals {
   repo_names                       = ["bu1-example-app"]
   cmd_prompt                       = "gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id}  --service-account=projects/${module.app_infra_cloudbuild_project[0].project_id}/serviceAccounts/${module.app_infra_cloudbuild_project[0].sa} --gcs-log-dir=gs://bkt-${module.app_infra_cloudbuild_project[0].project_id}-bu1-example-app-logs --worker-pool=${local.cloud_build_private_worker_pool_id}  || ( sleep 45 && gcloud builds submit --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id} --service-account=projects/${module.app_infra_cloudbuild_project[0].project_id}/serviceAccounts/${module.app_infra_cloudbuild_project[0].sa} --gcs-log-dir=gs://bkt-${module.app_infra_cloudbuild_project[0].project_id}-bu1-example-app-logs --worker-pool=${local.cloud_build_private_worker_pool_id}  )"
   confidential_space_image_version = "latest"
-  confidential_space_image_tag     = "${var.artifact_registry_location}-docker.pkg.dev/${local.cloudbuild_project_id}/tf-runners/confidential_space_image:${local.confidential_space_image_version}"
+  confidential_space_image_tag     = "${var.default_region}-docker.pkg.dev/${local.cloudbuild_project_id}/tf-runners/confidential_space_image:${local.confidential_space_image_version}"
+
 }
 
 module "app_infra_cloudbuild_project" {
@@ -60,7 +61,7 @@ resource "google_storage_bucket_iam_member" "allow_build_sa_to_read" {
 
 resource "google_artifact_registry_repository_iam_member" "builder_on_artifact_registry" {
   project    = local.cloudbuild_project_id
-  location   = var.artifact_registry_location
+  location   = var.default_region
   repository = "tf-runners"
   role       = "roles/artifactregistry.repoAdmin"
   member     = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"

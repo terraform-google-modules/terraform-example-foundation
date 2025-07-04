@@ -3,6 +3,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| image\_digest | SHA256 digest of the Docker image. | `string` | n/a | yes |
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | `null` | no |
 | remote\_state\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 

@@ -39,10 +39,11 @@ module "peering_gce_instance" {
   remote_state_bucket = var.remote_state_bucket
 }
 
-module "confidential_space_instance" {
-  source = "../../modules/env_base"
+module "confidential_space" {
+  source = "../../modules/confidential_space"
 
   environment         = local.environment
+  image_digest        = var.image_digest
   business_unit       = local.business_unit
   project_suffix      = "conf-space"
   region              = coalesce(var.instance_region, local.default_region)

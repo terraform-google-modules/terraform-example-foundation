@@ -3,7 +3,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| artifact\_registry\_location | The location to create the Artifact Registry used by confidential space. | `string` | `"us-central1"` | no |
 | business\_unit | The business (ex. business\_unit\_1). | `string` | `"business_unit_1"` | no |
 | confidential\_hostname | Hostname of confidential instance. | `string` | `"confidential-instance"` | no |
 | confidential\_instance\_type | (Optional) Defines the confidential computing technology the instance uses. SEV is an AMD feature. TDX is an Intel feature. One of the following values is required: SEV, SEV\_SNP, TDX. | `string` | `"SEV"` | no |
@@ -16,7 +15,6 @@
 | docker\_image\_reference | Docker image used by confidential space. | `string` | `null` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | gcs\_bucket\_prefix | Name prefix to be used for GCS Bucket | `string` | `"bkt"` | no |
-| gcs\_custom\_placement\_config | Configuration of the bucket's custom location in a dual-region bucket setup. If the bucket is designated a single or multi-region, the variable are null. | <pre>object({<br>    data_locations = list(string)<br>  })</pre> | n/a | yes |
 | image\_digest | SHA256 digest of the Docker image. | `string` | n/a | yes |
 | key\_rotation\_period | Rotation period in seconds to be used for KMS Key. | `string` | `"7776000s"` | no |
 | location\_gcs | Case-Sensitive Location for GCS Bucket. | `string` | `"us"` | no |
@@ -25,12 +23,14 @@
 | region | The GCP region to create and test resources in | `string` | `"us-central1"` | no |
 | remote\_state\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 | source\_image\_family | Source image family used for confidential instance. The default is confidential-space. | `string` | `"confidential-space"` | no |
+| source\_image\_project | Project where the source image comes from. The default project contains confidential-space-images images. | `string` | `"confidential-space-images"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | available\_zones | List of available zones in region |
+| image\_digest | SHA256 digest of the Docker image. |
 | instances\_details | List of details for compute instances |
 | instances\_self\_links | List of self-links for compute instances |
 | project\_id | Project where compute instance was created |

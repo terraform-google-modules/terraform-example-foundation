@@ -53,6 +53,12 @@ variable "source_image_family" {
   default     = "confidential-space"
 }
 
+variable "source_image_project" {
+  description = "Project where the source image comes from. The default project contains confidential-space-images images."
+  type        = string
+  default     = "confidential-space-images"
+}
+
 variable "confidential_machine_type" {
   description = "Machine type to create for confidential instance."
   type        = string
@@ -75,12 +81,6 @@ variable "confidential_hostname" {
   description = "Hostname of confidential instance."
   type        = string
   default     = "confidential-instance"
-}
-
-variable "artifact_registry_location" {
-  description = "The location to create the Artifact Registry used by confidential space."
-  type        = string
-  default     = "us-central1"
 }
 
 variable "docker_image_reference" {
@@ -136,9 +136,3 @@ variable "gcs_bucket_prefix" {
   default     = "bkt"
 }
 
-variable "gcs_custom_placement_config" {
-  description = "Configuration of the bucket's custom location in a dual-region bucket setup. If the bucket is designated a single or multi-region, the variable are null."
-  type = object({
-    data_locations = list(string)
-  })
-}

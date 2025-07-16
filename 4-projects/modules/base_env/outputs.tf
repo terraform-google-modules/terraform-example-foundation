@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 
-output "confidential_space_project" {
-  description = "Confidential Space project id."
-  value       = module.confidential_space_project.project_id
-}
-
-output "confidential_space_project_number" {
-  description = "Confidential Space project number."
-  value       = module.confidential_space_project.project_number
-}
-
 output "floating_project" {
   description = "Project sample floating project."
   value       = module.floating_project.project_id
@@ -100,4 +90,24 @@ output "iap_firewall_tags" {
     "tagKeys/${google_tags_tag_key.firewall_tag_key_ssh[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_ssh[0].name}"
     "tagKeys/${google_tags_tag_key.firewall_tag_key_rdp[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"
   } : {}
+}
+
+output "confidential_space_project" {
+  description = "Confidential Space project id."
+  value       = module.confidential_space_project.project_id
+}
+
+output "confidential_space_project_number" {
+  description = "Confidential Space project number."
+  value       = module.confidential_space_project.project_number
+}
+
+output "terraform_service_accounts" {
+  description = "Confidential space service account."
+  value       = module.confidential_space_project.sa
+}
+
+output "cloudbuild_sa" {
+  description = "Cloudbuild service account."
+  value       = local.app_infra_pipeline_service_accounts["bu1-example-app"]
 }

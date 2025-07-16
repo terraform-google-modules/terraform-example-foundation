@@ -37,6 +37,7 @@
 |------|-------------|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | bucket | The created storage bucket. |
+| cloudbuild\_sa | Cloudbuild service account. |
 | confidential\_space\_project | Confidential Space project id. |
 | confidential\_space\_project\_number | Confidential Space project number. |
 | floating\_project | Project sample floating project. |
@@ -51,6 +52,7 @@
 | shared\_vpc\_project | Project sample restricted project id. |
 | shared\_vpc\_project\_number | Project sample shared vpc project. |
 | subnets\_self\_links | The self-links of subnets. |
+| terraform\_service\_accounts | Confidential space service account. |
 | vpc\_service\_control\_perimeter\_name | VPC Service Control name. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

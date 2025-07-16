@@ -20,6 +20,7 @@
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | bootstrap\_cloudbuild\_project\_id | Cloudbuild project ID. |
 | bucket | The created storage bucket. |
+| cloudbuild\_sa | Cloudbuild Service Account. |
 | confidential\_space\_project | Confidential Space project id. |
 | confidential\_space\_project\_number | Confidential Space project number. |
 | default\_region | The default region for the project. |
@@ -35,6 +36,7 @@
 | shared\_vpc\_project | Project sample shared vpc project id. |
 | shared\_vpc\_project\_number | Project sample shared vpc project. |
 | subnets\_self\_links | The self-links of subnets from shared vpc environment. |
+| terraform\_service\_accounts | APP Infra Pipeline Terraform Accounts. |
 | vpc\_service\_control\_perimeter\_name | VPC Service Control name. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -39,6 +39,8 @@ locals {
   app_infra_cloudbuild_project      = data.terraform_remote_state.projects_env.outputs.confidential_space_project
   confidential_space_project_number = data.terraform_remote_state.projects_env.outputs.confidential_space_project_number
   confidential_space_project_id     = data.terraform_remote_state.projects_env.outputs.confidential_space_project
+  cloudbuild_service_account        = data.terraform_remote_state.projects_env.outputs.cloudbuild_sa
+
 }
 
 data "terraform_remote_state" "projects_env" {
@@ -48,6 +50,12 @@ data "terraform_remote_state" "projects_env" {
     bucket = var.remote_state_bucket
     prefix = "terraform/projects/${var.business_unit}/${var.environment}"
   }
+}
+
+resource "google_project_iam_member" "workload_identity_admin" {
+  project = local.app_infra_cloudbuild_project
+  role    = "roles/iam.workloadIdentityPoolAdmin"
+  member  = google_service_account.workload_sa.member
 }
 
 resource "google_iam_workload_identity_pool" "confidential_space_pool" {
@@ -73,11 +81,12 @@ resource "google_iam_workload_identity_pool_provider" "attestation_verifier" {
   }
 
   attribute_condition = <<EOT
-assertion.submods.container.image_digest == '${var.image_digest}' &&
-${google_service_account.workload_sa.email}" in assertion.google_service_accounts &&
+assertion.submods.container.image_digest == "${var.image_digest}" &&
+"${google_service_account.workload_sa.email}" in assertion.google_service_accounts &&
 assertion.swname == "CONFIDENTIAL_SPACE" &&
 "STABLE" in assertion.submods.confidential_space.support_attributes
 EOT
+
 }
 
 resource "google_service_account" "workload_sa" {
@@ -86,7 +95,45 @@ resource "google_service_account" "workload_sa" {
   project      = local.app_infra_cloudbuild_project
 }
 
+resource "google_project_iam_member" "service_usage_admin" {
+  project = local.app_infra_cloudbuild_project
+  role    = "roles/serviceusage.serviceUsageAdmin"
+  member  = google_service_account.workload_sa.member
+}
+
+resource "google_project_iam_member" "service_account_admin" {
+  project = local.app_infra_cloudbuild_project
+  role    = "roles/iam.serviceAccountAdmin"
+  member  = google_service_account.workload_sa.member
+}
+
+resource "google_project_iam_member" "workload_kms_admin" {
+  project = local.app_infra_cloudbuild_project
+  role    = "roles/cloudkms.admin"
+  member  = google_service_account.workload_sa.member
+}
+
+resource "google_project_iam_member" "workload_instance_admin" {
+  project = local.app_infra_cloudbuild_project
+  role    = "roles/compute.instanceAdmin.v1"
+  member  = google_service_account.workload_sa.member
+}
+
+resource "google_project_iam_member" "workload_gcs_admin_sa" {
+  project = local.confidential_space_project_id
+  role    = "roles/storage.admin"
+  member  = google_service_account.workload_sa.member
+}
+
+resource "google_service_account_iam_member" "impersonate_workload_sa" {
+  service_account_id = google_service_account.workload_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${local.cloudbuild_service_account}"
+}
+
+
 resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
+  project    = local.cloudbuild_project_id
   repository = local.artifact_registry_repository
   location   = local.default_region
   role       = "roles/artifactregistry.reader"
@@ -115,7 +162,7 @@ module "confidential_instance_template" {
   }
 
   metadata = {
-    tee-image-reference = var.docker_image_reference != "" ? var.docker_image_reference : local.default_tee_image_reference
+    tee-image-reference = local.default_tee_image_reference
   }
 
   service_account = {
@@ -171,7 +218,6 @@ module "kms_confidential_space" {
   prevent_destroy     = "false"
 }
 
-// Using resource since the KMS module doesn't support condition attribute
 resource "google_kms_crypto_key_iam_member" "key_decrypter" {
   crypto_key_id = module.kms_confidential_space.keys["workload-key"]
   role          = "roles/cloudkms.cryptoKeyDecrypter"
@@ -184,6 +230,12 @@ resource "google_kms_crypto_key_iam_member" "key_decrypter" {
   }
 }
 
+resource "google_kms_crypto_key_iam_member" "gcs_encrypter_ecrypter" {
+  crypto_key_id = module.kms_confidential_space.keys["workload-key"]
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = "serviceAccount:service-${local.confidential_space_project_number}@gs-project-accounts.iam.gserviceaccount.com"
+}
+
 resource "google_kms_crypto_key_iam_member" "encrypter_binding" {
   crypto_key_id = module.kms_confidential_space.keys["workload-key"]
   role          = "roles/cloudkms.cryptoKeyEncrypter"
@@ -194,7 +246,7 @@ resource "google_kms_crypto_key_iam_member" "encrypter_binding" {
 resource "google_service_account_iam_member" "workload_identity_binding" {
   service_account_id = "projects/${local.env_project_id}/serviceAccounts/${google_service_account.workload_sa.email}"
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${local.confidential_space_project_number}/locations/${var.confidential_space_location_kms}/workloadIdentityPools/confidential-space-pool/*"
+  member             = "principalSet://iam.googleapis.com/projects/${local.confidential_space_project_number}/locations/global/workloadIdentityPools/confidential-space-pool/*"
 }
 
 
@@ -218,8 +270,6 @@ module "gcs_buckets" {
   encryption = {
     default_kms_key_name = module.kms_confidential_space.keys["workload-key"]
   }
-
-  depends_on = [local.confidential_space_project_id]
 }
 
 resource "google_storage_bucket_iam_member" "object_viewer" {

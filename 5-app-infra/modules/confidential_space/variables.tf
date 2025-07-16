@@ -54,7 +54,7 @@ variable "source_image_family" {
 }
 
 variable "source_image_project" {
-  description = "Project where the source image comes from. The default project contains confidential-space-images images."
+  description = "Project where the source image comes from. The default project contains confidential-space-images images. See: https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-images"
   type        = string
   default     = "confidential-space-images"
 }
@@ -83,12 +83,6 @@ variable "confidential_hostname" {
   default     = "confidential-instance"
 }
 
-variable "docker_image_reference" {
-  description = "Docker image used by confidential space."
-  type        = string
-  default     = null
-}
-
 variable "confidential_space_keyring_name" {
   description = "Name to be used for KMS Keyring confidential space."
   type        = string
@@ -108,13 +102,13 @@ variable "key_rotation_period" {
 }
 
 variable "confidential_space_location_kms" {
-  description = "Case-Sensitive Location for KMS Keyring."
+  description = "Case-Sensitive Location for KMS Keyring.."
   type        = string
   default     = "us"
 }
 
 variable "image_digest" {
-  description = "SHA256 digest of the Docker image."
+  description = "SHA256 digest of the Docker image.The format is `sha256:xxxxx`"
   type        = string
 }
 
@@ -131,8 +125,7 @@ variable "location_gcs" {
 }
 
 variable "gcs_bucket_prefix" {
-  description = "Name prefix to be used for GCS Bucket"
+  description = "Name prefix to be used for GCS Bucket."
   type        = string
   default     = "bkt"
 }
-

@@ -39,3 +39,7 @@ output "image_digest" {
   value       = var.image_digest
 }
 
+output "cloudbuild_service_account" {
+  description = "Cloudbuild service account."
+  value       = local.cloudbuild_service_account
+}

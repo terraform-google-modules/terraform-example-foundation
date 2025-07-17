@@ -110,11 +110,6 @@ output "bootstrap_cloudbuild_project_id" {
   value       = local.cloudbuild_project_id
 }
 
-output "terraform_service_accounts" {
-  description = "APP Infra Pipeline Terraform Accounts."
-  value       = module.env.terraform_service_accounts
-}
-
 output "cloudbuild_sa" {
   description = "Cloudbuild Service Account."
   value       = module.env.cloudbuild_sa

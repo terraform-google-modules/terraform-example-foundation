@@ -219,7 +219,7 @@ module "kms_confidential_space" {
 }
 
 resource "google_kms_crypto_key_iam_member" "key_decrypter" {
-  crypto_key_id = module.kms_confidential_space.keys["workload-key"]
+  crypto_key_id = module.kms_confidential_space.keys[var.confidential_space_key_name]
   role          = "roles/cloudkms.cryptoKeyDecrypter"
   member        = "serviceAccount:${google_service_account.workload_sa.email}"
 
@@ -231,13 +231,13 @@ resource "google_kms_crypto_key_iam_member" "key_decrypter" {
 }
 
 resource "google_kms_crypto_key_iam_member" "gcs_encrypter_ecrypter" {
-  crypto_key_id = module.kms_confidential_space.keys["workload-key"]
+  crypto_key_id = module.kms_confidential_space.keys[var.confidential_space_key_name]
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
   member        = "serviceAccount:service-${local.confidential_space_project_number}@gs-project-accounts.iam.gserviceaccount.com"
 }
 
 resource "google_kms_crypto_key_iam_member" "encrypter_binding" {
-  crypto_key_id = module.kms_confidential_space.keys["workload-key"]
+  crypto_key_id = module.kms_confidential_space.keys[var.confidential_space_key_name]
   role          = "roles/cloudkms.cryptoKeyEncrypter"
   member        = "serviceAccount:${google_service_account.workload_sa.email}"
 }
@@ -268,7 +268,7 @@ module "gcs_buckets" {
   bucket_policy_only = true
 
   encryption = {
-    default_kms_key_name = module.kms_confidential_space.keys["workload-key"]
+    default_kms_key_name = module.kms_confidential_space.keys[var.confidential_space_key_name]
   }
 }
 

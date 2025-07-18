@@ -115,7 +115,7 @@ output "cloudbuild_sa" {
   value       = module.env.cloudbuild_sa
 }
 
-output "confidential_space_workload_sa" { //added 1807
+output "confidential_space_workload_sa" {
   description = "Workload Service Account for confidential space"
   value       = google_service_account.workload_sa.email
 }

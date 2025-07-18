@@ -39,6 +39,36 @@ module "env" {
   folder_deletion_protection   = var.folder_deletion_protection
 }
 
+resource "google_service_account" "workload_sa" {
+  account_id   = "confidential-space-workload-sa"
+  display_name = "Workload Service Account for confidential space"
+  project      = module.env.confidential_space_project
+}
+
+resource "google_project_iam_member" "service_usage_admin" {
+  project = module.env.confidential_space_project
+  role    = "roles/serviceusage.serviceUsageAdmin"
+  member  = google_service_account.workload_sa.member
+}
+
+resource "google_project_iam_member" "service_account_admin" {
+  project = module.env.confidential_space_project
+  role    = "roles/iam.serviceAccountAdmin"
+  member  = google_service_account.workload_sa.member
+}
+
+resource "google_project_iam_member" "workload_kms_admin" {
+  project = module.env.confidential_space_project
+  role    = "roles/cloudkms.admin"
+  member  = google_service_account.workload_sa.member
+}
+
+resource "google_project_iam_member" "workload_instance_admin" {
+  project = module.env.confidential_space_project
+  role    = "roles/compute.instanceAdmin.v1"
+  member  = google_service_account.workload_sa.member
+}
+
 resource "google_project_iam_member" "cb_workload_identity_admin" {
   project = module.env.confidential_space_project
   role    = "roles/iam.workloadIdentityPoolAdmin"

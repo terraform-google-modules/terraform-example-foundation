@@ -23,6 +23,7 @@
 | cloudbuild\_sa | Cloudbuild Service Account. |
 | confidential\_space\_project | Confidential Space project id. |
 | confidential\_space\_project\_number | Confidential Space project number. |
+| confidential\_space\_workload\_sa | Workload Service Account for confidential space |
 | default\_region | The default region for the project. |
 | floating\_project | Project sample floating project. |
 | iap\_firewall\_tags | The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project. |
@@ -36,7 +37,6 @@
 | shared\_vpc\_project | Project sample project id. |
 | shared\_vpc\_project\_number | Project sample shared vpc project. |
 | subnets\_self\_links | The self-links of subnets from environment. |
-| terraform\_service\_accounts | APP Infra Pipeline Terraform Accounts. |
 | vpc\_service\_control\_perimeter\_name | VPC Service Control name. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

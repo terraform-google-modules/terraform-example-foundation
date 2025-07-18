@@ -26,7 +26,6 @@ variable "remote_state_bucket" {
 }
 
 variable "image_digest" {
-  description = "SHA256 digest of the Docker image to be used for running the workload in Confidential Space. This value ensures the integrity and immutability of the image, guaranteeing that only the expected 
-and verified code is executed within the confidential environment. Expected format: `sha256:<digest>`."
+  description = "SHA256 digest of the Docker image to be used for running the workload in Confidential Space. This value ensures the integrity and immutability of the image, guaranteeing that only the expected and verified code is executed within the confidential environment. Expected format: `sha256:<digest>`."
   type        = string
 }

@@ -3,7 +3,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| image\_digest | SHA256 digest of the Docker image. | `string` | n/a | yes |
+| image\_digest | SHA256 digest of the Docker image to be used for running the workload in Confidential Space. This value ensures the integrity and immutability of the image, guaranteeing that only the expected and verified code is executed within the confidential environment. Expected format: `sha256:<digest>`. | `string` | n/a | yes |
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | `null` | no |
 | remote\_state\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
 

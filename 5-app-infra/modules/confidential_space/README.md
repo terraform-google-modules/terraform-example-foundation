@@ -14,7 +14,7 @@
 | cpu\_platform | The CPU platform used by this instance. If confidential\_instance\_type is set as SEV, then it is an AMD feature. TDX is an Intel feature. | `string` | `"AMD Milan"` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | gcs\_bucket\_prefix | Name prefix to be used for GCS Bucket. | `string` | `"bkt"` | no |
-| image\_digest | SHA256 digest of the Docker image.The format is `sha256:xxxxx` | `string` | n/a | yes |
+| image\_digest | SHA256 digest of the Docker image to be used for running the workload in Confidential Space. This value ensures the integrity and immutability of the image, guaranteeing that only the expected and verified code is executed within the confidential environment. Expected format: `sha256:<digest>`. | `string` | n/a | yes |
 | key\_rotation\_period | Rotation period in seconds to be used for KMS Key. | `string` | `"7776000s"` | no |
 | location\_gcs | Case-Sensitive Location for GCS Bucket. | `string` | `"us"` | no |
 | num\_instances | Number of instances to create | `number` | `1` | no |

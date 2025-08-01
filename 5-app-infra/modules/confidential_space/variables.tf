@@ -129,3 +129,4 @@ variable "gcs_bucket_prefix" {
   type        = string
   default     = "bkt"
 }
+

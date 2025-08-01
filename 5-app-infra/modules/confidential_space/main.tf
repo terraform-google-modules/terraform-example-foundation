@@ -77,7 +77,8 @@ resource "google_iam_workload_identity_pool_provider" "attestation_verifier" {
   }
 
   attribute_mapping = {
-    "google.subject" = "assertion.sub"
+    "google.subject"         = "\"gcpcs::\" + assertion.submods.container.image_digest + \"::\" + assertion.submods.gce.project_number + \"::\" + assertion.submods.gce.instance_id"
+    "attribute.image_digest" = "assertion.submods.container.image_digest"
   }
 
   attribute_condition = <<EOT
@@ -87,12 +88,6 @@ assertion.swname == "CONFIDENTIAL_SPACE" &&
 "STABLE" in assertion.submods.confidential_space.support_attributes
 EOT
 
-}
-
-resource "google_project_iam_member" "workload_gcs_admin_sa" {
-  project = local.confidential_space_project_id
-  role    = "roles/storage.admin"
-  member  = "serviceAccount:${local.confidential_space_workload_sa}"
 }
 
 resource "google_service_account_iam_member" "impersonate_workload_sa" {
@@ -219,13 +214,13 @@ resource "google_service_account_iam_member" "workload_identity_binding" {
   member             = "principalSet://iam.googleapis.com/projects/${local.confidential_space_project_number}/locations/global/workloadIdentityPools/confidential-space-pool/*"
 }
 
-resource "random_string" "bucket_name" {
-  length  = 5
-  upper   = false
-  numeric = true
-  lower   = true
-  special = false
-}
+ resource "random_string" "bucket_name" {
+   length  = 5
+   upper   = false
+   numeric = true
+   lower   = true
+   special = false
+ }
 
 module "gcs_buckets" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
@@ -235,16 +230,12 @@ module "gcs_buckets" {
   location           = var.location_gcs
   name               = "${var.gcs_bucket_prefix}-${local.confidential_space_project_id}-cmek-encrypted-${random_string.bucket_name.result}"
   bucket_policy_only = true
-
-  encryption = {
-    default_kms_key_name = module.kms_confidential_space.keys[var.confidential_space_key_name]
-  }
 }
 
-resource "google_storage_bucket_iam_member" "object_viewer" {
-  bucket = module.gcs_buckets.name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${local.confidential_space_workload_sa}"
+resource "google_project_iam_member" "workload_gcs_admin_sa" {
+  project = local.confidential_space_project_id
+  role    = "roles/storage.admin"
+  member  = "serviceAccount:${local.confidential_space_workload_sa}"
 }
 
 resource "google_storage_bucket_iam_member" "results_bucket_object_admin" {
@@ -253,3 +244,8 @@ resource "google_storage_bucket_iam_member" "results_bucket_object_admin" {
   member = "serviceAccount:${local.confidential_space_workload_sa}"
 }
 
+resource "google_storage_bucket_iam_member" "object_viewer" {
+  bucket = module.gcs_buckets.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${local.confidential_space_workload_sa}"
+}

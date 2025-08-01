@@ -43,3 +43,8 @@ output "cloudbuild_service_account" {
   description = "Cloudbuild service account."
   value       = local.cloudbuild_service_account
 }
+
+output "gcs_buckets" {
+  description = "Bucket name for confidential space code."
+  value       = module.gcs_buckets.name
+}

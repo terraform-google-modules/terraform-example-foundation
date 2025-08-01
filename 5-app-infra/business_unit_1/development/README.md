@@ -12,6 +12,7 @@
 | Name | Description |
 |------|-------------|
 | available\_zones | List of available zones in region |
+| gcs\_buckets | Bucket where confidential space code will be stored |
 | instances\_details | List of details for compute instances |
 | instances\_names | List of names for compute instances |
 | instances\_self\_links | List of self-links for compute instances |

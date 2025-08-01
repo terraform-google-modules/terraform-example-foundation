@@ -110,3 +110,16 @@ resource "google_project_iam_member" "cloudbuild_project_iam_admin" {
   role    = "roles/resourcemanager.projectIamAdmin"
   member  = "serviceAccount:${module.env.cloudbuild_sa}"
 }
+
+resource "google_project_iam_member" "workload_identity_admin" {
+  project = module.env.confidential_space_project
+  role    = "roles/iam.workloadIdentityPoolAdmin"
+  member  = "serviceAccount:${google_service_account.workload_sa.email}"
+}
+
+resource "google_project_iam_member" "workload_identity_admin_cb" {
+  project = module.env.confidential_space_project
+  role    = "roles/iam.workloadIdentityPoolAdmin"
+  member  = "serviceAccount:${module.env.cloudbuild_sa}"
+}
+

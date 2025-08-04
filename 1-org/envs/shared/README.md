@@ -43,6 +43,7 @@
 | Name | Description |
 |------|-------------|
 | billing\_sink\_names | The name of the sinks under billing account level. |
+| build\_service\_account | Cloud Function Build Service Account Id. This is The fully-qualified name of the service account to be used for building the container. |
 | cai\_monitoring\_artifact\_registry | CAI Monitoring Cloud Function Artifact Registry name. |
 | cai\_monitoring\_asset\_feed | CAI Monitoring Cloud Function Organization Asset Feed name. |
 | cai\_monitoring\_bucket | CAI Monitoring Cloud Function Source Bucket name. |

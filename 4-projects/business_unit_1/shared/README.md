@@ -16,6 +16,7 @@
 | apply\_triggers\_id | CB apply triggers |
 | artifact\_buckets | GCS Buckets to store Cloud Build Artifacts |
 | cloudbuild\_project\_id | n/a |
+| cloudbuild\_project\_number | n/a |
 | default\_region | Default region to create resources where applicable. |
 | enable\_cloudbuild\_deploy | Enable infra deployment using Cloud Build. |
 | log\_buckets | GCS Buckets to store Cloud Build logs |

@@ -23,6 +23,10 @@ output "cloudbuild_project_id" {
   value = try(module.app_infra_cloudbuild_project[0].project_id, "")
 }
 
+output "cloudbuild_project_number" {
+  value = module.app_infra_cloudbuild_project[0].project_number
+}
+
 output "terraform_service_accounts" {
   description = "APP Infra Pipeline Terraform Accounts."
   value       = try(module.infra_pipelines[0].terraform_service_accounts, {})

@@ -1,19 +1,3 @@
-/**
- * Copyright 2025 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package main
 
 import (
@@ -30,15 +14,15 @@ import (
 )
 
 const (
-	serviceAccountToImpersonate = "<your-confidential-space-workload-service-account>"
-        projectID                   = "<your-confidential-space-project>"
-        bucketName                  = "<your-confidential-space-bucket>"
+	serviceAccountToImpersonate = "CONFIDENTIAL-SPACCE-WORKLOAD-SERVICE-ACCOUNT"
+	projectID                   = "CONFIDENTIAL-SPACE-PROJECT"
+	bucketName                  = "CONFIDENTIAL-SPACE-BUCKET"
 )
 
 func main() {
-        ctx := context.Background()
+	ctx := context.Background()
 
-        fileName := "<your-confidential-file>"
+	fileName := "salary.txt"
 
 	err := ioutil.WriteFile(fileName, []byte("test\n"), 0644)
 	if err != nil {
@@ -56,9 +40,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error sending file to GCS: %v", err)
 	}
-	fmt.Println("Success sending file to GCS!")
+	fmt.Println("Success sendign file to GCS!")
 
-	err = writeLogEntry(ctx, projectID, "confidential_log", "Confidential space successfully created.", logging.Info)
+	err = writeLogEntry(ctx, projectID, "confidential_log", "Log created by Confidential space instance.", logging.Info)
 	if err != nil {
 		log.Fatalf("Error writing log: %v", err)
 	}

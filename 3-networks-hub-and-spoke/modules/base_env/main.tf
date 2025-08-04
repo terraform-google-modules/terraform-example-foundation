@@ -20,139 +20,12 @@ locals {
 
   subnet_aggregates = ["10.8.0.0/18", "10.9.0.0/18", "100.72.0.0/18", "100.73.0.0/18"]
   hub_subnet_ranges = ["10.8.0.0/24", "10.9.0.0/24"]
-
-  supported_restricted_service = [
-    "accessapproval.googleapis.com",
-    "adsdatahub.googleapis.com",
-    "aiplatform.googleapis.com",
-    "alloydb.googleapis.com",
-    "alpha-documentai.googleapis.com",
-    "analyticshub.googleapis.com",
-    "apigee.googleapis.com",
-    "apigeeconnect.googleapis.com",
-    "artifactregistry.googleapis.com",
-    "assuredworkloads.googleapis.com",
-    "automl.googleapis.com",
-    "baremetalsolution.googleapis.com",
-    "batch.googleapis.com",
-    "bigquery.googleapis.com",
-    "bigquerydatapolicy.googleapis.com",
-    "bigquerydatatransfer.googleapis.com",
-    "bigquerymigration.googleapis.com",
-    "bigqueryreservation.googleapis.com",
-    "bigtable.googleapis.com",
-    "binaryauthorization.googleapis.com",
-    "cloud.googleapis.com",
-    "cloudasset.googleapis.com",
-    "cloudbuild.googleapis.com",
-    "clouddebugger.googleapis.com",
-    "clouddeploy.googleapis.com",
-    "clouderrorreporting.googleapis.com",
-    "cloudfunctions.googleapis.com",
-    "cloudkms.googleapis.com",
-    "cloudprofiler.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "cloudscheduler.googleapis.com",
-    "cloudsearch.googleapis.com",
-    "cloudtrace.googleapis.com",
-    "composer.googleapis.com",
-    "compute.googleapis.com",
-    "connectgateway.googleapis.com",
-    "contactcenterinsights.googleapis.com",
-    "container.googleapis.com",
-    "containeranalysis.googleapis.com",
-    "containerfilesystem.googleapis.com",
-    "containerregistry.googleapis.com",
-    "containerthreatdetection.googleapis.com",
-    "datacatalog.googleapis.com",
-    "dataflow.googleapis.com",
-    "datafusion.googleapis.com",
-    "datamigration.googleapis.com",
-    "dataplex.googleapis.com",
-    "dataproc.googleapis.com",
-    "datastream.googleapis.com",
-    "dialogflow.googleapis.com",
-    "dlp.googleapis.com",
-    "dns.googleapis.com",
-    "documentai.googleapis.com",
-    "domains.googleapis.com",
-    "eventarc.googleapis.com",
-    "file.googleapis.com",
-    "firebaseappcheck.googleapis.com",
-    "firebaserules.googleapis.com",
-    "firestore.googleapis.com",
-    "gameservices.googleapis.com",
-    "gkebackup.googleapis.com",
-    "gkeconnect.googleapis.com",
-    "gkehub.googleapis.com",
-    "healthcare.googleapis.com",
-    "iam.googleapis.com",
-    "iamcredentials.googleapis.com",
-    "iaptunnel.googleapis.com",
-    "ids.googleapis.com",
-    "integrations.googleapis.com",
-    "kmsinventory.googleapis.com",
-    "krmapihosting.googleapis.com",
-    "language.googleapis.com",
-    "lifesciences.googleapis.com",
-    "logging.googleapis.com",
-    "managedidentities.googleapis.com",
-    "memcache.googleapis.com",
-    "meshca.googleapis.com",
-    "meshconfig.googleapis.com",
-    "metastore.googleapis.com",
-    "ml.googleapis.com",
-    "monitoring.googleapis.com",
-    "networkconnectivity.googleapis.com",
-    "networkmanagement.googleapis.com",
-    "networksecurity.googleapis.com",
-    "networkservices.googleapis.com",
-    "notebooks.googleapis.com",
-    "opsconfigmonitoring.googleapis.com",
-    "orgpolicy.googleapis.com",
-    "osconfig.googleapis.com",
-    "oslogin.googleapis.com",
-    "privateca.googleapis.com",
-    "pubsub.googleapis.com",
-    "pubsublite.googleapis.com",
-    "recaptchaenterprise.googleapis.com",
-    "recommender.googleapis.com",
-    "redis.googleapis.com",
-    "retail.googleapis.com",
-    "run.googleapis.com",
-    "secretmanager.googleapis.com",
-    "servicecontrol.googleapis.com",
-    "servicedirectory.googleapis.com",
-    "spanner.googleapis.com",
-    "speakerid.googleapis.com",
-    "speech.googleapis.com",
-    "sqladmin.googleapis.com",
-    "storage.googleapis.com",
-    "storagetransfer.googleapis.com",
-    "sts.googleapis.com",
-    "texttospeech.googleapis.com",
-    "timeseriesinsights.googleapis.com",
-    "tpu.googleapis.com",
-    "trafficdirector.googleapis.com",
-    "transcoder.googleapis.com",
-    "translate.googleapis.com",
-    "videointelligence.googleapis.com",
-    "vision.googleapis.com",
-    "visionai.googleapis.com",
-    "vmmigration.googleapis.com",
-    "vpcaccess.googleapis.com",
-    "webrisk.googleapis.com",
-    "workflows.googleapis.com",
-    "workstations.googleapis.com",
-  ]
-
-  restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
-  restricted_services_dry_run = length(var.custom_restricted_services_dry_run) != 0 ? var.custom_restricted_services : local.supported_restricted_service
 }
 
 /******************************************
  Shared VPC
 *****************************************/
+
 module "shared_vpc" {
   source = "../shared_vpc"
 
@@ -162,28 +35,14 @@ module "shared_vpc" {
   net_hub_project_number           = local.net_hub_project_number
   environment_code                 = var.environment_code
   access_context_manager_policy_id = var.access_context_manager_policy_id
-  restricted_services              = local.restricted_services
-  restricted_services_dry_run      = local.restricted_services_dry_run
-  members = distinct(concat([
-    "serviceAccount:${local.networks_service_account}",
-    "serviceAccount:${local.projects_service_account}",
-    "serviceAccount:${local.organization_service_account}",
-  ], var.perimeter_additional_members))
-  members_dry_run = distinct(concat([
-    "serviceAccount:${local.networks_service_account}",
-    "serviceAccount:${local.projects_service_account}",
-    "serviceAccount:${local.organization_service_account}",
-  ], var.perimeter_additional_members))
-  private_service_cidr         = var.private_service_cidr
-  private_service_connect_ip   = var.private_service_connect_ip
-  ingress_policies             = var.ingress_policies
-  egress_policies              = var.egress_policies
-  bgp_asn_subnet               = local.bgp_asn_number
-  default_region1              = var.default_region1
-  default_region2              = var.default_region2
-  domain                       = var.domain
-  mode                         = "spoke"
-  target_name_server_addresses = var.target_name_server_addresses
+  private_service_cidr             = var.private_service_cidr
+  private_service_connect_ip       = var.private_service_connect_ip
+  bgp_asn_subnet                   = local.bgp_asn_number
+  default_region1                  = var.default_region1
+  default_region2                  = var.default_region2
+  domain                           = var.domain
+  mode                             = "spoke"
+  target_name_server_addresses     = var.target_name_server_addresses
 
   subnets = [
     {
@@ -232,6 +91,7 @@ module "shared_vpc" {
     }
   ]
   secondary_ranges = {
+    "sb-${var.environment_code}-svpc-${var.default_region1}" = var.subnet_secondary_ranges[var.default_region1]
     "sb-${var.environment_code}-svpc-${var.default_region1}" = var.subnet_secondary_ranges[var.default_region1]
   }
 }

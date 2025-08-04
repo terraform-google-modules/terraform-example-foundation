@@ -47,12 +47,9 @@ module "base_env" {
   env                               = local.env
   environment_code                  = local.environment_code
   access_context_manager_policy_id  = var.access_context_manager_policy_id
-  perimeter_additional_members      = var.perimeter_additional_members
   default_region1                   = local.default_region1
   default_region2                   = local.default_region2
   domain                            = var.domain
-  ingress_policies                  = var.ingress_policies
-  egress_policies                   = var.egress_policies
   enable_partner_interconnect       = false
   enable_hub_and_spoke_transitivity = var.enable_hub_and_spoke_transitivity
   private_service_cidr              = local.private_service_cidr

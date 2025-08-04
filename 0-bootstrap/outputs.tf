@@ -71,6 +71,11 @@ output "common_config" {
   }
 }
 
+output "parent_id" {
+  description = "Parent ID service account."
+  value       = var.parent_folder != "" ? "folder-${local.parent_id}" : "org-${var.org_id}"
+}
+
 output "required_groups" {
   description = "List of Google Groups created that are required by the Example Foundation steps."
   value       = var.groups.create_required_groups == false ? tomap(var.groups.required_groups) : tomap({ for key, value in module.required_group : key => value.id })
@@ -79,6 +84,16 @@ output "required_groups" {
 output "optional_groups" {
   description = "List of Google Groups created that are optional to the Example Foundation steps."
   value       = var.groups.create_optional_groups == false ? tomap(var.groups.optional_groups) : tomap({ for key, value in module.optional_group : key => value.id })
+}
+
+output "seed_project_number" {
+  description = "The seed project number."
+  value       = data.google_project.seed_project.number
+}
+
+output "cloudbuild_project_number" {
+  description = "The cloudbuild project number."
+  value       = data.google_project.cloudbuild_project.number
 }
 
 /* ----------------------------------------

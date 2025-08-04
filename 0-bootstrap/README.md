@@ -546,6 +546,7 @@ The following steps will guide you through deploying without using Cloud Build.
 | cloud\_build\_worker\_range\_id | The Cloud Build private worker IP range ID. |
 | cloud\_builder\_artifact\_repo | Artifact Registry (AR) Repository created to store TF Cloud Builder images. |
 | cloudbuild\_project\_id | Project where Cloud Build configuration and terraform container image will reside. |
+| cloudbuild\_project\_number | The cloudbuild project number. |
 | common\_config | Common configuration data to be used in other steps. |
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
 | environment\_step\_terraform\_service\_account\_email | Environment Step Terraform Account |
@@ -555,9 +556,11 @@ The following steps will guide you through deploying without using Cloud Build.
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
 | optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |
+| parent\_id | Parent ID service account. |
 | projects\_gcs\_bucket\_tfstate | Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project. |
 | projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
 | required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
+| seed\_project\_number | The seed project number. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

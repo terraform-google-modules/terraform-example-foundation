@@ -214,13 +214,13 @@ resource "google_service_account_iam_member" "workload_identity_binding" {
   member             = "principalSet://iam.googleapis.com/projects/${local.confidential_space_project_number}/locations/global/workloadIdentityPools/confidential-space-pool/*"
 }
 
- resource "random_string" "bucket_name" {
-   length  = 5
-   upper   = false
-   numeric = true
-   lower   = true
-   special = false
- }
+resource "random_string" "bucket_name" {
+  length  = 5
+  upper   = false
+  numeric = true
+  lower   = true
+  special = false
+}
 
 module "gcs_buckets" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"

@@ -74,6 +74,9 @@ module "logging_logbucket" {
 | Name | Description |
 |------|-------------|
 | billing\_sink\_names | Map of log sink names with billing suffix |
+| internal\_project\_log\_export | The service account that logging uses to write log entries to the destination. |
+| log\_export | The service account that logging uses to write log entries to the destination. |
+| log\_export\_billing | The service account that logging uses to write log entries to the destination. |
 | project\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset for the project destination. |
 | project\_logbucket\_name | The resource name for the Log Bucket created for the project destination. |
 | pubsub\_destination\_name | The resource name for the destination Pub/Sub. |

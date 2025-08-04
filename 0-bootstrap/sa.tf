@@ -49,14 +49,18 @@ locals {
       "roles/resourcemanager.tagUser",
       "roles/cloudasset.owner",
       "roles/securitycenter.sourcesEditor",
+      "roles/serviceusage.serviceUsageConsumer",
     ], local.common_roles)),
     "env" = distinct(concat([
+      "roles/accesscontextmanager.policyAdmin",
       "roles/resourcemanager.tagUser",
       "roles/assuredworkloads.admin",
+      "roles/serviceusage.serviceUsageConsumer",
     ], local.common_roles)),
     "net" = distinct(concat([
       "roles/accesscontextmanager.policyAdmin",
       "roles/compute.xpnAdmin",
+      "roles/serviceusage.serviceUsageConsumer",
     ], local.common_roles)),
     "proj" = distinct(concat([
       "roles/accesscontextmanager.policyAdmin",

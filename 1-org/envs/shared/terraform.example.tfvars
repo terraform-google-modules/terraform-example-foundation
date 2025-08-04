@@ -19,6 +19,11 @@ domains_to_allow = ["example.com"]
 
 essential_contacts_domains_to_allow = ["@example.com"]
 
+// Update the following line and add you email in the perimeter_additional_members list.
+// You must be in this list to be able to view/access resources in the project protected by the VPC service controls.
+
+perimeter_additional_members = ["user:YOUR-USER-EMAIL@example.com"]
+
 scc_notification_name = "scc-notify"
 
 remote_state_bucket = "REMOTE_STATE_BUCKET"

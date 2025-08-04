@@ -148,3 +148,8 @@ output "cai_monitoring_topic" {
   value       = try(module.cai_monitoring[0].topic_name, null)
   description = "CAI Monitoring Cloud Function Pub/Sub Topic name."
 }
+
+output "build_service_account" {
+  description = "Cloud Function Build Service Account Id. This is The fully-qualified name of the service account to be used for building the container."
+  value       = google_service_account.cai_monitoring_builder[0].email
+}

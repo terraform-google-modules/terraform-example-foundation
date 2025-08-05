@@ -220,13 +220,75 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    git push origin nonproduction
    ```
 
-1. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+2. Use `terraform output` to get the APP Infra Pipeline Terraform service account.
+
+   ```bash
+   export terraform_service_accounts=$(terraform -chdir="business_unit_1/shared/" output -json terraform_service_accounts | jq -r 'to_entries[0].value')
+   echo $terraform_service_accounts
+   ```
+
+3. If you are deploying with VPC Service Controls in dry run mode, update the `required_ingres_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_ingres_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the directional rules:
+
+   ```
+   {
+      from = {
+         identities = [
+            "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
+         ]
+         sources = {
+            resources = [
+               "projects/${local.cloudbuild_project_number}"
+            ]
+         }
+      }
+      to = {
+         resources = [
+            "projects/<prj_bu1_infra_pipeline_number>"
+         ]
+         operations = {
+            "storage.googleapis.com" = {
+               methods = ["*"]
+            }
+            "logging.googleapis.com" = {
+               methods = ["*"]
+            }
+            "iamcredentials.googleapis.com" = {
+               methods = ["*"]
+            }
+         }
+      }
+   },
+   {
+      from = {
+         identities = [
+            "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
+         ]
+         sources = {
+            resources = [
+               "projects/${local.cloudbuild_project_number}"
+            ]
+         }
+      }
+      to = {
+         resources = [
+            "projects/${local.seed_project_number}"
+         ]
+         operations = {
+            "storage.googleapis.com" = {
+               methods = ["*"]
+            }
+         }
+      }
+   },
+   ```
+
+4. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
-1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
+5. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
 
 ### Deploying with Jenkins
 
@@ -400,6 +462,68 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    git add .
    git commit -m "Initial production commit."
    cd ../
+   ```
+
+1. Use `terraform output` to get the APP Infra Pipeline Terraform service account.
+
+   ```bash
+   export terraform_service_accounts=$(terraform -chdir="business_unit_1/shared/" output -json terraform_service_accounts | jq -r 'to_entries[0].value')
+   echo $terraform_service_accounts
+   ```
+
+3. If you are deploying with VPC Service Controls in dry run mode, update the `required_ingres_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_ingres_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the directional rules:
+
+   ```
+   {
+      from = {
+         identities = [
+            "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
+         ]
+         sources = {
+            resources = [
+               "projects/${local.cloudbuild_project_number}"
+            ]
+         }
+      }
+      to = {
+         resources = [
+            "projects/<prj_bu1_infra_pipeline_number>"
+         ]
+         operations = {
+            "storage.googleapis.com" = {
+               methods = ["*"]
+            }
+            "logging.googleapis.com" = {
+               methods = ["*"]
+            }
+            "iamcredentials.googleapis.com" = {
+               methods = ["*"]
+            }
+         }
+      }
+   },
+   {
+      from = {
+         identities = [
+            "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
+         ]
+         sources = {
+            resources = [
+               "projects/${local.cloudbuild_project_number}"
+            ]
+         }
+      }
+      to = {
+         resources = [
+            "projects/${local.seed_project_number}"
+         ]
+         operations = {
+            "storage.googleapis.com" = {
+               methods = ["*"]
+            }
+         }
+      }
+   },
    ```
 
 If you received any errors or made any changes to the Terraform config or any `.tfvars`, you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.

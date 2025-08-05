@@ -58,7 +58,7 @@ file.
 The purpose of this step is to deploy a simple [Compute Engine](https://cloud.google.com/compute/) instance in one of the business unit projects using the infra pipeline set up in 4-projects.
 The infra pipeline is created in step `4-projects` within the shared env and has a [Cloud Build](https://cloud.google.com/build/docs) pipeline configured to manage infrastructure within projects.
 
-As part of this deployment, the provided Terraform code automates the provisioning of a secure infrastructure in Google Cloud to run workloads in Confidential Space — based on Confidential VMs with integrity verification, data isolation, trusted image execution, and integration with KMS for encryption and GCS for storage.
+As part of this deployment, the provided Terraform code automates the provisioning of a secure infrastructure in Google Cloud to run workloads in [Confidential Space](https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview) — based on Confidential VMs with integrity verification, data isolation, trusted image execution, and integration with KMS for encryption and GCS for storage.
 
 This Compute Engine instance is created using the base network from step `3-networks` and is used to access private services. For the Confidential Space, a Docker image built in step `4-projects` serves as the base for the confidential instance.
 There is also a [Source Repository](https://cloud.google.com/source-repositories) configured with build triggers similar to the [CI/CD Pipeline](https://github.com/terraform-google-modules/terraform-example-foundation#0-bootstrap) setup in `0-bootstrap`.
@@ -174,7 +174,7 @@ export image_digest=$(gcloud artifacts docker images describe us-central1-docker
 ```
 
 1. Update `IMAGE_DIGEST` value in the file `confidential_space.tfvars`.
- 
+
 ```bash
 export image_digest=$(terraform -chdir="../gcp-projects/business_unit_1/nonproduction/" output -raw confidential_space_workload_sa)
 echo "image_digest = ${image_digest}"
@@ -222,7 +222,7 @@ sed -i'' -e "s/IMAGE_DIGEST/${image_digest}/" ./confidential_space.tfvars
 
 ### Testing Workload in a Confidential space instance - Cloud Build
 
-1. These instructions assume you're at the root level of the `terraform-example-foundation` repository. The following steps will guide you through validating the workload running in Confidential Space for the `nonproduction` environment.
+1. These instructions assume you're at the root level of the `terraform-example-foundation` repository. The following steps will guide you through validating the workload running in Confidential Space for the `nonproduction` environment. In addition to this documentation with practical example, you can also follow Google's official tutorial to test each step directly: [Create your first Confidential Space environment](https://cloud.google.com/confidential-computing/confidential-space/docs/create-your-first-confidential-space-environment).
 
 1. Switch to the `gcp-projects` directory in the `nonproduction` branch and run ``terraform init` to load the outputs.
 

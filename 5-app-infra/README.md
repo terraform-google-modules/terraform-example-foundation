@@ -58,7 +58,9 @@ file.
 The purpose of this step is to deploy a simple [Compute Engine](https://cloud.google.com/compute/) instance in one of the business unit projects using the infra pipeline set up in 4-projects.
 The infra pipeline is created in step `4-projects` within the shared env and has a [Cloud Build](https://cloud.google.com/build/docs) pipeline configured to manage infrastructure within projects.
 
-As part of this deployment, the provided Terraform code automates the provisioning of a secure infrastructure in Google Cloud to run workloads in [Confidential Space](https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview) — based on Confidential VMs with integrity verification, data isolation, trusted image execution, and integration with KMS for encryption and GCS for storage.
+As part of this deployment, the provided Terraform code automates the provisioning of a secure infrastructure in Google Cloud to run workloads in [Confidential Space](https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview) — based on Confidential VMs with integrity verification, data isolation, trusted image execution, and integration with KMS for encryption and GCS for storage. In addition to this documentation, you can also follow Google's official tutorial to test each step directly: [Create your first Confidential Space environment](https://cloud.google.com/confidential-computing/confidential-space/docs/create-your-first-confidential-space-environment).
+
+To better understand the structure and content of the tokens used in Confidential Space, refer to the reference documentation on [Token Claims](https://cloud.google.com/confidential-computing/confidential-space/docs/reference/token-claims). This link details the information contained in the tokens and how they are used to ensure the security and integrity of the environment.
 
 This Compute Engine instance is created using the base network from step `3-networks` and is used to access private services. For the Confidential Space, a Docker image built in step `4-projects` serves as the base for the confidential instance.
 There is also a [Source Repository](https://cloud.google.com/source-repositories) configured with build triggers similar to the [CI/CD Pipeline](https://github.com/terraform-google-modules/terraform-example-foundation#0-bootstrap) setup in `0-bootstrap`.
@@ -157,7 +159,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
-1. Update the file `confidential_space.tfvars` with values from your environment from `gcp-projects`.
+1. Update the file `common.auto.tfvars` with values from your environment from `gcp-projects`.
 
 ```bash
 export confidential_space_workload_sa=$(terraform -chdir="../gcp-projects/business_unit_1/nonproduction/" output -raw confidential_space_workload_sa)
@@ -219,93 +221,6 @@ sed -i'' -e "s/IMAGE_DIGEST/${image_digest}/" ./confidential_space.tfvars
    git checkout -b production
    git push origin production
    ```
-
-### Testing Workload in a Confidential space instance - Cloud Build
-
-1. These instructions assume you're at the root level of the `terraform-example-foundation` repository. The following steps will guide you through validating the workload running in Confidential Space for the `nonproduction` environment. In addition to this documentation with practical example, you can also follow Google's official tutorial to test each step directly: [Create your first Confidential Space environment](https://cloud.google.com/confidential-computing/confidential-space/docs/create-your-first-confidential-space-environment).
-
-1. Switch to the `gcp-projects` directory in the `nonproduction` branch and run ``terraform init` to load the outputs.
-
-```bash
-cd gcp-projects/business_unit_1/nonproduction
-git checkout nonproduction
-terraform init
-```
-
-1. Get the output for nonproduction `confidential_space_workload_sa` and `confidential_space_project`.
-
-```bash
-export confidential_space_workload_sa=$(terraform output -raw confidential_space_workload_sa)
-echo $confidential_space_workload_sa
-export confidential_space_project=$(terraform output -raw confidential_space_project)
-echo $confidential_space_project
-```
-
-1. Navigate to the bu1-example-app/business_unit_1/nonproduction` directory and get the output for `gcs_buckets`.
-
-```bash
-cd ../../../bu1-example-app/business_unit_1/nonproduction
-terraform init
-export gcs_buckets=$(terraform output -raw gcs_buckets)
-echo $gcs_buckets
-```
-
-1. Create the `salary.txt` file that will be used by the workload.
-
-```bash
-echo "$1000" > salary.txt
-```
-
-1. Go back to the `gcp-projects` directory and update the `salary.go` file with the appropriate values.
-
-```bash
-cd ../../../gcp-projects/business_unit_1/shared/
-
-sed -i'' -e "s/CONFIDENTIAL-SPACE-WORKLOAD-SERVICE-ACCOUNT/${confidential_space_workload_sa}/" salary.go
-sed -i'' -e "s/CONFIDENTIAL-SPACE-PROJECT/${confidential_space_project}/" salary.go
-sed -i'' -e "s/CONFIDENTIAL-SPACE-BUCKET/${gcs_buckets}/" salary.go
-```
-
-1. Set up the Go environment by running the following commands:
-
-```bash
-go mod init salary
-go get cloud.google.com/go/kms/apiv1 cloud.google.com/go/storage google.golang.org/api/option google.golang.org/genproto/googleapis/cloud/kms/v1 cloud.google.com/go/logging
-```
-
-1. Enter the following command to compile the source code to a statically linked binary.
-
-```bash
-CGO_ENABLED=0 go build -trimpath
-```
-
-1. Push the code changes to update the Docker image used in Confidential Space.
-
-```
-git add salary
-git commit -m 'build workload for confidential space'
-git pusy
-```
-
-1. Trigger a build for the Confidential Space instance:
-
-```
-git commit --allow-empty -m "Empty commit for triggering pipeline"
-git push
-```
-
-1. Once completed, you should see the `salary.txt` file in the `CONFIDENTIAL-SPACE-BUCKET`. You should also see a log entry with the message:
-`Log created by Confidential Space instance.`. Use the following commands to verify the environment:
-
-
-```bash
-gcloud logging read 'textPayload="Log created by Confidential space instance."' \
-  --project=prj-n-bu1-conf-space-<YOUR-PROJECT-ID> \
-  --limit=10 \
-  --format="json"
-
-gcloud storage ls gs://${gcs_buckets}
-```
 
 ### Run Terraform locally
 

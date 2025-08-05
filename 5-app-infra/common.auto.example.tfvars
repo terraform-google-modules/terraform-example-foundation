@@ -16,4 +16,6 @@
 
 # instance_region = "us-central1" // should be one of the regions used to create network on step 3-networks
 
-remote_state_bucket = "REMOTE_STATE_BUCKET"
+remote_state_bucket                  = "REMOTE_STATE_BUCKET"
+image_digest                         = "IMAGE_DIGEST"
+confidential_space_workload_operator = "CONFIDENTIAL_SPACE_WORKLOAD_OPERATOR"

@@ -158,7 +158,7 @@ locals {
     }) : tostring(v)
   ]
 
-  projects = distinct(concat([
+  projects = var.enable_hub_and_spoke ? (concat([
     local.seed_project_number,
     module.org_audit_logs.project_number,
     module.org_billing_export.project_number,
@@ -166,10 +166,31 @@ locals {
     module.org_secrets.project_number,
     module.interconnect.project_number,
     module.scc_notifications.project_number,
+    module.network_hub.project_number,
     ], local.shared_vpc_projects_numbers
-  ))
+    )) : (concat([
+      local.seed_project_number,
+      module.org_audit_logs.project_number,
+      module.org_billing_export.project_number,
+      module.common_kms.project_number,
+      module.org_secrets.project_number,
+      module.interconnect.project_number,
+      module.scc_notifications.project_number,
+  ], local.shared_vpc_projects_numbers))
 
-  project_keys = [
+  project_keys = var.enable_hub_and_spoke ? [
+    "prj-org-seed",
+    "prj-org-audit",
+    "prj-org-billing",
+    "prj-org-kms",
+    "prj-org-secrets",
+    "prj-org-interconnect",
+    "prj-org-scc",
+    "prj-net-hub",
+    "prj-net-p-svpc",
+    "prj-net-d-svpc",
+    "prj-net-n-svpc",
+    ] : [
     "prj-org-seed",
     "prj-org-audit",
     "prj-org-billing",

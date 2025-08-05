@@ -173,7 +173,34 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
    if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
 
-1. Run `terraform init` in `/envs/shared` to generate the outputs used in other steps.
+2. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the same value as your user that you updated in `envs/shared/terraform.tfvars`:
+    
+   ```
+   {
+      from = {
+         identities = [
+            "user:YOUR-USER-EMAIL@example.com",
+         ]
+         sources = {
+            resources = [
+               "projects/${local.seed_project_number}"
+            ]
+         }
+      }
+      to = {
+         resources = [
+            "projects/${local.cloudbuild_project_number}"
+         ]
+         operations = {
+            "storage.googleapis.com" = {
+               methods = ["*"]
+            }
+         }
+      }
+   },
+   ```
+
+3. Run `terraform init` in `/envs/shared` to generate the outputs used in other steps.
 
    ```bash
    cd envs/shared
@@ -181,14 +208,14 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
    cd ../..
    ```
 
-1. Commit changes.
+4. Commit changes.
 
    ```bash
    git add .
    git commit -m 'Initialize org repo'
    ```
 
-1. Push your plan branch to trigger a plan for all environments. Because the
+5. Push your plan branch to trigger a plan for all environments. Because the
    _plan_ branch is not a [named environment branch](../docs/FAQ.md#what-is-a-named-branch), pushing your _plan_
    branch triggers _terraform plan_ but not _terraform apply_. Review the plan output in your Cloud Build project.
 
@@ -196,7 +223,7 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
    git push --set-upstream origin plan
    ```
 
-1. Merge changes to the production branch. Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
+6. Merge changes to the production branch. Because the _production_ branch is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
    pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project.
 
    ```bash
@@ -204,7 +231,7 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
    git push origin production
    ```
 
-1. Proceed to the [2-environments](../2-environments/README.md) step.
+7. Proceed to the [2-environments](../2-environments/README.md) step.
 
 **Troubleshooting:**
 If you received a `PERMISSION_DENIED` error while running the `gcloud access-context-manager` or the `gcloud scc notifications` commands, you can append the following to run the command as the Terraform service account:
@@ -268,6 +295,33 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
 
    ```bash
    sed -i'' -e "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./envs/shared/terraform.tfvars
+   ```
+
+2. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the same value as your user that you updated in `envs/shared/terraform.tfvars`:
+    
+   ```
+   {
+      from = {
+         identities = [
+            "user:YOUR-USER-EMAIL@example.com",
+         ]
+         sources = {
+            resources = [
+               "projects/${local.seed_project_number}"
+            ]
+         }
+      }
+      to = {
+         resources = [
+            "projects/${local.cloudbuild_project_number}"
+         ]
+         operations = {
+            "storage.googleapis.com" = {
+               methods = ["*"]
+            }
+         }
+      }
+   },
    ```
 
 1. Update the `envs/shared/terraform.tfvars` file with values from your environment and `gcp-bootstrap` step. If the previous step showed a numeric value, un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.

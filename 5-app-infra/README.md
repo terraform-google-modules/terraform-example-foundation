@@ -157,7 +157,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
-1. Update the file `confidential_space.tfvars` with values from your environment from `gcp-projects`. 
+1. Update the file `confidential_space.tfvars` with values from your environment from `gcp-projects`.
 
 ```bash
 export confidential_space_workload_sa=$(terraform -chdir="../gcp-projects/business_unit_1/nonproduction/" output -raw confidential_space_workload_sa)
@@ -174,7 +174,7 @@ export image_digest=$(gcloud artifacts docker images describe us-central1-docker
 ```
 
 1. Update `IMAGE_DIGEST` value in the file `confidential_space.tfvars`.
-  
+ 
 ```bash
 export image_digest=$(terraform -chdir="../gcp-projects/business_unit_1/nonproduction/" output -raw confidential_space_workload_sa)
 echo "image_digest = ${image_digest}"

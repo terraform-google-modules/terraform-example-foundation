@@ -186,6 +186,31 @@ locals {
     [for p in local.projects : "${p}"]
   )
 
+  ingress_policies_keys_dry_run = ["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"]
+  egress_policies_keys_dry_run  = ["seed_to_cicd", "org_sa_to_scc", "user_to_seed"]
+  ingress_policies_keys         = ["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"]
+  egress_policies_keys          = ["seed_to_cicd", "org_sa_to_scc", "user_to_seed"]
+
+  ingress_policies_dry_run_map = zipmap(
+    local.ingress_policies_keys_dry_run,
+    [for r in local.required_ingress_rules_dry_run : "${r}"]
+  )
+
+  egress_policies_dry_run_map = zipmap(
+    local.egress_policies_keys_dry_run,
+    [for r in local.required_egress_rules_dry_run : "${r}"]
+  )
+
+  ingress_policies_map = zipmap(
+    local.ingress_policies_keys,
+    [for r in local.required_ingress_rules_dry_run : "${r}"]
+  )
+
+  egress_policies_map = zipmap(
+    local.egress_policies_keys,
+    [for r in local.required_egress_rules_dry_run : "${r}"]
+  )
+
   required_egress_rules_dry_run = [
     {
       from = {
@@ -553,10 +578,14 @@ module "service_control" {
   ], var.perimeter_additional_members))
   resources_dry_run        = concat(values(local.projects_map), var.resources_dry_run)
   resource_keys_dry_run    = local.project_keys
-  ingress_policies         = distinct(concat(var.ingress_policies, local.required_ingress_rules))
-  ingress_policies_dry_run = distinct(concat(var.ingress_policies_dry_run, local.required_ingress_rules_dry_run))
-  egress_policies          = distinct(concat(var.egress_policies, local.required_egress_rules))
-  egress_policies_dry_run  = distinct(concat(var.egress_policies_dry_run, local.required_egress_rules_dry_run))
+  ingress_policies_keys_dry_run = local.ingress_policies_keys_dry_run
+  egress_policies_keys_dry_run  = local.egress_policies_keys_dry_run
+  ingress_policies_keys         = local.ingress_policies_keys
+  egress_policies_keys          = local.egress_policies_keys_dry_run
+  ingress_policies              = distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, var.ingress_policies))
+  ingress_policies_dry_run      = distinct(concat(values(local.ingress_policies_dry_run_map), var.ingress_policies_dry_run, local.required_ingress_rules_dry_run))
+  egress_policies               = distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules))
+  egress_policies_dry_run       = distinct(concat(values(local.egress_policies_dry_run_map), var.egress_policies_dry_run, local.required_egress_rules_dry_run))
 
   depends_on = [
     time_sleep.wait_projects

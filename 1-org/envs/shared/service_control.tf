@@ -158,7 +158,16 @@ locals {
     }) : tostring(v)
   ]
 
-  projects = (concat([
+  projects = var.enable_hub_and_spoke ? (concat([
+    local.seed_project_number,
+    module.org_audit_logs.project_number,
+    module.org_billing_export.project_number,
+    module.common_kms.project_number,
+    module.org_secrets.project_number,
+    module.interconnect.project_number,
+    module.network_hub.project_number,
+    module.scc_notifications.project_number,
+    ], local.shared_vpc_projects_numbers)) : (concat([
     local.seed_project_number,
     module.org_audit_logs.project_number,
     module.org_billing_export.project_number,
@@ -168,7 +177,7 @@ locals {
     module.scc_notifications.project_number,
   ], local.shared_vpc_projects_numbers))
 
-  project_keys = [
+  project_keys = var.enable_hub_and_spoke ? [
     "prj-org-seed",
     "prj-org-audit",
     "prj-org-billing",
@@ -176,6 +185,18 @@ locals {
     "prj-org-secrets",
     "prj-org-interconnect",
     "prj-org-scc",
+    "prj-net-p-svpc",
+    "prj-net-d-svpc",
+    "prj-net-n-svpc",
+    ] : [
+    "prj-org-seed",
+    "prj-org-audit",
+    "prj-org-billing",
+    "prj-org-kms",
+    "prj-org-secrets",
+    "prj-org-interconnect",
+    "prj-org-scc",
+    "prj-net-hub-svpc",
     "prj-net-p-svpc",
     "prj-net-d-svpc",
     "prj-net-n-svpc",
@@ -576,8 +597,8 @@ module "service_control" {
     "serviceAccount:${local.organization_service_account}",
     "serviceAccount:${local.environment_service_account}",
   ], var.perimeter_additional_members))
-  resources_dry_run        = concat(values(local.projects_map), var.resources_dry_run)
-  resource_keys_dry_run    = local.project_keys
+  resources_dry_run             = concat(values(local.projects_map), var.resources_dry_run)
+  resource_keys_dry_run         = local.project_keys
   ingress_policies_keys_dry_run = local.ingress_policies_keys_dry_run
   egress_policies_keys_dry_run  = local.egress_policies_keys_dry_run
   ingress_policies_keys         = local.ingress_policies_keys

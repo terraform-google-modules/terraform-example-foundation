@@ -158,7 +158,7 @@ locals {
     }) : tostring(v)
   ]
 
-  projects = var.enable_hub_and_spoke ? (concat([
+  projects = (concat([
     local.seed_project_number,
     module.org_audit_logs.project_number,
     module.org_billing_export.project_number,
@@ -166,31 +166,9 @@ locals {
     module.org_secrets.project_number,
     module.interconnect.project_number,
     module.scc_notifications.project_number,
-    module.network_hub.project_number,
-    ], local.shared_vpc_projects_numbers
-    )) : (concat([
-      local.seed_project_number,
-      module.org_audit_logs.project_number,
-      module.org_billing_export.project_number,
-      module.common_kms.project_number,
-      module.org_secrets.project_number,
-      module.interconnect.project_number,
-      module.scc_notifications.project_number,
   ], local.shared_vpc_projects_numbers))
 
-  project_keys = var.enable_hub_and_spoke ? [
-    "prj-org-seed",
-    "prj-org-audit",
-    "prj-org-billing",
-    "prj-org-kms",
-    "prj-org-secrets",
-    "prj-org-interconnect",
-    "prj-org-scc",
-    "prj-net-hub",
-    "prj-net-p-svpc",
-    "prj-net-d-svpc",
-    "prj-net-n-svpc",
-    ] : [
+  project_keys = [
     "prj-org-seed",
     "prj-org-audit",
     "prj-org-billing",
@@ -575,11 +553,10 @@ module "service_control" {
   ], var.perimeter_additional_members))
   resources_dry_run        = concat(values(local.projects_map), var.resources_dry_run)
   resource_keys_dry_run    = local.project_keys
-  ingress_policies         = var.enforce_vpcsc ? distinct(concat(var.ingress_policies, local.required_ingress_rules)) : tolist([])
-  ingress_policies_dry_run = !var.enforce_vpcsc ? distinct(concat(var.ingress_policies_dry_run, local.required_ingress_rules_dry_run)) : tolist([])
+  ingress_policies         = distinct(concat(var.ingress_policies, local.required_ingress_rules))
+  ingress_policies_dry_run = distinct(concat(var.ingress_policies_dry_run, local.required_ingress_rules_dry_run))
   egress_policies          = distinct(concat(var.egress_policies, local.required_egress_rules))
   egress_policies_dry_run  = distinct(concat(var.egress_policies_dry_run, local.required_egress_rules_dry_run))
-  enforce_vpcsc            = var.enforce_vpcsc
 
   depends_on = [
     time_sleep.wait_projects

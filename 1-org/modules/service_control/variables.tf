@@ -168,3 +168,27 @@ variable "resource_keys_dry_run" {
   type        = list(string)
   default     = null
 }
+
+variable "ingress_policies_keys" {
+  description = "A list of keys to use for the Terraform state. The order should correspond to var.ingress_policies and the keys must not be dynamically computed. If `null`, var.ingress_policies will be used as keys."
+  type        = list(string)
+  default     = null
+}
+
+variable "egress_policies_keys" {
+  description = "A list of keys to use for the Terraform state. The order should correspond to var.egress_policies and the keys must not be dynamically computed. If `null`, var.egress_policies will be used as keys."
+  type        = list(string)
+  default     = null
+}
+
+variable "ingress_policies_keys_dry_run" {
+  description = "(Dry-run) A list of keys to use for the Terraform state. The order should correspond to var.ingress_policies_dry_run and the keys must not be dynamically computed. If `null`, var.ingress_policies_dry_run will be used as keys."
+  type        = list(string)
+  default     = null
+}
+
+variable "egress_policies_keys_dry_run" {
+  description = "(Dry-run) A list of keys to use for the Terraform state. The order should correspond to var.egress_policies_dry_run and the keys must not be dynamically computed. If `null`, var.egress_policies_dry_run will be used as keys."
+  type        = list(string)
+  default     = null
+}

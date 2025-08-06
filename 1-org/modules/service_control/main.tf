@@ -46,9 +46,8 @@ module "access_level_dry_run" {
 }
 
 module "regular_service_perimeter" {
-  source = "git::https://github.com/mariammartins/terraform-google-vpc-service-controls.git//modules/regular_service_perimeter?ref=fix-ingress-rules"
-  # source  = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
-  # version = "~> 7.1.2"
+  source  = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
+  version = "~> 7.1.2"
 
   policy         = var.access_context_manager_policy_id
   perimeter_name = local.perimeter_name
@@ -61,7 +60,9 @@ module "regular_service_perimeter" {
   restricted_services     = var.enforce_vpcsc ? var.restricted_services : []
   vpc_accessible_services = var.enforce_vpcsc ? ["*"] : []
   ingress_policies        = var.enforce_vpcsc ? var.ingress_policies : []
+  ingress_policies_keys   = var.enforce_vpcsc ? var.ingress_policies_keys : []
   egress_policies         = var.enforce_vpcsc ? var.egress_policies : []
+  egress_policies_keys    = var.enforce_vpcsc ? var.egress_policies_keys : []
 
   # configurations for a perimeter in dry run mode.
   resources_dry_run               = var.resources_dry_run
@@ -70,7 +71,9 @@ module "regular_service_perimeter" {
   restricted_services_dry_run     = var.restricted_services_dry_run
   vpc_accessible_services_dry_run = ["*"]
   ingress_policies_dry_run        = var.ingress_policies_dry_run
+  ingress_policies_keys_dry_run   = var.ingress_policies_keys_dry_run
   egress_policies_dry_run         = var.egress_policies_dry_run
+  egress_policies_keys_dry_run    = var.egress_policies_keys_dry_run
 }
 
 resource "time_sleep" "wait_vpc_sc_propagation" {

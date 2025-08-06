@@ -224,7 +224,7 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
    ```bash
-   ../scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+   ../scripts/validate-requirements.sh -o 1055058813388 -b 01AAD1-616217-97513A -u mariamartins@clsecteam.com
    ```
 
    **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
@@ -241,7 +241,7 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
 1. Run the following commands and check for violations:
 
    ```bash
-   export VET_PROJECT_ID=A-VALID-PROJECT-ID
+   export VET_PROJECT_ID=deployer-foundation
    terraform show -json bootstrap.tfplan > bootstrap.json
    gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project ${VET_PROJECT_ID}
    ```

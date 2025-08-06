@@ -16,7 +16,6 @@
 | enable\_kms\_key\_usage\_tracking | Enable KMS centralized key usage tracking system. | `bool` | `true` | no |
 | enable\_scc\_resources\_in\_terraform | Create Security Command Center resources in Terraform. If your organization has newly enabled any preview features for SCC and get an error related to the v2 API, you must set this variable to false because the v2 API does not yet support Terraform resources. See [issue 1189](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1189) for context. | `bool` | `true` | no |
 | enforce\_allowed\_worker\_pools | Whether to enforce the organization policy restriction on allowed worker pools for Cloud Build. | `bool` | `false` | no |
-| enforce\_vpcsc | Enable the enforced mode for VPC Service Controls. It is not recommended to enable VPC-SC on the first run deploying your foundation. Review [best practices for enabling VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs/enable), then only enforce the perimeter after you have analyzed the access patterns in your dry-run perimeter and created the necessary exceptions for your use cases. | `bool` | `false` | no |
 | essential\_contacts\_domains\_to\_allow | .The list of domains that email addresses added to Essential Contacts can have. | `list(string)` | n/a | yes |
 | essential\_contacts\_language | Essential Contacts preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages. | `string` | `"en"` | no |
 | folder\_deletion\_protection | Prevent Terraform from destroying or recreating the folder. | `string` | `true` | no |
@@ -42,6 +41,9 @@
 
 | Name | Description |
 |------|-------------|
+| access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
+| access\_level\_name | Access context manager access level name |
+| access\_level\_name\_dry\_run | Access context manager access level name for the dry-run perimeter |
 | billing\_sink\_names | The name of the sinks under billing account level. |
 | build\_service\_account | Cloud Function Build Service Account Id. This is The fully-qualified name of the service account to be used for building the container. |
 | cai\_monitoring\_artifact\_registry | CAI Monitoring Cloud Function Artifact Registry name. |
@@ -51,8 +53,12 @@
 | common\_folder\_name | The common folder name |
 | common\_kms\_project\_id | The org Cloud Key Management Service (KMS) project ID |
 | domains\_to\_allow | The list of domains to allow users from in IAM. |
+| enforce\_vpcsc | The mode of VPC Service Controls. |
 | interconnect\_project\_id | The Dedicated Interconnect project ID |
 | interconnect\_project\_number | The Dedicated Interconnect project number |
+| internal\_project\_log\_export | The service account that logging uses to write log entries to the destination. |
+| log\_export | The service account that logging uses to write log entries to the destination. |
+| log\_export\_billing | The service account that logging uses to write log entries to the destination. |
 | logs\_export\_project\_linked\_dataset\_name | The resource name of the Log Bucket linked BigQuery dataset for the project destination. |
 | logs\_export\_project\_logbucket\_name | The resource name for the Log Bucket created for the project destination. |
 | logs\_export\_pubsub\_topic | The Pub/Sub topic for destination of log exports |
@@ -68,6 +74,7 @@
 | parent\_resource\_type | The parent resource type |
 | scc\_notification\_name | Name of SCC Notification |
 | scc\_notifications\_project\_id | The SCC notifications project ID |
+| service\_perimeter\_name | Access context manager service perimeter name |
 | shared\_vpc\_projects | Shared VPC Projects info grouped by environment (development, nonproduction, production). |
 | tags | Tag Values to be applied on next steps. |
 

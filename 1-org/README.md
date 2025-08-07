@@ -174,7 +174,7 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
    ```
 
 2. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the same value as your user that you updated in `envs/shared/terraform.tfvars`:
-    
+
    ```
    {
       from = {
@@ -298,7 +298,7 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
    ```
 
 2. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the same value as your user that you updated in `envs/shared/terraform.tfvars`:
-    
+
    ```
    {
       from = {
@@ -324,7 +324,7 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
    },
    ```
 
-1. Update the `envs/shared/terraform.tfvars` file with values from your environment and `gcp-bootstrap` step. If the previous step showed a numeric value, un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
+3. Update the `envs/shared/terraform.tfvars` file with values from your environment and `gcp-bootstrap` step. If the previous step showed a numeric value, un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
 
    ```bash
    export backend_bucket=$(terraform -chdir="../gcp-bootstrap/" output -raw gcs_bucket_tfstate)

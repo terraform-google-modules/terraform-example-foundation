@@ -29,7 +29,7 @@ variable "enable_hub_and_spoke" {
 variable "enable_scc_resources_in_terraform" {
   description = "Create Security Command Center resources in Terraform. If your organization has newly enabled any preview features for SCC and get an error related to the v2 API, you must set this variable to false because the v2 API does not yet support Terraform resources. See [issue 1189](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1189) for context."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "enable_kms_key_usage_tracking" {
@@ -173,12 +173,12 @@ variable "essential_contacts_language" {
 }
 
 variable "remote_state_bucket" {
-  description = "Backend bucket to load Terraform Remote State Data from previous steps.."
+  description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string
 }
 
 variable "essential_contacts_domains_to_allow" {
-  description = ".The list of domains that email addresses added to Essential Contacts can have."
+  description = "The list of domains that email addresses added to Essential Contacts can have."
   type        = list(string)
 }
 

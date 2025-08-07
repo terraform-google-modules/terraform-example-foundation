@@ -179,11 +179,6 @@ output "access_context_manager_policy_id" {
   description = "Access Context Manager Policy ID."
 }
 
-output "build_service_account" {
-  description = "Cloud Function Build Service Account Id. This is The fully-qualified name of the service account to be used for building the container."
-  value       = google_service_account.cai_monitoring_builder[0].email
-}
-
 output "log_export_billing" {
   description = "The service account that logging uses to write log entries to the destination."
   value       = module.logs_export.log_export_billing

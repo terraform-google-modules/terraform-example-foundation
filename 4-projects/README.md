@@ -220,14 +220,14 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    git push origin nonproduction
    ```
 
-2. Use `terraform output` to get the APP Infra Pipeline Terraform service account.
+1. Use `terraform output` to get the APP Infra Pipeline Terraform service account.
 
    ```bash
    export terraform_service_accounts=$(terraform -chdir="business_unit_1/shared/" output -json terraform_service_accounts | jq -r 'to_entries[0].value')
    echo $terraform_service_accounts
    ```
 
-3. If you are deploying with VPC Service Controls in dry run mode, update the `required_ingres_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_ingres_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the directional rules:
+1. If you are deploying with VPC Service Controls in dry run mode, update the `required_ingres_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_ingres_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the directional rules:
 
    ```
    {
@@ -282,13 +282,13 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    },
    ```
 
-4. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+1. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
-5. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
+1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
 
 ### Deploying with Jenkins
 
@@ -471,7 +471,7 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    echo $terraform_service_accounts
    ```
 
-3. If you are deploying with VPC Service Controls in dry run mode, update the `required_ingres_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_ingres_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the directional rules:
+1. If you are deploying with VPC Service Controls in dry run mode, update the `required_ingres_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_ingres_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the directional rules:
 
    ```
    {

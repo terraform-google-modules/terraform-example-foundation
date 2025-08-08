@@ -124,3 +124,9 @@ EOT
   })
   default = {}
 }
+
+variable "subnet_region" {
+  description = "Region where a subnet will be created in the sigle project network."
+  type        = string
+  default     = "us-central1"
+}

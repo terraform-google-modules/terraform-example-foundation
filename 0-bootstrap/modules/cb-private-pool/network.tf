@@ -22,7 +22,7 @@ locals {
   single_project_network = {
     subnet_name           = "eab-develop-us-central1"
     subnet_ip             = "10.1.20.0/24"
-    subnet_region         = "us-central1"
+    subnet_region         = var.subnet_region
     subnet_private_access = true
   }
   single_project_secondary = {

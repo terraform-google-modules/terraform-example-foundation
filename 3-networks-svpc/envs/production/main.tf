@@ -44,18 +44,18 @@ locals {
 module "base_env" {
   source = "../../modules/base_env"
 
-  env                              = local.env
-  environment_code                 = local.environment_code
-  default_region1                  = local.default_region1
-  default_region2                  = local.default_region2
-  domain                           = var.domain
-  enable_partner_interconnect      = false
-  private_service_cidr             = local.private_service_cidr
-  subnet_primary_ranges            = local.subnet_primary_ranges
-  subnet_proxy_ranges              = local.subnet_proxy_ranges
-  subnet_secondary_ranges          = local.subnet_secondary_ranges
-  private_service_connect_ip       = "10.17.0.8"
-  remote_state_bucket              = var.remote_state_bucket
-  tfc_org_name                     = var.tfc_org_name
-  target_name_server_addresses     = var.target_name_server_addresses
+  env                          = local.env
+  environment_code             = local.environment_code
+  default_region1              = local.default_region1
+  default_region2              = local.default_region2
+  domain                       = var.domain
+  enable_partner_interconnect  = false
+  private_service_cidr         = local.private_service_cidr
+  subnet_primary_ranges        = local.subnet_primary_ranges
+  subnet_proxy_ranges          = local.subnet_proxy_ranges
+  subnet_secondary_ranges      = local.subnet_secondary_ranges
+  private_service_connect_ip   = "10.17.0.8"
+  remote_state_bucket          = var.remote_state_bucket
+  tfc_org_name                 = var.tfc_org_name
+  target_name_server_addresses = var.target_name_server_addresses
 }

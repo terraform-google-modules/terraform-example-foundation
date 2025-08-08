@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-output "access_context_manager_policy_id" {
-  description = "Access Context Manager Policy ID."
-  value       = var.access_context_manager_policy_id
-}
-
 output "shared_vpc_host_project_id" {
   value       = module.base_env.shared_vpc_host_project_id
   description = "The host project ID"

@@ -19,11 +19,6 @@ variable "remote_state_bucket" {
   type        = string
 }
 
-variable "access_context_manager_policy_id" {
-  type        = number
-  description = "The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format=\"value(name)\"`."
-}
-
 variable "dns_enable_logging" {
   type        = bool
   description = "Toggle DNS logging for VPC DNS."

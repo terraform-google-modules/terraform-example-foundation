@@ -15,7 +15,6 @@ The purpose of this step is to set up shared VPCs with default DNS, NAT (optiona
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`. | `number` | n/a | yes |
 | domain | The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period. | `string` | n/a | yes |
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | tfc\_org\_name | Name of the TFC organization | `string` | `""` | no |
@@ -24,7 +23,6 @@ The purpose of this step is to set up shared VPCs with default DNS, NAT (optiona
 
 | Name | Description |
 |------|-------------|
-| access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
 | shared\_vpc\_host\_project\_id | The shared vpc host project ID |

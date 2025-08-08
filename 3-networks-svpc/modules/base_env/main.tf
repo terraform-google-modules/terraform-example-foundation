@@ -24,18 +24,17 @@ locals {
 module "shared_vpc" {
   source = "../shared_vpc"
 
-  project_id                       = local.shared_vpc_project_id
-  project_number                   = local.shared_vpc_project_number
-  dns_project_id                   = local.dns_project_id
-  environment_code                 = var.environment_code
-  access_context_manager_policy_id = var.access_context_manager_policy_id
-  private_service_cidr             = var.private_service_cidr
-  private_service_connect_ip       = var.private_service_connect_ip
-  bgp_asn_subnet                   = local.bgp_asn_number
-  default_region1                  = var.default_region1
-  default_region2                  = var.default_region2
-  domain                           = var.domain
-  target_name_server_addresses     = var.target_name_server_addresses
+  project_id                   = local.shared_vpc_project_id
+  project_number               = local.shared_vpc_project_number
+  dns_project_id               = local.dns_project_id
+  environment_code             = var.environment_code
+  private_service_cidr         = var.private_service_cidr
+  private_service_connect_ip   = var.private_service_connect_ip
+  bgp_asn_subnet               = local.bgp_asn_number
+  default_region1              = var.default_region1
+  default_region2              = var.default_region2
+  domain                       = var.domain
+  target_name_server_addresses = var.target_name_server_addresses
 
 
 

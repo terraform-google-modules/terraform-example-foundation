@@ -34,25 +34,24 @@ locals {
 module "shared_vpc" {
   source = "../../modules/shared_vpc"
 
-  project_id                       = local.net_hub_project_id
-  project_number                   = local.net_hub_project_number
-  environment_code                 = local.environment_code
-  private_service_connect_ip       = "10.17.0.5"
-  access_context_manager_policy_id = var.access_context_manager_policy_id
-  bgp_asn_subnet                   = local.bgp_asn_number
-  default_region1                  = local.default_region1
-  default_region2                  = local.default_region2
-  domain                           = var.domain
-  dns_enable_inbound_forwarding    = var.hub_dns_enable_inbound_forwarding
-  dns_enable_logging               = var.hub_dns_enable_logging
-  firewall_enable_logging          = var.hub_firewall_enable_logging
-  nat_enabled                      = var.hub_nat_enabled
-  nat_bgp_asn                      = var.hub_nat_bgp_asn
-  nat_num_addresses_region1        = var.hub_nat_num_addresses_region1
-  nat_num_addresses_region2        = var.hub_nat_num_addresses_region2
-  windows_activation_enabled       = var.hub_windows_activation_enabled
-  target_name_server_addresses     = var.target_name_server_addresses
-  mode                             = "hub"
+  project_id                    = local.net_hub_project_id
+  project_number                = local.net_hub_project_number
+  environment_code              = local.environment_code
+  private_service_connect_ip    = "10.17.0.5"
+  bgp_asn_subnet                = local.bgp_asn_number
+  default_region1               = local.default_region1
+  default_region2               = local.default_region2
+  domain                        = var.domain
+  dns_enable_inbound_forwarding = var.hub_dns_enable_inbound_forwarding
+  dns_enable_logging            = var.hub_dns_enable_logging
+  firewall_enable_logging       = var.hub_firewall_enable_logging
+  nat_enabled                   = var.hub_nat_enabled
+  nat_bgp_asn                   = var.hub_nat_bgp_asn
+  nat_num_addresses_region1     = var.hub_nat_num_addresses_region1
+  nat_num_addresses_region2     = var.hub_nat_num_addresses_region2
+  windows_activation_enabled    = var.hub_windows_activation_enabled
+  target_name_server_addresses  = var.target_name_server_addresses
+  mode                          = "hub"
 
   subnets = [
     {

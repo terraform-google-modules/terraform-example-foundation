@@ -280,7 +280,7 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
 1. Check if a Security Command Center notification with the default name, **scc-notify**, already exists. If it exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
 
    ```bash
-   export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
+   export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -json common_config | jq '.org_id' --raw-output)
    gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID}
    ```
 
@@ -327,7 +327,7 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
 1. Update the `envs/shared/terraform.tfvars` file with values from your environment and `gcp-bootstrap` step. If the previous step showed a numeric value, un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
 
    ```bash
-   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/" output -raw gcs_bucket_tfstate)
+   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${backend_bucket}"
 
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
@@ -342,10 +342,10 @@ To use the `validate` option of the `tf-wrapper.sh` script, follow the [instruct
 1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
-   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/" output -raw seed_project_id)
+   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw seed_project_id)
    echo ${SEED_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/" output -raw organization_step_terraform_service_account_email)
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw organization_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 

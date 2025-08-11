@@ -207,10 +207,10 @@ locals {
     [for p in local.projects : "${p}"]
   )
 
-  ingress_policies_keys_dry_run = ["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"]
-  egress_policies_keys_dry_run  = ["seed_to_cicd", "org_sa_to_scc"]
-  ingress_policies_keys         = ["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"]
-  egress_policies_keys          = ["seed_to_cicd", "org_sa_to_scc"]
+  ingress_policies_keys_dry_run = concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys_dry_run)
+  egress_policies_keys_dry_run  = concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
+  ingress_policies_keys         = concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys)
+  egress_policies_keys          = concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
 
   ingress_policies_dry_run_map = zipmap(
     local.ingress_policies_keys_dry_run,

@@ -19,12 +19,12 @@ locals {
   billing_account                     = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
   project_prefix                      = data.terraform_remote_state.bootstrap.outputs.common_config.project_prefix
   projects_backend_bucket             = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
-  perimeter_name                      = data.terraform_remote_state.network_env.outputs.service_perimeter_name
   network_self_link                   = data.terraform_remote_state.network_env.outputs.network_self_link
   shared_vpc_host_project_id          = data.terraform_remote_state.network_env.outputs.shared_vpc_host_project_id
   subnets_self_links                  = data.terraform_remote_state.network_env.outputs.subnets_self_links
-  access_context_manager_policy_id    = data.terraform_remote_state.network_env.outputs.access_context_manager_policy_id
-  enforce_vpcsc                       = data.terraform_remote_state.network_env.outputs.enforce_vpcsc
+  access_context_manager_policy_id    = data.terraform_remote_state.org.outputs.access_context_manager_policy_id
+  enforce_vpcsc                       = data.terraform_remote_state.org.outputs.enforce_vpcsc
+  perimeter_name                      = data.terraform_remote_state.org.outputs.service_perimeter_name
   env_folder_name                     = data.terraform_remote_state.environments_env.outputs.env_folder
   app_infra_pipeline_service_accounts = data.terraform_remote_state.business_unit_shared.outputs.terraform_service_accounts
   enable_cloudbuild_deploy            = data.terraform_remote_state.business_unit_shared.outputs.enable_cloudbuild_deploy
@@ -38,6 +38,15 @@ data "terraform_remote_state" "bootstrap" {
   config = {
     bucket = var.remote_state_bucket
     prefix = "terraform/bootstrap/state"
+  }
+}
+
+data "terraform_remote_state" "org_env" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.remote_state_bucket
+    prefix = "terraform/org/state"
   }
 }
 

@@ -27,7 +27,7 @@ resource "random_id" "random_access_level_suffix" {
 
 module "access_level" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
-  version = "~> 7.1.2"
+  version = "~> 7.1.3"
 
   description = "${local.prefix} Access Level for use in an enforced perimeter"
   policy      = var.access_context_manager_policy_id
@@ -37,7 +37,7 @@ module "access_level" {
 
 module "access_level_dry_run" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
-  version = "~> 7.1.2"
+  version = "~> 7.1.3"
 
   description = "${local.prefix} Access Level for testing with a dry run perimeter"
   policy      = var.access_context_manager_policy_id
@@ -47,7 +47,7 @@ module "access_level_dry_run" {
 
 module "regular_service_perimeter" {
   source  = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
-  version = "~> 7.1.2"
+  version = "~> 7.1.3"
 
   policy         = var.access_context_manager_policy_id
   perimeter_name = local.perimeter_name

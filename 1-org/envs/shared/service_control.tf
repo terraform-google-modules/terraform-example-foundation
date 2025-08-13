@@ -279,6 +279,31 @@ locals {
     },
   ]
 
+  required_egress_rules_app_infra_dry_run = [
+    {
+      from = {
+        identities = [
+          "serviceAccount:PRJ_APP_INFRA_PIPELINE_NUMBER@cloudbuild.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/PRJ_APP_INFRA_PIPELINE_NUMBER"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.cloudbuild_project_number}"
+        ]
+        operations = {
+          "cloudbuild.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
   required_ingress_rules_dry_run = [
     {
       from = {
@@ -395,59 +420,6 @@ locals {
       to = {
         resources = [
           "projects/${module.scc_notifications.project_number}"
-        ]
-        operations = {
-          "storage.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-  ]
-
-  required_ingress_rules_app_infra_dry_run = [
-    {
-      from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
-        ]
-        sources = {
-          resources = [
-            "projects/${local.cloudbuild_project_number}"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/<prj_bu1_infra_pipeline_number>"
-        ]
-        operations = {
-          "storage.googleapis.com" = {
-            methods = ["*"]
-          }
-          "logging.googleapis.com" = {
-            methods = ["*"]
-          }
-          "iamcredentials.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-    {
-      from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
-        ]
-        sources = {
-          resources = [
-            "projects/${local.cloudbuild_project_number}"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${local.seed_project_number}"
         ]
         operations = {
           "storage.googleapis.com" = {
@@ -582,59 +554,6 @@ locals {
     },
   ]
 
-  required_ingress_rules_app_infra = [
-    {
-      from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
-        ]
-        sources = {
-          resources = [
-            "projects/${local.cloudbuild_project_number}"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/<prj_bu1_infra_pipeline_number>"
-        ]
-        operations = {
-          "storage.googleapis.com" = {
-            methods = ["*"]
-          }
-          "logging.googleapis.com" = {
-            methods = ["*"]
-          }
-          "iamcredentials.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-    {
-      from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
-        ]
-        sources = {
-          resources = [
-            "projects/${local.cloudbuild_project_number}"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${local.seed_project_number}"
-        ]
-        operations = {
-          "storage.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-  ]
-
   required_egress_rules = [
     {
       from = {
@@ -681,7 +600,33 @@ locals {
       }
     },
   ]
+
+  required_egress_rules_app_infra = [
+    {
+      from = {
+        identities = [
+          "serviceAccount:PRJ_APP_INFRA_PIPELINE_NUMBER@cloudbuild.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/PRJ_APP_INFRA_PIPELINE_NUMBER"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.cloudbuild_project_number}"
+        ]
+        operations = {
+          "cloudbuild.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
 }
+
 
 module "service_control" {
   source = "../../modules/service_control"
@@ -709,10 +654,10 @@ module "service_control" {
   egress_policies_keys_dry_run  = local.egress_policies_keys_dry_run
   ingress_policies_keys         = local.ingress_policies_keys
   egress_policies_keys          = local.egress_policies_keys_dry_run
-  ingress_policies              = var.required_ingress_rules_app_infra ? distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, local.required_ingress_rules_app_infra, var.ingress_policies)) : distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, var.ingress_policies))
-  ingress_policies_dry_run      = var.required_ingress_rules_app_infra_dry_run ? distinct(concat(values(local.ingress_policies_dry_run_map), local.required_ingress_rules_dry_run, local.required_ingress_rules_app_infra_dry_run, var.ingress_policies_dry_run)) : distinct(concat(values(local.ingress_policies_dry_run_map), local.required_ingress_rules_dry_run, var.ingress_policies_dry_run, ))
-  egress_policies               = distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules))
-  egress_policies_dry_run       = distinct(concat(values(local.egress_policies_dry_run_map), var.egress_policies_dry_run, local.required_egress_rules_dry_run))
+  ingress_policies              = distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, var.ingress_policies))
+  ingress_policies_dry_run      = distinct(concat(values(local.ingress_policies_dry_run_map), local.required_ingress_rules_dry_run, var.ingress_policies_dry_run, ))
+  egress_policies               = var.required_egress_rules_app_infra ? distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules, local.required_egress_rules_app_infra)) : distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules))
+  egress_policies_dry_run       = var.required_egress_rules_app_infra_dry_run ? distinct(concat(values(local.egress_policies_dry_run_map), var.egress_policies_dry_run, local.required_egress_rules_dry_run, local.required_egress_rules_app_infra_dry_run)) : distinct(concat(values(local.egress_policies_dry_run_map), var.egress_policies_dry_run, local.required_egress_rules_dry_run))
 
   depends_on = [
     time_sleep.wait_projects

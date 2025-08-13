@@ -45,3 +45,7 @@ billing_export_dataset_location = "US"
 //create_unique_tag_key = true
 
 access_context_manager_policy_id = ACCESS_CONTEXT_MANAGER_ID
+
+//required_egress_rules_app_infra_dry_run = true
+
+//required_egress_rules_app_infra = true

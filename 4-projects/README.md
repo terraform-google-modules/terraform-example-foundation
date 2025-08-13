@@ -220,72 +220,33 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    git push origin nonproduction
    ```
 
-1. Use `terraform output` to get the APP Infra Pipeline Terraform service account.
-
-   ```bash
-   export terraform_service_accounts=$(terraform -chdir="business_unit_1/shared/" output -json terraform_service_accounts | jq -r 'to_entries[0].value')
-   echo $terraform_service_accounts
-   ```
-
-1. If you are deploying with VPC Service Controls in dry run mode, update the `required_ingres_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_ingres_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the directional rules:
-
-   ```
-   {
-      from = {
-         identities = [
-            "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
-         ]
-         sources = {
-            resources = [
-               "projects/${local.cloudbuild_project_number}"
-            ]
-         }
-      }
-      to = {
-         resources = [
-            "projects/<prj_bu1_infra_pipeline_number>"
-         ]
-         operations = {
-            "storage.googleapis.com" = {
-               methods = ["*"]
-            }
-            "logging.googleapis.com" = {
-               methods = ["*"]
-            }
-            "iamcredentials.googleapis.com" = {
-               methods = ["*"]
-            }
-         }
-      }
-   },
-   {
-      from = {
-         identities = [
-            "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
-         ]
-         sources = {
-            resources = [
-               "projects/${local.cloudbuild_project_number}"
-            ]
-         }
-      }
-      to = {
-         resources = [
-            "projects/${local.seed_project_number}"
-         ]
-         operations = {
-            "storage.googleapis.com" = {
-               methods = ["*"]
-            }
-         }
-      }
-   },
-   ```
-
-1. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. Use `terraform output` to get the APP Infra Pipeline cloud build project number.
+
+   ```bash
+   export cloudbuild_project_number=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_number)
+   echo $cloudbuild_project_number
+   sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" ../gcp-org/envs/shared/service_control.tf
+   ```
+
+1. Before executing the next stages, set `required_egress_rule_app_infra` and `required_egress_rule_app_infra_dry_run` variables in [service_control.tf](gcp-org/envs/shared/service_control.tf) file.
+
+   ```bash
+   cd ../gcp-org
+   git checkout production
+
+   sed -i 's|^//\s*\(required_egress_rules_app_infra_dry_run\s*=.*\)|\1|' envs/shared/terraform.tfvars
+   sed -i 's|^//\s*\(required_egress_rules_app_infra\s*=.*\)|\1|' /envs/shared/terraform.tfvars
+
+   git add envs/shared/terraform.tfvars
+   git commit -m "Add App Infra egress rule."
+   git push
+   cd ../
    ```
 
 1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
@@ -464,72 +425,35 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    cd ../
    ```
 
-1. Use `terraform output` to get the APP Infra Pipeline Terraform service account.
-
-   ```bash
-   export terraform_service_accounts=$(terraform -chdir="business_unit_1/shared/" output -json terraform_service_accounts | jq -r 'to_entries[0].value')
-   echo $terraform_service_accounts
-   ```
-
-1. If you are deploying with VPC Service Controls in dry run mode, update the `required_ingres_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_ingres_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the directional rules:
-
-   ```
-   {
-      from = {
-         identities = [
-            "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
-         ]
-         sources = {
-            resources = [
-               "projects/${local.cloudbuild_project_number}"
-            ]
-         }
-      }
-      to = {
-         resources = [
-            "projects/<prj_bu1_infra_pipeline_number>"
-         ]
-         operations = {
-            "storage.googleapis.com" = {
-               methods = ["*"]
-            }
-            "logging.googleapis.com" = {
-               methods = ["*"]
-            }
-            "iamcredentials.googleapis.com" = {
-               methods = ["*"]
-            }
-         }
-      }
-   },
-   {
-      from = {
-         identities = [
-            "serviceAccount:sa-tf-cb-bu1-example-app@<prj_bu1_infra_pipeline_id>.iam.gserviceaccount.com",
-         ]
-         sources = {
-            resources = [
-               "projects/${local.cloudbuild_project_number}"
-            ]
-         }
-      }
-      to = {
-         resources = [
-            "projects/${local.seed_project_number}"
-         ]
-         operations = {
-            "storage.googleapis.com" = {
-               methods = ["*"]
-            }
-         }
-      }
-   },
-   ```
-
 If you received any errors or made any changes to the Terraform config or any `.tfvars`, you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.
 
-Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
-```bash
-unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
-```
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. Use `terraform output` to get the APP Infra Pipeline cloud build project number.
+
+   ```bash
+   export cloudbuild_project_number=$(terraform -chdir="gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_number)
+   echo $cloudbuild_project_number
+   sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" gcp-org/envs/shared/service_control.tf
+   ```
+
+1. Before executing the next stages, set `required_egress_rule_app_infra` and `required_egress_rule_app_infra_dry_run` variables in [service_control.tf](gcp-org/envs/shared/service_control.tf) file.
+
+   ```bash
+   cd gcp-org
+   git checkout production
+
+   sed -i 's|^//\s*\(required_egress_rules_app_infra_dry_run\s*=.*\)|\1|' envs/shared/terraform.tfvars
+   sed -i 's|^//\s*\(required_egress_rules_app_infra\s*=.*\)|\1|' /envs/shared/terraform.tfvars
+
+   ./tf-wrapper.sh plan production
+   ./tf-wrapper.sh apply production
+
+   git add envs/shared/terraform.tfvars
+   git commit -m "Add App Infra egress rule."
+   cd ../
+   ```

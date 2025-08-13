@@ -364,14 +364,14 @@ variable "egress_policies_keys_dry_run" {
   default     = []
 }
 
-variable "required_ingress_rules_app_infra" {
-  description = "Required ingress rule app infra enforced mode."
+variable "required_egress_rules_app_infra" {
+  description = "Required egress rule app infra enforced mode."
   type        = bool
   default     = false
 }
 
-variable "required_ingress_rules_app_infra_dry_run" {
-  description = "Required ingress rule app infra dry run mode."
+variable "required_egress_rules_app_infra_dry_run" {
+  description = "Required egress rule app infra dry run mode."
   type        = bool
   default     = false
 }

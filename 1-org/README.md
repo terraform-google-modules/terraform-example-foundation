@@ -173,33 +173,6 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
    if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
    ```
 
-1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the same value as your user that you updated in `envs/shared/terraform.tfvars`:
-
-   ```
-   {
-      from = {
-         identities = [
-            "user:YOUR-USER-EMAIL@example.com",
-         ]
-         sources = {
-            resources = [
-               "projects/${local.seed_project_number}"
-            ]
-         }
-      }
-      to = {
-         resources = [
-            "projects/${local.cloudbuild_project_number}"
-         ]
-         operations = {
-            "storage.googleapis.com" = {
-               methods = ["*"]
-            }
-         }
-      }
-   },
-   ```
-
 1. Run `terraform init` in `/envs/shared` to generate the outputs used in other steps.
 
    ```bash

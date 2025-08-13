@@ -447,24 +447,7 @@ If you received any errors or made any changes to the Terraform config or any `.
    sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" gcp-org/envs/shared/service_control.tf
    ```
 
-1. Before executing the next stages, set `required_egress_rule_app_infra` and `required_egress_rule_app_infra_dry_run` variables in [service_control.tf](gcp-org/envs/shared/service_control.tf) file.
-
-   ```bash
-   cd gcp-org
-   git checkout production
-
-   sed -i 's|^//\s*\(required_egress_rules_app_infra_dry_run\s*=.*\)|\1|' envs/shared/terraform.tfvars
-   sed -i 's|^//\s*\(required_egress_rules_app_infra\s*=.*\)|\1|' /envs/shared/terraform.tfvars
-
-   ./tf-wrapper.sh plan production
-   ./tf-wrapper.sh apply production
-
-   git add envs/shared/terraform.tfvars
-   git commit -m "Add App Infra egress rule."
-   cd ../
-   ```
-
-1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` variable to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` variable to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file, run `plan` and `apply`.
+2. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` variable to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` variable to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file, run `plan` and `apply`.
 
    ```bash
    cd gcp-org

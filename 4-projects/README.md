@@ -228,20 +228,26 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
 
 1. Use `terraform output` to get the APP Infra Pipeline cloud build project number.
 
+
    ```bash
    export cloudbuild_project_number=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_number)
    echo $cloudbuild_project_number
    sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" ../gcp-org/envs/shared/service_control.tf
    ```
 
-1. Before executing the next stages, set `required_egress_rule_app_infra` and `required_egress_rule_app_infra_dry_run` variables in [service_control.tf](gcp-org/envs/shared/service_control.tf) file.
+1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` variable to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` variable to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file, and push your changes.
 
    ```bash
    cd ../gcp-org
    git checkout production
 
-   sed -i 's|^//\s*\(required_egress_rules_app_infra_dry_run\s*=.*\)|\1|' envs/shared/terraform.tfvars
-   sed -i 's|^//\s*\(required_egress_rules_app_infra\s*=.*\)|\1|' /envs/shared/terraform.tfvars
+   export enforce_vpcsc=$(terraform -chdir="envs/shared/" output -raw enforce_vpcsc); \
+   echo "enforce_vpcsc" = $enforce_vpcsc
+   if [[ "$enforce_vpcsc" == "false" ]]; then \
+   sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   else \
+   sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   fi
 
    git add envs/shared/terraform.tfvars
    git commit -m "Add App Infra egress rule."
@@ -449,6 +455,28 @@ If you received any errors or made any changes to the Terraform config or any `.
 
    sed -i 's|^//\s*\(required_egress_rules_app_infra_dry_run\s*=.*\)|\1|' envs/shared/terraform.tfvars
    sed -i 's|^//\s*\(required_egress_rules_app_infra\s*=.*\)|\1|' /envs/shared/terraform.tfvars
+
+   ./tf-wrapper.sh plan production
+   ./tf-wrapper.sh apply production
+
+   git add envs/shared/terraform.tfvars
+   git commit -m "Add App Infra egress rule."
+   cd ../
+   ```
+
+1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` variable to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` variable to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file, run `plan` and `apply`.
+
+   ```bash
+   cd gcp-org
+   git checkout production
+
+   export enforce_vpcsc=$(terraform -chdir="envs/shared/" output -raw enforce_vpcsc); \
+   echo "enforce_vpcsc" = $enforce_vpcsc
+   if [[ "$enforce_vpcsc" == "false" ]]; then \
+   sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   else \
+   sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   fi
 
    ./tf-wrapper.sh plan production
    ./tf-wrapper.sh apply production

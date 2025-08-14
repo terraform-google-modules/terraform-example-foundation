@@ -375,3 +375,15 @@ variable "required_egress_rules_app_infra_dry_run" {
   type        = bool
   default     = false
 }
+
+variable "required_ingress_rules_app_infra" {
+  description = "Required ingress rule app infra enforced mode."
+  type        = bool
+  default     = false
+}
+
+variable "required_ingress_rules_app_infra_dry_run" {
+  description = "Required ingress rule app infra dry run mode."
+  type        = bool
+  default     = false
+}

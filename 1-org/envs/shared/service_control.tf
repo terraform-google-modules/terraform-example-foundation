@@ -208,16 +208,16 @@ locals {
   )
 
   ingress_policies_keys_dry_run = concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys_dry_run)
-  egress_policies_keys_dry_run  = concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
+  egress_policies_keys_dry_run  = var.required_egress_rules_app_infra_dry_run ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys_dry_run) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
   ingress_policies_keys         = concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys)
-  egress_policies_keys          = concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
+  egress_policies_keys          = var.required_egress_rules_app_infra ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
 
-  ingress_policies_dry_run_map = zipmap(
+  ingress_policies_map_dry_run = zipmap(
     local.ingress_policies_keys_dry_run,
     [for r in local.required_ingress_rules_dry_run : "${r}"]
   )
 
-  egress_policies_dry_run_map = zipmap(
+  egress_policies_map_dry_run = zipmap(
     local.egress_policies_keys_dry_run,
     [for r in local.required_egress_rules_dry_run : "${r}"]
   )
@@ -227,10 +227,11 @@ locals {
     [for r in local.required_ingress_rules_dry_run : "${r}"]
   )
 
-  egress_policies_map = zipmap(
+  egress_policies_map = var.required_egress_rules_app_infra ? zipmap(
     local.egress_policies_keys,
-    [for r in local.required_egress_rules_dry_run : "${r}"]
-  )
+    [for r in concat(local.required_egress_rules_dry_run, local.required_egress_rules_app_infra) : "${r}"]
+    ) : zipmap(local.egress_policies_keys,
+  [for r in local.required_egress_rules_dry_run : "${r}"])
 
   required_egress_rules_dry_run = [
     {
@@ -430,6 +431,89 @@ locals {
     },
   ]
 
+  required_ingress_rules_app_infra_dry_run = [
+    {
+      from = {
+        identities = [
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/PRJ_BU1_APP_INFRA_NUMBER"
+        ]
+        operations = {
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "iamcredentials.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.seed_project_number}"
+        ]
+        operations = {
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/PRJS_DEV_SAMPLE_SVPC_NUMBER",
+          "projects/PRJS_DEV_SAMPLE_PEERING_NUMBER",
+          "projects/PRJS_PROD_SAMPLE_SVPC_NUMBER",
+          "projects/PRJS_PROD_SAMPLE_PEERING_NUMBER",
+          "projects/PRJS_NONPROD_SAMPLE_SVPC_NUMBER",
+          "projects/PRJS_NONPROD_SAMPLE_PEERING_NUMBER"
+        ]
+        operations = {
+          "iam.googleapis.com" = {
+            methods = ["*"]
+          }
+          "compute.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
   required_ingress_rules = [
     {
       from = {
@@ -554,6 +638,89 @@ locals {
     },
   ]
 
+  required_ingress_rules_app_infra = [
+    {
+      from = {
+        identities = [
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/PRJ_BU1_APP_INFRA_NUMBER"
+        ]
+        operations = {
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "iamcredentials.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.seed_project_number}"
+        ]
+        operations = {
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/PRJS_DEV_SAMPLE_SVPC_NUMBER",
+          "projects/PRJS_DEV_SAMPLE_PEERING_NUMBER",
+          "projects/PRJS_PROD_SAMPLE_SVPC_NUMBER",
+          "projects/PRJS_PROD_SAMPLE_PEERING_NUMBER",
+          "projects/PRJS_NONPROD_SAMPLE_SVPC_NUMBER",
+          "projects/PRJS_NONPROD_SAMPLE_PEERING_NUMBER"
+        ]
+        operations = {
+          "iam.googleapis.com" = {
+            methods = ["*"]
+          }
+          "compute.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
   required_egress_rules = [
     {
       from = {
@@ -654,10 +821,10 @@ module "service_control" {
   egress_policies_keys_dry_run  = local.egress_policies_keys_dry_run
   ingress_policies_keys         = local.ingress_policies_keys
   egress_policies_keys          = local.egress_policies_keys_dry_run
-  ingress_policies              = distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, var.ingress_policies))
-  ingress_policies_dry_run      = distinct(concat(values(local.ingress_policies_dry_run_map), local.required_ingress_rules_dry_run, var.ingress_policies_dry_run, ))
+  ingress_policies              = var.required_ingress_rules_app_infra ? distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, local.required_ingress_rules_app_infra, var.ingress_policies)) : distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, var.ingress_policies))
+  ingress_policies_dry_run      = var.required_ingress_rules_app_infra ? distinct(concat(values(local.ingress_policies_map_dry_run), local.required_ingress_rules, local.required_ingress_rules_app_infra_dry_run, var.ingress_policies_dry_run)) : distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules_dry_run, var.ingress_policies_dry_run))
   egress_policies               = var.required_egress_rules_app_infra ? distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules, local.required_egress_rules_app_infra)) : distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules))
-  egress_policies_dry_run       = var.required_egress_rules_app_infra_dry_run ? distinct(concat(values(local.egress_policies_dry_run_map), var.egress_policies_dry_run, local.required_egress_rules_dry_run, local.required_egress_rules_app_infra_dry_run)) : distinct(concat(values(local.egress_policies_dry_run_map), var.egress_policies_dry_run, local.required_egress_rules_dry_run))
+  egress_policies_dry_run       = var.required_egress_rules_app_infra_dry_run ? distinct(concat(values(local.egress_policies_map_dry_run), var.egress_policies_dry_run, local.required_egress_rules_dry_run, local.required_egress_rules_app_infra_dry_run)) : distinct(concat(values(local.egress_policies_map_dry_run), local.required_egress_rules_dry_run, var.egress_policies_dry_run))
 
   depends_on = [
     time_sleep.wait_projects

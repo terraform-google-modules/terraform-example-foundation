@@ -37,6 +37,8 @@
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | required\_egress\_rules\_app\_infra | Required egress rule app infra enforced mode. | `bool` | `false` | no |
 | required\_egress\_rules\_app\_infra\_dry\_run | Required egress rule app infra dry run mode. | `bool` | `false` | no |
+| required\_ingress\_rules\_app\_infra | Required ingress rule app infra enforced mode. | `bool` | `false` | no |
+| required\_ingress\_rules\_app\_infra\_dry\_run | Required ingress rule app infra dry run mode. | `bool` | `false` | no |
 | resources | A list of GCP resources that are inside of the service perimeter. Currently only projects and VPC networks are allowed. | `list(string)` | `[]` | no |
 | resources\_dry\_run | A list of GCP resources that are inside of the service perimeter. Currently only projects and VPC networks are allowed. If set, a dry-run policy will be set. | `list(string)` | `[]` | no |
 | scc\_notification\_filter | Filter used to create the Security Command Center Notification, you can see more details on how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter | `string` | `"state = \"ACTIVE\""` | no |

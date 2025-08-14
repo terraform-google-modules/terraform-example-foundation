@@ -24,6 +24,11 @@ output "peering_project" {
   value       = module.peering_project.project_id
 }
 
+output "peering_project_number" {
+  description = "Project sample peering project number."
+  value       = module.peering_project.project_number
+}
+
 output "peering_network" {
   description = "Peer network peering resource."
   value       = module.peering.peer_network_peering

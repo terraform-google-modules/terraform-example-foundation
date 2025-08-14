@@ -12,23 +12,34 @@ See [GLOSSARY.md](./GLOSSARY.md).
 - [Caller does not have permission in the Organization](#caller-does-not-have-permission-in-the-organization)
 - [Billing quota exceeded](#billing-quota-exceeded)
 - [Terraform Error acquiring the state lock](#terraform-error-acquiring-the-state-lock)
+- [VPC Service Controls](#vpc-service-controls)
 
 - - -
 
 ## Common issues
 
-- [Project quota exceeded](#project-quota-exceeded)
-- [Default branch setting](#default-branch-setting)
-- [Terraform State Snapshot lock](#terraform-state-snapshot-lock)
-- [Application authenticated using end user credentials](#application-authenticated-using-end-user-credentials)
-- [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
-- [Error: Unsupported attribute](#error-unsupported-attribute)
-- [Error: Error adding network peering](#error-error-adding-network-peering)
-- [Error: Terraform deploy fails due to GitLab repositories not found](#terraform-deploy-fails-due-to-gitlab-repositories-not-found)
-- [Error: Gitlab pipelines access denied](#gitlab-pipelines-access-denied)
-- [Error: Unknown project id on 4-project step context](#error-unknown-project-id-on-4-project-step-context)
-- [Error: Error getting operation for committing purpose for TagValue](#error-error-getting-operation-for-committing-purpose-for-tagvalue)
-- [The user does not have permission to access Project or it may not exist](#the-user-does-not-have-permission-to-access-project-or-it-may-not-exist)
+- [Troubleshooting](#troubleshooting)
+  - [Terminology](#terminology)
+  - [Problems](#problems)
+  - [Common issues](#common-issues)
+    - [Project quota exceeded](#project-quota-exceeded)
+    - [Default branch setting](#default-branch-setting)
+    - [Terraform State Snapshot lock](#terraform-state-snapshot-lock)
+      - [Downgrade your local Terraform version](#downgrade-your-local-terraform-version)
+      - [Upgrade your 0-bootstrap runner image Terraform version](#upgrade-your-0-bootstrap-runner-image-terraform-version)
+    - [Application authenticated using end user credentials](#application-authenticated-using-end-user-credentials)
+    - [Cannot assign requested address error in Cloud Shell](#cannot-assign-requested-address-error-in-cloud-shell)
+    - [Error: Unsupported attribute](#error-unsupported-attribute)
+    - [Error: Error adding network peering](#error-error-adding-network-peering)
+    - [Error: Unknown project id on 4-project step context](#error-unknown-project-id-on-4-project-step-context)
+    - [Error: Error getting operation for committing purpose for TagValue](#error-error-getting-operation-for-committing-purpose-for-tagvalue)
+    - [Caller does not have permission in the Organization](#caller-does-not-have-permission-in-the-organization)
+    - [Billing quota exceeded](#billing-quota-exceeded)
+    - [Terraform Error acquiring the state lock](#terraform-error-acquiring-the-state-lock)
+    - [VPC Service Controls](#vpc-service-controls)
+    - [Terraform deploy fails due to GitLab repositories not found](#terraform-deploy-fails-due-to-gitlab-repositories-not-found)
+    - [Gitlab pipelines access denied](#gitlab-pipelines-access-denied)
+    - [The user does not have permission to access Project or it may not exist](#the-user-does-not-have-permission-to-access-project-or-it-may-not-exist)
 - - -
 
 ### Project quota exceeded
@@ -494,6 +505,102 @@ You can get this information from step `0-bootstrap` by running the following co
 **Terraform State lock possible causes:**
 
 - If you realize that the Terraform State lock was due to a build timeout increase the build timeout on [build configuration](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/build/cloudbuild-tf-apply.yaml#L15).
+
+### VPC Service Controls
+
+**Error message:**
+
+```text
+Failed to load state: Failed to open state file at gs://YOUR-TF-STATE-BUCKET/terraform/bootstrap/state/default.tfstate: googleapi: got HTTP response code 403 with body: <?xml version='1.0' encoding='UTF-8'?><Error><Code>SecurityPolicyViolated</Code><Message>Request violates VPC Service Controls.</Message><Details>Request is prohibited by organization's policy. vpcServiceControlsUniqueIdentifier: VPC-UNIQUE-IDENTIFIER</Details></Error>
+```
+
+**Cause:**
+
+You are trying to access an output from a Terraform remote state stored in a project that is inside a VPC Service Controls perimeter. However, your current environment is configured with a billing/quota_project that is not part of that perimeter. Since the VPC Service Controls perimeter is in enforced mode, this configuration blocks access.
+
+**Solution:**
+
+Run the following gcloud commands to remove the configured billing/quota_project from your environment:
+
+   ```bash
+   gcloud config unset billing/quota_project
+   gcloud auth application-default login
+   ```
+
+This will ensure that requests are not made using the billing/quota_project configured in your environment, which is outside the VPC Service Controls perimeter and causes access to be blocked.
+
+If you must use a billing/quota_project outside the perimeter, you will need to add the following egress rule using the `egress_policies` variable for VPC Service Controls in enforced mode in the `1-org/envs/shared/terraform.tfvars`
+
+Steps:
+
+1. Navigate into the [gcp-org/envs/shared/terraform.tfvars](gcp-org/envs/shared/terraform.tfvars) and change to the `production` branch:
+
+   ```bash
+   cd gcp-org/envs/shared/
+   git checkout production
+   ```
+
+- Update `egress_policies` variable, with the following rule:
+
+   ```
+   {
+      from = {
+         identities = [
+            "user:YOUR-USER-EMAIL@example.com",
+         ]
+         sources = {
+            resources = [
+               "projects/SEED_PROJECT_NUMBER"
+            ]
+         }
+      }
+      to = {
+         resources = [
+            "projects/YOUR_BILLING_QUOTA_PROJECT"
+         ]
+         operations = {
+            "storage.googleapis.com" = {
+               methods = ["*"]
+            }
+         }
+      }
+   },
+   ```
+
+- Update the `egress_policies_keys` variable with the `"seed_to_billing_prj"` value.
+- Update the identities field to match the values of the `perimeter_additional_members variable`.
+- Run the following command to get the Seed project number and the Billing project configured in your environment project number.
+  
+   ```bash
+   export seed_project_number=$(terraform -chdir="../../../gcp-bootstrap/envs/shared/" output -raw seed_project_number)
+   echo "seed_project_number = ${seed_project_number}"
+
+   export billing_quota_project_number=$(gcloud projects describe "$(gcloud config get-value billing/quota_project)" --format="value(projectNumber)")
+   echo "billing_quota_project_number = ${billing_quota_project_number}"
+
+   sed -i'' -e "s/SEED_PROJECT_NUMBER/${seed_project_number}/" ./terraform.tfvars
+   sed -i'' -e "s/YOUR_BILLING_QUOTA_PROJECT/${billing_quota_project_number}/" ./terraform.tfvars
+   ```
+
+- Use `terraform output` to get an environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+- Run `init`, `plan` and `apply` and review the output.
+- Commit validated code.
+
+   ```bash
+   cd ../../
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw organization_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ./tf-wrapper.sh apply production
+
+   git add .
+   git commit -m "Add egress rule for billig/quota project."
+   cd ..
+
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT 
+   ```
 
 ### Terraform deploy fails due to GitLab repositories not found
 

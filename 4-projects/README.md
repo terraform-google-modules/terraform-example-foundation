@@ -253,7 +253,7 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    else \
    sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
    fi
-   
+
    git add envs/shared/terraform.tfvars
    git commit -m "Add App Infra directional rules."
    git push

@@ -235,7 +235,7 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" ../gcp-org/envs/shared/service_control.tf
    ```
 
-1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` variable to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` variable to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file, and push your changes.
+1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` and `required_ingress_rule_app_infra_dry_run` variables to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` adn `required_ingress_rule_app_infra` variables to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file, and push your changes.
 
    ```bash
    cd ../gcp-org
@@ -244,13 +244,18 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    export enforce_vpcsc=$(terraform -chdir="envs/shared/" output -raw enforce_vpcsc); \
    echo "enforce_vpcsc" = $enforce_vpcsc
    if [[ "$enforce_vpcsc" == "false" ]]; then \
+   sed -i -E '/^[[:space:]]*\/\/required_ingress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   else \
+   sed -i -E '/^[[:space:]]*\/\/required_ingress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   fi
+   if [[ "$enforce_vpcsc" == "false" ]]; then \
    sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
    else \
    sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
    fi
-
+   
    git add envs/shared/terraform.tfvars
-   git commit -m "Add App Infra egress rule."
+   git commit -m "Add App Infra directional rules."
    git push
    cd ../
    ```

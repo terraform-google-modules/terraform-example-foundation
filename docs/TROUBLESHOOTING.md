@@ -570,7 +570,7 @@ Steps:
 - Update the `egress_policies_keys` variable with the `"seed_to_billing_prj"` value.
 - Update the identities field to match the values of the `perimeter_additional_members variable`.
 - Run the following command to get the Seed project number and the Billing project configured in your environment project number.
-  
+
    ```bash
    export seed_project_number=$(terraform -chdir="../../../gcp-bootstrap/envs/shared/" output -raw seed_project_number)
    echo "seed_project_number = ${seed_project_number}"
@@ -599,7 +599,7 @@ Steps:
    git commit -m "Add egress rule for billig/quota project."
    cd ..
 
-   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT 
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
 ### Terraform deploy fails due to GitLab repositories not found

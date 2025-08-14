@@ -207,9 +207,9 @@ locals {
     [for p in local.projects : "${p}"]
   )
 
-  ingress_policies_keys_dry_run = concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys_dry_run)
+  ingress_policies_keys_dry_run = var.required_ingress_rules_app_infra_dry_run ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc", "cicd_to_app_infra", "cicd_to_seed", "cicd_to_net_env"], var.ingress_policies_keys_dry_run) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys_dry_run)
   egress_policies_keys_dry_run  = var.required_egress_rules_app_infra_dry_run ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys_dry_run) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
-  ingress_policies_keys         = concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys)
+  ingress_policies_keys         = var.required_ingress_rules_app_infra ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc", "cicd_to_app_infra", "cicd_to_seed", "cicd_to_net_env"], var.ingress_policies_keys) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys)
   egress_policies_keys          = var.required_egress_rules_app_infra ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
 
   ingress_policies_map_dry_run = zipmap(

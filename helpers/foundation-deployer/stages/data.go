@@ -83,11 +83,13 @@ type BootstrapOutputs struct {
 }
 
 type InfraPipelineOutputs struct {
-	RemoteStateBucket string
-	InfraPipeProj     string
-	DefaultRegion     string
-	TerraformSA       string
-	StateBucket       string
+	RemoteStateBucket            string
+	InfraPipeProj                string
+	DefaultRegion                string
+	TerraformSA                  string
+	StateBucket                  string
+	ImageName                    string
+	BootstrapCloudbuildProjectID string
 }
 
 // ServerAddress is the element for TargetNameServerAddresses
@@ -272,10 +274,9 @@ type ProjEnvTfvars struct {
 }
 
 type AppInfraCommonTfvars struct {
-	InstanceRegion                    string `hcl:"instance_region"`
-	RemoteStateBucket                 string `hcl:"remote_state_bucket"`
-	ImageDigest                       string `hcl:"image_digest"`
-	ConfidentialSpaceWorkloadOperator string `hcl:"confidential_space_workload_operator"`
+	InstanceRegion    string `hcl:"instance_region"`
+	RemoteStateBucket string `hcl:"remote_state_bucket"`
+	ImageDigest       string `hcl:"image_digest"`
 }
 
 func GetBootstrapStepOutputs(t testing.TB, foundationPath string) BootstrapOutputs {
@@ -305,10 +306,12 @@ func GetInfraPipelineOutputs(t testing.TB, checkoutPath, workspace string) Infra
 		NoColor:      true,
 	}
 	return InfraPipelineOutputs{
-		InfraPipeProj: terraform.Output(t, options, "cloudbuild_project_id"),
-		DefaultRegion: terraform.Output(t, options, "default_region"),
-		TerraformSA:   terraform.OutputMap(t, options, "terraform_service_accounts")["bu1-example-app"],
-		StateBucket:   terraform.OutputMap(t, options, "state_buckets")["bu1-example-app"],
+		InfraPipeProj:                terraform.Output(t, options, "cloudbuild_project_id"),
+		DefaultRegion:                terraform.Output(t, options, "default_region"),
+		TerraformSA:                  terraform.OutputMap(t, options, "terraform_service_accounts")["bu1-example-app"],
+		StateBucket:                  terraform.OutputMap(t, options, "state_buckets")["bu1-example-app"],
+		ImageName:                    terraform.Output(t, options, "image_name"),
+		BootstrapCloudbuildProjectID: terraform.Output(t, options, "bootstrap_cloudbuild_project_id"),
 	}
 }
 

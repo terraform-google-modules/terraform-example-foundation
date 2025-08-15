@@ -397,12 +397,17 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 }
 
 func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs InfraPipelineOutputs, c CommonConf) error {
+	digest, err := gcp.NewGCP().GetDockerImageDigest(t, outputs.BootstrapCloudbuildProjectID, outputs.ImageName)
+	if err != nil {
+		return err
+	}
 	// create tfvars file
 	commonTfvars := AppInfraCommonTfvars{
 		InstanceRegion:    tfvars.DefaultRegion,
 		RemoteStateBucket: outputs.RemoteStateBucket,
+		ImageDigest:       digest,
 	}
-	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, AppInfraStep, "common.auto.tfvars"), commonTfvars)
+	err = utils.WriteTfvars(filepath.Join(c.FoundationPath, AppInfraStep, "common.auto.tfvars"), commonTfvars)
 	if err != nil {
 		return err
 	}

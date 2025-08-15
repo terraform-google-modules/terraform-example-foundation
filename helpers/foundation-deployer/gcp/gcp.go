@@ -170,3 +170,17 @@ func (g GCP) GetDockerImageDigest(t testing.TB, project, imageName string) (stri
 
 	return digest, nil
 }
+
+// Gets the digest of a Docker image in Artifact Registry.
+func (g GCP) GetDockerImageDigest(t testing.TB, project, imageName string) (string, error) {
+
+	cmd := fmt.Sprintf("artifacts docker images describe %s --project=%s", imageName, project)
+	result := g.Runf(t, cmd)
+
+	digest := result.Get("image_summary.digest").String()
+	if digest == "" {
+		return "", fmt.Errorf("failed to retrieve digest for image %s in project %s", imageName, project)
+	}
+
+	return digest, nil
+}

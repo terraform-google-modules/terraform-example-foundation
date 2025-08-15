@@ -72,43 +72,43 @@ resource "google_project_iam_member" "workload_instance_admin" {
 resource "google_project_iam_member" "cb_workload_identity_admin" {
   project = module.env.confidential_space_project
   role    = "roles/iam.workloadIdentityPoolAdmin"
-  member  = "serviceAccount:${module.env.cloudbuild_sa}"
+  member  = "serviceAccount:${local.cloudbuild_sa}"
 }
 
 resource "google_project_iam_member" "cb_service_usage_admin" {
   project = module.env.confidential_space_project
   role    = "roles/serviceusage.serviceUsageAdmin"
-  member  = "serviceAccount:${module.env.cloudbuild_sa}"
+  member  = "serviceAccount:${local.cloudbuild_sa}"
 }
 
 resource "google_project_iam_member" "cb_service_account_admin" {
   project = module.env.confidential_space_project
   role    = "roles/iam.serviceAccountAdmin"
-  member  = "serviceAccount:${module.env.cloudbuild_sa}"
+  member  = "serviceAccount:${local.cloudbuild_sa}"
 }
 
 resource "google_project_iam_member" "cloudbuild_kms_admin" {
   project = module.env.confidential_space_project
   role    = "roles/cloudkms.admin"
-  member  = "serviceAccount:${module.env.cloudbuild_sa}"
+  member  = "serviceAccount:${local.cloudbuild_sa}"
 }
 
 resource "google_project_iam_member" "cloudbuild_instance_admin" {
   project = module.env.confidential_space_project
   role    = "roles/compute.instanceAdmin.v1"
-  member  = "serviceAccount:${module.env.cloudbuild_sa}"
+  member  = "serviceAccount:${local.cloudbuild_sa}"
 }
 
 resource "google_project_iam_member" "cloudbuild_gcs_admin_sa" {
   project = module.env.confidential_space_project
   role    = "roles/storage.admin"
-  member  = "serviceAccount:${module.env.cloudbuild_sa}"
+  member  = "serviceAccount:${local.cloudbuild_sa}"
 }
 
 resource "google_project_iam_member" "cloudbuild_project_iam_admin" {
   project = module.env.confidential_space_project
   role    = "roles/resourcemanager.projectIamAdmin"
-  member  = "serviceAccount:${module.env.cloudbuild_sa}"
+  member  = "serviceAccount:${local.cloudbuild_sa}"
 }
 
 resource "google_project_iam_member" "workload_identity_admin" {
@@ -120,6 +120,6 @@ resource "google_project_iam_member" "workload_identity_admin" {
 resource "google_project_iam_member" "workload_identity_admin_cb" {
   project = module.env.confidential_space_project
   role    = "roles/iam.workloadIdentityPoolAdmin"
-  member  = "serviceAccount:${module.env.cloudbuild_sa}"
+  member  = "serviceAccount:${local.cloudbuild_sa}"
 }
 

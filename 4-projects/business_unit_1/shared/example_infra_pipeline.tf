@@ -16,7 +16,7 @@
 
 locals {
   repo_names                       = ["bu1-example-app"]
-  cmd_prompt                       = "gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id}  --service-account=projects/${module.app_infra_cloudbuild_project[0].project_id}/serviceAccounts/${module.app_infra_cloudbuild_project[0].sa} --gcs-log-dir=gs://bkt-${module.app_infra_cloudbuild_project[0].project_id}-bu1-example-app-logs --worker-pool=${local.cloud_build_private_worker_pool_id}  || ( sleep 45 && gcloud builds submit --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project[0].project_id} --service-account=projects/${module.app_infra_cloudbuild_project[0].project_id}/serviceAccounts/${module.app_infra_cloudbuild_project[0].sa} --gcs-log-dir=gs://bkt-${module.app_infra_cloudbuild_project[0].project_id}-bu1-example-app-logs --worker-pool=${local.cloud_build_private_worker_pool_id}  )"
+  cmd_prompt                       = "gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://bkt-${local.cloudbuild_project_id}-gcp-projects-build-logs --worker-pool=${local.cloud_build_private_worker_pool_id} || ( sleep 46 && gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://bkt-${local.cloudbuild_project_id}-gcp-projects-build-logs --worker-pool=${local.cloud_build_private_worker_pool_id})"
   confidential_space_image_version = "latest"
   confidential_space_image_tag     = "${var.default_region}-docker.pkg.dev/${local.cloudbuild_project_id}/tf-runners/confidential_space_image:${local.confidential_space_image_version}"
 }
@@ -52,6 +52,12 @@ module "app_infra_cloudbuild_project" {
   business_code     = "bu1"
 }
 
+resource "google_storage_bucket_iam_member" "sa_policy_admin_binding" {
+  bucket = "${local.cloudbuild_project_id}_cloudbuild"
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com"
+}
+
 resource "google_storage_bucket_iam_member" "cloudbuild_storage_read" {
   bucket = "bkt-${module.app_infra_cloudbuild_project[0].project_id}-bu1-example-app-logs"
   role   = "roles/storage.admin"
@@ -64,6 +70,24 @@ resource "google_artifact_registry_repository_iam_member" "builder_on_artifact_r
   repository = "tf-runners"
   role       = "roles/artifactregistry.repoAdmin"
   member     = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
+resource "google_project_iam_member" "cloudbuild_logging" {
+  project = local.cloudbuild_project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
+resource "google_storage_bucket_iam_member" "bucket_object_viewer" {
+  bucket = "${module.app_infra_cloudbuild_project[0].project_id}_cloudbuild"
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
+resource "google_storage_bucket_iam_member" "bucket_object_admin" {
+  bucket = "${module.app_infra_cloudbuild_project[0].project_id}_cloudbuild"
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
 }
 
 resource "google_project_iam_member" "workload_identity_admin" {
@@ -93,7 +117,11 @@ resource "time_sleep" "wait_iam_propagation" {
     module.infra_pipelines,
     module.app_infra_cloudbuild_project,
     google_storage_bucket_iam_member.cloudbuild_storage_read,
-    google_artifact_registry_repository_iam_member.builder_on_artifact_registry
+    google_artifact_registry_repository_iam_member.builder_on_artifact_registry,
+    google_project_iam_member.cloudbuild_logging,
+    google_storage_bucket_iam_member.bucket_object_viewer,
+    google_storage_bucket_iam_member.bucket_object_admin,
+    google_storage_bucket_iam_member.sa_policy_admin_binding
   ]
 }
 

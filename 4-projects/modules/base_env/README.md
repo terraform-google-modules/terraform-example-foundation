@@ -37,7 +37,6 @@
 |------|-------------|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | bucket | The created storage bucket. |
-| cloudbuild\_sa | Cloudbuild service account. |
 | confidential\_space\_project | Confidential Space project id. |
 | confidential\_space\_project\_number | Confidential Space project number. |
 | floating\_project | Project sample floating project. |

@@ -105,16 +105,6 @@ output "confidential_space_project_number" {
   value       = module.env.confidential_space_project_number
 }
 
-output "bootstrap_cloudbuild_project_id" {
-  description = "Cloudbuild project ID."
-  value       = local.cloudbuild_project_id
-}
-
-output "cloudbuild_sa" {
-  description = "Cloudbuild Service Account."
-  value       = module.env.cloudbuild_sa
-}
-
 output "confidential_space_workload_sa" {
   description = "Workload Service Account for confidential space"
   value       = google_service_account.workload_sa.email

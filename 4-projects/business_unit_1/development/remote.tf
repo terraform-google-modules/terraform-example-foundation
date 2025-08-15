@@ -15,11 +15,12 @@
  */
 
 locals {
-  default_region        = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region_2      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
-  default_region_gcs    = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_gcs
-  default_region_kms    = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_kms
-  cloudbuild_project_id = data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_id
+  default_region          = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region_2        = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
+  default_region_gcs      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_gcs
+  default_region_kms      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_kms
+  projects_backend_bucket = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
+  cloudbuild_sa           = data.terraform_remote_state.business_unit_shared.outputs.terraform_service_accounts["bu1-example-app"]
 }
 
 data "terraform_remote_state" "bootstrap" {
@@ -28,5 +29,14 @@ data "terraform_remote_state" "bootstrap" {
   config = {
     bucket = var.remote_state_bucket
     prefix = "terraform/bootstrap/state"
+  }
+}
+
+data "terraform_remote_state" "business_unit_shared" {
+  backend = "gcs"
+
+  config = {
+    bucket = local.projects_backend_bucket
+    prefix = "terraform/projects/business_unit_1/shared"
   }
 }

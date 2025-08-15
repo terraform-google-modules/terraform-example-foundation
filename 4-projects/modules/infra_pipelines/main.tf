@@ -99,7 +99,6 @@ module "tf_workspace" {
 /***********************************************
   Cloud Build - IAM
  ***********************************************/
-# Adding the AR Admin role to grant permission to the Workload Confidential Space
 resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" {
   provider = google-beta
   for_each = toset(var.app_infra_repos)

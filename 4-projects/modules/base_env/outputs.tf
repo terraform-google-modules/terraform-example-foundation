@@ -107,7 +107,3 @@ output "terraform_service_accounts" {
   value       = module.confidential_space_project.sa
 }
 
-output "cloudbuild_sa" {
-  description = "Cloudbuild service account."
-  value       = local.app_infra_pipeline_service_accounts["bu1-example-app"]
-}

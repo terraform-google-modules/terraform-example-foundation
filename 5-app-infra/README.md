@@ -162,9 +162,9 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
 1. Update the file `common.auto.tfvars` with values from your environment from `gcp-projects`.
 
 ```bash
-export confidential_space_workload_sa=$(terraform -chdir="../gcp-projects/business_unit_1/nonproduction/" output -raw confidential_space_workload_sa)
-echo "confidential_space_workload_sa = ${confidential_space_workload_sa}"
-sed -i'' -e "s/CONFIDENTIAL_SPACE_WORKLOAD_OPERATOR/${confidential_space_workload_sa}/" ./confidential_space.tfvars
+export confidential_space_workload_operator=$(terraform -chdir="../gcp-projects/business_unit_1/nonproduction/" output -raw confidential_space_workload_sa)
+echo "confidential_space_workload_operator = ${confidential_space_workload_operator}"
+sed -i'' -e "s/CONFIDENTIAL_SPACE_WORKLOAD_OPERATOR/${confidential_space_workload_operator}/" ./common.auto.tfvars
 ```
 
 1. Get the `image_digest` value from the Docker image created in `gcp-projects`
@@ -175,12 +175,12 @@ echo ${CLOUD_BUILD_PROJECT_ID}
 export image_digest=$(gcloud artifacts docker images describe us-central1-docker.pkg.dev/${CLOUD_BUILD_PROJECT_ID}/tf-runners/confidential_space_image:latest --project=${CLOUD_BUILD_PROJECT_ID})
 ```
 
-1. Update `IMAGE_DIGEST` value in the file `confidential_space.tfvars`.
+1. Update `IMAGE_DIGEST` value in the file `common.auto.tfvars`.
 
 ```bash
 export image_digest=$(terraform -chdir="../gcp-projects/business_unit_1/nonproduction/" output -raw confidential_space_workload_sa)
 echo "image_digest = ${image_digest}"
-sed -i'' -e "s/IMAGE_DIGEST/${image_digest}/" ./confidential_space.tfvars
+sed -i'' -e "s/IMAGE_DIGEST/${image_digest}/" ./common.auto.tfvars
 ```
 
 1. Commit changes.

@@ -18,9 +18,7 @@
 | Name | Description |
 |------|-------------|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
-| bootstrap\_cloudbuild\_project\_id | Cloudbuild project ID. |
 | bucket | The created storage bucket. |
-| cloudbuild\_sa | Cloudbuild Service Account. |
 | confidential\_space\_project | Confidential Space project id. |
 | confidential\_space\_project\_number | Confidential Space project number. |
 | confidential\_space\_workload\_sa | Workload Service Account for confidential space |

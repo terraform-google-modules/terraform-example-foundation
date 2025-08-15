@@ -272,8 +272,10 @@ type ProjEnvTfvars struct {
 }
 
 type AppInfraCommonTfvars struct {
-	InstanceRegion    string `hcl:"instance_region"`
-	RemoteStateBucket string `hcl:"remote_state_bucket"`
+	InstanceRegion                    string `hcl:"instance_region"`
+	RemoteStateBucket                 string `hcl:"remote_state_bucket"`
+	ImageDigest                       string `hcl:"image_digest"`
+	ConfidentialSpaceWorkloadOperator string `hcl:"confidential_space_workload_operator"`
 }
 
 func GetBootstrapStepOutputs(t testing.TB, foundationPath string) BootstrapOutputs {

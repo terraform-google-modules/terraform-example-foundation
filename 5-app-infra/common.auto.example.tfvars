@@ -19,3 +19,7 @@
 remote_state_bucket                  = "REMOTE_STATE_BUCKET"
 image_digest                         = "IMAGE_DIGEST"
 confidential_space_workload_operator = "CONFIDENTIAL_SPACE_WORKLOAD_OPERATOR"
+#
+#prod_confidential_space_workload_operator = "PROD_CONFIDENTIAL_SPACE_WORKLOAD_OPERATOR"
+#nonprod_confidential_space_workload_operator = "NONPROD_CONFIDENTIAL_SPACE_WORKLOAD_OPERATOR"
+#dev_confidential_space_workload_operator = "DEV_CONFIDENTIAL_SPACE_WORKLOAD_OPERATOR"

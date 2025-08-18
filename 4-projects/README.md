@@ -226,23 +226,62 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
+1. Before move to the next step, configure directional policies for your perimeter.
+
 1. Use `terraform output` to get the APP Infra Pipeline cloud build project id and project number.
-
-
-   ```bash
-   export cloudbuild_project_number=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_number)
-   echo "cloud build project number = $cloudbuild_project_number"
-   export cloudbuild_project_id=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_id)
-   echo "cloud build project id = $cloudbuild_project_id"
-   sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" ../gcp-org/envs/shared/service_control.tf
-   sed -i'' -e "s/PRJ_APP_INFRA_ID/${cloudbuild_project_id}/" ../gcp-org/envs/shared/service_control.tf
-   ```
-
-1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` and `required_ingress_rule_app_infra_dry_run` variables to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` adn `required_ingress_rule_app_infra` variables to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file, and push your changes.
 
    ```bash
    cd ../gcp-org
 
+   export cloudbuild_project_number=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_number)
+   echo "cloud build project number = $cloudbuild_project_number"
+   export cloudbuild_project_id=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_id)
+   echo "cloud build project id = $cloudbuild_project_id"
+   sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" /envs/shared/service_control.tf
+   sed -i'' -e "s/PRJ_APP_INFRA_ID/${cloudbuild_project_id}/" /envs/shared/service_control.tf
+   ```
+
+1. Use `terraform output` to get the Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project.
+1. Use `gsutil cat` to get the project numbers of the SVPC and Peering projects in each environment (production, nonproduction, and development) for configuring the directional app infra policies.
+
+   ```bash
+   export projects_gcs_bucket_tfstate=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+   echo "projects_gcs_bucket_tfstate = ${projects_gcs_bucket_tfstate}"
+
+   export peering_project_number_dev=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/development/default.tfstate \
+   | jq -r '.outputs.peering_project_number.value')
+   echo "peering_project_number_dev = ${peering_project_number_dev}"
+   sed -i'' -e "s/PRJS_DEV_SAMPLE_PEERING_NUMBER/${peering_project_number_dev}/" envs/shared/service_control.tf
+
+   export peering_project_number_prod=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/production/default.tfstate \
+   | jq -r '.outputs.peering_project_number.value')
+   echo "peering_project_number_prod = ${peering_project_number_prod}"
+   sed -i'' -e "s/PRJS_PROD_SAMPLE_PEERING_NUMBER/${peering_project_number_prod}/" envs/shared/service_control.tf
+
+   export peering_project_number_nonprod=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/nonproduction/default.tfstate \
+   | jq -r '.outputs.peering_project_number.value')
+   echo "peering_project_number_nonprod = ${peering_project_number_nonprod}"
+   sed -i'' -e "s/PRJS_NONPROD_SAMPLE_PEERING_NUMBER/${peering_project_number_nonprod}/" envs/shared/service_control.tf
+
+   export shared_vpc_project_number_dev=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/development/default.tfstate \
+   | jq -r '.outputs.shared_vpc_project_number.value')
+   echo "shared_vpc_project_number_dev = ${shared_vpc_project_number_dev}"
+   sed -i'' -e "s/PRJS_DEV_SAMPLE_SVPC_NUMBER/${shared_vpc_project_number_dev}/" /envs/shared/service_control.tf
+
+   export shared_vpc_project_number_prod=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/production/default.tfstate \
+   | jq -r '.outputs.shared_vpc_project_number.value')
+   echo "shared_vpc_project_number_prod = ${shared_vpc_project_number_prod}"
+   sed -i'' -e "s/PRJS_PROD_SAMPLE_SVPC_NUMBER/${shared_vpc_project_number_prod}/" /envs/shared/service_control.tf
+
+   export shared_vpc_project_number_nonprod=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/nonproduction/default.tfstate \
+   | jq -r '.outputs.shared_vpc_project_number.value')
+   echo "shared_vpc_project_number_nonprod = ${shared_vpc_project_number_nonprod}"
+   sed -i'' -e "s/PRJS_NONPROD_SAMPLE_SVPC_NUMBER/${shared_vpc_project_number_nonprod}/" /envs/shared/service_control.tf
+   ```
+
+1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` and `required_ingress_rule_app_infra_dry_run` variables to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` and `required_ingress_rule_app_infra` variables to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file.
+
+   ```bash
    export enforce_vpcsc=$(terraform -chdir="envs/shared/" output -raw enforce_vpcsc); \
    echo "enforce_vpcsc" = $enforce_vpcsc
    if [[ "$enforce_vpcsc" == "false" ]]; then \
@@ -255,11 +294,16 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    else \
    sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
    fi
+   ```
 
-   git add envs/shared/terraform.tfvars
-   git commit -m "Add App Infra directional rules."
+1. Commit and push the changes.
+
+   ```bash
+   git add .
+   git commit -m "Add infra pipeline directional policies"
    git push
-   cd ../
+
+   cd ..
    ```
 
 1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
@@ -414,7 +458,7 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    git commit -m "Initial nonproduction commit."
    ```
 
-1. Checkout shared `production`. Run `init` and `plan` and review output for environment development.
+1. Checkout shared `production`. Run `init` and `plan` and review output for production development.
 
    ```bash
    git checkout production
@@ -446,32 +490,100 @@ If you received any errors or made any changes to the Terraform config or any `.
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
-1. Use `terraform output` to get the APP Infra Pipeline cloud build project number.
+1. Before move to the next step, configure directional policies for your perimeter.
+
+1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
-   export cloudbuild_project_number=$(terraform -chdir="gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_number)
-   echo $cloudbuild_project_number
-   sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" gcp-org/envs/shared/service_control.tf
+   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw seed_project_id)
+   echo ${SEED_PROJECT_ID}
+
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw organization_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
-2. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` variable to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` variable to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file, run `plan` and `apply`.
+1. Use `terraform output` to get the APP Infra Pipeline cloud build project id and project number.
 
    ```bash
-   cd gcp-org
-   git checkout production
+   cd ../gcp-org
 
+   export cloudbuild_project_number=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_number)
+   echo "cloud build project number = $cloudbuild_project_number"
+   export cloudbuild_project_id=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_id)
+   echo "cloud build project id = $cloudbuild_project_id"
+   sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" /envs/shared/service_control.tf
+   sed -i'' -e "s/PRJ_APP_INFRA_ID/${cloudbuild_project_id}/" /envs/shared/service_control.tf
+   ```
+
+1. Use `terraform output` to get the Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project.
+1. Use `gsutil cat` to get the project numbers of the SVPC and Peering projects in each environment (production, nonproduction, and development) for configuring the directional app infra policies.
+
+   ```bash
+   export projects_gcs_bucket_tfstate=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+   echo "projects_gcs_bucket_tfstate = ${projects_gcs_bucket_tfstate}"
+
+   export peering_project_number_dev=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/development/default.tfstate \
+   | jq -r '.outputs.peering_project_number.value')
+   echo "peering_project_number_dev = ${peering_project_number_dev}"
+   sed -i'' -e "s/PRJS_DEV_SAMPLE_PEERING_NUMBER/${peering_project_number_dev}/" envs/shared/service_control.tf
+
+   export peering_project_number_prod=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/production/default.tfstate \
+   | jq -r '.outputs.peering_project_number.value')
+   echo "peering_project_number_prod = ${peering_project_number_prod}"
+   sed -i'' -e "s/PRJS_PROD_SAMPLE_PEERING_NUMBER/${peering_project_number_prod}/" envs/shared/service_control.tf
+
+   export peering_project_number_nonprod=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/nonproduction/default.tfstate \
+   | jq -r '.outputs.peering_project_number.value')
+   echo "peering_project_number_nonprod = ${peering_project_number_nonprod}"
+   sed -i'' -e "s/PRJS_NONPROD_SAMPLE_PEERING_NUMBER/${peering_project_number_nonprod}/" envs/shared/service_control.tf
+
+   export shared_vpc_project_number_dev=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/development/default.tfstate \
+   | jq -r '.outputs.shared_vpc_project_number.value')
+   echo "shared_vpc_project_number_dev = ${shared_vpc_project_number_dev}"
+   sed -i'' -e "s/PRJS_DEV_SAMPLE_SVPC_NUMBER/${shared_vpc_project_number_dev}/" /envs/shared/service_control.tf
+
+   export shared_vpc_project_number_prod=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/production/default.tfstate \
+   | jq -r '.outputs.shared_vpc_project_number.value')
+   echo "shared_vpc_project_number_prod = ${shared_vpc_project_number_prod}"
+   sed -i'' -e "s/PRJS_PROD_SAMPLE_SVPC_NUMBER/${shared_vpc_project_number_prod}/" /envs/shared/service_control.tf
+
+   export shared_vpc_project_number_nonprod=$(gsutil cat gs://${projects_gcs_bucket_tfstate}/terraform/projects/business_unit_1/nonproduction/default.tfstate \
+   | jq -r '.outputs.shared_vpc_project_number.value')
+   echo "shared_vpc_project_number_nonprod = ${shared_vpc_project_number_nonprod}"
+   sed -i'' -e "s/PRJS_NONPROD_SAMPLE_SVPC_NUMBER/${shared_vpc_project_number_nonprod}/" /envs/shared/service_control.tf
+   ```
+
+1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` and `required_ingress_rule_app_infra_dry_run` variables to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` and `required_ingress_rule_app_infra` variables to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file.
+
+   ```bash
    export enforce_vpcsc=$(terraform -chdir="envs/shared/" output -raw enforce_vpcsc); \
    echo "enforce_vpcsc" = $enforce_vpcsc
+   if [[ "$enforce_vpcsc" == "false" ]]; then \
+   sed -i -E '/^[[:space:]]*\/\/required_ingress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   else \
+   sed -i -E '/^[[:space:]]*\/\/required_ingress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   fi
    if [[ "$enforce_vpcsc" == "false" ]]; then \
    sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
    else \
    sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
    fi
-
-   ./tf-wrapper.sh plan production
-   ./tf-wrapper.sh apply production
-
-   git add envs/shared/terraform.tfvars
-   git commit -m "Add App Infra egress rule."
-   cd ../
    ```
+
+1. Run `plan` and `apply` and output for production development. Commit and save the changes.
+
+   ```bash
+   ./tf-wrapper plan production
+   ./tf-wrapper apply production
+   git commit -m "Add infra pipeline directional policies"
+
+   cd ..
+   ```
+
+1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.

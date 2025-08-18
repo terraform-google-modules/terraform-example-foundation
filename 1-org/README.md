@@ -270,33 +270,6 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
    sed -i'' -e "s/ACCESS_CONTEXT_MANAGER_ID/${ACCESS_CONTEXT_MANAGER_ID}/" ./envs/shared/terraform.tfvars
    ```
 
-1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rules_dry_run` list, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rules` list, in [gcp-org/envs/shared/service_control.tf](../gcp-org/envs/shared/service_control.tf) with the same value as your user that you updated in `envs/shared/terraform.tfvars`:
-
-   ```
-   {
-      from = {
-         identities = [
-            "user:YOUR-USER-EMAIL@example.com",
-         ]
-         sources = {
-            resources = [
-               "projects/${local.seed_project_number}"
-            ]
-         }
-      }
-      to = {
-         resources = [
-            "projects/${local.cloudbuild_project_number}"
-         ]
-         operations = {
-            "storage.googleapis.com" = {
-               methods = ["*"]
-            }
-         }
-      }
-   },
-   ```
-
 1. Update the `envs/shared/terraform.tfvars` file with values from your environment and `gcp-bootstrap` step. If the previous step showed a numeric value, un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
 
    ```bash

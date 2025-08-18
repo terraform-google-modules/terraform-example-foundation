@@ -226,20 +226,22 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
-1. Use `terraform output` to get the APP Infra Pipeline cloud build project number.
+1. Use `terraform output` to get the APP Infra Pipeline cloud build project id and project number.
 
 
    ```bash
    export cloudbuild_project_number=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_number)
-   echo $cloudbuild_project_number
+   echo "cloud build project number = $cloudbuild_project_number"
+   export cloudbuild_project_id=$(terraform -chdir="business_unit_1/shared/" output -raw cloudbuild_project_id)
+   echo "cloud build project id = $cloudbuild_project_id"
    sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" ../gcp-org/envs/shared/service_control.tf
+   sed -i'' -e "s/PRJ_APP_INFRA_ID/${cloudbuild_project_id}/" ../gcp-org/envs/shared/service_control.tf
    ```
 
 1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` and `required_ingress_rule_app_infra_dry_run` variables to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` adn `required_ingress_rule_app_infra` variables to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file, and push your changes.
 
    ```bash
    cd ../gcp-org
-   git checkout production
 
    export enforce_vpcsc=$(terraform -chdir="envs/shared/" output -raw enforce_vpcsc); \
    echo "enforce_vpcsc" = $enforce_vpcsc

@@ -435,7 +435,7 @@ locals {
     {
       from = {
         identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
         ]
         sources = {
           resources = [
@@ -463,7 +463,7 @@ locals {
     {
       from = {
         identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
         ]
         sources = {
           resources = [
@@ -485,7 +485,7 @@ locals {
     {
       from = {
         identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
         ]
         sources = {
           resources = [
@@ -642,7 +642,7 @@ locals {
     {
       from = {
         identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
         ]
         sources = {
           resources = [
@@ -670,7 +670,7 @@ locals {
     {
       from = {
         identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
         ]
         sources = {
           resources = [
@@ -692,7 +692,7 @@ locals {
     {
       from = {
         identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_BU1_APP_INFRA_ID.iam.gserviceaccount.com",
+          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
         ]
         sources = {
           resources = [

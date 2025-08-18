@@ -207,31 +207,34 @@ locals {
     [for p in local.projects : "${p}"]
   )
 
-  ingress_policies_keys_dry_run = var.required_ingress_rules_app_infra_dry_run ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc", "cicd_to_app_infra", "cicd_to_seed", "cicd_to_net_env"], var.ingress_policies_keys_dry_run) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys_dry_run)
+  ingress_policies_keys_dry_run = var.required_ingress_rules_app_infra_dry_run ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc", "cicd_to_app_infra", "cicd_to_seed_app_infra", "cicd_to_net_env"], var.ingress_policies_keys_dry_run) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys_dry_run)
   egress_policies_keys_dry_run  = var.required_egress_rules_app_infra_dry_run ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys_dry_run) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
-  ingress_policies_keys         = var.required_ingress_rules_app_infra ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc", "cicd_to_app_infra", "cicd_to_seed", "cicd_to_net_env"], var.ingress_policies_keys) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys)
+  ingress_policies_keys         = var.required_ingress_rules_app_infra ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc", "cicd_to_app_infra", "cicd_to_seed_app_infra", "cicd_to_net_env"], var.ingress_policies_keys) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys)
   egress_policies_keys          = var.required_egress_rules_app_infra ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
 
-  ingress_policies_map_dry_run = zipmap(
+  ingress_policies_map_dry_run = var.required_ingress_rules_app_infra_dry_run ? zipmap(
     local.ingress_policies_keys_dry_run,
-    [for r in local.required_ingress_rules_dry_run : "${r}"]
-  )
+    [for r in concat(local.required_ingress_rules_dry_run, local.required_ingress_rules_app_infra_dry_run) : "${r}"]
+    ) : zipmap(local.ingress_policies_keys_dry_run,
+  [for r in local.required_ingress_rules_dry_run : "${r}"])
 
-  egress_policies_map_dry_run = zipmap(
+  egress_policies_map_dry_run = var.required_egress_rules_app_infra_dry_run ? zipmap(
     local.egress_policies_keys_dry_run,
-    [for r in local.required_egress_rules_dry_run : "${r}"]
-  )
+    [for r in concat(local.required_egress_rules_dry_run, local.required_egress_rules_app_infra_dry_run) : "${r}"]
+    ) : zipmap(local.egress_policies_keys_dry_run,
+  [for r in local.required_egress_rules_dry_run : "${r}"])
 
-  ingress_policies_map = zipmap(
+  ingress_policies_map = var.required_ingress_rules_app_infra ? zipmap(
     local.ingress_policies_keys,
-    [for r in local.required_ingress_rules_dry_run : "${r}"]
-  )
+    [for r in concat(local.required_ingress_rules, local.required_ingress_rules_app_infra) : "${r}"]
+    ) : zipmap(local.ingress_policies_keys,
+  [for r in local.required_ingress_rules : "${r}"])
 
   egress_policies_map = var.required_egress_rules_app_infra ? zipmap(
     local.egress_policies_keys,
-    [for r in concat(local.required_egress_rules_dry_run, local.required_egress_rules_app_infra) : "${r}"]
+    [for r in concat(local.required_egress_rules, local.required_egress_rules_app_infra) : "${r}"]
     ) : zipmap(local.egress_policies_keys,
-  [for r in local.required_egress_rules_dry_run : "${r}"])
+  [for r in local.required_egress_rules : "${r}"])
 
   required_egress_rules_dry_run = [
     {
@@ -822,7 +825,7 @@ module "service_control" {
   ingress_policies_keys         = local.ingress_policies_keys
   egress_policies_keys          = local.egress_policies_keys_dry_run
   ingress_policies              = var.required_ingress_rules_app_infra ? distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, local.required_ingress_rules_app_infra, var.ingress_policies)) : distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, var.ingress_policies))
-  ingress_policies_dry_run      = var.required_ingress_rules_app_infra ? distinct(concat(values(local.ingress_policies_map_dry_run), local.required_ingress_rules, local.required_ingress_rules_app_infra_dry_run, var.ingress_policies_dry_run)) : distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules_dry_run, var.ingress_policies_dry_run))
+  ingress_policies_dry_run      = var.required_ingress_rules_app_infra_dry_run ? distinct(concat(values(local.ingress_policies_map_dry_run), local.required_ingress_rules_dry_run, local.required_ingress_rules_app_infra_dry_run, var.ingress_policies_dry_run)) : distinct(concat(values(local.ingress_policies_map_dry_run), local.required_ingress_rules_dry_run, var.ingress_policies_dry_run))
   egress_policies               = var.required_egress_rules_app_infra ? distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules, local.required_egress_rules_app_infra)) : distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules))
   egress_policies_dry_run       = var.required_egress_rules_app_infra_dry_run ? distinct(concat(values(local.egress_policies_map_dry_run), var.egress_policies_dry_run, local.required_egress_rules_dry_run, local.required_egress_rules_app_infra_dry_run)) : distinct(concat(values(local.egress_policies_map_dry_run), local.required_egress_rules_dry_run, var.egress_policies_dry_run))
 

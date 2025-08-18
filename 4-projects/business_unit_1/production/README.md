@@ -27,6 +27,7 @@
 | peering\_complete | Output to be used as a module dependency. |
 | peering\_network | Peer network peering resource. |
 | peering\_project | Project sample peering project id. |
+| peering\_project\_number | Project sample shared vpc project. |
 | peering\_subnetwork\_self\_link | The subnetwork self link of the peering network. |
 | restricted\_enabled\_apis | Activated APIs. |
 | shared\_vpc\_project | Project sample shared vpc project id. |

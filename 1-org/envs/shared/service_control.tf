@@ -823,7 +823,7 @@ module "service_control" {
   ingress_policies_keys_dry_run = local.ingress_policies_keys_dry_run
   egress_policies_keys_dry_run  = local.egress_policies_keys_dry_run
   ingress_policies_keys         = local.ingress_policies_keys
-  egress_policies_keys          = local.egress_policies_keys_dry_run
+  egress_policies_keys          = local.egress_policies_keys
   ingress_policies              = var.required_ingress_rules_app_infra ? distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, local.required_ingress_rules_app_infra, var.ingress_policies)) : distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, var.ingress_policies))
   ingress_policies_dry_run      = var.required_ingress_rules_app_infra_dry_run ? distinct(concat(values(local.ingress_policies_map_dry_run), local.required_ingress_rules_dry_run, local.required_ingress_rules_app_infra_dry_run, var.ingress_policies_dry_run)) : distinct(concat(values(local.ingress_policies_map_dry_run), local.required_ingress_rules_dry_run, var.ingress_policies_dry_run))
   egress_policies               = var.required_egress_rules_app_infra ? distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules, local.required_egress_rules_app_infra)) : distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules))

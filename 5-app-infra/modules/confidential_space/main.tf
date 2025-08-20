@@ -29,17 +29,16 @@ locals {
   subnetwork_self_links     = data.terraform_remote_state.projects_env.outputs.subnets_self_links
   svpc_subnetwork_self_link = [for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
 
-  cloudbuild_project_id             = data.terraform_remote_state.projects_env.outputs.bootstrap_cloudbuild_project_id
+  cloudbuild_project_id             = data.terraform_remote_state.business_unit_shared.outputs.bootstrap_cloudbuild_project_id
   default_region                    = data.terraform_remote_state.projects_env.outputs.default_region
   env_project_id                    = local.env_project_ids[var.project_suffix]
   subnetwork_self_link              = local.env_project_subnets[var.project_suffix]
   subnetwork_project                = element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1, )
   resource_manager_tags             = local.env_project_resource_manager_tags[var.project_suffix]
   artifact_registry_repository      = "tf-runners"
-  app_infra_cloudbuild_project      = data.terraform_remote_state.projects_env.outputs.confidential_space_project
   confidential_space_project_number = data.terraform_remote_state.projects_env.outputs.confidential_space_project_number
   confidential_space_project_id     = data.terraform_remote_state.projects_env.outputs.confidential_space_project
-  cloudbuild_service_account        = data.terraform_remote_state.projects_env.outputs.cloudbuild_sa
+  cloudbuild_service_account        = data.terraform_remote_state.business_unit_shared.outputs.terraform_service_accounts["bu1-example-app"]
   confidential_space_workload_sa    = data.terraform_remote_state.projects_env.outputs.confidential_space_workload_sa
 }
 
@@ -52,8 +51,17 @@ data "terraform_remote_state" "projects_env" {
   }
 }
 
+data "terraform_remote_state" "business_unit_shared" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.remote_state_bucket
+    prefix = "terraform/projects/${var.business_unit}/shared"
+  }
+}
+
 resource "google_project_iam_member" "workload_identity_admin" {
-  project = local.app_infra_cloudbuild_project
+  project = local.confidential_space_project_id
   role    = "roles/iam.workloadIdentityPoolAdmin"
   member  = "serviceAccount:${local.confidential_space_workload_sa}"
 }
@@ -151,7 +159,7 @@ module "confidential_compute_instance" {
 resource "google_project_iam_member" "workload_sa_user" {
   project = local.env_project_id
   role    = "roles/iam.serviceAccountUser"
-  member  = var.confidential_space_workload_operator
+  member  = "serviceAccount:${var.confidential_space_workload_operator}"
 }
 
 resource "google_project_iam_member" "workload_sa_confidential_user" {

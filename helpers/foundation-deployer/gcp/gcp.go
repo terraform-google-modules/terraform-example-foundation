@@ -160,19 +160,6 @@ func (g GCP) IsApiEnabled(t testing.TB, project, api string) bool {
 
 // Gets the digest of a Docker image in Artifact Registry.
 func (g GCP) GetDockerImageDigest(t testing.TB, project, imageName string) (string, error) {
-	cmd := fmt.Sprintf("artifacts docker images describe %s --project=%s --format=\"value(image_summary.digest)\"", imageName, project)
-	result := g.Runf(t, cmd)
-
-	digest := strings.TrimSpace(result.String())
-	if digest == "" {
-		return "", fmt.Errorf("failed to retrieve digest for image %s in project %s", imageName, project)
-	}
-
-	return digest, nil
-}
-
-// Gets the digest of a Docker image in Artifact Registry.
-func (g GCP) GetDockerImageDigest(t testing.TB, project, imageName string) (string, error) {
 
 	cmd := fmt.Sprintf("artifacts docker images describe %s --project=%s", imageName, project)
 	result := g.Runf(t, cmd)

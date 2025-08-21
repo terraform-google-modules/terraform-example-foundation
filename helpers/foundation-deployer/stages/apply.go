@@ -195,8 +195,11 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf) error {
 
 	createACMAPolicy := testutils.GetOrgACMPolicyID(t, tfvars.OrgID) == ""
+	AccessContextManagerPolicyID := testutils.GetOrgACMPolicyID(t, tfvars.OrgID)
 
 	orgTfvars := OrgTfvars{
+		AccessContextManagerPolicyID:          AccessContextManagerPolicyID,
+		PerimeterAdditionalMembers:            tfvars.PerimeterAdditionalMembers,
 		DomainsToAllow:                        tfvars.DomainsToAllow,
 		EssentialContactsDomains:              tfvars.EssentialContactsDomains,
 		SccNotificationName:                   tfvars.SccNotificationName,
@@ -305,22 +308,13 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	}
 	// common
 	commonTfvars := NetCommonTfvars{
-		Domain:                     tfvars.Domain,
-		PerimeterAdditionalMembers: tfvars.PerimeterAdditionalMembers,
-		RemoteStateBucket:          outputs.RemoteStateBucket,
+		Domain:            tfvars.Domain,
+		RemoteStateBucket: outputs.RemoteStateBucket,
 	}
 	if tfvars.EnableHubAndSpoke {
 		commonTfvars.EnableHubAndSpokeTransitivity = &tfvars.EnableHubAndSpokeTransitivity
 	}
 	err = utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "common.auto.tfvars"), commonTfvars)
-	if err != nil {
-		return err
-	}
-	//access_context
-	accessContextTfvars := NetAccessContextTfvars{
-		AccessContextManagerPolicyID: testutils.GetOrgACMPolicyID(t, tfvars.OrgID),
-	}
-	err = utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "access_context.auto.tfvars"), accessContextTfvars)
 	if err != nil {
 		return err
 	}

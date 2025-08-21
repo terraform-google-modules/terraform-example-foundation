@@ -207,10 +207,12 @@ locals {
     [for p in local.projects : "${p}"]
   )
 
-  ingress_policies_keys_dry_run = var.required_ingress_rules_app_infra_dry_run ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc", "cicd_to_app_infra", "cicd_to_seed_app_infra", "cicd_to_net_env"], var.ingress_policies_keys_dry_run) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys_dry_run)
-  egress_policies_keys_dry_run  = var.required_egress_rules_app_infra_dry_run ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys_dry_run) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
-  ingress_policies_keys         = var.required_ingress_rules_app_infra ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc", "cicd_to_app_infra", "cicd_to_seed_app_infra", "cicd_to_net_env"], var.ingress_policies_keys) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys)
-  egress_policies_keys          = var.required_egress_rules_app_infra ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
+  enable_scc_resources_in_terraform_dry_run = var.enable_scc_resources_in_terraform ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys_dry_run) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed"], var.ingress_policies_keys_dry_run)
+  enable_scc_resources_in_terraform         = var.enable_scc_resources_in_terraform ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "service_scc_to_scc"], var.ingress_policies_keys) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed"], var.ingress_policies_keys)
+  ingress_policies_keys_dry_run             = var.required_ingress_rules_app_infra_dry_run ? concat(["cicd_to_app_infra", "cicd_to_seed_app_infra", "cicd_to_net_env"], local.enable_scc_resources_in_terraform_dry_run) : local.enable_scc_resources_in_terraform
+  egress_policies_keys_dry_run              = var.required_egress_rules_app_infra_dry_run ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys_dry_run) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
+  ingress_policies_keys                     = var.required_ingress_rules_app_infra ? concat(["cicd_to_app_infra", "cicd_to_seed_app_infra", "cicd_to_net_env"], local.enable_scc_resources_in_terraform) : local.enable_scc_resources_in_terraform
+  egress_policies_keys                      = var.required_egress_rules_app_infra ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
 
   ingress_policies_map_dry_run = var.required_ingress_rules_app_infra_dry_run ? zipmap(
     local.ingress_policies_keys_dry_run,
@@ -308,7 +310,131 @@ locals {
     },
   ]
 
-  required_ingress_rules_dry_run = [
+  required_ingress_rules_dry_run = var.enable_scc_resources_in_terraform ? [
+    {
+      from = {
+        identities = [
+          "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = [
+            "*"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_billing_export.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
+          "serviceAccount:service-b-${local.billing_account}@gcp-sa-logging.iam.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = [
+            "*"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_audit_logs.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+
+          "pubsub.googleapis.com" = {
+            methods = ["*"]
+          }
+
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:service-${module.scc_notifications.project_number}@gcf-admin-robot.iam.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = [
+            "*"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.scc_notifications.project_number}"
+        ]
+        operations = {
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:service-${local.cloudbuild_project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.seed_project_number}"
+        ]
+        operations = {
+          "iam.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.seed_project_number}"
+        ]
+        operations = {
+          "cloudbuild.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    ] : [
     {
       from = {
         identities = [
@@ -405,28 +531,6 @@ locals {
         ]
         operations = {
           "cloudbuild.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-    {
-      from = {
-        identities = [
-          "serviceAccount:service-${module.scc_notifications.project_number}@gcf-admin-robot.iam.gserviceaccount.com",
-        ]
-        sources = {
-          access_levels = [
-            "*"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${module.scc_notifications.project_number}"
-        ]
-        operations = {
-          "storage.googleapis.com" = {
             methods = ["*"]
           }
         }
@@ -517,7 +621,131 @@ locals {
     },
   ]
 
-  required_ingress_rules = [
+  required_ingress_rules = var.enable_scc_resources_in_terraform ? [
+    {
+      from = {
+        identities = [
+          "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = [
+            "*"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_billing_export.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
+          "serviceAccount:service-b-${local.billing_account}@gcp-sa-logging.iam.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = [
+            "*"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_audit_logs.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+
+          "pubsub.googleapis.com" = {
+            methods = ["*"]
+          }
+
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:service-${module.scc_notifications.project_number}@gcf-admin-robot.iam.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = [
+            "*"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.scc_notifications.project_number}"
+        ]
+        operations = {
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:service-${local.cloudbuild_project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.seed_project_number}"
+        ]
+        operations = {
+          "iam.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      from = {
+        identities = [
+          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.seed_project_number}"
+        ]
+        operations = {
+          "cloudbuild.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    ] : [
     {
       from = {
         identities = [
@@ -612,28 +840,6 @@ locals {
         ]
         operations = {
           "cloudbuild.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-    {
-      from = {
-        identities = [
-          "serviceAccount:service-${module.scc_notifications.project_number}@gcf-admin-robot.iam.gserviceaccount.com",
-        ]
-        sources = {
-          access_levels = [
-            "*"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${module.scc_notifications.project_number}"
-        ]
-        operations = {
-          "storage.googleapis.com" = {
             methods = ["*"]
           }
         }
@@ -796,7 +1002,6 @@ locals {
     },
   ]
 }
-
 
 module "service_control" {
   source = "../../modules/service_control"

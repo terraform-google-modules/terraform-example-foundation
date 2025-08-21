@@ -52,6 +52,12 @@ module "app_infra_cloudbuild_project" {
   business_code     = "bu1"
 }
 
+resource "google_project_iam_member" "cloudbuild_access" {
+  project = local.cloudbuild_project_id
+  role    = "roles/cloudbuild.builds.builder"
+  member  = "serviceAccount:tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com"
+}
+
 resource "google_project_iam_member" "bucket_admin_binding" {
   project = local.cloudbuild_project_id
   role    = "roles/storage.objectAdmin"
@@ -128,7 +134,8 @@ resource "time_sleep" "wait_iam_propagation" {
     google_artifact_registry_repository_iam_member.builder_on_artifact_registry,
     google_project_iam_member.cloudbuild_logging,
     google_storage_bucket_iam_member.bucket_object_viewer,
-    google_storage_bucket_iam_member.bucket_object_admin
+    google_storage_bucket_iam_member.bucket_object_admin,
+    google_project_iam_member.cloudbuild_access
   ]
 }
 

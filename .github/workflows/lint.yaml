@@ -20,8 +20,11 @@ name: 'lint'
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - main
+    types: [opened, edited, reopened, synchronize]
+    branches: [main]
+
+permissions:
+  contents: read
 
 concurrency:
   group: '${{ github.workflow }}-${{ github.head_ref || github.ref }}'
@@ -56,3 +59,21 @@ jobs:
           ENABLE_PARALLEL: 0
           EXCLUDE_LINT_DIRS: \./3-networks/modules/transitivity/assets
 
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install commitlint
+        run: |
+          npm install -D @commitlint/cli@19.8.1 @commitlint/config-conventional@19.8.1
+          echo "module.exports = { extends: ['@commitlint/config-conventional'], rules: {'subject-case': [0]} };" > commitlint.config.js
+          npx commitlint --version
+      - name: Validate PR commits with commitlint
+        if: github.event_name == 'pull_request'
+        run: 'echo "${{ github.event.pull_request.title }}" | npx commitlint --verbose'

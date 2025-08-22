@@ -371,7 +371,7 @@ locals {
       }
     },
     {
-      title = "IR billing"
+      title = "IR scc"
       from = {
         identities = [
           "serviceAccount:service-${module.scc_notifications.project_number}@gcf-admin-robot.iam.gserviceaccount.com",
@@ -394,6 +394,7 @@ locals {
       }
     },
     {
+      title = "IR service cicd -> seed"
       from = {
         identities = [
           "serviceAccount:service-${local.cloudbuild_project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com",
@@ -419,6 +420,7 @@ locals {
       }
     },
     {
+      title = "IR cicd -> seed"
       from = {
         identities = [
           "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com",
@@ -442,6 +444,7 @@ locals {
     },
     ] : [
     {
+      title = "IR billing"
       from = {
         identities = [
           "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
@@ -464,6 +467,7 @@ locals {
       }
     },
     {
+      title = "IR sinks"
       from = {
         identities = [
           "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
@@ -496,6 +500,7 @@ locals {
       }
     },
     {
+      title = "IR service cicd -> seed"
       from = {
         identities = [
           "serviceAccount:service-${local.cloudbuild_project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com",
@@ -521,6 +526,7 @@ locals {
       }
     },
     {
+      title = "IR cicd -> seed"
       from = {
         identities = [
           "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com",
@@ -546,6 +552,7 @@ locals {
 
   required_ingress_rules_app_infra_dry_run = [
     {
+      title = "IR cicd -> app infra"
       from = {
         identities = [
           "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
@@ -574,6 +581,7 @@ locals {
       }
     },
     {
+      title = "IR app infra -> seed"
       from = {
         identities = [
           "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
@@ -596,6 +604,7 @@ locals {
       }
     },
     {
+      title = "IR app infra -> prjs"
       from = {
         identities = [
           "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
@@ -629,6 +638,7 @@ locals {
 
   required_ingress_rules = var.enable_scc_resources_in_terraform ? [
     {
+      title = "IR billing"
       from = {
         identities = [
           "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
@@ -651,6 +661,7 @@ locals {
       }
     },
     {
+      title = "IR sinks"
       from = {
         identities = [
           "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
@@ -683,6 +694,7 @@ locals {
       }
     },
     {
+      title = "IR scc"
       from = {
         identities = [
           "serviceAccount:service-${module.scc_notifications.project_number}@gcf-admin-robot.iam.gserviceaccount.com",
@@ -705,6 +717,7 @@ locals {
       }
     },
     {
+      title = "IR service cicd -> seed"
       from = {
         identities = [
           "serviceAccount:service-${local.cloudbuild_project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com",
@@ -730,6 +743,7 @@ locals {
       }
     },
     {
+      title = "IR cicd -> seed"
       from = {
         identities = [
           "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com",
@@ -753,6 +767,7 @@ locals {
     },
     ] : [
     {
+      title = "IR billing"
       from = {
         identities = [
           "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
@@ -775,6 +790,7 @@ locals {
       }
     },
     {
+      title = "IR sinks"
       from = {
         identities = [
           "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
@@ -798,13 +814,16 @@ locals {
           "pubsub.googleapis.com" = {
             methods = ["*"]
           }
+
           "storage.googleapis.com" = {
             methods = ["*"]
           }
+
         }
       }
     },
     {
+      title = "IR service cicd -> seed"
       from = {
         identities = [
           "serviceAccount:service-${local.cloudbuild_project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com",
@@ -830,6 +849,7 @@ locals {
       }
     },
     {
+      title = "IR cicd -> seed"
       from = {
         identities = [
           "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com",
@@ -855,6 +875,7 @@ locals {
 
   required_ingress_rules_app_infra = [
     {
+      title = "IR cicd -> app infra"
       from = {
         identities = [
           "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
@@ -883,6 +904,7 @@ locals {
       }
     },
     {
+      title = "IR app infra -> seed"
       from = {
         identities = [
           "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
@@ -905,6 +927,7 @@ locals {
       }
     },
     {
+      title = "IR app infra -> prjs"
       from = {
         identities = [
           "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
@@ -985,6 +1008,7 @@ locals {
 
   required_egress_rules_app_infra = [
     {
+      title = "ER app infra -> cicd"
       from = {
         identities = [
           "serviceAccount:PRJ_APP_INFRA_PIPELINE_NUMBER@cloudbuild.gserviceaccount.com",

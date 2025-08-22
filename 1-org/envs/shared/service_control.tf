@@ -165,7 +165,7 @@ locals {
     module.common_kms.project_number,
     module.org_secrets.project_number,
     module.interconnect.project_number,
-    module.network_hub.project_number,
+    module.network_hub[0].project_number,
     module.scc_notifications.project_number,
     ], local.shared_vpc_projects_numbers)) : (concat([
     local.seed_project_number,
@@ -240,6 +240,7 @@ locals {
 
   required_egress_rules_dry_run = [
     {
+      title = "ER seed -> cicd"
       from = {
         identities = [
           "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com",
@@ -262,6 +263,7 @@ locals {
       }
     },
     {
+      title = "ER seed -> scc"
       from = {
         identities = [
           "serviceAccount:${local.organization_service_account}",
@@ -287,6 +289,7 @@ locals {
 
   required_egress_rules_app_infra_dry_run = [
     {
+      title = "ER app infra -> cicd"
       from = {
         identities = [
           "serviceAccount:PRJ_APP_INFRA_PIPELINE_NUMBER@cloudbuild.gserviceaccount.com",
@@ -312,6 +315,7 @@ locals {
 
   required_ingress_rules_dry_run = var.enable_scc_resources_in_terraform ? [
     {
+      title = "IR billing"
       from = {
         identities = [
           "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
@@ -334,6 +338,7 @@ locals {
       }
     },
     {
+      title = "IR sinks"
       from = {
         identities = [
           "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
@@ -366,6 +371,7 @@ locals {
       }
     },
     {
+      title = "IR billing"
       from = {
         identities = [
           "serviceAccount:service-${module.scc_notifications.project_number}@gcf-admin-robot.iam.gserviceaccount.com",

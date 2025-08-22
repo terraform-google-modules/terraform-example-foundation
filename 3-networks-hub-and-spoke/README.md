@@ -164,7 +164,6 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    ```bash
    mv common.auto.example.tfvars common.auto.tfvars
    mv shared.auto.example.tfvars shared.auto.tfvars
-   mv access_context.auto.example.tfvars access_context.auto.tfvars
    ```
 
 1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.

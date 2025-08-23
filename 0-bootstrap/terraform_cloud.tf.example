@@ -257,7 +257,7 @@ module "tfc_cicd" {
 
 module "tfc-oidc" {
   source  = "GoogleCloudPlatform/tf-cloud-agents/google//modules/tfc-oidc"
-  version = "0.1.0"
+  version = "0.2.0"
 
   project_id            = module.tfc_cicd.project_id
   pool_id               = "foundation-pool"

@@ -106,7 +106,7 @@ output "confidential_space_project_number" {
 }
 
 output "confidential_space_workload_sa" {
-  description = "Workload Service Account for confidential space"
-  value       = google_service_account.workload_sa.email
+  description = "Workload Service Account for confidential space from base_env"
+  value       = module.env.confidential_space_workload_sa
 }
 

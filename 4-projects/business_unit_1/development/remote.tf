@@ -20,7 +20,6 @@ locals {
   default_region_gcs      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_gcs
   default_region_kms      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_kms
   projects_backend_bucket = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
-  cloudbuild_sa           = data.terraform_remote_state.business_unit_shared.outputs.terraform_service_accounts["bu1-example-app"]
 }
 
 data "terraform_remote_state" "bootstrap" {

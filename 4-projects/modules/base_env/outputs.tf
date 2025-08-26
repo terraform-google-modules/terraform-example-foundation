@@ -107,3 +107,9 @@ output "terraform_service_accounts" {
   value       = module.confidential_space_project.sa
 }
 
+
+output "confidential_space_workload_sa" {
+  description = "Workload Service Account for confidential space"
+  value       = google_service_account.workload_sa.email
+}
+

@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+resource "google_service_account" "workload_sa" {
+  account_id   = "confidential-space-workload-sa"
+  display_name = "Workload Service Account for confidential space"
+  project      = module.confidential_space_project.project_id
+}
+
 module "confidential_space_project" {
   source = "../single_project"
 
@@ -36,6 +42,13 @@ module "confidential_space_project" {
       "roles/compute.instanceAdmin.v1",
       "roles/iam.serviceAccountUser",
       "roles/iam.serviceAccountAdmin",
+      "roles/iam.workloadIdentityPoolAdmin",
+      "roles/serviceusage.serviceUsageAdmin",
+      "roles/iam.serviceAccountAdmin",
+      "roles/cloudkms.admin",
+      "roles/storage.admin",
+      "roles/resourcemanager.projectIamAdmin",
+      "roles/iam.workloadIdentityPoolAdmin",
     ]
   }
 

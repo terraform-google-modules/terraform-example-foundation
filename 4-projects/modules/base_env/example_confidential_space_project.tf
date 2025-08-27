@@ -14,10 +14,27 @@
  * limitations under the License.
  */
 
+locals {
+  iam_roles = [
+    "roles/iam.serviceAccountUser",
+    "roles/confidentialcomputing.workloadUser",
+    "roles/iam.workloadIdentityPoolAdmin",
+    "roles/storage.admin",
+    "roles/logging.logWriter",
+  ]
+}
+
 resource "google_service_account" "workload_sa" {
   account_id   = "confidential-space-workload-sa"
   display_name = "Workload Service Account for confidential space"
   project      = module.confidential_space_project.project_id
+}
+
+resource "google_project_iam_member" "workload_sa_roles" {
+  for_each = toset(local.iam_roles)
+  project  = module.confidential_space_project.project_id
+  role     = each.key
+  member   = "serviceAccount:${google_service_account.workload_sa.email}"
 }
 
 module "confidential_space_project" {
@@ -38,17 +55,15 @@ module "confidential_space_project" {
   app_infra_pipeline_service_accounts = local.app_infra_pipeline_service_accounts
 
   sa_roles = {
-    "${var.business_code}-confidential-instance" = [
+    "${var.business_code}-example-app" = [
       "roles/compute.instanceAdmin.v1",
       "roles/iam.serviceAccountUser",
       "roles/iam.serviceAccountAdmin",
       "roles/iam.workloadIdentityPoolAdmin",
       "roles/serviceusage.serviceUsageAdmin",
-      "roles/iam.serviceAccountAdmin",
       "roles/cloudkms.admin",
       "roles/storage.admin",
       "roles/resourcemanager.projectIamAdmin",
-      "roles/iam.workloadIdentityPoolAdmin",
     ]
   }
 

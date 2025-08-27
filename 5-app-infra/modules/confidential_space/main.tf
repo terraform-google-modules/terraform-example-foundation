@@ -60,12 +60,6 @@ data "terraform_remote_state" "business_unit_shared" {
   }
 }
 
-resource "google_project_iam_member" "workload_identity_admin" {
-  project = local.confidential_space_project_id
-  role    = "roles/iam.workloadIdentityPoolAdmin"
-  member  = "serviceAccount:${local.confidential_space_workload_sa}"
-}
-
 resource "google_iam_workload_identity_pool" "confidential_space_pool" {
   workload_identity_pool_id = "confidential-space-pool"
   disabled                  = false
@@ -156,24 +150,6 @@ module "confidential_compute_instance" {
   resource_manager_tags = local.resource_manager_tags
 }
 
-resource "google_project_iam_member" "workload_sa_user" {
-  project = local.env_project_id
-  role    = "roles/iam.serviceAccountUser"
-  member  = "serviceAccount:${var.confidential_space_workload_operator}"
-}
-
-resource "google_project_iam_member" "workload_sa_confidential_user" {
-  project = local.env_project_id
-  role    = "roles/confidentialcomputing.workloadUser"
-  member  = "serviceAccount:${local.confidential_space_workload_sa}"
-}
-
-resource "google_project_iam_member" "workload_sa_logging_writer" {
-  project = local.env_project_id
-  role    = "roles/logging.logWriter"
-  member  = "serviceAccount:${local.confidential_space_workload_sa}"
-}
-
 module "kms_confidential_space" {
   source  = "terraform-google-modules/kms/google"
   version = "~> 4.0"
@@ -238,12 +214,6 @@ module "gcs_buckets" {
   location           = var.location_gcs
   name               = "${var.gcs_bucket_prefix}-${local.confidential_space_project_id}-cmek-encrypted-${random_string.bucket_name.result}"
   bucket_policy_only = true
-}
-
-resource "google_project_iam_member" "workload_gcs_admin_sa" {
-  project = local.confidential_space_project_id
-  role    = "roles/storage.admin"
-  member  = "serviceAccount:${local.confidential_space_workload_sa}"
 }
 
 resource "google_storage_bucket_iam_member" "results_bucket_object_admin" {

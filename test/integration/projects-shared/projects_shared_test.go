@@ -50,6 +50,16 @@ func TestProjectsShared(t *testing.T) {
 		"cloudkms.googleapis.com",
 	}
 
+	orgState := tft.NewTFBlueprintTest(t,
+		tft.WithTFDir("../../../1-org/envs/shared"),
+		tft.WithVars(map[string]interface{}{"remote_state_bucket": backend_bucket}),
+		tft.WithBackendConfig(map[string]interface{}{"bucket": backend_bucket}),
+	)
+	perimeterName := terraform.Output(t, orgState.GetTFOptions(), "service_perimeter_name")
+	orgID := bootstrap.GetTFSetupStringOutput("org_id")
+	policyID := testutils.GetOrgACMPolicyID(t, orgID)
+	servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, perimeterName)
+
 	for _, tts := range []struct {
 		name  string
 		repo  string
@@ -83,8 +93,14 @@ func TestProjectsShared(t *testing.T) {
 					shared.DefaultVerify(assert)
 
 					projectID := shared.GetStringOutput("cloudbuild_project_id")
+					projectNumber := shared.GetStringOutput("cloudbuild_project_number")
 					prj := gcloud.Runf(t, "projects describe %s", projectID)
 					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
+
+					projectFormat := fmt.Sprintf("projects/%s", projectNumber)
+					perimeter := gcloud.Runf(t, "access-context-manager perimeters dry-run describe %s --policy %s --format json", servicePerimeterLink, policyID)
+					spec := utils.GetResultStrSlice(perimeter.Get("spec.resources").Array())
+					assert.Contains(spec, projectFormat, fmt.Sprintf("dry-run service perimeter %s should contain %s", perimeterName, projectFormat))
 
 					enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
 					listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")

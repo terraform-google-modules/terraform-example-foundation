@@ -16,12 +16,14 @@ package envs
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
@@ -65,6 +67,17 @@ func TestEnvs(t *testing.T) {
 				tft.WithVars(vars),
 				tft.WithBackendConfig(backendConfig),
 			)
+
+			orgState := tft.NewTFBlueprintTest(t,
+				tft.WithTFDir("../../../1-org/envs/shared"),
+				tft.WithVars(vars),
+				tft.WithBackendConfig(backendConfig),
+			)
+
+			perimeterName := terraform.Output(t, orgState.GetTFOptions(), "service_perimeter_name")
+			orgID := bootstrap.GetTFSetupStringOutput("org_id")
+			policyID := testutils.GetOrgACMPolicyID(t, orgID)
+
 			envs.DefineVerify(
 				func(assert *assert.Assertions) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
@@ -109,9 +122,14 @@ func TestEnvs(t *testing.T) {
 						},
 					} {
 						projectID := envs.GetStringOutput(projectEnvOutput.projectOutput)
+						projectNumber := envs.GetStringOutput(strings.ReplaceAll(projectEnvOutput.projectOutput, "_id", "_number"))
 						prj := gcloud.Runf(t, "projects describe %s", projectID)
 						assert.Equal(projectID, prj.Get("projectId").String(), fmt.Sprintf("project %s should exist", projectID))
 						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
+
+						perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", perimeterName, policyID))
+						assert.NoError(err)
+						assert.True(strings.Contains(perimeter, projectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s (number)", perimeterName, projectNumber))
 
 						enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
 						listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")

@@ -24,6 +24,11 @@ output "env_secrets_project_id" {
   value       = module.env_secrets.project_id
 }
 
+output "env_secrets_project_number" {
+  description = "Project number for environment secrets."
+  value       = module.env_secrets.project_number
+}
+
 output "env_kms_project_id" {
   description = "Project for environment Cloud Key Management Service (KMS)."
   value       = module.env_kms.project_id

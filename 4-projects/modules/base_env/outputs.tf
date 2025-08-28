@@ -19,6 +19,11 @@ output "floating_project" {
   value       = module.floating_project.project_id
 }
 
+output "floating_project" {
+  description = "Project sample floating project."
+  value       = module.floating_project.project_number
+}
+
 output "peering_project" {
   description = "Project sample peering project id."
   value       = module.peering_project.project_id

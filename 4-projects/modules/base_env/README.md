@@ -38,12 +38,14 @@
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | bucket | The created storage bucket. |
 | floating\_project | Project sample floating project. |
+| floating\_project\_number | Project number sample floating project. |
 | iap\_firewall\_tags | The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project. |
 | keyring | The name of the keyring. |
 | keys | List of created key names. |
 | peering\_complete | Output to be used as a module dependency. |
 | peering\_network | Peer network peering resource. |
 | peering\_project | Project sample peering project id. |
+| peering\_project\_number | Project sample peering project number. |
 | peering\_subnetwork\_self\_link | The subnetwork self link of the peering network. |
 | restricted\_enabled\_apis | Activated APIs. |
 | shared\_vpc\_project | Project sample restricted project id. |

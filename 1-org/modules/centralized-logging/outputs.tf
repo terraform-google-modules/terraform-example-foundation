@@ -41,3 +41,24 @@ output "billing_sink_names" {
     key => "${coalesce(options.logging_sink_name, local.logging_sink_name_map[key])}-billing-${random_string.suffix.result}"
   }
 }
+
+output "log_export_billing" {
+  description = "The service account that logging uses to write log entries to the destination."
+  value = {
+    for k, m in module.log_export_billing :
+    k => m.writer_identity
+  }
+}
+
+output "log_export" {
+  description = "The service account that logging uses to write log entries to the destination."
+  value = {
+    for k, m in module.log_export :
+    k => m.writer_identity
+  }
+}
+
+output "internal_project_log_export" {
+  description = "The service account that logging uses to write log entries to the destination."
+  value       = module.internal_project_log_export[0].writer_identity
+}

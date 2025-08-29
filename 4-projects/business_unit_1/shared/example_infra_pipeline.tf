@@ -15,7 +15,8 @@
  */
 
 locals {
-  repo_names = ["bu1-example-app"]
+  repo_names                 = ["bu1-example-app"]
+  terraform_service_accounts = values(module.infra_pipelines[0].terraform_service_accounts)
 }
 
 module "app_infra_cloudbuild_project" {
@@ -30,6 +31,11 @@ module "app_infra_cloudbuild_project" {
   project_prefix  = local.project_prefix
 
   project_deletion_policy = var.project_deletion_policy
+
+  vpc_service_control_attach_enabled = local.enforce_vpcsc ? "true" : "false"
+  vpc_service_control_attach_dry_run = !local.enforce_vpcsc ? "true" : "false"
+  vpc_service_control_perimeter_name = "accessPolicies/${local.access_context_manager_policy_id}/servicePerimeters/${local.perimeter_name}"
+  vpc_service_control_sleep_duration = "60s"
 
   activate_apis = [
     "cloudbuild.googleapis.com",

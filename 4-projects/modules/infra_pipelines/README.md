@@ -13,8 +13,6 @@
 | private\_worker\_pool\_id | ID of the Cloud Build private worker pool. | `string` | n/a | yes |
 | remote\_tfstate\_bucket | Bucket with remote state data to be used by the pipeline. | `string` | n/a | yes |
 | terraform\_docker\_tag\_version | TAG version of the terraform docker image. | `string` | `"v1"` | no |
-| vpc\_service\_control\_attach\_dry\_run | Whether the project will be attached to a VPC Service Control Perimeter with an explicit dry run spec flag, which may use different values for the dry run perimeter compared to the ENFORCED perimeter. | `bool` | `false` | no |
-| vpc\_service\_control\_attach\_enabled | Whether the project will be attached to a VPC Service Control Perimeter in ENFORCED MODE. | `bool` | `false` | no |
 
 ## Outputs
 

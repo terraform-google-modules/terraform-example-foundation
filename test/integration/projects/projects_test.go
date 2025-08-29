@@ -71,27 +71,27 @@ func TestProjects(t *testing.T) {
 	}
 
 	for _, tt := range []struct {
-		name              string
-		repo              string
-		baseDir           string
+		name          string
+		repo          string
+		baseDir       string
 		sharedNetwork string
 	}{
 		{
-			name:              "bu1_development",
-			repo:              "bu1-example-app",
-			baseDir:           "../../../4-projects/business_unit_1/%s",
+			name:          "bu1_development",
+			repo:          "bu1-example-app",
+			baseDir:       "../../../4-projects/business_unit_1/%s",
 			sharedNetwork: fmt.Sprintf("vpc-d-svpc%s", networkMode),
 		},
 		{
-			name:              "bu1_nonproduction",
-			repo:              "bu1-example-app",
-			baseDir:           "../../../4-projects/business_unit_1/%s",
+			name:          "bu1_nonproduction",
+			repo:          "bu1-example-app",
+			baseDir:       "../../../4-projects/business_unit_1/%s",
 			sharedNetwork: fmt.Sprintf("vpc-n-svpc%s", networkMode),
 		},
 		{
-			name:              "bu1_production",
-			repo:              "bu1-example-app",
-			baseDir:           "../../../4-projects/business_unit_1/%s",
+			name:          "bu1_production",
+			repo:          "bu1-example-app",
+			baseDir:       "../../../4-projects/business_unit_1/%s",
 			sharedNetwork: fmt.Sprintf("vpc-p-svpc%s", networkMode),
 		},
 	} {
@@ -156,9 +156,13 @@ func TestProjects(t *testing.T) {
 							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
 
 							sharedProjectNumber := projects.GetStringOutput("shared_vpc_project_number")
+							floatingProjectNumber := projects.GetStringOutput("floating_project_number")
+							peeringProjectNumber := projects.GetStringOutput("peering_project_number")
 							perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", perimeterName, policyID))
 							assert.NoError(err)
 							assert.True(strings.Contains(perimeter, sharedProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, sharedProjectNumber))
+							assert.True(strings.Contains(perimeter, floatingProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, floatingProjectNumber))
+							assert.True(strings.Contains(perimeter, peeringProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, peeringProjectNumber))
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s --impersonate-service-account %s", projectID, terraformSA)
 							assert.NotEmpty(sharedVPC.Map())

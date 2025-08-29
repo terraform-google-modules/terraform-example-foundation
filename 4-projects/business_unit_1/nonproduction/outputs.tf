@@ -24,6 +24,11 @@ output "peering_project" {
   value       = module.env.peering_project
 }
 
+output "peering_project_number" {
+  description = "Project sample shared vpc project."
+  value       = module.env.peering_project_number
+}
+
 output "peering_network" {
   description = "Peer network peering resource."
   value       = module.env.peering_network

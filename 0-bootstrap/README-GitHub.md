@@ -665,7 +665,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 1. Push your production branch since development and nonproduction depends it.
 
-*Note:** The Production envrionment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
+*Note:** The Production environment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
 
    ```bash
    git add .

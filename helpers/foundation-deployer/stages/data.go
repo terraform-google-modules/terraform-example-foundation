@@ -215,6 +215,8 @@ type BootstrapTfvars struct {
 }
 
 type OrgTfvars struct {
+	AccessContextManagerPolicyID          string    `hcl:"access_context_manager_policy_id"`
+	PerimeterAdditionalMembers            []string  `hcl:"perimeter_additional_members"`
 	DomainsToAllow                        []string  `hcl:"domains_to_allow"`
 	EssentialContactsDomains              []string  `hcl:"essential_contacts_domains_to_allow"`
 	SccNotificationName                   string    `hcl:"scc_notification_name"`
@@ -238,10 +240,9 @@ type EnvsTfvars struct {
 }
 
 type NetCommonTfvars struct {
-	Domain                        string   `hcl:"domain"`
-	PerimeterAdditionalMembers    []string `hcl:"perimeter_additional_members"`
-	RemoteStateBucket             string   `hcl:"remote_state_bucket"`
-	EnableHubAndSpokeTransitivity *bool    `hcl:"enable_hub_and_spoke_transitivity"`
+	Domain                        string `hcl:"domain"`
+	RemoteStateBucket             string `hcl:"remote_state_bucket"`
+	EnableHubAndSpokeTransitivity *bool  `hcl:"enable_hub_and_spoke_transitivity"`
 }
 
 type NetSharedTfvars struct {
@@ -250,10 +251,6 @@ type NetSharedTfvars struct {
 
 type NetProductionTfvars struct {
 	TargetNameServerAddresses []ServerAddress `hcl:"target_name_server_addresses"`
-}
-
-type NetAccessContextTfvars struct {
-	AccessContextManagerPolicyID string `hcl:"access_context_manager_policy_id"`
 }
 
 type ProjCommonTfvars struct {

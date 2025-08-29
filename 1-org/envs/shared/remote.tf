@@ -31,6 +31,14 @@ locals {
   bootstrap_folder_name                         = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
   cloud_build_private_worker_pool_id            = try(data.terraform_remote_state.bootstrap.outputs.cloud_build_private_worker_pool_id, "")
   required_groups                               = data.terraform_remote_state.bootstrap.outputs.required_groups
+  organization_service_account                  = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
+  networks_service_account                      = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
+  projects_service_account                      = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+  environment_service_account                   = data.terraform_remote_state.bootstrap.outputs.environment_step_terraform_service_account_email
+  cloudbuild_project_number                     = data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_number
+  seed_project_id                               = data.terraform_remote_state.bootstrap.outputs.seed_project_id
+  seed_project_number                           = data.terraform_remote_state.bootstrap.outputs.seed_project_number
+  parent_id                                     = data.terraform_remote_state.bootstrap.outputs.parent_id
 }
 
 data "terraform_remote_state" "bootstrap" {

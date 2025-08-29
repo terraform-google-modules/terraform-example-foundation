@@ -90,6 +90,7 @@ module "org_billing_export" {
     env_code          = "c"
     vpc               = "none"
   }
+
   budget_alert_pubsub_topic   = var.project_budget.org_billing_export_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.org_billing_export_alert_spent_percents
   budget_amount               = var.project_budget.org_billing_export_budget_amount
@@ -149,6 +150,7 @@ module "org_secrets" {
   deletion_policy          = var.project_deletion_policy
   activate_apis            = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
 
+
   labels = {
     environment       = "common"
     application_name  = "org-secrets"
@@ -193,6 +195,7 @@ module "interconnect" {
     env_code          = "net"
     vpc               = "none"
   }
+
   budget_alert_pubsub_topic   = var.project_budget.interconnect_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.interconnect_alert_spent_percents
   budget_amount               = var.project_budget.interconnect_budget_amount
@@ -227,6 +230,7 @@ module "scc_notifications" {
     env_code          = "c"
     vpc               = "none"
   }
+
   budget_alert_pubsub_topic   = var.project_budget.scc_notifications_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.scc_notifications_alert_spent_percents
   budget_amount               = var.project_budget.scc_notifications_budget_amount
@@ -270,6 +274,7 @@ module "network_hub" {
     env_code          = "net"
     vpc               = "svpc"
   }
+
   budget_alert_pubsub_topic   = var.project_budget.net_hub_alert_pubsub_topic
   budget_alert_spent_percents = var.project_budget.net_hub_alert_spent_percents
   budget_amount               = var.project_budget.net_hub_budget_amount
@@ -312,4 +317,19 @@ resource "google_project_iam_member" "network_sa" {
   project = module.network_hub[0].project_id
   role    = each.key
   member  = "serviceAccount:${local.networks_step_terraform_service_account_email}"
+}
+
+resource "time_sleep" "wait_projects" {
+  create_duration = "30s"
+
+  depends_on = [
+    module.org_audit_logs,
+    module.org_billing_export,
+    module.common_kms,
+    module.org_secrets,
+    module.interconnect,
+    module.scc_notifications,
+    module.network_hub,
+    module.environment_network
+  ]
 }

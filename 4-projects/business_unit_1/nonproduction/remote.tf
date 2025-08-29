@@ -15,11 +15,10 @@
  */
 
 locals {
-  default_region          = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region_2        = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
-  default_region_gcs      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_gcs
-  default_region_kms      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_kms
-  projects_backend_bucket = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
+  default_region     = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region_2   = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
+  default_region_gcs = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_gcs
+  default_region_kms = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_kms
 }
 
 data "terraform_remote_state" "bootstrap" {
@@ -31,11 +30,3 @@ data "terraform_remote_state" "bootstrap" {
   }
 }
 
-data "terraform_remote_state" "business_unit_shared" {
-  backend = "gcs"
-
-  config = {
-    bucket = local.projects_backend_bucket
-    prefix = "terraform/projects/business_unit_1/shared"
-  }
-}

@@ -83,31 +83,7 @@ variable "confidential_hostname" {
   default     = "confidential-instance"
 }
 
-variable "confidential_space_keyring_name" {
-  description = "Name to be used for KMS Keyring confidential space."
-  type        = string
-  default     = "workload-key-ring"
-}
-
-variable "confidential_space_key_name" {
-  description = "Name to be used for KMS Key in confidential space."
-  type        = string
-  default     = "workload-key"
-}
-
-variable "key_rotation_period" {
-  description = "Rotation period in seconds to be used for KMS Key."
-  type        = string
-  default     = "7776000s"
-}
-
-variable "confidential_space_location_kms" {
-  description = "Case-Sensitive Location for KMS Keyring.."
-  type        = string
-  default     = "us"
-}
-
-variable "image_digest" {
+variable "confidential_image_digest" {
   description = "SHA256 digest of the Docker image to be used for running the workload in Confidential Space. This value ensures the integrity and immutability of the image, guaranteeing that only the expected and verified code is executed within the confidential environment. Expected format: `sha256:<digest>`."
   type        = string
 }
@@ -116,17 +92,5 @@ variable "confidential_space_workload_operator" {
   description = "The person who runs the workload that operates on the combined confidential data. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`."
   type        = string
   default     = null
-}
-
-variable "location_gcs" {
-  description = "Case-Sensitive Location for GCS Bucket."
-  type        = string
-  default     = "us"
-}
-
-variable "gcs_bucket_prefix" {
-  description = "Name prefix to be used for GCS Bucket."
-  type        = string
-  default     = "bkt"
 }
 

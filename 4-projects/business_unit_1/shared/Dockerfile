@@ -13,8 +13,8 @@
 # limitations under the License.
 
 FROM alpine:latest
-WORKDIR /test
-COPY salary /test
-ENTRYPOINT ["/test/salary"]
+WORKDIR /confidential
+COPY confidential_data /confidential
+ENTRYPOINT ["/confidential/confidential_data"]
 CMD []
 

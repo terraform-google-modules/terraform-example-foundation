@@ -34,7 +34,7 @@ output "project_id" {
   value       = local.env_project_id
 }
 
-output "image_digest" {
+output "confidential_image_digest" {
   description = "SHA256 digest of the Docker image."
   value       = var.image_digest
 }
@@ -44,7 +44,3 @@ output "cloudbuild_service_account" {
   value       = local.cloudbuild_service_account
 }
 
-output "gcs_buckets" {
-  description = "Bucket name for confidential space code."
-  value       = module.gcs_buckets.name
-}

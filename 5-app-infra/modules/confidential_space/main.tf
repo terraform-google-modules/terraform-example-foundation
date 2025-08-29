@@ -84,7 +84,7 @@ resource "google_iam_workload_identity_pool_provider" "attestation_verifier" {
   }
 
   attribute_condition = <<EOT
-assertion.submods.container.image_digest == "${var.image_digest}" &&
+assertion.submods.container.image_digest == "${var.confidential_image_digest}" &&
 "${local.confidential_space_workload_sa}" in assertion.google_service_accounts &&
 assertion.swname == "CONFIDENTIAL_SPACE" &&
 "STABLE" in assertion.submods.confidential_space.support_attributes
@@ -150,80 +150,9 @@ module "confidential_compute_instance" {
   resource_manager_tags = local.resource_manager_tags
 }
 
-module "kms_confidential_space" {
-  source  = "terraform-google-modules/kms/google"
-  version = "~> 4.0"
-
-  project_id          = local.env_project_id
-  keyring             = var.confidential_space_keyring_name
-  location            = var.confidential_space_location_kms
-  keys                = [var.confidential_space_key_name]
-  key_rotation_period = var.key_rotation_period
-  encrypters          = ["serviceAccount:${local.confidential_space_workload_sa}"]
-  set_encrypters_for  = [var.confidential_space_key_name]
-  decrypters          = ["serviceAccount:${local.confidential_space_workload_sa}"]
-  set_decrypters_for  = [var.confidential_space_key_name]
-  prevent_destroy     = "false"
-}
-
-// Using resource since the KMS module doesn't support condition attribute
-resource "google_kms_crypto_key_iam_member" "key_decrypter" {
-  crypto_key_id = module.kms_confidential_space.keys[var.confidential_space_key_name]
-  role          = "roles/cloudkms.cryptoKeyDecrypter"
-  member        = "serviceAccount:${local.confidential_space_workload_sa}"
-
-  condition {
-    expression  = "request.auth.claims.google.container.image_digest == '${var.image_digest}'"
-    title       = "RequireAttestedImage"
-    description = "OnlyAllowTrustedImage"
-  }
-}
-
-resource "google_kms_crypto_key_iam_member" "gcs_encrypter_ecrypter" {
-  crypto_key_id = module.kms_confidential_space.keys[var.confidential_space_key_name]
-  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-  member        = "serviceAccount:service-${local.confidential_space_project_number}@gs-project-accounts.iam.gserviceaccount.com"
-}
-
-resource "google_kms_crypto_key_iam_member" "encrypter_binding" {
-  crypto_key_id = module.kms_confidential_space.keys[var.confidential_space_key_name]
-  role          = "roles/cloudkms.cryptoKeyEncrypter"
-  member        = "serviceAccount:${local.confidential_space_workload_sa}"
-}
-
-
 resource "google_service_account_iam_member" "workload_identity_binding" {
   service_account_id = "projects/${local.env_project_id}/serviceAccounts/${local.confidential_space_workload_sa}"
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/${local.confidential_space_project_number}/locations/global/workloadIdentityPools/confidential-space-pool/*"
 }
 
-resource "random_string" "bucket_name" {
-  length  = 5
-  upper   = false
-  numeric = true
-  lower   = true
-  special = false
-}
-
-module "gcs_buckets" {
-  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 9.0"
-
-  project_id         = local.confidential_space_project_id
-  location           = var.location_gcs
-  name               = "${var.gcs_bucket_prefix}-${local.confidential_space_project_id}-cmek-encrypted-${random_string.bucket_name.result}"
-  bucket_policy_only = true
-}
-
-resource "google_storage_bucket_iam_member" "results_bucket_object_admin" {
-  bucket = module.gcs_buckets.name
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${local.confidential_space_workload_sa}"
-}
-
-resource "google_storage_bucket_iam_member" "object_viewer" {
-  bucket = module.gcs_buckets.name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${local.confidential_space_workload_sa}"
-}

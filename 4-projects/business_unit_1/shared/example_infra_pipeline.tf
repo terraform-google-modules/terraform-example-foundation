@@ -16,10 +16,67 @@
 
 locals {
   repo_names                       = ["bu1-example-app"]
-  cmd_prompt                       = "gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://bkt-${local.cloudbuild_project_id}-gcp-projects-build-logs --worker-pool=${local.cloud_build_private_worker_pool_id} || ( sleep 46 && gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://bkt-${local.cloudbuild_project_id}-gcp-projects-build-logs --worker-pool=${local.cloud_build_private_worker_pool_id})"
+  cmd_prompt                       = "gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://${module.app_infra_cloudbuild_project[0].log_buckets["bu1-example-app"]} --worker-pool=${local.cloud_build_private_worker_pool_id} || ( sleep 46 && gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://${module.app_infra_cloudbuild_project[0].log_buckets["bu1-example-app"]} --worker-pool=${local.cloud_build_private_worker_pool_id})"
   confidential_space_image_version = "latest"
   confidential_space_image_tag     = "${var.default_region}-docker.pkg.dev/${local.cloudbuild_project_id}/tf-runners/confidential_space_image:${local.confidential_space_image_version}"
+
+  iam_roles_build = [
+    "roles/storage.objectAdmin",
+    "roles/cloudbuild.builds.builder",
+  ]
 }
+
+resource "google_project_iam_member" "build_roles" {
+  for_each = toset(local.iam_roles_build)
+  project  = local.cloudbuild_project_id
+  role     = each.key
+  member   = "serviceAccount:tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com"
+}
+
+resource "google_project_iam_member" "bucket_admin_binding" {
+  project = local.cloudbuild_project_id
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${local.projects_terraform_sa}"
+}
+
+resource "google_artifact_registry_repository_iam_member" "builder_on_artifact_registry" {
+  project    = local.cloudbuild_project_id
+  location   = var.default_region
+  repository = "tf-runners"
+  role       = "roles/artifactregistry.repoAdmin"
+  member     = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
+resource "google_project_iam_member" "cloudbuild_logging" {
+  project = local.cloudbuild_project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
+resource "google_project_iam_member" "workload_identity_admin" {
+  project = module.app_infra_cloudbuild_project[0].project_id
+  role    = "roles/iam.workloadIdentityPoolAdmin"
+  member  = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
+resource "google_storage_bucket_iam_member" "cloudbuild_storage_read" {
+  bucket = module.app_infra_cloudbuild_project[0].log_buckets["bu1-example-app"]
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
+resource "google_storage_bucket_iam_member" "bucket_object_admin" {
+  bucket = "${module.app_infra_cloudbuild_project[0].project_id}_cloudbuild"
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
+resource "google_storage_bucket_iam_member" "bucket_object_viewer" {
+  bucket = "${module.app_infra_cloudbuild_project[0].project_id}_cloudbuild"
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+}
+
 
 module "app_infra_cloudbuild_project" {
   source = "../../modules/single_project"
@@ -50,62 +107,6 @@ module "app_infra_cloudbuild_project" {
   primary_contact   = "example@example.com"
   secondary_contact = "example2@example.com"
   business_code     = "bu1"
-}
-
-resource "google_project_iam_member" "cloudbuild_access" {
-  project = local.cloudbuild_project_id
-  role    = "roles/cloudbuild.builds.builder"
-  member  = "serviceAccount:tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com"
-}
-
-resource "google_project_iam_member" "bucket_admin_binding" {
-  project = local.cloudbuild_project_id
-  role    = "roles/storage.objectAdmin"
-  member  = "serviceAccount:${local.projects_terraform_sa}"
-}
-
-resource "google_project_iam_member" "project_object_admin_binding" {
-  project = local.cloudbuild_project_id
-  role    = "roles/storage.objectAdmin"
-  member  = "serviceAccount:tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com"
-}
-
-resource "google_storage_bucket_iam_member" "cloudbuild_storage_read" {
-  bucket = "bkt-${module.app_infra_cloudbuild_project[0].project_id}-bu1-example-app-logs"
-  role   = "roles/storage.admin"
-  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
-}
-
-resource "google_artifact_registry_repository_iam_member" "builder_on_artifact_registry" {
-  project    = local.cloudbuild_project_id
-  location   = var.default_region
-  repository = "tf-runners"
-  role       = "roles/artifactregistry.repoAdmin"
-  member     = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
-}
-
-resource "google_project_iam_member" "cloudbuild_logging" {
-  project = local.cloudbuild_project_id
-  role    = "roles/logging.logWriter"
-  member  = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
-}
-
-resource "google_storage_bucket_iam_member" "bucket_object_viewer" {
-  bucket = "${module.app_infra_cloudbuild_project[0].project_id}_cloudbuild"
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
-}
-
-resource "google_storage_bucket_iam_member" "bucket_object_admin" {
-  bucket = "${module.app_infra_cloudbuild_project[0].project_id}_cloudbuild"
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
-}
-
-resource "google_project_iam_member" "workload_identity_admin" {
-  project = module.app_infra_cloudbuild_project[0].project_id
-  role    = "roles/iam.workloadIdentityPoolAdmin"
-  member  = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
 }
 
 module "infra_pipelines" {
@@ -164,4 +165,5 @@ module "build_confidential_space_image" {
 resource "null_resource" "jenkins_cicd" {
   count = !local.enable_cloudbuild_deploy ? 1 : 0
 }
+
 

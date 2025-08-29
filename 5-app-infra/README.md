@@ -159,7 +159,7 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
-1. Get the `image_digest` value from the Docker image created in `gcp-projects`
+1. Get the `confidential_image_digest` value from the Docker image created in `gcp-projects`
 
 ```bash
 export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
@@ -169,14 +169,14 @@ export DEFAULT_REGION=$(terraform -chdir="../gcp-projects/business_unit_1/shared
 echo ${DEFAULT_REGION}
 
 default_region
-export image_digest=$(gcloud artifacts docker images describe ${DEFAULT_REGION}-docker.pkg.dev/${CLOUD_BUILD_PROJECT_ID}/tf-runners/confidential_space_image:latest --project=${CLOUD_BUILD_PROJECT_ID})
-echo "image_digest = ${image_digest}"
+export confidential_image_digest=$(gcloud artifacts docker images describe ${DEFAULT_REGION}-docker.pkg.dev/${CLOUD_BUILD_PROJECT_ID}/tf-runners/confidential_space_image:latest --project=${CLOUD_BUILD_PROJECT_ID})
+echo "confidential_image_digest = ${confidential_image_digest}"
 ```
 
 1. Update `IMAGE_DIGEST` value in the file `common.auto.tfvars`.
 
 ```bash
-sed -i'' -e "s/IMAGE_DIGEST/${image_digest}/" ./common.auto.tfvars
+sed -i'' -e "s/IMAGE_DIGEST/${confidential_image_digest}/" ./common.auto.tfvars
 ```
 
 1. Commit changes.

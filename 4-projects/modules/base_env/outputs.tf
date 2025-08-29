@@ -19,8 +19,8 @@ output "floating_project" {
   value       = module.floating_project.project_id
 }
 
-output "floating_project" {
-  description = "Project sample floating project."
+output "floating_project_number" {
+  description = "Project number sample floating project."
   value       = module.floating_project.project_number
 }
 

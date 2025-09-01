@@ -37,6 +37,14 @@ resource "google_project_iam_member" "workload_sa_roles" {
   member   = "serviceAccount:${google_service_account.workload_sa.email}"
 }
 
+resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
+  project    = local.cloudbuild_project_id
+  repository = "tf-runners"
+  location   = local.default_region
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${google_service_account.workload_sa.email}"
+}
+
 module "confidential_space_project" {
   source = "../single_project"
 

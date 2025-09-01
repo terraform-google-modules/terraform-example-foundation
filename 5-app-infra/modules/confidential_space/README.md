@@ -23,7 +23,6 @@
 | Name | Description |
 |------|-------------|
 | available\_zones | List of available zones in region |
-| cloudbuild\_service\_account | Cloudbuild service account. |
 | confidential\_image\_digest | SHA256 digest of the Docker image. |
 | instances\_details | List of details for compute instances |
 | instances\_self\_links | List of self-links for compute instances |

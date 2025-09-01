@@ -36,11 +36,6 @@ output "project_id" {
 
 output "confidential_image_digest" {
   description = "SHA256 digest of the Docker image."
-  value       = var.image_digest
-}
-
-output "cloudbuild_service_account" {
-  description = "Cloudbuild service account."
-  value       = local.cloudbuild_service_account
+  value       = var.confidential_image_digest
 }
 

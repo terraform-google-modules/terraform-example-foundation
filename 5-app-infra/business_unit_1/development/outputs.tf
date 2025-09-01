@@ -52,8 +52,3 @@ output "region" {
   value       = module.gce_instance.region
 }
 
-output "gcs_buckets" {
-  description = "Bucket where confidential space code will be stored"
-  value       = module.confidential_space.gcs_buckets
-}
-

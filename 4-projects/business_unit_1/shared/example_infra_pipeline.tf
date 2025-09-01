@@ -16,7 +16,7 @@
 
 locals {
   repo_names                       = ["bu1-example-app"]
-  cmd_prompt                       = "gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://${module.app_infra_cloudbuild_project[0].log_buckets["bu1-example-app"]} --worker-pool=${local.cloud_build_private_worker_pool_id} || ( sleep 46 && gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://${module.app_infra_cloudbuild_project[0].log_buckets["bu1-example-app"]} --worker-pool=${local.cloud_build_private_worker_pool_id})"
+  cmd_prompt                       = "gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://${module.infra_pipelines[0].log_buckets["log_buckets"]} --worker-pool=${local.cloud_build_private_worker_pool_id} || ( sleep 46 && gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${local.cloudbuild_project_id} --service-account=projects/${local.cloudbuild_project_id}/serviceAccounts/tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://${module.infra_pipelines[0].log_buckets["log_buckets"]} --worker-pool=${local.cloud_build_private_worker_pool_id})"
   confidential_space_image_version = "latest"
   confidential_space_image_tag     = "${var.default_region}-docker.pkg.dev/${local.cloudbuild_project_id}/tf-runners/confidential_space_image:${local.confidential_space_image_version}"
 
@@ -60,7 +60,7 @@ resource "google_project_iam_member" "workload_identity_admin" {
 }
 
 resource "google_storage_bucket_iam_member" "cloudbuild_storage_read" {
-  bucket = module.app_infra_cloudbuild_project[0].log_buckets["bu1-example-app"]
+  bucket = module.infra_pipelines[0].log_buckets["log_buckets"]
   role   = "roles/storage.admin"
   member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
 }
@@ -130,13 +130,11 @@ resource "time_sleep" "wait_iam_propagation" {
     module.infra_pipelines,
     module.app_infra_cloudbuild_project,
     google_project_iam_member.bucket_admin_binding,
-    google_project_iam_member.project_object_admin_binding,
     google_storage_bucket_iam_member.cloudbuild_storage_read,
     google_artifact_registry_repository_iam_member.builder_on_artifact_registry,
     google_project_iam_member.cloudbuild_logging,
     google_storage_bucket_iam_member.bucket_object_viewer,
     google_storage_bucket_iam_member.bucket_object_admin,
-    google_project_iam_member.cloudbuild_access
   ]
 }
 

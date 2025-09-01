@@ -38,7 +38,6 @@ locals {
   artifact_registry_repository      = "tf-runners"
   confidential_space_project_number = data.terraform_remote_state.projects_env.outputs.confidential_space_project_number
   confidential_space_project_id     = data.terraform_remote_state.projects_env.outputs.confidential_space_project
-  cloudbuild_service_account        = data.terraform_remote_state.business_unit_shared.outputs.terraform_service_accounts["bu1-example-app"]
   confidential_space_workload_sa    = data.terraform_remote_state.projects_env.outputs.confidential_space_workload_sa
 }
 
@@ -90,20 +89,6 @@ assertion.swname == "CONFIDENTIAL_SPACE" &&
 "STABLE" in assertion.submods.confidential_space.support_attributes
 EOT
 
-}
-
-resource "google_service_account_iam_member" "impersonate_workload_sa" {
-  service_account_id = "projects/${local.env_project_id}/serviceAccounts/${local.confidential_space_workload_sa}"
-  role               = "roles/iam.serviceAccountUser"
-  member             = "serviceAccount:${local.cloudbuild_service_account}"
-}
-
-resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
-  project    = local.cloudbuild_project_id
-  repository = local.artifact_registry_repository
-  location   = local.default_region
-  role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${local.confidential_space_workload_sa}"
 }
 
 module "confidential_instance_template" {

@@ -42,11 +42,10 @@ module "peering_gce_instance" {
 module "confidential_space" {
   source = "../../modules/confidential_space"
 
-  environment                          = local.environment
-  confidential_image_digest            = var.confidential_image_digest
-  confidential_space_workload_operator = local.confidential_space_workload_sa
-  business_unit                        = local.business_unit
-  project_suffix                       = "conf-space"
-  region                               = coalesce(var.instance_region, local.default_region)
-  remote_state_bucket                  = var.remote_state_bucket
+  environment               = local.environment
+  confidential_image_digest = var.confidential_image_digest
+  business_unit             = local.business_unit
+  project_suffix            = "conf-space"
+  region                    = coalesce(var.instance_region, local.default_region)
+  remote_state_bucket       = var.remote_state_bucket
 }

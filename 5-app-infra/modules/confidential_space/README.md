@@ -8,7 +8,6 @@
 | confidential\_image\_digest | SHA256 digest of the Docker image to be used for running the workload in Confidential Space. This value ensures the integrity and immutability of the image, guaranteeing that only the expected and verified code is executed within the confidential environment. Expected format: `sha256:<digest>`. | `string` | n/a | yes |
 | confidential\_instance\_type | (Optional) Defines the confidential computing technology the instance uses. SEV is an AMD feature. TDX is an Intel feature. One of the following values is required: SEV, SEV\_SNP, TDX. | `string` | `"SEV"` | no |
 | confidential\_machine\_type | Machine type to create for confidential instance. | `string` | `"n2d-standard-2"` | no |
-| confidential\_space\_workload\_operator | The person who runs the workload that operates on the combined confidential data. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`. | `string` | `null` | no |
 | cpu\_platform | The CPU platform used by this instance. If confidential\_instance\_type is set as SEV, then it is an AMD feature. TDX is an Intel feature. | `string` | `"AMD Milan"` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | num\_instances | Number of instances to create | `number` | `1` | no |

@@ -88,9 +88,3 @@ variable "confidential_image_digest" {
   type        = string
 }
 
-variable "confidential_space_workload_operator" {
-  description = "The person who runs the workload that operates on the combined confidential data. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`."
-  type        = string
-  default     = null
-}
-

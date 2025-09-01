@@ -15,8 +15,7 @@
  */
 
 locals {
-  default_region                 = data.terraform_remote_state.projects_env.outputs.default_region
-  confidential_space_workload_sa = data.terraform_remote_state.projects_env.outputs.confidential_space_workload_sa
+  default_region = data.terraform_remote_state.projects_env.outputs.default_region
 }
 
 data "terraform_remote_state" "projects_env" {

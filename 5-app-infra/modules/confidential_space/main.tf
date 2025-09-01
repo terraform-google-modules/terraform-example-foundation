@@ -37,7 +37,6 @@ locals {
   resource_manager_tags             = local.env_project_resource_manager_tags[var.project_suffix]
   artifact_registry_repository      = "tf-runners"
   confidential_space_project_number = data.terraform_remote_state.projects_env.outputs.confidential_space_project_number
-  confidential_space_project_id     = data.terraform_remote_state.projects_env.outputs.confidential_space_project
   confidential_space_workload_sa    = data.terraform_remote_state.projects_env.outputs.confidential_space_workload_sa
 }
 

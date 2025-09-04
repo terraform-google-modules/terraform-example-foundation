@@ -39,49 +39,9 @@ func TestOrg(t *testing.T) {
 
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
-	ingressPolicies := []map[string]interface{}{
-		{
-			"from": map[string]interface{}{
-				"sources": map[string][]string{
-					"access_levels": {"*"},
-				},
-				"identity_type": "ANY_IDENTITY",
-			},
-			"to": map[string]interface{}{
-				"resources": []string{"*"},
-				"operations": map[string]map[string][]string{
-					"storage.googleapis.com": {
-						"methods": {
-							"google.storage.objects.get",
-							"google.storage.objects.list",
-						},
-					},
-				},
-			},
-		},
-	}
+	ingressPolicies := []map[string]interface{}{}
 
-	egressPolicies := []map[string]interface{}{
-		{
-			"from": map[string]interface{}{
-				"sources": map[string][]string{
-					"access_levels": {"*"},
-				},
-				"identity_type": "ANY_IDENTITY",
-			},
-			"to": map[string]interface{}{
-				"resources": []string{"*"},
-				"operations": map[string]map[string][]string{
-					"storage.googleapis.com": {
-						"methods": {
-							"google.storage.objects.get",
-							"google.storage.objects.list",
-						},
-					},
-				},
-			},
-		},
-	}
+	egressPolicies := []map[string]interface{}{}
 
 	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")
 

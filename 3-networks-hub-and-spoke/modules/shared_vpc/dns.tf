@@ -34,7 +34,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "peering_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   count = var.mode == "spoke" ? 1 : 0
 
@@ -55,7 +55,7 @@ module "peering_zone" {
 *****************************************/
 module "dns_forwarding_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   count = var.mode != "spoke" ? 1 : 0
 

@@ -36,6 +36,8 @@ module "access_level" {
 }
 
 module "access_level_dry_run" {
+  count = !var.enforce_vpcsc ? 1 : 0
+
   source  = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
   version = "~> 7.1.3"
 
@@ -65,15 +67,15 @@ module "regular_service_perimeter" {
   egress_policies_keys    = var.enforce_vpcsc ? var.egress_policies_keys : []
 
   # configurations for a perimeter in dry run mode.
-  resources_dry_run               = var.resources_dry_run
-  resource_keys_dry_run           = var.resource_keys_dry_run
-  access_levels_dry_run           = [module.access_level_dry_run.name]
-  restricted_services_dry_run     = var.restricted_services_dry_run
-  vpc_accessible_services_dry_run = ["*"]
-  ingress_policies_dry_run        = var.ingress_policies_dry_run
-  ingress_policies_keys_dry_run   = var.ingress_policies_keys_dry_run
-  egress_policies_dry_run         = var.egress_policies_dry_run
-  egress_policies_keys_dry_run    = var.egress_policies_keys_dry_run
+  resources_dry_run               = !var.enforce_vpcsc ? var.resources_dry_run : []
+  resource_keys_dry_run           = !var.enforce_vpcsc ? var.resource_keys_dry_run : []
+  access_levels_dry_run           = !var.enforce_vpcsc && length(module.access_level_dry_run) > 0 ? [module.access_level_dry_run[0].name] : []
+  restricted_services_dry_run     = !var.enforce_vpcsc ? var.restricted_services_dry_run : []
+  vpc_accessible_services_dry_run = !var.enforce_vpcsc ? ["*"] : []
+  ingress_policies_dry_run        = !var.enforce_vpcsc ? var.ingress_policies_dry_run : []
+  ingress_policies_keys_dry_run   = !var.enforce_vpcsc ? var.ingress_policies_keys_dry_run : []
+  egress_policies_dry_run         = !var.enforce_vpcsc ? var.egress_policies_dry_run : []
+  egress_policies_keys_dry_run    = !var.enforce_vpcsc ? var.egress_policies_keys_dry_run : []
 }
 
 resource "time_sleep" "wait_vpc_sc_propagation" {

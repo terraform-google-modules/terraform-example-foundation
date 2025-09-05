@@ -145,7 +145,7 @@ If required, run `terraform output cloudbuild_project_id` in the `0-bootstrap` f
 
    ```bash
    export ORGANIZATION_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
-   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID}
+   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID} --location=global
    ```
 
 1. Check if your organization already has an Access Context Manager policy.
@@ -239,7 +239,7 @@ Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensu
 
    ```bash
    export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
-   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID}
+   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID} --location=global
    ```
 
 1. Check if your organization already has an Access Context Manager policy.

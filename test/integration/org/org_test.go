@@ -262,7 +262,7 @@ func TestOrg(t *testing.T) {
 
 			servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, org.GetStringOutput("service_perimeter_name"))
 			accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, org.GetStringOutput("access_level_name_dry_run"))
-			servicePerimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", servicePerimeterLink, policyID))
+			servicePerimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s --format=json", servicePerimeterLink, policyID))
 			assert.NoError(err)
 			perimeterName := org.GetStringOutput("service_perimeter_name")
 			assert.True(strings.Contains(servicePerimeter, perimeterName), fmt.Sprintf("service perimeter %s should exist", perimeterName))

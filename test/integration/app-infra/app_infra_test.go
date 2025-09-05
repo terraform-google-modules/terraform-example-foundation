@@ -79,7 +79,7 @@ func TestAppInfra(t *testing.T) {
 					gcOps := gcloud.WithCommonArgs([]string{"--project", projectID, "--zone", instanceZone, "--format", "json"})
 					instance := gcloud.Run(t, fmt.Sprintf("compute instances describe %s", instanceName), gcOps)
 					assert.Equal(machineType, instance.Get("machineType").String(), "should have machine_type f1-micro")
-					
+
 					computeInstanceList := gcloud.Run(t, fmt.Sprintf("compute instances list --format=json --project %s --filter name=confidential-instance", projectID))
 					assert.Len(computeInstanceList.Array(), 1)
 					computeInstance := computeInstanceList.Array()[0]

@@ -18,5 +18,7 @@
 | instances\_zones | List of zone for compute instances |
 | project\_id | Project where compute instance was created |
 | region | Region where compute instance was created |
+| workload\_identity\_pool\_id | Workload identity pool ID. |
+| workload\_pool\_provider\_id | Workload pool provider used by confidential space. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

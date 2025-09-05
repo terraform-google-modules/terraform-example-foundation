@@ -26,6 +26,8 @@
 | instances\_details | List of details for compute instances |
 | instances\_self\_links | List of self-links for compute instances |
 | project\_id | Project where compute instance was created |
+| workload\_identity\_pool\_id | Workload identity pool ID. |
+| workload\_pool\_provider\_id | Workload pool provider used by confidential space. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

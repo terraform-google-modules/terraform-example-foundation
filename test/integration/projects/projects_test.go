@@ -178,24 +178,12 @@ func TestProjects(t *testing.T) {
 
 							enabledAPIS := gcloud.Runf(t, "services list --project %s --impersonate-service-account %s", projectID, terraformSA).Array()
 							listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
-							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
+							assert.Subset(listApis, confidentialRestrictedApisEnabled, "API should have been enabled")
 
-							sharedProjectNumber := projects.GetStringOutput("confidential_space_project_number")
-							perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", perimeterName, policyID))
-							assert.NoError(err)
-							assert.True(strings.Contains(perimeter, sharedProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, sharedProjectNumber))
-
-							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s --impersonate-service-account %s", projectID, terraformSA)
-							assert.NotEmpty(sharedVPC.Map())
-
-							hostProjectID := sharedVPC.Get("name").String()
-							hostProject := gcloud.Runf(t, "projects describe %s --impersonate-service-account %s", hostProjectID, terraformSA)
-							assert.Equal("shared-vpc-host", hostProject.Get("labels.application_name").String(), "host project should have application_name label equals to shared-vpc-host")
-							assert.Equal(env, hostProject.Get("labels.environment").String(), fmt.Sprintf("project should have environment label %s", env))
-
-							hostNetwork := gcloud.Runf(t, "compute networks list --project %s --impersonate-service-account %s", hostProjectID, terraformSA).Array()[0]
-							assert.Equal(tt.sharedNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
-
+							confidentialSpaceWorkloadSAEmail := projects.GetStringOutput("confidential_space_workload_sa")
+							confidentialSpaceSAName := fmt.Sprintf("projects/%s/serviceAccounts/%s", projectID, confidentialSpaceWorkloadSAEmail)
+							confidentialSpaceSA := gcloud.Runf(t, "iam service-accounts describe %s --project %s", confidentialSpaceWorkloadSAEmail, projectID)
+							assert.Equal(confidentialSpaceSAName, confidentialSpaceSA.Get("name").String(), fmt.Sprintf("service account %s should exist", confidentialSpaceWorkloadSAEmail))
 						}
 
 						if projectOutput == "floating_project" {

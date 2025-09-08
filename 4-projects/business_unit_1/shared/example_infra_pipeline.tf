@@ -60,7 +60,7 @@ resource "google_project_iam_member" "workload_identity_admin" {
 }
 
 resource "google_storage_bucket_iam_member" "cloudbuild_storage_read" {
-  bucket = module.infra_pipelines[0].log_buckets["log_buckets"]
+  bucket = module.infra_pipelines[0].log_buckets["bu1-example-app"]
   role   = "roles/storage.admin"
   member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
 }

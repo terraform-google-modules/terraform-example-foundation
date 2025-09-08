@@ -259,10 +259,9 @@ func TestOrg(t *testing.T) {
 			// check tags applied to common and bootstrap folder
 			commonConfig := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
 			bootstrapFolder := testutils.GetLastSplitElement(commonConfig["bootstrap_folder_name"], "/")
-
 			servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, org.GetStringOutput("service_perimeter_name"))
 			accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, org.GetStringOutput("access_level_name_dry_run"))
-			servicePerimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s --format=json", servicePerimeterLink, policyID))
+			servicePerimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID))
 			assert.NoError(err)
 			perimeterName := org.GetStringOutput("service_perimeter_name")
 			assert.True(strings.Contains(servicePerimeter, perimeterName), fmt.Sprintf("service perimeter %s should exist", perimeterName))
@@ -526,7 +525,7 @@ func TestOrg(t *testing.T) {
 
 			// verify seed project in perimeter
 			sharedProjectNumber := bootstrap.GetStringOutput("seed_project_number")
-			perimeter := gcloud.Runf(t, "access-context-manager perimeters dry-run describe %s --policy %s --format=json", servicePerimeterLink, policyID)
+			perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
 			projectFormat := fmt.Sprintf("projects/%s", sharedProjectNumber)
 			perimeterResources := utils.GetResultStrSlice(perimeter.Get("spec.resources").Array())
 			assert.Contains(perimeterResources, projectFormat, fmt.Sprintf("dry-run service perimeter %s should contain %s", perimeterName, projectFormat))
@@ -545,7 +544,7 @@ func TestOrg(t *testing.T) {
 					assert.Equal("ACTIVE", projects[0].Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 					numberOutput := strings.ReplaceAll(hubAndSpokeProjectOutput, "_id", "_number") // "net_hub_project_number"
 					projectNumber := org.GetStringOutput(numberOutput)
-					perimeter := gcloud.Runf(t, "access-context-manager perimeters dry-run describe %s --policy %s --format=json", servicePerimeterLink, policyID)
+					perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
 					projectFormat := fmt.Sprintf("projects/%s", projectNumber)
 					perimeterResources := utils.GetResultStrSlice(perimeter.Get("spec.resources").Array())
 					assert.Contains(perimeterResources, projectFormat, fmt.Sprintf("dry-run service perimeter %s should contain %s", perimeterName, projectFormat))
@@ -606,7 +605,7 @@ func TestOrg(t *testing.T) {
 				prj := gcloud.Runf(t, "projects describe %s", projectID)
 				assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 				projectNumber := prj.Get("projectNumber").String()
-				perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", servicePerimeterLink, policyID))
+				perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID))
 				assert.NoError(err)
 				assert.True(strings.Contains(perimeter, projectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s (number: %s)", perimeterName, projectID, projectNumber))
 				enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
@@ -643,7 +642,7 @@ func TestOrg(t *testing.T) {
 					prj := gcloud.Runf(t, "projects describe %s", projectID)
 					assert.Equal(projectID, prj.Get("projectId").String(), fmt.Sprintf("project %s should exist", projectID))
 					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
-					perimeter := gcloud.Runf(t, "access-context-manager perimeters dry-run describe %s --policy %s --format=json", servicePerimeterLink, policyID)
+					perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
 					projectFormat := fmt.Sprintf("projects/%s", projectNumber)
 					perimeterResources := utils.GetResultStrSlice(perimeter.Get("spec.resources").Array())
 					assert.Contains(perimeterResources, projectFormat, fmt.Sprintf("dry-run service perimeter %s should contain %s", perimeterName, projectFormat))

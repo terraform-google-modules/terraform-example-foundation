@@ -98,7 +98,7 @@ func TestProjectsShared(t *testing.T) {
 					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
 					projectFormat := fmt.Sprintf("projects/%s", projectNumber)
-					perimeter := gcloud.Runf(t, "access-context-manager perimeters dry-run describe %s --policy %s --format=json", servicePerimeterLink, policyID)
+					perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s --format=json", servicePerimeterLink, policyID)
 					spec := utils.GetResultStrSlice(perimeter.Get("spec.resources").Array())
 					assert.Contains(spec, projectFormat, fmt.Sprintf("dry-run service perimeter %s should contain %s", perimeterName, projectFormat))
 

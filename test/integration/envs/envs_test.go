@@ -127,7 +127,7 @@ func TestEnvs(t *testing.T) {
 						assert.Equal(projectID, prj.Get("projectId").String(), fmt.Sprintf("project %s should exist", projectID))
 						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
 
-						perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", perimeterName, policyID))
+						perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters describe %s --policy %s", perimeterName, policyID))
 						assert.NoError(err)
 						assert.True(strings.Contains(perimeter, projectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s (number)", perimeterName, projectNumber))
 

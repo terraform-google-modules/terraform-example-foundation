@@ -66,13 +66,13 @@ resource "google_storage_bucket_iam_member" "cloudbuild_storage_read" {
 }
 
 resource "google_storage_bucket_iam_member" "bucket_object_admin" {
-  bucket = "gs://${local.cloudbuild_project_id}_cloudbuild"
+  bucket = "${local.cloudbuild_project_id}_cloudbuild"
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
 }
 
 resource "google_storage_bucket_iam_member" "bucket_object_viewer" {
-  bucket = "gs://${local.cloudbuild_project_id}_cloudbuild"
+  bucket = "${local.cloudbuild_project_id}_cloudbuild"
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
 }

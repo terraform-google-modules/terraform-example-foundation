@@ -65,18 +65,17 @@ resource "google_storage_bucket_iam_member" "cloudbuild_storage_read" {
   member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
 }
 
-resource "google_storage_bucket_iam_member" "bucket_object_admin" {
-  bucket = "${local.cloudbuild_project_id}_cloudbuild"
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
+resource "google_storage_bucket_iam_member" "cloudbuild_sa_storage_admin" {
+  bucket = module.infra_pipelines[0].log_buckets["bu1-example-app"]
+  role   = "roles/storage.admin"
+  member = "serviceAccount:tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com"
 }
 
-resource "google_storage_bucket_iam_member" "bucket_object_viewer" {
+resource "google_storage_bucket_iam_member" "cloudbuild_bucket_admin" {
   bucket = "${local.cloudbuild_project_id}_cloudbuild"
-  role   = "roles/storage.objectViewer"
+  role   = "roles/storage.admin"
   member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
 }
-
 
 module "app_infra_cloudbuild_project" {
   source = "../../modules/single_project"
@@ -133,8 +132,8 @@ resource "time_sleep" "wait_iam_propagation" {
     google_storage_bucket_iam_member.cloudbuild_storage_read,
     google_artifact_registry_repository_iam_member.builder_on_artifact_registry,
     google_project_iam_member.cloudbuild_logging,
-    google_storage_bucket_iam_member.bucket_object_viewer,
-    google_storage_bucket_iam_member.bucket_object_admin,
+    google_storage_bucket_iam_member.cloudbuild_sa_storage_admin,
+    google_storage_bucket_iam_member.cloudbuild_bucket_admin,
   ]
 }
 

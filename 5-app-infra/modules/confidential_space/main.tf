@@ -134,9 +134,21 @@ module "confidential_compute_instance" {
   resource_manager_tags = local.resource_manager_tags
 }
 
+resource "time_sleep" "wait_workload_pool_propagation" {
+  create_duration = "60s"
+
+  depends_on = [
+    google_iam_workload_identity_pool.confidential_space_pool
+  ]
+}
+
 resource "google_service_account_iam_member" "workload_identity_binding" {
   service_account_id = "projects/${local.env_project_id}/serviceAccounts/${local.confidential_space_workload_sa}"
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/${local.confidential_space_project_number}/locations/global/workloadIdentityPools/confidential-space-pool/*"
+
+  depends_on = [
+    time_sleep.wait_workload_pool_propagation
+  ]
 }
 

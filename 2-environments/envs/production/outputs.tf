@@ -25,7 +25,7 @@ output "env_secrets_project_id" {
 }
 
 output "env_secrets_project_number" {
-  description = "Project for environment related secrets."
+  description = "Project number for environment related secrets."
   value       = module.env.env_secrets_project_number
 }
 

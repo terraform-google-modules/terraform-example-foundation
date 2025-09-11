@@ -28,11 +28,6 @@ function networks(){
         mv $network_dir/envs/production/production.auto.tfvars  $network_dir/envs/production/production.auto.tfvars.disabled
     fi
 
-    # disable access_context.auto.tfvars in main module
-    mv $network_dir/envs/development/access_context.auto.tfvars  $network_dir/envs/development/access_context.auto.tfvars.disabled
-    mv $network_dir/envs/nonproduction/access_context.auto.tfvars  $network_dir/envs/nonproduction/access_context.auto.tfvars.disabled
-    mv $network_dir/envs/production/access_context.auto.tfvars  $network_dir/envs/production/access_context.auto.tfvars.disabled
-
     # disable common.auto.tfvars in main module
     mv $network_dir/envs/development/common.auto.tfvars $network_dir/envs/development/common.auto.tfvars.disabled
     mv $network_dir/envs/nonproduction/common.auto.tfvars  $network_dir/envs/nonproduction/common.auto.tfvars.disabled
@@ -49,9 +44,6 @@ function shared(){
     else
         network_dir="3-networks-svpc"
     fi
-
-    # disable access_context.auto.tfvars in main module
-    mv $network_dir/envs/shared/access_context.auto.tfvars $network_dir/envs/shared/access_context.auto.tfvars.disabled
 
     # disable common.auto.tfvars in main module
     mv $network_dir/envs/shared/common.auto.tfvars  $network_dir/envs/shared/common.auto.tfvars.disabled

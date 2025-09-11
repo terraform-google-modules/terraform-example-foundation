@@ -36,7 +36,7 @@ output "topic_name" {
 
 output "scc_source" {
   description = "SCC Findings Source."
-  value       = google_scc_source.cai_monitoring.id
+  value       = google_scc_v2_organization_source.cai_monitoring.id
 }
 
 output "function_uri" {

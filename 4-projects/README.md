@@ -591,3 +591,7 @@ If you received any errors or made any changes to the Terraform config or any `.
    ```
 
 1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
+
+## Warning
+
+If you previously enabled the dry-run variables `required_ingress_rules_app_infra_dry_run` and `required_egress_rules_app_infra_dry_run`, you must **disable both of them before running the 4-projects step in enforced mode**. Once enforced mode is activated and the **4-projects** step is executed, the projects created in that step are removed from the dry-run perimeter. Keeping these dry-run variables active creates conflicts, because they define rules for projects that will no longer be part of the dry-run perimeter after this transition.

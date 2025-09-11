@@ -46,6 +46,10 @@ billing_export_dataset_location = "US"
 
 access_context_manager_policy_id = ACCESS_CONTEXT_MANAGER_ID
 
+// If you choose to enable enforced mode, make sure to disable the dry-run variables
+// required_ingress_rules_app_infra_dry_run and required_egress_rules_app_infra_dry_run
+// before running the 4-projects step
+
 //required_egress_rules_app_infra_dry_run = true
 
 //required_egress_rules_app_infra = true

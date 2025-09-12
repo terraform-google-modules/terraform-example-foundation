@@ -64,6 +64,10 @@ func TestProjects(t *testing.T) {
 		"billingbudgets.googleapis.com",
 	}
 
+	var confidentialRestrictedApisEnabled = []string{
+		"confidentialcomputing.googleapis.com",
+	}
+
 	var project_sa_roles = []string{
 		"roles/compute.instanceAdmin.v1",
 		"roles/iam.serviceAccountAdmin",

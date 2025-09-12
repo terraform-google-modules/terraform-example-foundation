@@ -208,6 +208,7 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		CreateACMAPolicy:                      createACMAPolicy,
 		CreateUniqueTagKey:                    tfvars.CreateUniqueTagKey,
 		AuditLogsTableDeleteContentsOnDestroy: tfvars.AuditLogsTableDeleteContentsOnDestroy,
+		EnableSccResourcesInTerraform:         tfvars.EnableSccResourcesInTerraform,
 		LogExportStorageForceDestroy:          tfvars.LogExportStorageForceDestroy,
 		LogExportStorageLocation:              tfvars.LogExportStorageLocation,
 		BillingExportDatasetLocation:          tfvars.BillingExportDatasetLocation,

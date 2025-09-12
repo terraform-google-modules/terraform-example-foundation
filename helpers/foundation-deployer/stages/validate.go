@@ -48,10 +48,10 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 	fmt.Println("")
 	fmt.Println("# Validating tfvar file.")
 	if g.OrgID != replaceME {
-		if g.HasValidatorProj() && gcpConf.HasSccNotification(t, g.OrgID, g.SccNotificationName) {
+		if g.HasValidatorProj() && g.EnableSccResourcesInTerraform != nil && *g.EnableSccResourcesInTerraform && gcpConf.HasSccNotification(t, g.OrgID, g.SccNotificationName) {
 			fmt.Printf("# Notification '%s' exists in organization '%s'. Chose a different one.\n", g.SccNotificationName, g.OrgID)
 			fmt.Printf("# See existing Notifications for organization '%s'.\n", g.OrgID)
-			fmt.Printf("# gcloud scc notifications list organizations/%s --filter=\"name:organizations/%s/notificationConfigs/%s\" --format=\"value(name)\"\n", g.OrgID, g.OrgID, g.SccNotificationName)
+			fmt.Printf("# gcloud scc notifications list organizations/%s --location=global --filter=\"name:organizations/%s/locations/global/notificationConfigs/%s\" --format=\"value(name)\"\n", g.OrgID, g.OrgID, g.SccNotificationName)
 			fmt.Println("")
 		}
 		if g.HasValidatorProj() && !g.CreateUniqueTagKey && gcpConf.HasTagKey(t, g.OrgID, "environment") {

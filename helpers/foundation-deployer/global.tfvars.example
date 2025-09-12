@@ -89,6 +89,7 @@ domains_to_allow                    = ["example.com"] # Must include the domain 
 essential_contacts_domains_to_allow = ["@example.com"]
 
 scc_notification_name                       = "scc-notify"
+enable_scc_resources_in_terraform           = false # See https://cloud.google.com/security-command-center/docs/activate-scc-overview before enabling this feature
 audit_logs_table_delete_contents_on_destroy = false
 log_export_storage_force_destroy            = false
 log_export_storage_location                 = "US"

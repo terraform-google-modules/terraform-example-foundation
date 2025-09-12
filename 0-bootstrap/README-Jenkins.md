@@ -397,7 +397,7 @@ Here you will configure a VPN Network tunnel to enable connectivity between the 
 
    ```bash
    export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -json common_config | jq '.org_id' --raw-output)
-   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID}
+   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID} --location=global
    ```
 
 1. Check if your organization already has an Access Context Manager Policy.

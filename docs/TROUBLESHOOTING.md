@@ -144,7 +144,7 @@ Replace `1.x.x` with the actual version of your local Terraform version in the f
 When running `gcloud` commands in Cloud Shell like
 
 ```bash
-gcloud scc notifications describe <scc_notification_name> --organization YOUR_ORGANIZATION_ID
+gcloud scc notifications describe <scc_notification_name> --organization YOUR_ORGANIZATION_ID --location=global
 ```
 
 or

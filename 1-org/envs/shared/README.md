@@ -16,7 +16,7 @@
 | egress\_policies\_keys\_dry\_run | (Dry-run) A list of keys to use for the Terraform state. The order should correspond to var.egress\_policies\_dry\_run and the keys must not be dynamically computed. If `null`, var.egress\_policies\_dry\_run will be used as keys. | `list(string)` | `[]` | no |
 | enable\_hub\_and\_spoke | Enable Hub-and-Spoke architecture. | `bool` | `false` | no |
 | enable\_kms\_key\_usage\_tracking | Enable KMS centralized key usage tracking system. | `bool` | `true` | no |
-| enable\_scc\_resources\_in\_terraform | Create Security Command Center resources in Terraform. If your organization has newly enabled any preview features for SCC and get an error related to the v2 API, you must set this variable to false because the v2 API does not yet support Terraform resources. See [issue 1189](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1189) for context. | `bool` | `false` | no |
+| enable\_scc\_resources\_in\_terraform | Create Security Command Center resources in Terraform. Security Command Center must be activated before the creation of the resources. See [Overview of activating Security Command Center](https://cloud.google.com/security-command-center/docs/activate-scc-overview) before enabling this feature. | `bool` | `false` | no |
 | enforce\_allowed\_worker\_pools | Whether to enforce the organization policy restriction on allowed worker pools for Cloud Build. | `bool` | `false` | no |
 | essential\_contacts\_domains\_to\_allow | The list of domains that email addresses added to Essential Contacts can have. | `list(string)` | n/a | yes |
 | essential\_contacts\_language | Essential Contacts preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages. | `string` | `"en"` | no |
@@ -42,7 +42,7 @@
 | resources | A list of GCP resources that are inside of the service perimeter. Currently only projects and VPC networks are allowed. | `list(string)` | `[]` | no |
 | resources\_dry\_run | A list of GCP resources that are inside of the service perimeter. Currently only projects and VPC networks are allowed. If set, a dry-run policy will be set. | `list(string)` | `[]` | no |
 | scc\_notification\_filter | Filter used to create the Security Command Center Notification, you can see more details on how to create filters in https://cloud.google.com/security-command-center/docs/how-to-api-filter-notifications#create-filter | `string` | `"state = \"ACTIVE\""` | no |
-| scc\_notification\_name | Name of the Security Command Center Notification. It must be unique in the organization. Run `gcloud scc notifications describe <scc_notification_name> --organization=org_id` to check if it already exists. | `string` | n/a | yes |
+| scc\_notification\_name | Name of the Security Command Center Notification. It must be unique in the organization. Run `gcloud scc notifications describe <scc_notification_name> --organization=org_id --location=global` to check if it already exists. | `string` | n/a | yes |
 | tfc\_org\_name | Name of the TFC organization | `string` | `""` | no |
 
 ## Outputs

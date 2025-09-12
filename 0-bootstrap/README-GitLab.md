@@ -417,7 +417,7 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
    ```bash
    export ORG_STEP_SA=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw organization_step_terraform_service_account_email)
 
-   gcloud scc notifications describe "scc-notify" --format="value(name)" --organization=${ORGANIZATION_ID} --impersonate-service-account=${ORG_STEP_SA}
+   gcloud scc notifications describe "scc-notify" --format="value(name)" --organization=${ORGANIZATION_ID} --location=global --impersonate-service-account=${ORG_STEP_SA}
    ```
 
 1. If the notification exists the output will be:

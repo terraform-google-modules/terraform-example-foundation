@@ -129,8 +129,8 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, fa
 
 // HasSccNotification checks if a Security Command Center notification exists
 func (g GCP) HasSccNotification(t testing.TB, orgID, sccName string) bool {
-	filter := fmt.Sprintf("name=organizations/%s/notificationConfigs/%s", orgID, sccName)
-	scc := g.Runf(t, "scc notifications list organizations/%s --filter %s --quiet", orgID, filter).Array()
+	filter := fmt.Sprintf("name=organizations/%s/locations/global/notificationConfigs/%s", orgID, sccName)
+	scc := g.Runf(t, "scc notifications list organizations/%s --filter %s --location=global --quiet", orgID, filter).Array()
 	if len(scc) == 0 {
 		return false
 	}

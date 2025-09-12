@@ -150,6 +150,7 @@ type GlobalTFVars struct {
 	BucketTfstateKmsForceDestroy          *bool           `hcl:"bucket_tfstate_kms_force_destroy"`
 	WorkflowDeletionProtection            *bool           `hcl:"workflow_deletion_protection"`
 	AuditLogsTableDeleteContentsOnDestroy *bool           `hcl:"audit_logs_table_delete_contents_on_destroy"`
+	EnableSccResourcesInTerraform         *bool           `hcl:"enable_scc_resources_in_terraform"`
 	LogExportStorageForceDestroy          *bool           `hcl:"log_export_storage_force_destroy"`
 	LogExportStorageLocation              string          `hcl:"log_export_storage_location"`
 	BillingExportDatasetLocation          string          `hcl:"billing_export_dataset_location"`
@@ -225,6 +226,7 @@ type OrgTfvars struct {
 	CreateACMAPolicy                      bool      `hcl:"create_access_context_manager_access_policy"`
 	CreateUniqueTagKey                    bool      `hcl:"create_unique_tag_key"`
 	AuditLogsTableDeleteContentsOnDestroy *bool     `hcl:"audit_logs_table_delete_contents_on_destroy"`
+	EnableSccResourcesInTerraform         *bool     `hcl:"enable_scc_resources_in_terraform"`
 	LogExportStorageForceDestroy          *bool     `hcl:"log_export_storage_force_destroy"`
 	LogExportStorageLocation              string    `hcl:"log_export_storage_location"`
 	BillingExportDatasetLocation          string    `hcl:"billing_export_dataset_location"`

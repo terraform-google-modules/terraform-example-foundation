@@ -133,7 +133,7 @@ module "pubsub_cai_feed" {
 }
 
 // SCC source
-resource "google_scc_source" "cai_monitoring" {
+resource "google_scc_v2_organization_source" "cai_monitoring" {
   display_name = local.cai_source_name
   organization = var.org_id
   description  = "SCC Finding Source for caiMonitoring Cloud Functions."
@@ -163,7 +163,7 @@ module "cloud_function" {
     service_account_email = google_service_account.cloudfunction.email
     runtime_env_variables = {
       ROLES     = join(",", var.roles_to_monitor)
-      SOURCE_ID = google_scc_source.cai_monitoring.id
+      SOURCE_ID = google_scc_v2_organization_source.cai_monitoring.id
     }
   }
 

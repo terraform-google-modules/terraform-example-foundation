@@ -34,7 +34,6 @@ import (
 
 var (
 	validatorApis = []string{
-		"securitycenter.googleapis.com",
 		"accesscontextmanager.googleapis.com",
 	}
 )
@@ -116,6 +115,9 @@ func main() {
 		conf.ValidatorProject = *globalTFVars.ValidatorProjectId
 		var apis []string
 		gcpConf := gcp.NewGCP()
+		if globalTFVars.EnableSccResourcesInTerraform != nil && *globalTFVars.EnableSccResourcesInTerraform {
+			validatorApis = append(validatorApis, "securitycenter.googleapis.com")
+		}
 		for _, a := range validatorApis {
 			if !gcpConf.IsApiEnabled(t, *globalTFVars.ValidatorProjectId, a) {
 				apis = append(apis, a)

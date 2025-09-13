@@ -42,6 +42,25 @@ func ValidateDirectories(g GlobalTFVars) error {
 	return nil
 }
 
+// ValidateComponents checks if gcloud Beta Components and Terraform Tools are installed
+func ValidateComponents(t testing.TB) error {
+	gcpConf := gcp.NewGCP()
+	components := []string{
+		"beta",
+		"terraform-tools",
+	}
+	missing := []string{}
+	for _, c := range components {
+		if !gcpConf.IsComponentInstalled(t, c) {
+			missing = append(missing, fmt.Sprintf("'%s' not installed", c))
+		}
+	}
+	if len(missing) > 0 {
+		return fmt.Errorf("Missing Google Cloud SDK component:%v", missing)
+	}
+	return nil
+}
+
 // ValidateBasicFields validates if the values for the required field were provided
 func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 	gcpConf := gcp.NewGCP()

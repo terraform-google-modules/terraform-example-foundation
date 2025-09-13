@@ -25,6 +25,40 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+func TestIsComponentInstalledFound(t *gotest.T) {
+	betaComponents, err := os.ReadFile(filepath.Join(".", "testdata", "beta_components_installed.json"))
+	assert.NoError(t, err)
+	gcp := GCP{
+		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
+			return gjson.Result{
+				Type: gjson.JSON,
+				Raw:  fmt.Sprintf("%s", string(betaComponents[:])),
+			}
+		},
+		sleepTime: 1,
+	}
+	componentID := "beta"
+	result := gcp.IsComponentInstalled(t, componentID)
+	assert.True(t, result, "component '%s' should be installed", componentID)
+}
+
+func TestIsComponentInstalledNotFound(t *gotest.T) {
+	betaComponents, err := os.ReadFile(filepath.Join(".", "testdata", "beta_components_not_installed.json"))
+	assert.NoError(t, err)
+	gcp := GCP{
+		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
+			return gjson.Result{
+				Type: gjson.JSON,
+				Raw:  fmt.Sprintf("%s", string(betaComponents[:])),
+			}
+		},
+		sleepTime: 1,
+	}
+	componentID := "beta"
+	result := gcp.IsComponentInstalled(t, componentID)
+	assert.False(t, result, "component '%s' should not be installed", componentID)
+}
+
 func TestGetLastBuildStatus(t *gotest.T) {
 	current, err := os.ReadFile(filepath.Join(".", "testdata", "success_build.json"))
 	assert.NoError(t, err)
@@ -101,7 +135,7 @@ func TestWaitBuildSuccess(t *gotest.T) {
 		sleepTime: 1,
 	}
 
-	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo","", "failed_test_for_WaitBuildSuccess", 40)
+	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo", "", "failed_test_for_WaitBuildSuccess", 40)
 	assert.Error(t, err, "should have failed")
 	assert.Contains(t, err.Error(), "failed_test_for_WaitBuildSuccess", "should have failed with custom info")
 	assert.Equal(t, callCount, 3, "Runf must be called three times")
@@ -133,7 +167,7 @@ func TestWaitBuildTimeout(t *gotest.T) {
 		sleepTime: 1,
 	}
 
-	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo","", "failed_test_for_WaitBuildSuccess", 1)
+	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo", "", "failed_test_for_WaitBuildSuccess", 1)
 	assert.Error(t, err, "should have failed")
 	assert.Contains(t, err.Error(), "timeout waiting for build '736f4689-2497-4382-afd0-b5f0f50eea5b' execution", "should have failed with timeout error")
 	assert.Equal(t, callCount, 3, "Runf must be called three times")

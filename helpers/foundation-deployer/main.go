@@ -94,6 +94,14 @@ func main() {
 	// init infra
 	gotest.Init()
 	t := &testing.RuntimeT{}
+
+	// validate gcloud components
+	err = stages.ValidateComponents(t)
+	if err != nil {
+		fmt.Printf("# Failed validating gcloud components. Error: %s\n", err.Error())
+		os.Exit(1)
+	}
+
 	conf := stages.CommonConf{
 		FoundationPath:    globalTFVars.FoundationCodePath,
 		CheckoutPath:      globalTFVars.CodeCheckoutPath,

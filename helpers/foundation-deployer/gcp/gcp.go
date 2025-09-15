@@ -47,6 +47,16 @@ func NewGCP() GCP {
 	}
 }
 
+// IsComponentInstalled checks if a given gcloud component is installed
+func (g GCP) IsComponentInstalled(t testing.TB, componentID string) bool {
+	filter := fmt.Sprintf("\"id='%s'\"",componentID)
+    components := g.Runf(t, "components list --filter %s", filter).Array()
+	if len(components) == 0 {
+		return false
+	}
+	return components[0].Get("state.name").String() != "Not Installed"
+}
+
 // GetBuilds gets all Cloud Build builds form a project and region that satisfy the given filter.
 func (g GCP) GetBuilds(t testing.TB, projectID, region, filter string) map[string]string {
 	var result = map[string]string{}
@@ -116,12 +126,12 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, fa
 			return err
 		}
 		if status != StatusSuccess {
-			return fmt.Errorf("%s\nSee:\nhttps://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s\nfor details.\n", failureMsg, region, build, project)
+			return fmt.Errorf("%s\nSee:\nhttps://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s\nfor details", failureMsg, region, build, project)
 		}
 	} else {
 		status := g.GetLastBuildStatus(t, project, region, filter)
 		if status != StatusSuccess {
-			return fmt.Errorf("%s\nSee:\nhttps://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s\nfor details.\n", failureMsg, region, build, project)
+			return fmt.Errorf("%s\nSee:\nhttps://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s\nfor details", failureMsg, region, build, project)
 		}
 	}
 	return nil

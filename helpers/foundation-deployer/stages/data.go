@@ -320,11 +320,11 @@ func ReadGlobalTFVars(file string) (GlobalTFVars, error) {
 	}
 	_, err := os.Stat(file)
 	if os.IsNotExist(err) {
-		return globalTfvars, fmt.Errorf("tfvars file '%s' does not exits\n", file)
+		return globalTfvars, fmt.Errorf("tfvars file '%s' does not exits", file)
 	}
 	err = utils.ReadTfvars(file, &globalTfvars)
 	if err != nil {
-		return globalTfvars, fmt.Errorf("Failed to load tfvars file %s. Error: %s\n", file, err.Error())
+		return globalTfvars, fmt.Errorf("failed to load tfvars file %s. Error: %s", file, err.Error())
 	}
 	return globalTfvars, nil
 }

@@ -17,7 +17,7 @@ name: go-test
 on:
   pull_request:
     branches:
-      - 'master'
+      - 'main'
     paths:
       - 'helpers/foundation-deployer/**'
       - '.github/workflows/go-test.yaml'

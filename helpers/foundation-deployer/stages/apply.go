@@ -70,9 +70,12 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 
 	terraformDir := filepath.Join(c.FoundationPath, BootstrapStep)
 	options := &terraform.Options{
-		TerraformDir: terraformDir,
-		Logger:       c.Logger,
-		NoColor:      true,
+		TerraformDir:             terraformDir,
+		Logger:                   c.Logger,
+		NoColor:                  true,
+		RetryableTerraformErrors: testutils.RetryableTransientErrors,
+		MaxRetries:               MaxRetries,
+		TimeBetweenRetries:       TimeBetweenRetries,
 	}
 	// terraform deploy
 	err = applyLocal(t, options, "", c.PolicyPath, c.ValidatorProject)
@@ -177,9 +180,12 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 	// Init gcp-bootstrap terraform
 	err = s.RunStep("gcp-bootstrap.init-tf", func() error {
 		options := &terraform.Options{
-			TerraformDir: filepath.Join(gcpBootstrapPath, "envs", "shared"),
-			Logger:       c.Logger,
-			NoColor:      true,
+			TerraformDir:             filepath.Join(gcpBootstrapPath, "envs", "shared"),
+			Logger:                   c.Logger,
+			NoColor:                  true,
+			RetryableTerraformErrors: testutils.RetryableTransientErrors,
+			MaxRetries:               MaxRetries,
+			TimeBetweenRetries:       TimeBetweenRetries,
 		}
 		_, err := terraform.InitE(t, options)
 		return err
@@ -461,9 +467,12 @@ func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error 
 	for _, bu := range groupunit {
 		for _, localStep := range sc.LocalSteps {
 			buOptions := &terraform.Options{
-				TerraformDir: filepath.Join(filepath.Join(c.CheckoutPath, sc.Repo), bu, localStep),
-				Logger:       c.Logger,
-				NoColor:      true,
+				TerraformDir:             filepath.Join(filepath.Join(c.CheckoutPath, sc.Repo), bu, localStep),
+				Logger:                   c.Logger,
+				NoColor:                  true,
+				RetryableTerraformErrors: testutils.RetryableTransientErrors,
+				MaxRetries:               MaxRetries,
+				TimeBetweenRetries:       TimeBetweenRetries,
 			}
 
 			err := s.RunStep(fmt.Sprintf("%s.%s.apply-%s", sc.Stage, bu, localStep), func() error {

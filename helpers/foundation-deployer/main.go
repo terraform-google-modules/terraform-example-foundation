@@ -34,7 +34,6 @@ import (
 
 var (
 	validatorApis = []string{
-		"securitycenter.googleapis.com",
 		"accesscontextmanager.googleapis.com",
 	}
 )
@@ -94,6 +93,14 @@ func main() {
 	// init infra
 	gotest.Init()
 	t := &testing.RuntimeT{}
+
+	// validate gcloud components
+	err = stages.ValidateComponents(t)
+	if err != nil {
+		fmt.Printf("# Failed validating gcloud components. Error: %s\n", err.Error())
+		os.Exit(1)
+	}
+
 	conf := stages.CommonConf{
 		FoundationPath:    globalTFVars.FoundationCodePath,
 		CheckoutPath:      globalTFVars.CodeCheckoutPath,
@@ -108,6 +115,9 @@ func main() {
 		conf.ValidatorProject = *globalTFVars.ValidatorProjectId
 		var apis []string
 		gcpConf := gcp.NewGCP()
+		if globalTFVars.EnableSccResourcesInTerraform != nil && *globalTFVars.EnableSccResourcesInTerraform {
+			validatorApis = append(validatorApis, "securitycenter.googleapis.com")
+		}
 		for _, a := range validatorApis {
 			if !gcpConf.IsApiEnabled(t, *globalTFVars.ValidatorProjectId, a) {
 				apis = append(apis, a)

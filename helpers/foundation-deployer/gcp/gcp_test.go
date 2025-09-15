@@ -32,7 +32,7 @@ func TestIsComponentInstalledFound(t *gotest.T) {
 		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
 			return gjson.Result{
 				Type: gjson.JSON,
-				Raw:  fmt.Sprintf("%s", string(betaComponents[:])),
+				Raw:  string(betaComponents[:]),
 			}
 		},
 		sleepTime: 1,
@@ -49,7 +49,7 @@ func TestIsComponentInstalledNotFound(t *gotest.T) {
 		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
 			return gjson.Result{
 				Type: gjson.JSON,
-				Raw:  fmt.Sprintf("%s", string(betaComponents[:])),
+				Raw:  string(betaComponents[:]),
 			}
 		},
 		sleepTime: 1,

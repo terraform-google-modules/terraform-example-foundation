@@ -33,11 +33,11 @@ const (
 func ValidateDirectories(g GlobalTFVars) error {
 	_, err := os.Stat(g.FoundationCodePath)
 	if os.IsNotExist(err) {
-		return fmt.Errorf("Stopping execution, FoundationCodePath directory '%s' does not exits\n", g.FoundationCodePath)
+		return fmt.Errorf("stopping execution, FoundationCodePath directory '%s' does not exits", g.FoundationCodePath)
 	}
 	_, err = os.Stat(g.CodeCheckoutPath)
 	if os.IsNotExist(err) {
-		return fmt.Errorf("Stopping execution, CodeCheckoutPath directory '%s' does not exits\n", g.CodeCheckoutPath)
+		return fmt.Errorf("stopping execution, CodeCheckoutPath directory '%s' does not exits", g.CodeCheckoutPath)
 	}
 	return nil
 }
@@ -56,7 +56,7 @@ func ValidateComponents(t testing.TB) error {
 		}
 	}
 	if len(missing) > 0 {
-		return fmt.Errorf("Missing Google Cloud SDK component:%v", missing)
+		return fmt.Errorf("missing Google Cloud SDK component:%v", missing)
 	}
 	return nil
 }

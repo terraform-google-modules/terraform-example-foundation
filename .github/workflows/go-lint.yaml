@@ -16,7 +16,7 @@ name: go-lint
 on:
   pull_request:
     branches:
-      - master
+      - main
     paths:
       - ".github/workflows/go-lint.yaml"
       - "helpers/foundation-deployer/**"

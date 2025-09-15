@@ -33,11 +33,30 @@ const (
 func ValidateDirectories(g GlobalTFVars) error {
 	_, err := os.Stat(g.FoundationCodePath)
 	if os.IsNotExist(err) {
-		return fmt.Errorf("Stopping execution, FoundationCodePath directory '%s' does not exits\n", g.FoundationCodePath)
+		return fmt.Errorf("stopping execution, FoundationCodePath directory '%s' does not exits", g.FoundationCodePath)
 	}
 	_, err = os.Stat(g.CodeCheckoutPath)
 	if os.IsNotExist(err) {
-		return fmt.Errorf("Stopping execution, CodeCheckoutPath directory '%s' does not exits\n", g.CodeCheckoutPath)
+		return fmt.Errorf("stopping execution, CodeCheckoutPath directory '%s' does not exits", g.CodeCheckoutPath)
+	}
+	return nil
+}
+
+// ValidateComponents checks if gcloud Beta Components and Terraform Tools are installed
+func ValidateComponents(t testing.TB) error {
+	gcpConf := gcp.NewGCP()
+	components := []string{
+		"beta",
+		"terraform-tools",
+	}
+	missing := []string{}
+	for _, c := range components {
+		if !gcpConf.IsComponentInstalled(t, c) {
+			missing = append(missing, fmt.Sprintf("'%s' not installed", c))
+		}
+	}
+	if len(missing) > 0 {
+		return fmt.Errorf("missing Google Cloud SDK component:%v", missing)
 	}
 	return nil
 }

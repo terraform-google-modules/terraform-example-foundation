@@ -74,7 +74,7 @@ func ReplaceStringInFile(filename, old, new string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filename, bytes.Replace(f, []byte(old), []byte(new), -1), 0644)
+	return os.WriteFile(filename, bytes.ReplaceAll(f, []byte(old), []byte(new)), 0644)
 }
 
 // FindFiles find files with the given filename under the directory skipping terraform temp dir.

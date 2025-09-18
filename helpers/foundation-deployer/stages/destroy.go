@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/mitchellh/go-testing-interface"
@@ -61,9 +60,12 @@ func forceBackendMigration(t testing.TB, repo, groupUnit, env string, c CommonCo
 	}
 	if exist {
 		options := &terraform.Options{
-			TerraformDir: tfDir,
-			Logger:       c.Logger,
-			NoColor:      true,
+			TerraformDir:             tfDir,
+			Logger:                   c.Logger,
+			NoColor:                  true,
+			RetryableTerraformErrors: testutils.RetryableTransientErrors,
+			MaxRetries:               MaxRetries,
+			TimeBetweenRetries:       TimeBetweenRetries,
 		}
 		_, err := terraform.InitE(t, options)
 		if err != nil {
@@ -164,8 +166,8 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 					Logger:                   c.Logger,
 					NoColor:                  true,
 					RetryableTerraformErrors: testutils.RetryableTransientErrors,
-					MaxRetries:               2,
-					TimeBetweenRetries:       2 * time.Minute,
+					MaxRetries:               MaxRetries,
+					TimeBetweenRetries:       TimeBetweenRetries,
 				}
 				conf := utils.CloneCSR(t, sc.Repo, gcpPath, sc.CICDProject, c.Logger)
 				branch := e
@@ -198,8 +200,8 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 				Logger:                   c.Logger,
 				NoColor:                  true,
 				RetryableTerraformErrors: testutils.RetryableTransientErrors,
-				MaxRetries:               2,
-				TimeBetweenRetries:       2 * time.Minute,
+				MaxRetries:               MaxRetries,
+				TimeBetweenRetries:       TimeBetweenRetries,
 			}
 			conf := utils.CloneCSR(t, ProjectsRepo, gcpPath, sc.CICDProject, c.Logger)
 			err := conf.CheckoutBranch("production")

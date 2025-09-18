@@ -49,8 +49,8 @@ func NewGCP() GCP {
 
 // IsComponentInstalled checks if a given gcloud component is installed
 func (g GCP) IsComponentInstalled(t testing.TB, componentID string) bool {
-	filter := fmt.Sprintf("\"id='%s'\"",componentID)
-    components := g.Runf(t, "components list --filter %s", filter).Array()
+	filter := fmt.Sprintf("\"id='%s'\"", componentID)
+	components := g.Runf(t, "components list --filter %s", filter).Array()
 	if len(components) == 0 {
 		return false
 	}
@@ -158,12 +158,12 @@ func (g GCP) HasTagKey(t testing.TB, orgID, tag string) bool {
 }
 
 // EnableApis enables the apis in the given project
-func (g GCP) EnableApis(t testing.TB, project string, apis []string) {
+func (g GCP) EnableAPIs(t testing.TB, project string, apis []string) {
 	g.Runf(t, "services enable %s --project %s", strings.Join(apis, " "), project)
 }
 
-// IsApiEnabled checks if the api is enabled in the given project
-func (g GCP) IsApiEnabled(t testing.TB, project, api string) bool {
+// IsAPIEnabled checks if the api is enabled in the given project
+func (g GCP) IsAPIEnabled(t testing.TB, project, api string) bool {
 	filter := fmt.Sprintf("config.name=%s", api)
 	return len(g.Runf(t, "services list --enabled --project %s --filter %s", project, filter).Array()) > 0
 }

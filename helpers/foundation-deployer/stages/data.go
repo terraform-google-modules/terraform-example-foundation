@@ -162,7 +162,7 @@ type GlobalTFVars struct {
 	LocationGCS                           string          `hcl:"location_gcs"`
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
-	ValidatorProjectId                    *string         `hcl:"validator_project_id"`
+	ValidatorProjectID                    *string         `hcl:"validator_project_id"`
 	Groups                                Groups          `hcl:"groups"`
 	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
 	FolderDeletionProtection              *bool           `hcl:"folder_deletion_protection"`
@@ -171,7 +171,7 @@ type GlobalTFVars struct {
 
 // HasValidatorProj checks if a Validator Project was provided
 func (g GlobalTFVars) HasValidatorProj() bool {
-	return g.ValidatorProjectId != nil && *g.ValidatorProjectId != "" && *g.ValidatorProjectId != "EXISTING_PROJECT_ID"
+	return g.ValidatorProjectID != nil && *g.ValidatorProjectID != "" && *g.ValidatorProjectID != "EXISTING_PROJECT_ID"
 }
 
 // HasGroupsCreation checks if Groups creation is enabled

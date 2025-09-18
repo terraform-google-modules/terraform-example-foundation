@@ -112,20 +112,20 @@ func main() {
 
 	// only enable services if they are not already enabled
 	if globalTFVars.HasValidatorProj() {
-		conf.ValidatorProject = *globalTFVars.ValidatorProjectId
+		conf.ValidatorProject = *globalTFVars.ValidatorProjectID
 		var apis []string
 		gcpConf := gcp.NewGCP()
 		if globalTFVars.EnableSccResourcesInTerraform != nil && *globalTFVars.EnableSccResourcesInTerraform {
 			validatorApis = append(validatorApis, "securitycenter.googleapis.com")
 		}
 		for _, a := range validatorApis {
-			if !gcpConf.IsApiEnabled(t, *globalTFVars.ValidatorProjectId, a) {
+			if !gcpConf.IsAPIEnabled(t, *globalTFVars.ValidatorProjectID, a) {
 				apis = append(apis, a)
 			}
 		}
 		if len(apis) > 0 {
-			fmt.Printf("# Enabling APIs: %s in validator project '%s'\n", strings.Join(apis, ", "), *globalTFVars.ValidatorProjectId)
-			gcpConf.EnableApis(t, *globalTFVars.ValidatorProjectId, apis)
+			fmt.Printf("# Enabling APIs: %s in validator project '%s'\n", strings.Join(apis, ", "), *globalTFVars.ValidatorProjectID)
+			gcpConf.EnableAPIs(t, *globalTFVars.ValidatorProjectID, apis)
 			fmt.Println("# waiting for API propagation")
 			for i := 0; i < 20; i++ {
 				time.Sleep(10 * time.Second)

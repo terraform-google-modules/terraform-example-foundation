@@ -12,6 +12,7 @@
 | Name | Description |
 |------|-------------|
 | available\_zones | List of available zones in region |
+| confidential\_space\_project\_id | Project where confidential compute instance was created |
 | instances\_details | List of details for compute instances |
 | instances\_names | List of names for compute instances |
 | instances\_self\_links | List of self-links for compute instances |

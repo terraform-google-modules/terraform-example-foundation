@@ -100,23 +100,14 @@ func TestProjects(t *testing.T) {
 			t.Parallel()
 
 			env := testutils.GetLastSplitElement(tt.name, "_")
-			netVars := map[string]interface{}{
-				"access_context_manager_policy_id": policyID,
-			}
 
 			// networks created to retrieve output from the network step for this environment
-			var networkTFDir string
-			if networkMode == "" {
-				networkTFDir = "../../../3-networks-svpc/envs/%s"
-			} else {
-				networkTFDir = "../../../3-networks-hub-and-spoke/envs/%s"
-			}
 
-			networks := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(fmt.Sprintf(networkTFDir, env)),
-				tft.WithVars(netVars),
+			org := tft.NewTFBlueprintTest(t,
+				tft.WithTFDir("../../../1-org/envs/shared"),
 			)
-			perimeterName := networks.GetStringOutput("service_perimeter_name")
+
+			perimeterName := org.GetStringOutput("service_perimeter_name")
 
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, "shared")),

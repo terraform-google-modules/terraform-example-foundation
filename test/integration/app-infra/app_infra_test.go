@@ -70,6 +70,8 @@ func TestAppInfra(t *testing.T) {
 			appInfra.DefineVerify(
 				func(assert *assert.Assertions) {
 					projectID := appInfra.GetStringOutput("project_id")
+					workloadPoolProvider := appInfra.GetStringOutput("workload_pool_provider_id")
+					workloadIdentityPool := appInfra.GetStringOutput("workload_identity_pool_id")
 					instanceName := terraform.OutputList(t, appInfra.GetTFOptions(), "instances_names")[0]
 					instanceZone := terraform.OutputList(t, appInfra.GetTFOptions(), "instances_zones")[0]
 					machineType := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/machineTypes/f1-micro", projectID, instanceZone)
@@ -77,6 +79,24 @@ func TestAppInfra(t *testing.T) {
 					gcOps := gcloud.WithCommonArgs([]string{"--project", projectID, "--zone", instanceZone, "--format", "json"})
 					instance := gcloud.Run(t, fmt.Sprintf("compute instances describe %s", instanceName), gcOps)
 					assert.Equal(machineType, instance.Get("machineType").String(), "should have machine_type f1-micro")
+
+					confidentialProjectID := appInfra.GetStringOutput("confidential_space_project_id")
+					confidentialInstanceName := appInfra.GetStringOutput("confidential_instances_names")
+					computeInstanceList := gcloud.Run(t, fmt.Sprintf("compute instances list --format=json --project %s --filter name=%s", confidentialProjectID, confidentialInstanceName))
+					assert.Len(computeInstanceList.Array(), 1)
+					computeInstance := computeInstanceList.Array()[0]
+					confidentialInstanceConfig := computeInstance.Get("confidentialInstanceConfig")
+					assert.True(confidentialInstanceConfig.Get("enableConfidentialCompute").Bool())
+					assert.Equal("SEV", confidentialInstanceConfig.Get("confidentialInstanceType").String())
+					assert.Equal("MIGRATE", computeInstance.Get("scheduling").Get("onHostMaintenance").String())
+					serviceAccounts := computeInstance.Get("serviceAccounts").Array()
+					assert.Len(serviceAccounts, 1)
+					assert.Equal(fmt.Sprintf("confidential-space-workload-sa@%s.iam.gserviceaccount.com", confidentialProjectID), serviceAccounts[0].Get("email").String())
+					workloadIdentityPoolProviderID := gcloud.Runf(t, "iam workload-identity-pools providers describe %s --workload-identity-pool=confidential-space-pool --location=global --project %s", workloadPoolProvider, confidentialProjectID)
+					assert.Equal(workloadPoolProvider, workloadIdentityPoolProviderID.Get("displayName").String(), fmt.Sprintf("workload identity pool provider should have name equals to %s", workloadIdentityPoolProviderID))
+					gcPoolOps := gcloud.WithCommonArgs([]string{"--project", confidentialProjectID, "--format", "value(name.basename())"})
+					workloadIdentityPoolName := gcloud.Runf(t, fmt.Sprintf("iam workload-identity-pools describe confidential-space-pool --location=global"), gcPoolOps)
+					assert.Equal(workloadIdentityPool, workloadIdentityPoolName.Get("name").String(), fmt.Sprintf("workload identity pool should have name equals to %s", workloadIdentityPoolName))
 				})
 
 			appInfra.Test()

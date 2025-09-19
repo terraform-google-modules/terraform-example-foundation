@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,61 +16,42 @@
 
 output "instances_self_links" {
   description = "List of self-links for compute instances"
-  value       = module.gce_instance.instances_self_links
-}
-
-output "instances_names" {
-  description = "List of names for compute instances"
-  value       = [for u in module.gce_instance.instances_details : u.name]
-  sensitive   = true
-}
-
-output "instances_zones" {
-  description = "List of zone for compute instances"
-  value       = [for u in module.gce_instance.instances_details : u.zone]
-  sensitive   = true
+  value       = module.confidential_compute_instance.instances_self_links
 }
 
 output "instances_details" {
   description = "List of details for compute instances"
-  value       = module.gce_instance.instances_details
-  sensitive   = true
+  value       = module.confidential_compute_instance.instances_details
 }
 
 output "available_zones" {
   description = "List of available zones in region"
-  value       = module.gce_instance.available_zones
+  value       = module.confidential_compute_instance.available_zones
 }
 
 output "project_id" {
   description = "Project where compute instance was created"
-  value       = module.gce_instance.project_id
+  value       = local.env_project_id
 }
 
 output "confidential_space_project_id" {
   description = "Project where confidential compute instance was created"
-  value       = module.confidential_space.confidential_space_project_id
+  value       = local.confidential_space_project_id
 }
 
-output "region" {
-  description = "Region where compute instance was created"
-  value       = module.gce_instance.region
+output "confidential_image_digest" {
+  description = "SHA256 digest of the Docker image."
+  value       = var.confidential_image_digest
 }
 
 output "workload_pool_provider_id" {
   description = "Workload pool provider used by confidential space."
-  value       = module.confidential_space.workload_pool_provider_id
+  value       = google_iam_workload_identity_pool_provider.attestation_verifier.workload_identity_pool_provider_id
 }
 
 output "workload_identity_pool_id" {
   description = "Workload identity pool ID."
-  value       = module.confidential_space.workload_identity_pool_id
+  value       = google_iam_workload_identity_pool.confidential_space_pool.workload_identity_pool_id
 
-}
-
-output "confidential_instances_names" {
-  description = "List of names for confidential compute instances"
-  value       = [for u in module.confidential_space.instances_details : u.name]
-  sensitive   = true
 }
 

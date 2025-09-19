@@ -62,3 +62,18 @@ output "enable_cloudbuild_deploy" {
   description = "Enable infra deployment using Cloud Build."
   value       = local.enable_cloudbuild_deploy
 }
+
+output "artifact_registry_repository_id" {
+  description = "Artifact Registry ID."
+  value       = module.infra_pipelines[0].artifact_registry_repository_id
+}
+
+output "bootstrap_cloudbuild_project_id" {
+  description = "Cloudbuild project ID."
+  value       = local.cloudbuild_project_id
+}
+
+output "image_name" {
+  description = "Image path used by confidential space instance."
+  value       = local.confidential_space_image_tag
+}

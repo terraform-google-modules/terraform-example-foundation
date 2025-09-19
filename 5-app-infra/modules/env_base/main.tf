@@ -88,3 +88,4 @@ module "compute_instance" {
   instance_template     = module.instance_template.self_link
   resource_manager_tags = local.resource_manager_tags
 }
+

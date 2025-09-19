@@ -30,6 +30,8 @@ locals {
   enable_cloudbuild_deploy            = data.terraform_remote_state.business_unit_shared.outputs.enable_cloudbuild_deploy
   kms_project_id                      = data.terraform_remote_state.environments_env.outputs.env_kms_project_id
   kms_project_number                  = data.terraform_remote_state.environments_env.outputs.env_kms_project_number
+  cloudbuild_project_id               = data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_id
+  default_region                      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
 }
 
 data "terraform_remote_state" "bootstrap" {

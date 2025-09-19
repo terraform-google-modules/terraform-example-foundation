@@ -81,7 +81,8 @@ func TestAppInfra(t *testing.T) {
 					assert.Equal(machineType, instance.Get("machineType").String(), "should have machine_type f1-micro")
 
 					confidentialProjectID := appInfra.GetStringOutput("confidential_space_project_id")
-					computeInstanceList := gcloud.Run(t, fmt.Sprintf("compute instances list --format=json --project %s --filter name=confidential-instance", confidentialProjectID))
+					confidentialInstanceName := appInfra.GetStringOutput("confidential_instances_names")
+					computeInstanceList := gcloud.Run(t, fmt.Sprintf("compute instances list --format=json --project %s --filter name=%s", confidentialProjectID, confidentialInstanceName))
 					assert.Len(computeInstanceList.Array(), 1)
 					computeInstance := computeInstanceList.Array()[0]
 					confidentialInstanceConfig := computeInstance.Get("confidentialInstanceConfig")

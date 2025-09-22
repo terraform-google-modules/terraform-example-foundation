@@ -83,7 +83,7 @@ func TestAppInfra(t *testing.T) {
 					confidentialProjectID := appInfra.GetStringOutput("confidential_space_project_id")
 					confidentialInstanceName := appInfra.GetStringOutput("confidential_instances_names")
 					computeInstanceList := gcloud.Run(t, fmt.Sprintf("compute instances list --format=json --project %s --filter name=%s", confidentialProjectID, confidentialInstanceName))
-					assert.Len(computeInstanceList.Array(), 1)
+					assert.Equal(confidentialInstanceName, computeInstanceList.Get("name").String(), fmt.Sprintf("Confidential instance should have name equals to %s", computeInstanceList))
 					computeInstance := computeInstanceList.Array()[0]
 					confidentialInstanceConfig := computeInstance.Get("confidentialInstanceConfig")
 					assert.True(confidentialInstanceConfig.Get("enableConfidentialCompute").Bool())

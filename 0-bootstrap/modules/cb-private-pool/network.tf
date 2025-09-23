@@ -218,6 +218,8 @@ resource "google_compute_address" "cloud_build_nat" {
   name         = "cloud-build-nat"
   network_tier = "PREMIUM"
   region       = "us-central1"
+
+  depends_on = [module.peered_network]
 }
 
 resource "google_compute_instance" "vm-proxy" {
@@ -250,7 +252,10 @@ resource "google_compute_instance" "vm-proxy" {
     scopes = ["cloud-platform"]
   }
 
-  depends_on = [resource.google_compute_router_nat.cb-nat]
+  depends_on = [
+    resource.google_compute_router_nat.cb-nat,
+    module.peered_network
+  ]
 }
 
 #  This route will route packets to the NAT VM

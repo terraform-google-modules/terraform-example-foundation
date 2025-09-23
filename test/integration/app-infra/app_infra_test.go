@@ -81,11 +81,12 @@ func TestAppInfra(t *testing.T) {
 					assert.Equal(machineType, instance.Get("machineType").String(), "should have machine_type f1-micro")
 
 					confidentialProjectID := appInfra.GetStringOutput("confidential_space_project_id")
-					confidentialInstanceName := appInfra.GetStringOutput("confidential_instances_names")
-					gcInstanceOps := gcloud.WithCommonArgs([]string{"--project", confidentialProjectID, "--format", "value(name)"})
+					confidentialInstanceName := terraform.OutputList(t, appInfra.GetTFOptions(), "confidential_instances_names")[0]
+					gcInstanceOps := gcloud.WithCommonArgs([]string{"--project", confidentialProjectID, "--format", "json"})
 					computeInstanceList := gcloud.Runf(t, "compute instances list", gcInstanceOps)
-					assert.Equal(confidentialInstanceName, computeInstanceList.Get("name").String(), fmt.Sprintf("Confidential instance should have name equals to %s", computeInstanceList))
+					assert.NotEmpty(computeInstanceList.Array(), "Expected at least one confidential instance")
 					computeInstance := computeInstanceList.Array()[0]
+					assert.Equal(confidentialInstanceName, computeInstance.Get("name").String(), "Confidential instance name must match expected")
 					confidentialInstanceConfig := computeInstance.Get("confidentialInstanceConfig")
 					assert.True(confidentialInstanceConfig.Get("enableConfidentialCompute").Bool())
 					assert.Equal("SEV", confidentialInstanceConfig.Get("confidentialInstanceType").String())

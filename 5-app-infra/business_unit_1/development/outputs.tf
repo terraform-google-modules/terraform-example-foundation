@@ -74,3 +74,13 @@ output "confidential_instances_names" {
   sensitive   = true
 }
 
+output "confidential_available_zones" {
+  description = "List of available zones in region for confidential space."
+  value       = module.confidential_space.available_zones
+}
+
+output "confidential_instances_zones" {
+  description = "List of zone for confidential compute instances."
+  value       = [for u in module.confidential_space.instances_details : u.zone]
+  sensitive   = true
+}

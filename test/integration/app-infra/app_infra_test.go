@@ -83,7 +83,7 @@ func TestAppInfra(t *testing.T) {
 					confidentialProjectID := appInfra.GetStringOutput("confidential_space_project_id")
 					confidentialInstanceName := terraform.OutputList(t, appInfra.GetTFOptions(), "confidential_instances_names")[0]
 					gcInstanceOps := gcloud.WithCommonArgs([]string{"--project", confidentialProjectID, "--format", "json"})
-					computeInstanceList := gcloud.Runf(t, "compute instances list", gcInstanceOps)
+					computeInstanceList := gcloud.Run(t, fmt.Sprintf("compute instances describe %s", confidentialInstanceName), gcInstanceOps)
 					assert.NotEmpty(computeInstanceList.Array(), "Expected at least one confidential instance")
 					computeInstance := computeInstanceList.Array()[0]
 					assert.Equal(confidentialInstanceName, computeInstance.Get("name").String(), "Confidential instance name must match expected")

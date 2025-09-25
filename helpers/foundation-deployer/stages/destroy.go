@@ -64,8 +64,8 @@ func forceBackendMigration(t testing.TB, repo, groupUnit, env string, c CommonCo
 			Logger:                   c.Logger,
 			NoColor:                  true,
 			RetryableTerraformErrors: testutils.RetryableTransientErrors,
-			MaxRetries:               MaxRetries,
-			TimeBetweenRetries:       TimeBetweenRetries,
+			MaxRetries:               MaxErrorRetries,
+			TimeBetweenRetries:       TimeBetweenErrorRetries,
 		}
 		_, err := terraform.InitE(t, options)
 		if err != nil {
@@ -166,8 +166,8 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 					Logger:                   c.Logger,
 					NoColor:                  true,
 					RetryableTerraformErrors: testutils.RetryableTransientErrors,
-					MaxRetries:               MaxRetries,
-					TimeBetweenRetries:       TimeBetweenRetries,
+					MaxRetries:               MaxErrorRetries,
+					TimeBetweenRetries:       TimeBetweenErrorRetries,
 				}
 				conf := utils.CloneCSR(t, sc.Repo, gcpPath, sc.CICDProject, c.Logger)
 				branch := e
@@ -200,8 +200,8 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 				Logger:                   c.Logger,
 				NoColor:                  true,
 				RetryableTerraformErrors: testutils.RetryableTransientErrors,
-				MaxRetries:               MaxRetries,
-				TimeBetweenRetries:       TimeBetweenRetries,
+				MaxRetries:               MaxErrorRetries,
+				TimeBetweenRetries:       TimeBetweenErrorRetries,
 			}
 			conf := utils.CloneCSR(t, ProjectsRepo, gcpPath, sc.CICDProject, c.Logger)
 			err := conf.CheckoutBranch("production")

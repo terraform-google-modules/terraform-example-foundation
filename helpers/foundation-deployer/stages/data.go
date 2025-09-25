@@ -29,22 +29,22 @@ import (
 )
 
 const (
-	PoliciesRepo       = "gcp-policies"
-	BootstrapRepo      = "gcp-bootstrap"
-	OrgRepo            = "gcp-org"
-	EnvironmentsRepo   = "gcp-environments"
-	NetworksRepo       = "gcp-networks"
-	ProjectsRepo       = "gcp-projects"
-	AppInfraRepo       = "bu1-example-app"
-	BootstrapStep      = "0-bootstrap"
-	OrgStep            = "1-org"
-	EnvironmentsStep   = "2-environments"
-	HubAndSpokeStep    = "3-networks-hub-and-spoke"
-	SvpcStep           = "3-networks-svpc"
-	ProjectsStep       = "4-projects"
-	AppInfraStep       = "5-app-infra"
-	MaxRetries         = 2
-	TimeBetweenRetries = 2 * time.Minute
+	PoliciesRepo            = "gcp-policies"
+	BootstrapRepo           = "gcp-bootstrap"
+	OrgRepo                 = "gcp-org"
+	EnvironmentsRepo        = "gcp-environments"
+	NetworksRepo            = "gcp-networks"
+	ProjectsRepo            = "gcp-projects"
+	AppInfraRepo            = "bu1-example-app"
+	BootstrapStep           = "0-bootstrap"
+	OrgStep                 = "1-org"
+	EnvironmentsStep        = "2-environments"
+	HubAndSpokeStep         = "3-networks-hub-and-spoke"
+	SvpcStep                = "3-networks-svpc"
+	ProjectsStep            = "4-projects"
+	AppInfraStep            = "5-app-infra"
+	MaxErrorRetries         = 2
+	TimeBetweenErrorRetries = 2 * time.Minute
 )
 
 type CommonConf struct {

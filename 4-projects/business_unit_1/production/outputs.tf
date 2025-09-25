@@ -94,3 +94,18 @@ output "default_region" {
   value       = local.default_region
 }
 
+output "confidential_space_project" {
+  description = "Confidential Space project id."
+  value       = module.env.confidential_space_project
+}
+
+
+output "confidential_space_project_number" {
+  description = "Confidential Space project number."
+  value       = module.env.confidential_space_project_number
+}
+
+output "confidential_space_workload_sa" {
+  description = "Workload Service Account for confidential space from base_env"
+  value       = module.env.confidential_space_workload_sa
+}

@@ -27,6 +27,8 @@ locals {
   cloud_build_private_worker_pool_id = try(data.terraform_remote_state.bootstrap.outputs.cloud_build_private_worker_pool_id, "")
   cloud_builder_artifact_repo        = try(data.terraform_remote_state.bootstrap.outputs.cloud_builder_artifact_repo, "")
   enable_cloudbuild_deploy           = local.cloud_builder_artifact_repo != ""
+  cloudbuild_project_id              = data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_id
+  projects_terraform_sa              = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
 }
 
 data "terraform_remote_state" "bootstrap" {

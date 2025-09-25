@@ -55,7 +55,7 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
 
 module "tf_workspace" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version = "~> 11.0"
+  version = "~> 11.0.1"
 
   for_each = toset(var.app_infra_repos)
 
@@ -99,7 +99,6 @@ module "tf_workspace" {
 /***********************************************
   Cloud Build - IAM
  ***********************************************/
-
 resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" {
   provider = google-beta
   for_each = toset(var.app_infra_repos)
@@ -107,7 +106,7 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
   project    = local.gar_project_id
   location   = local.gar_region
   repository = local.gar_name
-  role       = "roles/artifactregistry.reader"
+  role       = "roles/artifactregistry.admin"
   member     = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
 
@@ -136,3 +135,4 @@ resource "google_sourcerepo_repository_iam_member" "member" {
   role       = "roles/viewer"
   member     = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
+

@@ -58,8 +58,12 @@ file.
 The purpose of this step is to deploy a simple [Compute Engine](https://cloud.google.com/compute/) instance in one of the business unit projects using the infra pipeline set up in 4-projects.
 The infra pipeline is created in step `4-projects` within the shared env and has a [Cloud Build](https://cloud.google.com/build/docs) pipeline configured to manage infrastructure within projects.
 
+As part of this deployment, the provided Terraform code automates the provisioning of a secure infrastructure in Google Cloud to run workloads in [Confidential Space](https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview) — based on Confidential VMs with integrity verification, data isolation, trusted image execution, and integration with KMS for encryption and GCS for storage. In addition to this documentation, you can also follow Google's official tutorial to test each step directly: [Create your first Confidential Space environment](https://cloud.google.com/confidential-computing/confidential-space/docs/create-your-first-confidential-space-environment).
+
+To better understand the structure and content of the tokens used in Confidential Space, refer to the reference documentation on [Token Claims](https://cloud.google.com/confidential-computing/confidential-space/docs/reference/token-claims). This link details the information contained in the tokens and how they are used to ensure the security and integrity of the environment.
+
+This Compute Engine instance is created using the base network from step `3-networks` and is used to access private services. For the Confidential Space, a Docker image built in step `4-projects` serves as the base for the confidential instance.
 There is also a [Source Repository](https://cloud.google.com/source-repositories) configured with build triggers similar to the [CI/CD Pipeline](https://github.com/terraform-google-modules/terraform-example-foundation#0-bootstrap) setup in `0-bootstrap`.
-This Compute Engine instance is created using the base network from step `3-networks` and is used to access private services.
 
 ## Prerequisites
 
@@ -75,8 +79,10 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 ## Usage
 
-**Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
-commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
+**Notes:**
+
+- For Confidential space, additional firewall rules and directional perimeter rules may be required, depending on the additional workloads to be deployed.
+- If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Deploying with Cloud Build
 
@@ -152,6 +158,26 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    echo "remote_state_bucket = ${remote_state_bucket}"
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
+
+1. Get the `confidential_image_digest` value from the Docker image created in `gcp-projects`
+
+```bash
+export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
+echo ${CLOUD_BUILD_PROJECT_ID}
+
+export DEFAULT_REGION=$(terraform -chdir="../gcp-projects/business_unit_1/shared" output -raw default_region)
+echo ${DEFAULT_REGION}
+
+default_region
+export confidential_image_digest=$(gcloud artifacts docker images describe ${DEFAULT_REGION}-docker.pkg.dev/${CLOUD_BUILD_PROJECT_ID}/tf-runners/confidential_space_image:latest --project=${CLOUD_BUILD_PROJECT_ID})
+echo "confidential_image_digest = ${confidential_image_digest}"
+```
+
+1. Update `IMAGE_DIGEST` value in the file `common.auto.tfvars`.
+
+```bash
+sed -i'' -e "s/IMAGE_DIGEST/${confidential_image_digest}/" ./common.auto.tfvars
+```
 
 1. Commit changes.
 

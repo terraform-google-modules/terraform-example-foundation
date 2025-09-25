@@ -95,11 +95,20 @@ func TestAppInfra(t *testing.T) {
 					serviceAccounts := computeInstance.Get("serviceAccounts").Array()
 					assert.Len(serviceAccounts, 1)
 					assert.Equal(fmt.Sprintf("confidential-space-workload-sa@%s.iam.gserviceaccount.com", confidentialProjectID), serviceAccounts[0].Get("email").String())
-					workloadIdentityPoolProviderID := gcloud.Runf(t, "iam workload-identity-pools providers describe %s --workload-identity-pool=%s --location=global --project=%s --format=json", workloadPoolProvider, workloadIdentityPool, confidentialProjectID)
-					assert.Equal(workloadPoolProvider, workloadIdentityPoolProviderID.Get("displayName").String(), fmt.Sprintf("workload identity pool provider should have name equals to %s", workloadPoolProvider))
+
 					gcPoolOps := gcloud.WithCommonArgs([]string{"--project", confidentialProjectID, "--format", "value(name.basename())"})
 					workloadIdentityPoolName := gcloud.Runf(t, "iam workload-identity-pools describe %s --location=global", workloadIdentityPool, gcPoolOps)
 					assert.Equal(workloadIdentityPool, workloadIdentityPoolName.String(), fmt.Sprintf("workload identity pool should have name equals to %s", workloadIdentityPool))
+
+					// gcPoolOps := gcloud.WithCommonArgs([]string{ "--project", confidentialProjectID, "--format", "json"})
+					// poolDetails := gcloud.Runf(t, "iam workload-identity-pools describe %s --location=global", workloadIdentityPool, gcPoolOps)
+					// name := poolDetails.Get("name").String()
+					// expectedName := fmt.Sprintf("projects/%s/locations/global/workloadIdentityPools/%s", confidentialProjectID, workloadIdentityPool)
+					// assert.Equal(expectedName, name, "Workload Identity Pool full name should match")
+
+					gcPoolProviderOps := gcloud.WithCommonArgs([]string{fmt.Sprintf("--workload-identity-pool=%s", workloadIdentityPool), "--location=global", "--project", confidentialProjectID, "--format", "value(displayName())"})
+					workloadIdentityPoolProviderID := gcloud.Runf(t, "iam workload-identity-pools providers describe %s", workloadPoolProvider, gcPoolProviderOps)
+					assert.Equal(workloadPoolProvider, workloadIdentityPoolProviderID.String(), fmt.Sprintf("workload identity pool provider should have name equals to %s", workloadPoolProvider))
 				})
 
 			appInfra.Test()

@@ -16,6 +16,7 @@
 | confidential\_instances\_names | List of names for confidential compute instances |
 | confidential\_instances\_zones | List of zone for confidential compute instances. |
 | confidential\_space\_project\_id | Project where confidential compute instance was created |
+| confidential\_space\_project\_number | Project number from confidential compute instance |
 | instances\_details | List of details for compute instances |
 | instances\_names | List of names for compute instances |
 | instances\_self\_links | List of self-links for compute instances |

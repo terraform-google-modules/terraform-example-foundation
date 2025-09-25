@@ -52,6 +52,11 @@ output "confidential_space_project_id" {
   value       = module.confidential_space.confidential_space_project_id
 }
 
+output "confidential_space_project_number" {
+  description = "Project number from confidential compute instance"
+  value       = module.confidential_space.confidential_space_project_number
+}
+
 output "region" {
   description = "Region where compute instance was created"
   value       = module.gce_instance.region

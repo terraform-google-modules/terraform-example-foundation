@@ -24,6 +24,7 @@
 | available\_zones | List of available zones in region |
 | confidential\_image\_digest | SHA256 digest of the Docker image. |
 | confidential\_space\_project\_id | Project where confidential compute instance was created |
+| confidential\_space\_project\_number | Project number from confidential compute instance |
 | instances\_details | List of details for compute instances |
 | instances\_self\_links | List of self-links for compute instances |
 | project\_id | Project where compute instance was created |

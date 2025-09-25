@@ -39,6 +39,11 @@ output "confidential_space_project_id" {
   value       = local.confidential_space_project_id
 }
 
+output "confidential_space_project_number" {
+  description = "Project number from confidential compute instance"
+  value       = local.confidential_space_project_number
+}
+
 output "confidential_image_digest" {
   description = "SHA256 digest of the Docker image."
   value       = var.confidential_image_digest

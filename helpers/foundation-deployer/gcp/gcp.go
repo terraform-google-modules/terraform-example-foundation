@@ -95,7 +95,7 @@ func triggerNewBuild(t testing.TB, buildName string) (string, error) {
 	var data RetryOp
 	err = json.Unmarshal(retryOperation.Metadata, &data)
 	if err != nil {
-		return "", fmt.Errorf("Error unmarshaling retry operation metadata: %v", err)
+		return "", fmt.Errorf("error unmarshaling retry operation metadata: %v", err)
 	}
 
 	return data.Build.ID, nil
@@ -221,7 +221,7 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, fa
 			time.Sleep(timeBetweenErrorRetries) // Wait before retrying
 		}
 	}
-	return fmt.Errorf("%s\nbuild failed after %d retries.\nSee Cloud Build logs for details.", failureMsg, maxErrorRetries)
+	return fmt.Errorf("%s\nbuild failed after %d retries.\nSee Cloud Build logs for details", failureMsg, maxErrorRetries)
 }
 
 // IsRetryableError checks the logs of a failed Cloud Build build

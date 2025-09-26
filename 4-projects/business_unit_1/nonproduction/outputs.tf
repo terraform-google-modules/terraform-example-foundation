@@ -99,7 +99,6 @@ output "confidential_space_project" {
   value       = module.env.confidential_space_project
 }
 
-
 output "confidential_space_project_number" {
   description = "Confidential Space project number."
   value       = module.env.confidential_space_project_number

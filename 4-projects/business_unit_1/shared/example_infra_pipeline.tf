@@ -71,12 +71,6 @@ resource "google_storage_bucket_iam_member" "cloudbuild_sa_storage_admin" {
   member = "serviceAccount:tf-cb-builder-sa@${local.cloudbuild_project_id}.iam.gserviceaccount.com"
 }
 
-#resource "google_storage_bucket_iam_member" "cloudbuild_bucket_admin" {
-#  bucket = "${local.cloudbuild_project_id}_cloudbuild"
-#  role   = "roles/storage.admin"
-#  member = "serviceAccount:${module.app_infra_cloudbuild_project[0].sa}"
-#}
-
 module "app_infra_cloudbuild_project" {
   source = "../../modules/single_project"
   count  = local.enable_cloudbuild_deploy ? 1 : 0
@@ -133,13 +127,12 @@ resource "time_sleep" "wait_iam_propagation" {
     google_artifact_registry_repository_iam_member.builder_on_artifact_registry,
     google_project_iam_member.cloudbuild_logging,
     google_storage_bucket_iam_member.cloudbuild_sa_storage_admin,
-    #google_storage_bucket_iam_member.cloudbuild_bucket_admin,
   ]
 }
 
 module "build_confidential_space_image" {
   source            = "terraform-google-modules/gcloud/google"
-  version           = "~> 3.5"
+  version           = "~> 4.0"
   upgrade           = false
   module_depends_on = [time_sleep.wait_iam_propagation]
 

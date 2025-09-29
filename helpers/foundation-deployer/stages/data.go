@@ -45,6 +45,7 @@ const (
 	AppInfraStep            = "5-app-infra"
 	MaxErrorRetries         = 2
 	TimeBetweenErrorRetries = 2 * time.Minute
+	MaxBuildRetries         = 40
 )
 
 type CommonConf struct {

@@ -221,7 +221,7 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, fa
 		// Trigger a new build
 		build, err = g.TriggerNewBuild(t, ctx, fmt.Sprintf("projects/%s/locations/%s/builds/%s", project, region, build))
 		if err != nil {
-			return fmt.Errorf("failed to trigger new build after %d retries: %w", maxErrorRetries, err)
+			return fmt.Errorf("failed to trigger new build (attempt %d/%d): %w", i+1, maxErrorRetries, err)
 		}
 		fmt.Printf("triggered new build with ID: %s (attempt %d/%d)\n", build, i+1, maxErrorRetries)
 		if i < maxErrorRetries-1 {

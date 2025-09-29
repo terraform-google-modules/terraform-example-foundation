@@ -628,7 +628,7 @@ func applyEnv(t testing.TB, conf utils.GitRepo, project, region, repo, environme
 	return gcp.NewGCP().WaitBuildSuccess(t, project, region, repo, commitSha, fmt.Sprintf("Terraform %s apply %s build Failed.", repo, environment), MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
 }
 
-func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policyPath, ValidatorProjectID string) error {
+func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policyPath, validatorProjectID string) error {
 	var err error
 
 	if serviceAccount != "" {
@@ -648,8 +648,8 @@ func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policy
 	}
 
 	// Runs gcloud terraform vet
-	if ValidatorProjectID != "" {
-		err = TerraformVet(t, options.TerraformDir, policyPath, ValidatorProjectID)
+	if validatorProjectID != "" {
+		err = TerraformVet(t, options.TerraformDir, policyPath, validatorProjectID)
 		if err != nil {
 			return err
 		}

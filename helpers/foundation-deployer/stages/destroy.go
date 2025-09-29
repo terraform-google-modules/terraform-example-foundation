@@ -27,10 +27,6 @@ import (
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
-const (
-	MaxBuildRetries = 40
-)
-
 func DestroyBootstrapStage(t testing.TB, s steps.Steps, c CommonConf) error {
 
 	if err := forceBackendMigration(t, BootstrapRepo, "envs", "shared", c); err != nil {

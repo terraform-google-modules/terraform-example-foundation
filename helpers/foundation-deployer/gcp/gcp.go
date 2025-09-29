@@ -53,25 +53,23 @@ type Build struct {
 
 var (
 	retryRegexp = map[*regexp.Regexp]string{}
-	ctx         = context.Background()
+	// ctx         = context.Background()
 )
 
 func init() {
-	if len(retryRegexp) == 0 {
-		for e, m := range testutils.RetryableTransientErrors {
-			r, err := regexp.Compile(fmt.Sprintf("(?s)%s", e)) //(?s) enables dot (.) to match newline.
-			if err != nil {
-				fmt.Printf("failed to compile regex %s: %s", e, err.Error())
-			}
-			retryRegexp[r] = m
+	for e, m := range testutils.RetryableTransientErrors {
+		r, err := regexp.Compile(fmt.Sprintf("(?s)%s", e)) //(?s) enables dot (.) to match newline.
+		if err != nil {
+			panic(fmt.Sprintf("failed to compile regex %s: %s", e, err.Error()))
 		}
+		retryRegexp[r] = m
 	}
 }
 
 type GCP struct {
 	Runf            func(t testing.TB, cmd string, args ...interface{}) gjson.Result
 	RunCmd          func(t testing.TB, cmd string, args ...interface{}) string
-	TriggerNewBuild func(t testing.TB, buildName string) (string, error)
+	TriggerNewBuild func(t testing.TB, ctx context.Context, buildName string) (string, error)
 	sleepTime       time.Duration
 }
 
@@ -81,7 +79,7 @@ func runCmd(t testing.TB, cmd string, args ...interface{}) string {
 }
 
 // triggerNewBuild triggers a new build based on the build provided
-func triggerNewBuild(t testing.TB, buildName string) (string, error) {
+func triggerNewBuild(t testing.TB, ctx context.Context, buildName string) (string, error) {
 
 	buildService, err := cloudbuild.NewService(ctx, option.WithScopes(cloudbuild.CloudPlatformScope))
 	if err != nil {
@@ -135,7 +133,11 @@ func (g GCP) GetBuilds(t testing.TB, projectID, region, filter string) map[strin
 
 // GetLastBuildStatus gets the status of the last build form a project and region that satisfy the given filter.
 func (g GCP) GetLastBuildStatus(t testing.TB, projectID, region, filter string) (string, string) {
-	build := g.Runf(t, "builds list --project %s --region %s --limit 1 --sort-by ~createTime --filter %s", projectID, region, filter).Array()[0]
+	builds := g.Runf(t, "builds list --project %s --region %s --limit 1 --sort-by ~createTime --filter %s", projectID, region, filter).Array()
+	if len(builds) == 0 {
+		return "", ""
+	}
+	build := builds[0]
 	return build.Get("status").String(), build.Get("id").String()
 }
 
@@ -185,6 +187,7 @@ func (g GCP) GetFinalBuildState(t testing.TB, projectID, region, buildID string,
 func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, failureMsg string, maxBuildRetry, maxErrorRetries int, timeBetweenErrorRetries time.Duration) error {
 	var filter, status, build string
 	var timeoutErr, err error
+	ctx := context.Background()
 
 	if commitSha == "" {
 		filter = fmt.Sprintf("source.repoSource.repoName:%s", repo)
@@ -196,13 +199,17 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, fa
 	for i := 0; i < maxErrorRetries; i++ {
 		if build != "" {
 			status, timeoutErr = g.GetFinalBuildState(t, project, region, build, maxBuildRetry)
+			if timeoutErr != nil {
+				return timeoutErr
+			}
 		} else {
 			status, build = g.GetLastBuildStatus(t, project, region, filter)
+			if build == "" {
+				return fmt.Errorf("no build found for filter: %s", filter)
+			}
 		}
 
-		if timeoutErr != nil {
-			return timeoutErr
-		} else if status != StatusSuccess {
+		if status != StatusSuccess {
 			if !g.IsRetryableError(t, project, region, build) {
 				return fmt.Errorf("%s\nSee:\nhttps://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s\nfor details", failureMsg, region, build, project)
 			}
@@ -212,7 +219,7 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, fa
 		}
 
 		// Trigger a new build
-		build, err = g.TriggerNewBuild(t, fmt.Sprintf("projects/%s/locations/%s/builds/%s", project, region, build))
+		build, err = g.TriggerNewBuild(t, ctx, fmt.Sprintf("projects/%s/locations/%s/builds/%s", project, region, build))
 		if err != nil {
 			return fmt.Errorf("failed to trigger new build after %d retries: %w", maxErrorRetries, err)
 		}

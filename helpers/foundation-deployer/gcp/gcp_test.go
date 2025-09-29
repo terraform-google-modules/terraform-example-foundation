@@ -15,6 +15,7 @@
 package gcp
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -219,7 +220,7 @@ func TestWaitBuildSuccessRetry(t *gotest.T) {
 			runCmdCallCount = runCmdCallCount + 1
 			return "a\nError 403. Compute Engine API has not been used in project\nz" // get build logs
 		},
-		TriggerNewBuild: func(t testing.TB, buildName string) (string, error) {
+		TriggerNewBuild: func(t testing.TB, ctx context.Context, buildName string) (string, error) {
 			triggerNewBuildCallCount = triggerNewBuildCallCount + 1
 			return "845f5790-2497-4382-afd0-b5f0f50eea5a", nil // buildService.Projects.Locations.Builds.Retry
 		},

@@ -74,8 +74,8 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		Logger:                   c.Logger,
 		NoColor:                  true,
 		RetryableTerraformErrors: testutils.RetryableTransientErrors,
-		MaxRetries:               MaxRetries,
-		TimeBetweenRetries:       TimeBetweenRetries,
+		MaxRetries:               MaxErrorRetries,
+		TimeBetweenRetries:       TimeBetweenErrorRetries,
 	}
 	// terraform deploy
 	err = applyLocal(t, options, "", c.PolicyPath, c.ValidatorProject)
@@ -132,7 +132,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 	msg.PrintBuildMsg(cbProjectID, defaultRegion, c.DisablePrompt)
 
 	// Check if image build was successful.
-	err = gcp.NewGCP().WaitBuildSuccess(t, cbProjectID, defaultRegion, "tf-cloudbuilder", "", "Terraform Image builder Build Failed for tf-cloudbuilder repository.", MaxBuildRetries)
+	err = gcp.NewGCP().WaitBuildSuccess(t, cbProjectID, defaultRegion, "tf-cloudbuilder", "", "Terraform Image builder Build Failed for tf-cloudbuilder repository.", MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
 	if err != nil {
 		return err
 	}
@@ -184,8 +184,8 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 			Logger:                   c.Logger,
 			NoColor:                  true,
 			RetryableTerraformErrors: testutils.RetryableTransientErrors,
-			MaxRetries:               MaxRetries,
-			TimeBetweenRetries:       TimeBetweenRetries,
+			MaxRetries:               MaxErrorRetries,
+			TimeBetweenRetries:       TimeBetweenErrorRetries,
 		}
 		_, err := terraform.InitE(t, options)
 		return err
@@ -465,8 +465,8 @@ func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error 
 				Logger:                   c.Logger,
 				NoColor:                  true,
 				RetryableTerraformErrors: testutils.RetryableTransientErrors,
-				MaxRetries:               MaxRetries,
-				TimeBetweenRetries:       TimeBetweenRetries,
+				MaxRetries:               MaxErrorRetries,
+				TimeBetweenRetries:       TimeBetweenErrorRetries,
 			}
 
 			err := s.RunStep(fmt.Sprintf("%s.%s.apply-%s", sc.Stage, bu, localStep), func() error {
@@ -555,7 +555,7 @@ func planStage(t testing.TB, conf utils.GitRepo, project, region, repo string) e
 		return err
 	}
 
-	return gcp.NewGCP().WaitBuildSuccess(t, project, region, repo, commitSha, fmt.Sprintf("Terraform %s plan build Failed.", repo), MaxBuildRetries)
+	return gcp.NewGCP().WaitBuildSuccess(t, project, region, repo, commitSha, fmt.Sprintf("Terraform %s plan build Failed.", repo), MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
 }
 
 func saveBootstrapCodeOnly(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error {
@@ -619,10 +619,10 @@ func applyEnv(t testing.TB, conf utils.GitRepo, project, region, repo, environme
 		return err
 	}
 
-	return gcp.NewGCP().WaitBuildSuccess(t, project, region, repo, commitSha, fmt.Sprintf("Terraform %s apply %s build Failed.", repo, environment), MaxBuildRetries)
+	return gcp.NewGCP().WaitBuildSuccess(t, project, region, repo, commitSha, fmt.Sprintf("Terraform %s apply %s build Failed.", repo, environment), MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
 }
 
-func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policyPath, validatorProjectId string) error {
+func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policyPath, validatorProjectID string) error {
 	var err error
 
 	if serviceAccount != "" {
@@ -642,8 +642,8 @@ func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policy
 	}
 
 	// Runs gcloud terraform vet
-	if validatorProjectId != "" {
-		err = TerraformVet(t, options.TerraformDir, policyPath, validatorProjectId)
+	if validatorProjectID != "" {
+		err = TerraformVet(t, options.TerraformDir, policyPath, validatorProjectID)
 		if err != nil {
 			return err
 		}

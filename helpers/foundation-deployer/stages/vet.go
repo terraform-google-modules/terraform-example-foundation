@@ -44,8 +44,8 @@ func TerraformVet(t testing.TB, terraformDir, policyPath, project string) error 
 		NoColor:                  true,
 		PlanFilePath:             filepath.Join(os.TempDir(), "plan.tfplan"),
 		RetryableTerraformErrors: testutils.RetryableTransientErrors,
-		MaxRetries:               MaxRetries,
-		TimeBetweenRetries:       TimeBetweenRetries,
+		MaxRetries:               MaxErrorRetries,
+		TimeBetweenRetries:       TimeBetweenErrorRetries,
 	}
 	_, err := terraform.PlanE(t, options)
 	if err != nil {

@@ -29,22 +29,23 @@ import (
 )
 
 const (
-	PoliciesRepo       = "gcp-policies"
-	BootstrapRepo      = "gcp-bootstrap"
-	OrgRepo            = "gcp-org"
-	EnvironmentsRepo   = "gcp-environments"
-	NetworksRepo       = "gcp-networks"
-	ProjectsRepo       = "gcp-projects"
-	AppInfraRepo       = "bu1-example-app"
-	BootstrapStep      = "0-bootstrap"
-	OrgStep            = "1-org"
-	EnvironmentsStep   = "2-environments"
-	HubAndSpokeStep    = "3-networks-hub-and-spoke"
-	SvpcStep           = "3-networks-svpc"
-	ProjectsStep       = "4-projects"
-	AppInfraStep       = "5-app-infra"
-	MaxRetries         = 2
-	TimeBetweenRetries = 2 * time.Minute
+	PoliciesRepo            = "gcp-policies"
+	BootstrapRepo           = "gcp-bootstrap"
+	OrgRepo                 = "gcp-org"
+	EnvironmentsRepo        = "gcp-environments"
+	NetworksRepo            = "gcp-networks"
+	ProjectsRepo            = "gcp-projects"
+	AppInfraRepo            = "bu1-example-app"
+	BootstrapStep           = "0-bootstrap"
+	OrgStep                 = "1-org"
+	EnvironmentsStep        = "2-environments"
+	HubAndSpokeStep         = "3-networks-hub-and-spoke"
+	SvpcStep                = "3-networks-svpc"
+	ProjectsStep            = "4-projects"
+	AppInfraStep            = "5-app-infra"
+	MaxErrorRetries         = 2
+	TimeBetweenErrorRetries = 2 * time.Minute
+	MaxBuildRetries         = 40
 )
 
 type CommonConf struct {
@@ -164,7 +165,7 @@ type GlobalTFVars struct {
 	LocationGCS                           string          `hcl:"location_gcs"`
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
-	ValidatorProjectId                    *string         `hcl:"validator_project_id"`
+	ValidatorProjectID                    *string         `hcl:"validator_project_id"`
 	Groups                                Groups          `hcl:"groups"`
 	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
 	FolderDeletionProtection              *bool           `hcl:"folder_deletion_protection"`
@@ -173,7 +174,7 @@ type GlobalTFVars struct {
 
 // HasValidatorProj checks if a Validator Project was provided
 func (g GlobalTFVars) HasValidatorProj() bool {
-	return g.ValidatorProjectId != nil && *g.ValidatorProjectId != "" && *g.ValidatorProjectId != "EXISTING_PROJECT_ID"
+	return g.ValidatorProjectID != nil && *g.ValidatorProjectID != "" && *g.ValidatorProjectID != "EXISTING_PROJECT_ID"
 }
 
 // HasGroupsCreation checks if Groups creation is enabled

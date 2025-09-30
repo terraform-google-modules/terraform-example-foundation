@@ -77,7 +77,6 @@ module "confidential_space_project" {
 
   activate_apis = [
     "accesscontextmanager.googleapis.com",
-    "cloudkms.googleapis.com",
     "artifactregistry.googleapis.com",
     "iamcredentials.googleapis.com",
     "compute.googleapis.com",

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM alpine:latest
+FROM alpine:3.18
 WORKDIR /confidential
 COPY confidential_data /confidential
 ENTRYPOINT ["/confidential/confidential_data"]

@@ -168,7 +168,6 @@ echo ${CLOUD_BUILD_PROJECT_ID}
 export DEFAULT_REGION=$(terraform -chdir="../gcp-projects/business_unit_1/shared" output -raw default_region)
 echo ${DEFAULT_REGION}
 
-default_region
 export confidential_image_digest=$(gcloud artifacts docker images describe ${DEFAULT_REGION}-docker.pkg.dev/${CLOUD_BUILD_PROJECT_ID}/tf-runners/confidential_space_image:latest --project=${CLOUD_BUILD_PROJECT_ID})
 echo "confidential_image_digest = ${confidential_image_digest}"
 ```

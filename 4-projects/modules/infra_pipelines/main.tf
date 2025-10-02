@@ -106,7 +106,7 @@ resource "google_artifact_registry_repository_iam_member" "terraform-image-iam" 
   project    = local.gar_project_id
   location   = local.gar_region
   repository = local.gar_name
-  role       = "roles/artifactregistry.admin"
+  role       = "roles/artifactregistry.writer"
   member     = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
 

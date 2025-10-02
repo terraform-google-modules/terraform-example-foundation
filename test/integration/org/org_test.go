@@ -76,7 +76,7 @@ func TestOrg(t *testing.T) {
 		"adsdatahub.googleapis.com",
 		"aiplatform.googleapis.com",
 		"alloydb.googleapis.com",
-		"alpha-documentai.googleapis.com",
+		"documentai.googleapis.com",
 		"analyticshub.googleapis.com",
 		"apigee.googleapis.com",
 		"apigeeconnect.googleapis.com",

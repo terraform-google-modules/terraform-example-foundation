@@ -39,6 +39,23 @@ locals {
   seed_project_id                               = data.terraform_remote_state.bootstrap.outputs.seed_project_id
   seed_project_number                           = data.terraform_remote_state.bootstrap.outputs.seed_project_number
   parent_id                                     = data.terraform_remote_state.bootstrap.outputs.parent_id
+  projects_gcs_bucket_tfstate                   = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
+  peering_projects_numbers                      = compact([for s in data.terraform_remote_state.projects_env : try(s.outputs.peering_project_number, null)])
+  shared_vpc_project_numbers                    = compact([for s in data.terraform_remote_state.projects_env : try(s.outputs.shared_vpc_project_number, null)])
+  app_infra_project_id                          = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_id, null)
+  app_infra_project_number                      = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_number, null)
+
+  app_infra_pipeline_identity        = local.app_infra_project_number != null ? "serviceAccount:${local.app_infra_project_number}@cloudbuild.gserviceaccount.com" : null
+  app_infra_pipeline_source_projects = local.app_infra_project_number != null ? ["projects/${local.app_infra_project_number}"] : []
+  app_infra_targets = distinct(concat(
+    [for n in local.shared_vpc_project_numbers : "projects/${n}"],
+    [for n in local.peering_projects_numbers : "projects/${n}"]
+  ))
+  app_infra_cicd_identity = (
+    local.app_infra_project_id != null
+    ? "serviceAccount:sa-tf-cb-bu1-example-app@${local.app_infra_project_id}.iam.gserviceaccount.com"
+    : null
+  )
 }
 
 data "terraform_remote_state" "bootstrap" {
@@ -47,5 +64,27 @@ data "terraform_remote_state" "bootstrap" {
   config = {
     bucket = var.remote_state_bucket
     prefix = "terraform/bootstrap/state"
+  }
+}
+
+data "terraform_remote_state" "projects_env" {
+  backend = "gcs"
+
+  for_each = (var.required_egress_rules_app_infra_dry_run && var.required_ingress_rules_app_infra_dry_run) || (var.required_egress_rules_app_infra && var.required_ingress_rules_app_infra) ? var.envs : {}
+
+  config = {
+    bucket = local.projects_gcs_bucket_tfstate
+    prefix = "terraform/projects/business_unit_1/${each.key}"
+  }
+}
+
+data "terraform_remote_state" "projects_app_infra" {
+  backend = "gcs"
+
+  count = (var.required_egress_rules_app_infra_dry_run && var.required_ingress_rules_app_infra_dry_run) || (var.required_egress_rules_app_infra && var.required_ingress_rules_app_infra) ? 1 : 0
+
+  config = {
+    bucket = local.projects_gcs_bucket_tfstate
+    prefix = "terraform/projects/business_unit_1/shared"
   }
 }

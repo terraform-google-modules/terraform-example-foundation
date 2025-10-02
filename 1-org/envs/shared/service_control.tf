@@ -26,7 +26,6 @@ locals {
     "adsdatahub.googleapis.com",
     "aiplatform.googleapis.com",
     "alloydb.googleapis.com",
-    "alpha-documentai.googleapis.com",
     "analyticshub.googleapis.com",
     "apigee.googleapis.com",
     "apigeeconnect.googleapis.com",
@@ -148,8 +147,9 @@ locals {
 
   restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
   restricted_services_dry_run = length(var.custom_restricted_services_dry_run) != 0 ? var.custom_restricted_services : local.supported_restricted_service
-  access_level_name           = module.service_control.access_level_name
-  access_level_dry_run_name   = module.service_control.access_level_name_dry_run
+
+  access_level_name         = module.service_control.access_level_name
+  access_level_dry_run_name = module.service_control.access_level_name_dry_run
 
   shared_vpc_projects_numbers = [
     for v in values({
@@ -253,37 +253,50 @@ locals {
 
   projects_map_dry_run = zipmap(
     local.project_keys_dry_run,
-    [for p in local.projects : "${p}"]
+    [for p in local.projects_dry_run : "${p}"]
   )
 
-  ingress_policies_keys_dry_run = var.required_ingress_rules_app_infra_dry_run ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "cicd_to_app_infra", "cicd_to_seed_app_infra", "cicd_to_net_env"], var.ingress_policies_keys_dry_run) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed"], var.ingress_policies_keys_dry_run)
-  egress_policies_keys_dry_run  = var.required_egress_rules_app_infra_dry_run ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys_dry_run) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
-  ingress_policies_keys         = var.required_ingress_rules_app_infra ? concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed", "cicd_to_app_infra", "cicd_to_seed_app_infra", "cicd_to_net_env"], var.ingress_policies_keys) : concat(["billing_sa_to_prj", "sinks_sa_to_logs", "service_cicd_to_seed", "cicd_to_seed"], var.ingress_policies_keys)
-  egress_policies_keys          = var.required_egress_rules_app_infra ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
+  base_ingress_keys = [
+    "billing_sa_to_prj",
+    "sinks_sa_to_logs",
+    "service_cicd_to_seed",
+    "cicd_to_seed",
+  ]
 
-  ingress_policies_map_dry_run = var.required_ingress_rules_app_infra_dry_run ? zipmap(
-    local.ingress_policies_keys_dry_run,
-    [for r in concat(local.required_ingress_rules_dry_run, local.required_ingress_rules_app_infra_dry_run) : "${r}"]
-    ) : zipmap(local.ingress_policies_keys_dry_run,
-  [for r in local.required_ingress_rules_dry_run : "${r}"])
+  app_infra_ingress_keys_dry_run = [
+    "cicd_to_app_infra",
+    "cicd_to_seed_app_infra",
+    "cicd_to_net_env",
+  ]
 
-  egress_policies_map_dry_run = var.required_egress_rules_app_infra_dry_run ? zipmap(
-    local.egress_policies_keys_dry_run,
-    [for r in concat(local.required_egress_rules_dry_run, local.required_egress_rules_app_infra_dry_run) : "${r}"]
-    ) : zipmap(local.egress_policies_keys_dry_run,
-  [for r in local.required_egress_rules_dry_run : "${r}"])
+  scc_ingress_key_dry_run = "cai_monitoring_to_scc"
 
-  ingress_policies_map = var.required_ingress_rules_app_infra ? zipmap(
-    local.ingress_policies_keys,
-    [for r in concat(local.required_ingress_rules, local.required_ingress_rules_app_infra) : "${r}"]
-    ) : zipmap(local.ingress_policies_keys,
-  [for r in local.required_ingress_rules : "${r}"])
+  app_infra_ingress_keys = [
+    "cicd_to_app_infra",
+    "cicd_to_seed_app_infra",
+    "cicd_to_net_env",
+  ]
 
-  egress_policies_map = var.required_egress_rules_app_infra ? zipmap(
-    local.egress_policies_keys,
-    [for r in concat(local.required_egress_rules, local.required_egress_rules_app_infra) : "${r}"]
-    ) : zipmap(local.egress_policies_keys,
-  [for r in local.required_egress_rules : "${r}"])
+  scc_ingress_key = "cai_monitoring_to_scc"
+
+  ingress_policies_keys_dry_run = concat(
+    local.base_ingress_keys,
+    var.required_ingress_rules_app_infra_dry_run ? local.app_infra_ingress_keys_dry_run : [],
+    var.enable_scc_resources_in_terraform ? [local.scc_ingress_key_dry_run] : [],
+    var.ingress_policies_keys_dry_run
+  )
+
+  ingress_policies_keys = concat(
+    local.base_ingress_keys,
+    var.required_ingress_rules_app_infra ? local.app_infra_ingress_keys : [],
+    var.enable_scc_resources_in_terraform ? [local.scc_ingress_key] : [],
+    var.ingress_policies_keys
+  )
+
+  egress_policies_keys_dry_run = var.required_egress_rules_app_infra_dry_run ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys_dry_run) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
+  egress_policies_keys         = var.required_egress_rules_app_infra ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
+  app_infra_targets_sorted     = sort(local.app_infra_targets)
+  app_infra_to_resources       = local.app_infra_project_number != null ? ["projects/${local.app_infra_project_number}"] : []
 
   required_egress_rules_dry_run = [
     {
@@ -338,13 +351,9 @@ locals {
     {
       title = "ER app infra -> cicd"
       from = {
-        identities = [
-          "serviceAccount:PRJ_APP_INFRA_PIPELINE_NUMBER@cloudbuild.gserviceaccount.com",
-        ]
+        identities = compact([local.app_infra_pipeline_identity])
         sources = {
-          resources = [
-            "projects/PRJ_APP_INFRA_PIPELINE_NUMBER"
-          ]
+          resources = local.app_infra_pipeline_source_projects
         }
       }
       to = {
@@ -368,9 +377,7 @@ locals {
           "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
         ]
         sources = {
-          access_levels = [
-            "*"
-          ]
+          access_levels = ["*"]
         }
       }
       to = {
@@ -392,9 +399,7 @@ locals {
           "serviceAccount:service-b-${local.billing_account}@gcp-sa-logging.iam.gserviceaccount.com",
         ]
         sources = {
-          access_levels = [
-            "*"
-          ]
+          access_levels = ["*"]
         }
       }
       to = {
@@ -405,15 +410,12 @@ locals {
           "logging.googleapis.com" = {
             methods = ["*"]
           }
-
           "pubsub.googleapis.com" = {
             methods = ["*"]
           }
-
           "storage.googleapis.com" = {
             methods = ["*"]
           }
-
         }
       }
     },
@@ -468,13 +470,41 @@ locals {
     },
   ]
 
+  required_ingress_rule_scc_dry_run = [
+    {
+      title = "CAI -> SCC"
+      from = {
+        identities = [
+          try("serviceAccount:${google_service_account.cai_monitoring_builder[0].email}", null)
+        ]
+        sources = {
+          access_levels = ["*"]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.scc_notifications.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "artifactregistry.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
   required_ingress_rules_app_infra_dry_run = [
     {
       title = "IR cicd -> app infra"
       from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
-        ]
+        identities = compact([local.app_infra_cicd_identity])
         sources = {
           resources = [
             "projects/${local.cloudbuild_project_number}"
@@ -482,9 +512,7 @@ locals {
         }
       }
       to = {
-        resources = [
-          "projects/PRJ_BU1_APP_INFRA_NUMBER"
-        ]
+        resources = local.app_infra_to_resources
         operations = {
           "storage.googleapis.com" = {
             methods = ["*"]
@@ -501,9 +529,7 @@ locals {
     {
       title = "IR app infra -> seed"
       from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
-        ]
+        identities = compact([local.app_infra_cicd_identity])
         sources = {
           resources = [
             "projects/${local.cloudbuild_project_number}"
@@ -524,9 +550,7 @@ locals {
     {
       title = "IR app infra -> prjs"
       from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
-        ]
+        identities = compact([local.app_infra_cicd_identity])
         sources = {
           resources = [
             "projects/${local.cloudbuild_project_number}"
@@ -534,14 +558,7 @@ locals {
         }
       }
       to = {
-        resources = [
-          "projects/PRJS_DEV_SAMPLE_SVPC_NUMBER",
-          "projects/PRJS_DEV_SAMPLE_PEERING_NUMBER",
-          "projects/PRJS_PROD_SAMPLE_SVPC_NUMBER",
-          "projects/PRJS_PROD_SAMPLE_PEERING_NUMBER",
-          "projects/PRJS_NONPROD_SAMPLE_SVPC_NUMBER",
-          "projects/PRJS_NONPROD_SAMPLE_PEERING_NUMBER"
-        ]
+        resources = local.app_infra_targets_sorted
         operations = {
           "iam.googleapis.com" = {
             methods = ["*"]
@@ -562,9 +579,7 @@ locals {
           "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
         ]
         sources = {
-          access_levels = [
-            "*"
-          ]
+          access_levels = ["*"]
         }
       }
       to = {
@@ -586,9 +601,7 @@ locals {
           "serviceAccount:service-b-${local.billing_account}@gcp-sa-logging.iam.gserviceaccount.com",
         ]
         sources = {
-          access_levels = [
-            "*"
-          ]
+          access_levels = ["*"]
         }
       }
       to = {
@@ -599,15 +612,12 @@ locals {
           "logging.googleapis.com" = {
             methods = ["*"]
           }
-
           "pubsub.googleapis.com" = {
             methods = ["*"]
           }
-
           "storage.googleapis.com" = {
             methods = ["*"]
           }
-
         }
       }
     },
@@ -641,7 +651,7 @@ locals {
       title = "IR cicd -> seed"
       from = {
         identities = [
-          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com",
+          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com"
         ]
         sources = {
           resources = [
@@ -654,7 +664,33 @@ locals {
           "projects/${local.seed_project_number}"
         ]
         operations = {
-          "cloudbuild.googleapis.com" = {
+          "cloudbuild.googleapis.com" = { methods = ["*"] }
+        }
+      }
+    },
+  ]
+
+  required_ingress_rule_scc = [
+    {
+      title = "CAI -> SCC"
+      from = {
+        identities = [
+          try("serviceAccount:${google_service_account.cai_monitoring_builder[0].email}", null)
+        ]
+        sources = { access_levels = ["*"] }
+      }
+      to = {
+        resources = [
+          "projects/${module.scc_notifications.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "artifactregistry.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
             methods = ["*"]
           }
         }
@@ -666,9 +702,7 @@ locals {
     {
       title = "IR cicd -> app infra"
       from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
-        ]
+        identities = compact([local.app_infra_cicd_identity])
         sources = {
           resources = [
             "projects/${local.cloudbuild_project_number}"
@@ -676,9 +710,7 @@ locals {
         }
       }
       to = {
-        resources = [
-          "projects/PRJ_BU1_APP_INFRA_NUMBER"
-        ]
+        resources = local.app_infra_to_resources
         operations = {
           "storage.googleapis.com" = {
             methods = ["*"]
@@ -695,9 +727,7 @@ locals {
     {
       title = "IR app infra -> seed"
       from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
-        ]
+        identities = compact([local.app_infra_cicd_identity])
         sources = {
           resources = [
             "projects/${local.cloudbuild_project_number}"
@@ -718,9 +748,7 @@ locals {
     {
       title = "IR app infra -> prjs"
       from = {
-        identities = [
-          "serviceAccount:sa-tf-cb-bu1-example-app@PRJ_APP_INFRA_ID.iam.gserviceaccount.com",
-        ]
+        identities = compact([local.app_infra_cicd_identity])
         sources = {
           resources = [
             "projects/${local.cloudbuild_project_number}"
@@ -728,14 +756,7 @@ locals {
         }
       }
       to = {
-        resources = [
-          "projects/PRJS_DEV_SAMPLE_SVPC_NUMBER",
-          "projects/PRJS_DEV_SAMPLE_PEERING_NUMBER",
-          "projects/PRJS_PROD_SAMPLE_SVPC_NUMBER",
-          "projects/PRJS_PROD_SAMPLE_PEERING_NUMBER",
-          "projects/PRJS_NONPROD_SAMPLE_SVPC_NUMBER",
-          "projects/PRJS_NONPROD_SAMPLE_PEERING_NUMBER"
-        ]
+        resources = local.app_infra_targets_sorted
         operations = {
           "iam.googleapis.com" = {
             methods = ["*"]
@@ -753,7 +774,7 @@ locals {
       title = "ER seed -> cicd"
       from = {
         identities = [
-          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com",
+          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com"
         ]
         sources = {
           resources = [
@@ -776,7 +797,7 @@ locals {
       title = "ER cicd -> scc"
       from = {
         identities = [
-          "serviceAccount:${local.organization_service_account}",
+          "serviceAccount:${local.organization_service_account}"
         ]
         sources = {
           resources = [
@@ -801,13 +822,9 @@ locals {
     {
       title = "ER app infra -> cicd"
       from = {
-        identities = [
-          "serviceAccount:PRJ_APP_INFRA_PIPELINE_NUMBER@cloudbuild.gserviceaccount.com",
-        ]
+        identities = compact([local.app_infra_pipeline_identity])
         sources = {
-          resources = [
-            "projects/PRJ_APP_INFRA_PIPELINE_NUMBER"
-          ]
+          resources = local.app_infra_pipeline_source_projects
         }
       }
       to = {
@@ -822,6 +839,20 @@ locals {
       }
     },
   ]
+
+  required_ingress_rules_list_dry_run = concat(
+    local.required_ingress_rules_dry_run,
+    var.required_ingress_rules_app_infra_dry_run ? local.required_ingress_rules_app_infra_dry_run : [],
+    var.enable_scc_resources_in_terraform ? local.required_ingress_rule_scc_dry_run : [],
+    var.ingress_policies_dry_run
+  )
+
+  required_ingress_rules_list = concat(
+    local.required_ingress_rules,
+    var.required_ingress_rules_app_infra ? local.required_ingress_rules_app_infra : [],
+    var.enable_scc_resources_in_terraform ? local.required_ingress_rule_scc : [],
+    var.ingress_policies
+  )
 }
 
 module "service_control" {
@@ -836,24 +867,35 @@ module "service_control" {
     "serviceAccount:${local.organization_service_account}",
     "serviceAccount:${local.environment_service_account}",
   ], var.perimeter_additional_members))
-  resources     = concat(values(local.projects_map), var.resources)
-  resource_keys = local.project_keys
   members_dry_run = distinct(concat([
     "serviceAccount:${local.networks_service_account}",
     "serviceAccount:${local.projects_service_account}",
     "serviceAccount:${local.organization_service_account}",
     "serviceAccount:${local.environment_service_account}",
   ], var.perimeter_additional_members))
-  resources_dry_run             = concat(values(local.projects_map_dry_run), var.resources_dry_run)
+  resources                     = [for k in local.project_keys : local.projects_map[k]]
+  resource_keys                 = local.project_keys
+  resources_dry_run             = [for k in local.project_keys_dry_run : local.projects_map_dry_run[k]]
   resource_keys_dry_run         = local.project_keys_dry_run
   ingress_policies_keys_dry_run = local.ingress_policies_keys_dry_run
-  egress_policies_keys_dry_run  = local.egress_policies_keys_dry_run
   ingress_policies_keys         = local.ingress_policies_keys
+  egress_policies_keys_dry_run  = local.egress_policies_keys_dry_run
   egress_policies_keys          = local.egress_policies_keys
-  ingress_policies              = var.required_ingress_rules_app_infra ? distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, local.required_ingress_rules_app_infra, var.ingress_policies)) : distinct(concat(values(local.ingress_policies_map), local.required_ingress_rules, var.ingress_policies))
-  ingress_policies_dry_run      = var.required_ingress_rules_app_infra_dry_run ? distinct(concat(values(local.ingress_policies_map_dry_run), local.required_ingress_rules_dry_run, local.required_ingress_rules_app_infra_dry_run, var.ingress_policies_dry_run)) : distinct(concat(values(local.ingress_policies_map_dry_run), local.required_ingress_rules_dry_run, var.ingress_policies_dry_run))
-  egress_policies               = var.required_egress_rules_app_infra ? distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules, local.required_egress_rules_app_infra)) : distinct(concat(values(local.egress_policies_map), var.egress_policies, local.required_egress_rules))
-  egress_policies_dry_run       = var.required_egress_rules_app_infra_dry_run ? distinct(concat(values(local.egress_policies_map_dry_run), var.egress_policies_dry_run, local.required_egress_rules_dry_run, local.required_egress_rules_app_infra_dry_run)) : distinct(concat(values(local.egress_policies_map_dry_run), local.required_egress_rules_dry_run, var.egress_policies_dry_run))
+
+  ingress_policies_dry_run = local.required_ingress_rules_list_dry_run
+  ingress_policies         = local.required_ingress_rules_list
+
+  egress_policies_dry_run = concat(
+    local.required_egress_rules_dry_run,
+    var.required_egress_rules_app_infra_dry_run ? local.required_egress_rules_app_infra_dry_run : [],
+    var.egress_policies_dry_run
+  )
+
+  egress_policies = concat(
+    local.required_egress_rules,
+    var.required_egress_rules_app_infra ? local.required_egress_rules_app_infra : [],
+    var.egress_policies
+  )
 
   depends_on = [
     time_sleep.wait_projects

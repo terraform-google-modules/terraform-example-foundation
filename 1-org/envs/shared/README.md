@@ -18,6 +18,7 @@
 | enable\_kms\_key\_usage\_tracking | Enable KMS centralized key usage tracking system. | `bool` | `true` | no |
 | enable\_scc\_resources\_in\_terraform | Create Security Command Center resources in Terraform. Security Command Center must be activated before the creation of the resources. See [Overview of activating Security Command Center](https://cloud.google.com/security-command-center/docs/activate-scc-overview) before enabling this feature. | `bool` | `false` | no |
 | enforce\_allowed\_worker\_pools | Whether to enforce the organization policy restriction on allowed worker pools for Cloud Build. | `bool` | `false` | no |
+| envs | n/a | `map(bool)` | <pre>{<br>  "development": true,<br>  "nonproduction": true,<br>  "production": true<br>}</pre> | no |
 | essential\_contacts\_domains\_to\_allow | The list of domains that email addresses added to Essential Contacts can have. | `list(string)` | n/a | yes |
 | essential\_contacts\_language | Essential Contacts preferred language for notifications, as a ISO 639-1 language code. See [Supported languages](https://cloud.google.com/resource-manager/docs/managing-notification-contacts#supported-languages) for a list of supported languages. | `string` | `"en"` | no |
 | folder\_deletion\_protection | Prevent Terraform from destroying or recreating the folder. | `string` | `true` | no |

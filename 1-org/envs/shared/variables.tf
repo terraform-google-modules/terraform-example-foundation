@@ -387,3 +387,12 @@ variable "required_ingress_rules_app_infra_dry_run" {
   type        = bool
   default     = false
 }
+
+variable "envs" {
+  type = map(bool)
+  default = {
+    development   = true
+    nonproduction = true
+    production    = true
+  }
+}

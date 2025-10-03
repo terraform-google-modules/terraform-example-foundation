@@ -57,6 +57,7 @@ locals {
     "cloudtrace.googleapis.com",
     "composer.googleapis.com",
     "compute.googleapis.com",
+    "confidentialcomputing.googleapis.com",
     "connectgateway.googleapis.com",
     "contactcenterinsights.googleapis.com",
     "container.googleapis.com",

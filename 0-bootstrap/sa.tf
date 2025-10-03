@@ -111,6 +111,7 @@ locals {
     ],
     "proj" = [
       "roles/storage.objectAdmin",
+      "roles/storage.admin",
     ],
   }
 

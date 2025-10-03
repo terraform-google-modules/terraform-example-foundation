@@ -64,6 +64,10 @@ func TestProjects(t *testing.T) {
 		"billingbudgets.googleapis.com",
 	}
 
+	var confidentialRestrictedApisEnabled = []string{
+		"confidentialcomputing.googleapis.com",
+	}
+
 	var project_sa_roles = []string{
 		"roles/compute.instanceAdmin.v1",
 		"roles/iam.serviceAccountAdmin",
@@ -71,27 +75,27 @@ func TestProjects(t *testing.T) {
 	}
 
 	for _, tt := range []struct {
-		name              string
-		repo              string
-		baseDir           string
+		name          string
+		repo          string
+		baseDir       string
 		sharedNetwork string
 	}{
 		{
-			name:              "bu1_development",
-			repo:              "bu1-example-app",
-			baseDir:           "../../../4-projects/business_unit_1/%s",
+			name:          "bu1_development",
+			repo:          "bu1-example-app",
+			baseDir:       "../../../4-projects/business_unit_1/%s",
 			sharedNetwork: fmt.Sprintf("vpc-d-svpc%s", networkMode),
 		},
 		{
-			name:              "bu1_nonproduction",
-			repo:              "bu1-example-app",
-			baseDir:           "../../../4-projects/business_unit_1/%s",
+			name:          "bu1_nonproduction",
+			repo:          "bu1-example-app",
+			baseDir:       "../../../4-projects/business_unit_1/%s",
 			sharedNetwork: fmt.Sprintf("vpc-n-svpc%s", networkMode),
 		},
 		{
-			name:              "bu1_production",
-			repo:              "bu1-example-app",
-			baseDir:           "../../../4-projects/business_unit_1/%s",
+			name:          "bu1_production",
+			repo:          "bu1-example-app",
+			baseDir:       "../../../4-projects/business_unit_1/%s",
 			sharedNetwork: fmt.Sprintf("vpc-p-svpc%s", networkMode),
 		},
 	} {
@@ -144,6 +148,7 @@ func TestProjects(t *testing.T) {
 						"floating_project",
 						"peering_project",
 						"shared_vpc_project",
+						"confidential_space_project",
 					} {
 						projectID := projects.GetStringOutput(projectOutput)
 						prj := gcloud.Runf(t, "projects describe %s", projectID)
@@ -171,6 +176,18 @@ func TestProjects(t *testing.T) {
 							hostNetwork := gcloud.Runf(t, "compute networks list --project %s --impersonate-service-account %s", hostProjectID, terraformSA).Array()[0]
 							assert.Equal(tt.sharedNetwork, hostNetwork.Get("name").String(), "should have a shared vpc")
 
+						}
+
+						if projectOutput == "confidential_space_project" {
+
+							enabledAPIS := gcloud.Runf(t, "services list --project %s --impersonate-service-account %s", projectID, terraformSA).Array()
+							listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
+							assert.Subset(listApis, confidentialRestrictedApisEnabled, "API should have been enabled")
+
+							confidentialSpaceWorkloadSAEmail := projects.GetStringOutput("confidential_space_workload_sa")
+							confidentialSpaceSAName := fmt.Sprintf("projects/%s/serviceAccounts/%s", projectID, confidentialSpaceWorkloadSAEmail)
+							confidentialSpaceSA := gcloud.Runf(t, "iam service-accounts describe %s --project %s", confidentialSpaceWorkloadSAEmail, projectID)
+							assert.Equal(confidentialSpaceSAName, confidentialSpaceSA.Get("name").String(), fmt.Sprintf("service account %s should exist", confidentialSpaceWorkloadSAEmail))
 						}
 
 						if projectOutput == "floating_project" {

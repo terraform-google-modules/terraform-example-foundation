@@ -16,5 +16,6 @@
 | env\_kms\_project\_id | Project for environment Cloud Key Management Service (KMS). |
 | env\_kms\_project\_number | Project Number for environment Cloud Key Management Service (KMS). |
 | env\_secrets\_project\_id | Project for environment related secrets. |
+| env\_secrets\_project\_number | Project number for environment related secrets. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

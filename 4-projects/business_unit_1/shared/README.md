@@ -15,10 +15,13 @@
 |------|-------------|
 | apply\_triggers\_id | CB apply triggers |
 | artifact\_buckets | GCS Buckets to store Cloud Build Artifacts |
+| artifact\_registry\_repository\_id | Artifact Registry ID. |
+| bootstrap\_cloudbuild\_project\_id | Cloudbuild project ID. |
 | cloudbuild\_project\_id | APP Infra cloudbuild project id. |
 | cloudbuild\_project\_number | APP Infra cloudbuild project number. |
 | default\_region | Default region to create resources where applicable. |
 | enable\_cloudbuild\_deploy | Enable infra deployment using Cloud Build. |
+| image\_name | Image path used by confidential space instance. |
 | log\_buckets | GCS Buckets to store Cloud Build logs |
 | plan\_triggers\_id | CB plan triggers |
 | repos | CSRs to store source code |

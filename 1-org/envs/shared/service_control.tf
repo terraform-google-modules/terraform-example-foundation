@@ -143,6 +143,7 @@ locals {
     "webrisk.googleapis.com",
     "workflows.googleapis.com",
     "workstations.googleapis.com",
+    "confidentialcomputing.googleapis.com",
   ]
 
   restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service

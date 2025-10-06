@@ -160,6 +160,8 @@ module "tf_private_pool" {
   vpn_configuration = {
     enable_vpn = false
   }
+
+  depends_on = [module.tf_source]
 }
 
 module "tf_cloud_builder" {
@@ -264,6 +266,8 @@ resource "google_artifact_registry_repository_iam_member" "terraform_sa_artifact
   repository = local.gar_repository
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+
+  depends_on = [module.tf_source]
 }
 
 resource "google_sourcerepo_repository_iam_member" "member" {
@@ -273,4 +277,6 @@ resource "google_sourcerepo_repository_iam_member" "member" {
   repository = module.tf_source.csr_repos["gcp-policies"].name
   role       = "roles/viewer"
   member     = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+
+  depends_on = [module.tf_source]
 }

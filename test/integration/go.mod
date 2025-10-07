@@ -10,7 +10,7 @@ require (
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.10.0
 	github.com/tidwall/gjson v1.18.0
-	golang.org/x/oauth2 v0.24.0
+	golang.org/x/oauth2 v0.27.0
 )
 
 require (

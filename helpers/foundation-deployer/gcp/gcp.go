@@ -53,7 +53,6 @@ type Build struct {
 
 var (
 	retryRegexp = map[*regexp.Regexp]string{}
-	// ctx         = context.Background()
 )
 
 func init() {

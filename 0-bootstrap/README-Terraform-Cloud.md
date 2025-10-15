@@ -136,21 +136,9 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
    cd ./envs/shared
    ```
 
-1. In the versions file `./versions.tf` un-comment the `tfe` required provider
-1. In the variables file `./variables.tf` un-comment variables in the section `Specific to tfc_bootstrap`
-1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
-1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to tfc_bootstrap`
-    1. If you want to use [Terraform Cloud with Agents](https://developer.hashicorp.com/terraform/cloud-docs/agents), in addition to `Specific to tfc_bootstrap`, un-comment outputs in the section `Specific to tfc_bootstrap with Terraform Cloud Agents` and update `enable_tfc_cloud_agents` to `true` variable at `terraform.tfvars`
-1. Rename file `./cb.tf` to `./cb.tf.example`
-
+1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitHub version
    ```bash
-   mv ./cb.tf ./cb.tf.example
-   ```
-
-1. Rename file `.terraform_cloud.tf.example` to `./terraform_cloud.tf`
-
-   ```bash
-   mv ./terraform_cloud.tf.example ./terraform_cloud.tf
+   ./scripts/choose_build_type.sh terraform_cloud
    ```
 
 1. Rename file `terraform.example.tfvars` to `terraform.tfvars`

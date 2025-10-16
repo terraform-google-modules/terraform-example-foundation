@@ -140,12 +140,10 @@ resource "google_scc_v2_organization_source" "cai_monitoring" {
 }
 
 // Cloud Function
-//Using branch 'release-please--branches--main' due to Registry v0.6 incompability with Google Provider.
-//TODO: update to the latest Registry version when released.
+
 module "cloud_function" {
-  source = "git::https://github.com/GoogleCloudPlatform/terraform-google-cloud-functions.git?ref=release-please--branches--main"
-  # source  = "GoogleCloudPlatform/cloud-functions/google"
-  # version = "~> 0.6"
+  source  = "GoogleCloudPlatform/cloud-functions/google"
+  version = "~> 0.7"
 
   function_name         = "caiMonitoring"
   description           = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."

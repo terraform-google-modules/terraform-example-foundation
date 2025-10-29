@@ -29,15 +29,16 @@ SA="$3"
 # System folder to save the temporary files
 SAVE_PATH="$4"
 
-# TODO
+# Save the OIDC token to a file.
+# gcloud requires the OIDC token to be passed as a file.
 echo "${OIDC_TOKEN}" > "${SAVE_PATH}"/.ci_job_token_file
 
-# TODO
+# Exchange the OIDC token for a Google Cloud credential.
 gcloud iam workload-identity-pools \
 create-cred-config "${WIF_PROVIDER}" \
 --service-account="${SA}" \
 --output-file="${SAVE_PATH}"/.gcp_generated_credentials.json \
 --credential-source-file="${SAVE_PATH}"/.ci_job_token_file \
 
-# TODO
+# Authenticate using the generated credential.
 gcloud auth login --cred-file="${SAVE_PATH}"/.gcp_generated_credentials.json --update-adc

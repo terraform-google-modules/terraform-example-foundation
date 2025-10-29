@@ -1,0 +1,318 @@
+// Copyright 2025 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package github
+
+import (
+	"context"
+	"fmt"
+	"io"
+	"net/http"
+	"regexp"
+	"time"
+
+	"github.com/google/go-github/v58/github"
+	"github.com/mitchellh/go-testing-interface"
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
+	"golang.org/x/oauth2"
+)
+
+const (
+	StatusQueued         = "queued"
+	StatusPending        = "pending"
+	StatusWaiting        = "waiting"
+	StatusWorking        = "in_progress"
+	statusCompleted      = "completed"
+	StatusSuccess        = "success"
+	StatusFailure        = "failure"
+	StatusCancelled      = "cancelled"
+	StatusTimeout        = "timed_out"
+	StatusNeutral        = "neutral"
+	StatusSkipped        = "skipped"
+	StatusActionRequired = "action_required"
+)
+
+var (
+	retryRegexp = map[*regexp.Regexp]string{}
+)
+
+func init() {
+	for e, m := range testutils.RetryableTransientErrors {
+		r, err := regexp.Compile(fmt.Sprintf("(?s)%s", e)) //(?s) enables dot (.) to match newline.
+		if err != nil {
+			panic(fmt.Sprintf("failed to compile regex %s: %s", e, err.Error()))
+		}
+		retryRegexp[r] = m
+	}
+}
+
+type GH struct {
+	TriggerNewBuild func(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (int64, string, string, error)
+	sleepTime       time.Duration
+}
+
+func NewGH() GH {
+	return GH{
+		TriggerNewBuild: triggerNewBuild,
+		sleepTime:       20,
+	}
+}
+func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (int64, string, string, error) {
+	if token == "" {
+		return 0, "", "", fmt.Errorf("GITHUB_TOKEN not set")
+	}
+
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
+
+	_, err := client.Actions.RerunWorkflowByID(ctx, owner, repo, runID)
+	if err != nil {
+		return 0, "", "", fmt.Errorf("Error re-running workflow: %v", err)
+	}
+	opts := &github.ListWorkflowRunsOptions{
+
+		ListOptions: github.ListOptions{
+			PerPage: 1,
+			Page:    1,
+		},
+	}
+
+	// wait action creation
+	time.Sleep(30 * time.Second)
+
+	runs, _, err := client.Actions.ListRepositoryWorkflowRuns(ctx, owner, repo, opts)
+
+	if err != nil {
+		return 0, "", "", fmt.Errorf("Error listing workflow runs: %v", err)
+	}
+
+	if len(runs.WorkflowRuns) == 0 {
+		return 0, "", "", fmt.Errorf("No workflow runs found for repo %s/%s ", owner, repo)
+	}
+
+	var newRunID int64
+	if runs.WorkflowRuns[0].ID != nil {
+		newRunID = *runs.WorkflowRuns[0].ID
+	}
+
+	var status string
+	if runs.WorkflowRuns[0].Status != nil {
+		status = *runs.WorkflowRuns[0].Status
+	}
+
+	var conclusion string
+	if runs.WorkflowRuns[0].Conclusion != nil {
+		conclusion = *runs.WorkflowRuns[0].Conclusion
+	}
+
+	return newRunID, status, conclusion, nil
+}
+
+func (g GH) GetLastBuildState(t testing.TB, ctx context.Context, owner, repo, token string) (int64, string, string, error) {
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
+
+	opts := &github.ListWorkflowRunsOptions{
+
+		ListOptions: github.ListOptions{
+			PerPage: 1,
+		},
+	}
+	runs, _, err := client.Actions.ListRepositoryWorkflowRuns(ctx, owner, repo, opts)
+
+	if err != nil {
+		return 0, "", "", fmt.Errorf("Error listing workflow runs: %v", err)
+	}
+
+	if len(runs.WorkflowRuns) == 0 {
+		return 0, "", "", fmt.Errorf("no action workflow found for repo: %s/%s", owner, repo)
+	}
+
+	var runID int64
+	var status string
+	var conclusion string
+
+	if runs.WorkflowRuns[0].ID != nil {
+		runID = *runs.WorkflowRuns[0].ID
+	}
+	if runs.WorkflowRuns[0].Status != nil {
+		status = *runs.WorkflowRuns[0].Status
+	}
+	if runs.WorkflowRuns[0].Conclusion != nil {
+		conclusion = *runs.WorkflowRuns[0].Conclusion
+	}
+
+	return runID, status, conclusion, nil
+}
+
+func (g GH) GetActionState(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (string, string, error) {
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
+
+	run, _, err := client.Actions.GetWorkflowRunByID(ctx, owner, repo, runID)
+	if err != nil {
+		return "", "", fmt.Errorf("Error getting workflow run: %v", err)
+	}
+
+	var status string
+	if run.Status != nil {
+		status = *run.Status
+	}
+
+	var conclusion string
+	if run.Conclusion != nil {
+		conclusion = *run.Conclusion
+	}
+	return status, conclusion, nil
+}
+
+func (g GH) GetBuildLogs(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (string, error) {
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
+
+	listJobsOpts := &github.ListWorkflowJobsOptions{
+		ListOptions: github.ListOptions{PerPage: 10},
+	}
+	jobs, _, err := client.Actions.ListWorkflowJobs(ctx, owner, repo, runID, listJobsOpts)
+	if err != nil {
+		return "", fmt.Errorf("Error listing jobs for run %d: %v", runID, err)
+	}
+
+	for _, job := range jobs.Jobs {
+		if job.Status == nil || job.Conclusion == nil {
+			continue
+		}
+
+		if *job.Status == statusCompleted && *job.Conclusion == StatusFailure {
+			jobID := *job.ID
+
+			logURL, resp, err := client.Actions.GetWorkflowJobLogs(ctx, owner, repo, jobID, 3)
+			if err != nil {
+				return "", fmt.Errorf("  ERROR: Could not get log URL for job %d: %v\n", jobID, err)
+			}
+			if resp.StatusCode != http.StatusFound {
+				return "", fmt.Errorf("  ERROR: Expected a 302 redirect for job logs, but got %s\n", resp.Status)
+			}
+
+			logContentResp, err := http.Get(logURL.String())
+			if err != nil {
+				return "", fmt.Errorf("  ERROR: Could not download logs from %s: %v\n", logURL, err)
+			}
+			defer logContentResp.Body.Close()
+
+			if logContentResp.StatusCode != http.StatusOK {
+				return "", fmt.Errorf("  ERROR: Expected status 200 OK from log URL, but got %s\n", logContentResp.Status)
+			}
+
+			bodyBytes, err := io.ReadAll(logContentResp.Body)
+			if err != nil {
+				return "", fmt.Errorf("Error reading response body: %v", err)
+			}
+			return string(bodyBytes), nil
+		}
+	}
+	return "", nil
+}
+
+func (g GH) GetFinalActionState(t testing.TB, ctx context.Context, owner, repo, token string, runID int64, maxBuildRetry int) (string, string, error) {
+	var status, conclusion string
+	var err error
+	count := 0
+	fmt.Printf("waiting for action %d execution.\n", runID)
+	status, conclusion, err = g.GetActionState(t, ctx, owner, repo, token, runID)
+	if err != nil {
+		return "", "", err
+	}
+	fmt.Printf("action status is %s\n", status)
+	for status != statusCompleted {
+		fmt.Printf("action status is %s\n", status)
+		if count >= maxBuildRetry {
+			return "", "", fmt.Errorf("timeout waiting for action '%d' execution", runID)
+		}
+		count = count + 1
+		time.Sleep(g.sleepTime * time.Second)
+		status, conclusion, err = g.GetActionState(t, ctx, owner, repo, token, runID)
+		if err != nil {
+			return "", "", err
+		}
+	}
+	fmt.Printf("final action state is %s\n", conclusion)
+	return status, conclusion, nil
+}
+
+// WaitBuildSuccess waits for the current build in a repo to finish.
+func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token string, failureMsg string, maxBuildRetry, maxErrorRetries int, timeBetweenErrorRetries time.Duration) error {
+	var status, conclusion string
+	var runID int64
+	var err error
+
+	ctx := context.Background()
+	// wait action creation
+	time.Sleep(30 * time.Second)
+
+	runID, status, conclusion, err = g.GetLastBuildState(t, ctx, owner, repo, token)
+	if err != nil {
+		return err
+	}
+	for i := 0; i < maxErrorRetries; i++ {
+		if status != statusCompleted {
+			status, conclusion, err = g.GetFinalActionState(t, ctx, owner, repo, token, runID, maxBuildRetry)
+			if err != nil {
+				return err
+			}
+		}
+
+		if conclusion != StatusSuccess {
+			logs, err := g.GetBuildLogs(t, ctx, owner, repo, token, runID)
+			if err != nil {
+				return err
+			}
+			if !g.IsRetryableError(t, logs) {
+				return fmt.Errorf("%s\nSee:\nhttps://github.com/%s/%s/actions/runs/%d\nfor details", failureMsg, owner, repo, runID)
+			}
+			fmt.Println("build failed with retryable error. a new build will be triggered.")
+		} else {
+			return nil // Build succeeded
+		}
+
+		// Trigger a new build
+		runID, status, conclusion, err = g.TriggerNewBuild(t, ctx, owner, repo, token, runID)
+		if err != nil {
+			return fmt.Errorf("failed to trigger new action (attempt %d/%d): %w", i+1, maxErrorRetries, err)
+		}
+		fmt.Printf("triggered new action with ID: %d (attempt %d/%d)\n", runID, i+1, maxErrorRetries)
+		if i < maxErrorRetries-1 {
+			time.Sleep(timeBetweenErrorRetries) // Wait before retrying
+		}
+	}
+	return fmt.Errorf("%s action failed after %d retries", failureMsg, maxErrorRetries)
+}
+
+// IsRetryableError checks the logs of a failed Cloud Build build
+// and verify if the error is a transient one and can be retried
+func (g GH) IsRetryableError(t testing.TB, logs string) bool {
+	found := false
+	for pattern, msg := range retryRegexp {
+		if pattern.MatchString(logs) {
+			found = true
+			fmt.Printf("error '%s' is worth of a retry\n", msg)
+			break
+		}
+	}
+	return found
+}

@@ -32,7 +32,7 @@ import (
 )
 
 // TerraformVet runs gcloud terraform vet on the plan of the provided terraform directory
-func TerraformVet(t testing.TB, terraformDir, policyPath, project string) error {
+func TerraformVet(t testing.TB, terraformDir, policyPath, project string, envVars map[string]string) error {
 
 	fmt.Println("")
 	fmt.Println("# Running gcloud terraform vet")
@@ -46,6 +46,7 @@ func TerraformVet(t testing.TB, terraformDir, policyPath, project string) error 
 		RetryableTerraformErrors: testutils.RetryableTransientErrors,
 		MaxRetries:               MaxErrorRetries,
 		TimeBetweenRetries:       TimeBetweenErrorRetries,
+		EnvVars:                  envVars,
 	}
 	_, err := terraform.PlanE(t, options)
 	if err != nil {

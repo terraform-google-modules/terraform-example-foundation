@@ -15,12 +15,15 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+var testBuildTypes = []string{"cb", "github", "gitlab", "jenkins", "terraform_cloud"}
 
 func writeTempFile(dir, name, content string) (string, error) {
 	f := filepath.Join(dir, name)
@@ -94,4 +97,65 @@ func TestFindFiles(t *testing.T) {
 
 	assert.Len(t, files, 1, "must have found only one file")
 	assert.Equal(t, filepath.Join(base, "one", "two", "three", "four", filename), files[0])
+}
+
+func createRenameTestFiles(t *testing.T, tempDir string, targetBuild string, defaultBuild string) {
+	t.Helper() // Mark this function as a helper function.
+	// Create some test files to rename.
+	var filesToCreate []string
+
+	// Files for the defaultBuild rename logic
+	filesToCreate = append(filesToCreate, filepath.Join(tempDir, fmt.Sprintf("test_%s.tf", defaultBuild)))
+
+	// Files for the target build rename logic
+	filesToCreate = append(filesToCreate, filepath.Join(tempDir, fmt.Sprintf("test_%s.tf.example", targetBuild)))
+	filesToCreate = append(filesToCreate, filepath.Join(tempDir, "test_other.tf")) // Create a non-matching file
+
+	for _, filename := range filesToCreate {
+		err := os.WriteFile(filename, []byte("test content"), 0644) // Write simple content
+		if err != nil {
+			t.Fatalf("Failed to create test file %s: %v", filename, err)
+		}
+	}
+}
+
+func checkRenamedFiles(t *testing.T, tempDir string, targetBuild string, defaultBuild string) {
+	t.Helper()
+	// Check the files renamed successfully.
+	if targetBuild != DefaultBuild {
+		expectedNewName := filepath.Join(tempDir, fmt.Sprintf("test_%s.tf", targetBuild))
+		assert.FileExists(t, expectedNewName, "File %s should exist after rename", expectedNewName)
+
+		originalName := filepath.Join(tempDir, fmt.Sprintf("test_%s.tf.example", targetBuild))
+		assert.NoFileExists(t, originalName, "File %s should not exist after rename", originalName)
+
+		expectedDefaultBuildName := filepath.Join(tempDir, fmt.Sprintf("test_%s.tf.example", defaultBuild))
+		assert.FileExists(t, expectedDefaultBuildName, "File %s should exist after default build rename", expectedDefaultBuildName)
+
+		originalDefaultBuildName := filepath.Join(tempDir, fmt.Sprintf("test_%s.tf", defaultBuild))
+		assert.NoFileExists(t, originalDefaultBuildName, "File %s should not exist after  rename", originalDefaultBuildName)
+
+		otherName := filepath.Join(tempDir, "test_other.tf")
+		assert.FileExists(t, otherName, "File %s should exist after default build rename", otherName)
+	}
+}
+
+func TestRenameFiles(t *testing.T) {
+	for _, targetBuild := range AllowedBuildTypes {
+		t.Run(targetBuild, func(t *testing.T) {
+			tempDir := t.TempDir()
+			createRenameTestFiles(t, tempDir, targetBuild, DefaultBuild)
+
+			err := RenameBuildFiles(tempDir, targetBuild)
+			assert.NoError(t, err, "RenameBuildFiles failed for targetBuild %s: %v", targetBuild, err)
+			checkRenamedFiles(t, tempDir, targetBuild, DefaultBuild)
+		})
+	}
+	// Add a test case for an invalid build type
+	t.Run("invalid", func(t *testing.T) {
+		tempDir := t.TempDir()
+		err := RenameBuildFiles(tempDir, "invalid_build_type")
+		assert.Error(t, err, "RenameBuildFiles should have failed for invalid build type")
+		assert.Contains(t, err.Error(), "invalid build type", "RenameFiles should have returned an error about the build type")
+	})
 }

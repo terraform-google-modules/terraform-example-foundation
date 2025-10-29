@@ -29,23 +29,28 @@ import (
 )
 
 const (
-	PoliciesRepo            = "gcp-policies"
-	BootstrapRepo           = "gcp-bootstrap"
-	OrgRepo                 = "gcp-org"
-	EnvironmentsRepo        = "gcp-environments"
-	NetworksRepo            = "gcp-networks"
-	ProjectsRepo            = "gcp-projects"
-	AppInfraRepo            = "bu1-example-app"
-	BootstrapStep           = "0-bootstrap"
-	OrgStep                 = "1-org"
-	EnvironmentsStep        = "2-environments"
-	HubAndSpokeStep         = "3-networks-hub-and-spoke"
-	SvpcStep                = "3-networks-svpc"
-	ProjectsStep            = "4-projects"
-	AppInfraStep            = "5-app-infra"
-	MaxErrorRetries         = 2
-	TimeBetweenErrorRetries = 2 * time.Minute
-	MaxBuildRetries         = 40
+	PoliciesRepo              = "gcp-policies"
+	BootstrapRepo             = "gcp-bootstrap"
+	OrgRepo                   = "gcp-org"
+	EnvironmentsRepo          = "gcp-environments"
+	NetworksRepo              = "gcp-networks"
+	ProjectsRepo              = "gcp-projects"
+	AppInfraRepo              = "bu1-example-app"
+	BootstrapStep             = "0-bootstrap"
+	OrgStep                   = "1-org"
+	EnvironmentsStep          = "2-environments"
+	HubAndSpokeStep           = "3-networks-hub-and-spoke"
+	SvpcStep                  = "3-networks-svpc"
+	ProjectsStep              = "4-projects"
+	AppInfraStep              = "5-app-infra"
+	MaxErrorRetries           = 2
+	TimeBetweenErrorRetries   = 2 * time.Minute
+	MaxBuildRetries           = 40
+	BuildTypeCBCSR            = "cb"
+	BuildTypeGiHub            = "github"
+	BuildTypeGitLab           = "gitlab"
+	CloudBuildProjectIdOutput = "cloudbuild_project_id"
+	CICDProjectIdOutput       = "cicd_project_id"
 )
 
 type CommonConf struct {
@@ -53,6 +58,7 @@ type CommonConf struct {
 	CheckoutPath      string
 	PolicyPath        string
 	ValidatorProject  string
+	BuildType         string
 	EnableHubAndSpoke bool
 	DisablePrompt     bool
 	Logger            *logger.Logger
@@ -71,6 +77,8 @@ type StageConf struct {
 	GroupingUnits       []string
 	Envs                []string
 	LocalSteps          []string
+	BuildType           string
+	BuildExecutor       Executor
 }
 
 type BootstrapOutputs struct {
@@ -133,6 +141,37 @@ type GcpGroups struct {
 	KmsAdmin           *string `cty:"kms_admin"`
 }
 
+type GitRepos struct {
+	Token        string `cty:"token"`
+	Owner        string `cty:"owner"`
+	Bootstrap    string `cty:"bootstrap"`
+	Organization string `cty:"organization"`
+	Environments string `cty:"environments"`
+	Networks     string `cty:"networks"`
+	Projects     string `cty:"projects"`
+	// AppInfra     string  `cty:"app_infra"` //TODO
+	CICDRunner *string `cty:"cicd_runner"`
+}
+
+type GitHubRepos struct {
+	Owner        string `cty:"owner"`
+	Bootstrap    string `cty:"bootstrap"`
+	Organization string `cty:"organization"`
+	Environments string `cty:"environments"`
+	Networks     string `cty:"networks"`
+	Projects     string `cty:"projects"`
+}
+
+type GitLabRepos struct {
+	Owner        string `cty:"owner"`
+	Bootstrap    string `cty:"bootstrap"`
+	Organization string `cty:"organization"`
+	Environments string `cty:"environments"`
+	Networks     string `cty:"networks"`
+	Projects     string `cty:"projects"`
+	CICDRunner   string `cty:"cicd_runner"`
+}
+
 // GlobalTFVars contains all the configuration for the deploy
 type GlobalTFVars struct {
 	OrgID                                 string          `hcl:"org_id"`
@@ -170,6 +209,8 @@ type GlobalTFVars struct {
 	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
 	FolderDeletionProtection              *bool           `hcl:"folder_deletion_protection"`
 	ProjectDeletionPolicy                 string          `hcl:"project_deletion_policy"`
+	BuildType                             string          `hcl:"build_type"`
+	GitRepos                              *GitRepos       `hcl:"git_repos"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
@@ -203,22 +244,24 @@ func (g GlobalTFVars) CheckString(s string) {
 }
 
 type BootstrapTfvars struct {
-	OrgID                        string  `hcl:"org_id"`
-	BillingAccount               string  `hcl:"billing_account"`
-	DefaultRegion                string  `hcl:"default_region"`
-	DefaultRegion2               string  `hcl:"default_region_2"`
-	DefaultRegionGCS             string  `hcl:"default_region_gcs"`
-	DefaultRegionKMS             string  `hcl:"default_region_kms"`
-	ParentFolder                 *string `hcl:"parent_folder"`
-	ProjectPrefix                *string `hcl:"project_prefix"`
-	FolderPrefix                 *string `hcl:"folder_prefix"`
-	BucketForceDestroy           *bool   `hcl:"bucket_force_destroy"`
-	BucketTfstateKmsForceDestroy *bool   `hcl:"bucket_tfstate_kms_force_destroy"`
-	WorkflowDeletionProtection   *bool   `hcl:"workflow_deletion_protection"`
-	Groups                       Groups  `hcl:"groups"`
-	InitialGroupConfig           *string `hcl:"initial_group_config"`
-	FolderDeletionProtection     *bool   `hcl:"folder_deletion_protection"`
-	ProjectDeletionPolicy        string  `hcl:"project_deletion_policy"`
+	OrgID                        string       `hcl:"org_id"`
+	BillingAccount               string       `hcl:"billing_account"`
+	DefaultRegion                string       `hcl:"default_region"`
+	DefaultRegion2               string       `hcl:"default_region_2"`
+	DefaultRegionGCS             string       `hcl:"default_region_gcs"`
+	DefaultRegionKMS             string       `hcl:"default_region_kms"`
+	ParentFolder                 *string      `hcl:"parent_folder"`
+	ProjectPrefix                *string      `hcl:"project_prefix"`
+	FolderPrefix                 *string      `hcl:"folder_prefix"`
+	BucketForceDestroy           *bool        `hcl:"bucket_force_destroy"`
+	BucketTfstateKmsForceDestroy *bool        `hcl:"bucket_tfstate_kms_force_destroy"`
+	WorkflowDeletionProtection   *bool        `hcl:"workflow_deletion_protection"`
+	Groups                       Groups       `hcl:"groups"`
+	InitialGroupConfig           *string      `hcl:"initial_group_config"`
+	FolderDeletionProtection     *bool        `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy        string       `hcl:"project_deletion_policy"`
+	GitHubRepos                  *GitHubRepos `hcl:"gh_repos"`
+	GitLabRepos                  *GitLabRepos `hcl:"gl_repos"`
 }
 
 type OrgTfvars struct {
@@ -285,14 +328,19 @@ type AppInfraCommonTfvars struct {
 	ImageDigest       string `hcl:"confidential_image_digest"`
 }
 
-func GetBootstrapStepOutputs(t testing.TB, foundationPath string) BootstrapOutputs {
+func GetBootstrapStepOutputs(t testing.TB, foundationPath string, buildType string) BootstrapOutputs {
 	options := &terraform.Options{
 		TerraformDir: filepath.Join(foundationPath, "0-bootstrap"),
 		Logger:       logger.Discard,
 		NoColor:      true,
 	}
+	cicdProjectIDOutput := CICDProjectIdOutput
+	if buildType != BuildTypeCBCSR {
+		cicdProjectIDOutput = CICDProjectIdOutput
+	}
+
 	return BootstrapOutputs{
-		CICDProject:               terraform.Output(t, options, "cloudbuild_project_id"),
+		CICDProject:               terraform.Output(t, options, cicdProjectIDOutput),
 		RemoteStateBucket:         terraform.Output(t, options, "gcs_bucket_tfstate"),
 		RemoteStateBucketProjects: terraform.Output(t, options, "projects_gcs_bucket_tfstate"),
 		DefaultRegion:             terraform.OutputMap(t, options, "common_config")["default_region"],

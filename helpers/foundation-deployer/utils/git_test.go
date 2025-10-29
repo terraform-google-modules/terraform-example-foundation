@@ -39,6 +39,24 @@ func createLocalRepo(t *testing.T, repo string) string {
 	return local
 }
 
+func TestGenericClone(t *testing.T) {
+	repo := "terraform-google-secret"
+	fileSystemRepo := createLocalRepo(t, repo)
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, repo)
+	err := os.MkdirAll(dir, 0755)
+	assert.NoError(t, err)
+
+	local := GitClone(t, "Generic", "terraform-google-secret", "file://"+fileSystemRepo, path, "", logger.Discard)
+	err = local.CheckoutBranch("unit-test")
+	assert.NoError(t, err)
+
+	localBranch, err := local.GetCurrentBranch()
+	assert.NoError(t, err)
+	assert.Equal(t, localBranch, "unit-test", "current branch should be 'unit-test'")
+}
+
 func TestGit(t *testing.T) {
 	remote := "origin"
 	repo := createLocalRepo(t, "my-git-repo")
@@ -46,7 +64,7 @@ func TestGit(t *testing.T) {
 	err := CopyDirectory(repo, originPath)
 	assert.NoError(t, err)
 
-	local := CloneCSR(t, "my-git-repo", repo, "", logger.Discard)
+	local := GitClone(t, "CSR", "my-git-repo", "", repo, "", logger.Discard)
 	err = local.AddRemote(remote, originPath)
 	assert.NoError(t, err)
 
@@ -70,7 +88,7 @@ func TestGit(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, hasUpstream, "branch 'unit-test' should have a remote")
 
-	origin := CloneCSR(t, "my-git-repo", originPath, "", logger.Discard)
+	origin := GitClone(t, "CSR", "my-git-repo", "", originPath, "", logger.Discard)
 	files, err := FindFiles(originPath, "go.mod")
 	assert.NoError(t, err)
 	assert.Len(t, files, 0, "'go.mod' file should not exist on main branch")

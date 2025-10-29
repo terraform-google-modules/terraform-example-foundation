@@ -105,6 +105,7 @@ func main() {
 		FoundationPath:    globalTFVars.FoundationCodePath,
 		CheckoutPath:      globalTFVars.CodeCheckoutPath,
 		PolicyPath:        filepath.Join(globalTFVars.FoundationCodePath, "policy-library"),
+		BuildType:         globalTFVars.BuildType,
 		EnableHubAndSpoke: globalTFVars.EnableHubAndSpoke,
 		DisablePrompt:     cfg.disablePrompt,
 		Logger:            utils.GetLogger(cfg.quiet),
@@ -171,21 +172,22 @@ func main() {
 	// destroy stages
 	if cfg.destroy {
 		// Note: destroy is only terraform destroy, local directories are not deleted.
-		// 5-app-infra
-		msg.PrintStageMsg("Destroying 5-app-infra stage")
-		err = s.RunDestroyStep("bu1-example-app", func() error {
-			io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
-			return stages.DestroyExampleAppStage(t, s, io, conf)
-		})
-		if err != nil {
-			fmt.Printf("# Example app step destroy failed. Error: %s\n", err.Error())
-			os.Exit(3)
+		if conf.BuildType == stages.BuildTypeCBCSR {
+			// 5-app-infra
+			msg.PrintStageMsg("Destroying 5-app-infra stage")
+			err = s.RunDestroyStep("bu1-example-app", func() error {
+				io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
+				return stages.DestroyExampleAppStage(t, s, io, conf)
+			})
+			if err != nil {
+				fmt.Printf("# Example app step destroy failed. Error: %s\n", err.Error())
+				os.Exit(3)
+			}
 		}
-
 		// 4-projects
 		msg.PrintStageMsg("Destroying 4-projects stage")
 		err = s.RunDestroyStep("gcp-projects", func() error {
-			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 			return stages.DestroyProjectsStage(t, s, bo, conf)
 		})
 		if err != nil {
@@ -196,7 +198,7 @@ func main() {
 		// 3-networks
 		msg.PrintStageMsg("Destroying 3-networks stage")
 		err = s.RunDestroyStep("gcp-networks", func() error {
-			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 			return stages.DestroyNetworksStage(t, s, bo, conf)
 		})
 		if err != nil {
@@ -207,7 +209,7 @@ func main() {
 		// 2-environments
 		msg.PrintStageMsg("Destroying 2-environments stage")
 		err = s.RunDestroyStep("gcp-environments", func() error {
-			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 			return stages.DestroyEnvStage(t, s, bo, conf)
 		})
 		if err != nil {
@@ -218,7 +220,7 @@ func main() {
 		// 1-org
 		msg.PrintStageMsg("Destroying 1-org stage")
 		err = s.RunDestroyStep("gcp-org", func() error {
-			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 			return stages.DestroyOrgStage(t, s, bo, conf)
 		})
 		if err != nil {
@@ -251,14 +253,18 @@ func main() {
 	msg.PrintStageMsg("Deploying 0-bootstrap stage")
 	skipInnerBuildMsg := s.IsStepComplete("gcp-bootstrap")
 	err = s.RunStep("gcp-bootstrap", func() error {
-		return stages.DeployBootstrapStage(t, s, globalTFVars, conf)
+		if globalTFVars.BuildType == stages.BuildTypeCBCSR {
+			return stages.DeployBootstrapStage(t, s, globalTFVars, conf)
+		} else {
+			return stages.DeployGenericBootstrapStage(t, s, globalTFVars, conf)
+		}
 	})
 	if err != nil {
 		fmt.Printf("# Bootstrap step failed. Error: %s\n", err.Error())
 		os.Exit(3)
 	}
 
-	bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+	bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 
 	if skipInnerBuildMsg {
 		msg.PrintBuildMsg(bo.CICDProject, bo.DefaultRegion, conf.DisablePrompt)
@@ -310,18 +316,21 @@ func main() {
 		os.Exit(3)
 	}
 
-	// 5-app-infra
-	msg.PrintStageMsg("Deploying 5-app-infra stage")
-	io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
-	io.RemoteStateBucket = bo.RemoteStateBucketProjects
+	if conf.BuildType == stages.BuildTypeCBCSR {
+		// 5-app-infra
+		msg.PrintStageMsg("Deploying 5-app-infra stage")
+		io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
+		io.RemoteStateBucket = bo.RemoteStateBucketProjects
 
-	msg.PrintBuildMsg(io.InfraPipeProj, io.DefaultRegion, conf.DisablePrompt)
+		msg.PrintBuildMsg(io.InfraPipeProj, io.DefaultRegion, conf.DisablePrompt)
 
-	err = s.RunStep("bu1-example-app", func() error {
-		return stages.DeployExampleAppStage(t, s, globalTFVars, io, conf)
-	})
-	if err != nil {
-		fmt.Printf("# Example app step failed. Error: %s\n", err.Error())
-		os.Exit(3)
+		err = s.RunStep("bu1-example-app", func() error {
+			return stages.DeployExampleAppStage(t, s, globalTFVars, io, conf)
+		})
+		if err != nil {
+			fmt.Printf("# Example app step failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
 	}
+
 }

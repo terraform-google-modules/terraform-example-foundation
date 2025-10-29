@@ -165,7 +165,7 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 					MaxRetries:               MaxErrorRetries,
 					TimeBetweenRetries:       TimeBetweenErrorRetries,
 				}
-				conf := utils.CloneCSR(t, sc.Repo, gcpPath, sc.CICDProject, c.Logger)
+				conf := utils.GitClone(t, "CSR", sc.Repo, "", gcpPath, sc.CICDProject, c.Logger)
 				branch := e
 				if branch == "shared" {
 					branch = "production"
@@ -199,7 +199,7 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 				MaxRetries:               MaxErrorRetries,
 				TimeBetweenRetries:       TimeBetweenErrorRetries,
 			}
-			conf := utils.CloneCSR(t, ProjectsRepo, gcpPath, sc.CICDProject, c.Logger)
+			conf := utils.GitClone(t, "CSR", ProjectsRepo, "", gcpPath, sc.CICDProject, c.Logger)
 			err := conf.CheckoutBranch("production")
 			if err != nil {
 				return err

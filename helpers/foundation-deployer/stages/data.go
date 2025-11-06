@@ -62,6 +62,7 @@ type CommonConf struct {
 	EnableHubAndSpoke bool
 	DisablePrompt     bool
 	Logger            *logger.Logger
+	GitToken          string
 }
 
 type StageConf struct {
@@ -78,7 +79,7 @@ type StageConf struct {
 	Envs                []string
 	LocalSteps          []string
 	BuildType           string
-	BuildExecutor       Executor
+	Executor            Executor
 }
 
 type BootstrapOutputs struct {
@@ -142,15 +143,13 @@ type GcpGroups struct {
 }
 
 type GitRepos struct {
-	Token        string `cty:"token"`
-	Owner        string `cty:"owner"`
-	Bootstrap    string `cty:"bootstrap"`
-	Organization string `cty:"organization"`
-	Environments string `cty:"environments"`
-	Networks     string `cty:"networks"`
-	Projects     string `cty:"projects"`
-	// AppInfra     string  `cty:"app_infra"` //TODO
-	CICDRunner *string `cty:"cicd_runner"`
+	Owner        string  `cty:"owner"`
+	Bootstrap    string  `cty:"bootstrap"`
+	Organization string  `cty:"organization"`
+	Environments string  `cty:"environments"`
+	Networks     string  `cty:"networks"`
+	Projects     string  `cty:"projects"`
+	CICDRunner   *string `cty:"cicd_runner"`
 }
 
 type GitHubRepos struct {
@@ -334,7 +333,7 @@ func GetBootstrapStepOutputs(t testing.TB, foundationPath string, buildType stri
 		Logger:       logger.Discard,
 		NoColor:      true,
 	}
-	cicdProjectIDOutput := CICDProjectIdOutput
+	cicdProjectIDOutput := CloudBuildProjectIdOutput
 	if buildType != BuildTypeCBCSR {
 		cicdProjectIDOutput = CICDProjectIdOutput
 	}

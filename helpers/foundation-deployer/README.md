@@ -16,7 +16,7 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 Your environment need to use the same [Terraform](https://www.terraform.io/downloads.html) version used on the build pipeline.
 Otherwise, you might experience Terraform state snapshot lock errors.
 
-Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
+Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operating System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
 
 - 0-bootstrap/modules/jenkins-agent/variables.tf
    ```
@@ -73,7 +73,7 @@ Version 1.5.7 is the last version before the license model change. To use a late
 
 ### Prepare the deploy environment
 
-- Create a directory in the file system to host the Cloud Source repositories the will be created and a copy of the terraform example foundation.
+- Create a directory in the file system to host the Git Repositories that will be created (Cloud Source repositories, Github , or GitLab) and a copy of the terraform example foundation repository.
 - Clone the `terraform-example-foundation` repository on this directory.
 
     ```text
@@ -105,10 +105,6 @@ Version 1.5.7 is the last version before the license model change. To use a late
 ### Location
 
 By default the foundation regional resources are deployed in `us-west1` and `us-central1` regions and multi-regional resources are deployed in the `US` multi-region.
-
-In addition to the variables declared in the file `global.tfvars` for configuring location, there are two locals, `default_region1` and `default_region2`, in each one of the environments (`production`, `nonproduction`, and `development`) in the network steps (`3-networks-svpc` and `3-networks-hub-and-spoke`).
-They are located in the [main.tf](../../3-networks-svpc/envs/production/main.tf#L20-L21) files for each environments.
-Change the two locals **before** starting the deployment to deploy in other regions.
 
 **Note:** the region used for the variable `default_region` in the file `global.tfvars` **MUST** be one of the regions used for the `default_region1` and `default_region2` locals.
 

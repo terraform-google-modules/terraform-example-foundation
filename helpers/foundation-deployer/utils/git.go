@@ -34,13 +34,10 @@ type GitRepo struct {
 
 // GitClone clones git repositories, supporting CSR, Github and Gitlab type of source control
 func GitClone(t testing.TB, repositoryType, repositoryName, repositoryURL, path, project string, logger *logger.Logger) GitRepo {
-	conf := GitRepo{}
-	if repositoryType != "CSR" {
-		conf = cloneGit(t, repositoryURL, path, logger)
-	} else {
-		conf = cloneCSR(t, repositoryName, path, project, logger)
+	if repositoryType == "CSR" {
+		return cloneCSR(t, repositoryName, path, project, logger)
 	}
-	return conf
+	return cloneGit(t, repositoryURL, path, logger)
 }
 
 // CloneCSR clones a Google Cloud Source repository and returns a CmdConfig pointing to the repository.
@@ -49,6 +46,12 @@ func cloneCSR(t testing.TB, repositoryName, path, project string, logger *logger
 	if os.IsNotExist(err) {
 		gcloud.Runf(t, "source repos clone %s %s --project %s", repositoryName, path, project)
 	}
+	return GitRepo{
+		conf: git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger)),
+	}
+}
+
+func GetRepoOnly(t testing.TB, path string, logger *logger.Logger) GitRepo {
 	return GitRepo{
 		conf: git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger)),
 	}
@@ -146,6 +149,10 @@ func (g GitRepo) GetCommitSha() (string, error) {
 
 func BuildGitHubURL(owner, repoName string) string {
 	return fmt.Sprintf("https://github.com/%s/%s.git", owner, repoName)
+}
+
+func BuildGitLabURL(owner, repoName string) string {
+	return fmt.Sprintf("https://gitlab.com/%s/%s.git", owner, repoName)
 }
 
 // ExtractRepoNameFromGitHubURL parses a GitHub URL and returns the repository name.

@@ -18,7 +18,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"regexp"
 	"strings"
 	"time"
 
@@ -26,6 +25,8 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/mitchellh/go-testing-interface"
 	"github.com/tidwall/gjson"
+
+	localutil "github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 
@@ -49,20 +50,6 @@ type Build struct {
 	ID         string `json:"id"`
 	Status     string `json:"status"`
 	CreateTime string `json:"createTime"`
-}
-
-var (
-	retryRegexp = map[*regexp.Regexp]string{}
-)
-
-func init() {
-	for e, m := range testutils.RetryableTransientErrors {
-		r, err := regexp.Compile(fmt.Sprintf("(?s)%s", e)) //(?s) enables dot (.) to match newline.
-		if err != nil {
-			panic(fmt.Sprintf("failed to compile regex %s: %s", e, err.Error()))
-		}
-		retryRegexp[r] = m
-	}
 }
 
 type GCP struct {
@@ -209,7 +196,8 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, fa
 		}
 
 		if status != StatusSuccess {
-			if !g.IsRetryableError(t, project, region, build) {
+			logs := g.GetBuildLogs(t, project, region, build)
+			if !localutil.IsRetryableError(t, logs) {
 				return fmt.Errorf("%s\nSee:\nhttps://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s\nfor details", failureMsg, region, build, project)
 			}
 			fmt.Println("build failed with retryable error. a new build will be triggered.")
@@ -228,21 +216,6 @@ func (g GCP) WaitBuildSuccess(t testing.TB, project, region, repo, commitSha, fa
 		}
 	}
 	return fmt.Errorf("%s\nbuild failed after %d retries.\nSee Cloud Build logs for details", failureMsg, maxErrorRetries)
-}
-
-// IsRetryableError checks the logs of a failed Cloud Build build
-// and verify if the error is a transient one and can be retried
-func (g GCP) IsRetryableError(t testing.TB, projectID, region, build string) bool {
-	logs := g.GetBuildLogs(t, projectID, region, build)
-	found := false
-	for pattern, msg := range retryRegexp {
-		if pattern.MatchString(logs) {
-			found = true
-			fmt.Printf("error '%s' is worth of a retry\n", msg)
-			break
-		}
-	}
-	return found
 }
 
 // HasSccNotification checks if a Security Command Center notification exists

@@ -23,6 +23,7 @@ import (
 	"github.com/mitchellh/go-testing-interface"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gcp"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gitlab"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/msg"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/steps"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
@@ -30,7 +31,56 @@ import (
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
-func DeployGenericBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c CommonConf) error {
+func buildGitLabCICDImage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c CommonConf) error {
+	gl := gitlab.NewGL()
+	cicdPath := filepath.Join(c.CheckoutPath, "gcp-cicd-runner")
+	repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner)
+
+	conf := utils.GitClone(t, tfvars.BuildType, "", repoURL, cicdPath, "", c.Logger)
+	conf.CheckoutBranch("image")
+
+	err := utils.CopyFile(filepath.Join(c.FoundationPath, "build/gitlab-ci.yml"), filepath.Join(cicdPath, ".gitlab-ci.yml"))
+	if err != nil {
+		return err
+	}
+
+	err = utils.CopyFile(filepath.Join(c.FoundationPath, "0-bootstrap/Dockerfile"), filepath.Join(cicdPath, "Dockerfile"))
+	if err != nil {
+		return err
+	}
+
+	err = conf.CommitFiles("Initialize CI/CD runner project")
+	if err != nil {
+		return err
+	}
+	err = conf.PushBranch("image", "origin")
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("")
+	fmt.Println("# Follow job execution in GitLab:")
+	fmt.Printf("# %s\n", fmt.Sprintf("https://gitlab.com/%s/%s/-/jobs", tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner))
+
+	failureMsg := fmt.Sprintf("CI/CD runner image job failed %s/%s repository.", tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner)
+	err = gl.WaitBuildSuccess(t, tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner, c.GitToken, failureMsg, MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
+	if err != nil {
+		return err
+	}
+	projectsToAdd := make([]string, 5)
+	projectsToAdd[0] = tfvars.GitRepos.Bootstrap
+	projectsToAdd[1] = tfvars.GitRepos.Organization
+	projectsToAdd[2] = tfvars.GitRepos.Environments
+	projectsToAdd[3] = tfvars.GitRepos.Networks
+	projectsToAdd[4] = tfvars.GitRepos.Projects
+	return gl.AddProjectsToJobTokenScope(t, tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner, c.GitToken, projectsToAdd)
+}
+
+func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c CommonConf) error {
+
+	var err error
+	var envVars map[string]string
+
 	bootstrapTfvars := BootstrapTfvars{
 		OrgID:                        tfvars.OrgID,
 		DefaultRegion:                tfvars.DefaultRegion,
@@ -50,11 +100,6 @@ func DeployGenericBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVar
 		ProjectDeletionPolicy:        tfvars.ProjectDeletionPolicy,
 	}
 
-	var buildExecutor Executor
-	var repoURL string
-	var err error
-	var envVars map[string]string
-
 	if tfvars.BuildType == BuildTypeGiHub {
 		bootstrapTfvars.GitHubRepos = &GitHubRepos{
 			Owner:        tfvars.GitRepos.Owner,
@@ -65,10 +110,8 @@ func DeployGenericBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVar
 			Projects:     tfvars.GitRepos.Projects,
 		}
 		envVars = map[string]string{
-			"TF_VAR_gh_token": tfvars.GitRepos.Token,
+			"TF_VAR_gh_token": c.GitToken,
 		}
-		repoURL = utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap)
-		buildExecutor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap, tfvars.GitRepos.Token)
 	}
 
 	if tfvars.BuildType == BuildTypeGitLab {
@@ -82,7 +125,7 @@ func DeployGenericBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVar
 			CICDRunner:   *tfvars.GitRepos.CICDRunner,
 		}
 		envVars = map[string]string{
-			"TF_VAR_gitlab_token": tfvars.GitRepos.Token,
+			"TF_VAR_gitlab_token": c.GitToken,
 		}
 	}
 
@@ -92,9 +135,6 @@ func DeployGenericBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVar
 	if err != nil {
 		return err
 	}
-
-	EmptyProject := ""
-	NoRegion := ""
 
 	terraformDir := filepath.Join(c.FoundationPath, BootstrapStep)
 	options := &terraform.Options{
@@ -114,6 +154,7 @@ func DeployGenericBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVar
 	}
 
 	// read bootstrap outputs
+	defaultRegion := terraform.OutputMap(t, options, "common_config")["default_region"]
 	backendBucket := terraform.Output(t, options, "gcs_bucket_tfstate")
 	backendBucketProjects := terraform.Output(t, options, "projects_gcs_bucket_tfstate")
 
@@ -157,19 +198,73 @@ func DeployGenericBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVar
 		return err
 	}
 
+	var stageConf StageConf
+	var cbProjectID string
+	var executor Executor
+	var bootstrapConf utils.GitRepo
+
 	gcpBootstrapPath := filepath.Join(c.CheckoutPath, BootstrapRepo)
-	bootstrapConf := utils.GitClone(t, tfvars.BuildType, "", repoURL, gcpBootstrapPath, EmptyProject, c.Logger)
-	stageConf := StageConf{
+
+	if tfvars.BuildType == BuildTypeCBCSR {
+		cbProjectID = terraform.Output(t, options, "cloudbuild_project_id")
+
+		msg.PrintBuildMsg(cbProjectID, defaultRegion, c.DisablePrompt)
+
+		// Check if image build was successful.
+		buildTFBuilderExecutor := NewGCPExecutor(cbProjectID, defaultRegion, "tf-cloudbuilder")
+		err = buildTFBuilderExecutor.WaitBuildSuccess(t, "", "Terraform Image builder Build Failed for tf-cloudbuilder repository.")
+		if err != nil {
+			return err
+		}
+
+		//prepare policies repo
+		gcpPoliciesPath := filepath.Join(c.CheckoutPath, PoliciesRepo)
+		policiesConf := utils.GitClone(t, "CSR", PoliciesRepo, "", gcpPoliciesPath, cbProjectID, c.Logger)
+		policiesBranch := "main"
+
+		err = s.RunStep("gcp-bootstrap.gcp-policies", func() error {
+			return preparePoliciesRepo(policiesConf, policiesBranch, c.FoundationPath, gcpPoliciesPath)
+		})
+		if err != nil {
+			return err
+		}
+
+		bootstrapConf = utils.GitClone(t, "CSR", BootstrapRepo, "", gcpBootstrapPath, cbProjectID, c.Logger)
+		executor = NewGCPExecutor(cbProjectID, defaultRegion, BootstrapRepo)
+	}
+
+	if tfvars.BuildType == BuildTypeGiHub {
+		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap, c.GitToken)
+		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap)
+		bootstrapConf = utils.GitClone(t, tfvars.BuildType, "", repoURL, gcpBootstrapPath, cbProjectID, c.Logger)
+
+	}
+
+	if tfvars.BuildType == BuildTypeGitLab {
+
+		err = s.RunStep("gcp-bootstrap.build-cicd-runner", func() error {
+			return buildGitLabCICDImage(t, s, tfvars, c)
+		})
+		if err != nil {
+			return err
+		}
+
+		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap, c.GitToken)
+		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap)
+		bootstrapConf = utils.GitClone(t, tfvars.BuildType, "", repoURL, gcpBootstrapPath, cbProjectID, c.Logger)
+	}
+
+	stageConf = StageConf{
 		Stage:               BootstrapRepo,
-		CICDProject:         EmptyProject,
-		DefaultRegion:       NoRegion,
+		CICDProject:         cbProjectID,
+		DefaultRegion:       defaultRegion,
 		Step:                BootstrapStep,
 		Repo:                BootstrapRepo,
 		CustomTargetDirPath: "envs/shared",
 		GitConf:             bootstrapConf,
 		Envs:                []string{"shared"},
 		BuildType:           tfvars.BuildType,
-		BuildExecutor:       buildExecutor,
+		Executor:            executor,
 	}
 
 	// if groups creation is enable the helper will just push the code
@@ -197,179 +292,6 @@ func DeployGenericBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVar
 			MaxRetries:               MaxErrorRetries,
 			TimeBetweenRetries:       TimeBetweenErrorRetries,
 			EnvVars:                  envVars,
-		}
-		_, err := terraform.InitE(t, options)
-		return err
-	})
-	if err != nil {
-		return err
-	}
-	fmt.Println("end of bootstrap deploy")
-
-	return nil
-}
-
-func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c CommonConf) error {
-	bootstrapTfvars := BootstrapTfvars{
-		OrgID:                        tfvars.OrgID,
-		DefaultRegion:                tfvars.DefaultRegion,
-		DefaultRegion2:               tfvars.DefaultRegion2,
-		DefaultRegionGCS:             tfvars.DefaultRegionGCS,
-		DefaultRegionKMS:             tfvars.DefaultRegionKMS,
-		BillingAccount:               tfvars.BillingAccount,
-		ParentFolder:                 tfvars.ParentFolder,
-		ProjectPrefix:                tfvars.ProjectPrefix,
-		FolderPrefix:                 tfvars.FolderPrefix,
-		BucketForceDestroy:           tfvars.BucketForceDestroy,
-		BucketTfstateKmsForceDestroy: tfvars.BucketTfstateKmsForceDestroy,
-		WorkflowDeletionProtection:   tfvars.WorkflowDeletionProtection,
-		Groups:                       tfvars.Groups,
-		InitialGroupConfig:           tfvars.InitialGroupConfig,
-		FolderDeletionProtection:     tfvars.FolderDeletionProtection,
-		ProjectDeletionPolicy:        tfvars.ProjectDeletionPolicy,
-	}
-
-	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, BootstrapStep, "terraform.tfvars"), bootstrapTfvars)
-	if err != nil {
-		return err
-	}
-
-	// delete README-Jenkins.md due to private key checker false positive
-	jenkinsReadme := filepath.Join(c.FoundationPath, BootstrapStep, "README-Jenkins.md")
-	exist, err := utils.FileExists(jenkinsReadme)
-	if err != nil {
-		return err
-	}
-	if exist {
-		err = os.Remove(jenkinsReadme)
-		if err != nil {
-			return err
-		}
-	}
-
-	terraformDir := filepath.Join(c.FoundationPath, BootstrapStep)
-	options := &terraform.Options{
-		TerraformDir:             terraformDir,
-		Logger:                   c.Logger,
-		NoColor:                  true,
-		RetryableTerraformErrors: testutils.RetryableTransientErrors,
-		MaxRetries:               MaxErrorRetries,
-		TimeBetweenRetries:       TimeBetweenErrorRetries,
-	}
-
-	// terraform deploy
-	err = applyLocal(t, options, "", c.PolicyPath, c.ValidatorProject)
-	if err != nil {
-		return err
-	}
-
-	// read bootstrap outputs
-	defaultRegion := terraform.OutputMap(t, options, "common_config")["default_region"]
-	cbProjectID := terraform.Output(t, options, "cloudbuild_project_id")
-	backendBucket := terraform.Output(t, options, "gcs_bucket_tfstate")
-	backendBucketProjects := terraform.Output(t, options, "projects_gcs_bucket_tfstate")
-
-	// replace backend and terraform init migrate
-	err = s.RunStep("gcp-bootstrap.migrate-state", func() error {
-		options.MigrateState = true
-		err = utils.CopyFile(filepath.Join(options.TerraformDir, "backend.tf.example"), filepath.Join(options.TerraformDir, "backend.tf"))
-		if err != nil {
-			return err
-		}
-		err = utils.ReplaceStringInFile(filepath.Join(options.TerraformDir, "backend.tf"), "UPDATE_ME", backendBucket)
-		if err != nil {
-			return err
-		}
-		_, err := terraform.InitE(t, options)
-		return err
-	})
-	if err != nil {
-		return err
-	}
-
-	// replace all backend files
-	err = s.RunStep("gcp-bootstrap.replace-backend-files", func() error {
-		files, err := utils.FindFiles(c.FoundationPath, "backend.tf")
-		if err != nil {
-			return err
-		}
-		for _, file := range files {
-			err = utils.ReplaceStringInFile(file, "UPDATE_ME", backendBucket)
-			if err != nil {
-				return err
-			}
-			err = utils.ReplaceStringInFile(file, "UPDATE_PROJECTS_BACKEND", backendBucketProjects)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	if err != nil {
-		return err
-	}
-
-	msg.PrintBuildMsg(cbProjectID, defaultRegion, c.DisablePrompt)
-
-	// Check if image build was successful.
-	buildTFBuilderExecutor := NewGCPExecutor(cbProjectID, defaultRegion, "tf-cloudbuilder")
-	err = buildTFBuilderExecutor.WaitBuildSuccess(t, "", "Terraform Image builder Build Failed for tf-cloudbuilder repository.")
-	if err != nil {
-		return err
-	}
-
-	//prepare policies repo
-	gcpPoliciesPath := filepath.Join(c.CheckoutPath, PoliciesRepo)
-	policiesConf := utils.GitClone(t, "CSR", PoliciesRepo, "", gcpPoliciesPath, cbProjectID, c.Logger)
-	policiesBranch := "main"
-
-	err = s.RunStep("gcp-bootstrap.gcp-policies", func() error {
-		return preparePoliciesRepo(policiesConf, policiesBranch, c.FoundationPath, gcpPoliciesPath)
-	})
-	if err != nil {
-		return err
-	}
-
-	//prepare bootstrap repo
-	gcpBootstrapPath := filepath.Join(c.CheckoutPath, BootstrapRepo)
-	bootstrapConf := utils.GitClone(t, "CSR", BootstrapRepo, "", gcpBootstrapPath, cbProjectID, c.Logger)
-	buildExecutor := NewGCPExecutor(cbProjectID, defaultRegion, BootstrapRepo)
-	stageConf := StageConf{
-		Stage:               BootstrapRepo,
-		CICDProject:         cbProjectID,
-		DefaultRegion:       defaultRegion,
-		Step:                BootstrapStep,
-		Repo:                BootstrapRepo,
-		CustomTargetDirPath: "envs/shared",
-		GitConf:             bootstrapConf,
-		Envs:                []string{"shared"},
-		BuildType:           BuildTypeCBCSR,
-		BuildExecutor:       buildExecutor,
-	}
-
-	// if groups creation is enable the helper will just push the code
-	// because Cloud Build build will fail until bootstrap
-	// service account is granted Group Admin role in the
-	// Google Workspace by a Super Admin.
-	// https://github.com/terraform-google-modules/terraform-google-group/blob/main/README.md#google-workspace-formerly-known-as-g-suite-roles
-	if tfvars.HasGroupsCreation() {
-		err = saveBootstrapCodeOnly(t, stageConf, s, c)
-	} else {
-		err = deployStage(t, stageConf, s, c)
-	}
-
-	if err != nil {
-		return err
-	}
-	// Init gcp-bootstrap terraform
-	err = s.RunStep("gcp-bootstrap.init-tf", func() error {
-		options := &terraform.Options{
-			TerraformDir:             filepath.Join(gcpBootstrapPath, "envs", "shared"),
-			Logger:                   c.Logger,
-			NoColor:                  true,
-			RetryableTerraformErrors: testutils.RetryableTransientErrors,
-			MaxRetries:               MaxErrorRetries,
-			TimeBetweenRetries:       TimeBetweenErrorRetries,
 		}
 		_, err := terraform.InitE(t, options)
 		return err
@@ -427,14 +349,18 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 	}
 
 	var conf utils.GitRepo
-	var buildExecutor Executor
+	var executor Executor
 
 	if c.BuildType == BuildTypeGiHub {
-		buildExecutor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, tfvars.GitRepos.Token)
+		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.GitToken)
 		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, OrgRepo), "", c.Logger)
+	} else if tfvars.BuildType == BuildTypeGitLab {
+		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.GitToken)
+		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization)
+		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, OrgRepo), "", c.Logger)
 	} else {
-		buildExecutor = NewGCPExecutor(outputs.CICDProject, outputs.DefaultRegion, OrgRepo)
+		executor = NewGCPExecutor(outputs.CICDProject, outputs.DefaultRegion, OrgRepo)
 		conf = utils.GitClone(t, "CSR", OrgRepo, "", filepath.Join(c.CheckoutPath, OrgRepo), outputs.CICDProject, c.Logger)
 	}
 
@@ -447,7 +373,7 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		GitConf:       conf,
 		Envs:          []string{"shared"},
 		BuildType:     c.BuildType,
-		BuildExecutor: buildExecutor,
+		Executor:      executor,
 	}
 
 	return deployStage(t, stageConf, s, c)
@@ -466,14 +392,18 @@ func DeployEnvStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 	}
 
 	var conf utils.GitRepo
-	var buildExecutor Executor
+	var executor Executor
 
 	if c.BuildType == BuildTypeGiHub {
-		buildExecutor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments, tfvars.GitRepos.Token)
+		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments, c.GitToken)
 		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, EnvironmentsRepo), "", c.Logger)
+	} else if c.BuildType == BuildTypeGitLab {
+		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments, c.GitToken)
+		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments)
+		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, EnvironmentsRepo), "", c.Logger)
 	} else {
-		buildExecutor = NewGCPExecutor(outputs.CICDProject, outputs.DefaultRegion, EnvironmentsRepo)
+		executor = NewGCPExecutor(outputs.CICDProject, outputs.DefaultRegion, EnvironmentsRepo)
 		conf = utils.GitClone(t, "CSR", EnvironmentsRepo, "", filepath.Join(c.CheckoutPath, EnvironmentsRepo), outputs.CICDProject, c.Logger)
 	}
 
@@ -486,7 +416,7 @@ func DeployEnvStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		GitConf:       conf,
 		Envs:          []string{"production", "nonproduction", "development"},
 		BuildType:     c.BuildType,
-		BuildExecutor: buildExecutor,
+		Executor:      executor,
 	}
 
 	return deployStage(t, stageConf, s, c)
@@ -543,14 +473,18 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	}
 
 	var conf utils.GitRepo
-	var buildExecutor Executor
+	var executor Executor
 
 	if c.BuildType == BuildTypeGiHub {
-		buildExecutor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks, tfvars.GitRepos.Token)
+		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks, c.GitToken)
 		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, NetworksRepo), "", c.Logger)
+	} else if c.BuildType == BuildTypeGitLab {
+		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks, c.GitToken)
+		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks)
+		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, NetworksRepo), "", c.Logger)
 	} else {
-		buildExecutor = NewGCPExecutor(outputs.CICDProject, outputs.DefaultRegion, NetworksRepo)
+		executor = NewGCPExecutor(outputs.CICDProject, outputs.DefaultRegion, NetworksRepo)
 		conf = utils.GitClone(t, "CSR", NetworksRepo, "", filepath.Join(c.CheckoutPath, NetworksRepo), outputs.CICDProject, c.Logger)
 	}
 
@@ -567,7 +501,7 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		GroupingUnits: []string{"envs"},
 		Envs:          []string{"production", "nonproduction", "development"},
 		BuildType:     c.BuildType,
-		BuildExecutor: buildExecutor,
+		Executor:      executor,
 	}
 	return deployStage(t, stageConf, s, c)
 }
@@ -607,16 +541,19 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		}
 	}
 
-	// conf := utils.GitClone(t, "CSR", ProjectsRepo, "", filepath.Join(c.CheckoutPath, ProjectsRepo), outputs.CICDProject, c.Logger)
 	var conf utils.GitRepo
-	var buildExecutor Executor
+	var executor Executor
 
 	if c.BuildType == BuildTypeGiHub {
-		buildExecutor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects, tfvars.GitRepos.Token)
+		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects, c.GitToken)
 		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, ProjectsRepo), "", c.Logger)
+	} else if c.BuildType == BuildTypeGitLab {
+		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects, c.GitToken)
+		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects)
+		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, ProjectsRepo), "", c.Logger)
 	} else {
-		buildExecutor = NewGCPExecutor(outputs.CICDProject, outputs.DefaultRegion, ProjectsRepo)
+		executor = NewGCPExecutor(outputs.CICDProject, outputs.DefaultRegion, ProjectsRepo)
 		conf = utils.GitClone(t, "CSR", ProjectsRepo, "", filepath.Join(c.CheckoutPath, ProjectsRepo), outputs.CICDProject, c.Logger)
 	}
 
@@ -633,7 +570,7 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		GroupingUnits: []string{"business_unit_1"},
 		Envs:          []string{"production", "nonproduction", "development"},
 		BuildType:     c.BuildType,
-		BuildExecutor: buildExecutor,
+		Executor:      executor,
 	}
 
 	return deployStage(t, stageConf, s, c)
@@ -726,7 +663,7 @@ func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error 
 	}
 
 	err = s.RunStep(fmt.Sprintf("%s.plan", sc.Stage), func() error {
-		return planStage(t, sc.GitConf, sc.CICDProject, sc.DefaultRegion, sc.Repo, sc.BuildExecutor)
+		return planStage(t, sc.GitConf, sc.CICDProject, sc.DefaultRegion, sc.Repo, sc.Executor)
 	})
 	if err != nil {
 		return err
@@ -738,7 +675,7 @@ func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error 
 			if env == "shared" {
 				aEnv = "production"
 			}
-			return applyEnv(t, sc.GitConf, sc.CICDProject, sc.DefaultRegion, sc.Repo, aEnv, sc.BuildExecutor)
+			return applyEnv(t, sc.GitConf, sc.CICDProject, sc.DefaultRegion, sc.Repo, aEnv, sc.Executor)
 		})
 		if err != nil {
 			return err
@@ -786,11 +723,13 @@ func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath
 			return err
 		}
 	}
-	if buildType == BuildTypeGiHub {
+	if buildType != BuildTypeCBCSR {
 		err := utils.CopyDirectory(filepath.Join(foundationPath, "policy-library"), filepath.Join(gcpPath, "policy-library"))
 		if err != nil {
 			return err
 		}
+	}
+	if buildType == BuildTypeGiHub {
 		err = os.MkdirAll(filepath.Join(gcpPath, ".github/workflows/"), 0755)
 		if err != nil {
 			return err
@@ -804,6 +743,16 @@ func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath
 			return err
 		}
 		err = utils.CopyFile(filepath.Join(foundationPath, "build/github-tf-pull-request.yaml"), filepath.Join(gcpPath, ".github/workflows/github-tf-pull-request.yaml"))
+		if err != nil {
+			return err
+		}
+	}
+	if buildType == BuildTypeGitLab {
+		err = utils.CopyFile(filepath.Join(foundationPath, "build/gitlab-ci.yml"), filepath.Join(gcpPath, ".gitlab-ci.yml"))
+		if err != nil {
+			return err
+		}
+		err = utils.CopyFile(filepath.Join(foundationPath, "build/run_gcp_auth.sh"), filepath.Join(gcpPath, "run_gcp_auth.sh"))
 		if err != nil {
 			return err
 		}

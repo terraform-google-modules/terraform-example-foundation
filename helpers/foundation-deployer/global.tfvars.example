@@ -86,19 +86,28 @@ groups = {
 }
 
 // Uncomment for GitHub or GitLab deploy
+
+// git_repos = {
+//     owner        = "REPO_OWNER"
+//     bootstrap    = "BOOTSTRAP_REPO"
+//     organization = "ORGANIZATION_REPO"
+//     environments = "ENVIRONMENTS_REPO"
+//     networks     = "NETWORKS_REPO"
+//     projects     = "PROJECTS_REPO"
+//     cicd_runner  = "CICD_RUNNER_REPO" // Required for GitLab
+// }
+
+//  to prevent saving the git token in plain text in this file,
+//  export the token in the command line
+//  as an environment variable before running this helper.
+//  Run the following command in your shell:
+
+//  export GIT_TOKEN="YOUR-ACCESS-TOKEN"
+
 // See:
 //   GitHub: https://github.com/terraform-google-modules/terraform-example-foundation/blob/main/0-bootstrap/README-GitHub.md#requirements
 //   GitLab: https://github.com/terraform-google-modules/terraform-example-foundation/blob/main/0-bootstrap/README-GitLab.md#requirements
-// git_repos = {
-//     token        = "ACCESS_TOKEN"
-//     owner        = "REPO_OWNER"
-//     bootstrap    = "BOOTSTRAP_REPO_URL"
-//     organization = "ORGANIZATION_REPO_URL"
-//     environments = "ENVIRONMENTS_REPO_URL"
-//     networks     = "NETWORKS_REPO_URL"
-//     projects     = "PROJECTS_REPO_URL"
-//     cicd_runner  = "CICD_RUNNER_REPO_URL" // Required if GitLab
-// }
+
 
 
 // 1-org inputs

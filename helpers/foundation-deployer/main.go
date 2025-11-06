@@ -111,6 +111,19 @@ func main() {
 		Logger:            utils.GetLogger(cfg.quiet),
 	}
 
+	// validate git configuration for GitHub and GitLab
+	if globalTFVars.BuildType == stages.BuildTypeGiHub || globalTFVars.BuildType == stages.BuildTypeGitLab {
+		token := os.Getenv("GIT_TOKEN")
+		if token == "" {
+			fmt.Println("# GIT_TOKEN environment variable not set. It is required for GitHub and GitLab.")
+			os.Exit(1)
+		}
+		if globalTFVars.GitRepos == nil {
+			fmt.Printf("# for build type %s variable 'git_repos' is required\n", globalTFVars.BuildType)
+			os.Exit(1)
+		}
+		conf.GitToken = token
+	}
 	// only enable services if they are not already enabled
 	if globalTFVars.HasValidatorProj() {
 		conf.ValidatorProject = *globalTFVars.ValidatorProjectID
@@ -169,6 +182,17 @@ func main() {
 		return
 	}
 
+	var envVars map[string]string
+	if conf.BuildType != stages.BuildTypeGiHub {
+		envVars = map[string]string{
+			"TF_VAR_gh_token": conf.GitToken,
+		}
+	}
+	if conf.BuildType != stages.BuildTypeGitLab {
+		envVars = map[string]string{
+			"TF_VAR_gitlab_token": conf.GitToken,
+		}
+	}
 	// destroy stages
 	if cfg.destroy {
 		// Note: destroy is only terraform destroy, local directories are not deleted.
@@ -231,7 +255,7 @@ func main() {
 		// 0-bootstrap
 		msg.PrintStageMsg("Destroying 0-bootstrap stage")
 		err = s.RunDestroyStep("gcp-bootstrap", func() error {
-			return stages.DestroyBootstrapStage(t, s, conf)
+			return stages.DestroyBootstrapStage(t, s, conf, envVars)
 		})
 		if err != nil {
 			fmt.Printf("# Bootstrap step destroy failed. Error: %s\n", err.Error())
@@ -253,11 +277,8 @@ func main() {
 	msg.PrintStageMsg("Deploying 0-bootstrap stage")
 	skipInnerBuildMsg := s.IsStepComplete("gcp-bootstrap")
 	err = s.RunStep("gcp-bootstrap", func() error {
-		if globalTFVars.BuildType == stages.BuildTypeCBCSR {
-			return stages.DeployBootstrapStage(t, s, globalTFVars, conf)
-		} else {
-			return stages.DeployGenericBootstrapStage(t, s, globalTFVars, conf)
-		}
+		return stages.DeployBootstrapStage(t, s, globalTFVars, conf)
+
 	})
 	if err != nil {
 		fmt.Printf("# Bootstrap step failed. Error: %s\n", err.Error())

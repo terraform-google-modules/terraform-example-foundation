@@ -111,16 +111,6 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 	}
 }
 
-func ValidateGitRepos(t testing.TB, g GlobalTFVars) {
-	//
-
-	if g.BuildType == BuildTypeGiHub {
-		// check if owner was provided
-		// check if all repo was provided
-		// test if token is valid
-	}
-}
-
 // ValidateDestroyFlags checks if the flags to allow the destruction of the infrastructure are enabled
 func ValidateDestroyFlags(t testing.TB, g GlobalTFVars) {
 	trueFlags := []string{}

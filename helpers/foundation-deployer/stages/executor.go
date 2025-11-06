@@ -18,6 +18,7 @@ import (
 	"github.com/mitchellh/go-testing-interface"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gcp"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/github"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gitlab"
 )
 
 type Executor interface {
@@ -62,4 +63,24 @@ func NewGitHubExecutor(owner, repo, token string) *GitHubExecutor {
 
 func (e *GitHubExecutor) WaitBuildSuccess(t testing.TB, commitSha, failureMsg string) error {
 	return e.executor.WaitBuildSuccess(t, e.owner, e.repo, e.token, failureMsg, MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
+}
+
+type GitLabExecutor struct {
+	executor gitlab.GL
+	owner    string
+	project  string
+	token    string
+}
+
+func NewGitLabExecutor(owner, project, token string) *GitLabExecutor {
+	return &GitLabExecutor{
+		executor: gitlab.NewGL(),
+		owner:    owner,
+		project:  project,
+		token:    token,
+	}
+}
+
+func (e *GitLabExecutor) WaitBuildSuccess(t testing.TB, commitSha, failureMsg string) error {
+	return e.executor.WaitBuildSuccess(t, e.owner, e.project, e.token, failureMsg, MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
 }

@@ -25,6 +25,9 @@ import (
 	"github.com/google/go-github/v58/github"
 	"github.com/mitchellh/go-testing-interface"
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
+
+	localutil "github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
+
 	"golang.org/x/oauth2"
 )
 
@@ -62,24 +65,29 @@ type GH struct {
 	sleepTime       time.Duration
 }
 
+// NewGH creates a new wrapper for The GitHub API
 func NewGH() GH {
 	return GH{
 		TriggerNewBuild: triggerNewBuild,
 		sleepTime:       20,
 	}
 }
+// triggerNewBuild triggers a new action execution
 func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (int64, string, string, error) {
-	if token == "" {
-		return 0, "", "", fmt.Errorf("GITHUB_TOKEN not set")
-	}
-
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
-	_, err := client.Actions.RerunWorkflowByID(ctx, owner, repo, runID)
+	resp, err := client.Actions.RerunWorkflowByID(ctx, owner, repo, runID)
 	if err != nil {
 		return 0, "", "", fmt.Errorf("Error re-running workflow: %v", err)
+	}
+	if resp.StatusCode != http.StatusCreated {
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return 0, "", "", fmt.Errorf("Error re-running workflow status: %d body parsing error: %v", resp.StatusCode, err)
+		}
+		return 0, "", "", fmt.Errorf("Error re-running workflow status: %d body: %s", resp.StatusCode, string(bodyBytes))
 	}
 	opts := &github.ListWorkflowRunsOptions{
 
@@ -120,7 +128,8 @@ func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token strin
 	return newRunID, status, conclusion, nil
 }
 
-func (g GH) GetLastBuildState(t testing.TB, ctx context.Context, owner, repo, token string) (int64, string, string, error) {
+// GetLastActionState returns the state of the latest action
+func (g GH) GetLastActionState(t testing.TB, ctx context.Context, owner, repo, token string) (int64, string, string, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
@@ -158,6 +167,7 @@ func (g GH) GetLastBuildState(t testing.TB, ctx context.Context, owner, repo, to
 	return runID, status, conclusion, nil
 }
 
+// GetActionState returns the state of a given action
 func (g GH) GetActionState(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (string, string, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
@@ -180,6 +190,7 @@ func (g GH) GetActionState(t testing.TB, ctx context.Context, owner, repo, token
 	return status, conclusion, nil
 }
 
+// GetBuildLogs returns the execution logs of an action
 func (g GH) GetBuildLogs(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (string, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
@@ -229,6 +240,7 @@ func (g GH) GetBuildLogs(t testing.TB, ctx context.Context, owner, repo, token s
 	return "", nil
 }
 
+// GetFinalActionState returns the final state of an action
 func (g GH) GetFinalActionState(t testing.TB, ctx context.Context, owner, repo, token string, runID int64, maxBuildRetry int) (string, string, error) {
 	var status, conclusion string
 	var err error
@@ -265,7 +277,7 @@ func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token string, failureMsg
 	// wait action creation
 	time.Sleep(30 * time.Second)
 
-	runID, status, conclusion, err = g.GetLastBuildState(t, ctx, owner, repo, token)
+	runID, status, conclusion, err = g.GetLastActionState(t, ctx, owner, repo, token)
 	if err != nil {
 		return err
 	}
@@ -282,7 +294,7 @@ func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token string, failureMsg
 			if err != nil {
 				return err
 			}
-			if !g.IsRetryableError(t, logs) {
+			if localutil.IsRetryableError(t, logs) {
 				return fmt.Errorf("%s\nSee:\nhttps://github.com/%s/%s/actions/runs/%d\nfor details", failureMsg, owner, repo, runID)
 			}
 			fmt.Println("build failed with retryable error. a new build will be triggered.")
@@ -301,18 +313,4 @@ func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token string, failureMsg
 		}
 	}
 	return fmt.Errorf("%s action failed after %d retries", failureMsg, maxErrorRetries)
-}
-
-// IsRetryableError checks the logs of a failed Cloud Build build
-// and verify if the error is a transient one and can be retried
-func (g GH) IsRetryableError(t testing.TB, logs string) bool {
-	found := false
-	for pattern, msg := range retryRegexp {
-		if pattern.MatchString(logs) {
-			found = true
-			fmt.Printf("error '%s' is worth of a retry\n", msg)
-			break
-		}
-	}
-	return found
 }

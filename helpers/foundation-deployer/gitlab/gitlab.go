@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"regexp"
 	"time"
 
 	"github.com/mitchellh/go-testing-interface"
@@ -43,10 +42,6 @@ const (
 	StatusCanceling          = "canceling"
 )
 
-var (
-	retryRegexp = map[*regexp.Regexp]string{}
-)
-
 type GL struct {
 	TriggerNewBuild func(t testing.TB, ctx context.Context, owner, project, token string, jobID int) (int, error)
 	sleepTime       time.Duration
@@ -65,12 +60,12 @@ func triggerNewBuild(t testing.TB, ctx context.Context, owner, project, token st
 
 	git, err := gitlab.NewClient(token)
 	if err != nil {
-		return 0, fmt.Errorf("Failed to create client: %v", err)
+		return 0, fmt.Errorf("failed to create client: %v", err)
 	}
 
 	job, resp, err := git.Jobs.RetryJob(fmt.Sprintf("%s/%s", owner, project), jobID, gitlab.WithContext(ctx))
 	if err != nil {
-		return 0, fmt.Errorf("Error retrying job: %v", err)
+		return 0, fmt.Errorf("error retrying job: %v", err)
 	}
 	if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode <= http.StatusNetworkAuthenticationRequired {
 		bodyBytes, err := io.ReadAll(resp.Body)
@@ -86,7 +81,7 @@ func triggerNewBuild(t testing.TB, ctx context.Context, owner, project, token st
 func (g GL) GetLastJobStatus(t testing.TB, ctx context.Context, owner, project, token string) (string, int, error) {
 	git, err := gitlab.NewClient(token)
 	if err != nil {
-		return "", 0, fmt.Errorf("Failed to create client: %v", err)
+		return "", 0, fmt.Errorf("failed to create client: %v", err)
 	}
 
 	includeRetried := true
@@ -102,11 +97,11 @@ func (g GL) GetLastJobStatus(t testing.TB, ctx context.Context, owner, project, 
 
 	jobs, _, err := git.Jobs.ListProjectJobs(fmt.Sprintf("%s/%s", owner, project), opts, gitlab.WithContext(ctx))
 	if err != nil {
-		return "", 0, fmt.Errorf("Error listing project jobs: %v", err)
+		return "", 0, fmt.Errorf("error listing project jobs: %v", err)
 	}
 
 	if len(jobs) == 0 {
-		return "", 0, fmt.Errorf("No jobs found for project: %s/%s", owner, project)
+		return "", 0, fmt.Errorf("no jobs found for project: %s/%s", owner, project)
 	}
 
 	return jobs[0].Status, jobs[0].ID, nil
@@ -116,21 +111,21 @@ func (g GL) GetLastJobStatus(t testing.TB, ctx context.Context, owner, project, 
 func (g GL) GetJobLogs(t testing.TB, ctx context.Context, owner, project, token string, jobID int) (string, error) {
 	git, err := gitlab.NewClient(token)
 	if err != nil {
-		return "", fmt.Errorf("Failed to create client: %v", err)
+		return "", fmt.Errorf("failed to create client: %v", err)
 	}
 
 	reader, resp, err := git.Jobs.GetTraceFile(fmt.Sprintf("%s/%s", owner, project), jobID)
 	if err != nil {
-		return "", fmt.Errorf("Error getting job trace file: %v", err)
+		return "", fmt.Errorf("error getting job trace file: %v", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("Expected status 200 OK, but got %s for job %d trace", resp.Status, jobID)
+		return "", fmt.Errorf("expected status 200 OK, but got %s for job %d trace", resp.Status, jobID)
 	}
 
 	logBytes, err := io.ReadAll(reader)
 	if err != nil {
-		return "", fmt.Errorf("Failed to read job %d trace from bytes.Reader: %v", jobID, err)
+		return "", fmt.Errorf("failed to read job %d trace from bytes.Reader: %v", jobID, err)
 	}
 
 	return string(logBytes), nil
@@ -140,12 +135,12 @@ func (g GL) GetJobLogs(t testing.TB, ctx context.Context, owner, project, token 
 func (g GL) GetJobStatus(t testing.TB, ctx context.Context, owner, project, token string, jobID int) (string, error) {
 	git, err := gitlab.NewClient(token)
 	if err != nil {
-		return "", fmt.Errorf("Failed to create client: %v", err)
+		return "", fmt.Errorf("failed to create client: %v", err)
 	}
 
 	job, _, err := git.Jobs.GetJob(fmt.Sprintf("%s/%s", owner, project), jobID, gitlab.WithContext(ctx))
 	if err != nil {
-		return "", fmt.Errorf("Error retrying job: %v", err)
+		return "", fmt.Errorf("error retrying job: %v", err)
 	}
 
 	return job.Status, nil
@@ -232,7 +227,7 @@ func (g GL) AddProjectsToJobTokenScope(t testing.TB, owner, cicdProject, token s
 	ctx := context.Background()
 	git, err := gitlab.NewClient(token)
 	if err != nil {
-		return fmt.Errorf("Failed to create client: %v", err)
+		return fmt.Errorf("failed to create client: %v", err)
 	}
 	runnerProjectPath := fmt.Sprintf("%s/%s", owner, cicdProject)
 
@@ -243,13 +238,13 @@ func (g GL) AddProjectsToJobTokenScope(t testing.TB, owner, cicdProject, token s
 
 	runnerProjectID, err := getProjectIDByPath(git, ctx, runnerProjectPath)
 	if err != nil {
-		return fmt.Errorf("Could not get the project ID for the runner repository. Aborting. Error: %v", err)
+		return fmt.Errorf("could not get the project ID for the runner repository. Aborting. Error: %v", err)
 	}
 	for _, targetProjectPath := range projectsToAdd {
 
 		targetProjectID, err := getProjectIDByPath(git, ctx, targetProjectPath)
 		if err != nil {
-			return fmt.Errorf("Could not find project ID. Error: %v", err)
+			return fmt.Errorf("could not find project ID. Error: %v", err)
 		}
 
 		opts := &gitlab.JobTokenInboundAllowOptions{
@@ -266,7 +261,7 @@ func (g GL) AddProjectsToJobTokenScope(t testing.TB, owner, cicdProject, token s
 		}
 
 		if resp.StatusCode != http.StatusCreated {
-			return fmt.Errorf("DONE (Status: %s)\n", resp.Status)
+			return fmt.Errorf("done (Status: %s)", resp.Status)
 		}
 	}
 

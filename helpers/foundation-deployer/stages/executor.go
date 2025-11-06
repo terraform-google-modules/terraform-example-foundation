@@ -46,7 +46,6 @@ func NewGCPExecutor(project, region, repo string) *GCPExecutor {
 
 type GitHubExecutor struct {
 	executor github.GH
-	url      string
 	owner    string
 	repo     string
 	token    string

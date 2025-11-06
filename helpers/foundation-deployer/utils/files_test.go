@@ -23,8 +23,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var testBuildTypes = []string{"cb", "github", "gitlab", "jenkins", "terraform_cloud"}
-
 func writeTempFile(dir, name, content string) (string, error) {
 	f := filepath.Join(dir, name)
 	err := os.WriteFile(f, []byte(content), 0644)

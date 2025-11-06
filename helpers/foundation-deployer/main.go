@@ -188,7 +188,7 @@ func main() {
 			"TF_VAR_gh_token": conf.GitToken,
 		}
 	}
-	if conf.BuildType != stages.BuildTypeGitLab {
+	if conf.BuildType == stages.BuildTypeGitLab {
 		envVars = map[string]string{
 			"TF_VAR_gitlab_token": conf.GitToken,
 		}

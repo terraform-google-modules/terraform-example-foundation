@@ -19,14 +19,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"regexp"
+	"os"
 	"time"
 
 	"github.com/google/go-github/v58/github"
 	"github.com/mitchellh/go-testing-interface"
-	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 
-	localutil "github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 
 	"golang.org/x/oauth2"
 )
@@ -46,20 +45,6 @@ const (
 	StatusActionRequired = "action_required"
 )
 
-var (
-	retryRegexp = map[*regexp.Regexp]string{}
-)
-
-func init() {
-	for e, m := range testutils.RetryableTransientErrors {
-		r, err := regexp.Compile(fmt.Sprintf("(?s)%s", e)) //(?s) enables dot (.) to match newline.
-		if err != nil {
-			panic(fmt.Sprintf("failed to compile regex %s: %s", e, err.Error()))
-		}
-		retryRegexp[r] = m
-	}
-}
-
 type GH struct {
 	TriggerNewBuild func(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (int64, string, string, error)
 	sleepTime       time.Duration
@@ -72,6 +57,7 @@ func NewGH() GH {
 		sleepTime:       20,
 	}
 }
+
 // triggerNewBuild triggers a new action execution
 func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (int64, string, string, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
@@ -80,14 +66,14 @@ func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token strin
 
 	resp, err := client.Actions.RerunWorkflowByID(ctx, owner, repo, runID)
 	if err != nil {
-		return 0, "", "", fmt.Errorf("Error re-running workflow: %v", err)
+		return 0, "", "", fmt.Errorf("error re-running workflow: %v", err)
 	}
 	if resp.StatusCode != http.StatusCreated {
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return 0, "", "", fmt.Errorf("Error re-running workflow status: %d body parsing error: %v", resp.StatusCode, err)
+			return 0, "", "", fmt.Errorf("error re-running workflow status: %d body parsing error: %v", resp.StatusCode, err)
 		}
-		return 0, "", "", fmt.Errorf("Error re-running workflow status: %d body: %s", resp.StatusCode, string(bodyBytes))
+		return 0, "", "", fmt.Errorf("error re-running workflow status: %d body: %s", resp.StatusCode, string(bodyBytes))
 	}
 	opts := &github.ListWorkflowRunsOptions{
 
@@ -103,11 +89,11 @@ func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token strin
 	runs, _, err := client.Actions.ListRepositoryWorkflowRuns(ctx, owner, repo, opts)
 
 	if err != nil {
-		return 0, "", "", fmt.Errorf("Error listing workflow runs: %v", err)
+		return 0, "", "", fmt.Errorf("error listing workflow runs: %v", err)
 	}
 
 	if len(runs.WorkflowRuns) == 0 {
-		return 0, "", "", fmt.Errorf("No workflow runs found for repo %s/%s ", owner, repo)
+		return 0, "", "", fmt.Errorf("no workflow runs found for repo %s/%s", owner, repo)
 	}
 
 	var newRunID int64
@@ -143,7 +129,7 @@ func (g GH) GetLastActionState(t testing.TB, ctx context.Context, owner, repo, t
 	runs, _, err := client.Actions.ListRepositoryWorkflowRuns(ctx, owner, repo, opts)
 
 	if err != nil {
-		return 0, "", "", fmt.Errorf("Error listing workflow runs: %v", err)
+		return 0, "", "", fmt.Errorf("error listing workflow runs: %v", err)
 	}
 
 	if len(runs.WorkflowRuns) == 0 {
@@ -175,7 +161,7 @@ func (g GH) GetActionState(t testing.TB, ctx context.Context, owner, repo, token
 
 	run, _, err := client.Actions.GetWorkflowRunByID(ctx, owner, repo, runID)
 	if err != nil {
-		return "", "", fmt.Errorf("Error getting workflow run: %v", err)
+		return "", "", fmt.Errorf("error getting workflow run: %v", err)
 	}
 
 	var status string
@@ -201,7 +187,7 @@ func (g GH) GetBuildLogs(t testing.TB, ctx context.Context, owner, repo, token s
 	}
 	jobs, _, err := client.Actions.ListWorkflowJobs(ctx, owner, repo, runID, listJobsOpts)
 	if err != nil {
-		return "", fmt.Errorf("Error listing jobs for run %d: %v", runID, err)
+		return "", fmt.Errorf("error listing jobs for run %d: %v", runID, err)
 	}
 
 	for _, job := range jobs.Jobs {
@@ -214,25 +200,31 @@ func (g GH) GetBuildLogs(t testing.TB, ctx context.Context, owner, repo, token s
 
 			logURL, resp, err := client.Actions.GetWorkflowJobLogs(ctx, owner, repo, jobID, 3)
 			if err != nil {
-				return "", fmt.Errorf("  ERROR: Could not get log URL for job %d: %v\n", jobID, err)
+				return "", fmt.Errorf("error: Could not get log URL for job %d: %v", jobID, err)
 			}
 			if resp.StatusCode != http.StatusFound {
-				return "", fmt.Errorf("  ERROR: Expected a 302 redirect for job logs, but got %s\n", resp.Status)
+				return "", fmt.Errorf("error: Expected a 302 redirect for job logs, but got %s", resp.Status)
 			}
 
 			logContentResp, err := http.Get(logURL.String())
 			if err != nil {
-				return "", fmt.Errorf("  ERROR: Could not download logs from %s: %v\n", logURL, err)
+				return "", fmt.Errorf("error: Could not download logs from %s: %v", logURL, err)
 			}
-			defer logContentResp.Body.Close()
+
+			defer func() {
+				err := logContentResp.Body.Close()
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "error closing execution log file: %s", err)
+				}
+			}()
 
 			if logContentResp.StatusCode != http.StatusOK {
-				return "", fmt.Errorf("  ERROR: Expected status 200 OK from log URL, but got %s\n", logContentResp.Status)
+				return "", fmt.Errorf("error: Expected status 200 OK from log URL, but got %s", logContentResp.Status)
 			}
 
 			bodyBytes, err := io.ReadAll(logContentResp.Body)
 			if err != nil {
-				return "", fmt.Errorf("Error reading response body: %v", err)
+				return "", fmt.Errorf("error reading response body: %v", err)
 			}
 			return string(bodyBytes), nil
 		}
@@ -283,7 +275,7 @@ func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token string, failureMsg
 	}
 	for i := 0; i < maxErrorRetries; i++ {
 		if status != statusCompleted {
-			status, conclusion, err = g.GetFinalActionState(t, ctx, owner, repo, token, runID, maxBuildRetry)
+			_, conclusion, err = g.GetFinalActionState(t, ctx, owner, repo, token, runID, maxBuildRetry)
 			if err != nil {
 				return err
 			}
@@ -294,7 +286,7 @@ func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token string, failureMsg
 			if err != nil {
 				return err
 			}
-			if localutil.IsRetryableError(t, logs) {
+			if utils.IsRetryableError(t, logs) {
 				return fmt.Errorf("%s\nSee:\nhttps://github.com/%s/%s/actions/runs/%d\nfor details", failureMsg, owner, repo, runID)
 			}
 			fmt.Println("build failed with retryable error. a new build will be triggered.")

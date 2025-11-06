@@ -23,15 +23,7 @@ TARGET_BUILD="$1"
 build_types=("cb" "github" "gitlab" "jenkins" "terraform_cloud")
 
 # Validate the build_type input
-valid_build_type=false
-for valid_type in "${build_types[@]}"; do
-  if [ "$TARGET_BUILD" = "$valid_type" ]; then
-    valid_build_type=true
-    break
-  fi
-done
-
-if [ "$valid_build_type" = false ]; then
+if [[ ! " ${build_types[*]} " =~ " ${TARGET_BUILD} " ]]; then
   echo "Error: Invalid build type '$TARGET_BUILD'.  Must be one of: ${build_types[*]}"
   exit 1
 fi

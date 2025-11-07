@@ -136,7 +136,7 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
    cd ./envs/shared
    ```
 
-1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitHub version
+1. Run the helper script `choose_build_type.sh` to enable Bootstrap Terraform Cloud version
    ```bash
    ./scripts/choose_build_type.sh terraform_cloud
    ```

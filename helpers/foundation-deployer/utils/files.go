@@ -145,26 +145,25 @@ func RenameBuildFiles(basePath, targetBuild string) error {
 				return fmt.Errorf("error renaming file \"%s\": %w", file, err)
 			}
 		}
-
-		// Rename *_BUILD_TYPE.tf.example to *_BUILD_TYPE.tf if they exist.
-		pattern := filepath.Join(basePath, fmt.Sprintf("*_%s.tf%s", targetBuild, DisableFileSuffix))
-		files, err := filepath.Glob(pattern)
-		if err != nil {
-			return fmt.Errorf("error finding files (target rename): %w", err)
-		}
-
-		for _, file := range files {
-			baseName := strings.TrimSuffix(file, fmt.Sprintf(".tf%s", DisableFileSuffix))
-			newName := baseName + ".tf"
-
-			fmt.Printf("Renaming \"%s\" to \"%s\"\n", file, newName)
-
-			err := os.Rename(file, newName)
-			if err != nil {
-				return fmt.Errorf("error renaming file \"%s\": %w", file, err)
-			}
-		}
 	}
 
+	// Rename *_BUILD_TYPE.tf.example to *_BUILD_TYPE.tf if they exist.
+	pattern := filepath.Join(basePath, fmt.Sprintf("*_%s.tf%s", targetBuild, DisableFileSuffix))
+	files, err := filepath.Glob(pattern)
+	if err != nil {
+		return fmt.Errorf("error finding files (target rename): %w", err)
+	}
+
+	for _, file := range files {
+		baseName := strings.TrimSuffix(file, fmt.Sprintf(".tf%s", DisableFileSuffix))
+		newName := baseName + ".tf"
+
+		fmt.Printf("Renaming \"%s\" to \"%s\"\n", file, newName)
+
+		err := os.Rename(file, newName)
+		if err != nil {
+			return fmt.Errorf("error renaming file \"%s\": %w", file, err)
+		}
+	}
 	return nil
 }

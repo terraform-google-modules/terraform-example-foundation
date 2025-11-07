@@ -288,7 +288,7 @@ func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token, commitSha, failur
 			if err != nil {
 				return err
 			}
-			if utils.IsRetryableError(t, logs) {
+			if !utils.IsRetryableError(t, logs) {
 				return fmt.Errorf("%s\nSee:\nhttps://github.com/%s/%s/actions/runs/%d\nfor details", failureMsg, owner, repo, runID)
 			}
 			fmt.Println("build failed with retryable error. a new build will be triggered.")

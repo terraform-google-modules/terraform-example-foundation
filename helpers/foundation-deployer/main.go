@@ -183,12 +183,13 @@ func main() {
 	}
 
 	var envVars map[string]string
-	if conf.BuildType != stages.BuildTypeGiHub {
+
+	switch conf.BuildType {
+	case stages.BuildTypeGiHub:
 		envVars = map[string]string{
 			"TF_VAR_gh_token": conf.GitToken,
 		}
-	}
-	if conf.BuildType == stages.BuildTypeGitLab {
+	case stages.BuildTypeGitLab:
 		envVars = map[string]string{
 			"TF_VAR_gitlab_token": conf.GitToken,
 		}

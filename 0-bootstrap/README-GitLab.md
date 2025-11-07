@@ -218,7 +218,7 @@ Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create the
    cd ./envs/shared
    ```
 
-1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitHub version
+1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitLab version
    ```bash
    ./scripts/choose_build_type.sh gitlab
    ```

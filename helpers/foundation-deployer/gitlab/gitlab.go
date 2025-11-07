@@ -223,7 +223,7 @@ func (g GL) WaitBuildSuccess(t testing.TB, owner, project, token, commitSha, fai
 			if err != nil {
 				return err
 			}
-			if utils.IsRetryableError(t, logs) {
+			if !utils.IsRetryableError(t, logs) {
 				return fmt.Errorf("%s\nSee:\nhttps://gitlab.com/%s/%s/-/jobs/%d\nfor details", failureMsg, owner, project, jobID)
 			}
 			fmt.Println("job failed with retryable error. a new job will be triggered.")

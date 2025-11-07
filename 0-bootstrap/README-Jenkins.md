@@ -139,7 +139,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
    cd ./envs/shared
    ```
 
-1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitHub version
+1. Run the helper script `choose_build_type.sh` to enable Bootstrap Jenkins version
    ```bash
    ./scripts/choose_build_type.sh jenkins
    ```

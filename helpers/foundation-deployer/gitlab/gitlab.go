@@ -77,15 +77,37 @@ func triggerNewBuild(t testing.TB, ctx context.Context, owner, project, token st
 	return job.ID, nil
 }
 
-// GetLastJobStatus returns the status of the latest executed job
-func (g GL) GetLastJobStatus(t testing.TB, ctx context.Context, owner, project, token string) (string, int, error) {
+// GetLastJobStatusForSHA finds the latest job associated with a specific commit SHA
+func (g GL) GetLastJobStatusForSHA(t testing.TB, ctx context.Context, owner, project, token, sha string) (string, int, error) {
 	git, err := gitlab.NewClient(token)
 	if err != nil {
 		return "", 0, fmt.Errorf("failed to create client: %v", err)
 	}
 
+	projectPath := fmt.Sprintf("%s/%s", owner, project)
+
+	pipelineOpts := &gitlab.ListProjectPipelinesOptions{
+		ListOptions: gitlab.ListOptions{
+			PerPage: 1,
+			Page:    1,
+			OrderBy: "id",
+			Sort:    "desc",
+		},
+		SHA: &sha,
+	}
+
+	pipelines, _, err := git.Pipelines.ListProjectPipelines(projectPath, pipelineOpts, gitlab.WithContext(ctx))
+	if err != nil {
+		return "", 0, fmt.Errorf("error listing pipelines for SHA %s: %w", sha, err)
+	}
+
+	if len(pipelines) == 0 {
+		return "", 0, fmt.Errorf("no pipelines found for project '%s' at SHA '%s'", projectPath, sha)
+	}
+
+	latestPipelineID := pipelines[0].ID
 	includeRetried := true
-	opts := &gitlab.ListJobsOptions{
+	jobOpts := &gitlab.ListJobsOptions{
 		ListOptions: gitlab.ListOptions{
 			PerPage: 1,
 			Page:    1,
@@ -95,13 +117,13 @@ func (g GL) GetLastJobStatus(t testing.TB, ctx context.Context, owner, project, 
 		IncludeRetried: &includeRetried,
 	}
 
-	jobs, _, err := git.Jobs.ListProjectJobs(fmt.Sprintf("%s/%s", owner, project), opts, gitlab.WithContext(ctx))
+	jobs, _, err := git.Jobs.ListPipelineJobs(projectPath, latestPipelineID, jobOpts, gitlab.WithContext(ctx))
 	if err != nil {
-		return "", 0, fmt.Errorf("error listing project jobs: %v", err)
+		return "", 0, fmt.Errorf("error listing jobs for pipeline %d: %w", latestPipelineID, err)
 	}
 
 	if len(jobs) == 0 {
-		return "", 0, fmt.Errorf("no jobs found for project: %s/%s", owner, project)
+		return "", 0, fmt.Errorf("no jobs found for pipeline %d", latestPipelineID)
 	}
 
 	return jobs[0].Status, jobs[0].ID, nil
@@ -175,7 +197,7 @@ func (g GL) GetFinalJobStatus(t testing.TB, ctx context.Context, owner, project,
 }
 
 // WaitBuildSuccess waits for the current job in a project to finish.
-func (g GL) WaitBuildSuccess(t testing.TB, owner, project, token, failureMsg string, maxBuildRetry, maxErrorRetries int, timeBetweenErrorRetries time.Duration) error {
+func (g GL) WaitBuildSuccess(t testing.TB, owner, project, token, commitSha, failureMsg string, maxBuildRetry, maxErrorRetries int, timeBetweenErrorRetries time.Duration) error {
 	var status string
 	var jobID int
 	var err error
@@ -184,7 +206,7 @@ func (g GL) WaitBuildSuccess(t testing.TB, owner, project, token, failureMsg str
 	// wait job creation
 	time.Sleep(30 * time.Second)
 
-	status, jobID, err = g.GetLastJobStatus(t, ctx, owner, project, token)
+	status, jobID, err = g.GetLastJobStatusForSHA(t, ctx, owner, project, token, commitSha)
 	if err != nil {
 		return err
 	}

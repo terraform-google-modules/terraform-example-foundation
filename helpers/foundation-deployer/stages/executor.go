@@ -81,5 +81,5 @@ func NewGitLabExecutor(owner, project, token string) *GitLabExecutor {
 }
 
 func (e *GitLabExecutor) WaitBuildSuccess(t testing.TB, commitSha, failureMsg string) error {
-	return e.executor.WaitBuildSuccess(t, e.owner, e.project, e.token, failureMsg, MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
+	return e.executor.WaitBuildSuccess(t, e.owner, e.project, e.token, commitSha, failureMsg, MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
 }

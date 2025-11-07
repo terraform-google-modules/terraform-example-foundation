@@ -61,21 +61,28 @@ func buildGitLabCICDImage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		return err
 	}
 
+	commitSha, err := conf.GetCommitSha()
+	if err != nil {
+		return err
+	}
+
 	fmt.Println("")
 	fmt.Println("# Follow job execution in GitLab:")
 	fmt.Printf("# %s\n", fmt.Sprintf("https://gitlab.com/%s/%s/-/jobs", tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner))
 
 	failureMsg := fmt.Sprintf("CI/CD runner image job failed %s/%s repository.", tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner)
-	err = gl.WaitBuildSuccess(t, tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner, c.GitToken, failureMsg, MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
+	err = gl.WaitBuildSuccess(t, tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner, c.GitToken, commitSha, failureMsg, MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
 	if err != nil {
 		return err
 	}
+
 	projectsToAdd := make([]string, 5)
 	projectsToAdd[0] = tfvars.GitRepos.Bootstrap
 	projectsToAdd[1] = tfvars.GitRepos.Organization
 	projectsToAdd[2] = tfvars.GitRepos.Environments
 	projectsToAdd[3] = tfvars.GitRepos.Networks
 	projectsToAdd[4] = tfvars.GitRepos.Projects
+
 	return gl.AddProjectsToJobTokenScope(t, tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner, c.GitToken, projectsToAdd)
 }
 

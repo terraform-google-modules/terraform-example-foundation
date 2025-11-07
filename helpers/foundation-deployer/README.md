@@ -73,7 +73,7 @@ Version 1.5.7 is the last version before the license model change. To use a late
 
 ### Prepare the deploy environment
 
-- Create a directory in the file system to host the Git Repositories that will be created (Cloud Source repositories, Github , or GitLab) and a copy of the terraform example foundation repository.
+- Create a directory in the file system to host the Git Repositories that will be created (Cloud Source repositories, Github, or GitLab) and a copy of the terraform example foundation repository.
 - Clone the `terraform-example-foundation` repository on this directory.
 
     ```text

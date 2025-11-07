@@ -84,7 +84,10 @@ func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token, comm
 		},
 	}
 
-	// wait action creation
+	// wait for the new workflow run to be created and appear
+	// in the API results after re-running it
+	// needed because RerunWorkflowByID dos no return
+	// the ID of the new workflow
 	time.Sleep(30 * time.Second)
 
 	runs, _, err := client.Actions.ListRepositoryWorkflowRuns(ctx, owner, repo, opts)
@@ -267,10 +270,11 @@ func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token, commitSha, failur
 	var runID int64
 	var err error
 
-	ctx := context.Background()
-	// wait action creation
+	// wait for the new workflow and action to be created and appear in the API results
+	// after the code being pushed to the repository
 	time.Sleep(30 * time.Second)
 
+	ctx := context.Background()
 	runID, status, conclusion, err = g.GetLastActionState(t, ctx, owner, repo, token, commitSha)
 	if err != nil {
 		return err

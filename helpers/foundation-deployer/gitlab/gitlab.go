@@ -202,10 +202,11 @@ func (g GL) WaitBuildSuccess(t testing.TB, owner, project, token, commitSha, fai
 	var jobID int
 	var err error
 
-	ctx := context.Background()
-	// wait job creation
+	// wait for the new job to be created and appear in the API results
+	// after the code being pushed to the project
 	time.Sleep(30 * time.Second)
 
+	ctx := context.Background()
 	status, jobID, err = g.GetLastJobStatusForSHA(t, ctx, owner, project, token, commitSha)
 	if err != nil {
 		return err

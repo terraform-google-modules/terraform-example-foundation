@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # Define the base path where the build type files are
-SCRIPTS_DIR="$( dirname -- "$0"; )"
+SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 BASE_PATH="$SCRIPTS_DIR/.."
 TARGET_BUILD="$1"
 

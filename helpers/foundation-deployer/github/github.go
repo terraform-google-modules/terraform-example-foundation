@@ -46,7 +46,7 @@ const (
 )
 
 type GH struct {
-	TriggerNewBuild func(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (int64, string, string, error)
+	TriggerNewBuild func(t testing.TB, ctx context.Context, owner, repo, token, commitSha string, runID int64) (int64, string, string, error)
 	sleepTime       time.Duration
 }
 
@@ -59,7 +59,7 @@ func NewGH() GH {
 }
 
 // triggerNewBuild triggers a new action execution
-func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token string, runID int64) (int64, string, string, error) {
+func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token, commitSha string, runID int64) (int64, string, string, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
@@ -75,8 +75,9 @@ func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token strin
 		}
 		return 0, "", "", fmt.Errorf("error re-running workflow status: %d body: %s", resp.StatusCode, string(bodyBytes))
 	}
-	opts := &github.ListWorkflowRunsOptions{
 
+	opts := &github.ListWorkflowRunsOptions{
+		HeadSHA: commitSha,
 		ListOptions: github.ListOptions{
 			PerPage: 1,
 			Page:    1,
@@ -115,17 +116,18 @@ func triggerNewBuild(t testing.TB, ctx context.Context, owner, repo, token strin
 }
 
 // GetLastActionState returns the state of the latest action
-func (g GH) GetLastActionState(t testing.TB, ctx context.Context, owner, repo, token string) (int64, string, string, error) {
+func (g GH) GetLastActionState(t testing.TB, ctx context.Context, owner, repo, token, commitSha string) (int64, string, string, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
 	opts := &github.ListWorkflowRunsOptions{
-
+		HeadSHA: commitSha,
 		ListOptions: github.ListOptions{
 			PerPage: 1,
 		},
 	}
+
 	runs, _, err := client.Actions.ListRepositoryWorkflowRuns(ctx, owner, repo, opts)
 
 	if err != nil {
@@ -260,7 +262,7 @@ func (g GH) GetFinalActionState(t testing.TB, ctx context.Context, owner, repo, 
 }
 
 // WaitBuildSuccess waits for the current build in a repo to finish.
-func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token string, failureMsg string, maxBuildRetry, maxErrorRetries int, timeBetweenErrorRetries time.Duration) error {
+func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token, commitSha, failureMsg string, maxBuildRetry, maxErrorRetries int, timeBetweenErrorRetries time.Duration) error {
 	var status, conclusion string
 	var runID int64
 	var err error
@@ -269,7 +271,7 @@ func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token string, failureMsg
 	// wait action creation
 	time.Sleep(30 * time.Second)
 
-	runID, status, conclusion, err = g.GetLastActionState(t, ctx, owner, repo, token)
+	runID, status, conclusion, err = g.GetLastActionState(t, ctx, owner, repo, token, commitSha)
 	if err != nil {
 		return err
 	}
@@ -295,7 +297,7 @@ func (g GH) WaitBuildSuccess(t testing.TB, owner, repo, token string, failureMsg
 		}
 
 		// Trigger a new build
-		runID, status, conclusion, err = g.TriggerNewBuild(t, ctx, owner, repo, token, runID)
+		runID, status, conclusion, err = g.TriggerNewBuild(t, ctx, owner, repo, token, commitSha, runID)
 		if err != nil {
 			return fmt.Errorf("failed to trigger new action (attempt %d/%d): %w", i+1, maxErrorRetries, err)
 		}

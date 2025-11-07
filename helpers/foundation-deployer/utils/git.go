@@ -63,15 +63,13 @@ func cloneGit(t testing.TB, repositoryUrl, path string, logger *logger.Logger) G
 
 	if os.IsNotExist(err) {
 		cmd := exec.Command("git", "clone", repositoryUrl, path)
-		fmt.Printf("Executing command %s", cmd)
-		// Run the command and capture its standard output
-		output, err := cmd.Output()
+		fmt.Printf("Executing command %s\n", cmd.String())
+		// Run the command and capture its combined output
+		output, err := cmd.CombinedOutput()
 		if err != nil {
 			t.Fatalf("Error executing git command: %v", err)
 		}
-		// Convert the output to a string and trim whitespace
-		branchName := strings.TrimSpace(string(output))
-		fmt.Printf("Current Git branch: %s\n", branchName)
+		fmt.Printf("git clone output:\n%s\n", string(output))
 	}
 
 	return GitRepo{

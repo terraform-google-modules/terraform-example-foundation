@@ -38,9 +38,10 @@ func (e *GCPExecutor) WaitBuildSuccess(t testing.TB, commitSha, failureMsg strin
 
 func NewGCPExecutor(project, region, repo string) *GCPExecutor {
 	return &GCPExecutor{
-		project: project,
-		region:  region,
-		repo:    repo,
+		executor: gcp.NewGCP(),
+		project:  project,
+		region:   region,
+		repo:     repo,
 	}
 }
 

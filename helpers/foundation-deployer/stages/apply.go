@@ -626,6 +626,7 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 		return err
 	}
 
+	executor := NewGCPExecutor(outputs.InfraPipeProj, outputs.DefaultRegion, AppInfraRepo)
 	conf := utils.GitClone(t, "CSR", AppInfraRepo, "", filepath.Join(c.CheckoutPath, AppInfraRepo), outputs.InfraPipeProj, c.Logger)
 	stageConf := StageConf{
 		Stage:         AppInfraRepo,
@@ -635,6 +636,8 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 		Repo:          AppInfraRepo,
 		GitConf:       conf,
 		Envs:          []string{"production", "nonproduction", "development"},
+		BuildType:     c.BuildType,
+		Executor:      executor,
 	}
 
 	return deployStage(t, stageConf, s, c)

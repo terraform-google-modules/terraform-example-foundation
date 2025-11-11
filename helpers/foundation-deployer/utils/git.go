@@ -63,8 +63,6 @@ func cloneGit(t testing.TB, repositoryUrl, path string, logger *logger.Logger) G
 
 	if os.IsNotExist(err) {
 		cmd := exec.Command("git", "clone", repositoryUrl, path)
-		fmt.Printf("Executing command %s\n", cmd.String())
-		// Run the command and capture its combined output
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			t.Fatalf("Error executing git command: %v", err)
@@ -145,12 +143,12 @@ func (g GitRepo) GetCommitSha() (string, error) {
 	return g.conf.RunCmdE("rev-parse", "HEAD")
 }
 
-func BuildGitHubURL(owner, repoName string) string {
-	return fmt.Sprintf("https://github.com/%s/%s.git", owner, repoName)
+func BuildGitHubURL(owner, repoName, token string) string {
+	return fmt.Sprintf("https://oauth2:%s@github.com/%s/%s.git", token, owner, repoName)
 }
 
-func BuildGitLabURL(owner, repoName string) string {
-	return fmt.Sprintf("https://gitlab.com/%s/%s.git", owner, repoName)
+func BuildGitLabURL(owner, repoName, token string) string {
+	return fmt.Sprintf("https://oauth2:%s@gitlab.com/%s/%s.git", token, owner, repoName)
 }
 
 // ExtractRepoNameFromGitHubURL parses a GitHub URL and returns the repository name.

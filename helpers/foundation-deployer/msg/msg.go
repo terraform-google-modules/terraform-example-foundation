@@ -26,6 +26,7 @@ const (
 	readmeURL       = "https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/%s/README.md"
 	cloudBuildURL   = "https://console.cloud.google.com/cloud-build/builds;region=%s?project=%s"
 	githubActionURL = "https://github.com/%s/%s/actions"
+	gitlabJobURL    = "https://gitlab.com/%s/%s/-/jobs?kind=BUILD"
 	buildErrorURL   = "https://console.cloud.google.com/cloud-build/builds;region=%s/%s?project=%s"
 	quotaURL        = "https://support.google.com/code/contact/billing_quota_increase"
 	troubleQuotaURL = "https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/docs/TROUBLESHOOTING.md#billing-quota-exceeded"
@@ -60,6 +61,9 @@ func CloudBuildURL(project, region string) string {
 func GitHubActionURL(owner, repo string) string {
 	return fmt.Sprintf(githubActionURL, owner, repo)
 }
+func GitLabJobURL(owner, repo string) string {
+	return fmt.Sprintf(gitlabJobURL, owner, repo)
+}
 
 func BuildErrorURL(project, region, build string) string {
 	return fmt.Sprintf(buildErrorURL, region, build, project)
@@ -87,6 +91,16 @@ func PrintGHActionMsg(owner, repo string, disablePrompt bool) {
 	fmt.Println("")
 	fmt.Println("# Follow workflow execution and check results in the GitHub:")
 	fmt.Printf("# %s\n", GitHubActionURL(owner, repo))
+	if !disablePrompt {
+		PressEnter("# Press Enter to continue at any time")
+		fmt.Println("")
+	}
+}
+
+func PrintGLJobsMsg(owner, repo string, disablePrompt bool) {
+	fmt.Println("")
+	fmt.Println("# Follow job execution and check results in the GitLab:")
+	fmt.Printf("# %s\n", GitLabJobURL(owner, repo))
 	if !disablePrompt {
 		PressEnter("# Press Enter to continue at any time")
 		fmt.Println("")

@@ -66,9 +66,7 @@ func buildGitLabCICDImage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		return err
 	}
 
-	fmt.Println("")
-	fmt.Println("# Follow job execution in GitLab:")
-	fmt.Printf("# %s\n", fmt.Sprintf("https://gitlab.com/%s/%s/-/jobs", tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner))
+	msg.PrintGLJobsMsg(tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner, c.DisablePrompt)
 
 	failureMsg := fmt.Sprintf("CI/CD runner image job failed %s/%s repository.", tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner)
 	err = gl.WaitBuildSuccess(t, tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner, c.GitToken, commitSha, failureMsg, MaxBuildRetries, MaxErrorRetries, TimeBetweenErrorRetries)
@@ -247,6 +245,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 	}
 
 	if tfvars.BuildType == BuildTypeGiHub {
+		msg.PrintGHActionMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap, c.DisablePrompt)
 		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap, c.GitToken)
 		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap, c.GitToken)
 		bootstrapConf = utils.GitClone(t, tfvars.BuildType, "", repoURL, gcpBootstrapPath, cbProjectID, c.Logger)
@@ -262,6 +261,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 			return err
 		}
 
+		msg.PrintGLJobsMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap, c.DisablePrompt)
 		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap, c.GitToken)
 		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Bootstrap, c.GitToken)
 		bootstrapConf = utils.GitClone(t, tfvars.BuildType, "", repoURL, gcpBootstrapPath, cbProjectID, c.Logger)
@@ -366,10 +366,12 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 
 	switch c.BuildType {
 	case BuildTypeGiHub:
+		msg.PrintGHActionMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.DisablePrompt)
 		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.GitToken)
 		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.GitToken)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, OrgRepo), "", c.Logger)
 	case BuildTypeGitLab:
+		msg.PrintGLJobsMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.DisablePrompt)
 		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.GitToken)
 		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.GitToken)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, OrgRepo), "", c.Logger)
@@ -410,10 +412,12 @@ func DeployEnvStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 
 	switch c.BuildType {
 	case BuildTypeGiHub:
+		msg.PrintGHActionMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments, c.DisablePrompt)
 		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments, c.GitToken)
 		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments, c.GitToken)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, EnvironmentsRepo), "", c.Logger)
 	case BuildTypeGitLab:
+		msg.PrintGLJobsMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments, c.DisablePrompt)
 		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments, c.GitToken)
 		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Environments, c.GitToken)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, EnvironmentsRepo), "", c.Logger)
@@ -492,10 +496,12 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 
 	switch c.BuildType {
 	case BuildTypeGiHub:
+		msg.PrintGHActionMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks, c.DisablePrompt)
 		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks, c.GitToken)
 		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks, c.GitToken)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, NetworksRepo), "", c.Logger)
 	case BuildTypeGitLab:
+		msg.PrintGLJobsMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks, c.DisablePrompt)
 		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks, c.GitToken)
 		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Networks, c.GitToken)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, NetworksRepo), "", c.Logger)
@@ -562,10 +568,12 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 
 	switch c.BuildType {
 	case BuildTypeGiHub:
+		msg.PrintGHActionMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects, c.DisablePrompt)
 		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects, c.GitToken)
 		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects, c.GitToken)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, ProjectsRepo), "", c.Logger)
 	case BuildTypeGitLab:
+		msg.PrintGLJobsMsg(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects, c.DisablePrompt)
 		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects, c.GitToken)
 		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, tfvars.GitRepos.Projects, c.GitToken)
 		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, ProjectsRepo), "", c.Logger)

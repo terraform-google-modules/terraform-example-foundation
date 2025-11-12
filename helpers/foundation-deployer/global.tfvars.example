@@ -94,7 +94,7 @@ groups = {
 //     environments = "ENVIRONMENTS_REPO"
 //     networks     = "NETWORKS_REPO"
 //     projects     = "PROJECTS_REPO"
-//     cicd_runner  = "CICD_RUNNER_REPO" // Required for GitLab
+//     cicd_runner  = "" // Required for GitLab
 // }
 
 //  to prevent saving the git token in plain text in this file,

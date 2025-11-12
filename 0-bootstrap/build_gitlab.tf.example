@@ -108,11 +108,11 @@ module "gitlab_cicd" {
 module "gitlab_oidc" {
   source = "./modules/gitlab-oidc"
 
-  project_id  = module.gitlab_cicd.project_id
-  pool_id     = "foundation-pool"
-  provider_id = "foundation-gl-provider"
-  sa_mapping  = local.sa_mapping
-  attribute_condition = "assertion.user_login=='${var.gl_repos.owner}'"
+  project_id          = module.gitlab_cicd.project_id
+  pool_id             = "foundation-pool"
+  provider_id         = "foundation-gl-provider"
+  sa_mapping          = local.sa_mapping
+  attribute_condition = "assertion.project_path.startsWith('${var.gl_repos.owner}/')"
 }
 
 resource "gitlab_project_variable" "variables" {
@@ -191,4 +191,3 @@ module "gcp_projects_state_bucket" {
 
   depends_on = [module.seed_bootstrap.gcs_bucket_tfstate]
 }
-

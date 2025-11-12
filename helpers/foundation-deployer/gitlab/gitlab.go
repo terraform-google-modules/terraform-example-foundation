@@ -43,7 +43,7 @@ const (
 )
 
 type GL struct {
-	TriggerNewBuild func(t testing.TB, ctx context.Context, owner, project, token string, jobID int) (int, error)
+	TriggerNewBuild func(t testing.TB, ctx context.Context, owner, project, token string, jobID int) (int, string, error)
 	sleepTime       time.Duration
 }
 
@@ -56,25 +56,25 @@ func NewGL() GL {
 }
 
 // triggerNewBuild triggers a new job execution
-func triggerNewBuild(t testing.TB, ctx context.Context, owner, project, token string, jobID int) (int, error) {
+func triggerNewBuild(t testing.TB, ctx context.Context, owner, project, token string, jobID int) (int, string, error) {
 
 	git, err := gitlab.NewClient(token)
 	if err != nil {
-		return 0, fmt.Errorf("failed to create client: %v", err)
+		return 0, "", fmt.Errorf("failed to create client: %v", err)
 	}
 
 	job, resp, err := git.Jobs.RetryJob(fmt.Sprintf("%s/%s", owner, project), jobID, gitlab.WithContext(ctx))
 	if err != nil {
-		return 0, fmt.Errorf("error retrying job: %v", err)
+		return 0, "", fmt.Errorf("error retrying job: %v", err)
 	}
 	if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode <= http.StatusNetworkAuthenticationRequired {
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return 0, fmt.Errorf("error Status: %d, failed to read response body: %v", resp.StatusCode, err)
+			return 0, "", fmt.Errorf("error Status: %d, failed to read response body: %v", resp.StatusCode, err)
 		}
-		return 0, fmt.Errorf("error Status: %d\n body: %s", resp.StatusCode, string(bodyBytes))
+		return 0, "", fmt.Errorf("error Status: %d\n body: %s", resp.StatusCode, string(bodyBytes))
 	}
-	return job.ID, nil
+	return job.ID, StatusCreated, nil
 }
 
 // GetLastJobStatusForSHA finds the latest job associated with a specific commit SHA
@@ -233,7 +233,7 @@ func (g GL) WaitBuildSuccess(t testing.TB, owner, project, token, commitSha, fai
 		}
 
 		// Trigger a new build
-		jobID, err = g.TriggerNewBuild(t, ctx, owner, project, token, jobID)
+		jobID, status, err = g.TriggerNewBuild(t, ctx, owner, project, token, jobID)
 		if err != nil {
 			return fmt.Errorf("failed to trigger new job (attempt %d/%d): %w", i+1, maxErrorRetries, err)
 		}

@@ -71,8 +71,7 @@ jobs:
           node-version: lts/*
       - name: Install commitlint
         run: |
-          COMMITLINT_VERSION=20.1.0
-          npm install -D @commitlint/cli@$COMMITLINT_VERSION @commitlint/config-conventional@$COMMITLINT_VERSION
+          npm install -D @commitlint/cli@20.1.0 @commitlint/config-conventional@20.0.0
           echo "module.exports = { extends: ['@commitlint/config-conventional'], rules: {'subject-case': [0], 'header-max-length': [0]} };" > commitlint.config.js
           npx commitlint --version
       - name: Validate PR commits with commitlint

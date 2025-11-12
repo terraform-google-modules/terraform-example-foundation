@@ -311,7 +311,8 @@ type ProjCommonTfvars struct {
 }
 
 type ProjSharedTfvars struct {
-	DefaultRegion string `hcl:"default_region"`
+	DefaultRegion         string `hcl:"default_region"`
+	ProjectDeletionPolicy string `hcl:"project_deletion_policy"`
 }
 
 type ProjEnvTfvars struct {

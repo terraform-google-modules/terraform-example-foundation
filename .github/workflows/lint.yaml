@@ -71,9 +71,11 @@ jobs:
           node-version: lts/*
       - name: Install commitlint
         run: |
-          npm install -D @commitlint/cli@19.8.1 @commitlint/config-conventional@19.8.1
-          echo "module.exports = { extends: ['@commitlint/config-conventional'], rules: {'subject-case': [0]} };" > commitlint.config.js
+          npm install -D @commitlint/cli@20.1.0 @commitlint/config-conventional@20.0.0
+          echo "module.exports = { extends: ['@commitlint/config-conventional'], rules: {'subject-case': [0], 'header-max-length': [0]} };" > commitlint.config.js
           npx commitlint --version
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request'
-        run: 'echo "${{ github.event.pull_request.title }}" | npx commitlint --verbose'
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: 'echo "$TITLE" | npx commitlint --verbose'

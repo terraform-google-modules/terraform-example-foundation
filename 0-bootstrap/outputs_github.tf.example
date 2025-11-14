@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-/******************************************
-  Top level folders
- *****************************************/
-
-resource "google_folder" "common" {
-  display_name        = "${local.folder_prefix}-common"
-  parent              = local.parent
-  deletion_protection = var.folder_deletion_protection
-}
-
-resource "google_folder" "network" {
-  display_name        = "${local.folder_prefix}-network"
-  parent              = local.parent
-  deletion_protection = var.folder_deletion_protection
+/* ----------------------------------------
+    Specific to github_bootstrap
+   ---------------------------------------- */
+output "cicd_project_id" {
+  description = "Project where the CI/CD infrastructure for GitHub Action resides."
+  value       = module.gh_cicd.project_id
 }

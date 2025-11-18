@@ -14,3 +14,6 @@
  * limitations under the License.
  */
 
+output "folders" {
+  value = local.associations
+}

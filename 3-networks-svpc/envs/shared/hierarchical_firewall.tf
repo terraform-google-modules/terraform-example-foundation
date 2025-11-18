@@ -14,19 +14,30 @@
  * limitations under the License.
  */
 
+locals {
+  parent               = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
+  base_folders         = [local.common_folder_name, local.network_folder_name, local.bootstrap_folder_name]
+  level_1_folder_ids   = data.terraform_remote_state.envs.outputs.level_1_folder_ids
+  associations         = concat(local.base_folders, local.level_1_folder_ids) 
+}
+
+
+data "terraform_remote_state" "envs" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.remote_state_bucket
+    prefix = "terraform/environments/shared"
+  }
+}
+
+
 module "hierarchical_firewall_policy" {
   source = "../../modules/hierarchical_firewall_policy/"
 
   parent = local.common_folder_name
   name   = "common-firewall-rules"
-  associations = [
-    local.common_folder_name,
-    local.network_folder_name,
-    local.bootstrap_folder_name,
-    local.development_folder_name,
-    local.production_folder_name,
-    local.nonproduction_folder_name,
-  ]
+  associations = local.associations
   rules = {
     delegate-rfc1918-ingress = {
       description = "Delegate RFC1918 ingress"

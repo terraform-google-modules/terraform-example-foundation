@@ -45,6 +45,7 @@ module "firewall_rules" {
           ]
         }
       },
+/*
       {
         priority       = "1000"
         direction      = "EGRESS"
@@ -62,6 +63,7 @@ module "firewall_rules" {
           ]
         }
       }
+*/
     ],
     !var.enable_all_vpc_internal_traffic ? [] : [
       {

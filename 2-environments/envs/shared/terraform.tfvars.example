@@ -1,0 +1,43 @@
+/**
+ * Copyright 2021 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+remote_state_bucket = "REMOTE_STATE_BUCKET"
+
+
+is_environment_level_1 = false  // true if the first level represents environments (dev/prod/stage/etc.), otherwise false
+
+
+level_1_folders = [
+  {
+    "folder_name"             = "<foldername-no prefix>"
+    "env_tag_value"           = "" // <"" | "environment_development" | "environment_nonproduction" | "environment_production">
+    "folder_abbreviated_name" = ""
+  },
+]
+
+level_2_folders = [
+  {
+    "folder_name"   = "<foldername-no prefix>"
+    "env_tag_value" = "" // <"" | "environment_development" | "environment_nonproduction" | "environment_production">
+  },
+]
+
+assured_workload_enabled = false
+assured_workload_region = "us-central1"
+
+# FOR TESTING ONLY - REMOVE BEFORE PRODUCTION
+# folder_deletion_protection = false
+# project_deletion_policy = "DELETE"

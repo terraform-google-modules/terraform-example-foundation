@@ -73,7 +73,7 @@ variable "bgp_asn_subnet" {
   type        = number
   description = "BGP ASN for Subnets cloud routers."
 }
-
+/*
 variable "default_region1" {
   type        = string
   description = "First subnet region. The shared vpc modules only configures two regions."
@@ -83,7 +83,7 @@ variable "default_region2" {
   type        = string
   description = "Second subnet region. The shared vpc modules only configures two regions."
 }
-
+*/
 variable "subnets" {
   type = list(object({
     subnet_name                      = string
@@ -141,12 +141,12 @@ variable "private_service_cidr" {
   description = "CIDR range for private service networking. Used for Cloud SQL and other managed services."
   default     = null
 }
-
+/*
 variable "private_service_connect_ip" {
   type        = string
   description = "Internal IP to be used as the private service connect endpoint."
 }
-
+*/
 variable "windows_activation_enabled" {
   type        = bool
   description = "Enable Windows license activation for Windows workloads."

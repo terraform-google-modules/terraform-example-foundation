@@ -70,9 +70,9 @@ module "seed_bootstrap" {
   project_labels = {
     environment       = "bootstrap"
     application_name  = "seed-bootstrap"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
+//    billing_code      = "1234"
+//    primary_contact   = "example1"
+//    secondary_contact = "example2"
     business_code     = "shared"
     env_code          = "b"
     vpc               = "none"

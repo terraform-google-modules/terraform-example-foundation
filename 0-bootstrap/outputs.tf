@@ -48,12 +48,12 @@ output "gcs_bucket_tfstate" {
   description = "Bucket used for storing terraform state for Foundations Pipelines in Seed Project."
   value       = module.seed_bootstrap.gcs_bucket_tfstate
 }
-
+/*
 output "projects_gcs_bucket_tfstate" {
   description = "Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project."
   value       = module.gcp_projects_state_bucket.bucket.name
 }
-
+*/
 output "common_config" {
   description = "Common configuration data to be used in other steps."
   value = {
@@ -61,7 +61,7 @@ output "common_config" {
     parent_folder         = var.parent_folder,
     billing_account       = var.billing_account,
     default_region        = var.default_region,
-    default_region_2      = var.default_region_2,
+//    default_region_2      = var.default_region_2,
     default_region_gcs    = var.default_region_gcs,
     default_region_kms    = var.default_region_kms,
     project_prefix        = var.project_prefix,
@@ -86,6 +86,7 @@ output "optional_groups" {
    ---------------------------------------- */
 # Comment-out the cloudbuild_bootstrap module and its outputs if you want to use
 # GitHub Actions, GitLab CI/CD, Terraform Cloud, or Jenkins instead of Cloud Build
+/*
 output "cloudbuild_project_id" {
   description = "Project where Cloud Build configuration and terraform container image will reside."
   value       = module.tf_source.cloudbuild_project_id
@@ -136,6 +137,7 @@ output "cloud_build_peered_network_id" {
   description = "The ID of the Cloud Build peered network."
   value       = module.tf_private_pool.peered_network_id
 }
+*/
 
 /* ----------------------------------------
     Specific to github_bootstrap

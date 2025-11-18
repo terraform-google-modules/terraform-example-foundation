@@ -82,3 +82,20 @@ variable "tfc_org_name" {
   type        = string
   default     = ""
 }
+
+/*
+variable "subnet_region1" {
+  description = "Region 1 CIDR block"
+  type        = string
+}
+
+variable "subnet_region2" {
+  description = "Region 2 CIDR block"
+  type        = string
+}
+*/
+
+variable "subnets" {
+  description = "Array of Subnet objects"
+  type = list(any)
+}

@@ -35,13 +35,13 @@ variable "default_region" {
   type        = string
   default     = "us-central1"
 }
-
+/*
 variable "default_region_2" {
   description = "Secondary default region to create resources where applicable."
   type        = string
   default     = "us-west1"
 }
-
+*/
 variable "default_region_gcs" {
   description = "Case-Sensitive default region to create gcs resources where applicable."
   type        = string

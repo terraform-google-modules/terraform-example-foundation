@@ -67,3 +67,9 @@ variable "tfc_org_name" {
   type        = string
   default     = ""
 }
+
+variable "perimeter_additional_members" {
+  description = "Placeholder - not used"
+  type        = list(string)
+  default     = []
+}

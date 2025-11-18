@@ -105,6 +105,91 @@ This module creates and applies [tags](https://cloud.google.com/resource-manager
 | enviroment nonproduction | folder | [2-environments](../2-environments/README.md) | environment | nonproduction |
 | enviroment production | folder | [2-environments](../2-environments/README.md) | environment | production |
 
+
+### Running Terraform locally
+
+1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder. Change to `1-org` folder, copy Terraform wrapper script; ensure it can be executed.
+
+   ```bash
+   cd 1-org
+   cp ../build/tf-wrapper.sh .
+   cp ../.gitignore .
+   chmod 755 ./tf-wrapper.sh
+   ```
+
+1. Copy `./envs/shared/terraform.tfvars.example` to `./envs/shared/terraform.tfvars`.
+
+   ```bash
+   cp envs/shared/terraform.tfvars.example envs/shared/terraform.tfvars
+   ```
+
+1. Check if a Security Command Center notification with the default name, **scc-notify**, already exists. If it exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
+
+   ```bash
+   export ORGANIZATION_ID=$(terraform -chdir="../0-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
+   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID} --location=global
+   ```
+
+1. Check if your organization already has an Access Context Manager policy.
+
+   ```bash
+   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+   ```
+
+1. Update the `envs/shared/terraform.tfvars` file with values from your environment and `0-bootstrap` step. If the previous step showed a numeric value, un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
+
+   ```bash
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${backend_bucket}"
+
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+
+   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
+   ```
+
+You can now deploy your environment (production) using this script.
+
+To use the `validate` option of the `tf-wrapper.sh` script, follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
+
+1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+
+   ```bash
+   export SEED_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw seed_project_id)
+   echo ${SEED_PROJECT_ID}
+
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw organization_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
+
+1. Run `init` and `plan` and review the output.
+
+   ```bash
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+
+1. Run `validate` and resolve any violations.
+
+   ```bash
+   ./tf-wrapper.sh validate production $(pwd)/../../../gcp-policies ${SEED_PROJECT_ID}
+   ```
+
+1. Run `apply production`.
+
+   ```bash
+   ./tf-wrapper.sh apply production
+   ```
+
+If you receive any errors or made any changes to the Terraform config or `terraform.tfvars`, re-run `./tf-wrapper.sh plan production` before you run `./tf-wrapper.sh apply production`.
+
+Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+```bash
+unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+```
+
+
 ### Deploying with Cloud Build
 
 1. Clone the `gcp-org` repo based on the Terraform output from the `0-bootstrap` step.
@@ -206,107 +291,3 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
 
 See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-step-1-org).
 
-### Running Terraform locally
-
-1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder.
-Create `gcp-org` folder, copy `1-org` content and Terraform wrapper script; ensure it can be executed.
-
-   ```bash
-   mkdir gcp-org
-   cp -R terraform-example-foundation/1-org/* gcp-org/
-   cp terraform-example-foundation/build/tf-wrapper.sh gcp-org/
-   cp terraform-example-foundation/.gitignore gcp-org/
-   cd gcp-org
-   chmod 755 ./tf-wrapper.sh
-   ```
-
-1. Initialize a local Git repository to manage versions locally. Then, create the environment branches.
-
-   ```bash
-      git init
-      git commit -m "initialize empty directory" --allow-empty
-      git checkout -b plan
-      git checkout -b production
-   ```
-
-1. Rename `./envs/shared/terraform.example.tfvars` to `./envs/shared/terraform.tfvars`.
-
-   ```bash
-   mv ./envs/shared/terraform.example.tfvars ./envs/shared/terraform.tfvars
-   ```
-
-1. Check if a Security Command Center notification with the default name, **scc-notify**, already exists. If it exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
-
-   ```bash
-   export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/" output -json common_config | jq '.org_id' --raw-output)
-   gcloud scc notifications describe "scc-notify" --organization=${ORGANIZATION_ID} --location=global
-   ```
-
-1. Check if your organization already has an Access Context Manager policy.
-
-   ```bash
-   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
-   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
-   ```
-
-1. Update the `envs/shared/terraform.tfvars` file with values from your environment and `gcp-bootstrap` step. If the previous step showed a numeric value, un-comment the variable `create_access_context_manager_access_policy = false`. See the shared folder [README.md](./envs/shared/README.md) for additional information on the values in the `terraform.tfvars` file.
-
-   ```bash
-   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "remote_state_bucket = ${backend_bucket}"
-
-   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
-
-   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
-   ```
-
-You can now deploy your environment (production) using this script.
-
-To use the `validate` option of the `tf-wrapper.sh` script, follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-
-1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
-
-   ```bash
-   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/" output -raw seed_project_id)
-   echo ${SEED_PROJECT_ID}
-
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/" output -raw organization_step_terraform_service_account_email)
-   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
-   ```
-
-1. Run `init` and `plan` and review the output.
-
-   ```bash
-   git checkout plan
-   ./tf-wrapper.sh init production
-   ./tf-wrapper.sh plan production
-   ```
-
-1. Run `validate` and resolve any violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
-1. Commit validated code in plan branch.
-
-   ```bash
-   git add .
-   git commit -m "Initial version of gcp-org."
-   ```
-
-1. Checkout `production` branch and merge plan into it. Run `apply production`.
-
-   ```bash
-   git checkout production
-   git merge plan
-   ./tf-wrapper.sh apply production
-   ```
-
-If you receive any errors or made any changes to the Terraform config or `terraform.tfvars`, re-run `./tf-wrapper.sh plan production` before you run `./tf-wrapper.sh apply production`.
-
-Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
-
-```bash
-unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
-```

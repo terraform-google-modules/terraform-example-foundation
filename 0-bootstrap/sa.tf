@@ -135,7 +135,7 @@ locals {
 
   bootstrap_projects = {
     "seed" = module.seed_bootstrap.seed_project_id,
-    "cicd" = local.cicd_project_id,
+//    "cicd" = local.cicd_project_id,
   }
 }
 
@@ -177,7 +177,7 @@ module "seed_project_iam_member" {
   parent_id   = module.seed_bootstrap.seed_project_id
   roles       = each.value
 }
-
+/*
 module "cicd_project_iam_member" {
   source   = "./modules/parent-iam-member"
   for_each = local.granular_sa_cicd_project
@@ -187,7 +187,7 @@ module "cicd_project_iam_member" {
   parent_id   = local.cicd_project_id
   roles       = each.value
 }
-
+*/
 // When the bootstrap projects are created, the Compute Engine
 // default service account is disabled but it still has the Editor
 // role associated with the service account. This default SA is the
@@ -203,7 +203,7 @@ module "bootstrap_projects_remove_editor" {
 
   depends_on = [
     module.seed_project_iam_member,
-    module.cicd_project_iam_member
+//    module.cicd_project_iam_member
   ]
 }
 

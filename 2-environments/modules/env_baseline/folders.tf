@@ -19,7 +19,8 @@
 *****************************************/
 
 resource "google_folder" "env" {
-  display_name        = "${local.folder_prefix}-${var.env}"
+//  display_name        = "${local.folder_prefix}-${var.env}"
+  display_name        = "${local.folder_prefix}-${var.folder_name}"
   parent              = local.parent
   deletion_protection = var.folder_deletion_protection
 }

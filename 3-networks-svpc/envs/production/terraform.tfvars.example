@@ -1,0 +1,15 @@
+subnets = [
+    {
+        subnet_name                      = "sb-p-svpc-<REGION>"
+        subnet_ip                        = ""  // CIDR block
+        subnet_region                    = "<REGION"
+        subnet_private_access            = "true"
+        subnet_flow_logs                 = true
+        subnet_flow_logs_interval        = "INTERVAL_5_SEC"
+        subnet_flow_logs_sampling        = "0.5"
+        subnet_flow_logs_metadata        = "INCLUDE_ALL_METADATA"
+        subnet_flow_logs_metadata_fields = []
+        subnet_flow_logs_filter          = "true"
+        description                      = "First production subnet example."
+    },
+]

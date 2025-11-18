@@ -39,7 +39,7 @@ variable "access_context_manager_policy_id" {
   type        = number
   description = "The id of the default Access Context Manager policy created in step `1-org`. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format=\"value(name)\"`."
 }
-
+/*
 variable "default_region1" {
   type        = string
   description = "First subnet region. The shared vpc modules only configures two regions."
@@ -49,7 +49,7 @@ variable "default_region2" {
   type        = string
   description = "Second subnet region. The shared vpc modules only configures two regions."
 }
-
+*/
 variable "domain" {
   type        = string
   description = "The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period."
@@ -66,17 +66,19 @@ variable "enable_partner_interconnect" {
   type        = bool
   default     = false
 }
-
+/*
 variable "private_service_cidr" {
   type        = string
   description = "CIDR range for private service networking. Used for Cloud SQL and other managed services in the Shared Vpc."
 }
-
+*/
+/*
 variable "subnet_primary_ranges" {
   type        = map(string)
   description = "The base subnet primary IPTs ranges to the Shared Vpc."
 }
-
+*/
+/*
 variable "subnet_proxy_ranges" {
   type        = map(string)
   description = "The base proxy-only subnet primary IPTs ranges to the Shared Vpc."
@@ -91,7 +93,7 @@ variable "private_service_connect_ip" {
   type        = string
   description = "The base subnet internal IP to be used as the private service connect endpoint in the Shared VPC"
 }
-
+*/
 variable "vpc_flow_logs" {
   description = <<EOT
   aggregation_interval: Toggles the aggregation interval for collecting flow logs. Increasing the interval time will reduce the amount of generated flow logs for long lasting connections. Possible values are: INTERVAL_5_SEC, INTERVAL_30_SEC, INTERVAL_1_MIN, INTERVAL_5_MIN, INTERVAL_10_MIN, INTERVAL_15_MIN.
@@ -176,3 +178,7 @@ variable "tfc_org_name" {
   type        = string
 }
 
+variable "subnets" {
+  description = "Array of Subnet objects"
+  type = list(any)
+}

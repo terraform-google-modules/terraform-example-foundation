@@ -131,13 +131,16 @@ Also make sure that you've done the following:
    [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
 1. Create Cloud Identity or Google Workspace groups as defined in [groups for access control](https://cloud.google.com/architecture/security-foundations/authentication-authorization#groups_for_access_control).
 Set the variables in **terraform.tfvars** (`groups` block) to use the specific group names you create.
-1. For the user who will run the procedures in this document, grant the following roles:
-   - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
-   - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
-   - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
-   - The `roles/billing.admin` role on the billing account.
-   - The `roles/resourcemanager.folderCreator` role.
-   - The `roles/securitycenter.admin` role.
+1. For the user who will run the procedures in this document, grant the following roles on the Google Cloud organization:
+   - The Access Context Manager Reader role - `roles/accesscontextmanager.policyReader`
+   - The Folder Creator role - `roles/resourcemanager.folderCreator`
+   - The Organization Administrator role - `roles/resourcemanager.organizationAdmin`
+   - The Organization Policy Administator role - `roles/orgpolicy.policyAdmin`
+   - The Project Creator role - `roles/resourcemanager.projectCreator`
+   - The Security Center Admin role - `roles/securitycenter.admin`
+   - The Service Account Token Creator role - `roles/iam.serviceAccountTokenCreator`
+   - The Service Usage Consumer role - `roles/serviceusage.serviceUsageConsumer`
+   - The Billing Account Administrator role - `roles/billing.admin` on the billing account.
 
      ```bash
      # example:
@@ -173,6 +176,103 @@ See [onprem](./onprem.md) for instructions on how to configure Cloud Build acces
 ### Troubleshooting
 
 See [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
+
+## Running Terraform locally
+
+The following steps will guide you through deploying without using Cloud Build.
+
+1. Navigate to `0-bootstrap`.
+
+   ```bash
+   cd 0-bootstrap
+   ```
+
+1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
+
+   ```bash
+   cp terraform.tfvars.example terraform.tfvars
+   ```
+
+1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
+
+   ```bash
+   ../scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+   ```
+
+   **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
+
+1. Run `terraform init` and `terraform plan` and review the output.
+
+   ```bash
+   terraform init
+   terraform plan -input=false -out bootstrap.tfplan
+   ```
+
+1. Create a new folder called gcp-policies at the same directory level as the `terraform-example-foundation` folder. Copy the contents of the `policy-library` directory from the `terraform-example-foundation` folder into the gcp-policies folder.
+
+   ```bash
+   cd ../../
+
+   mkdir gcp-policies
+
+   cd gcp-policies
+   cp -RT ../terraform-example-foundation/policy-library/ .
+   ```
+
+1. Navigate back to `0-bootstrap`.
+
+   ```bash
+   cd ../terraform-example-foundation/0-bootstrap
+   ```
+
+1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Install Google Cloud CLI](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install).
+
+1. Run the following commands and check for violations:
+
+   ```bash
+   export VET_PROJECT_ID=A-VALID-PROJECT-ID
+   terraform show -json bootstrap.tfplan > bootstrap.json
+   gcloud beta terraform vet bootstrap.json --policy-library="../../gcp-policies" --project ${VET_PROJECT_ID}
+   ```
+
+   *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because `gcloud beta terraform vet` needs to link resources to a valid Google Cloud Platform project.
+
+1. Run `terraform apply`.
+
+   ```bash
+   terraform apply bootstrap.tfplan
+   ```
+
+1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run steps manually and the state bucket that will be used by step `4-projects`.
+
+   ```bash
+   export network_step_sa=$(terraform output -raw networks_step_terraform_service_account_email)
+   export projects_step_sa=$(terraform output -raw projects_step_terraform_service_account_email)
+
+   echo "network step service account = ${network_step_sa}"
+   echo "projects step service account = ${projects_step_sa}"
+   ```
+
+1. Copy the backend and update `backend.tf` with the name of your Google Cloud Storage bucket for Terraform's state. Also update the `backend.tf` of all steps.
+
+   ```bash
+   export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
+   echo "backend_bucket = ${backend_bucket}"
+
+   cp backend.tf.example backend.tf
+
+   cd ../
+
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_ME/${backend_bucket}/" $i; done
+
+   cd 0-bootstrap
+   ```
+
+1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Cloud Storage.
+
+   ```bash
+   terraform init
+   ```
 
 ## Deploying with Jenkins
 
@@ -349,166 +449,6 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
 
 **Note 2:** After the deploy, even if you did not receive the project quota error described in the [Troubleshooting guide](../docs/TROUBLESHOOTING.md#project-quota-exceeded), we recommend that you request 50 additional projects for the **projects step service account** created in this step.
 
-## Running Terraform locally
-
-The following steps will guide you through deploying without using Cloud Build.
-
-1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and create to the `gcp-bootstrap` folder at the same level. Copy the `0-bootstrap` content and `.gitignore` to `gcp-bootstrap`.
-
-   ```bash
-   git clone https://github.com/terraform-google-modules/terraform-example-foundation.git
-
-   mkdir gcp-bootstrap
-
-   cp -R terraform-example-foundation/0-bootstrap/* gcp-bootstrap/
-
-   cp terraform-example-foundation/.gitignore gcp-bootstrap
-   ```
-
-1. Navigate to `gcp-bootstrap` and initialize a local Git repository to manage versions locally. Then, Create the environment branches.
-
-   ```bash
-   cd gcp-bootstrap
-
-   git init
-   git commit -m "initialize empty directory" --allow-empty
-   git checkout -b plan
-
-   git checkout -b shared
-   ```
-
-1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment:
-
-   ```bash
-   mv terraform.example.tfvars terraform.tfvars
-   ```
-
-1. Rename `cb.tf` to `cb.tf.example`:
-
-   ```bash
-   mv cb.tf cb.tf.example
-   ```
-
-1. Comment Cloud Build related outputs at `outputs.tf`.
-
-1. In `sa.tf` file, comment out lines related to Cloud Build. Specifically, search for `cicd_project_iam_member` and comment out the corresponding module, as well as the "depends_on" meta-argument in any modules that depend on the commented module.
-
-1. In `sa.tf` file, search for `local.cicd_project_id` and comment out the corresponding code.
-
-1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
-
-   ```bash
-   ../terraform-example-foundation/scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
-   ```
-
-   **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
-
-1. Run `terraform init` and `terraform plan` and review the output.
-
-   ```bash
-   git checkout plan
-   terraform init
-   terraform plan -input=false -out bootstrap.tfplan
-   ```
-
-1. Create a new folder called gcp-policies at the same directory level as the `terraform-example-foundation` folder. Initialize a Git repository, create a branch called `main`, and copy the contents of the `policy-library` directory from the `terraform-example-foundation` folder into the gcp-policies folder.
-
-   ```bash
-   cd ../
-
-   mkdir gcp-policies
-
-   cd gcp-policies
-   git init
-   git checkout -b main
-   cp -RT ../terraform-example-foundation/policy-library/ .
-   ```
-
-1. Commit changes to the main branch of the policy repo. This way you can manage versions locally.
-
-   ```bash
-   git add .
-   git commit -m 'Initialize policy library repo'
-   ```
-
-1. Navigate back to `gcp-bootstrap` repo.
-
-   ```bash
-   cd ../gcp-bootstrap
-   ```
-
-1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Install Google Cloud CLI](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install).
-
-1. Run the following commands and check for violations:
-
-   ```bash
-   export VET_PROJECT_ID=A-VALID-PROJECT-ID
-   terraform show -json bootstrap.tfplan > bootstrap.json
-   gcloud beta terraform vet bootstrap.json --policy-library="$(pwd)/../gcp-policies" --project ${VET_PROJECT_ID}
-   ```
-
-   *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because `gcloud beta terraform vet` needs to link resources to a valid Google Cloud Platform project.
-
-1. Commit validated code in plan branch.
-
-   ```bash
-   git add .
-   git commit -m "Initial version os gcp-bootstrap."
-   ```
-
-1. Checkout `shared` branch and merge the `plan` branch into it. Then, Run `terraform apply`.
-
-   ```bash
-   git checkout shared
-   git merge plan
-
-   terraform apply bootstrap.tfplan
-   ```
-
-1. Run `terraform output` to get the email address of the terraform service accounts that will be used to run steps manually and the state bucket that will be used by step `4-projects`.
-
-   ```bash
-   export network_step_sa=$(terraform output -raw networks_step_terraform_service_account_email)
-   export projects_step_sa=$(terraform output -raw projects_step_terraform_service_account_email)
-   export projects_gcs_bucket_tfstate=$(terraform output -raw projects_gcs_bucket_tfstate)
-
-   echo "network step service account = ${network_step_sa}"
-   echo "projects step service account = ${projects_step_sa}"
-   echo "projects gcs bucket tfstate = ${projects_gcs_bucket_tfstate}"
-   ```
-
-1. Copy the backend and update `backend.tf` with the name of your Google Cloud Storage bucket for Terraform's state. Also update the `backend.tf` of all steps.
-
-   ```bash
-   export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
-   echo "backend_bucket = ${backend_bucket}"
-
-   export backend_bucket_projects=$(terraform output -raw projects_gcs_bucket_tfstate)
-   echo "backend_bucket_projects = ${backend_bucket_projects}"
-
-   cp backend.tf.example backend.tf
-
-   cd ../
-
-   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_ME/${backend_bucket}/" $i; done
-   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${backend_bucket_projects}/" $i; done
-
-   cd gcp-bootstrap
-   ```
-
-1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Cloud Storage.
-
-   ```bash
-   terraform init
-   ```
-
-1. Commit the new code version, so you can manage versions locally.
-
-   ```sh
-   git add backend.tf
-   git commit -m "Init gcs backend."
-   cd ../
-   ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

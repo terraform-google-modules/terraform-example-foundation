@@ -17,9 +17,9 @@
 locals {
   vpc_name                    = "${var.environment_code}-svpc"
   network_name                = "vpc-${local.vpc_name}"
-  restricted_googleapis_cidr  = module.private_service_connect.private_service_connect_ip
+//  restricted_googleapis_cidr  = module.private_service_connect.private_service_connect_ip
   google_forward_source_range = "35.199.192.0/19"
-  advertised_ip               = var.environment_code == "p" ? [{ range = local.google_forward_source_range }, { range = local.restricted_googleapis_cidr }] : [{ range = local.restricted_googleapis_cidr }]
+//  advertised_ip               = var.environment_code == "p" ? [{ range = local.google_forward_source_range }, { range = local.restricted_googleapis_cidr }] : [{ range = local.restricted_googleapis_cidr }]
 }
 
 /******************************************
@@ -96,7 +96,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   Router to advertise shared VPC
   subnetworks and Google Restricted API
 ************************************/
-
+/*
 module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 6.0"
@@ -156,4 +156,4 @@ module "region2_router2" {
     advertised_ip_ranges = local.advertised_ip
   }
 }
-
+*/

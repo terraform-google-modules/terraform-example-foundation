@@ -17,16 +17,17 @@
 locals {
   env                       = "common"
   environment_code          = "c"
-  default_region1           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region2           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
+//  default_region1           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+//  default_region2           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
   folder_prefix             = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
   parent_id                 = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
   bootstrap_folder_name     = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
   common_folder_name        = data.terraform_remote_state.org.outputs.common_folder_name
   network_folder_name       = data.terraform_remote_state.org.outputs.network_folder_name
-  development_folder_name   = data.terraform_remote_state.env_development.outputs.env_folder
-  nonproduction_folder_name = data.terraform_remote_state.env_nonproduction.outputs.env_folder
-  production_folder_name    = data.terraform_remote_state.env_production.outputs.env_folder
+//  development_folder_name   = data.terraform_remote_state.env_development.outputs.env_folder
+//  nonproduction_folder_name = data.terraform_remote_state.env_nonproduction.outputs.env_folder
+//  production_folder_name    = data.terraform_remote_state.env_production.outputs.env_folder
+  is_environment_level_1    = data.terraform_remote_state.environment.outputs.is_environment_level_1
 }
 
 data "terraform_remote_state" "bootstrap" {
@@ -47,6 +48,17 @@ data "terraform_remote_state" "org" {
   }
 }
 
+data "terraform_remote_state" "environment" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.remote_state_bucket
+    prefix = "terraform/environments/shared"
+  }
+}
+
+
+/*
 data "terraform_remote_state" "env_development" {
   backend = "gcs"
 
@@ -73,3 +85,4 @@ data "terraform_remote_state" "env_production" {
     prefix = "terraform/environments/production"
   }
 }
+*/

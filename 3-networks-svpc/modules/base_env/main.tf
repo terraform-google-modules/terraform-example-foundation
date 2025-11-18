@@ -187,11 +187,11 @@ module "shared_vpc" {
     "serviceAccount:${local.projects_service_account}",
     "serviceAccount:${local.organization_service_account}",
   ], var.perimeter_additional_members))
-  private_service_cidr       = var.private_service_cidr
-  private_service_connect_ip = var.private_service_connect_ip
+//  private_service_cidr       = var.private_service_cidr
+//  private_service_connect_ip = var.private_service_connect_ip
   bgp_asn_subnet             = local.bgp_asn_number
-  default_region1            = var.default_region1
-  default_region2            = var.default_region2
+//  default_region1            = var.default_region1
+//  default_region2            = var.default_region2
   domain                     = var.domain
   ingress_policies           = var.ingress_policies
   ingress_policies_dry_run   = var.ingress_policies_dry_run
@@ -205,8 +205,9 @@ module "shared_vpc" {
   ))
   target_name_server_addresses = var.target_name_server_addresses
 
+  subnets = var.subnets
 
-
+/*
   subnets = [
     {
       subnet_name                      = "sb-${var.environment_code}-svpc-${var.default_region1}"
@@ -234,6 +235,9 @@ module "shared_vpc" {
       subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
       description                      = "Second ${var.env} subnet example."
     },
+*/
+
+/*
     {
       subnet_name      = "sb-${var.environment_code}-svpc-${var.default_region1}-proxy"
       subnet_ip        = var.subnet_proxy_ranges[var.default_region1]
@@ -253,8 +257,11 @@ module "shared_vpc" {
       purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
-  secondary_ranges = {
-    "sb-${var.environment_code}-svpc-${var.default_region1}" = var.subnet_secondary_ranges[var.default_region1]
-  }
-}
+*/
 
+/*
+  secondary_ranges = {
+   "sb-${var.environment_code}-svpc-${var.default_region1}" = var.subnet_secondary_ranges[var.default_region1]
+  }
+*/
+}

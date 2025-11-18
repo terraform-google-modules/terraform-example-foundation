@@ -38,9 +38,9 @@ module "env_kms" {
   labels = {
     environment       = var.env
     application_name  = "env-kms"
-    billing_code      = "1234"
-    primary_contact   = "example1"
-    secondary_contact = "example2"
+//    billing_code      = "1234"
+//    primary_contact   = "example1"
+//    secondary_contact = "example2"
     business_code     = "shared"
     env_code          = var.environment_code
     vpc               = "none"

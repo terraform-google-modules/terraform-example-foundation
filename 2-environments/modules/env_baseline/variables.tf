@@ -89,3 +89,9 @@ variable "folder_deletion_protection" {
   type        = string
   default     = true
 }
+
+
+variable "folder_name" {
+  description = "The name of the folder to be added to the hierarchy"
+  type        = string
+}

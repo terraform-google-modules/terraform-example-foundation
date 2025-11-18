@@ -84,6 +84,77 @@ Use the [GCP console](https://console.cloud.google.com/compliance/assuredworkloa
 **Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
+
+### Run Terraform locally
+
+1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder. Change to `2-environments` folder, copy Terraform wrapper script; ensure it can be executed.
+
+   ```bash
+   cd 2-environments
+   cp ../build/tf-wrapper.sh .
+   cp ../.gitignore .
+   chmod 755 ./tf-wrapper.sh
+   ```
+
+1. Copy `./envs/shared/terraform.tfvars.example` to `./envs/shared/terraform.tfvars`.
+
+   ```bash
+   cp envs/shared/terraform.tfvars.example envs/shared/terraform.tfvars
+   ```
+
+1. Update the file with values from your environment and 0-bootstrap output.See any of the envs folder [README.md](./envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
+
+1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
+
+   ```bash
+   export backend_bucket=$(terraform -chdir="../0-bootstrap/" output -raw gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${backend_bucket}"
+
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./envs/shared/terraform.tfvars
+   ```
+
+You can now deploy your environment (production) using this script.
+
+To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
+
+1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+
+   ```bash
+   export SEED_PROJECT_ID=$(terraform -chdir="../0-bootstrap/" output -raw seed_project_id)
+   echo ${SEED_PROJECT_ID}
+
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../0-bootstrap/" output -raw environment_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
+
+1. Run `init` and `plan` and review the output.
+
+   ```bash
+   ./tf-wrapper.sh init production
+   ./tf-wrapper.sh plan production
+   ```
+
+1. Run `validate` and check for violations.
+
+   ```bash
+   ./tf-wrapper.sh validate production $(pwd)/../../../gcp-policies ${SEED_PROJECT_ID}
+   ```
+
+1. Run `apply` production.
+
+   ```bash
+   ./tf-wrapper.sh apply production
+   ```
+
+If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.
+
+Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+```bash
+unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+```
+
+
 ### Deploying with Cloud Build
 
 1. Clone the `gcp-environments` repo based on the Terraform output from the `0-bootstrap` step.
@@ -177,131 +248,3 @@ See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying
 
 See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-step-2-environments).
 
-### Run Terraform locally
-
-1. The next instructions assume that you are at the same level of the `terraform-example-foundation` folder. Create the `gcp-environments` folder, copy the Terraform wrapper script and ensure it can be executed.
-
-   ```bash
-   mkdir gcp-environments
-   cp -R terraform-example-foundation/2-environments/* gcp-environments/
-   cp terraform-example-foundation/build/tf-wrapper.sh gcp-environments/
-   cp terraform-example-foundation/.gitignore gcp-environments/
-   chmod 755 ./gcp-environments/tf-wrapper.sh
-   ```
-
-1. Navigate to `gcp-environments` and initialize a local Git repository to manage versions locally. Then, create the environment branches.
-
-   ```bash
-   cd gcp-environments
-   git init
-   git commit -m "initialize empty directory" --allow-empty
-   git checkout -b production
-   git checkout -b nonproduction
-   git checkout -b development
-   ```
-
-1. Rename `terraform.example.tfvars` to `terraform.tfvars`.
-
-   ```bash
-   mv terraform.example.tfvars terraform.tfvars
-   ```
-
-1. Update the file with values from your environment and 0-bootstrap output.See any of the envs folder [README.md](./envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
-1. Use `terraform output` to get the backend bucket value from 0-bootstrap output.
-
-   ```bash
-   export backend_bucket=$(terraform -chdir="../gcp-bootstrap/" output -raw gcs_bucket_tfstate)
-   echo "remote_state_bucket = ${backend_bucket}"
-
-   sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./terraform.tfvars
-   ```
-
-We will now deploy each of our environments(development/production/nonproduction) using this script.
-
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-
-1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
-
-   ```bash
-   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/" output -raw seed_project_id)
-   echo ${SEED_PROJECT_ID}
-
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/" output -raw environment_step_terraform_service_account_email)
-   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
-   ```
-
-1. Checkout `development` branch. Run `init` and `plan` and review output for environment development.
-
-   ```bash
-   git checkout development
-   ./tf-wrapper.sh init development
-   ./tf-wrapper.sh plan development
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate development $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
-1. Run `apply` development and commit the initial version of `development` branch.
-
-   ```bash
-   ./tf-wrapper.sh apply development
-   git add .
-   git commit -m "Development initial commit."
-   ```
-
-1. Checkout `nonproduction` branch and merge `development` branch into it. Run `init` and `plan` and review output for environment nonproduction.
-
-   ```bash
-   git checkout nonproduction
-   git merge development
-   ./tf-wrapper.sh init nonproduction
-   ./tf-wrapper.sh plan nonproduction
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate nonproduction $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
-1. Run `apply` production and commit initial version of nonproduction.
-
-   ```bash
-   ./tf-wrapper.sh apply nonproduction
-   git add .
-   git commit -m "Nonproduction initial commit."
-   ```
-
-1. Checkout `production` branch and merge `nonproduction` branch into it. Run `init` and `plan` and review output for environment production.
-
-   ```bash
-   git checkout production
-   git merge nonproduction
-   ./tf-wrapper.sh init production
-   ./tf-wrapper.sh plan production
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
-1. Run `apply` production and commit initial version of production.
-
-   ```bash
-   ./tf-wrapper.sh apply production
-   git add .
-   git commit -m "Production initial commit."
-   ```
-
-If you received any errors or made any changes to the Terraform config or `terraform.tfvars` you must re-run `./tf-wrapper.sh plan <env>` before running `./tf-wrapper.sh apply <env>`.
-
-Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
-
-```bash
-unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
-```

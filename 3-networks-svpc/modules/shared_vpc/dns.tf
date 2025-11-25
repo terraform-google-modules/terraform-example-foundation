@@ -41,7 +41,7 @@ data "google_compute_network" "vpc_dns_hub" {
 
 module "peering_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   count = var.environment_code != "p" ? 1 : 0
 
@@ -62,7 +62,7 @@ module "peering_zone" {
 *****************************************/
 module "dns_forwarding_zone" {
   source  = "terraform-google-modules/cloud-dns/google"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   count = var.environment_code == "p" ? 1 : 0
 

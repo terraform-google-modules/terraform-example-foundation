@@ -30,22 +30,25 @@ if [[ ! " ${build_types[*]} " == *" ${TARGET_BUILD} "* ]]; then
   exit 1
 fi
 
-# Rename *_cb.tf files to *_cb.tf.example if BUILD_TYPE is not "cb"
-if [ "$TARGET_BUILD" != "cb" ]; then
-  find "$BASE_PATH" -name "*_cb.tf" -print0 | while IFS= read -r -d $'\0' file; do
-    new_name="${file}.example"
-    echo "Renaming \"$file\" to \"$new_name\""
-    mv "$file" "$new_name"
-  done
-fi
+# Deactivate all other build types to ensure a clean state
+for type in "${build_types[@]}"; do
+  if [[ "$type" != "$TARGET_BUILD" ]]; then
+    find "$BASE_PATH" -name "*_$type.tf" -print0 | while IFS= read -r -d $'\0' file; do
+      if [ -f "$file" ]; then
+        new_name="${file}.example"
+        echo "Deactivating: renaming \"$file\" to \"$new_name\""
+        mv "$file" "$new_name"
+      fi
+    done
+  fi
+done
 
-# Rename *_BUILD_TYPE.tf.example to *_BUILD_TYPE.tf if they exist
+# Activate the target build type
 find "$BASE_PATH" -name "*_$TARGET_BUILD.tf.example" -print0 | while IFS= read -r -d $'\0' file; do
-  # Extract the base name without the .example extension
   base_name="${file%.tf.example}"
   new_name="$base_name.tf"
 
-  echo "Renaming \"$file\" to \"$new_name\""
+  echo "Activating: renaming \"$file\" to \"$new_name\""
   mv "$file" "$new_name"
 done
 

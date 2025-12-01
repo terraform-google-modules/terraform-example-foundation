@@ -63,11 +63,11 @@ func cloneGit(t testing.TB, repositoryUrl, path string, logger *logger.Logger) G
 
 	if os.IsNotExist(err) {
 		cmd := exec.Command("git", "clone", repositoryUrl, path)
-		output, err := cmd.CombinedOutput()
+		_, err := cmd.CombinedOutput()
 		if err != nil {
 			t.Fatalf("Error executing git command: %v", err)
 		}
-		fmt.Printf("git clone output:\n%s\n", string(output))
+		fmt.Printf("repo cloned at path:\n%s\n", path)
 	}
 
 	return GitRepo{

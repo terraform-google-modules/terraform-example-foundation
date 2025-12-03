@@ -17,25 +17,11 @@
 locals {
   peered_ip_range = var.private_worker_pool.enable_network_peering ? "${google_compute_global_address.worker_pool_range[0].address}/${google_compute_global_address.worker_pool_range[0].prefix_length}" : ""
 
-  nat_proxy_vm_ip_range = "10.1.1.0/24"
+  nat_proxy_vm_ip_range = var.nat_proxy_vm_ip_range
 
-  single_project_network = {
-    subnet_name           = "eab-develop-us-central1"
-    subnet_ip             = "10.1.20.0/24"
-    subnet_region         = var.subnet_region
-    subnet_private_access = true
-  }
-  single_project_secondary = {
-    "eab-develop-us-central1" = [
-      {
-        range_name    = "eab-develop-us-central1-secondary-01"
-        ip_cidr_range = "192.168.0.0/18"
-      },
-      {
-        range_name    = "eab-develop-us-central1-secondary-02"
-        ip_cidr_range = "192.168.64.0/18"
-      },
-  ] }
+  single_project_network = var.single_project_network
+
+  single_project_secondary = var.single_project_secondary
 }
 
 module "peered_network" {

@@ -114,7 +114,7 @@ variable "vpc_flow_logs" {
   metadata: Configures whether metadata fields should be added to the reported VPC flow logs. Possible values are: EXCLUDE_ALL_METADATA, INCLUDE_ALL_METADATA, CUSTOM_METADATA.
   metadata_fields: ist of metadata fields that should be added to reported logs. Can only be specified if VPC flow logs for this subnetwork is enabled and "metadata" is set to CUSTOM_METADATA.
   filter_expr: Export filter used to define which VPC flow logs should be logged, as as CEL expression. See https://cloud.google.com/vpc/docs/flow-logs#filtering for details on how to format this field.
-EOT
+  EOT
   type = object({
     aggregation_interval = optional(string, "INTERVAL_5_SEC")
     flow_sampling        = optional(string, "0.5")
@@ -129,4 +129,56 @@ variable "subnet_region" {
   description = "Region where a subnet will be created in the sigle project network."
   type        = string
   default     = "us-central1"
+}
+
+variable "nat_proxy_vm_ip_range" {
+  description = "CIDR range used for the NAT proxy VM. Must follow Google Cloud VPC subnet requirements and must not overlap with other subnets or secondary ranges. See https://docs.cloud.google.com/vpc/docs/subnets for details."
+  type        = string
+  default     = "10.1.1.0/24"
+}
+
+variable "single_project_network" {
+  description = <<EOT
+  Configuration for the primary subnet used by the private worker pool.
+  subnet_name: Name of the subnet to be created or used for the private pool.
+  subnet_ip: Primary IPv4 CIDR range of the subnet. Must follow Google Cloud subnet requirements and must not overlap with other ranges. See https://docs.cloud.google.com/vpc/docs/subnets.
+  subnet_region: Region where the subnet will be created.
+  subnet_private_access: Enables Private Google Access to allow access to Google APIs without external IPs.
+  EOT
+  type = object({
+    subnet_name           = string
+    subnet_ip             = string
+    subnet_region         = string
+    subnet_private_access = bool
+  })
+  default = {
+    subnet_name           = "eab-develop-us-central1"
+    subnet_ip             = "10.1.20.0/24"
+    subnet_region         = "us-central1"
+    subnet_private_access = true
+  }
+}
+variable "single_project_secondary" {
+  description = <<EOT
+  Secondary IP ranges to be attached to the subnet used by the private worker pool.
+  Each entry in the map corresponds to a subnet name and contains a list of secondary ranges.
+  range_name: Name assigned to the secondary range. Must be unique within the subnet.
+  ip_cidr_range: IPv4 CIDR block for the secondary range. Must comply with Google Cloud VPC subnet rules and must not overlap with primary or other secondary ranges. See https://docs.cloud.google.com/vpc/docs/subnets for details.
+  EOT
+  type = map(list(object({
+    range_name    = string
+    ip_cidr_range = string
+  })))
+  default = {
+    "eab-develop-us-central1" = [
+      {
+        range_name    = "eab-develop-us-central1-secondary-01"
+        ip_cidr_range = "192.168.0.0/18"
+      },
+      {
+        range_name    = "eab-develop-us-central1-secondary-02"
+        ip_cidr_range = "192.168.64.0/18"
+      },
+    ]
+  }
 }

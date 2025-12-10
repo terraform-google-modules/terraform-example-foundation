@@ -12,13 +12,13 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240808135927-5f1fd0f4104a
 	github.com/tidwall/gjson v1.18.0
+	gitlab.com/gitlab-org/api/client-go v0.158.0
 	google.golang.org/api v0.206.0
 )
 
 require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.8 // indirect
-	gitlab.com/gitlab-org/api/client-go v0.158.0 // indirect
 	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
 	golang.org/x/time v0.12.0 // indirect
 )
@@ -70,7 +70,7 @@ require (
 	golang.org/x/crypto v0.40.0 // indirect
 	golang.org/x/mod v0.26.0 // indirect
 	golang.org/x/net v0.42.0 // indirect
-	golang.org/x/oauth2 v0.30.0 // indirect
+	golang.org/x/oauth2 v0.30.0
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/text v0.28.0 // indirect

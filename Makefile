@@ -23,6 +23,8 @@ DOCKER_IMAGE_DEVELOPER_TOOLS := cft/developer-tools
 REGISTRY_URL := gcr.io/cloud-foundation-cicd
 
 # Execute lint tests within the docker container
+# Set ENABLE_PARALLEL to 1 to run Terraform validation in parallel locally
+# When running in parallel, validation results can't be traced back to the individual Terraform configurations.
 .PHONY: docker_test_lint
 docker_test_lint:
 	docker run --rm -it \

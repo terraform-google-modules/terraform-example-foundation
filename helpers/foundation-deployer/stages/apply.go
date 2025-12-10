@@ -254,6 +254,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 
 	if tfvars.BuildType == BuildTypeGitLab {
 
+		// build the image to be used in the CI/CD pipelines for all the stages
 		err = s.RunStep("gcp-bootstrap.build-cicd-runner", func() error {
 			return buildGitLabCICDImage(t, s, tfvars, c)
 		})
@@ -750,6 +751,12 @@ func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath
 		}
 	}
 
+	return copyCICDConfig(t, conf, foundationPath, checkoutPath, repo, buildType)
+}
+
+func copyCICDConfig(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath, repo, buildType string) error {
+	var err error
+	gcpPath := filepath.Join(checkoutPath, repo)
 	switch buildType {
 	case BuildTypeGiHub:
 		err = os.MkdirAll(filepath.Join(gcpPath, ".github/workflows/"), 0755)

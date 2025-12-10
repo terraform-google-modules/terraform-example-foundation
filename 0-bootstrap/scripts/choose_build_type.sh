@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# This logic is also implemented in the deploy helper.
+# The deploy helper version is working on a subset of the options: cb, github, and gitlab
+# See helpers/foundation-deployer/utils/files.go RenameBuildFiles function
+
 set -e
 
 # Define the base path where the build type files are

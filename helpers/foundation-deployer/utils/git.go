@@ -16,7 +16,10 @@ package utils
 
 import (
 	"fmt"
+	"net/url"
 	"os"
+	"os/exec"
+	"path"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
@@ -29,12 +32,44 @@ type GitRepo struct {
 	conf *git.CmdCfg
 }
 
+// GitClone clones git repositories, supporting CSR, Github and Gitlab type of source control
+func GitClone(t testing.TB, repositoryType, repositoryName, repositoryURL, path, project string, logger *logger.Logger) GitRepo {
+	if repositoryType == "CSR" {
+		return cloneCSR(t, repositoryName, path, project, logger)
+	}
+	return cloneGit(t, repositoryURL, path, logger)
+}
+
 // CloneCSR clones a Google Cloud Source repository and returns a CmdConfig pointing to the repository.
-func CloneCSR(t testing.TB, name, path, project string, logger *logger.Logger) GitRepo {
+func cloneCSR(t testing.TB, repositoryName, path, project string, logger *logger.Logger) GitRepo {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
-		gcloud.Runf(t, "source repos clone %s %s --project %s", name, path, project)
+		gcloud.Runf(t, "source repos clone %s %s --project %s", repositoryName, path, project)
 	}
+	return GitRepo{
+		conf: git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger)),
+	}
+}
+
+func GetRepoOnly(t testing.TB, path string, logger *logger.Logger) GitRepo {
+	return GitRepo{
+		conf: git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger)),
+	}
+}
+
+// cloneGit clones a Github or Gitlab repository and returns a CmdConfig pointing to the repository.
+func cloneGit(t testing.TB, repositoryUrl, path string, logger *logger.Logger) GitRepo {
+	_, err := os.Stat(path)
+
+	if os.IsNotExist(err) {
+		cmd := exec.Command("git", "clone", repositoryUrl, path)
+		_, err := cmd.CombinedOutput()
+		if err != nil {
+			t.Fatalf("Error executing git command: %v", err)
+		}
+		fmt.Printf("repo cloned at path:\n%s\n", path)
+	}
+
 	return GitRepo{
 		conf: git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger)),
 	}
@@ -106,4 +141,31 @@ func (g GitRepo) AddRemote(name, url string) error {
 // GetCommitSha gets the commit SHA of the last commit of the current branch
 func (g GitRepo) GetCommitSha() (string, error) {
 	return g.conf.RunCmdE("rev-parse", "HEAD")
+}
+
+func BuildGitHubURL(owner, repoName, token string) string {
+	return fmt.Sprintf("https://oauth2:%s@github.com/%s/%s.git", token, owner, repoName)
+}
+
+func BuildGitLabURL(owner, repoName, token string) string {
+	return fmt.Sprintf("https://oauth2:%s@gitlab.com/%s/%s.git", token, owner, repoName)
+}
+
+// ExtractRepoNameFromGitHubURL parses a GitHub URL and returns the repository name.
+func ExtractRepoNameFromGitHubURL(githubURL string) (string, error) {
+	parsedURL, err := url.Parse(githubURL)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse URL: %w", err)
+	}
+
+	repoNameWithSuffix := path.Base(parsedURL.Path)
+	if repoNameWithSuffix == "" || repoNameWithSuffix == "." || repoNameWithSuffix == "/" {
+		return "", fmt.Errorf("could not find a repository name in the URL path: %s", githubURL)
+	}
+
+	repoName := strings.TrimSuffix(repoNameWithSuffix, ".git")
+	if repoName == "" {
+		return "", fmt.Errorf("extracted repository name is empty after processing: %s", githubURL)
+	}
+	return repoName, nil
 }

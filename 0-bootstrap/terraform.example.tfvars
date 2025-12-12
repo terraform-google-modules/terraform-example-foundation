@@ -68,7 +68,7 @@ default_region_kms = "us"
 #  to prevent saving the `gh_token` in plain text in this file,
 #  export the GitHub fine grained access token in the command line
 #  as an environment variable before running terraform.
-#  Run the following commnad in your shell:
+#  Run the following command in your shell:
 #   export TF_VAR_gh_token="YOUR-FINE-GRAINED-ACCESS-TOKEN"
 
 

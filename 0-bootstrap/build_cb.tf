@@ -68,7 +68,7 @@ resource "random_string" "suffix" {
 
 module "gcp_projects_state_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 9.0"
+  version = "~> 12.0"
 
   name          = "${var.bucket_prefix}-${module.seed_bootstrap.seed_project_id}-gcp-projects-tfstate"
   project_id    = module.seed_bootstrap.seed_project_id
@@ -186,7 +186,7 @@ module "tf_cloud_builder" {
 
 module "bootstrap_csr_repo" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 3.1"
+  version = "~> 4.0"
   upgrade = false
 
   create_cmd_entrypoint = "${path.module}/scripts/push-to-repo.sh"
@@ -204,7 +204,7 @@ resource "time_sleep" "cloud_builder" {
 
 module "build_terraform_image" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 3.1"
+  version = "~> 4.0"
   upgrade = false
 
   create_cmd_triggers = {

@@ -128,20 +128,20 @@ func RenameBuildFiles(basePath, targetBuild string) error {
 		return fmt.Errorf("invalid build type '%s'. Must be one of: %s", targetBuild, strings.Join(AllowedBuildTypes, ", "))
 	}
 
-	// Rename default build files to "*.example"
-	if targetBuild != DefaultBuild {
-		patternDefault := filepath.Join(basePath, fmt.Sprintf("*_%s.tf", DefaultBuild))
-		filesDefault, err := filepath.Glob(patternDefault)
-		if err != nil {
-			return fmt.Errorf("error finding files (%s rename): %w", DefaultBuild, err)
+	// Deactivate all other build types to ensure a clean state.
+	for _, buildType := range AllowedBuildTypes {
+		if buildType == targetBuild {
+			continue
 		}
-
-		for _, file := range filesDefault {
+		pattern := filepath.Join(basePath, fmt.Sprintf("*_%s.tf", buildType))
+		files, err := filepath.Glob(pattern)
+		if err != nil {
+			return fmt.Errorf("error finding files to deactivate for build type %s: %w", buildType, err)
+		}
+		for _, file := range files {
 			newName := file + DisableFileSuffix
-			fmt.Printf("Renaming \"%s\" to \"%s\"\n", file, newName)
-
-			err := os.Rename(file, newName)
-			if err != nil {
+			fmt.Printf("Deactivating: renaming \"%s\" to \"%s\"\n", file, newName)
+			if err := os.Rename(file, newName); err != nil {
 				return fmt.Errorf("error renaming file \"%s\": %w", file, err)
 			}
 		}

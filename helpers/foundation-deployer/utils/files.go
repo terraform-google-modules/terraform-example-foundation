@@ -16,15 +16,24 @@ package utils
 
 import (
 	"bytes"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const (
 	TerraformTempDir  = ".terraform"
 	TerraformLockFile = ".terraform.lock.hcl"
+	DisableFileSuffix = ".example"
+	DefaultBuild      = "cb"
+	GitHubBuild       = "github"
+	GitLabBuild       = "gitlab"
 )
+
+// Allowed build types.
+var AllowedBuildTypes = []string{"cb", "github", "gitlab", "jenkins", "terraform_cloud"}
 
 // CopyFile copies a single file from the src path to the dest path
 func CopyFile(src string, dest string) error {
@@ -102,4 +111,59 @@ func FileExists(filename string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+// RenameBuildFiles renames files based on targetBuild string.
+func RenameBuildFiles(basePath, targetBuild string) error {
+	// Validate build type.
+	validBuildType := false
+	for _, validType := range AllowedBuildTypes {
+		if targetBuild == validType {
+			validBuildType = true
+			break
+		}
+	}
+
+	if !validBuildType {
+		return fmt.Errorf("invalid build type '%s'. Must be one of: %s", targetBuild, strings.Join(AllowedBuildTypes, ", "))
+	}
+
+	// Deactivate all other build types to ensure a clean state.
+	for _, buildType := range AllowedBuildTypes {
+		if buildType == targetBuild {
+			continue
+		}
+		pattern := filepath.Join(basePath, fmt.Sprintf("*_%s.tf", buildType))
+		files, err := filepath.Glob(pattern)
+		if err != nil {
+			return fmt.Errorf("error finding files to deactivate for build type %s: %w", buildType, err)
+		}
+		for _, file := range files {
+			newName := file + DisableFileSuffix
+			fmt.Printf("Deactivating: renaming \"%s\" to \"%s\"\n", file, newName)
+			if err := os.Rename(file, newName); err != nil {
+				return fmt.Errorf("error renaming file \"%s\": %w", file, err)
+			}
+		}
+	}
+
+	// Rename *_BUILD_TYPE.tf.example to *_BUILD_TYPE.tf if they exist.
+	pattern := filepath.Join(basePath, fmt.Sprintf("*_%s.tf%s", targetBuild, DisableFileSuffix))
+	files, err := filepath.Glob(pattern)
+	if err != nil {
+		return fmt.Errorf("error finding files (target rename): %w", err)
+	}
+
+	for _, file := range files {
+		baseName := strings.TrimSuffix(file, fmt.Sprintf(".tf%s", DisableFileSuffix))
+		newName := baseName + ".tf"
+
+		fmt.Printf("Renaming \"%s\" to \"%s\"\n", file, newName)
+
+		err := os.Rename(file, newName)
+		if err != nil {
+			return fmt.Errorf("error renaming file \"%s\": %w", file, err)
+		}
+	}
+	return nil
 }

@@ -304,7 +304,7 @@ module "tfc_agent_gke" {
   service_account_email  = google_service_account.terraform-env-sa["bootstrap"].email
   service_account_id     = google_service_account.terraform-env-sa["bootstrap"].id
 
-  //If you are using Terraform Cloud Agents, un-comment this block after the first apply according README instructions
+  //If you are using Terraform Cloud Agents, un-comment this block after the first apply according to README instructions
   # providers = {
   #   kubernetes = kubernetes
   # }

@@ -139,22 +139,11 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
    cd ./envs/shared
    ```
 
-1. Activate the Jenkins module and disable the Cloud Build module. This implies manually editing the following files:
-   1. Rename file `./cb.tf` to `./cb.tf.example`
-
+1. Run the helper script `choose_build_type.sh` to enable Bootstrap Jenkins version
    ```bash
-   mv ./cb.tf ./cb.tf.example
+   ./scripts/choose_build_type.sh jenkins
    ```
 
-   1. Rename file `./jenkins.tf.example` to `./jenkins.tf`
-
-   ```bash
-   mv ./jenkins.tf.example ./jenkins.tf
-   ```
-
-   1. Un-comment the `jenkins_bootstrap` variables in `./variables.tf`
-   1. Un-comment the `jenkins_bootstrap` outputs in `./outputs.tf`
-   1. Comment-out the `cloudbuild_bootstrap` outputs in `./outputs.tf`
 1. Rename `terraform.example.tfvars` to `terraform.tfvars` and update the file with values from your environment.
 
    ```bash

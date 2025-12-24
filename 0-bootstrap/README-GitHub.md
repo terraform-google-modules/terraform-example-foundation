@@ -148,20 +148,9 @@ You must be [authenticated to GitHub](https://docs.github.com/en/authentication/
    cd ./envs/shared
    ```
 
-1. In the versions file `./versions.tf` un-comment the `github` required provider
-1. In the variables file `./variables.tf` un-comment variables in the section `Specific to github_bootstrap`
-1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
-1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to github_bootstrap`
-1. Rename file `./cb.tf` to `./cb.tf.example`
-
+1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitHub version
    ```bash
-   mv ./cb.tf ./cb.tf.example
-   ```
-
-1. Rename file `./github.tf.example` to `./github.tf`
-
-   ```bash
-   mv ./github.tf.example ./github.tf
+   ./scripts/choose_build_type.sh github
    ```
 
 1. Rename file `terraform.example.tfvars` to `terraform.tfvars`

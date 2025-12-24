@@ -104,16 +104,15 @@ output "iap_firewall_tags" {
 
 output "confidential_space_project" {
   description = "Confidential Space project id."
-  value       = module.confidential_space_project.project_id
+  value       = try(module.confidential_space_project[0].project_id, "")
 }
 
 output "confidential_space_project_number" {
   description = "Confidential Space project number."
-  value       = module.confidential_space_project.project_number
+  value       = try(module.confidential_space_project[0].project_number, "")
 }
 
 output "confidential_space_workload_sa" {
   description = "Workload Service Account for confidential space"
-  value       = google_service_account.workload_sa.email
+  value       = try(google_service_account.workload_sa[0].email, "")
 }
-

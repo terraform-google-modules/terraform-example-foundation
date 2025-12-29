@@ -169,3 +169,9 @@ func ExtractRepoNameFromGitHubURL(githubURL string) (string, error) {
 	}
 	return repoName, nil
 }
+
+// Merge merges the specified branch into the currently checked out branch.
+func (g GitRepo) Merge(branch string) error {
+	_, err := g.conf.RunCmdE("merge", "--no-edit", branch)
+	return err
+}

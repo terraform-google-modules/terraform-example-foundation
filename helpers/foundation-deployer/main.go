@@ -338,6 +338,16 @@ func main() {
 		os.Exit(3)
 	}
 
+	// Rerun org only to enable ingress and egress rules
+	msg.PrintStageMsg("Re-applying 1-org (enable app-infra dry-run rules)")
+	err = s.RunStep("gcp-org.enable-app-infra-dry-run-rules", func() error {
+		return stages.DeployOrgStageWithRules(t, s, globalTFVars, bo, conf)
+	})
+	if err != nil {
+		fmt.Printf("# Org re-apply (rules) failed. Error: %s\n", err.Error())
+		os.Exit(3)
+	}
+
 	if conf.BuildType == stages.BuildTypeCBCSR {
 		// 5-app-infra
 		msg.PrintStageMsg("Deploying 5-app-infra stage")

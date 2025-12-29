@@ -638,7 +638,9 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 		Executor:      executor,
 	}
 
-	return deployStage(t, stageConf, s, c)
+	if err := deployStage(t, stageConf, s, c); err != nil {
+		return err
+	}
 
 	//commit plan
 	if err := conf.CheckoutBranch("plan"); err != nil {

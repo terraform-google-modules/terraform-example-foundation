@@ -257,11 +257,17 @@ locals {
     [for p in local.projects_dry_run : "${p}"]
   )
 
-  base_ingress_keys = [
+  enable_cb_egress_dry_run = local.enable_cloudbuild_deploy
+  enable_cb_egress         = local.enable_cloudbuild_deploy
+
+  base_ingress_keys = local.enable_cloudbuild_deploy ? [
     "billing_sa_to_prj",
     "sinks_sa_to_logs",
     "service_cicd_to_seed",
     "cicd_to_seed",
+    ] : [
+    "billing_sa_to_prj",
+    "sinks_sa_to_logs",
   ]
 
   app_infra_ingress_keys_dry_run = [
@@ -294,12 +300,29 @@ locals {
     var.ingress_policies_keys
   )
 
-  egress_policies_keys_dry_run = var.required_egress_rules_app_infra_dry_run ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys_dry_run) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys_dry_run)
-  egress_policies_keys         = var.required_egress_rules_app_infra ? concat(["seed_to_cicd", "org_sa_to_scc", "app_infra_to_cicd"], var.egress_policies_keys) : concat(["seed_to_cicd", "org_sa_to_scc"], var.egress_policies_keys)
-  app_infra_targets_sorted     = sort(local.app_infra_targets)
-  app_infra_to_resources       = local.app_infra_project_number != null ? ["projects/${local.app_infra_project_number}"] : []
+  egress_policies_keys_dry_run = concat(
+    local.enable_cloudbuild_deploy ? ["seed_to_cicd"] : [],
+    ["org_sa_to_scc"],
+    var.required_egress_rules_app_infra_dry_run ? ["app_infra_to_cicd"] : [],
+    var.egress_policies_keys_dry_run
+  )
 
-  required_egress_rules_dry_run = [
+  egress_policies_keys = concat(
+    local.enable_cloudbuild_deploy ? ["seed_to_cicd"] : [],
+    ["org_sa_to_scc"],
+    var.required_egress_rules_app_infra ? ["app_infra_to_cicd"] : [],
+    var.egress_policies_keys
+  )
+
+  app_infra_targets_sorted = sort(local.app_infra_targets)
+
+  app_infra_to_resources = (
+    local.app_infra_project_number != ""
+    ? ["projects/${local.app_infra_project_number}"]
+    : []
+  )
+
+  required_egress_rules_dry_run_cb = [
     {
       title = "ER seed -> cicd"
       from = {
@@ -323,38 +346,19 @@ locals {
         }
       }
     },
+  ]
+
+  required_egress_rules_cb = [
     {
-      title = "ER seed -> scc"
+      title = "ER seed -> cicd"
       from = {
         identities = [
-          "serviceAccount:${local.organization_service_account}",
+          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com"
         ]
         sources = {
           resources = [
-            "projects/${local.cloudbuild_project_number}"
+            "projects/${local.seed_project_number}"
           ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${module.scc_notifications.project_number}"
-        ]
-        operations = {
-          "cloudasset.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-  ]
-
-  required_egress_rules_app_infra_dry_run = [
-    {
-      title = "ER app infra -> cicd"
-      from = {
-        identities = compact([local.app_infra_pipeline_identity])
-        sources = {
-          resources = local.app_infra_pipeline_source_projects
         }
       }
       to = {
@@ -370,56 +374,7 @@ locals {
     },
   ]
 
-  required_ingress_rules_dry_run = [
-    {
-      title = "IR billing"
-      from = {
-        identities = [
-          "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
-        ]
-        sources = {
-          access_levels = ["*"]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${module.org_billing_export.project_number}"
-        ]
-        operations = {
-          "logging.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-    {
-      title = "IR sinks"
-      from = {
-        identities = [
-          "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
-          "serviceAccount:service-b-${local.billing_account}@gcp-sa-logging.iam.gserviceaccount.com",
-        ]
-        sources = {
-          access_levels = ["*"]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${module.org_audit_logs.project_number}"
-        ]
-        operations = {
-          "logging.googleapis.com" = {
-            methods = ["*"]
-          }
-          "pubsub.googleapis.com" = {
-            methods = ["*"]
-          }
-          "storage.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
+  required_ingress_rules_dry_run_cb = [
     {
       title = "IR service cicd -> seed"
       from = {
@@ -471,29 +426,71 @@ locals {
     },
   ]
 
-  required_ingress_rule_scc_dry_run = [
+  required_ingress_rules_cb = [
     {
-      title = "CAI -> SCC"
+      title = "IR service cicd -> seed"
       from = {
         identities = [
-          try("serviceAccount:${google_service_account.cai_monitoring_builder[0].email}", null)
+          "serviceAccount:service-${local.cloudbuild_project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com",
         ]
         sources = {
-          access_levels = ["*"]
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
         }
       }
       to = {
         resources = [
-          "projects/${module.scc_notifications.project_number}"
+          "projects/${local.seed_project_number}"
         ]
         operations = {
-          "logging.googleapis.com" = {
-            methods = ["*"]
-          }
-          "artifactregistry.googleapis.com" = {
+          "iam.googleapis.com" = {
             methods = ["*"]
           }
           "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      title = "IR cicd -> seed"
+      from = {
+        identities = [
+          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com"
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.seed_project_number}"
+        ]
+        operations = {
+          "cloudbuild.googleapis.com" = { methods = ["*"] }
+        }
+      }
+    },
+  ]
+
+  required_egress_rules_app_infra_dry_run = [
+    {
+      title = "ER app infra -> cicd"
+      from = {
+        identities = compact([local.app_infra_pipeline_identity])
+        sources = {
+          resources = local.app_infra_pipeline_source_projects
+        }
+      }
+      to = {
+        resources = [
+          "projects/${local.cloudbuild_project_number}"
+        ]
+        operations = {
+          "cloudbuild.googleapis.com" = {
             methods = ["*"]
           }
         }
@@ -572,133 +569,6 @@ locals {
     },
   ]
 
-  required_ingress_rules = [
-    {
-      title = "IR billing"
-      from = {
-        identities = [
-          "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
-        ]
-        sources = {
-          access_levels = ["*"]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${module.org_billing_export.project_number}"
-        ]
-        operations = {
-          "logging.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-    {
-      title = "IR sinks"
-      from = {
-        identities = [
-          "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
-          "serviceAccount:service-b-${local.billing_account}@gcp-sa-logging.iam.gserviceaccount.com",
-        ]
-        sources = {
-          access_levels = ["*"]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${module.org_audit_logs.project_number}"
-        ]
-        operations = {
-          "logging.googleapis.com" = {
-            methods = ["*"]
-          }
-          "pubsub.googleapis.com" = {
-            methods = ["*"]
-          }
-          "storage.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-    {
-      title = "IR service cicd -> seed"
-      from = {
-        identities = [
-          "serviceAccount:service-${local.cloudbuild_project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com",
-        ]
-        sources = {
-          resources = [
-            "projects/${local.cloudbuild_project_number}"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${local.seed_project_number}"
-        ]
-        operations = {
-          "iam.googleapis.com" = {
-            methods = ["*"]
-          }
-          "storage.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-    {
-      title = "IR cicd -> seed"
-      from = {
-        identities = [
-          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com"
-        ]
-        sources = {
-          resources = [
-            "projects/${local.cloudbuild_project_number}"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${local.seed_project_number}"
-        ]
-        operations = {
-          "cloudbuild.googleapis.com" = { methods = ["*"] }
-        }
-      }
-    },
-  ]
-
-  required_ingress_rule_scc = [
-    {
-      title = "CAI -> SCC"
-      from = {
-        identities = [
-          try("serviceAccount:${google_service_account.cai_monitoring_builder[0].email}", null)
-        ]
-        sources = { access_levels = ["*"] }
-      }
-      to = {
-        resources = [
-          "projects/${module.scc_notifications.project_number}"
-        ]
-        operations = {
-          "logging.googleapis.com" = {
-            methods = ["*"]
-          }
-          "artifactregistry.googleapis.com" = {
-            methods = ["*"]
-          }
-          "storage.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-  ]
-
   required_ingress_rules_app_infra = [
     {
       title = "IR cicd -> app infra"
@@ -770,55 +640,6 @@ locals {
     },
   ]
 
-  required_egress_rules = [
-    {
-      title = "ER seed -> cicd"
-      from = {
-        identities = [
-          "serviceAccount:${local.cloudbuild_project_number}@cloudbuild.gserviceaccount.com"
-        ]
-        sources = {
-          resources = [
-            "projects/${local.seed_project_number}"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${local.cloudbuild_project_number}"
-        ]
-        operations = {
-          "cloudbuild.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-    {
-      title = "ER cicd -> scc"
-      from = {
-        identities = [
-          "serviceAccount:${local.organization_service_account}"
-        ]
-        sources = {
-          resources = [
-            "projects/${local.cloudbuild_project_number}"
-          ]
-        }
-      }
-      to = {
-        resources = [
-          "projects/${module.scc_notifications.project_number}"
-        ]
-        operations = {
-          "cloudasset.googleapis.com" = {
-            methods = ["*"]
-          }
-        }
-      }
-    },
-  ]
-
   required_egress_rules_app_infra = [
     {
       title = "ER app infra -> cicd"
@@ -841,8 +662,225 @@ locals {
     },
   ]
 
+  required_ingress_rule_scc_dry_run = [
+    {
+      title = "CAI -> SCC"
+      from = {
+        identities = [
+          try("serviceAccount:${google_service_account.cai_monitoring_builder[0].email}", null)
+        ]
+        sources = {
+          access_levels = ["*"]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.scc_notifications.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "artifactregistry.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
+  required_ingress_rule_scc = [
+    {
+      title = "CAI -> SCC"
+      from = {
+        identities = [
+          try("serviceAccount:${google_service_account.cai_monitoring_builder[0].email}", null)
+        ]
+        sources = {
+          access_levels = ["*"]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.scc_notifications.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "artifactregistry.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
+  required_ingress_rules_dry_run = [
+    {
+      title = "IR billing"
+      from = {
+        identities = [
+          "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = ["*"]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_billing_export.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      title = "IR sinks"
+      from = {
+        identities = [
+          "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
+          "serviceAccount:service-b-${local.billing_account}@gcp-sa-logging.iam.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = ["*"]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_audit_logs.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "pubsub.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
+  required_egress_rules_dry_run = [
+    {
+      title = "ER seed -> scc"
+      from = {
+        identities = [
+          "serviceAccount:${local.organization_service_account}",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.scc_notifications.project_number}"
+        ]
+        operations = {
+          "cloudasset.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
+  required_egress_rules = [
+    {
+      title = "ER seed -> scc"
+      from = {
+        identities = [
+          "serviceAccount:${local.organization_service_account}",
+        ]
+        sources = {
+          resources = [
+            "projects/${local.cloudbuild_project_number}"
+          ]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.scc_notifications.project_number}"
+        ]
+        operations = {
+          "cloudasset.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
+  required_ingress_rules = [
+    {
+      title = "IR billing"
+      from = {
+        identities = [
+          "serviceAccount:billing-export-bigquery@system.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = ["*"]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_billing_export.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+    {
+      title = "IR sinks"
+      from = {
+        identities = [
+          "serviceAccount:service-${local.parent_id}@gcp-sa-logging.iam.gserviceaccount.com",
+          "serviceAccount:service-b-${local.billing_account}@gcp-sa-logging.iam.gserviceaccount.com",
+        ]
+        sources = {
+          access_levels = ["*"]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_audit_logs.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "pubsub.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    },
+  ]
+
   required_ingress_rules_list_dry_run = concat(
     local.required_ingress_rules_dry_run,
+    local.enable_cloudbuild_deploy ? local.required_ingress_rules_dry_run_cb : [],
     var.required_ingress_rules_app_infra_dry_run ? local.required_ingress_rules_app_infra_dry_run : [],
     var.enable_scc_resources_in_terraform ? local.required_ingress_rule_scc_dry_run : [],
     var.ingress_policies_dry_run
@@ -850,9 +888,24 @@ locals {
 
   required_ingress_rules_list = concat(
     local.required_ingress_rules,
+    local.enable_cloudbuild_deploy ? local.required_ingress_rules_cb : [],
     var.required_ingress_rules_app_infra ? local.required_ingress_rules_app_infra : [],
     var.enable_scc_resources_in_terraform ? local.required_ingress_rule_scc : [],
     var.ingress_policies
+  )
+
+  required_egress_rules_list_dry_run = concat(
+    local.enable_cloudbuild_deploy ? local.required_egress_rules_dry_run_cb : [],
+    local.required_egress_rules_dry_run,
+    var.required_egress_rules_app_infra_dry_run ? local.required_egress_rules_app_infra_dry_run : [],
+    var.egress_policies_dry_run
+  )
+
+  required_egress_rules_list = concat(
+    local.enable_cloudbuild_deploy ? local.required_egress_rules_cb : [],
+    local.required_egress_rules,
+    var.required_egress_rules_app_infra ? local.required_egress_rules_app_infra : [],
+    var.egress_policies
   )
 }
 
@@ -886,17 +939,8 @@ module "service_control" {
   ingress_policies_dry_run = local.required_ingress_rules_list_dry_run
   ingress_policies         = local.required_ingress_rules_list
 
-  egress_policies_dry_run = concat(
-    local.required_egress_rules_dry_run,
-    var.required_egress_rules_app_infra_dry_run ? local.required_egress_rules_app_infra_dry_run : [],
-    var.egress_policies_dry_run
-  )
-
-  egress_policies = concat(
-    local.required_egress_rules,
-    var.required_egress_rules_app_infra ? local.required_egress_rules_app_infra : [],
-    var.egress_policies
-  )
+  egress_policies_dry_run = local.required_egress_rules_list_dry_run
+  egress_policies         = local.required_egress_rules_list
 
   depends_on = [
     time_sleep.wait_projects

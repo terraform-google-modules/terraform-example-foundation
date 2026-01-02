@@ -35,7 +35,9 @@ locals {
   networks_service_account                      = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
   projects_service_account                      = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
   environment_service_account                   = data.terraform_remote_state.bootstrap.outputs.environment_step_terraform_service_account_email
-  cloudbuild_project_number                     = data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_number
+  cloud_builder_artifact_repo                   = try(data.terraform_remote_state.bootstrap.outputs.cloud_builder_artifact_repo, "")
+  enable_cloudbuild_deploy                      = local.cloud_builder_artifact_repo != ""
+  cloudbuild_project_number                     = data.terraform_remote_state.bootstrap.outputs.cicd_project_number
   seed_project_id                               = data.terraform_remote_state.bootstrap.outputs.seed_project_id
   seed_project_number                           = data.terraform_remote_state.bootstrap.outputs.seed_project_number
   parent_id                                     = data.terraform_remote_state.bootstrap.outputs.parent_id
@@ -45,17 +47,28 @@ locals {
   app_infra_project_id                          = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_id, null)
   app_infra_project_number                      = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_number, null)
 
-  app_infra_pipeline_identity        = local.app_infra_project_number != null ? "serviceAccount:${local.app_infra_project_number}@cloudbuild.gserviceaccount.com" : null
-  app_infra_pipeline_source_projects = local.app_infra_project_number != null ? ["projects/${local.app_infra_project_number}"] : []
+  app_infra_pipeline_identity = (
+    local.app_infra_project_number != ""
+    ? "serviceAccount:${local.app_infra_project_number}@cloudbuild.gserviceaccount.com"
+    : null
+  )
+
+  app_infra_pipeline_source_projects = (
+    local.app_infra_project_number != ""
+    ? ["projects/${local.app_infra_project_number}"]
+    : []
+  )
+
+  app_infra_cicd_identity = (
+    local.app_infra_project_id != ""
+    ? "serviceAccount:sa-tf-cb-bu1-example-app@${local.app_infra_project_id}.iam.gserviceaccount.com"
+    : null
+  )
+
   app_infra_targets = distinct(concat(
     [for n in local.shared_vpc_project_numbers : "projects/${n}"],
     [for n in local.peering_projects_numbers : "projects/${n}"]
   ))
-  app_infra_cicd_identity = (
-    local.app_infra_project_id != null
-    ? "serviceAccount:sa-tf-cb-bu1-example-app@${local.app_infra_project_id}.iam.gserviceaccount.com"
-    : null
-  )
 }
 
 data "terraform_remote_state" "bootstrap" {

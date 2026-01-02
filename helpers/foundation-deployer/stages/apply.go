@@ -653,6 +653,15 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 		return err
 	}
 
+	// wait plan build
+	planSha, err := conf.GetCommitSha()
+	if err != nil {
+		return err
+	}
+	if err := executor.WaitBuildSuccess(t, planSha, "Terraform gcp-org plan (rerun rules) build failed."); err != nil {
+		return err
+	}
+
 	//merge with production
 	if err := conf.CheckoutBranch("production"); err != nil {
 		return err
@@ -661,6 +670,15 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 		return err
 	}
 	if err := conf.PushBranch("production", "origin"); err != nil {
+		return err
+	}
+
+	// wait production build
+	prodSha, err := conf.GetCommitSha()
+	if err != nil {
+		return err
+	}
+	if err := executor.WaitBuildSuccess(t, prodSha, "Terraform gcp-org apply production (rerun rules) build failed."); err != nil {
 		return err
 	}
 

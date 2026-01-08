@@ -35,7 +35,7 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-tf-cloud-agents:tfc-agent-gke/v4.1.0"
+    module_name = "blueprints/terraform/terraform-google-tf-cloud-agents:tfc-agent-gke/v5.0.0"
   }
 }
 

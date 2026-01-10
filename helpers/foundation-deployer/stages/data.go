@@ -182,6 +182,8 @@ type GlobalTFVars struct {
 	ParentFolder                          *string         `hcl:"parent_folder"`
 	Domain                                string          `hcl:"domain"`
 	DomainsToAllow                        []string        `hcl:"domains_to_allow"`
+	RequiredEgressRulesAppInfraDryRun     *bool           `hcl:"required_egress_rules_app_infra_dry_run"`
+	RequiredIngressRulesAppInfraDryRun    *bool           `hcl:"required_ingress_rules_app_infra_dry_run"`
 	EssentialContactsDomains              []string        `hcl:"essential_contacts_domains_to_allow"`
 	PerimeterAdditionalMembers            []string        `hcl:"perimeter_additional_members"`
 	TargetNameServerAddresses             []ServerAddress `hcl:"target_name_server_addresses"`
@@ -264,8 +266,12 @@ type BootstrapTfvars struct {
 }
 
 type OrgTfvars struct {
+	AccessContextManagerPolicyID          string    `hcl:"access_context_manager_policy_id"`
+	PerimeterAdditionalMembers            []string  `hcl:"perimeter_additional_members"`
 	DomainsToAllow                        []string  `hcl:"domains_to_allow"`
 	EssentialContactsDomains              []string  `hcl:"essential_contacts_domains_to_allow"`
+	RequiredEgressRulesAppInfraDryRun     *bool     `hcl:"required_egress_rules_app_infra_dry_run"`
+	RequiredIngressRulesAppInfraDryRun    *bool     `hcl:"required_ingress_rules_app_infra_dry_run"`
 	SccNotificationName                   string    `hcl:"scc_notification_name"`
 	RemoteStateBucket                     string    `hcl:"remote_state_bucket"`
 	EnableHubAndSpoke                     bool      `hcl:"enable_hub_and_spoke"`
@@ -288,10 +294,9 @@ type EnvsTfvars struct {
 }
 
 type NetCommonTfvars struct {
-	Domain                        string   `hcl:"domain"`
-	PerimeterAdditionalMembers    []string `hcl:"perimeter_additional_members"`
-	RemoteStateBucket             string   `hcl:"remote_state_bucket"`
-	EnableHubAndSpokeTransitivity *bool    `hcl:"enable_hub_and_spoke_transitivity"`
+	Domain                        string `hcl:"domain"`
+	RemoteStateBucket             string `hcl:"remote_state_bucket"`
+	EnableHubAndSpokeTransitivity *bool  `hcl:"enable_hub_and_spoke_transitivity"`
 }
 
 type NetSharedTfvars struct {
@@ -300,10 +305,6 @@ type NetSharedTfvars struct {
 
 type NetProductionTfvars struct {
 	TargetNameServerAddresses []ServerAddress `hcl:"target_name_server_addresses"`
-}
-
-type NetAccessContextTfvars struct {
-	AccessContextManagerPolicyID string `hcl:"access_context_manager_policy_id"`
 }
 
 type ProjCommonTfvars struct {

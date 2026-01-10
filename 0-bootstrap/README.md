@@ -555,9 +555,11 @@ The following steps will guide you through deploying without using Cloud Build.
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
 | optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |
+| parent\_id | Parent ID service account. |
 | projects\_gcs\_bucket\_tfstate | Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project. |
 | projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
 | required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
+| seed\_project\_number | The seed project number. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

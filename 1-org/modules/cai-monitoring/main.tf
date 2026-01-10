@@ -140,9 +140,10 @@ resource "google_scc_v2_organization_source" "cai_monitoring" {
 }
 
 // Cloud Function
+
 module "cloud_function" {
   source  = "GoogleCloudPlatform/cloud-functions/google"
-  version = "~> 0.6"
+  version = "~> 0.7"
 
   function_name         = "caiMonitoring"
   description           = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."

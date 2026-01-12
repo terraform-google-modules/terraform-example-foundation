@@ -23,6 +23,11 @@ output "cicd_project_id" {
   value       = module.jenkins_bootstrap.cicd_project_id
 }
 
+output "cicd_project_number" {
+  description = "Project number of the CI/CD project."
+  value       = module.jenkins_bootstrap.cicd_project_number
+}
+
 output "jenkins_agent_gce_instance_id" {
   description = "Jenkins Agent GCE Instance id."
   value       = module.jenkins_bootstrap.jenkins_agent_gce_instance_id

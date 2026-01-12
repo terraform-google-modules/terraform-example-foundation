@@ -37,15 +37,15 @@ locals {
   environment_service_account                   = data.terraform_remote_state.bootstrap.outputs.environment_step_terraform_service_account_email
   cloud_builder_artifact_repo                   = try(data.terraform_remote_state.bootstrap.outputs.cloud_builder_artifact_repo, "")
   enable_cloudbuild_deploy                      = local.cloud_builder_artifact_repo != ""
-  cloudbuild_project_number                     = data.terraform_remote_state.bootstrap.outputs.cicd_project_number
+  cloudbuild_project_number                     = try(data.terraform_remote_state.bootstrap.outputs.cicd_project_number, try(data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_number, ""))
   seed_project_id                               = data.terraform_remote_state.bootstrap.outputs.seed_project_id
   seed_project_number                           = data.terraform_remote_state.bootstrap.outputs.seed_project_number
   parent_id                                     = data.terraform_remote_state.bootstrap.outputs.parent_id
   projects_gcs_bucket_tfstate                   = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
   peering_projects_numbers                      = compact([for s in data.terraform_remote_state.projects_env : try(s.outputs.peering_project_number, null)])
   shared_vpc_project_numbers                    = compact([for s in data.terraform_remote_state.projects_env : try(s.outputs.shared_vpc_project_number, null)])
-  app_infra_project_id                          = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_id, null)
-  app_infra_project_number                      = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_number, null)
+  app_infra_project_id                          = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_id, "")
+  app_infra_project_number                      = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_number, "")
 
   app_infra_pipeline_identity = (
     local.app_infra_project_number != ""

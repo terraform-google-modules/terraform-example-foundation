@@ -130,8 +130,8 @@ github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
-github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240808135927-5f1fd0f4104a h1:4Ih0BauwdUTF+YuA55/qY8Q+d5brYKPpae0YWkB9D2A=
-github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20240808135927-5f1fd0f4104a/go.mod h1:p8CvVuYRey5Nb8dipH5KM+eY+TnqfLgDnQ5M1a7oHiw=
+github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20260108191608-7e2ac058c506 h1:0bDESBV2NYzupJIZXVnu9TkR7EyVMV9JpVGifn1k3lE=
+github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20260108191608-7e2ac058c506/go.mod h1:XsoM1QUls5BgdG+cExLBB487w5DBB1ajiUR8yLXePKk=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/gjson v1.18.0 h1:FIDeeyB800efLX89e5a8Y0BNH+LOngJyGrIWxG2FKQY=
 github.com/tidwall/gjson v1.18.0/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=

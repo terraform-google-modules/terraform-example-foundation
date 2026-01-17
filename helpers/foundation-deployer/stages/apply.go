@@ -601,14 +601,14 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 
 }
 
-func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf) error {
+func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf, enableVPCSCRules bool) error {
 
 	tfvarsPath := filepath.Join(c.FoundationPath, OrgStep, "envs", "shared", "terraform.tfvars")
 
-	if err := setBoolInTfvarsFile(tfvarsPath, "required_egress_rules_app_infra_dry_run", true); err != nil {
+	if err := setBoolInTfvarsFile(tfvarsPath, "required_egress_rules_app_infra_dry_run", enableVPCSCRules); err != nil {
 		return err
 	}
-	if err := setBoolInTfvarsFile(tfvarsPath, "required_ingress_rules_app_infra_dry_run", true); err != nil {
+	if err := setBoolInTfvarsFile(tfvarsPath, "required_ingress_rules_app_infra_dry_run", enableVPCSCRules); err != nil {
 		return err
 	}
 

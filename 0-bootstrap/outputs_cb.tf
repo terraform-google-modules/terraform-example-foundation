@@ -22,6 +22,11 @@ output "cloudbuild_project_id" {
   value       = module.tf_source.cloudbuild_project_id
 }
 
+output "cloudbuild_project_number" {
+  description = "Project number of the Cloud Build project"
+  value = data.google_project.cloudbuild_project.number
+}
+
 output "gcs_bucket_cloudbuild_artifacts" {
   description = "Bucket used to store Cloud Build artifacts in cicd project."
   value       = { for key, value in module.tf_workspace : key => replace(value.artifacts_bucket, local.bucket_self_link_prefix, "") }

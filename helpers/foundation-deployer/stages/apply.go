@@ -627,7 +627,7 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 	}
 
 	stageConf := StageConf{
-		Stage:         "gcp-org-rerun-rules",
+		Stage:         fmt.Sprintf("gcp-org-rerun-rules-%t", enableVPCSCRules),
 		CICDProject:   outputs.CICDProject,
 		DefaultRegion: outputs.DefaultRegion,
 		Step:          OrgStep,

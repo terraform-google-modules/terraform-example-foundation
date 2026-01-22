@@ -2,7 +2,7 @@ module github.com/terraform-google-modules/terraform-example-foundation/helpers/
 
 go 1.23.0
 
-toolchain go1.24.1
+toolchain go1.24.12
 
 require (
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.17.3

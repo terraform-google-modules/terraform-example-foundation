@@ -546,6 +546,7 @@ The following steps will guide you through deploying without using Cloud Build.
 | cloud\_build\_worker\_range\_id | The Cloud Build private worker IP range ID. |
 | cloud\_builder\_artifact\_repo | Artifact Registry (AR) Repository created to store TF Cloud Builder images. |
 | cloudbuild\_project\_id | Project where Cloud Build configuration and terraform container image will reside. |
+| cloudbuild\_project\_number | Project number of the Cloud Build project |
 | common\_config | Common configuration data to be used in other steps. |
 | csr\_repos | List of Cloud Source Repos created by the module, linked to Cloud Build triggers. |
 | environment\_step\_terraform\_service\_account\_email | Environment Step Terraform Account |

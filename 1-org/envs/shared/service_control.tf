@@ -942,6 +942,8 @@ module "service_control" {
   egress_policies_dry_run = local.required_egress_rules_list_dry_run
   egress_policies         = local.required_egress_rules_list
 
+  vpc_sc_propagation_sleep_duration = var.vpc_sc_propagation_sleep_duration
+
   depends_on = [
     time_sleep.wait_projects
   ]

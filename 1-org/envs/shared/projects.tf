@@ -320,7 +320,7 @@ resource "google_project_iam_member" "network_sa" {
 }
 
 resource "time_sleep" "wait_projects" {
-  create_duration = "30s"
+  create_duration = var.projects_sleep_duration
 
   depends_on = [
     module.org_audit_logs,

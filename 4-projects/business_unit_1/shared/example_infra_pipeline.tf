@@ -135,7 +135,7 @@ module "infra_pipelines" {
 }
 
 resource "time_sleep" "wait_iam_propagation" {
-  create_duration = "60s"
+  create_duration = var.iam_propagation_sleep_duration
 
   depends_on = [
     module.infra_pipelines,

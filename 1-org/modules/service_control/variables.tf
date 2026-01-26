@@ -192,3 +192,9 @@ variable "egress_policies_keys_dry_run" {
   type        = list(string)
   default     = null
 }
+
+variable "vpc_sc_propagation_sleep_duration" {
+  description = "The duration to wait for VPC Service Controls propagation (e.g., 60s, 2m)."
+  type        = string
+  default     = "60s"
+}

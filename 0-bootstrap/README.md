@@ -520,6 +520,7 @@ The following steps will guide you through deploying without using Cloud Build.
 | bucket\_force\_destroy | When deleting a bucket, this boolean option will delete all contained objects. If false, Terraform will fail to delete buckets which contain objects. | `bool` | `false` | no |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | bucket\_tfstate\_kms\_force\_destroy | When deleting a bucket, this boolean option will delete the KMS keys used for the Terraform state bucket. | `bool` | `false` | no |
+| cloud\_builder\_sleep\_duration | The duration to wait for Cloud Builder and CSR repo resources to initialize (e.g., 30s, 2m). | `string` | `"30s"` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | default\_region\_2 | Secondary default region to create resources where applicable. | `string` | `"us-west1"` | no |
 | default\_region\_gcs | Case-Sensitive default region to create gcs resources where applicable. | `string` | `"US"` | no |

@@ -92,7 +92,8 @@ module "restrict_protocol_fowarding" {
 *******************************************/
 
 resource "time_sleep" "wait_logs_export" {
-  create_duration = "30s"
+  create_duration = var.logs_export_sleep_duration
+
   depends_on = [
     module.logs_export
   ]

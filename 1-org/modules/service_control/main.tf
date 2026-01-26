@@ -79,7 +79,7 @@ module "regular_service_perimeter" {
 }
 
 resource "time_sleep" "wait_vpc_sc_propagation" {
-  create_duration = "60s"
+  create_duration = var.vpc_sc_propagation_sleep_duration
 
   depends_on = [module.regular_service_perimeter]
 }

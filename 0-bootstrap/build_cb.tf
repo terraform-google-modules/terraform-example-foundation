@@ -194,7 +194,7 @@ module "bootstrap_csr_repo" {
 }
 
 resource "time_sleep" "cloud_builder" {
-  create_duration = "30s"
+  create_duration = var.cloud_builder_sleep_duration
 
   depends_on = [
     module.tf_cloud_builder,

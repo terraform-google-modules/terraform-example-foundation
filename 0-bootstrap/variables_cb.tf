@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-module "env" {
-  source = "../../modules/env_baseline"
-
-  env                 = "nonproduction"
-  environment_code    = "n"
-  remote_state_bucket = var.remote_state_bucket
-  tfc_org_name        = var.tfc_org_name
-
-  project_deletion_policy       = var.project_deletion_policy
-  folder_deletion_protection    = var.folder_deletion_protection
-  folder_destroy_sleep_duration = var.folder_destroy_sleep_duration
+variable "cloud_builder_sleep_duration" {
+  description = "The duration to wait for Cloud Builder and CSR repo resources to initialize (e.g., 30s, 2m)."
+  type        = string
+  default     = "30s"
 }
+

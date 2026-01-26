@@ -89,8 +89,9 @@ module "cloudfunction_source_bucket" {
 }
 
 resource "time_sleep" "wait_for_bucket" {
-  depends_on      = [module.cloudfunction_source_bucket]
-  create_duration = "30s"
+  create_duration = var.bucket_sleep_duration
+
+  depends_on = [module.cloudfunction_source_bucket]
 }
 
 resource "google_storage_bucket_object" "cf_cai_source_zip" {

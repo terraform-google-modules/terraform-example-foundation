@@ -69,7 +69,8 @@ resource "google_project_iam_member" "cloudfunction_iam" {
 
 // Time sleep
 resource "time_sleep" "wait_kms_iam" {
-  create_duration = "60s"
+  create_duration = var.kms_iam_sleep_duration
+
   depends_on = [
     google_organization_iam_member.cloudfunction_findings_editor,
     google_project_iam_member.cloudfunction_iam

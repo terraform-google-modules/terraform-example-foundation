@@ -134,3 +134,9 @@ EOT
   })
   default = null
 }
+
+variable "sa_iam_membership_sleep_duration" {
+  description = "The duration to wait for Service Account IAM membership propagation (e.g., 30s)."
+  type        = string
+  default     = "30s"
+}

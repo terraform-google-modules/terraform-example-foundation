@@ -396,3 +396,39 @@ variable "envs" {
     production    = true
   }
 }
+
+variable "logs_export_sleep_duration" {
+  description = "The duration to wait for logs export resources to initialize (e.g., 30s, 2m)."
+  type        = string
+  default     = "30s"
+}
+
+variable "projects_sleep_duration" {
+  description = "The duration to wait for core project resources (audit logs, billing, networking, KMS, etc.) to initialize."
+  type        = string
+  default     = "30s"
+}
+
+variable "kms_iam_sleep_duration" {
+  description = "The duration to wait for KMS and Cloud Function IAM bindings to propagate (e.g., 60s, 2m)."
+  type        = string
+  default     = "60s"
+}
+
+variable "bucket_sleep_duration" {
+  description = "The duration to wait for the Cloud Function source bucket to initialize (e.g., 30s, 2m)."
+  type        = string
+  default     = "30s"
+}
+
+variable "sa_iam_membership_sleep_duration" {
+  description = "The duration to wait for Service Account IAM membership propagation (e.g., 30s)."
+  type        = string
+  default     = "30s"
+}
+
+variable "vpc_sc_propagation_sleep_duration" {
+  description = "The duration to wait for VPC Service Controls propagation (e.g., 60s, 2m)."
+  type        = string
+  default     = "60s"
+}

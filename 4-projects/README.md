@@ -219,10 +219,45 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    git push origin nonproduction
    ```
 
-1. Before executing the next step, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. Before move to the next step, configure directional policies for your perimeter.
+
+1. Navigate to `gcp-org`.
+
+   ```bash
+   cd ../gcp-org/
+   ```
+
+1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` and `required_ingress_rule_app_infra_dry_run` variables to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` and `required_ingress_rule_app_infra` variables to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file.
+
+   ```bash
+   export enforce_vpcsc=$(terraform -chdir="envs/shared/" output -raw enforce_vpcsc); \
+   echo "enforce_vpcsc" = $enforce_vpcsc
+   if [[ "$enforce_vpcsc" == "false" ]]; then \
+   sed -i -E '/^[[:space:]]*\/\/required_ingress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' ./envs/shared/terraform.tfvars; \
+   else \
+   sed -i -E '/^[[:space:]]*\/\/required_ingress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' ./envs/shared/terraform.tfvars; \
+   fi
+   if [[ "$enforce_vpcsc" == "false" ]]; then \
+   sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' ./envs/shared/terraform.tfvars; \
+   else \
+   sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' ./envs/shared/terraform.tfvars; \
+   fi
+   ```
+
+1. Commit and push the changes.
+
+   ```bash
+   git add .
+   git commit -m "Add infra pipeline directional policies"
+   git push
+
+   cd ..
    ```
 
 1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
@@ -274,7 +309,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    Use `terraform output` to get the remote state bucket (the backend bucket used by previous steps) value from `gcp-bootstrap` output.
 
    ```bash
-   export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/" output -raw gcs_bucket_tfstate)
+   export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${remote_state_bucket}"
 
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
@@ -287,10 +322,10 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
 1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
-   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/" output -raw seed_project_id)
+   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw seed_project_id)
    echo ${SEED_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/" output -raw projects_step_terraform_service_account_email)
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
@@ -377,7 +412,7 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
    git commit -m "Initial nonproduction commit."
    ```
 
-1. Checkout shared `production`. Run `init` and `plan` and review output for environment development.
+1. Checkout shared `production`. Run `init` and `plan` and review output for production development.
 
    ```bash
    git checkout production
@@ -403,8 +438,75 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
 
 If you received any errors or made any changes to the Terraform config or any `.tfvars`, you must re-run `./tf-wrapper.sh plan <env>` before run `./tf-wrapper.sh apply <env>`.
 
-Before executing the next stages, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
-```bash
-unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
-```
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. Before move to the next step, configure directional policies for your perimeter.
+
+1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+
+   ```bash
+   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw seed_project_id)
+   echo ${SEED_PROJECT_ID}
+
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw organization_step_terraform_service_account_email)
+   echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
+   ```
+
+1. Before move to the next step, configure directional policies for your perimeter.
+
+1. Navigate to `gcp-org`.
+1. Use `terraform output` to get the APP Infra Pipeline cloud build project id and project number.
+
+   ```bash
+   cd ../gcp-org/
+
+   export cloudbuild_project_number=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_number)
+   echo "cloud build project number = $cloudbuild_project_number"
+   export cloudbuild_project_id=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
+   echo "cloud build project id = $cloudbuild_project_id"
+   sed -i'' -e "s/PRJ_APP_INFRA_PIPELINE_NUMBER/${cloudbuild_project_number}/" /envs/shared/service_control.tf
+   sed -i'' -e "s/PRJ_APP_INFRA_ID/${cloudbuild_project_id}/" /envs/shared/service_control.tf
+   ```
+
+1. If you are deploying with VPC Service Controls in dry run mode, update the `required_egress_rule_app_infra_dry_run` and `required_ingress_rule_app_infra_dry_run` variables to true, if you are deploying with VPC Service Controls in enforced mode, update the `required_egress_rule_app_infra` and `required_ingress_rule_app_infra` variables to true in [service_control.tf](gcp-org/envs/shared/service_control.tf) file.
+
+   ```bash
+   export enforce_vpcsc=$(terraform -chdir="envs/shared/" output -raw enforce_vpcsc); \
+   echo "enforce_vpcsc" = $enforce_vpcsc
+   if [[ "$enforce_vpcsc" == "false" ]]; then \
+   sed -i -E '/^[[:space:]]*\/\/required_ingress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   else \
+   sed -i -E '/^[[:space:]]*\/\/required_ingress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   fi
+   if [[ "$enforce_vpcsc" == "false" ]]; then \
+   sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra_dry_run[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   else \
+   sed -i -E '/^[[:space:]]*\/\/required_egress_rules_app_infra[[:space:]]*=/ s|^[[:space:]]*//||' envs/shared/terraform.tfvars; \
+   fi
+   ```
+
+1. Run `plan` and `apply` and output for production development. Commit and save the changes.
+
+   ```bash
+   ./tf-wrapper plan production
+   ./tf-wrapper apply production
+   git commit -m "Add infra pipeline directional policies"
+
+   cd ..
+   ```
+
+1. Unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
+
+   ```bash
+   unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+   ```
+
+1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
+
+## Warning
+
+If you previously enabled the dry-run variables `required_ingress_rules_app_infra_dry_run` and `required_egress_rules_app_infra_dry_run`, you must **disable both of them before running the 4-projects step in enforced mode**. Once enforced mode is activated and the **4-projects** step is executed, the projects created in that step are removed from the dry-run perimeter. Keeping these dry-run variables active creates conflicts, because they define rules for projects that will no longer be part of the dry-run perimeter after this transition.

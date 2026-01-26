@@ -22,6 +22,11 @@ output "cicd_project_id" {
   value       = module.cicd_project.project_id
 }
 
+output "cicd_project_number" {
+  description = "Project number of the CI/CD project."
+  value       = module.cicd_project.project_number
+}
+
 output "jenkins_agent_gce_instance_id" {
   description = "Jenkins Agent GCE Instance id."
   value       = google_compute_instance.jenkins_agent_gce_instance.id

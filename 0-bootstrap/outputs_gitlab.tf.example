@@ -21,3 +21,8 @@ output "cicd_project_id" {
   description = "Project where the CI/CD infrastructure for GitLab CI/CD resides."
   value       = module.gitlab_cicd.project_id
 }
+
+output "cicd_project_number" {
+  description = "Project number of the CI/CD project."
+  value       = module.gitlab_cicd.project_number
+}

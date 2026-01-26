@@ -135,6 +135,12 @@ func ValidateDestroyFlags(t testing.TB, g GlobalTFVars) {
 	if g.WorkflowDeletionProtection != nil && *g.WorkflowDeletionProtection {
 		falseFlags = append(falseFlags, "workflow_deletion_protection")
 	}
+	if g.RequiredEgressRulesAppInfraDryRun != nil && *g.RequiredEgressRulesAppInfraDryRun {
+		falseFlags = append(falseFlags, "required_egress_rules_app_infra_dry_run")
+	}
+	if g.RequiredIngressRulesAppInfraDryRun != nil && *g.RequiredIngressRulesAppInfraDryRun {
+		falseFlags = append(falseFlags, "required_ingress_rules_app_infra_dry_run")
+	}
 	projectDeletion = g.ProjectDeletionPolicy != "DELETE"
 
 	if len(trueFlags) > 0 || len(falseFlags) > 0 || projectDeletion {

@@ -41,7 +41,8 @@ locals {
     "storage.publicAccessPrevention"
   ])
 
-  private_pools = [local.cloud_build_private_worker_pool_id]
+  private_pools                    = [local.cloud_build_private_worker_pool_id]
+  access_context_manager_policy_id = var.create_access_context_manager_access_policy ? google_access_context_manager_access_policy.access_policy[0].id : var.access_context_manager_policy_id
 }
 
 module "organization_policies_type_boolean" {
@@ -91,7 +92,8 @@ module "restrict_protocol_fowarding" {
 *******************************************/
 
 resource "time_sleep" "wait_logs_export" {
-  create_duration = "30s"
+  create_duration = var.logs_export_sleep_duration
+
   depends_on = [
     module.logs_export
   ]

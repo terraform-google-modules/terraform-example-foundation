@@ -19,9 +19,19 @@ output "floating_project" {
   value       = module.env.floating_project
 }
 
+output "floating_project_number" {
+  description = "Project number sample floating project."
+  value       = module.env.floating_project_number
+}
+
 output "peering_project" {
   description = "Project sample peering project id."
   value       = module.env.peering_project
+}
+
+output "peering_project_number" {
+  description = "Project sample shared vpc project."
+  value       = module.env.peering_project_number
 }
 
 output "peering_network" {

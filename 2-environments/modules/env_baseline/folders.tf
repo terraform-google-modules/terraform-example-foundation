@@ -25,9 +25,9 @@ resource "google_folder" "env" {
 }
 
 resource "time_sleep" "wait_60_seconds" {
-  depends_on = [google_folder.env]
+  destroy_duration = var.folder_destroy_sleep_duration
 
-  destroy_duration = "60s"
+  depends_on = [google_folder.env]
 }
 
 # The following code binds a tag to a resource.

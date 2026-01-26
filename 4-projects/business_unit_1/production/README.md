@@ -24,12 +24,14 @@
 | confidential\_space\_workload\_sa | Workload Service Account for confidential space from base\_env |
 | default\_region | The default region for the project. |
 | floating\_project | Project sample floating project. |
+| floating\_project\_number | Project number sample floating project. |
 | iap\_firewall\_tags | The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project. |
 | keyring | The name of the keyring. |
 | keys | List of created key names. |
 | peering\_complete | Output to be used as a module dependency. |
 | peering\_network | Peer network peering resource. |
 | peering\_project | Project sample peering project id. |
+| peering\_project\_number | Project sample shared vpc project. |
 | peering\_subnetwork\_self\_link | The subnetwork self link of the peering network. |
 | restricted\_enabled\_apis | Activated APIs. |
 | shared\_vpc\_project | Project sample shared vpc project id. |

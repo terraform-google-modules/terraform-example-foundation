@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/mitchellh/go-testing-interface"
@@ -321,8 +322,11 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf) error {
 
 	createACMAPolicy := testutils.GetOrgACMPolicyID(t, tfvars.OrgID) == ""
+	AccessContextManagerPolicyID := testutils.GetOrgACMPolicyID(t, tfvars.OrgID)
 
 	orgTfvars := OrgTfvars{
+		AccessContextManagerPolicyID:          AccessContextManagerPolicyID,
+		PerimeterAdditionalMembers:            tfvars.PerimeterAdditionalMembers,
 		DomainsToAllow:                        tfvars.DomainsToAllow,
 		EssentialContactsDomains:              tfvars.EssentialContactsDomains,
 		SccNotificationName:                   tfvars.SccNotificationName,
@@ -337,6 +341,8 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		BillingExportDatasetLocation:          tfvars.BillingExportDatasetLocation,
 		FolderDeletionProtection:              tfvars.FolderDeletionProtection,
 		ProjectDeletionPolicy:                 tfvars.ProjectDeletionPolicy,
+		RequiredEgressRulesAppInfraDryRun:     tfvars.RequiredEgressRulesAppInfraDryRun,
+		RequiredIngressRulesAppInfraDryRun:    tfvars.RequiredIngressRulesAppInfraDryRun,
 	}
 	orgTfvars.GcpGroups = GcpGroups{}
 	if tfvars.HasOptionalGroupsCreation() {
@@ -472,22 +478,13 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	}
 	// common
 	commonTfvars := NetCommonTfvars{
-		Domain:                     tfvars.Domain,
-		PerimeterAdditionalMembers: tfvars.PerimeterAdditionalMembers,
-		RemoteStateBucket:          outputs.RemoteStateBucket,
+		Domain:            tfvars.Domain,
+		RemoteStateBucket: outputs.RemoteStateBucket,
 	}
 	if tfvars.EnableHubAndSpoke {
 		commonTfvars.EnableHubAndSpokeTransitivity = &tfvars.EnableHubAndSpokeTransitivity
 	}
 	err = utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "common.auto.tfvars"), commonTfvars)
-	if err != nil {
-		return err
-	}
-	//access_context
-	accessContextTfvars := NetAccessContextTfvars{
-		AccessContextManagerPolicyID: testutils.GetOrgACMPolicyID(t, tfvars.OrgID),
-	}
-	err = utils.WriteTfvars(filepath.Join(c.FoundationPath, step, "access_context.auto.tfvars"), accessContextTfvars)
 	if err != nil {
 		return err
 	}
@@ -602,6 +599,90 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 
 	return deployStage(t, stageConf, s, c)
 
+}
+
+func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf, enableVPCSCRules bool) error {
+
+	tfvarsPath := filepath.Join(c.FoundationPath, OrgStep, "envs", "shared", "terraform.tfvars")
+
+	if err := setBoolInTfvarsFile(tfvarsPath, "required_egress_rules_app_infra_dry_run", enableVPCSCRules); err != nil {
+		return err
+	}
+	if err := setBoolInTfvarsFile(tfvarsPath, "required_ingress_rules_app_infra_dry_run", enableVPCSCRules); err != nil {
+		return err
+	}
+
+	repoPath := filepath.Join(c.CheckoutPath, OrgRepo)
+	conf := utils.GetRepoOnly(t, repoPath, c.Logger)
+
+	var executor Executor
+
+	switch c.BuildType {
+	case BuildTypeGiHub:
+		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.GitToken)
+	case BuildTypeGitLab:
+		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, tfvars.GitRepos.Organization, c.GitToken)
+	default:
+		executor = NewGCPExecutor(outputs.CICDProject, outputs.DefaultRegion, OrgRepo)
+	}
+
+	stageConf := StageConf{
+		Stage:         fmt.Sprintf("gcp-org-rerun-rules-%t", enableVPCSCRules),
+		CICDProject:   outputs.CICDProject,
+		DefaultRegion: outputs.DefaultRegion,
+		Step:          OrgStep,
+		Repo:          OrgRepo,
+		GitConf:       conf,
+		Envs:          []string{"shared"},
+		BuildType:     c.BuildType,
+		Executor:      executor,
+	}
+
+	if err := deployStage(t, stageConf, s, c); err != nil {
+		return err
+	}
+
+	//commit plan
+	if err := conf.CheckoutBranch("plan"); err != nil {
+		return err
+	}
+	if err := conf.CommitFiles("enable app-infra dry-run rules"); err != nil {
+		return err
+	}
+	if err := conf.PushBranch("plan", "origin"); err != nil {
+		return err
+	}
+
+	// wait plan build
+	planSha, err := conf.GetCommitSha()
+	if err != nil {
+		return err
+	}
+	if err := executor.WaitBuildSuccess(t, planSha, "Terraform gcp-org plan (rerun rules) build failed."); err != nil {
+		return err
+	}
+
+	//merge with production
+	if err := conf.CheckoutBranch("production"); err != nil {
+		return err
+	}
+	if err := conf.Merge("plan"); err != nil {
+		return err
+	}
+	if err := conf.PushBranch("production", "origin"); err != nil {
+		return err
+	}
+
+	// wait production build
+	prodSha, err := conf.GetCommitSha()
+	if err != nil {
+		return err
+	}
+	if err := executor.WaitBuildSuccess(t, prodSha, "Terraform gcp-org apply production (rerun rules) build failed."); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs InfraPipelineOutputs, c CommonConf) error {
@@ -920,4 +1001,25 @@ func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policy
 		}
 	}
 	return nil
+}
+
+func setBoolInTfvarsFile(path, key string, value bool) error {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	v := "false"
+	if value {
+		v = "true"
+	}
+	re := regexp.MustCompile(`(?m)^(` + regexp.QuoteMeta(key) + `\s*=\s*)(true|false)\s*$`)
+	out := re.ReplaceAllString(string(b), `${1}`+v)
+
+	if out == string(b) {
+		if !re.Match(b) {
+			return fmt.Errorf("key %q not found in %s", key, path)
+		}
+	}
+	return os.WriteFile(path, []byte(out), 0644)
 }

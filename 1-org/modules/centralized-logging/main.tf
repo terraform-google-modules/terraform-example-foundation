@@ -111,7 +111,8 @@ module "log_export_billing" {
 }
 
 resource "time_sleep" "wait_sa_iam_membership" {
-  create_duration = "30s"
+  create_duration = var.sa_iam_membership_sleep_duration
+
   depends_on = [
     module.log_export_billing
   ]

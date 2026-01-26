@@ -136,7 +136,7 @@ module "confidential_compute_instance" {
 }
 
 resource "time_sleep" "wait_workload_pool_propagation" {
-  create_duration = "60s"
+  create_duration = var.workload_pool_propagation_sleep_duration
 
   depends_on = [
     google_iam_workload_identity_pool.confidential_space_pool
@@ -152,4 +152,3 @@ resource "google_service_account_iam_member" "workload_identity_binding" {
     time_sleep.wait_workload_pool_propagation
   ]
 }
-

@@ -122,6 +122,8 @@ audit_logs_table_delete_contents_on_destroy = false
 log_export_storage_force_destroy            = false
 log_export_storage_location                 = "US"
 billing_export_dataset_location             = "US"
+required_egress_rules_app_infra_dry_run     = false
+required_ingress_rules_app_infra_dry_run    = false
 
 // Choose witch network architecture to use:
 // Shared VPC: https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/3-networks-svpc/README.md

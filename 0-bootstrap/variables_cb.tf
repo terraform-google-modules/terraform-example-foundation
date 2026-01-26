@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,9 @@
  * limitations under the License.
  */
 
-access_context_manager_policy_id = ACCESS_CONTEXT_MANAGER_ID
+variable "cloud_builder_sleep_duration" {
+  description = "The duration to wait for Cloud Builder and CSR repo resources to initialize (e.g., 30s, 2m)."
+  type        = string
+  default     = "30s"
+}
+

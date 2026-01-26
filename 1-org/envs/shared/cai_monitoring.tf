@@ -15,11 +15,13 @@
  */
 
 module "cai_monitoring" {
-  source                = "../../modules/cai-monitoring"
-  count                 = var.enable_scc_resources_in_terraform ? 1 : 0
-  org_id                = local.org_id
-  billing_account       = local.billing_account
-  project_id            = module.scc_notifications.project_id
-  location              = local.default_region
-  build_service_account = "projects/${module.scc_notifications.project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder[0].email}"
+  source                 = "../../modules/cai-monitoring"
+  count                  = var.enable_scc_resources_in_terraform ? 1 : 0
+  org_id                 = local.org_id
+  billing_account        = local.billing_account
+  project_id             = module.scc_notifications.project_id
+  location               = local.default_region
+  kms_iam_sleep_duration = var.kms_iam_sleep_duration
+  bucket_sleep_duration  = var.bucket_sleep_duration
+  build_service_account  = "projects/${module.scc_notifications.project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder[0].email}"
 }

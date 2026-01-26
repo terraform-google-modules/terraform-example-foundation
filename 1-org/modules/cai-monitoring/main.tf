@@ -89,8 +89,9 @@ module "cloudfunction_source_bucket" {
 }
 
 resource "time_sleep" "wait_for_bucket" {
-  depends_on      = [module.cloudfunction_source_bucket]
-  create_duration = "30s"
+  create_duration = var.bucket_sleep_duration
+
+  depends_on = [module.cloudfunction_source_bucket]
 }
 
 resource "google_storage_bucket_object" "cf_cai_source_zip" {
@@ -140,9 +141,10 @@ resource "google_scc_v2_organization_source" "cai_monitoring" {
 }
 
 // Cloud Function
+
 module "cloud_function" {
   source  = "GoogleCloudPlatform/cloud-functions/google"
-  version = "~> 0.6"
+  version = "~> 0.7"
 
   function_name         = "caiMonitoring"
   description           = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."

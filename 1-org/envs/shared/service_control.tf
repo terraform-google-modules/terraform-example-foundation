@@ -19,6 +19,10 @@
 *****************************************/
 
 locals {
+  # List of services supported by VPC Service Controls.
+  # This list is hardcoded and may need manual updates as Google Cloud adds support for new services.
+  # For the latest list of supported products, please refer to:
+  # https://cloud.google.com/vpc-service-controls/docs/supported-products
   supported_restricted_service = [
     "serviceusage.googleapis.com",
     "essentialcontacts.googleapis.com",
@@ -197,6 +201,10 @@ locals {
     module.scc_notifications.project_number,
   ], local.shared_vpc_projects_numbers))
 
+  # IMPORTANT: These project key lists are hardcoded and MUST be manually kept in sync
+  # with the values defined in `local.projects` and `local.projects_dry_run`.
+  # A mismatch in the number of items or their order will cause the `zipmap` function to fail.
+  # If you add or remove a project, you must update these lists accordingly.
   project_keys = var.enable_hub_and_spoke ? [
     "prj-b-seed",
     "prj-org-audit",

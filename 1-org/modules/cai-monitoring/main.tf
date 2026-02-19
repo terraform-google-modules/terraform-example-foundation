@@ -148,7 +148,7 @@ module "cloud_function" {
   description           = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."
   project_id            = var.project_id
   labels                = var.labels
-  function_location     = var.location
+  location              = var.location
   runtime               = "nodejs20"
   entrypoint            = "caiMonitoring"
   docker_repository     = google_artifact_registry_repository.cloudfunction.id

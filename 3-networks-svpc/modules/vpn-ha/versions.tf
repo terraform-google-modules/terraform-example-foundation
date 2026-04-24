@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,15 @@ terraform {
     google = {
       // version 6.26.0 and 6.27.0 removed because of the bug https://github.com/hashicorp/terraform-provider-google/issues/21950
       source  = "hashicorp/google"
-      version = ">= 3.50, != 6.26.0, != 6.27.0, < 8.0"
+      version = ">= 6.0, != 6.26.0, != 6.27.0, < 8.0"
     }
     google-beta = {
       // version 6.26.0 and 6.27.0 removed because of the bug https://github.com/hashicorp/terraform-provider-google/issues/21950
       source  = "hashicorp/google-beta"
-      version = ">= 3.50, != 6.26.0, != 6.27.0, < 8.0"
+      version = ">= 6.0, != 6.26.0, != 6.27.0, < 8.0"
     }
-  }
-
-  provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:networks-svpc/v4.1.0"
-  }
-
-  provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:networks-svpc/v4.1.0"
+    random = {
+      source = "hashicorp/random"
+    }
   }
 }

@@ -144,13 +144,13 @@ module "cloud_function" {
   # Temporary to integration tests, until release of cloud_function
   source = "git::https://github.com/marcos-leal-cit/terraform-google-cloud-functions.git?ref=d17bed17e7ffb4a2993e66e0b063171bfa4f3c42"
   # source  = "GoogleCloudPlatform/cloud-functions/google"
-  # version = "~> 0.6"
+  # version = "~> 0.8.0"
 
   function_name         = "caiMonitoring"
   description           = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."
   project_id            = var.project_id
   labels                = var.labels
-  function_location     = var.location
+  location              = var.location
   runtime               = "nodejs20"
   entrypoint            = "caiMonitoring"
   docker_repository     = google_artifact_registry_repository.cloudfunction.id

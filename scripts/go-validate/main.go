@@ -5,14 +5,21 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"sort"
+
+	"gopkg.in/yaml.v3" //
 
 	billing "cloud.google.com/go/billing/apiv1"
 	iampb "cloud.google.com/go/iam/apiv1/iampb"
 	resourcemanager "cloud.google.com/go/resourcemanager/apiv3"
 )
 
+var verbose bool
+
 func main() {
+	// Define a flag -v (nome, valor padrão, descrição)
+	flag.BoolVar(&verbose, "v", false, "show full output")
 	orgID := flag.String("org", "", "Organization ID")
 	folderID := flag.String("folder", "", "Folder ID")
 	billingID := flag.String("billing", "", "Billing Account ID")
@@ -91,58 +98,118 @@ func checkBilling(ctx context.Context, resource string, permissions []string) {
 }
 
 func printResult(scope, resource string, requested, allowed []string) {
+
 	sort.Strings(requested)
 	sort.Strings(allowed)
-
+	hasMissing := false
 	allowedMap := map[string]bool{}
 	for _, p := range allowed {
 		allowedMap[p] = true
 	}
 
-	fmt.Printf("\n========== %s ==========\n", scope)
-	fmt.Printf("Resource: %s\n\n", resource)
+	if !verbose {
+		fmt.Printf("\n========== %s ==========\n", scope)
+		fmt.Printf("Resource: %s\n", resource)
+		for _, p := range requested {
+			if !allowedMap[p] {
+				fmt.Println("\n- Missing permissions:")
+				hasMissing = true
+				fmt.Printf("   - %s\n", p)
+			}
+		}
+		if !hasMissing {
+			fmt.Println("\n  All permissions are granted  \n")
+		}
+	} else {
 
-	fmt.Println("Allowed permissions:")
-	for _, p := range allowed {
-		fmt.Printf(" ok %s\n", p)
-	}
+		fmt.Printf("\n========== %s ==========\n", scope)
+		fmt.Printf("Resource: %s\n\n", resource)
 
-	fmt.Println("\nMissing permissions:")
-	for _, p := range requested {
-		if !allowedMap[p] {
-			fmt.Printf(" no ok %s\n", p)
+		fmt.Println("Allowed permissions:")
+		for _, p := range allowed {
+			fmt.Printf("  - %s\n", p)
+		}
+
+		for _, p := range requested {
+			if !allowedMap[p] {
+				fmt.Println("\nMissing permissions:")
+				hasMissing = true
+				fmt.Printf("  - %s\n", p)
+			}
+		}
+		if !hasMissing {
+			fmt.Println("\n  All permissions are granted  ")
 		}
 	}
 }
 
+type Config struct {
+	Items []struct {
+		OrgPermissions     []string `yaml:"orgPermissions"`
+		FolderPermissions  []string `yaml:"folderPermissions"`
+		BillingPermissions []string `yaml:"billingPermissions"`
+	} `yaml:"items"`
+}
+
 func orgPermissions() []string {
-	return []string{
-		"accesscontextmanager.policies.get",
-		"accesscontextmanager.policies.getIamPolicy",
-		"accesscontextmanager.policies.list",
-		"resourcemanager.folders.get",
-		"resourcemanager.organizations.get",
-		"billing.accounts.get",
-		"resourcemanager.projects.get",
-		"orgpolicy.policy.set",
-		"iam.serviceAccounts.getAccessToken",
+	data, err := os.ReadFile("permissions.yaml")
+	if err != nil {
+		fmt.Printf("Error reading file: %v\n", err)
+		return nil
 	}
+
+	var config Config
+	err = yaml.Unmarshal(data, &config)
+	if err != nil {
+		fmt.Printf("Error unmarshaling YAML: %v\n", err)
+		return nil
+	}
+
+	if len(config.Items) > 0 {
+		return config.Items[0].OrgPermissions
+	}
+
+	return []string{}
 }
 
 func folderPermissions() []string {
-	return []string{
-		"resourcemanager.folders.get",
-		"resourcemanager.folders.create",
-		"resourcemanager.folders.delete",
-		"resourcemanager.folders.getIamPolicy",
-		"resourcemanager.folders.setIamPolicy",
+	data, err := os.ReadFile("permissions.yaml")
+	if err != nil {
+		fmt.Printf("Error reading file: %v\n", err)
+		return nil
 	}
+
+	var config Config
+	err = yaml.Unmarshal(data, &config)
+	if err != nil {
+		fmt.Printf("Error unmarshaling YAML: %v\n", err)
+		return nil
+	}
+
+	if len(config.Items) > 0 {
+		return config.Items[1].FolderPermissions
+	}
+
+	return []string{}
 }
 
 func billingPermissions() []string {
-	return []string{
-		"billing.accounts.get",
-		"billing.accounts.getIamPolicy",
-		"billing.resourceAssociations.create",
+	data, err := os.ReadFile("permissions.yaml")
+	if err != nil {
+		fmt.Printf("Error reading file: %v\n", err)
+		return nil
 	}
+
+	var config Config
+	err = yaml.Unmarshal(data, &config)
+	if err != nil {
+		fmt.Printf("Error unmarshaling YAML: %v\n", err)
+		return nil
+	}
+
+	if len(config.Items) > 0 {
+		return config.Items[2].BillingPermissions
+	}
+
+	return []string{}
 }

@@ -45,9 +45,9 @@ module "network" {
       name              = "rt-${local.vpc_name}-1000-egress-internet-default"
       description       = "Tag based route through IGW to access internet"
       destination_range = "0.0.0.0/0"
-      tags              = "tfc-runner-vm"
-      next_hop_internet = "true"
-      priority          = "1000"
+      tags              = ["tfc-runner-vm"]
+      next_hop_internet = true
+      priority          = 1000
     }
   ]
 

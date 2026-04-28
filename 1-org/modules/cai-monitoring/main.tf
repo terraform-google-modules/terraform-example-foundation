@@ -141,10 +141,8 @@ resource "google_scc_v2_organization_source" "cai_monitoring" {
 
 // Cloud Function
 module "cloud_function" {
-  # Temporary to integration tests, until release of cloud_function
-  source = "git::https://github.com/marcos-leal-cit/terraform-google-cloud-functions.git?ref=d17bed17e7ffb4a2993e66e0b063171bfa4f3c42"
-  # source  = "GoogleCloudPlatform/cloud-functions/google"
-  # version = "~> 0.8.0"
+  source  = "GoogleCloudPlatform/cloud-functions/google"
+  version = "~> 0.9"
 
   function_name         = "caiMonitoring"
   description           = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."

@@ -1,2 +1,6 @@
+For verbosity
+go run . -v  --org= --folder= --billing=
 
-go run . --org= --folder= --billing=
+OR 
+
+go run .  --org= --folder= --billing=

@@ -18,7 +18,7 @@ import (
 var verbose bool
 
 func main() {
-	// Define a flag -v (nome, valor padrão, descrição)
+	// Define a flag -v (name,  default value, description)
 	flag.BoolVar(&verbose, "v", false, "show full output")
 	orgID := flag.String("org", "", "Organization ID")
 	folderID := flag.String("folder", "", "Folder ID")

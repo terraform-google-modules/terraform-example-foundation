@@ -109,6 +109,10 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 			fmt.Printf("# VPC Service Controls does not allow groups in the perimeter: '%s'\n", p)
 		}
 	}
+
+	// Mirror scripts/go-validate: check IAM permissions for the current principal (ADC)
+	// using TestIamPermissions and print any missing permissions.
+	validateIamPermissions(g)
 }
 
 // ValidateDestroyFlags checks if the flags to allow the destruction of the infrastructure are enabled

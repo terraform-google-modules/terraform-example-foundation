@@ -145,6 +145,27 @@ For these extra check you need at least the roles *Security Center Notification 
     $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE> -validate
     ```
 
+- IAM permissions validation (TestIamPermissions). The `-validate` flag also validates that the currently authenticated principal (ADC) has the required IAM permissions on:
+  - organization (`organizations/<ORG_ID>`)
+  - folder (`folders/<FOLDER_ID>`, when `parent_folder` is set)
+  - billing account (`billingAccounts/<BILLING_ACCOUNT_ID>`)
+
+  You can optionally load the required permissions from a YAML file by setting `iam_permissions_yaml_path` in `global.tfvars`. This path can point to a file inside or outside this repository.
+
+- Run only the IAM permissions validation (CLI helper):
+
+    ```bash
+    cd helpers/foundation-deployer
+    go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE>
+    ```
+
+  Verbose output (prints allowed + missing):
+
+    ```bash
+    cd helpers/foundation-deployer
+    go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE> -v
+    ```
+
 - Run the helper:
 
     ```bash

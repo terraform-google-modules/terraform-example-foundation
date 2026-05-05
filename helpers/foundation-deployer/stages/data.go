@@ -203,6 +203,7 @@ type GlobalTFVars struct {
 	LocationGCS                           string          `hcl:"location_gcs"`
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
+	IAMPermissionsYAMLPath                *string         `hcl:"iam_permissions_yaml_path"`
 	ValidatorProjectID                    *string         `hcl:"validator_project_id"`
 	Groups                                Groups          `hcl:"groups"`
 	InitialGroupConfig                    *string         `hcl:"initial_group_config"`

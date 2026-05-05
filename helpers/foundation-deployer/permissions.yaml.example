@@ -1,0 +1,57 @@
+# permissions.yaml.example
+#
+# Example permissions definition for foundation-deployer IAM validation.
+#
+# Usage:
+# - Copy this file to a location you control, e.g.:
+#     /path/to/Foundation/permissions.yaml
+# - Point your global.tfvars to it:
+#     iam_permissions_yaml_path = "/path/to/Foundation/permissions.yaml"
+#
+# Notes:
+# - The structure MUST match:
+#     items[0].orgPermissions
+#     items[1].folderPermissions
+#     items[2].billingPermissions
+# - Values are IAM permission strings (not roles).
+# - Some permissions are only valid for specific resource types. Keep orgPermissions
+#   focused on permissions that can be tested against organizations/<ORG_ID>.
+#
+items:
+  # 0) Organization-scoped permissions (tested on organizations/<ORG_ID>)
+  - orgPermissions:
+      - accesscontextmanager.policies.create
+      - accesscontextmanager.policies.get
+      - accesscontextmanager.policies.getIamPolicy
+      - accesscontextmanager.policies.list
+      - accesscontextmanager.policies.setIamPolicy
+      - iam.serviceAccounts.getAccessToken
+      - resourcemanager.organizations.get
+      - resourcemanager.organizations.getIamPolicy
+      - resourcemanager.organizations.setIamPolicy
+      # Project permissions (resourcemanager.projects.*) can be included here; the validator
+      # will automatically test them on the effective project parent (folder if parent_folder
+      # is set, otherwise organization).
+      - resourcemanager.projects.create
+      - resourcemanager.projects.delete
+      - resourcemanager.projects.get
+      - resourcemanager.projects.getIamPolicy
+      - resourcemanager.projects.list
+      - resourcemanager.projects.setIamPolicy
+      - serviceusage.services.list
+      - serviceusage.services.use
+
+  # 1) Folder-scoped permissions (tested on folders/<PARENT_FOLDER> when parent_folder is set)
+  - folderPermissions:
+      - resourcemanager.folders.get
+      - resourcemanager.folders.create
+      - resourcemanager.folders.delete
+      - resourcemanager.folders.getIamPolicy
+      - resourcemanager.folders.setIamPolicy
+
+  # 2) Billing account scoped permissions (tested on billingAccounts/<BILLING_ACCOUNT_ID>)
+  - billingPermissions:
+      - billing.accounts.get
+      - billing.accounts.getIamPolicy
+      - billing.resourceAssociations.create
+

@@ -122,6 +122,23 @@ cd helpers/foundation-deployer
 go run ./cmd/iam-validate -tfvars_file "/path/to/global.tfvars" -v
 ```
 
+## Unit tests
+
+YAML loading and permission routing are covered by table-style tests on `loadRequiredPermissionsCore` (package `stages`):
+
+- **No `iam_permissions_yaml_path`**: returns built-in defaults; no error.
+- **Valid YAML**: splits `resourcemanager.projects.*` to the project-parent list; moves `securitycenter.notificationConfigs.*` and `resourcemanager.tagKeys.*` to a `skipped` list (not sent to org-level `TestIamPermissions`).
+- **YAML without `projects.*`**: project-parent list falls back to the default project permissions.
+- **Relative `iam_permissions_yaml_path`**: resolved against `foundation_code_path` when the path is not absolute.
+- **Missing file / invalid YAML / fewer than three `items` entries**: returns a non-nil error **and** the default permission lists (same behavior as production, which logs a warning and keeps validating with defaults).
+
+Run only these tests:
+
+```bash
+cd helpers/foundation-deployer
+go test ./stages/ -count=1 -v -run TestLoadRequiredPermissionsCore
+```
+
 ## Known limitations
 
 - **`TestIamPermissions` is resource-type aware**: requesting permissions that are not valid for a given resource type can lead to `InvalidArgument`. The validator therefore checks permissions only on the resource types where they are valid (`organizations/`, `folders/`, `billingAccounts/`), and it validates “resource existence” checks (e.g., SCC notification / TagKey existence) through the existing `gcloud ... list` logic where applicable.
@@ -129,8 +146,10 @@ go run ./cmd/iam-validate -tfvars_file "/path/to/global.tfvars" -v
 ## Files changed (list)
 
 - `helpers/foundation-deployer/stages/iam_validate.go` (new)
+- `helpers/foundation-deployer/stages/iam_validate_test.go` (unit tests for `loadRequiredPermissionsCore`)
 - `helpers/foundation-deployer/stages/validate.go` (calls IAM validation)
 - `helpers/foundation-deployer/stages/data.go` (new `iam_permissions_yaml_path` input)
 - `helpers/foundation-deployer/global.tfvars.example` (documents the new input)
+- `helpers/foundation-deployer/permissions.yaml.example` (sample permissions YAML)
 - `helpers/foundation-deployer/cmd/iam-validate/main.go` (new dedicated CLI)
 

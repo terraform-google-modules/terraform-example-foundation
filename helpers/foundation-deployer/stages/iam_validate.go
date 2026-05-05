@@ -113,55 +113,58 @@ type permissionsYAML struct {
 }
 
 func loadRequiredPermissions(g GlobalTFVars) (orgPerms, projectParentPerms, folderPerms, billingPerms []string) {
-	// Defaults (backwards compatible)
+	orgPerms, projectParentPerms, folderPerms, billingPerms, skipped, err := loadRequiredPermissionsCore(g)
+	if err != nil {
+		log.Printf("# warning: %v\n", err)
+	}
+	if len(skipped) > 0 {
+		log.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(skipped), strings.Join(skipped, ", "))
+	}
+	return orgPerms, projectParentPerms, folderPerms, billingPerms
+}
+
+// loadRequiredPermissionsCore resolves org / project-parent / folder / billing permission lists.
+// On YAML read/parse errors it returns the default lists and a non-nil err (caller may log).
+// skipped lists permissions removed from org-level TestIamPermissions (SCC notification / tag keys).
+func loadRequiredPermissionsCore(g GlobalTFVars) (orgPerms, projectParentPerms, folderPerms, billingPerms, skipped []string, err error) {
 	orgPerms = defaultOrgPermissions()
 	projectParentPerms = defaultProjectParentPermissions()
 	folderPerms = defaultFolderPermissions()
 	billingPerms = defaultBillingPermissions()
 
 	if g.IAMPermissionsYAMLPath == nil || strings.TrimSpace(*g.IAMPermissionsYAMLPath) == "" {
-		return
+		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, nil
 	}
 
 	p := strings.TrimSpace(*g.IAMPermissionsYAMLPath)
 	if !filepath.IsAbs(p) && g.FoundationCodePath != "" && g.FoundationCodePath != replaceME {
-		// Allow relative path (resolved from foundation_code_path).
 		p = filepath.Join(g.FoundationCodePath, p)
 	}
 
-	data, err := os.ReadFile(p)
-	if err != nil {
-		log.Printf("# warning: failed to read iam permissions yaml at '%s': %v\n", p, err)
-		return
+	data, readErr := os.ReadFile(p)
+	if readErr != nil {
+		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("failed to read iam permissions yaml at %q: %w", p, readErr)
 	}
 
 	var cfg permissionsYAML
-	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		log.Printf("# warning: failed to parse iam permissions yaml at '%s': %v\n", p, err)
-		return
+	if unmarshalErr := yaml.Unmarshal(data, &cfg); unmarshalErr != nil {
+		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("failed to parse iam permissions yaml at %q: %w", p, unmarshalErr)
 	}
 	if len(cfg.Items) < 3 {
-		log.Printf("# warning: iam permissions yaml at '%s' has unexpected format (expected 3 items)\n", p)
-		return
+		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("iam permissions yaml at %q: expected 3 items, got %d", p, len(cfg.Items))
 	}
 
 	orgAll := cfg.Items[0].OrgPermissions
-	folderPerms = cfg.Items[1].FolderPermissions
-	billingPerms = cfg.Items[2].BillingPermissions
+	folderPerms = append([]string(nil), cfg.Items[1].FolderPermissions...)
+	billingPerms = append([]string(nil), cfg.Items[2].BillingPermissions...)
 
-	// Split org permissions into:
-	// - project-parent permissions (resourcemanager.projects.*) => checked on effective parent (org or folder)
-	// - remaining org permissions => checked on org
 	projectParentPerms = []string{}
 	orgPerms = []string{}
-
-	skipped := []string{}
+	skipped = []string{}
 	for _, perm := range orgAll {
 		switch {
 		case strings.HasPrefix(perm, "resourcemanager.projects."):
 			projectParentPerms = append(projectParentPerms, perm)
-		// These are not valid to TestIamPermissions against organizations/<id> and would cause InvalidArgument.
-		// They are validated indirectly via the existing gcloud "list" calls in foundation-deployer -validate.
 		case strings.HasPrefix(perm, "securitycenter.notificationConfigs."),
 			strings.HasPrefix(perm, "resourcemanager.tagKeys."):
 			skipped = append(skipped, perm)
@@ -170,17 +173,12 @@ func loadRequiredPermissions(g GlobalTFVars) (orgPerms, projectParentPerms, fold
 		}
 	}
 
-	if len(skipped) > 0 {
-		sort.Strings(skipped)
-		log.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(skipped), strings.Join(skipped, ", "))
-	}
-
-	// If YAML didn't include projects.* for some reason, keep defaults so we still validate.
 	if len(projectParentPerms) == 0 {
 		projectParentPerms = defaultProjectParentPermissions()
 	}
 
-	return
+	sort.Strings(skipped)
+	return orgPerms, projectParentPerms, folderPerms, billingPerms, skipped, nil
 }
 
 func checkResourcePermissions(ctx context.Context, scope, resource string, permissions []string, verbose bool) {

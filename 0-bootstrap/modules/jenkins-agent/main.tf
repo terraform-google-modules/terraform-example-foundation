@@ -249,16 +249,32 @@ resource "google_compute_router_nat" "nat_external_addresses_region1" {
   Jenkins IAM for admins
 *******************************************/
 
+locals {
+  admin_roles = flatten([
+    for member in var.admin_members : [
+      for role in ["roles/compute.admin", "roles/viewer"] : {
+        key    = "${member}/${role}"
+        member = member
+        role   = role
+      }
+    ]
+  ])
+}
+
 resource "google_project_iam_member" "org_admins_jenkins_admin" {
+  for_each = { for item in local.admin_roles : item.key => item if item.role == "roles/compute.admin" }
+
   project = module.cicd_project.project_id
-  role    = "roles/compute.admin"
-  member  = "group:${var.group_org_admins}"
+  role    = each.value.role
+  member  = each.value.member
 }
 
 resource "google_project_iam_member" "org_admins_jenkins_viewer" {
+  for_each = { for item in local.admin_roles : item.key => item if item.role == "roles/viewer" }
+
   project = module.cicd_project.project_id
-  role    = "roles/viewer"
-  member  = "group:${var.group_org_admins}"
+  role    = each.value.role
+  member  = each.value.member
 }
 
 /******************************************

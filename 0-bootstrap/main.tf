@@ -18,9 +18,7 @@
   Bootstrap GCP Organization.
 *************************************************/
 locals {
-  // The bootstrap module will enforce that only identities
-  // in the list "org_project_creators" will have the Project Creator role,
-  // so the granular service accounts for each step need to be added to the list.
+  // Later foundation steps rely on these service accounts being able to create projects.
   step_terraform_sa = [
     "serviceAccount:${google_service_account.terraform-env-sa["bootstrap"].email}",
     "serviceAccount:${google_service_account.terraform-env-sa["org"].email}",
@@ -44,22 +42,19 @@ resource "google_folder" "bootstrap" {
 }
 
 module "seed_bootstrap" {
-  source  = "terraform-google-modules/bootstrap/google"
-  version = "~> 11.0"
+  source = "./modules/bootstrap-seed-lite"
 
   org_id                         = var.org_id
   folder_id                      = google_folder.bootstrap.id
+  parent_folder                  = var.parent_folder == "" ? "" : local.parent
   project_id                     = "${var.project_prefix}-b-seed"
   state_bucket_name              = "${var.bucket_prefix}-${var.project_prefix}-b-seed-tfstate"
   force_destroy                  = var.bucket_force_destroy
   billing_account                = var.billing_account
-  group_org_admins               = var.groups.required_groups.group_org_admins
-  group_billing_admins           = var.groups.required_groups.group_billing_admins
+  bootstrap_admin_members        = var.bootstrap_admin_members
+  billing_admin_members          = var.billing_admin_members
   default_region                 = var.default_region
   org_project_creators           = local.step_terraform_sa
-  sa_enable_impersonation        = true
-  create_terraform_sa            = false
-  parent_folder                  = var.parent_folder == "" ? "" : local.parent
   org_admins_org_iam_permissions = local.org_admins_org_iam_permissions
   project_prefix                 = var.project_prefix
   encrypt_gcs_bucket_tfstate     = true
@@ -103,6 +98,4 @@ module "seed_bootstrap" {
   ]
 
   sa_org_iam_permissions = []
-
-  depends_on = [module.required_group]
 }

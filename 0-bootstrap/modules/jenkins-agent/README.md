@@ -22,7 +22,7 @@ module "jenkins_bootstrap" {
   org_id                                    = "<ORGANIZATION_ID>"
   folder_id                                 = "<FOLDER_ID>"
   billing_account                           = "<BILLING_ACCOUNT_ID>"
-  group_org_admins                          = "gcp-organization-admins@example.com"
+  admin_members                             = ["user:alice@example.com"]
   default_region                            = "us-central1"
   terraform_sa_names                        = "<SERVICE_ACCOUNT_NAMES>"
   terraform_state_bucket                    = "<GCS_STATE_BUCKET_NAME>"
@@ -56,7 +56,7 @@ module "jenkins_bootstrap" {
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
 | folder\_id | The ID of a folder to host this project | `string` | `""` | no |
-| group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
+| admin\_members | IAM members to grant Jenkins project administration permissions. | `list(string)` | `[]` | no |
 | jenkins\_agent\_gce\_machine\_type | Jenkins Agent GCE Instance type. | `string` | `"n1-standard-1"` | no |
 | jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name. | `string` | `"jenkins-agent-01"` | no |
 | jenkins\_agent\_gce\_private\_ip\_address | The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Controller) and GCP (CICD Project, where the Jenkins Agent is located). | `string` | n/a | yes |
@@ -72,7 +72,7 @@ module "jenkins_bootstrap" {
 | project\_labels | Labels to apply to the project. | `map(string)` | `{}` | no |
 | project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
 | router\_asn | BGP ASN for cloud routes. | `number` | `"64515"` | no |
-| sa\_enable\_impersonation | Allow org\_admins group to impersonate service account & enable APIs required. | `bool` | `false` | no |
+| sa\_enable\_impersonation | Allow the Jenkins Agent to impersonate the Terraform service accounts and enable APIs required. | `bool` | `false` | no |
 | service\_account\_prefix | Name prefix to use for service accounts. | `string` | `"sa"` | no |
 | storage\_bucket\_labels | Labels to apply to the storage bucket. | `map(string)` | `{}` | no |
 | storage\_bucket\_prefix | Name prefix to use for storage buckets. | `string` | `"bkt"` | no |

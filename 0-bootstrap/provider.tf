@@ -16,7 +16,6 @@
 
 provider "google-beta" {
   user_project_override = true
-  billing_project       = var.groups.billing_project
 }
 
 # If you are using Terraform Cloud Agents, un-comment this block after the first apply according README instructions

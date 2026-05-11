@@ -45,7 +45,7 @@ Also make sure that you have the following:
    - See [GitHub repository creation](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) or [GitLab project creation](https://docs.gitlab.com/ee/user/project/index.html#create-a-blank-project) for more details.
 - A Google Cloud [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 - A Google Cloud [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
-- Cloud Identity or Google Workspace groups for organization and billing admins.
+- IAM principals for bootstrap and billing administration, supplied through `bootstrap_admin_members` and `billing_admin_members` in `terraform.tfvars` using fully-qualified member strings such as `user:alice@example.com` or `serviceAccount:...`.
 - For the user who will run the procedures in this document, grant the following roles:
    - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
    - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
@@ -180,7 +180,7 @@ export the OAuth Token ID as an environment variable:
    ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL> -e
    ```
 
-   **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
+   **Note:** The script validates local tooling and selected IAM prerequisites, but it does not validate the contents of `bootstrap_admin_members` or `billing_admin_members`.
 
 1. Run `terraform init` and `terraform plan` and review the output.
 

@@ -83,15 +83,14 @@ module "gcp_projects_state_bucket" {
 }
 
 module "tf_source" {
-  source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_source"
-  version = "~> 11.0"
+  source = "./modules/cloudbuild-source-lite"
 
   org_id                = var.org_id
   folder_id             = google_folder.bootstrap.id
   project_id            = "${var.project_prefix}-b-cicd-${random_string.suffix.result}"
   location              = var.default_region
   billing_account       = var.billing_account
-  group_org_admins      = var.groups.required_groups.group_org_admins
+  admin_members         = var.bootstrap_admin_members
   buckets_force_destroy = var.bucket_force_destroy
 
   project_deletion_policy = var.project_deletion_policy
@@ -129,9 +128,6 @@ module "tf_source" {
     env_code          = "b"
     vpc               = "none"
   }
-
-  # Remove after github.com/terraform-google-modules/terraform-google-bootstrap/issues/160
-  depends_on = [module.seed_bootstrap]
 }
 
 resource "google_project_service_identity" "workflows_identity" {

@@ -28,9 +28,10 @@ variable "billing_account" {
   type        = string
 }
 
-variable "group_org_admins" {
-  description = "Google Group for GCP Organization Administrators"
-  type        = string
+variable "admin_members" {
+  description = "IAM members to grant Jenkins project administration permissions."
+  type        = list(string)
+  default     = []
 }
 
 variable "default_region" {

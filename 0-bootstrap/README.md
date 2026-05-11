@@ -58,6 +58,8 @@ file.
 
 The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources and permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages. The [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
 
+This repository now implements the seed bootstrap and Cloud Build source bootstrap locally within `0-bootstrap/modules/bootstrap-seed-lite` and `0-bootstrap/modules/cloudbuild-source-lite`. The bootstrap access model uses generic IAM member strings such as `user:alice@example.com` or `serviceAccount:...` instead of Cloud Identity group inputs.
+
 ## Intended usage and support
 
 This repository is intended as an example to be forked, tweaked, and maintained in the user's own version-control system; the modules within this repository are not intended for use as remote references.
@@ -129,8 +131,7 @@ Also make sure that you've done the following:
    [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 1. Set up a Google Cloud
    [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
-1. Create Cloud Identity or Google Workspace groups as defined in [groups for access control](https://cloud.google.com/architecture/security-foundations/authentication-authorization#groups_for_access_control).
-Set the variables in **terraform.tfvars** (`groups` block) to use the specific group names you create.
+1. Decide which IAM principals should administer the bootstrap. Set `bootstrap_admin_members` and `billing_admin_members` in **terraform.tfvars** using fully-qualified IAM member strings such as `user:alice@example.com` or `serviceAccount:sa-name@project.iam.gserviceaccount.com`.
 1. For the user who will run the procedures in this document, grant the following roles:
    - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
    - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
@@ -153,18 +154,6 @@ Set the variables in **terraform.tfvars** (`groups` block) to use the specific g
      gcloud services enable cloudkms.googleapis.com
      gcloud services enable servicenetworking.googleapis.com
      ```
-
-### Optional - Automatic creation of Google Cloud Identity groups
-
-In the foundation, Google Cloud Identity groups are used for [authentication and access management](https://cloud.google.com/architecture/security-foundations/authentication-authorization) .
-
-To enable automatic creation of the [groups](https://cloud.google.com/architecture/security-foundations/authentication-authorization#groups_for_access_control), complete the following actions:
-
-- Have an existing project for Cloud Identity API billing.
-- Enable the Cloud Identity API (`cloudidentity.googleapis.com`) on the billing project.
-- Grant role `roles/serviceusage.serviceUsageConsumer` to the user running Terraform on the billing project.
-- Change the field `groups.create_required_groups` to **true** to create the required groups.
-- Change the field `groups.create_optional_groups` to **true** and fill the `groups.optional_groups` with the emails to be created.
 
 ### Optional - Cloud Build access to on-prem
 
@@ -227,7 +216,7 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
    ../scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
    ```
 
-   **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
+   **Note:** The script validates local tooling and selected IAM prerequisites, but it does not validate the contents of `bootstrap_admin_members` or `billing_admin_members`.
 
 1. Run `terraform init` and `terraform plan` and review the output.
 
@@ -401,7 +390,7 @@ The following steps will guide you through deploying without using Cloud Build.
    ../terraform-example-foundation/scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
    ```
 
-   **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
+   **Note:** The script validates local tooling and selected IAM prerequisites, but it does not validate the contents of `bootstrap_admin_members` or `billing_admin_members`.
 
 1. Run `terraform init` and `terraform plan` and review the output.
 
@@ -526,8 +515,8 @@ The following steps will guide you through deploying without using Cloud Build.
 | default\_region\_kms | Secondary default region to create kms resources where applicable. | `string` | `"us"` | no |
 | folder\_deletion\_protection | Prevent Terraform from destroying or recreating the folder. | `string` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
-| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins     = string<br>      group_billing_admins = string<br>      billing_data_users   = string<br>      audit_data_users     = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
-| initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
+| billing\_admin\_members | Generic IAM members to treat as billing administrators. Use fully-qualified member strings such as `user:alice@example.com`, `serviceAccount:sa-bootstrap@example-project.iam.gserviceaccount.com`, or `group:billing-admins@example.com`. | `list(string)` | `[]` | no |
+| bootstrap\_admin\_members | Generic IAM members to treat as bootstrap administrators. Use fully-qualified member strings such as `user:alice@example.com`, `serviceAccount:sa-bootstrap@example-project.iam.gserviceaccount.com`, or `group:platform-admins@example.com`. | `list(string)` | `[]` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. | `string` | `""` | no |
@@ -553,11 +542,9 @@ The following steps will guide you through deploying without using Cloud Build.
 | gcs\_bucket\_cloudbuild\_logs | Bucket used to store Cloud Build logs in cicd project. |
 | gcs\_bucket\_tfstate | Bucket used for storing terraform state for Foundations Pipelines in Seed Project. |
 | networks\_step\_terraform\_service\_account\_email | Networks Step Terraform Account |
-| optional\_groups | List of Google Groups created that are optional to the Example Foundation steps. |
 | organization\_step\_terraform\_service\_account\_email | Organization Step Terraform Account |
 | projects\_gcs\_bucket\_tfstate | Bucket used for storing terraform state for stage 4-projects foundations pipelines in seed project. |
 | projects\_step\_terraform\_service\_account\_email | Projects Step Terraform Account |
-| required\_groups | List of Google Groups created that are required by the Example Foundation steps. |
 | seed\_project\_id | Project where service accounts and core APIs will be enabled. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

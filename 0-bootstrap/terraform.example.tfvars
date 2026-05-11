@@ -18,26 +18,17 @@ org_id = "REPLACE_ME" # format "000000000000"
 
 billing_account = "REPLACE_ME" # format "000000-000000-000000"
 
-// For enabling the automatic groups creation, uncoment the
-// variables and update the values with the group names
-groups = {
-  # create_required_groups = false # Change to true to create the required_groups
-  # create_optional_groups = false # Change to true to create the optional_groups
-  # billing_project        = "REPLACE_ME"  # Fill to create required or optional groups
-  required_groups = {
-    group_org_admins     = "REPLACE_ME" # example "gcp-organization-admins@example.com"
-    group_billing_admins = "REPLACE_ME" # example "gcp-billing-admins@example.com"
-    billing_data_users   = "REPLACE_ME" # example "gcp-billing-data@example.com"
-    audit_data_users     = "REPLACE_ME" # example "gcp-audit-data@example.com"
-  }
-  # optional_groups = {
-  #   gcp_security_reviewer      = "" #"gcp_security_reviewer_local_test@example.com"
-  #   gcp_network_viewer         = "" #"gcp_network_viewer_local_test@example.com"
-  #   gcp_scc_admin              = "" #"gcp_scc_admin_local_test@example.com"
-  #   gcp_global_secrets_admin   = "" #"gcp_global_secrets_admin_local_test@example.com"
-  #   gcp_kms_admin              = "" #"gcp_kms_admin_local_test@example.com"
-  # }
-}
+// New generic access model.
+// Use fully-qualified IAM member strings such as:
+// - user:alice@example.com
+// - serviceAccount:sa-bootstrap@example-project.iam.gserviceaccount.com
+bootstrap_admin_members = [
+  "user:REPLACE_ME",
+]
+
+billing_admin_members = [
+  "user:REPLACE_ME",
+]
 
 default_region     = "us-central1"
 default_region_2   = "us-west1"

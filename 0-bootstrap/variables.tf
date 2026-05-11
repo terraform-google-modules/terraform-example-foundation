@@ -115,59 +115,38 @@ variable "workflow_deletion_protection" {
 }
 
 /* ----------------------------------------
-    Specific to Groups creation
+    Bootstrap access model
    ---------------------------------------- */
-variable "groups" {
-  description = "Contain the details of the Groups to be created."
-  type = object({
-    create_required_groups = optional(bool, false)
-    create_optional_groups = optional(bool, false)
-    billing_project        = optional(string, null)
-    required_groups = object({
-      group_org_admins     = string
-      group_billing_admins = string
-      billing_data_users   = string
-      audit_data_users     = string
-    })
-    optional_groups = optional(object({
-      gcp_security_reviewer    = optional(string, "")
-      gcp_network_viewer       = optional(string, "")
-      gcp_scc_admin            = optional(string, "")
-      gcp_global_secrets_admin = optional(string, "")
-      gcp_kms_admin            = optional(string, "")
-    }), {})
-  })
+variable "bootstrap_admin_members" {
+  description = <<EOT
+  Generic IAM members to treat as bootstrap administrators.
+  Use fully-qualified member strings such as:
+  - user:alice@example.com
+  - serviceAccount:sa-bootstrap@example-project.iam.gserviceaccount.com
+  - group:platform-admins@example.com
+  EOT
+  type        = list(string)
+  default     = []
 
   validation {
-    condition     = var.groups.create_required_groups || var.groups.create_optional_groups ? (var.groups.billing_project != null ? true : false) : true
-    error_message = "A billing_project must be passed to use the automatic group creation."
-  }
-
-  validation {
-    condition     = var.groups.required_groups.group_org_admins != ""
-    error_message = "The group group_org_admins is invalid, it must be a valid email"
-  }
-
-  validation {
-    condition     = var.groups.required_groups.group_billing_admins != ""
-    error_message = "The group group_billing_admins is invalid, it must be a valid email"
-  }
-
-  validation {
-    condition     = var.groups.required_groups.billing_data_users != ""
-    error_message = "The group billing_data_users is invalid, it must be a valid email"
-  }
-
-  validation {
-    condition     = var.groups.required_groups.audit_data_users != ""
-    error_message = "The group audit_data_users is invalid, it must be a valid email"
+    condition     = alltrue([for member in var.bootstrap_admin_members : can(regex("^(group|serviceAccount|user):", member))])
+    error_message = "bootstrap_admin_members entries must be fully-qualified IAM members prefixed with group:, serviceAccount:, or user:."
   }
 }
 
-variable "initial_group_config" {
-  description = "Define the group configuration when it is initialized. Valid values are: WITH_INITIAL_OWNER, EMPTY and INITIAL_GROUP_CONFIG_UNSPECIFIED."
-  type        = string
-  default     = "WITH_INITIAL_OWNER"
+variable "billing_admin_members" {
+  description = <<EOT
+  Generic IAM members to treat as billing administrators.
+  Use fully-qualified member strings such as:
+  - user:alice@example.com
+  - serviceAccount:sa-bootstrap@example-project.iam.gserviceaccount.com
+  - group:billing-admins@example.com
+  EOT
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition     = alltrue([for member in var.billing_admin_members : can(regex("^(group|serviceAccount|user):", member))])
+    error_message = "billing_admin_members entries must be fully-qualified IAM members prefixed with group:, serviceAccount:, or user:."
+  }
 }
-
-

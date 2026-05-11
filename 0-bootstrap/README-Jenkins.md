@@ -167,7 +167,7 @@ You arrived to these instructions because you are using the `jenkins_bootstrap` 
    ../../../terraform-example-foundation/scripts/validate-requirements.sh  -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL> -e
    ```
 
-   **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.
+   **Note:** The script validates local tooling and selected IAM prerequisites, but it does not validate the contents of `bootstrap_admin_members` or `billing_admin_members`.
 
 1. Commit changes:
 

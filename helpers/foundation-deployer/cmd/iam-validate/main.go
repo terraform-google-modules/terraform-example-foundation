@@ -1,3 +1,14 @@
+// Command iam-validate runs IAM permissions validation (TestIamPermissions) for the ADC
+// principal only, using the same logic as foundation-deployer -validate.
+//
+// See [github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils.ValidateIAMPermissions]
+// and [github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils.IAMValidateParams]
+// for resources checked,
+// iam_permissions_yaml_path, and examples:
+//
+//	cd helpers/foundation-deployer
+//	go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE>
+//	go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE> -v
 package main
 
 import (
@@ -6,6 +17,7 @@ import (
 	"os"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/stages"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 )
 
 func main() {
@@ -29,6 +41,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	stages.ValidateIAMPermissions(globalTFVars, verbose)
+	utils.ValidateIAMPermissions(utils.IAMValidateParams{
+		OrgID:                  globalTFVars.OrgID,
+		FoundationCodePath:     globalTFVars.FoundationCodePath,
+		IAMPermissionsYAMLPath: globalTFVars.IAMPermissionsYAMLPath,
+		ParentFolder:           globalTFVars.ParentFolder,
+		BillingAccount:         globalTFVars.BillingAccount,
+	}, verbose)
 }
-

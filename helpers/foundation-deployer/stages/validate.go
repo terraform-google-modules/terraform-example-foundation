@@ -22,6 +22,7 @@ import (
 	"github.com/mitchellh/go-testing-interface"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gcp"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 )
 
 const (
@@ -110,9 +111,15 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 		}
 	}
 
-	// Mirror scripts/go-validate: check IAM permissions for the current principal (ADC)
+	// Check IAM permissions for the current principal (ADC) using TestIamPermissions.
 	// using TestIamPermissions and print any missing permissions.
-	validateIamPermissions(g)
+	utils.ValidateIAMPermissions(utils.IAMValidateParams{
+		OrgID:                  g.OrgID,
+		FoundationCodePath:     g.FoundationCodePath,
+		IAMPermissionsYAMLPath: g.IAMPermissionsYAMLPath,
+		ParentFolder:           g.ParentFolder,
+		BillingAccount:         g.BillingAccount,
+	}, false)
 }
 
 // ValidateDestroyFlags checks if the flags to allow the destruction of the infrastructure are enabled

@@ -203,14 +203,19 @@ type GlobalTFVars struct {
 	LocationGCS                           string          `hcl:"location_gcs"`
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
-	IAMPermissionsYAMLPath                *string         `hcl:"iam_permissions_yaml_path"`
-	ValidatorProjectID                    *string         `hcl:"validator_project_id"`
-	Groups                                Groups          `hcl:"groups"`
-	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
-	FolderDeletionProtection              *bool           `hcl:"folder_deletion_protection"`
-	ProjectDeletionPolicy                 string          `hcl:"project_deletion_policy"`
-	BuildType                             string          `hcl:"build_type"`
-	GitRepos                              *GitRepos       `hcl:"git_repos"`
+	// IAMPermissionsYAMLPath maps tfvars input iam_permissions_yaml_path.
+	// When set, foundation-deployer -validate and cmd/iam-validate load required IAM
+	// permissions from this YAML file instead of built-in defaults. When unset or empty,
+	// those commands use the default permission lists.
+	// Example helpers/foundation-deployer/examples/iam/default-permissions.yaml
+	IAMPermissionsYAMLPath   *string   `hcl:"iam_permissions_yaml_path"`
+	ValidatorProjectID       *string   `hcl:"validator_project_id"`
+	Groups                   Groups    `hcl:"groups"`
+	InitialGroupConfig       *string   `hcl:"initial_group_config"`
+	FolderDeletionProtection *bool     `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy    string    `hcl:"project_deletion_policy"`
+	BuildType                string    `hcl:"build_type"`
+	GitRepos                 *GitRepos `hcl:"git_repos"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided

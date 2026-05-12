@@ -23,13 +23,6 @@ code_checkout_path = "FULL_PATH_TO_FOLDER_WHERE_TO_CHECK_OUT_THE_SOURCE_REPOSITO
 // The directory where the user has created a fresh git clone of the Terraform Example Foundation repository
 foundation_code_path = "FULL_PATH_TO_FOLDER_WHERE_THE_EXAMPLE_FOUNDATION_CODE_WAS_CHECKED_OUT"
 
-// Optional - path to a permissions definition file
-// If provided, foundation-deployer -validate will load required permissions from it instead of using
-// hardcoded defaults.
-//
-// Example (recommended): point to the file in your cloned repository.
-// iam_permissions_yaml_path = "FULL_PATH_TO_FOLDER_WHERE_THE_EXAMPLE_FOUNDATION_CODE_WAS_CHECKED_OUT"
-
 // An existing project configured as the default project in the local Cloud SDK configuration
 // See https://cloud.google.com/sdk/gcloud/reference/config/set#EXAMPLES
 validator_project_id = "EXISTING_PROJECT_ID"

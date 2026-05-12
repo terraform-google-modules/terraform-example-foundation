@@ -1,4 +1,18 @@
-package stages
+// Copyright 2023 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package utils
 
 import (
 	"context"
@@ -15,50 +29,78 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// validateIamPermissions keeps backwards-compat behavior for foundation-deployer -validate.
-func validateIamPermissions(g GlobalTFVars) {
-	ValidateIAMPermissions(g, false)
+const iamReplaceME = "REPLACE_ME"
+
+// IAMValidateParams holds tfvars fields used by IAM TestIamPermissions validation.
+//
+// IAM permissions validation (TestIamPermissions): the foundation-deployer -validate flag
+// also validates that the currently authenticated principal (ADC) has the required IAM
+// permissions on:
+//   - organization (organizations/<ORG_ID>)
+//   - folder (folders/<FOLDER_ID>, when parent_folder is set)
+//   - billing account (billingAccounts/<BILLING_ACCOUNT_ID>)
+//
+// Project-parent permissions (resourcemanager.projects.*) are checked on the effective
+// parent resource (organization or folder), matching Terraform project placement.
+//
+// Optional YAML: set iam_permissions_yaml_path in global.tfvars (see GlobalTFVars.IAMPermissionsYAMLPath
+// in package stages) to load required permissions from a file; the path can be inside or outside
+// the repository (relative paths resolve against foundation_code_path).
+//
+// Run only this validation from the repo root:
+//
+//	cd helpers/foundation-deployer
+//	go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE>
+//
+// Verbose output (prints allowed + missing):
+//
+//	go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE> -v
+type IAMValidateParams struct {
+	OrgID              string
+	FoundationCodePath string
+	// IAMPermissionsYAMLPath is the optional path from tfvars (iam_permissions_yaml_path); see GlobalTFVars.IAMPermissionsYAMLPath in package stages.
+	IAMPermissionsYAMLPath *string
+	ParentFolder           *string
+	BillingAccount         string
 }
 
-// ValidateIAMPermissions runs "TestIamPermissions" checks (similar to scripts/go-validate).
+// ValidateIAMPermissions runs TestIamPermissions checks against organization, folder, and billing resources for the ADC principal.
 // It prints missing permissions for the currently authenticated principal (ADC).
+// When verbose is true, it also prints the full list of allowed permissions returned by the API.
 //
-// If verbose is true, it also prints the full list of allowed permissions returned by the API.
-func ValidateIAMPermissions(g GlobalTFVars, verbose bool) {
-	if g.OrgID == "" || g.OrgID == replaceME {
+// See [IAMValidateParams] for scope, YAML configuration, and how to invoke the standalone CLI.
+func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
+	if p.OrgID == "" || p.OrgID == iamReplaceME {
 		return
 	}
 
 	ctx := context.Background()
 
-	orgPerms, projectParentPerms, folderPerms, billingPerms := loadRequiredPermissions(g)
+	orgPerms, projectParentPerms, folderPerms, billingPerms := loadRequiredPermissions(p)
 
-	orgRes := "organizations/" + g.OrgID
+	orgRes := "organizations/" + p.OrgID
 	checkOrgPermissions(ctx, orgRes, orgPerms, verbose)
 
-	// Projects are created either under a parent folder (if set) or directly under the org.
-	// Validate "projects.*" permissions on the effective parent resource to avoid false negatives.
 	projectParentRes := orgRes
 	projectParentScope := "ORG-PROJECTS"
-	if g.ParentFolder != nil && *g.ParentFolder != "" && *g.ParentFolder != replaceME {
-		projectParentRes = "folders/" + *g.ParentFolder
+	if p.ParentFolder != nil && *p.ParentFolder != "" && *p.ParentFolder != iamReplaceME {
+		projectParentRes = "folders/" + *p.ParentFolder
 		projectParentScope = "FOLDER-PROJECTS"
 	}
 	checkResourcePermissions(ctx, projectParentScope, projectParentRes, projectParentPerms, verbose)
 
-	if g.ParentFolder != nil && *g.ParentFolder != "" && *g.ParentFolder != replaceME {
-		folderRes := "folders/" + *g.ParentFolder
+	if p.ParentFolder != nil && *p.ParentFolder != "" && *p.ParentFolder != iamReplaceME {
+		folderRes := "folders/" + *p.ParentFolder
 		checkFolderPermissions(ctx, folderRes, folderPerms, verbose)
 	}
 
-	if g.BillingAccount != "" && g.BillingAccount != replaceME {
-		billingRes := "billingAccounts/" + g.BillingAccount
+	if p.BillingAccount != "" && p.BillingAccount != iamReplaceME {
+		billingRes := "billingAccounts/" + p.BillingAccount
 		checkBillingPermissions(ctx, billingRes, billingPerms, verbose)
 	}
 }
 
 func defaultOrgPermissions() []string {
-	// Mirrors scripts/go-validate/permissions.yaml (orgPermissions) excluding project-parent perms.
 	return []string{
 		"accesscontextmanager.policies.create",
 		"accesscontextmanager.policies.get",
@@ -75,7 +117,6 @@ func defaultOrgPermissions() []string {
 }
 
 func defaultProjectParentPermissions() []string {
-	// These permissions can be granted at org or folder level. We check them on the effective parent.
 	return []string{
 		"resourcemanager.projects.create",
 		"resourcemanager.projects.delete",
@@ -112,8 +153,8 @@ type permissionsYAML struct {
 	} `yaml:"items"`
 }
 
-func loadRequiredPermissions(g GlobalTFVars) (orgPerms, projectParentPerms, folderPerms, billingPerms []string) {
-	orgPerms, projectParentPerms, folderPerms, billingPerms, skipped, err := loadRequiredPermissionsCore(g)
+func loadRequiredPermissions(p IAMValidateParams) (orgPerms, projectParentPerms, folderPerms, billingPerms []string) {
+	orgPerms, projectParentPerms, folderPerms, billingPerms, skipped, err := loadRequiredPermissionsCore(p)
 	if err != nil {
 		log.Printf("# warning: %v\n", err)
 	}
@@ -126,32 +167,32 @@ func loadRequiredPermissions(g GlobalTFVars) (orgPerms, projectParentPerms, fold
 // loadRequiredPermissionsCore resolves org / project-parent / folder / billing permission lists.
 // On YAML read/parse errors it returns the default lists and a non-nil err (caller may log).
 // skipped lists permissions removed from org-level TestIamPermissions (SCC notification / tag keys).
-func loadRequiredPermissionsCore(g GlobalTFVars) (orgPerms, projectParentPerms, folderPerms, billingPerms, skipped []string, err error) {
+func loadRequiredPermissionsCore(p IAMValidateParams) (orgPerms, projectParentPerms, folderPerms, billingPerms, skipped []string, err error) {
 	orgPerms = defaultOrgPermissions()
 	projectParentPerms = defaultProjectParentPermissions()
 	folderPerms = defaultFolderPermissions()
 	billingPerms = defaultBillingPermissions()
 
-	if g.IAMPermissionsYAMLPath == nil || strings.TrimSpace(*g.IAMPermissionsYAMLPath) == "" {
+	if p.IAMPermissionsYAMLPath == nil || strings.TrimSpace(*p.IAMPermissionsYAMLPath) == "" {
 		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, nil
 	}
 
-	p := strings.TrimSpace(*g.IAMPermissionsYAMLPath)
-	if !filepath.IsAbs(p) && g.FoundationCodePath != "" && g.FoundationCodePath != replaceME {
-		p = filepath.Join(g.FoundationCodePath, p)
+	path := strings.TrimSpace(*p.IAMPermissionsYAMLPath)
+	if !filepath.IsAbs(path) && p.FoundationCodePath != "" && p.FoundationCodePath != iamReplaceME {
+		path = filepath.Join(p.FoundationCodePath, path)
 	}
 
-	data, readErr := os.ReadFile(p)
+	data, readErr := os.ReadFile(path)
 	if readErr != nil {
-		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("failed to read iam permissions yaml at %q: %w", p, readErr)
+		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("failed to read iam permissions yaml at %q: %w", path, readErr)
 	}
 
 	var cfg permissionsYAML
 	if unmarshalErr := yaml.Unmarshal(data, &cfg); unmarshalErr != nil {
-		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("failed to parse iam permissions yaml at %q: %w", p, unmarshalErr)
+		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("failed to parse iam permissions yaml at %q: %w", path, unmarshalErr)
 	}
 	if len(cfg.Items) < 3 {
-		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("iam permissions yaml at %q: expected 3 items, got %d", p, len(cfg.Items))
+		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("iam permissions yaml at %q: expected 3 items, got %d", path, len(cfg.Items))
 	}
 
 	orgAll := cfg.Items[0].OrgPermissions
@@ -326,4 +367,3 @@ func scopeHint(scope string) string {
 		return "the target resource"
 	}
 }
-

@@ -138,32 +138,12 @@ By default the foundation regional resources are deployed in `us-west1` and `us-
     go install
     ```
 
-- Validate the tfvars file. If you configured a `validator_project_id` in the `global.tfvars` file the `validate` flag will do additional checks for the Secure Command Center notification name and for the Tag Key name.
-For these extra check you need at least the roles *Security Center Notification Configurations Viewer* (`roles/securitycenter.notificationConfigViewer`) and *Tag Viewer* (`roles/resourcemanager.tagViewer`):
+- Validate the tfvars file. With `-validate`, the helper also checks whether the Google account you use to run the tool (the same one you set up with [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) above) has enough access on your organization, folder (if you use one), and billing account to complete the deployment. If anything is missing, it prints a clear list so you can ask your administrator to grant the right access before you run the full deployment.
+
+  If you configured a `validator_project_id` in `global.tfvars`, `-validate` additionally checks the Secure Command Center notification name and the Tag Key name. For those checks you need at least the roles *Security Center Notification Configurations Viewer* (`roles/securitycenter.notificationConfigViewer`) and *Tag Viewer* (`roles/resourcemanager.tagViewer`):
 
     ```bash
     $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE> -validate
-    ```
-
-- IAM permissions validation (TestIamPermissions). The `-validate` flag also validates that the currently authenticated principal (ADC) has the required IAM permissions on:
-  - organization (`organizations/<ORG_ID>`)
-  - folder (`folders/<FOLDER_ID>`, when `parent_folder` is set)
-  - billing account (`billingAccounts/<BILLING_ACCOUNT_ID>`)
-
-  You can optionally load the required permissions from a YAML file by setting `iam_permissions_yaml_path` in `global.tfvars`. This path can point to a file inside or outside this repository.
-
-- Run only the IAM permissions validation (CLI helper):
-
-    ```bash
-    cd helpers/foundation-deployer
-    go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE>
-    ```
-
-  Verbose output (prints allowed + missing):
-
-    ```bash
-    cd helpers/foundation-deployer
-    go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE> -v
     ```
 
 - Run the helper:

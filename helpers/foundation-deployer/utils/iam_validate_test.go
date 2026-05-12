@@ -1,4 +1,4 @@
-package stages
+package utils
 
 import (
 	"os"
@@ -10,12 +10,12 @@ import (
 func strPtr(s string) *string { return &s }
 
 func TestLoadRequiredPermissionsCore_noYAMLPathUsesDefaults(t *testing.T) {
-	g := GlobalTFVars{
-		OrgID:                "123",
-		FoundationCodePath:   "/tmp",
+	p := IAMValidateParams{
+		OrgID:                  "123",
+		FoundationCodePath:     "/tmp",
 		IAMPermissionsYAMLPath: nil,
 	}
-	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(g)
+	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(p)
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -54,12 +54,12 @@ func TestLoadRequiredPermissionsCore_splitsProjectsAndSkipsSCCAndTags(t *testing
 		t.Fatal(err)
 	}
 
-	g := GlobalTFVars{
-		OrgID:                "123",
-		FoundationCodePath:   "/unused",
+	p := IAMValidateParams{
+		OrgID:                  "123",
+		FoundationCodePath:     "/unused",
 		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
-	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(g)
+	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(p)
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -101,11 +101,11 @@ func TestLoadRequiredPermissionsCore_emptyProjectsFallsBackToDefaults(t *testing
 		t.Fatal(err)
 	}
 
-	g := GlobalTFVars{
-		OrgID:                "123",
+	p := IAMValidateParams{
+		OrgID:                  "123",
 		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
-	_, proj, _, _, _, err := loadRequiredPermissionsCore(g)
+	_, proj, _, _, _, err := loadRequiredPermissionsCore(p)
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -133,12 +133,12 @@ func TestLoadRequiredPermissionsCore_relativePathResolvedFromFoundationCodePath(
 		t.Fatal(err)
 	}
 
-	g := GlobalTFVars{
-		OrgID:                "123",
-		FoundationCodePath:   base,
+	p := IAMValidateParams{
+		OrgID:                  "123",
+		FoundationCodePath:     base,
 		IAMPermissionsYAMLPath: strPtr(rel),
 	}
-	org, _, folder, bill, _, err := loadRequiredPermissionsCore(g)
+	org, _, folder, bill, _, err := loadRequiredPermissionsCore(p)
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
@@ -154,11 +154,11 @@ func TestLoadRequiredPermissionsCore_relativePathResolvedFromFoundationCodePath(
 }
 
 func TestLoadRequiredPermissionsCore_missingFileReturnsErrorAndDefaults(t *testing.T) {
-	g := GlobalTFVars{
-		OrgID:                "123",
+	p := IAMValidateParams{
+		OrgID:                  "123",
 		IAMPermissionsYAMLPath: strPtr(filepath.Join(t.TempDir(), "nope.yaml")),
 	}
-	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(g)
+	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(p)
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -181,12 +181,12 @@ func TestLoadRequiredPermissionsCore_missingFileReturnsErrorAndDefaults(t *testi
 
 func TestLoadRequiredPermissionsCore_invalidYAMLReturnsError(t *testing.T) {
 	dir := t.TempDir()
-	p := filepath.Join(dir, "bad.yaml")
-	if err := os.WriteFile(p, []byte("items: [\n"), 0o600); err != nil {
+	pth := filepath.Join(dir, "bad.yaml")
+	if err := os.WriteFile(pth, []byte("items: [\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	g := GlobalTFVars{OrgID: "1", IAMPermissionsYAMLPath: strPtr(p)}
-	_, _, _, _, _, err := loadRequiredPermissionsCore(g)
+	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
+	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
 	if err == nil {
 		t.Fatal("expected parse error")
 	}
@@ -194,15 +194,15 @@ func TestLoadRequiredPermissionsCore_invalidYAMLReturnsError(t *testing.T) {
 
 func TestLoadRequiredPermissionsCore_tooFewItemsReturnsError(t *testing.T) {
 	dir := t.TempDir()
-	p := filepath.Join(dir, "short.yaml")
+	pth := filepath.Join(dir, "short.yaml")
 	content := `items:
   - orgPermissions: []
 `
-	if err := os.WriteFile(p, []byte(content), 0o600); err != nil {
+	if err := os.WriteFile(pth, []byte(content), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	g := GlobalTFVars{OrgID: "1", IAMPermissionsYAMLPath: strPtr(p)}
-	_, _, _, _, _, err := loadRequiredPermissionsCore(g)
+	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
+	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
 	if err == nil {
 		t.Fatal("expected format error")
 	}

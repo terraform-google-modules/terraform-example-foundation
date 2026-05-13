@@ -15,8 +15,8 @@
 # limitations under the License.
 
 # This logic is also implemented in the deploy helper.
-# The deploy helper version is working on a subset of the options: cb, github, and gitlab
-# See helpers/foundation-deployer/utils/files.go RenameBuildFiles function
+# The deploy helper RenameBuildFiles function mirrors these build types; see
+# helpers/foundation-deployer/utils/files.go (note: the helper automates extra steps only for cb, github, and gitlab).
 
 set -e
 
@@ -26,7 +26,7 @@ BASE_PATH="$SCRIPTS_DIR/.."
 TARGET_BUILD="$1"
 
 # Define the allowed build types for validation
-build_types=("cb" "github" "gitlab" "jenkins" "terraform_cloud")
+build_types=("cb" "github" "gitlab" "jenkins" "terraform_cloud" "local")
 
 # Validate the build_type input
 if [[ ! " ${build_types[*]} " == *" ${TARGET_BUILD} "* ]]; then

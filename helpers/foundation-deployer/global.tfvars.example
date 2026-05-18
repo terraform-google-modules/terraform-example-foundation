@@ -30,7 +30,7 @@ validator_project_id = "EXISTING_PROJECT_ID"
 project_deletion_policy    = "PREVENT" # Use "DELETE" to allow deletion of the projects
 folder_deletion_protection = true
 
-// build type to use. One of "cb", "github", "gitlab", "jenkins", "terraform_cloud", "local"
+// build type to use. One of "cb", "github", "gitlab"
 build_type = "cb"
 
 // 0-bootstrap inputs

@@ -142,6 +142,7 @@ func defaultBillingPermissions() []string {
 		"billing.accounts.get",
 		"billing.accounts.getIamPolicy",
 		"billing.resourceAssociations.create",
+		"billing.accounts.setIamPolicy",
 	}
 }
 

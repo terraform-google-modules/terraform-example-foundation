@@ -26,7 +26,6 @@ func strPtr(s string) *string { return &s }
 func TestLoadRequiredPermissionsCore_noYAMLPathUsesDefaults(t *testing.T) {
 	p := IAMValidateParams{
 		OrgID:                  "123",
-		FoundationCodePath:     "/tmp",
 		IAMPermissionsYAMLPath: nil,
 	}
 	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(p)
@@ -70,7 +69,6 @@ func TestLoadRequiredPermissionsCore_splitsProjectsAndSkipsSCCAndTags(t *testing
 
 	p := IAMValidateParams{
 		OrgID:                  "123",
-		FoundationCodePath:     "/unused",
 		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
 	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(p)
@@ -128,13 +126,9 @@ func TestLoadRequiredPermissionsCore_emptyProjectsFallsBackToDefaults(t *testing
 	}
 }
 
-func TestLoadRequiredPermissionsCore_relativePathResolvedFromFoundationCodePath(t *testing.T) {
-	base := t.TempDir()
-	if err := os.MkdirAll(filepath.Join(base, "cfg"), 0o700); err != nil {
-		t.Fatal(err)
-	}
-	rel := filepath.Join("cfg", "permissions.yaml")
-	abs := filepath.Join(base, rel)
+func TestLoadRequiredPermissionsCore_absoluteYAMLPath(t *testing.T) {
+	dir := t.TempDir()
+	yamlPath := filepath.Join(dir, "permissions.yaml")
 	content := `items:
   - orgPermissions:
       - serviceusage.services.use
@@ -143,14 +137,13 @@ func TestLoadRequiredPermissionsCore_relativePathResolvedFromFoundationCodePath(
   - billingPermissions:
       - billing.resourceAssociations.create
 `
-	if err := os.WriteFile(abs, []byte(content), 0o600); err != nil {
+	if err := os.WriteFile(yamlPath, []byte(content), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
 	p := IAMValidateParams{
 		OrgID:                  "123",
-		FoundationCodePath:     base,
-		IAMPermissionsYAMLPath: strPtr(rel),
+		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
 	org, _, folder, bill, _, err := loadRequiredPermissionsCore(p)
 	if err != nil {
@@ -164,6 +157,17 @@ func TestLoadRequiredPermissionsCore_relativePathResolvedFromFoundationCodePath(
 	}
 	if !slices.Equal(bill, []string{"billing.resourceAssociations.create"}) {
 		t.Fatalf("bill: %v", bill)
+	}
+}
+
+func TestLoadRequiredPermissionsCore_relativeYAMLPathReturnsError(t *testing.T) {
+	p := IAMValidateParams{
+		OrgID:                  "123",
+		IAMPermissionsYAMLPath: strPtr("cfg/permissions.yaml"),
+	}
+	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
+	if err == nil {
+		t.Fatal("expected error for relative iam_permissions_yaml_path")
 	}
 }
 

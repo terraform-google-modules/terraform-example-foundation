@@ -43,8 +43,7 @@ const iamReplaceME = "REPLACE_ME"
 // Project-parent permissions (resourcemanager.projects.*) are checked on the parent folder.
 //
 // Optional YAML: set iam_permissions_yaml_path in global.tfvars (see GlobalTFVars.IAMPermissionsYAMLPath
-// in package stages) to load required permissions from a file; the path can be inside or outside
-// the repository (relative paths resolve against foundation_code_path).
+// in package stages) to load required permissions from a file. The path must be an absolute path.
 //
 // Run only this validation from the repo root:
 //
@@ -55,9 +54,8 @@ const iamReplaceME = "REPLACE_ME"
 //
 //	go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE> -v
 type IAMValidateParams struct {
-	OrgID              string
-	FoundationCodePath string
-	// IAMPermissionsYAMLPath is the optional path from tfvars (iam_permissions_yaml_path); see GlobalTFVars.IAMPermissionsYAMLPath in package stages.
+	OrgID string
+	// IAMPermissionsYAMLPath is the optional absolute path from tfvars (iam_permissions_yaml_path).
 	IAMPermissionsYAMLPath *string
 	ParentFolder           *string
 	BillingAccount         string
@@ -249,8 +247,8 @@ func loadRequiredPermissionsCore(p IAMValidateParams) (orgPerms, projectParentPe
 	}
 
 	path := strings.TrimSpace(*p.IAMPermissionsYAMLPath)
-	if !filepath.IsAbs(path) && p.FoundationCodePath != "" && p.FoundationCodePath != iamReplaceME {
-		path = filepath.Join(p.FoundationCodePath, path)
+	if !filepath.IsAbs(path) {
+		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("iam_permissions_yaml_path must be an absolute path, got %q", path)
 	}
 
 	data, readErr := os.ReadFile(path)

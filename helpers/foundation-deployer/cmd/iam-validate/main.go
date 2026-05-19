@@ -57,7 +57,6 @@ func main() {
 
 	utils.ValidateIAMPermissions(utils.IAMValidateParams{
 		OrgID:                  globalTFVars.OrgID,
-		FoundationCodePath:     globalTFVars.FoundationCodePath,
 		IAMPermissionsYAMLPath: globalTFVars.IAMPermissionsYAMLPath,
 		ParentFolder:           globalTFVars.ParentFolder,
 		BillingAccount:         globalTFVars.BillingAccount,

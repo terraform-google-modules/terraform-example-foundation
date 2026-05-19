@@ -115,7 +115,6 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 	// using TestIamPermissions and print any missing permissions.
 	utils.ValidateIAMPermissions(utils.IAMValidateParams{
 		OrgID:                  g.OrgID,
-		FoundationCodePath:     g.FoundationCodePath,
 		IAMPermissionsYAMLPath: g.IAMPermissionsYAMLPath,
 		ParentFolder:           g.ParentFolder,
 		BillingAccount:         g.BillingAccount,

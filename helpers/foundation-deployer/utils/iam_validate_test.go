@@ -18,41 +18,23 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 )
 
 func strPtr(s string) *string { return &s }
 
-func TestLoadRequiredPermissionsCore_noYAMLPathUsesDefaults(t *testing.T) {
-	p := IAMValidateParams{
-		OrgID:                  "123",
-		IAMPermissionsYAMLPath: nil,
+func writePermissionsYAML(t *testing.T, dir, name, content string) string {
+	t.Helper()
+	path := filepath.Join(dir, name)
+	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
+		t.Fatal(err)
 	}
-	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(p)
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
-	if len(skipped) != 0 {
-		t.Fatalf("skipped: %v", skipped)
-	}
-	if !slices.Equal(org, defaultOrgPermissions()) {
-		t.Fatalf("org mismatch\ngot:  %v\nwant: %v", org, defaultOrgPermissions())
-	}
-	if !slices.Equal(proj, defaultProjectParentPermissions()) {
-		t.Fatalf("project parent mismatch\ngot:  %v\nwant: %v", proj, defaultProjectParentPermissions())
-	}
-	if !slices.Equal(folder, defaultFolderPermissions()) {
-		t.Fatalf("folder mismatch\ngot:  %v\nwant: %v", folder, defaultFolderPermissions())
-	}
-	if !slices.Equal(bill, defaultBillingPermissions()) {
-		t.Fatalf("billing mismatch\ngot:  %v\nwant: %v", bill, defaultBillingPermissions())
-	}
+	return path
 }
 
 func TestLoadRequiredPermissionsCore_splitsProjectsAndSkipsSCCAndTags(t *testing.T) {
-	dir := t.TempDir()
-	yamlPath := filepath.Join(dir, "permissions.yaml")
-	content := `items:
+	yamlPath := writePermissionsYAML(t, t.TempDir(), "permissions.yaml", `items:
   - orgPermissions:
       - resourcemanager.organizations.get
       - resourcemanager.projects.create
@@ -62,10 +44,7 @@ func TestLoadRequiredPermissionsCore_splitsProjectsAndSkipsSCCAndTags(t *testing
       - resourcemanager.folders.get
   - billingPermissions:
       - billing.accounts.get
-`
-	if err := os.WriteFile(yamlPath, []byte(content), 0o600); err != nil {
-		t.Fatal(err)
-	}
+`)
 
 	p := IAMValidateParams{
 		OrgID:                  "123",
@@ -98,65 +77,30 @@ func TestLoadRequiredPermissionsCore_splitsProjectsAndSkipsSCCAndTags(t *testing
 	}
 }
 
-func TestLoadRequiredPermissionsCore_emptyProjectsFallsBackToDefaults(t *testing.T) {
-	dir := t.TempDir()
-	yamlPath := filepath.Join(dir, "permissions.yaml")
-	content := `items:
+func TestLoadRequiredPermissionsCore_emptyProjectsReturnsError(t *testing.T) {
+	yamlPath := writePermissionsYAML(t, t.TempDir(), "permissions.yaml", `items:
   - orgPermissions:
       - resourcemanager.organizations.get
   - folderPermissions:
       - resourcemanager.folders.get
   - billingPermissions:
       - billing.accounts.get
-`
-	if err := os.WriteFile(yamlPath, []byte(content), 0o600); err != nil {
-		t.Fatal(err)
-	}
+`)
 
 	p := IAMValidateParams{
 		OrgID:                  "123",
 		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
-	_, proj, _, _, _, err := loadRequiredPermissionsCore(p)
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
-	if !slices.Equal(proj, defaultProjectParentPermissions()) {
-		t.Fatalf("project parent should default when YAML has no projects.*\ngot:  %v\nwant: %v", proj, defaultProjectParentPermissions())
+	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
+	if err == nil {
+		t.Fatal("expected error when orgPermissions has no resourcemanager.projects.* permissions")
 	}
 }
 
-func TestLoadRequiredPermissionsCore_absoluteYAMLPath(t *testing.T) {
-	dir := t.TempDir()
-	yamlPath := filepath.Join(dir, "permissions.yaml")
-	content := `items:
-  - orgPermissions:
-      - serviceusage.services.use
-  - folderPermissions:
-      - resourcemanager.folders.create
-  - billingPermissions:
-      - billing.resourceAssociations.create
-`
-	if err := os.WriteFile(yamlPath, []byte(content), 0o600); err != nil {
-		t.Fatal(err)
-	}
-
-	p := IAMValidateParams{
-		OrgID:                  "123",
-		IAMPermissionsYAMLPath: strPtr(yamlPath),
-	}
-	org, _, folder, bill, _, err := loadRequiredPermissionsCore(p)
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
-	if !slices.Equal(org, []string{"serviceusage.services.use"}) {
-		t.Fatalf("org: %v", org)
-	}
-	if !slices.Equal(folder, []string{"resourcemanager.folders.create"}) {
-		t.Fatalf("folder: %v", folder)
-	}
-	if !slices.Equal(bill, []string{"billing.resourceAssociations.create"}) {
-		t.Fatalf("bill: %v", bill)
+func TestLoadRequiredPermissionsCore_noYAMLPathReturnsError(t *testing.T) {
+	_, _, _, _, _, err := loadRequiredPermissionsCore(IAMValidateParams{OrgID: "123"})
+	if err == nil {
+		t.Fatal("expected error when permissions yaml path is not configured")
 	}
 }
 
@@ -167,42 +111,26 @@ func TestLoadRequiredPermissionsCore_relativeYAMLPathReturnsError(t *testing.T) 
 	}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
 	if err == nil {
-		t.Fatal("expected error for relative iam_permissions_yaml_path")
+		t.Fatal("expected error for relative permissions yaml path")
 	}
 }
 
-func TestLoadRequiredPermissionsCore_missingFileReturnsErrorAndDefaults(t *testing.T) {
+func TestLoadRequiredPermissionsCore_missingFileReturnsError(t *testing.T) {
 	p := IAMValidateParams{
 		OrgID:                  "123",
 		IAMPermissionsYAMLPath: strPtr(filepath.Join(t.TempDir(), "nope.yaml")),
 	}
-	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(p)
+	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
 	if err == nil {
 		t.Fatal("expected error")
 	}
-	if len(skipped) != 0 {
-		t.Fatalf("skipped: %v", skipped)
-	}
-	if !slices.Equal(org, defaultOrgPermissions()) {
-		t.Fatalf("org should remain defaults on error")
-	}
-	if !slices.Equal(proj, defaultProjectParentPermissions()) {
-		t.Fatalf("proj should remain defaults on error")
-	}
-	if !slices.Equal(folder, defaultFolderPermissions()) {
-		t.Fatalf("folder should remain defaults on error")
-	}
-	if !slices.Equal(bill, defaultBillingPermissions()) {
-		t.Fatalf("billing should remain defaults on error")
+	if !strings.Contains(err.Error(), "not found") {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }
 
 func TestLoadRequiredPermissionsCore_invalidYAMLReturnsError(t *testing.T) {
-	dir := t.TempDir()
-	pth := filepath.Join(dir, "bad.yaml")
-	if err := os.WriteFile(pth, []byte("items: [\n"), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	pth := writePermissionsYAML(t, t.TempDir(), "bad.yaml", "items: [\n")
 	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
 	if err == nil {
@@ -211,18 +139,36 @@ func TestLoadRequiredPermissionsCore_invalidYAMLReturnsError(t *testing.T) {
 }
 
 func TestLoadRequiredPermissionsCore_tooFewItemsReturnsError(t *testing.T) {
-	dir := t.TempDir()
-	pth := filepath.Join(dir, "short.yaml")
-	content := `items:
+	pth := writePermissionsYAML(t, t.TempDir(), "short.yaml", `items:
   - orgPermissions: []
-`
-	if err := os.WriteFile(pth, []byte(content), 0o600); err != nil {
-		t.Fatal(err)
-	}
+`)
 	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
 	if err == nil {
 		t.Fatal("expected format error")
+	}
+}
+
+func TestResolvePermissionsYAMLPath_fromFoundationCodePath(t *testing.T) {
+	dir := t.TempDir()
+	bundled := filepath.Join(dir, "helpers", "foundation-deployer", "examples", "iam")
+	if err := os.MkdirAll(bundled, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	yamlFile := filepath.Join(bundled, "default-permissions.yaml")
+	if err := os.WriteFile(yamlFile, []byte("items:\n  - orgPermissions: []\n  - folderPermissions: []\n  - billingPermissions: []\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	path, err := resolvePermissionsYAMLPath(IAMValidateParams{FoundationCodePath: dir})
+	if err != nil {
+		t.Fatalf("err: %v", err)
+	}
+	if !filepath.IsAbs(path) {
+		t.Fatalf("expected absolute path, got %q", path)
+	}
+	if path != yamlFile {
+		t.Fatalf("got %q want %q", path, yamlFile)
 	}
 }
 

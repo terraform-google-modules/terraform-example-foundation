@@ -57,9 +57,10 @@ func main() {
 	}
 
 	params := utils.IAMValidateParams{
-		OrgID:          globalTFVars.OrgID,
-		ParentFolder:   globalTFVars.ParentFolder,
-		BillingAccount: globalTFVars.BillingAccount,
+		OrgID:              globalTFVars.OrgID,
+		FoundationCodePath: globalTFVars.FoundationCodePath,
+		ParentFolder:       globalTFVars.ParentFolder,
+		BillingAccount:     globalTFVars.BillingAccount,
 	}
 	if permissionsYAML != "" {
 		params.IAMPermissionsYAMLPath = &permissionsYAML

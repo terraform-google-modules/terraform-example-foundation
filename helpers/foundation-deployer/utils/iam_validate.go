@@ -52,6 +52,8 @@ const iamReplaceME = "REPLACE_ME"
 //	go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE> -v
 type IAMValidateParams struct {
 	OrgID string
+	// FoundationCodePath is used to locate the bundled permissions YAML when IAMPermissionsYAMLPath is unset.
+	FoundationCodePath string
 	// IAMPermissionsYAMLPath is an optional absolute path to a permissions YAML file.
 	IAMPermissionsYAMLPath *string
 	ParentFolder           *string
@@ -86,7 +88,14 @@ func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
 
 	ctx := context.Background()
 
-	orgPerms, projectParentPerms, folderPerms, billingPerms := loadRequiredPermissions(p)
+	orgPerms, projectParentPerms, folderPerms, billingPerms, skipped, err := loadRequiredPermissionsCore(p)
+	if err != nil {
+		log.Printf("# IAM permissions validation failed: %v\n", err)
+		return
+	}
+	if len(skipped) > 0 {
+		log.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(skipped), strings.Join(skipped, ", "))
+	}
 
 	orgRes := "organizations/" + p.OrgID
 	checkOrgPermissions(ctx, orgRes, orgPerms, verbose)
@@ -165,52 +174,6 @@ func resolveParentFolder(p IAMValidateParams) (folderID string, ok bool) {
 	return folderID, true
 }
 
-func defaultOrgPermissions() []string {
-	return []string{
-		"accesscontextmanager.policies.create",
-		"accesscontextmanager.policies.get",
-		"accesscontextmanager.policies.getIamPolicy",
-		"accesscontextmanager.policies.list",
-		"accesscontextmanager.policies.setIamPolicy",
-		"iam.serviceAccounts.getAccessToken",
-		"resourcemanager.organizations.get",
-		"resourcemanager.organizations.getIamPolicy",
-		"resourcemanager.organizations.setIamPolicy",
-		"serviceusage.services.list",
-		"serviceusage.services.use",
-	}
-}
-
-func defaultProjectParentPermissions() []string {
-	return []string{
-		"resourcemanager.projects.create",
-		"resourcemanager.projects.delete",
-		"resourcemanager.projects.get",
-		"resourcemanager.projects.getIamPolicy",
-		"resourcemanager.projects.list",
-		"resourcemanager.projects.setIamPolicy",
-	}
-}
-
-func defaultFolderPermissions() []string {
-	return []string{
-		"resourcemanager.folders.get",
-		"resourcemanager.folders.create",
-		"resourcemanager.folders.delete",
-		"resourcemanager.folders.getIamPolicy",
-		"resourcemanager.folders.setIamPolicy",
-	}
-}
-
-func defaultBillingPermissions() []string {
-	return []string{
-		"billing.accounts.get",
-		"billing.accounts.getIamPolicy",
-		"billing.resourceAssociations.create",
-		"billing.accounts.setIamPolicy",
-	}
-}
-
 type permissionsYAML struct {
 	Items []struct {
 		OrgPermissions     []string `yaml:"orgPermissions"`
@@ -219,51 +182,43 @@ type permissionsYAML struct {
 	} `yaml:"items"`
 }
 
-func loadRequiredPermissions(p IAMValidateParams) (orgPerms, projectParentPerms, folderPerms, billingPerms []string) {
-	orgPerms, projectParentPerms, folderPerms, billingPerms, skipped, err := loadRequiredPermissionsCore(p)
-	if err != nil {
-		log.Printf("# warning: %v\n", err)
-	}
-	if len(skipped) > 0 {
-		log.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(skipped), strings.Join(skipped, ", "))
-	}
-	return orgPerms, projectParentPerms, folderPerms, billingPerms
-}
-
-// loadRequiredPermissionsCore resolves org / project-parent / folder / billing permission lists.
-// On YAML read/parse errors it returns the default lists and a non-nil err (caller may log).
-// skipped lists permissions removed from org-level TestIamPermissions (SCC notification / tag keys).
+// loadRequiredPermissionsCore loads org / project-parent / folder / billing permission lists from YAML.
 func loadRequiredPermissionsCore(p IAMValidateParams) (orgPerms, projectParentPerms, folderPerms, billingPerms, skipped []string, err error) {
-	orgPerms = defaultOrgPermissions()
-	projectParentPerms = defaultProjectParentPermissions()
-	folderPerms = defaultFolderPermissions()
-	billingPerms = defaultBillingPermissions()
-
-	if p.IAMPermissionsYAMLPath == nil || strings.TrimSpace(*p.IAMPermissionsYAMLPath) == "" {
-		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, nil
+	path, err := resolvePermissionsYAMLPath(p)
+	if err != nil {
+		return nil, nil, nil, nil, nil, err
 	}
 
-	path := strings.TrimSpace(*p.IAMPermissionsYAMLPath)
-	if !filepath.IsAbs(path) {
-		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("iam_permissions_yaml_path must be an absolute path, got %q", path)
+	if _, statErr := os.Stat(path); statErr != nil {
+		if os.IsNotExist(statErr) {
+			return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml file not found at %q", path)
+		}
+		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml file at %q is not readable: %w", path, statErr)
 	}
 
 	data, readErr := os.ReadFile(path)
 	if readErr != nil {
-		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("failed to read iam permissions yaml at %q: %w", path, readErr)
+		return nil, nil, nil, nil, nil, fmt.Errorf("failed to read permissions yaml at %q: %w", path, readErr)
 	}
 
 	var cfg permissionsYAML
 	if unmarshalErr := yaml.Unmarshal(data, &cfg); unmarshalErr != nil {
-		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("failed to parse iam permissions yaml at %q: %w", path, unmarshalErr)
+		return nil, nil, nil, nil, nil, fmt.Errorf("failed to parse permissions yaml at %q: %w", path, unmarshalErr)
 	}
 	if len(cfg.Items) < 3 {
-		return orgPerms, projectParentPerms, folderPerms, billingPerms, nil, fmt.Errorf("iam permissions yaml at %q: expected 3 items, got %d", path, len(cfg.Items))
+		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: expected 3 items, got %d", path, len(cfg.Items))
 	}
 
 	orgAll := cfg.Items[0].OrgPermissions
 	folderPerms = append([]string(nil), cfg.Items[1].FolderPermissions...)
 	billingPerms = append([]string(nil), cfg.Items[2].BillingPermissions...)
+
+	if len(folderPerms) == 0 {
+		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: folderPermissions must not be empty", path)
+	}
+	if len(billingPerms) == 0 {
+		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: billingPermissions must not be empty", path)
+	}
 
 	projectParentPerms = []string{}
 	orgPerms = []string{}
@@ -280,12 +235,39 @@ func loadRequiredPermissionsCore(p IAMValidateParams) (orgPerms, projectParentPe
 		}
 	}
 
+	if len(orgPerms) == 0 {
+		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: orgPermissions must include at least one org-scoped permission", path)
+	}
 	if len(projectParentPerms) == 0 {
-		projectParentPerms = defaultProjectParentPermissions()
+		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: orgPermissions must include resourcemanager.projects.* permissions", path)
 	}
 
 	sort.Strings(skipped)
 	return orgPerms, projectParentPerms, folderPerms, billingPerms, skipped, nil
+}
+
+func resolvePermissionsYAMLPath(p IAMValidateParams) (string, error) {
+	if p.IAMPermissionsYAMLPath != nil {
+		path := strings.TrimSpace(*p.IAMPermissionsYAMLPath)
+		if path == "" {
+			return "", fmt.Errorf("permissions yaml path is empty")
+		}
+		if !filepath.IsAbs(path) {
+			return "", fmt.Errorf("permissions yaml path must be an absolute path, got %q", path)
+		}
+		return path, nil
+	}
+
+	if strings.TrimSpace(p.FoundationCodePath) == "" || p.FoundationCodePath == iamReplaceME {
+		return "", fmt.Errorf("permissions yaml path is required: set -permissions_yaml or foundation_code_path in tfvars")
+	}
+
+	path := filepath.Join(p.FoundationCodePath, "helpers", "foundation-deployer", "examples", "iam", "default-permissions.yaml")
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve bundled permissions yaml path: %w", err)
+	}
+	return absPath, nil
 }
 
 func checkResourcePermissions(ctx context.Context, scope, resource string, permissions []string, verbose bool) {

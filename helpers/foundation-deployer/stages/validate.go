@@ -114,9 +114,10 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 	// Check IAM permissions for the current principal (ADC) using TestIamPermissions.
 	// using TestIamPermissions and print any missing permissions.
 	utils.ValidateIAMPermissions(utils.IAMValidateParams{
-		OrgID:          g.OrgID,
-		ParentFolder:   g.ParentFolder,
-		BillingAccount: g.BillingAccount,
+		OrgID:              g.OrgID,
+		FoundationCodePath: g.FoundationCodePath,
+		ParentFolder:       g.ParentFolder,
+		BillingAccount:     g.BillingAccount,
 	}, false)
 }
 

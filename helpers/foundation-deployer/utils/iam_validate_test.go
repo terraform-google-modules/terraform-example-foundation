@@ -221,3 +221,45 @@ func TestLoadRequiredPermissionsCore_tooFewItemsReturnsError(t *testing.T) {
 		t.Fatal("expected format error")
 	}
 }
+
+func TestIsValidOrgID(t *testing.T) {
+	if isValidOrgID("123456789012") != true {
+		t.Fatal("expected valid org id")
+	}
+	if isValidOrgID("") || isValidOrgID("REPLACE_ME") || isValidOrgID("org-123") {
+		t.Fatal("expected invalid org id")
+	}
+}
+
+func TestIsValidFolderID(t *testing.T) {
+	if isValidFolderID("987654321098") != true {
+		t.Fatal("expected valid folder id")
+	}
+	if isValidFolderID("REPLACE_ME") || isValidFolderID("fldr-1") {
+		t.Fatal("expected invalid folder id")
+	}
+}
+
+func TestIsValidBillingAccount(t *testing.T) {
+	if isValidBillingAccount("ABCDEF-123456-789ABC") != true {
+		t.Fatal("expected valid billing account")
+	}
+	if isValidBillingAccount("REPLACE_ME") || isValidBillingAccount("invalid") {
+		t.Fatal("expected invalid billing account")
+	}
+}
+
+func TestResolveParentFolder(t *testing.T) {
+	id, ok := resolveParentFolder(IAMValidateParams{ParentFolder: strPtr("987654321098")})
+	if !ok || id != "987654321098" {
+		t.Fatalf("got id=%q ok=%v", id, ok)
+	}
+	_, ok = resolveParentFolder(IAMValidateParams{ParentFolder: strPtr("REPLACE_ME")})
+	if ok {
+		t.Fatal("placeholder folder should not be used")
+	}
+	_, ok = resolveParentFolder(IAMValidateParams{})
+	if ok {
+		t.Fatal("nil parent folder should not be used")
+	}
+}

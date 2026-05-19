@@ -36,12 +36,11 @@ const iamReplaceME = "REPLACE_ME"
 // IAM permissions validation (TestIamPermissions): the foundation-deployer -validate flag
 // also validates that the currently authenticated principal (ADC) has the required IAM
 // permissions on:
-//   - organization (organizations/<ORG_ID>)
-//   - folder (folders/<FOLDER_ID>, when parent_folder is set)
-//   - billing account (billingAccounts/<BILLING_ACCOUNT_ID>)
+//   - organization (organizations/<ORG_ID>) — required
+//   - folder (folders/<FOLDER_ID> from parent_folder) — required
+//   - billing account (billingAccounts/<BILLING_ACCOUNT_ID>) — required
 //
-// Project-parent permissions (resourcemanager.projects.*) are checked on the effective
-// parent resource (organization or folder), matching Terraform project placement.
+// Project-parent permissions (resourcemanager.projects.*) are checked on the parent folder.
 //
 // Optional YAML: set iam_permissions_yaml_path in global.tfvars (see GlobalTFVars.IAMPermissionsYAMLPath
 // in package stages) to load required permissions from a file; the path can be inside or outside
@@ -70,7 +69,23 @@ type IAMValidateParams struct {
 //
 // See [IAMValidateParams] for scope, YAML configuration, and how to invoke the standalone CLI.
 func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
-	if p.OrgID == "" || p.OrgID == iamReplaceME {
+	if !isValidOrgID(p.OrgID) {
+		log.Printf("# IAM permissions validation skipped: invalid or missing org_id %q (expected numeric organization id)\n", p.OrgID)
+		return
+	}
+
+	folderID, checkFolder := resolveParentFolder(p)
+	if !checkFolder {
+		parentFolder := ""
+		if p.ParentFolder != nil {
+			parentFolder = strings.TrimSpace(*p.ParentFolder)
+		}
+		log.Printf("# IAM permissions validation skipped: invalid or missing parent_folder %q (expected numeric folder id)\n", parentFolder)
+		return
+	}
+
+	if !isValidBillingAccount(p.BillingAccount) {
+		log.Printf("# IAM permissions validation skipped: invalid or missing billing_account %q (expected format XXXXXX-XXXXXX-XXXXXX)\n", p.BillingAccount)
 		return
 	}
 
@@ -81,23 +96,78 @@ func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
 	orgRes := "organizations/" + p.OrgID
 	checkOrgPermissions(ctx, orgRes, orgPerms, verbose)
 
-	projectParentRes := orgRes
-	projectParentScope := "ORG-PROJECTS"
-	if p.ParentFolder != nil && *p.ParentFolder != "" && *p.ParentFolder != iamReplaceME {
-		projectParentRes = "folders/" + *p.ParentFolder
-		projectParentScope = "FOLDER-PROJECTS"
-	}
-	checkResourcePermissions(ctx, projectParentScope, projectParentRes, projectParentPerms, verbose)
+	folderRes := "folders/" + folderID
+	checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, projectParentPerms, verbose)
+	checkFolderPermissions(ctx, folderRes, folderPerms, verbose)
 
-	if p.ParentFolder != nil && *p.ParentFolder != "" && *p.ParentFolder != iamReplaceME {
-		folderRes := "folders/" + *p.ParentFolder
-		checkFolderPermissions(ctx, folderRes, folderPerms, verbose)
-	}
+	checkBillingPermissions(ctx, "billingAccounts/"+p.BillingAccount, billingPerms, verbose)
+}
 
-	if p.BillingAccount != "" && p.BillingAccount != iamReplaceME {
-		billingRes := "billingAccounts/" + p.BillingAccount
-		checkBillingPermissions(ctx, billingRes, billingPerms, verbose)
+func isIAMPlaceholder(s string) bool {
+	return strings.TrimSpace(s) == "" || strings.TrimSpace(s) == iamReplaceME
+}
+
+func isValidOrgID(orgID string) bool {
+	if isIAMPlaceholder(orgID) {
+		return false
 	}
+	return isNumericID(orgID)
+}
+
+func isValidFolderID(folderID string) bool {
+	if isIAMPlaceholder(folderID) {
+		return false
+	}
+	return isNumericID(folderID)
+}
+
+func isValidBillingAccount(billingAccount string) bool {
+	if isIAMPlaceholder(billingAccount) {
+		return false
+	}
+	parts := strings.Split(billingAccount, "-")
+	if len(parts) != 3 {
+		return false
+	}
+	for _, part := range parts {
+		if len(part) != 6 || !isAlphanumericSegment(part) {
+			return false
+		}
+	}
+	return true
+}
+
+func isAlphanumericSegment(s string) bool {
+	for _, r := range s {
+		if (r < '0' || r > '9') && (r < 'A' || r > 'Z') && (r < 'a' || r > 'z') {
+			return false
+		}
+	}
+	return true
+}
+
+func isNumericID(s string) bool {
+	if s == "" {
+		return false
+	}
+	for _, r := range s {
+		if r < '0' || r > '9' {
+			return false
+		}
+	}
+	return true
+}
+
+// resolveParentFolder returns a trimmed folder id and whether folder-scoped checks should run.
+func resolveParentFolder(p IAMValidateParams) (folderID string, ok bool) {
+	if p.ParentFolder == nil {
+		return "", false
+	}
+	folderID = strings.TrimSpace(*p.ParentFolder)
+	if !isValidFolderID(folderID) {
+		return folderID, false
+	}
+	return folderID, true
 }
 
 func defaultOrgPermissions() []string {

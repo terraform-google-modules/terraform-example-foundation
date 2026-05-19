@@ -17,12 +17,11 @@
 //
 // See [github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils.ValidateIAMPermissions]
 // and [github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils.IAMValidateParams]
-// for resources checked,
-// iam_permissions_yaml_path, and examples:
+// for resources checked. Optional permissions YAML via -permissions_yaml (absolute path).
 //
 //	cd helpers/foundation-deployer
 //	go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE>
-//	go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE> -v
+//	go run ./cmd/iam-validate -tfvars_file <PATH TO 'global.tfvars' FILE> -permissions_yaml /path/to/permissions.yaml -v
 package main
 
 import (
@@ -36,11 +35,13 @@ import (
 
 func main() {
 	var (
-		tfvarsFile string
-		verbose    bool
+		tfvarsFile       string
+		permissionsYAML  string
+		verbose          bool
 	)
 
 	flag.StringVar(&tfvarsFile, "tfvars_file", "", "Full path to the Terraform .tfvars file with the configuration to be used.")
+	flag.StringVar(&permissionsYAML, "permissions_yaml", "", "Optional absolute path to a permissions YAML file.")
 	flag.BoolVar(&verbose, "v", false, "show full output (allowed + missing permissions)")
 	flag.Parse()
 
@@ -55,10 +56,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	utils.ValidateIAMPermissions(utils.IAMValidateParams{
-		OrgID:                  globalTFVars.OrgID,
-		IAMPermissionsYAMLPath: globalTFVars.IAMPermissionsYAMLPath,
-		ParentFolder:           globalTFVars.ParentFolder,
-		BillingAccount:         globalTFVars.BillingAccount,
-	}, verbose)
+	params := utils.IAMValidateParams{
+		OrgID:          globalTFVars.OrgID,
+		ParentFolder:   globalTFVars.ParentFolder,
+		BillingAccount: globalTFVars.BillingAccount,
+	}
+	if permissionsYAML != "" {
+		params.IAMPermissionsYAMLPath = &permissionsYAML
+	}
+
+	utils.ValidateIAMPermissions(params, verbose)
 }

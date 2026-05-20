@@ -17,9 +17,9 @@ package utils
 import (
 	"os"
 	"path/filepath"
-	"slices"
-	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func strPtr(s string) *string { return &s }
@@ -27,9 +27,8 @@ func strPtr(s string) *string { return &s }
 func writePermissionsYAML(t *testing.T, dir, name, content string) string {
 	t.Helper()
 	path := filepath.Join(dir, name)
-	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	err := os.WriteFile(path, []byte(content), 0o600)
+	assert.NoError(t, err)
 	return path
 }
 
@@ -51,30 +50,12 @@ func TestLoadRequiredPermissionsCore_splitsProjectsAndSkipsSCCAndTags(t *testing
 		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
 	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(p)
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
-
-	wantOrg := []string{"resourcemanager.organizations.get"}
-	if !slices.Equal(org, wantOrg) {
-		t.Fatalf("org: got %v want %v", org, wantOrg)
-	}
-	wantProj := []string{"resourcemanager.projects.create"}
-	if !slices.Equal(proj, wantProj) {
-		t.Fatalf("proj: got %v want %v", proj, wantProj)
-	}
-	wantFolder := []string{"resourcemanager.folders.get"}
-	if !slices.Equal(folder, wantFolder) {
-		t.Fatalf("folder: got %v want %v", folder, wantFolder)
-	}
-	wantBill := []string{"billing.accounts.get"}
-	if !slices.Equal(bill, wantBill) {
-		t.Fatalf("billing: got %v want %v", bill, wantBill)
-	}
-	wantSkipped := []string{"resourcemanager.tagKeys.get", "securitycenter.notificationConfigs.list"}
-	if !slices.Equal(skipped, wantSkipped) {
-		t.Fatalf("skipped: got %v want %v", skipped, wantSkipped)
-	}
+	assert.NoError(t, err)
+	assert.Equal(t, []string{"resourcemanager.organizations.get"}, org, "org permissions")
+	assert.Equal(t, []string{"resourcemanager.projects.create"}, proj, "project-parent permissions")
+	assert.Equal(t, []string{"resourcemanager.folders.get"}, folder, "folder permissions")
+	assert.Equal(t, []string{"billing.accounts.get"}, bill, "billing permissions")
+	assert.Equal(t, []string{"resourcemanager.tagKeys.get", "securitycenter.notificationConfigs.list"}, skipped, "skipped permissions")
 }
 
 func TestLoadRequiredPermissionsCore_emptyProjectsReturnsError(t *testing.T) {
@@ -92,16 +73,12 @@ func TestLoadRequiredPermissionsCore_emptyProjectsReturnsError(t *testing.T) {
 		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
-	if err == nil {
-		t.Fatal("expected error when orgPermissions has no resourcemanager.projects.* permissions")
-	}
+	assert.Error(t, err, "expected error when orgPermissions has no resourcemanager.projects.* permissions")
 }
 
 func TestLoadRequiredPermissionsCore_noYAMLPathReturnsError(t *testing.T) {
 	_, _, _, _, _, err := loadRequiredPermissionsCore(IAMValidateParams{OrgID: "123"})
-	if err == nil {
-		t.Fatal("expected error when permissions yaml path is not configured")
-	}
+	assert.Error(t, err, "expected error when permissions yaml path is not configured")
 }
 
 func TestLoadRequiredPermissionsCore_relativeYAMLPathReturnsError(t *testing.T) {
@@ -110,9 +87,7 @@ func TestLoadRequiredPermissionsCore_relativeYAMLPathReturnsError(t *testing.T) 
 		IAMPermissionsYAMLPath: strPtr("cfg/permissions.yaml"),
 	}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
-	if err == nil {
-		t.Fatal("expected error for relative permissions yaml path")
-	}
+	assert.Error(t, err, "expected error for relative permissions yaml path")
 }
 
 func TestLoadRequiredPermissionsCore_missingFileReturnsError(t *testing.T) {
@@ -121,21 +96,15 @@ func TestLoadRequiredPermissionsCore_missingFileReturnsError(t *testing.T) {
 		IAMPermissionsYAMLPath: strPtr(filepath.Join(t.TempDir(), "nope.yaml")),
 	}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
-	if err == nil {
-		t.Fatal("expected error")
-	}
-	if !strings.Contains(err.Error(), "not found") {
-		t.Fatalf("unexpected error: %v", err)
-	}
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "not found")
 }
 
 func TestLoadRequiredPermissionsCore_invalidYAMLReturnsError(t *testing.T) {
 	pth := writePermissionsYAML(t, t.TempDir(), "bad.yaml", "items: [\n")
 	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
-	if err == nil {
-		t.Fatal("expected parse error")
-	}
+	assert.Error(t, err, "expected parse error")
 }
 
 func TestLoadRequiredPermissionsCore_tooFewItemsReturnsError(t *testing.T) {
@@ -144,72 +113,51 @@ func TestLoadRequiredPermissionsCore_tooFewItemsReturnsError(t *testing.T) {
 `)
 	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
-	if err == nil {
-		t.Fatal("expected format error")
-	}
+	assert.Error(t, err, "expected format error")
 }
 
 func TestResolvePermissionsYAMLPath_fromFoundationCodePath(t *testing.T) {
 	dir := t.TempDir()
 	bundled := filepath.Join(dir, "helpers", "foundation-deployer", "examples", "iam")
-	if err := os.MkdirAll(bundled, 0o700); err != nil {
-		t.Fatal(err)
-	}
+	err := os.MkdirAll(bundled, 0o700)
+	assert.NoError(t, err)
 	yamlFile := filepath.Join(bundled, "default-permissions.yaml")
-	if err := os.WriteFile(yamlFile, []byte("items:\n  - orgPermissions: []\n  - folderPermissions: []\n  - billingPermissions: []\n"), 0o600); err != nil {
-		t.Fatal(err)
-	}
+	err = os.WriteFile(yamlFile, []byte("items:\n  - orgPermissions: []\n  - folderPermissions: []\n  - billingPermissions: []\n"), 0o600)
+	assert.NoError(t, err)
 
 	path, err := resolvePermissionsYAMLPath(IAMValidateParams{FoundationCodePath: dir})
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
-	if !filepath.IsAbs(path) {
-		t.Fatalf("expected absolute path, got %q", path)
-	}
-	if path != yamlFile {
-		t.Fatalf("got %q want %q", path, yamlFile)
-	}
+	assert.NoError(t, err)
+	assert.True(t, filepath.IsAbs(path), "resolved path should be absolute")
+	assert.Equal(t, yamlFile, path, "resolved path should match bundled default-permissions.yaml")
 }
 
 func TestIsValidOrgID(t *testing.T) {
-	if isValidOrgID("123456789012") != true {
-		t.Fatal("expected valid org id")
-	}
-	if isValidOrgID("") || isValidOrgID("REPLACE_ME") || isValidOrgID("org-123") {
-		t.Fatal("expected invalid org id")
-	}
+	assert.True(t, isValidOrgID("123456789012"), "numeric org id should be valid")
+	assert.False(t, isValidOrgID(""), "empty org id should be invalid")
+	assert.False(t, isValidOrgID("REPLACE_ME"), "placeholder org id should be invalid")
+	assert.False(t, isValidOrgID("org-123"), "non-numeric org id should be invalid")
 }
 
 func TestIsValidFolderID(t *testing.T) {
-	if isValidFolderID("987654321098") != true {
-		t.Fatal("expected valid folder id")
-	}
-	if isValidFolderID("REPLACE_ME") || isValidFolderID("fldr-1") {
-		t.Fatal("expected invalid folder id")
-	}
+	assert.True(t, isValidFolderID("987654321098"), "numeric folder id should be valid")
+	assert.False(t, isValidFolderID("REPLACE_ME"), "placeholder folder id should be invalid")
+	assert.False(t, isValidFolderID("fldr-1"), "non-numeric folder id should be invalid")
 }
 
 func TestIsValidBillingAccount(t *testing.T) {
-	if isValidBillingAccount("ABCDEF-123456-789ABC") != true {
-		t.Fatal("expected valid billing account")
-	}
-	if isValidBillingAccount("REPLACE_ME") || isValidBillingAccount("invalid") {
-		t.Fatal("expected invalid billing account")
-	}
+	assert.True(t, isValidBillingAccount("ABCDEF-123456-789ABC"), "billing account should be valid")
+	assert.False(t, isValidBillingAccount("REPLACE_ME"), "placeholder billing account should be invalid")
+	assert.False(t, isValidBillingAccount("invalid"), "malformed billing account should be invalid")
 }
 
 func TestResolveParentFolder(t *testing.T) {
 	id, ok := resolveParentFolder(IAMValidateParams{ParentFolder: strPtr("987654321098")})
-	if !ok || id != "987654321098" {
-		t.Fatalf("got id=%q ok=%v", id, ok)
-	}
+	assert.True(t, ok, "numeric parent folder should resolve")
+	assert.Equal(t, "987654321098", id, "folder id should match")
+
 	_, ok = resolveParentFolder(IAMValidateParams{ParentFolder: strPtr("REPLACE_ME")})
-	if ok {
-		t.Fatal("placeholder folder should not be used")
-	}
+	assert.False(t, ok, "placeholder folder should not be used")
+
 	_, ok = resolveParentFolder(IAMValidateParams{})
-	if ok {
-		t.Fatal("nil parent folder should not be used")
-	}
+	assert.False(t, ok, "nil parent folder should not be used")
 }

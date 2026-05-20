@@ -262,6 +262,7 @@ func resolvePermissionsYAMLPath(p IAMValidateParams) (string, error) {
 		return "", fmt.Errorf("permissions yaml path is required: set -permissions_yaml or foundation_code_path in tfvars")
 	}
 
+	// the segments below are a fixed relative path inside the repository, not configurable via tfvars.
 	path := filepath.Join(p.FoundationCodePath, "helpers", "foundation-deployer", "examples", "iam", "default-permissions.yaml")
 	absPath, err := filepath.Abs(path)
 	if err != nil {

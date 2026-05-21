@@ -227,10 +227,6 @@ grep -rl 10.3.64.0 business_unit_2/ | xargs sed -i 's/10.3.64.0/10.4.64.0/g'
 
 1. You can now move to the instructions in the [5-app-infra](../5-app-infra/README.md) step.
 
-### Deploying with Jenkins
-
-See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying-step-4-projects).
-
 ### Deploying with GitHub Actions
 
 See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-step-4-projects).

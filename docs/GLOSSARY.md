@@ -6,7 +6,7 @@ specific meaning within the domain of knowledge.
 ## Terraform Service Accounts
 
 The email for the privileged service accounts created in the seed project of the step 0-bootstrap.
-This service accounts are used to run Terraform by Cloud Build and Jenkins. When using Jenkins, the service account of the Jenkins Agent uses impersonation over this Terraform Service Accounts. A Terraform service account is created for each one of the steps.
+This service accounts are used to run Terraform by Cloud Build. A Terraform service account is created for each one of the steps.
 
 ## Seed Project
 
@@ -15,7 +15,7 @@ Seed Project created in the 0-bootstrap step. It is the project where the Terraf
 ## Foundation CI/CD Pipeline
 
 A project created in step 0-bootstrap to manage infrastructure **within the organization**.
-The pipeline can use either **Cloud Build**, **Github Actions**, **GitLab pipeline**, **Terraform Cloud** or **Jenkins** depending on your context and Terraform is executed using the seed project service account.
+The pipeline can use either **Cloud Build**, **Github Actions**, **GitLab pipeline** or **Terraform Cloud** depending on your context and Terraform is executed using the seed project service account.
 Also known as the CI/CD project.
 It is located under folder `bootstrap`.
 

@@ -6,7 +6,7 @@ specific meaning within the domain of knowledge.
 ## Terraform Service Accounts
 
 The email for the privileged service accounts created in the seed project of the step 0-bootstrap.
-This service accounts are used to run Terraform by Cloud Build. A Terraform service account is created for each one of the steps.
+These service accounts are used to run Terraform by Cloud Build. A Terraform service account is created for each one of the steps.
 
 ## Seed Project
 

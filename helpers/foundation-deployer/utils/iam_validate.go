@@ -18,7 +18,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -68,7 +67,7 @@ type IAMValidateParams struct {
 // See [IAMValidateParams] for scope, YAML configuration, and how to invoke the standalone CLI.
 func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
 	if !isValidOrgID(p.OrgID) {
-		log.Printf("# IAM permissions validation skipped: invalid or missing org_id %q (expected numeric organization id)\n", p.OrgID)
+		fmt.Printf("# IAM permissions validation skipped: invalid or missing org_id %q (expected numeric organization id)\n", p.OrgID)
 		return
 	}
 
@@ -78,12 +77,12 @@ func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
 		if p.ParentFolder != nil {
 			parentFolder = strings.TrimSpace(*p.ParentFolder)
 		}
-		log.Printf("# IAM permissions validation skipped: invalid or missing parent_folder %q (expected numeric folder id)\n", parentFolder)
+		fmt.Printf("# IAM permissions validation skipped: invalid or missing parent_folder %q (expected numeric folder id)\n", parentFolder)
 		return
 	}
 
 	if !isValidBillingAccount(p.BillingAccount) {
-		log.Printf("# IAM permissions validation skipped: invalid or missing billing_account %q (expected format XXXXXX-XXXXXX-XXXXXX)\n", p.BillingAccount)
+		fmt.Printf("# IAM permissions validation skipped: invalid or missing billing_account %q (expected format XXXXXX-XXXXXX-XXXXXX)\n", p.BillingAccount)
 		return
 	}
 
@@ -91,21 +90,30 @@ func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
 
 	perms, err := loadRequiredPermissionsCore(p)
 	if err != nil {
-		log.Printf("# IAM permissions validation failed: %v\n", err)
+		fmt.Printf("# IAM permissions validation failed: %v\n", err)
 		return
 	}
 	if len(perms.Skipped) > 0 {
-		log.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(perms.Skipped), strings.Join(perms.Skipped, ", "))
+		fmt.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(perms.Skipped), strings.Join(perms.Skipped, ", "))
 	}
 
 	orgRes := "organizations/" + p.OrgID
-	checkOrgPermissions(ctx, orgRes, perms.Org, verbose)
+	if err := checkOrgPermissions(ctx, orgRes, perms.Org, verbose); err != nil {
+		fmt.Printf("# %v\n", err)
+	}
 
 	folderRes := "folders/" + folderID
-	checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, perms.ProjectParent, verbose)
-	checkFolderPermissions(ctx, folderRes, perms.Folder, verbose)
+	if err := checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, perms.ProjectParent, verbose); err != nil {
+		fmt.Printf("# %v\n", err)
+	}
+	
+	if err := checkFolderPermissions(ctx, folderRes, perms.Folder, verbose); err != nil {
+		fmt.Printf("# %v\n", err)
+	}
 
-	checkBillingPermissions(ctx, "billingAccounts/"+p.BillingAccount, perms.Billing, verbose)
+	if err := checkBillingPermissions(ctx, "billingAccounts/"+p.BillingAccount, perms.Billing, verbose); err != nil {
+		fmt.Printf("# %v\n", err)
+	}
 }
 
 func isIAMPlaceholder(s string) bool {
@@ -163,6 +171,7 @@ func isNumericID(s string) bool {
 	return true
 }
 
+// resolveParentFolder returns a trimmed folder id and whether folder-scoped checks should run.
 func resolveParentFolder(p IAMValidateParams) (folderID string, ok bool) {
 	if p.ParentFolder == nil {
 		return "", false
@@ -187,6 +196,7 @@ type permissionsYAMLItem struct {
 	BillingPermissions []string `yaml:"billingPermissions,omitempty"`
 }
 
+// normalize merges legacy items[] entries into the top-level permission lists.
 func (c *permissionsYAML) normalize() {
 	for _, item := range c.Items {
 		c.OrgPermissions = append(c.OrgPermissions, item.OrgPermissions...)
@@ -195,6 +205,7 @@ func (c *permissionsYAML) normalize() {
 	}
 }
 
+// RequiredPermissions groups the permission lists loaded from YAML.
 type RequiredPermissions struct {
 	Org           []string
 	ProjectParent []string
@@ -281,7 +292,6 @@ func resolvePermissionsYAMLPath(p IAMValidateParams) (string, error) {
 		return "", fmt.Errorf("permissions yaml path is required: set -permissions_yaml or foundation_code_path in tfvars")
 	}
 
-	// the segments below are a fixed relative path inside the repository, not configurable via tfvars.
 	path := filepath.Join(p.FoundationCodePath, "helpers", "foundation-deployer", "examples", "iam", "default-permissions.yaml")
 	absPath, err := filepath.Abs(path)
 	if err != nil {
@@ -290,7 +300,7 @@ func resolvePermissionsYAMLPath(p IAMValidateParams) (string, error) {
 	return absPath, nil
 }
 
-func checkResourcePermissions(ctx context.Context, scope, resource string, permissions []string, verbose bool) {
+func checkResourcePermissions(ctx context.Context, scope, resource string, permissions []string, verbose bool) error {
 	var (
 		resp *iampb.TestIamPermissionsResponse
 		err  error
@@ -305,35 +315,32 @@ func checkResourcePermissions(ctx context.Context, scope, resource string, permi
 	case strings.HasPrefix(resource, "folders/"):
 		client, cErr := resourcemanager.NewFoldersClient(ctx)
 		if cErr != nil {
-			log.Printf("# error creating folders client: %v\n", cErr)
-			return
+			return fmt.Errorf("error creating folders client: %w", cErr)
 		}
 		defer client.Close()
 		resp, err = client.TestIamPermissions(ctx, req)
 	case strings.HasPrefix(resource, "organizations/"):
 		client, cErr := resourcemanager.NewOrganizationsClient(ctx)
 		if cErr != nil {
-			log.Printf("# error creating organizations client: %v\n", cErr)
-			return
+			return fmt.Errorf("error creating organizations client: %w", cErr)
 		}
 		defer client.Close()
 		resp, err = client.TestIamPermissions(ctx, req)
 	default:
-		log.Printf("# unsupported resource for IAM check: %s\n", resource)
-		return
+		return fmt.Errorf("unsupported resource for IAM check: %s", resource)
 	}
+	
 	if err != nil {
-		log.Printf("# error checking permissions for %s: %v\n", resource, err)
-		return
+		return fmt.Errorf("error checking permissions for %s: %w", resource, err)
 	}
 	printPermissions(scope, resource, permissions, resp.Permissions, verbose)
+	return nil
 }
 
-func checkOrgPermissions(ctx context.Context, resource string, permissions []string, verbose bool) {
+func checkOrgPermissions(ctx context.Context, resource string, permissions []string, verbose bool) error {
 	client, err := resourcemanager.NewOrganizationsClient(ctx)
 	if err != nil {
-		log.Printf("# error creating org client: %v\n", err)
-		return
+		return fmt.Errorf("error creating org client: %w", err)
 	}
 	defer client.Close()
 
@@ -342,17 +349,16 @@ func checkOrgPermissions(ctx context.Context, resource string, permissions []str
 		Permissions: permissions,
 	})
 	if err != nil {
-		log.Printf("# error checking org permissions for %s: %v\n", resource, err)
-		return
+		return fmt.Errorf("error checking org permissions for %s: %w", resource, err)
 	}
 	printPermissions("ORG", resource, permissions, resp.Permissions, verbose)
+	return nil
 }
 
-func checkFolderPermissions(ctx context.Context, resource string, permissions []string, verbose bool) {
+func checkFolderPermissions(ctx context.Context, resource string, permissions []string, verbose bool) error {
 	client, err := resourcemanager.NewFoldersClient(ctx)
 	if err != nil {
-		log.Printf("# error creating folder client: %v\n", err)
-		return
+		return fmt.Errorf("error creating folder client: %w", err)
 	}
 	defer client.Close()
 
@@ -361,17 +367,16 @@ func checkFolderPermissions(ctx context.Context, resource string, permissions []
 		Permissions: permissions,
 	})
 	if err != nil {
-		log.Printf("# error checking folder permissions for %s: %v\n", resource, err)
-		return
+		return fmt.Errorf("error checking folder permissions for %s: %w", resource, err)
 	}
 	printPermissions("FOLDER", resource, permissions, resp.Permissions, verbose)
+	return nil
 }
 
-func checkBillingPermissions(ctx context.Context, resource string, permissions []string, verbose bool) {
+func checkBillingPermissions(ctx context.Context, resource string, permissions []string, verbose bool) error {
 	client, err := billing.NewCloudBillingClient(ctx)
 	if err != nil {
-		log.Printf("# error creating billing client: %v\n", err)
-		return
+		return fmt.Errorf("error creating billing client: %w", err)
 	}
 	defer client.Close()
 
@@ -380,10 +385,10 @@ func checkBillingPermissions(ctx context.Context, resource string, permissions [
 		Permissions: permissions,
 	})
 	if err != nil {
-		log.Printf("# error checking billing permissions for %s: %v\n", resource, err)
-		return
+		return fmt.Errorf("error checking billing permissions for %s: %w", resource, err)
 	}
 	printPermissions("BILLING", resource, permissions, resp.Permissions, verbose)
+	return nil
 }
 
 func printPermissions(scope, resource string, requested, allowed []string, verbose bool) {

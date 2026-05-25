@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ package utils
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -88,23 +89,23 @@ func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
 
 	ctx := context.Background()
 
-	orgPerms, projectParentPerms, folderPerms, billingPerms, skipped, err := loadRequiredPermissionsCore(p)
+	perms, err := loadRequiredPermissionsCore(p)
 	if err != nil {
 		log.Printf("# IAM permissions validation failed: %v\n", err)
 		return
 	}
-	if len(skipped) > 0 {
-		log.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(skipped), strings.Join(skipped, ", "))
+	if len(perms.Skipped) > 0 {
+		log.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(perms.Skipped), strings.Join(perms.Skipped, ", "))
 	}
 
 	orgRes := "organizations/" + p.OrgID
-	checkOrgPermissions(ctx, orgRes, orgPerms, verbose)
+	checkOrgPermissions(ctx, orgRes, perms.Org, verbose)
 
 	folderRes := "folders/" + folderID
-	checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, projectParentPerms, verbose)
-	checkFolderPermissions(ctx, folderRes, folderPerms, verbose)
+	checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, perms.ProjectParent, verbose)
+	checkFolderPermissions(ctx, folderRes, perms.Folder, verbose)
 
-	checkBillingPermissions(ctx, "billingAccounts/"+p.BillingAccount, billingPerms, verbose)
+	checkBillingPermissions(ctx, "billingAccounts/"+p.BillingAccount, perms.Billing, verbose)
 }
 
 func isIAMPlaceholder(s string) bool {
@@ -162,7 +163,6 @@ func isNumericID(s string) bool {
 	return true
 }
 
-// resolveParentFolder returns a trimmed folder id and whether folder-scoped checks should run.
 func resolveParentFolder(p IAMValidateParams) (folderID string, ok bool) {
 	if p.ParentFolder == nil {
 		return "", false
@@ -178,7 +178,6 @@ type permissionsYAML struct {
 	OrgPermissions     []string `yaml:"orgPermissions"`
 	FolderPermissions  []string `yaml:"folderPermissions"`
 	BillingPermissions []string `yaml:"billingPermissions"`
-	// Items supports the legacy list format; entries are merged by field name (order-independent).
 	Items []permissionsYAMLItem `yaml:"items,omitempty"`
 }
 
@@ -188,7 +187,6 @@ type permissionsYAMLItem struct {
 	BillingPermissions []string `yaml:"billingPermissions,omitempty"`
 }
 
-// normalize merges legacy items[] entries into the top-level permission lists.
 func (c *permissionsYAML) normalize() {
 	for _, item := range c.Items {
 		c.OrgPermissions = append(c.OrgPermissions, item.OrgPermissions...)
@@ -197,46 +195,47 @@ func (c *permissionsYAML) normalize() {
 	}
 }
 
+type RequiredPermissions struct {
+	Org           []string
+	ProjectParent []string
+	Folder        []string
+	Billing       []string
+	Skipped       []string
+}
+
 // loadRequiredPermissionsCore loads org / project-parent / folder / billing permission lists from YAML.
-func loadRequiredPermissionsCore(p IAMValidateParams) (orgPerms, projectParentPerms, folderPerms, billingPerms, skipped []string, err error) {
+func loadRequiredPermissionsCore(p IAMValidateParams) (*RequiredPermissions, error) {
 	path, err := resolvePermissionsYAMLPath(p)
 	if err != nil {
-		return nil, nil, nil, nil, nil, err
-	}
-
-	if _, statErr := os.Stat(path); statErr != nil {
-		if os.IsNotExist(statErr) {
-			return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml file not found at %q", path)
-		}
-		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml file at %q is not readable: %w", path, statErr)
+		return nil, fmt.Errorf("failed to resolve permissions path: %w", err)
 	}
 
 	data, readErr := os.ReadFile(path)
 	if readErr != nil {
-		return nil, nil, nil, nil, nil, fmt.Errorf("failed to read permissions yaml at %q: %w", path, readErr)
+		if errors.Is(readErr, os.ErrNotExist) {
+			return nil, fmt.Errorf("permissions yaml file not found at %q", path)
+		}
+		return nil, fmt.Errorf("failed to read permissions yaml at %q: %w", path, readErr)
 	}
 
 	var cfg permissionsYAML
 	if unmarshalErr := yaml.Unmarshal(data, &cfg); unmarshalErr != nil {
-		return nil, nil, nil, nil, nil, fmt.Errorf("failed to parse permissions yaml at %q: %w", path, unmarshalErr)
+		return nil, fmt.Errorf("failed to parse permissions yaml at %q: %w", path, unmarshalErr)
 	}
 	cfg.normalize()
 
-	orgAll := append([]string(nil), cfg.OrgPermissions...)
-	folderPerms = append([]string(nil), cfg.FolderPermissions...)
-	billingPerms = append([]string(nil), cfg.BillingPermissions...)
-
-	if len(folderPerms) == 0 {
-		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: folderPermissions must not be empty", path)
+	if len(cfg.FolderPermissions) == 0 {
+		return nil, fmt.Errorf("permissions yaml at %q: folderPermissions must not be empty", path)
 	}
-	if len(billingPerms) == 0 {
-		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: billingPermissions must not be empty", path)
+	if len(cfg.BillingPermissions) == 0 {
+		return nil, fmt.Errorf("permissions yaml at %q: billingPermissions must not be empty", path)
 	}
 
-	projectParentPerms = []string{}
-	orgPerms = []string{}
-	skipped = []string{}
-	for _, perm := range orgAll {
+	var projectParentPerms []string
+	var orgPerms []string
+	var skipped []string
+
+	for _, perm := range cfg.OrgPermissions {
 		switch {
 		case strings.HasPrefix(perm, "resourcemanager.projects."):
 			projectParentPerms = append(projectParentPerms, perm)
@@ -249,14 +248,21 @@ func loadRequiredPermissionsCore(p IAMValidateParams) (orgPerms, projectParentPe
 	}
 
 	if len(orgPerms) == 0 {
-		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: orgPermissions must include at least one org-scoped permission", path)
+		return nil, fmt.Errorf("permissions yaml at %q: orgPermissions must include at least one org-scoped permission", path)
 	}
 	if len(projectParentPerms) == 0 {
-		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: orgPermissions must include resourcemanager.projects.* permissions", path)
+		return nil, fmt.Errorf("permissions yaml at %q: orgPermissions must include resourcemanager.projects.* permissions", path)
 	}
 
 	sort.Strings(skipped)
-	return orgPerms, projectParentPerms, folderPerms, billingPerms, skipped, nil
+
+	return &RequiredPermissions{
+		Org:           orgPerms,
+		ProjectParent: projectParentPerms,
+		Folder:        cfg.FolderPermissions,
+		Billing:       cfg.BillingPermissions,
+		Skipped:       skipped,
+	}, nil
 }
 
 func resolvePermissionsYAMLPath(p IAMValidateParams) (string, error) {

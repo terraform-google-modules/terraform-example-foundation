@@ -33,16 +33,15 @@ func writePermissionsYAML(t *testing.T, dir, name, content string) string {
 }
 
 func TestLoadRequiredPermissionsCore_splitsProjectsAndSkipsSCCAndTags(t *testing.T) {
-	yamlPath := writePermissionsYAML(t, t.TempDir(), "permissions.yaml", `items:
-  - orgPermissions:
-      - resourcemanager.organizations.get
-      - resourcemanager.projects.create
-      - securitycenter.notificationConfigs.list
-      - resourcemanager.tagKeys.get
-  - folderPermissions:
-      - resourcemanager.folders.get
-  - billingPermissions:
-      - billing.accounts.get
+	yamlPath := writePermissionsYAML(t, t.TempDir(), "permissions.yaml", `orgPermissions:
+  - resourcemanager.organizations.get
+  - resourcemanager.projects.create
+  - securitycenter.notificationConfigs.list
+  - resourcemanager.tagKeys.get
+folderPermissions:
+  - resourcemanager.folders.get
+billingPermissions:
+  - billing.accounts.get
 `)
 
 	p := IAMValidateParams{
@@ -58,14 +57,36 @@ func TestLoadRequiredPermissionsCore_splitsProjectsAndSkipsSCCAndTags(t *testing
 	assert.Equal(t, []string{"resourcemanager.tagKeys.get", "securitycenter.notificationConfigs.list"}, skipped, "skipped permissions")
 }
 
-func TestLoadRequiredPermissionsCore_emptyProjectsReturnsError(t *testing.T) {
+func TestLoadRequiredPermissionsCore_legacyItemsOrderIndependent(t *testing.T) {
 	yamlPath := writePermissionsYAML(t, t.TempDir(), "permissions.yaml", `items:
-  - orgPermissions:
-      - resourcemanager.organizations.get
-  - folderPermissions:
-      - resourcemanager.folders.get
   - billingPermissions:
       - billing.accounts.get
+  - folderPermissions:
+      - resourcemanager.folders.get
+  - orgPermissions:
+      - resourcemanager.organizations.get
+      - resourcemanager.projects.create
+`)
+
+	p := IAMValidateParams{
+		OrgID:                  "123",
+		IAMPermissionsYAMLPath: strPtr(yamlPath),
+	}
+	org, proj, folder, bill, _, err := loadRequiredPermissionsCore(p)
+	assert.NoError(t, err)
+	assert.Equal(t, []string{"resourcemanager.organizations.get"}, org)
+	assert.Equal(t, []string{"resourcemanager.projects.create"}, proj)
+	assert.Equal(t, []string{"resourcemanager.folders.get"}, folder)
+	assert.Equal(t, []string{"billing.accounts.get"}, bill)
+}
+
+func TestLoadRequiredPermissionsCore_emptyProjectsReturnsError(t *testing.T) {
+	yamlPath := writePermissionsYAML(t, t.TempDir(), "permissions.yaml", `orgPermissions:
+  - resourcemanager.organizations.get
+folderPermissions:
+  - resourcemanager.folders.get
+billingPermissions:
+  - billing.accounts.get
 `)
 
 	p := IAMValidateParams{
@@ -101,19 +122,23 @@ func TestLoadRequiredPermissionsCore_missingFileReturnsError(t *testing.T) {
 }
 
 func TestLoadRequiredPermissionsCore_invalidYAMLReturnsError(t *testing.T) {
-	pth := writePermissionsYAML(t, t.TempDir(), "bad.yaml", "items: [\n")
+	pth := writePermissionsYAML(t, t.TempDir(), "bad.yaml", "orgPermissions: [\n")
 	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
 	assert.Error(t, err, "expected parse error")
 }
 
-func TestLoadRequiredPermissionsCore_tooFewItemsReturnsError(t *testing.T) {
-	pth := writePermissionsYAML(t, t.TempDir(), "short.yaml", `items:
-  - orgPermissions: []
+func TestLoadRequiredPermissionsCore_missingFolderPermissionsReturnsError(t *testing.T) {
+	pth := writePermissionsYAML(t, t.TempDir(), "short.yaml", `orgPermissions:
+  - resourcemanager.organizations.get
+  - resourcemanager.projects.create
+billingPermissions:
+  - billing.accounts.get
 `)
 	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
 	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
-	assert.Error(t, err, "expected format error")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "folderPermissions must not be empty")
 }
 
 func TestResolvePermissionsYAMLPath_fromFoundationCodePath(t *testing.T) {
@@ -122,7 +147,14 @@ func TestResolvePermissionsYAMLPath_fromFoundationCodePath(t *testing.T) {
 	err := os.MkdirAll(bundled, 0o700)
 	assert.NoError(t, err)
 	yamlFile := filepath.Join(bundled, "default-permissions.yaml")
-	err = os.WriteFile(yamlFile, []byte("items:\n  - orgPermissions: []\n  - folderPermissions: []\n  - billingPermissions: []\n"), 0o600)
+	err = os.WriteFile(yamlFile, []byte(`orgPermissions:
+  - resourcemanager.organizations.get
+  - resourcemanager.projects.create
+folderPermissions:
+  - resourcemanager.folders.get
+billingPermissions:
+  - billing.accounts.get
+`), 0o600)
 	assert.NoError(t, err)
 
 	path, err := resolvePermissionsYAMLPath(IAMValidateParams{FoundationCodePath: dir})

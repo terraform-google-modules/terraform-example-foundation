@@ -175,11 +175,26 @@ func resolveParentFolder(p IAMValidateParams) (folderID string, ok bool) {
 }
 
 type permissionsYAML struct {
-	Items []struct {
-		OrgPermissions     []string `yaml:"orgPermissions"`
-		FolderPermissions  []string `yaml:"folderPermissions"`
-		BillingPermissions []string `yaml:"billingPermissions"`
-	} `yaml:"items"`
+	OrgPermissions     []string `yaml:"orgPermissions"`
+	FolderPermissions  []string `yaml:"folderPermissions"`
+	BillingPermissions []string `yaml:"billingPermissions"`
+	// Items supports the legacy list format; entries are merged by field name (order-independent).
+	Items []permissionsYAMLItem `yaml:"items,omitempty"`
+}
+
+type permissionsYAMLItem struct {
+	OrgPermissions     []string `yaml:"orgPermissions,omitempty"`
+	FolderPermissions  []string `yaml:"folderPermissions,omitempty"`
+	BillingPermissions []string `yaml:"billingPermissions,omitempty"`
+}
+
+// normalize merges legacy items[] entries into the top-level permission lists.
+func (c *permissionsYAML) normalize() {
+	for _, item := range c.Items {
+		c.OrgPermissions = append(c.OrgPermissions, item.OrgPermissions...)
+		c.FolderPermissions = append(c.FolderPermissions, item.FolderPermissions...)
+		c.BillingPermissions = append(c.BillingPermissions, item.BillingPermissions...)
+	}
 }
 
 // loadRequiredPermissionsCore loads org / project-parent / folder / billing permission lists from YAML.
@@ -205,13 +220,11 @@ func loadRequiredPermissionsCore(p IAMValidateParams) (orgPerms, projectParentPe
 	if unmarshalErr := yaml.Unmarshal(data, &cfg); unmarshalErr != nil {
 		return nil, nil, nil, nil, nil, fmt.Errorf("failed to parse permissions yaml at %q: %w", path, unmarshalErr)
 	}
-	if len(cfg.Items) < 3 {
-		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: expected 3 items, got %d", path, len(cfg.Items))
-	}
+	cfg.normalize()
 
-	orgAll := cfg.Items[0].OrgPermissions
-	folderPerms = append([]string(nil), cfg.Items[1].FolderPermissions...)
-	billingPerms = append([]string(nil), cfg.Items[2].BillingPermissions...)
+	orgAll := append([]string(nil), cfg.OrgPermissions...)
+	folderPerms = append([]string(nil), cfg.FolderPermissions...)
+	billingPerms = append([]string(nil), cfg.BillingPermissions...)
 
 	if len(folderPerms) == 0 {
 		return nil, nil, nil, nil, nil, fmt.Errorf("permissions yaml at %q: folderPermissions must not be empty", path)

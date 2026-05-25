@@ -13,33 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-items:
-  - orgPermissions:
-      - accesscontextmanager.policies.create
-      - accesscontextmanager.policies.get
-      - accesscontextmanager.policies.getIamPolicy
-      - accesscontextmanager.policies.list
-      - accesscontextmanager.policies.setIamPolicy
-      - iam.serviceAccounts.getAccessToken
-      - resourcemanager.organizations.get
-      - resourcemanager.organizations.getIamPolicy
-      - resourcemanager.organizations.setIamPolicy
-      - resourcemanager.projects.create
-      - resourcemanager.projects.delete
-      - resourcemanager.projects.get
-      - resourcemanager.projects.getIamPolicy
-      - resourcemanager.projects.list
-      - resourcemanager.projects.setIamPolicy
-      - serviceusage.services.list
-      - serviceusage.services.use
-  - folderPermissions:
-      - resourcemanager.folders.get
-      - resourcemanager.folders.create
-      - resourcemanager.folders.delete
-      - resourcemanager.folders.getIamPolicy
-      - resourcemanager.folders.setIamPolicy
-  - billingPermissions:
-      - billing.accounts.get
-      - billing.accounts.getIamPolicy
-      - billing.resourceAssociations.create
-      - billing.accounts.setIamPolicy
+orgPermissions:
+  - accesscontextmanager.policies.create
+  - accesscontextmanager.policies.get
+  - accesscontextmanager.policies.getIamPolicy
+  - accesscontextmanager.policies.list
+  - accesscontextmanager.policies.setIamPolicy
+  - iam.serviceAccounts.getAccessToken
+  - resourcemanager.organizations.get
+  - resourcemanager.organizations.getIamPolicy
+  - resourcemanager.organizations.setIamPolicy
+  - resourcemanager.projects.create
+  - resourcemanager.projects.delete
+  - resourcemanager.projects.get
+  - resourcemanager.projects.getIamPolicy
+  - resourcemanager.projects.list
+  - resourcemanager.projects.setIamPolicy
+  - serviceusage.services.list
+  - serviceusage.services.use
+folderPermissions:
+  - resourcemanager.folders.get
+  - resourcemanager.folders.create
+  - resourcemanager.folders.delete
+  - resourcemanager.folders.getIamPolicy
+  - resourcemanager.folders.setIamPolicy
+billingPermissions:
+  - billing.accounts.get
+  - billing.accounts.getIamPolicy
+  - billing.resourceAssociations.create
+  - billing.accounts.setIamPolicy

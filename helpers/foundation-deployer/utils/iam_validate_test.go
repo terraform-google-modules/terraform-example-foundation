@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,13 +48,13 @@ billingPermissions:
 		OrgID:                  "123",
 		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
-	org, proj, folder, bill, skipped, err := loadRequiredPermissionsCore(p)
+	perms, err := loadRequiredPermissionsCore(p)
 	assert.NoError(t, err)
-	assert.Equal(t, []string{"resourcemanager.organizations.get"}, org, "org permissions")
-	assert.Equal(t, []string{"resourcemanager.projects.create"}, proj, "project-parent permissions")
-	assert.Equal(t, []string{"resourcemanager.folders.get"}, folder, "folder permissions")
-	assert.Equal(t, []string{"billing.accounts.get"}, bill, "billing permissions")
-	assert.Equal(t, []string{"resourcemanager.tagKeys.get", "securitycenter.notificationConfigs.list"}, skipped, "skipped permissions")
+	assert.Equal(t, []string{"resourcemanager.organizations.get"}, perms.Org, "org permissions")
+	assert.Equal(t, []string{"resourcemanager.projects.create"}, perms.ProjectParent, "project-parent permissions")
+	assert.Equal(t, []string{"resourcemanager.folders.get"}, perms.Folder, "folder permissions")
+	assert.Equal(t, []string{"billing.accounts.get"}, perms.Billing, "billing permissions")
+	assert.Equal(t, []string{"resourcemanager.tagKeys.get", "securitycenter.notificationConfigs.list"}, perms.Skipped, "skipped permissions")
 }
 
 func TestLoadRequiredPermissionsCore_legacyItemsOrderIndependent(t *testing.T) {
@@ -72,12 +72,12 @@ func TestLoadRequiredPermissionsCore_legacyItemsOrderIndependent(t *testing.T) {
 		OrgID:                  "123",
 		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
-	org, proj, folder, bill, _, err := loadRequiredPermissionsCore(p)
+	perms, err := loadRequiredPermissionsCore(p)
 	assert.NoError(t, err)
-	assert.Equal(t, []string{"resourcemanager.organizations.get"}, org)
-	assert.Equal(t, []string{"resourcemanager.projects.create"}, proj)
-	assert.Equal(t, []string{"resourcemanager.folders.get"}, folder)
-	assert.Equal(t, []string{"billing.accounts.get"}, bill)
+	assert.Equal(t, []string{"resourcemanager.organizations.get"}, perms.Org)
+	assert.Equal(t, []string{"resourcemanager.projects.create"}, perms.ProjectParent)
+	assert.Equal(t, []string{"resourcemanager.folders.get"}, perms.Folder)
+	assert.Equal(t, []string{"billing.accounts.get"}, perms.Billing)
 }
 
 func TestLoadRequiredPermissionsCore_emptyProjectsReturnsError(t *testing.T) {
@@ -93,12 +93,12 @@ billingPermissions:
 		OrgID:                  "123",
 		IAMPermissionsYAMLPath: strPtr(yamlPath),
 	}
-	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
+	_, err := loadRequiredPermissionsCore(p)
 	assert.Error(t, err, "expected error when orgPermissions has no resourcemanager.projects.* permissions")
 }
 
 func TestLoadRequiredPermissionsCore_noYAMLPathReturnsError(t *testing.T) {
-	_, _, _, _, _, err := loadRequiredPermissionsCore(IAMValidateParams{OrgID: "123"})
+	_, err := loadRequiredPermissionsCore(IAMValidateParams{OrgID: "123"})
 	assert.Error(t, err, "expected error when permissions yaml path is not configured")
 }
 
@@ -107,7 +107,7 @@ func TestLoadRequiredPermissionsCore_relativeYAMLPathReturnsError(t *testing.T) 
 		OrgID:                  "123",
 		IAMPermissionsYAMLPath: strPtr("cfg/permissions.yaml"),
 	}
-	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
+	_, err := loadRequiredPermissionsCore(p)
 	assert.Error(t, err, "expected error for relative permissions yaml path")
 }
 
@@ -116,7 +116,7 @@ func TestLoadRequiredPermissionsCore_missingFileReturnsError(t *testing.T) {
 		OrgID:                  "123",
 		IAMPermissionsYAMLPath: strPtr(filepath.Join(t.TempDir(), "nope.yaml")),
 	}
-	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
+	_, err := loadRequiredPermissionsCore(p)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "not found")
 }
@@ -124,7 +124,7 @@ func TestLoadRequiredPermissionsCore_missingFileReturnsError(t *testing.T) {
 func TestLoadRequiredPermissionsCore_invalidYAMLReturnsError(t *testing.T) {
 	pth := writePermissionsYAML(t, t.TempDir(), "bad.yaml", "orgPermissions: [\n")
 	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
-	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
+	_, err := loadRequiredPermissionsCore(p)
 	assert.Error(t, err, "expected parse error")
 }
 
@@ -136,7 +136,7 @@ billingPermissions:
   - billing.accounts.get
 `)
 	p := IAMValidateParams{OrgID: "1", IAMPermissionsYAMLPath: strPtr(pth)}
-	_, _, _, _, _, err := loadRequiredPermissionsCore(p)
+	_, err := loadRequiredPermissionsCore(p)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "folderPermissions must not be empty")
 }

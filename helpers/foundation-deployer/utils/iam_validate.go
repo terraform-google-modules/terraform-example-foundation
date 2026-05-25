@@ -65,10 +65,9 @@ type IAMValidateParams struct {
 // When verbose is true, it also prints the full list of allowed permissions returned by the API.
 //
 // See [IAMValidateParams] for scope, YAML configuration, and how to invoke the standalone CLI.
-func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
+func ValidateIAMPermissions(p IAMValidateParams, verbose bool) error {
 	if !isValidOrgID(p.OrgID) {
-		fmt.Printf("# IAM permissions validation skipped: invalid or missing org_id %q (expected numeric organization id)\n", p.OrgID)
-		return
+		return fmt.Errorf("invalid or missing org_id %q (expected numeric organization id)", p.OrgID)
 	}
 
 	folderID, checkFolder := resolveParentFolder(p)
@@ -77,43 +76,43 @@ func ValidateIAMPermissions(p IAMValidateParams, verbose bool) {
 		if p.ParentFolder != nil {
 			parentFolder = strings.TrimSpace(*p.ParentFolder)
 		}
-		fmt.Printf("# IAM permissions validation skipped: invalid or missing parent_folder %q (expected numeric folder id)\n", parentFolder)
-		return
+		return fmt.Errorf("invalid or missing parent_folder %q (expected numeric folder id)", parentFolder)
 	}
 
 	if !isValidBillingAccount(p.BillingAccount) {
-		fmt.Printf("# IAM permissions validation skipped: invalid or missing billing_account %q (expected format XXXXXX-XXXXXX-XXXXXX)\n", p.BillingAccount)
-		return
+		return fmt.Errorf("invalid or missing billing_account %q (expected format XXXXXX-XXXXXX-XXXXXX)", p.BillingAccount)
 	}
 
 	ctx := context.Background()
 
 	perms, err := loadRequiredPermissionsCore(p)
 	if err != nil {
-		fmt.Printf("# IAM permissions validation failed: %v\n", err)
-		return
+		return fmt.Errorf("IAM permissions validation failed: %w", err)
 	}
+
 	if len(perms.Skipped) > 0 {
 		fmt.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(perms.Skipped), strings.Join(perms.Skipped, ", "))
 	}
 
 	orgRes := "organizations/" + p.OrgID
 	if err := checkOrgPermissions(ctx, orgRes, perms.Org, verbose); err != nil {
-		fmt.Printf("# %v\n", err)
+		return err
 	}
 
 	folderRes := "folders/" + folderID
 	if err := checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, perms.ProjectParent, verbose); err != nil {
-		fmt.Printf("# %v\n", err)
+		return err
 	}
-	
+
 	if err := checkFolderPermissions(ctx, folderRes, perms.Folder, verbose); err != nil {
-		fmt.Printf("# %v\n", err)
+		return err
 	}
 
 	if err := checkBillingPermissions(ctx, "billingAccounts/"+p.BillingAccount, perms.Billing, verbose); err != nil {
-		fmt.Printf("# %v\n", err)
+		return err
 	}
+
+	return nil
 }
 
 func isIAMPlaceholder(s string) bool {
@@ -187,6 +186,7 @@ type permissionsYAML struct {
 	OrgPermissions     []string `yaml:"orgPermissions"`
 	FolderPermissions  []string `yaml:"folderPermissions"`
 	BillingPermissions []string `yaml:"billingPermissions"`
+	// Items supports the legacy list format; entries are merged by field name (order-independent).
 	Items []permissionsYAMLItem `yaml:"items,omitempty"`
 }
 
@@ -235,6 +235,7 @@ func loadRequiredPermissionsCore(p IAMValidateParams) (*RequiredPermissions, err
 	}
 	cfg.normalize()
 
+	// Validations using the original struct slices
 	if len(cfg.FolderPermissions) == 0 {
 		return nil, fmt.Errorf("permissions yaml at %q: folderPermissions must not be empty", path)
 	}
@@ -329,7 +330,7 @@ func checkResourcePermissions(ctx context.Context, scope, resource string, permi
 	default:
 		return fmt.Errorf("unsupported resource for IAM check: %s", resource)
 	}
-	
+
 	if err != nil {
 		return fmt.Errorf("error checking permissions for %s: %w", resource, err)
 	}

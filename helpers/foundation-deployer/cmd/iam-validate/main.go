@@ -35,9 +35,9 @@ import (
 
 func main() {
 	var (
-		tfvarsFile       string
-		permissionsYAML  string
-		verbose          bool
+		tfvarsFile      string
+		permissionsYAML string
+		verbose         bool
 	)
 
 	flag.StringVar(&tfvarsFile, "tfvars_file", "", "Full path to the Terraform .tfvars file with the configuration to be used.")
@@ -66,5 +66,9 @@ func main() {
 		params.IAMPermissionsYAMLPath = &permissionsYAML
 	}
 
-	utils.ValidateIAMPermissions(params, verbose)
+	err = utils.ValidateIAMPermissions(params, verbose)
+	if err != nil {
+		fmt.Printf("# Failed to validate IAM permissions. Error: %s\n", err.Error())
+		os.Exit(1)
+	}
 }

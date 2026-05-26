@@ -204,12 +204,12 @@ type GlobalTFVars struct {
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
 	ValidatorProjectID                    *string         `hcl:"validator_project_id"`
-	Groups                   Groups    `hcl:"groups"`
-	InitialGroupConfig       *string   `hcl:"initial_group_config"`
-	FolderDeletionProtection *bool     `hcl:"folder_deletion_protection"`
-	ProjectDeletionPolicy    string    `hcl:"project_deletion_policy"`
-	BuildType                string    `hcl:"build_type"`
-	GitRepos                 *GitRepos `hcl:"git_repos"`
+	Groups                                Groups          `hcl:"groups"`
+	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
+	FolderDeletionProtection              *bool           `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy                 string          `hcl:"project_deletion_policy"`
+	BuildType                             string          `hcl:"build_type"`
+	GitRepos                              *GitRepos       `hcl:"git_repos"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided

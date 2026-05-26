@@ -19,7 +19,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mitchellh/go-testing-interface"
+	"github.com/mitchellh/go-ng-interface"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gcp"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
@@ -111,8 +111,7 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 		}
 	}
 
-	// Check IAM permissions for the current principal (ADC) using TestIamPermissions.
-	// using TestIamPermissions and print any missing permissions.
+	// Check IAM permissions for the current principal (ADC) using TestIamPermissions and print any missing permissions.
 	err := utils.ValidateIAMPermissions(utils.IAMValidateParams{
 		OrgID:              g.OrgID,
 		FoundationCodePath: g.FoundationCodePath,

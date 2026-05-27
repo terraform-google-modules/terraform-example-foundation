@@ -98,13 +98,18 @@ func ValidateIAMPermissions(p IAMValidateParams, verbose bool) error {
 		return err
 	}
 
-	folderRes := "folders/" + folderID
-	if err := checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, perms.ProjectParent, verbose); err != nil {
-		return err
-	}
-
-	if err := checkFolderPermissions(ctx, folderRes, perms.Folder, verbose); err != nil {
-		return err
+	if checkFolder {
+		folderRes := "folders/" + folderID
+		if err := checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, perms.ProjectParent, verbose); err != nil {
+			return err
+		}
+		if err := checkFolderPermissions(ctx, folderRes, perms.Folder, verbose); err != nil {
+			return err
+		}
+	} else {
+		if err := checkResourcePermissions(ctx, "ORG-PROJECTS", orgRes, perms.ProjectParent, verbose); err != nil {
+			return err
+		}
 	}
 
 	if err := checkBillingPermissions(ctx, "billingAccounts/"+p.BillingAccount, perms.Billing, verbose); err != nil {

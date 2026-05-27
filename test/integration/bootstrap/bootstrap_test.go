@@ -180,8 +180,10 @@ func TestBootstrap(t *testing.T) {
 				assert.Equal(seedProjectID, cicdProjectID, "local bootstrap should reuse seed as cicd_project_id")
 				projectsStateBucket := bootstrap.GetStringOutput("projects_gcs_bucket_tfstate")
 				seedAlphaOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--json"})
-				projStateBkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", projectsStateBucket), seedAlphaOpts).Array()[0]
-				assert.True(projStateBkt.Exists(), "projects state bucket %s should exist", projectsStateBucket)
+				projStateBktList := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", projectsStateBucket), seedAlphaOpts).Array()
+				if assert.NotEmpty(projStateBktList, "projects state bucket %s should exist", projectsStateBucket) {
+					assert.True(projStateBktList[0].Exists(), "projects state bucket %s should exist", projectsStateBucket)
+				}
 			} else {
 				// cloud build project
 				cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")

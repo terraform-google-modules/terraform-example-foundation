@@ -71,12 +71,11 @@ func ValidateIAMPermissions(p IAMValidateParams, verbose bool) error {
 	}
 
 	folderID, checkFolder := resolveParentFolder(p)
-	if !checkFolder {
-		parentFolder := ""
-		if p.ParentFolder != nil {
-			parentFolder = strings.TrimSpace(*p.ParentFolder)
+	if p.ParentFolder != nil {
+		pf := strings.TrimSpace(*p.ParentFolder)
+		if pf != "" && pf != iamReplaceME && !checkFolder {
+			return fmt.Errorf("invalid parent_folder %q (expected numeric folder id)", pf)
 		}
-		return fmt.Errorf("invalid or missing parent_folder %q (expected numeric folder id)", parentFolder)
 	}
 
 	if !isValidBillingAccount(p.BillingAccount) {

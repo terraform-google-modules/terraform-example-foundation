@@ -37,7 +37,7 @@ module "service_account" {
 
 module "templates" {
   source   = "terraform-google-modules/vm/google//modules/instance_template"
-  version  = "~> 13.0"
+  version  = "~> 15.1"
   for_each = toset(var.regions)
 
   can_ip_forward = true
@@ -65,7 +65,7 @@ module "templates" {
 
 module "migs" {
   source   = "terraform-google-modules/vm/google//modules/mig"
-  version  = "~> 13.0"
+  version  = "~> 15.1"
   for_each = toset(var.regions)
 
   project_id        = var.project_id

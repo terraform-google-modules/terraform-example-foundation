@@ -151,7 +151,7 @@ locals {
   ]
 
   restricted_services         = length(var.custom_restricted_services) != 0 ? var.custom_restricted_services : local.supported_restricted_service
-  restricted_services_dry_run = length(var.custom_restricted_services_dry_run) != 0 ? var.custom_restricted_services : local.supported_restricted_service
+  restricted_services_dry_run = length(var.custom_restricted_services_dry_run) != 0 ? var.custom_restricted_services_dry_run : local.supported_restricted_service
 
   access_level_name         = module.service_control.access_level_name
   access_level_dry_run_name = module.service_control.access_level_name_dry_run

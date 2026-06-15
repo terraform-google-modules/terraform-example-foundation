@@ -61,6 +61,7 @@ Also make sure that you have the following:
     - Repository access to Only select repositories, including all the repositories in the previous item.
     - Permissions:
         - Actions: Read and Write
+        - Contents: Read and Write
         - Metadata: Read-only
         - Secrets: Read and Write
         - Variables: Read and Write

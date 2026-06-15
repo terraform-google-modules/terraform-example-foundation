@@ -176,6 +176,8 @@ Using GitHub Actions requires manual creation of the GitHub repositories used in
 
 ## Deploying with GitLab Pipelines
 
+*Warning: the guidance for deploying with GitLab Pipelines is no longer actively tested or maintained. While we have left the guidance available for users who prefer GitLab Pipelines, we make no guarantees about its quality, and you might be responsible for troubleshooting and modifying the directions.*
+
 If you are deploying using [GitLab Pipelines](https://docs.gitlab.com/ee/ci/pipelines/), see [README-GitLab.md](./README-GitLab.md)
 for requirements and instructions on how to run the 0-bootstrap step.
 Using GitLab Pipeline requires manual creation of the GitLab projects (repositories) used in each stage.

@@ -182,55 +182,11 @@ locals {
     module.scc_notifications.project_number,
   ], local.shared_vpc_projects_numbers))
 
-  projects_dry_run = var.enable_hub_and_spoke ? (concat([
-    local.seed_project_number,
-    module.org_audit_logs.project_number,
-    module.org_billing_export.project_number,
-    module.common_kms.project_number,
-    module.org_secrets.project_number,
-    module.interconnect.project_number,
-    module.network_hub[0].project_number,
-    module.scc_notifications.project_number,
-    ], local.shared_vpc_projects_numbers)) : (concat([
-    local.seed_project_number,
-    module.org_audit_logs.project_number,
-    module.org_billing_export.project_number,
-    module.common_kms.project_number,
-    module.org_secrets.project_number,
-    module.interconnect.project_number,
-    module.scc_notifications.project_number,
-  ], local.shared_vpc_projects_numbers))
-
   # IMPORTANT: These project key lists are hardcoded and MUST be manually kept in sync
-  # with the values defined in `local.projects` and `local.projects_dry_run`.
+  # with the values defined in `local.projects`.
   # A mismatch in the number of items or their order will cause the `zipmap` function to fail.
   # If you add or remove a project, you must update these lists accordingly.
   project_keys = var.enable_hub_and_spoke ? [
-    "prj-b-seed",
-    "prj-org-audit",
-    "prj-org-billing",
-    "prj-org-kms",
-    "prj-org-secrets",
-    "prj-org-interconnect",
-    "prj-org-scc",
-    "prj-net-hub-svpc",
-    "prj-net-p-svpc",
-    "prj-net-d-svpc",
-    "prj-net-n-svpc",
-    ] : [
-    "prj-b-seed",
-    "prj-org-audit",
-    "prj-org-billing",
-    "prj-org-kms",
-    "prj-org-secrets",
-    "prj-org-interconnect",
-    "prj-org-scc",
-    "prj-net-p-svpc",
-    "prj-net-d-svpc",
-    "prj-net-n-svpc",
-  ]
-
-  project_keys_dry_run = var.enable_hub_and_spoke ? [
     "prj-b-seed",
     "prj-org-audit",
     "prj-org-billing",
@@ -260,11 +216,6 @@ locals {
     [for p in local.projects : "${p}"]
   )
 
-  projects_map_dry_run = zipmap(
-    local.project_keys_dry_run,
-    [for p in local.projects_dry_run : "${p}"]
-  )
-
   enable_cb_egress_dry_run = local.enable_cloudbuild_deploy
   enable_cb_egress         = local.enable_cloudbuild_deploy
 
@@ -278,12 +229,6 @@ locals {
     "sinks_sa_to_logs",
   ]
 
-  app_infra_ingress_keys_dry_run = [
-    "cicd_to_app_infra",
-    "cicd_to_seed_app_infra",
-    "cicd_to_net_env",
-  ]
-
   scc_ingress_key_dry_run = "cai_monitoring_to_scc"
 
   app_infra_ingress_keys = [
@@ -294,25 +239,11 @@ locals {
 
   scc_ingress_key = "cai_monitoring_to_scc"
 
-  ingress_policies_keys_dry_run = concat(
-    local.base_ingress_keys,
-    var.required_ingress_rules_app_infra_dry_run ? local.app_infra_ingress_keys_dry_run : [],
-    var.enable_scc_resources_in_terraform ? [local.scc_ingress_key_dry_run] : [],
-    var.ingress_policies_keys_dry_run
-  )
-
   ingress_policies_keys = concat(
     local.base_ingress_keys,
     var.required_ingress_rules_app_infra ? local.app_infra_ingress_keys : [],
     var.enable_scc_resources_in_terraform ? [local.scc_ingress_key] : [],
     var.ingress_policies_keys
-  )
-
-  egress_policies_keys_dry_run = concat(
-    local.enable_cloudbuild_deploy ? ["seed_to_cicd"] : [],
-    ["org_sa_to_scc"],
-    var.required_egress_rules_app_infra_dry_run ? ["app_infra_to_cicd"] : [],
-    var.egress_policies_keys_dry_run
   )
 
   egress_policies_keys = concat(
@@ -937,11 +868,11 @@ module "service_control" {
   ], var.perimeter_additional_members))
   resources                     = [for k in local.project_keys : local.projects_map[k]]
   resource_keys                 = local.project_keys
-  resources_dry_run             = [for k in local.project_keys_dry_run : local.projects_map_dry_run[k]]
-  resource_keys_dry_run         = local.project_keys_dry_run
-  ingress_policies_keys_dry_run = local.ingress_policies_keys_dry_run
+  resources_dry_run             = [for k in local.project_keys : local.projects_map[k]]
+  resource_keys_dry_run         = local.project_keys
+  ingress_policies_keys_dry_run = local.ingress_policies_keys
   ingress_policies_keys         = local.ingress_policies_keys
-  egress_policies_keys_dry_run  = local.egress_policies_keys_dry_run
+  egress_policies_keys_dry_run  = local.egress_policies_keys
   egress_policies_keys          = local.egress_policies_keys
 
   ingress_policies_dry_run = local.required_ingress_rules_list_dry_run

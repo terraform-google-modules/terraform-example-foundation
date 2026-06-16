@@ -81,7 +81,7 @@ module "peering_project" {
 
 module "peering_network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 10.0"
+  version = "~> 18.0"
 
   project_id                             = module.peering_project.project_id
   network_name                           = "vpc-${local.env_code}-peering-base"
@@ -117,7 +117,7 @@ resource "google_dns_policy" "default_policy" {
 
 module "peering" {
   source  = "terraform-google-modules/network/google//modules/network-peering"
-  version = "~> 10.0"
+  version = "~> 18.0"
 
   prefix            = "${var.business_code}-${local.env_code}"
   local_network     = module.peering_network.network_self_link
@@ -130,7 +130,7 @@ module "peering" {
  *****************************************/
 module "firewall_rules" {
   source  = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version = "~> 10.0"
+  version = "~> 18.0"
 
   project_id  = module.peering_project.project_id
   policy_name = "fp-${local.env_code}-peering-project-firewalls"

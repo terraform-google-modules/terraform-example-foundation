@@ -147,7 +147,14 @@ func TestShared(t *testing.T) {
 					sharedComputeRouter := gcloud.Runf(t, "compute routers describe %s --region %s --project %s", router.name, router.region, projectID)
 					assert.Equal(router.name, sharedComputeRouter.Get("name").String(), fmt.Sprintf("router %s should exist", router.name))
 					assert.Equal("64514", sharedComputeRouter.Get("bgp.asn").String(), fmt.Sprintf("router %s should have bgp asm 64514", router.name))
-					assert.Equal(bgpAdvertisedIpRange, sharedComputeRouter.Get("bgp.advertisedIpRanges.0.range").String(), fmt.Sprintf("router %s should have range %s", router.name, bgpAdvertisedIpRange))
+
+					advertisedRanges := sharedComputeRouter.Get("bgp.advertisedIpRanges").Array()
+					var actualRanges []string
+					for _, r := range advertisedRanges {
+						actualRanges = append(actualRanges, r.Get("range").String())
+					}
+					assert.Contains(actualRanges, bgpAdvertisedIpRange, fmt.Sprintf("router %s should have range %s. Actual ranges found: %v", router.name, bgpAdvertisedIpRange, actualRanges))
+
 					assert.Equal(sharedDNSHubNetworkUrl, sharedComputeRouter.Get("network").String(), fmt.Sprintf("router %s should be on network vpc-c-svpc-hub", router.name))
 				}
 			}

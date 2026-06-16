@@ -93,7 +93,7 @@ EOT
 
 module "confidential_instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 13.0"
+  version = "~> 15.1"
 
   region     = var.region
   project_id = local.env_project_id
@@ -124,8 +124,9 @@ module "confidential_instance_template" {
 
 module "confidential_compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
-  version = "~> 13.0"
+  version = "~> 15.1"
 
+  project_id            = local.env_project_id
   region                = var.region
   subnetwork_project    = local.subnetwork_project
   subnetwork            = local.subnetwork_self_link

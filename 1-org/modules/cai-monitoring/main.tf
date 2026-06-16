@@ -122,7 +122,7 @@ resource "google_cloud_asset_organization_feed" "organization_feed" {
 
 module "pubsub_cai_feed" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "~> 7.0"
+  version = "~> 8.7"
 
   topic              = "top-cai-monitoring-${random_id.suffix.hex}-event"
   project_id         = var.project_id
@@ -144,7 +144,7 @@ resource "google_scc_v2_organization_source" "cai_monitoring" {
 
 module "cloud_function" {
   source  = "GoogleCloudPlatform/cloud-functions/google"
-  version = "~> 0.8.0"
+  version = "~> 0.9"
 
   function_name         = "caiMonitoring"
   description           = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."

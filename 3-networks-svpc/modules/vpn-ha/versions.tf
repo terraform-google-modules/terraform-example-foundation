@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,29 +18,17 @@ terraform {
   required_version = ">= 0.13"
   required_providers {
     google = {
+      // version 6.26.0 and 6.27.0 removed because of the bug https://github.com/hashicorp/terraform-provider-google/issues/21950
       source  = "hashicorp/google"
-      version = ">= 3.61, < 8.0"
+      version = ">= 6.0, != 6.26.0, != 6.27.0, < 8.0"
     }
     google-beta = {
+      // version 6.26.0 and 6.27.0 removed because of the bug https://github.com/hashicorp/terraform-provider-google/issues/21950
       source  = "hashicorp/google-beta"
-      version = ">= 3.61, < 8.0"
+      version = ">= 6.0, != 6.26.0, != 6.27.0, < 8.0"
     }
-    null = {
-      source  = "hashicorp/null"
-      version = "~> 3.0"
-    }
-
     random = {
-      source  = "hashicorp/random"
-      version = "~> 3.1"
+      source = "hashicorp/random"
     }
-  }
-
-  provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:app_confidential_space/v4.1.0"
-  }
-
-  provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:app_confidential_space/v4.1.0"
   }
 }

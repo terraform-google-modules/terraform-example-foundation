@@ -1,3 +1,5 @@
+*Warning: the guidance for deploying with GitLab is no longer actively tested or maintained. While we have left the guidance available for users who prefer GitLab, we make no guarantees about its quality, and you might be responsible for troubleshooting and modifying the directions.*
+
 # Deploying a GitLab CI/CD compatible environment
 
 The objective of the following instructions is to configure the infrastructure that allows CI/CD deployments using

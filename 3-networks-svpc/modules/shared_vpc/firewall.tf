@@ -25,7 +25,7 @@ module "firewall_rules" {
   project_id  = var.project_id
   policy_name = "fp-${var.environment_code}-svpc-firewalls"
   description = "Firewall rules for shared vpc: ${module.main.network_name}."
-  target_vpcs = ["projects/${var.project_id}/global/networks/${module.main.network_name}"]
+  target_vpcs = ["projects/${var.project_id}/global/networks/${local.network_name}"]
 
   rules = concat(
     [

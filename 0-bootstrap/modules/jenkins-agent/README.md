@@ -49,42 +49,7 @@ module "jenkins_bootstrap" {
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| activate\_apis | List of APIs to enable in the CICD project. | `list(string)` | <pre>[<br>  "serviceusage.googleapis.com",<br>  "servicenetworking.googleapis.com",<br>  "compute.googleapis.com",<br>  "logging.googleapis.com",<br>  "bigquery.googleapis.com",<br>  "cloudresourcemanager.googleapis.com",<br>  "cloudbilling.googleapis.com",<br>  "iam.googleapis.com",<br>  "admin.googleapis.com",<br>  "appengine.googleapis.com",<br>  "storage-api.googleapis.com",<br>  "dns.googleapis.com"<br>]</pre> | no |
-| bgp\_peer\_asn | BGP ASN for peer cloud routes. | `number` | `"64513"` | no |
-| billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
-| default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
-| folder\_id | The ID of a folder to host this project | `string` | `""` | no |
-| group\_org\_admins | Google Group for GCP Organization Administrators | `string` | n/a | yes |
-| jenkins\_agent\_gce\_machine\_type | Jenkins Agent GCE Instance type. | `string` | `"n1-standard-1"` | no |
-| jenkins\_agent\_gce\_name | Jenkins Agent GCE Instance name. | `string` | `"jenkins-agent-01"` | no |
-| jenkins\_agent\_gce\_private\_ip\_address | The private IP Address of the Jenkins Agent. This IP Address must be in the CIDR range of `jenkins_agent_gce_subnetwork_cidr_range` and be reachable through the VPN that exists between on-prem (Jenkins Controller) and GCP (CICD Project, where the Jenkins Agent is located). | `string` | n/a | yes |
-| jenkins\_agent\_gce\_ssh\_pub\_key | SSH public key needed by the Jenkins Agent GCE Instance. The Jenkins Controller holds the SSH private key. The correct format is `'ssh-rsa [KEY_VALUE] [USERNAME]'` | `string` | n/a | yes |
-| jenkins\_agent\_gce\_subnetwork\_cidr\_range | The subnetwork to which the Jenkins Agent will be connected to (in CIDR range 0.0.0.0/0) | `string` | n/a | yes |
-| jenkins\_agent\_sa\_email | Email for Jenkins Agent service account. | `string` | `"jenkins-agent-gce"` | no |
-| jenkins\_controller\_subnetwork\_cidr\_range | A list of CIDR IP ranges of the Jenkins Controller in the form ['0.0.0.0/0']. Usually only one IP in the form '0.0.0.0/32'. Needed to create a FW rule that allows communication with the Jenkins Agent GCE Instance. | `list(string)` | n/a | yes |
-| nat\_bgp\_asn | BGP ASN for NAT cloud route. This is needed to allow the Jenkins Agent to download packages and updates from the internet without having an external IP address. | `number` | n/a | yes |
-| on\_prem\_vpn\_public\_ip\_address | The public IP Address of the Jenkins Controller. | `string` | n/a | yes |
-| on\_prem\_vpn\_public\_ip\_address2 | The secondpublic IP Address of the Jenkins Controller. | `string` | n/a | yes |
-| org\_id | GCP Organization ID | `string` | n/a | yes |
-| project\_deletion\_policy | The deletion policy for the project created. | `string` | `"PREVENT"` | no |
-| project\_labels | Labels to apply to the project. | `map(string)` | `{}` | no |
-| project\_prefix | Name prefix to use for projects created. | `string` | `"prj"` | no |
-| router\_asn | BGP ASN for cloud routes. | `number` | `"64515"` | no |
-| sa\_enable\_impersonation | Allow org\_admins group to impersonate service account & enable APIs required. | `bool` | `false` | no |
-| service\_account\_prefix | Name prefix to use for service accounts. | `string` | `"sa"` | no |
-| storage\_bucket\_labels | Labels to apply to the storage bucket. | `map(string)` | `{}` | no |
-| storage\_bucket\_prefix | Name prefix to use for storage buckets. | `string` | `"bkt"` | no |
-| terraform\_sa\_names | Fully-qualified name of the Terraform Service Accounts. It must be supplied by the Seed Project | `map(string)` | n/a | yes |
-| terraform\_state\_bucket | Default state bucket, used in Cloud Build substitutions. It must be supplied by the Seed Project | `string` | n/a | yes |
-| terraform\_version | Default terraform version. | `string` | `"1.5.7"` | no |
-| terraform\_version\_sha256sum | sha256sum for default terraform version. | `string` | `"380ca822883176af928c80e5771d1c0ac9d69b13c6d746e6202482aedde7d457"` | no |
-| tunnel0\_bgp\_peer\_address | BGP peer address for tunnel 0 | `string` | n/a | yes |
-| tunnel0\_bgp\_session\_range | BGP session range for tunnel 0 | `string` | n/a | yes |
-| tunnel1\_bgp\_peer\_address | BGP peer address for tunnel 1 | `string` | n/a | yes |
-| tunnel1\_bgp\_session\_range | BGP session range for tunnel 1 | `string` | n/a | yes |
-| vpn\_shared\_secret | The shared secret used in the VPN | `string` | n/a | yes |
+No inputs.
 
 ## Outputs
 

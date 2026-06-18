@@ -198,10 +198,6 @@ If you received a `PERMISSION_DENIED` error while running the `gcloud access-con
 --impersonate-service-account=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw organization_step_terraform_service_account_email)
 ```
 
-### Deploying with Jenkins
-
-See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying-step-1-org).
-
 ### Deploying with GitHub Actions
 
 See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-step-1-org).

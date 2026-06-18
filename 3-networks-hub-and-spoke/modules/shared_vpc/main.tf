@@ -29,7 +29,7 @@ locals {
 
 module "main" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 10.0"
+  version = "~> 18.0"
 
   project_id                             = var.project_id
   network_name                           = local.network_name
@@ -78,7 +78,7 @@ data "google_compute_network" "vpc_net_hub" {
 
 module "peering" {
   source  = "terraform-google-modules/network/google//modules/network-peering"
-  version = "~> 10.0"
+  version = "~> 18.0"
   count   = var.mode == "spoke" ? 1 : 0
 
   prefix                    = "np"
@@ -122,13 +122,13 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
 module "region1_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 6.0"
+  version = "~> 9.0"
   count   = var.mode != "spoke" ? 1 : 0
 
-  name    = "cr-${local.vpc_name}-${var.default_region1}-cr5"
-  project = var.project_id
-  network = module.main.network_name
-  region  = var.default_region1
+  name       = "cr-${local.vpc_name}-${var.default_region1}-cr5"
+  project_id = var.project_id
+  network    = module.main.network_name
+  region     = var.default_region1
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
@@ -138,13 +138,13 @@ module "region1_router1" {
 
 module "region1_router2" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 6.0"
+  version = "~> 9.0"
   count   = var.mode != "spoke" ? 1 : 0
 
-  name    = "cr-${local.vpc_name}-${var.default_region1}-cr6"
-  project = var.project_id
-  network = module.main.network_name
-  region  = var.default_region1
+  name       = "cr-${local.vpc_name}-${var.default_region1}-cr6"
+  project_id = var.project_id
+  network    = module.main.network_name
+  region     = var.default_region1
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
@@ -154,13 +154,13 @@ module "region1_router2" {
 
 module "region2_router1" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 6.0"
+  version = "~> 9.0"
   count   = var.mode != "spoke" ? 1 : 0
 
-  name    = "cr-${local.vpc_name}-${var.default_region2}-cr7"
-  project = var.project_id
-  network = module.main.network_name
-  region  = var.default_region2
+  name       = "cr-${local.vpc_name}-${var.default_region2}-cr7"
+  project_id = var.project_id
+  network    = module.main.network_name
+  region     = var.default_region2
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]
@@ -170,13 +170,13 @@ module "region2_router1" {
 
 module "region2_router2" {
   source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 6.0"
+  version = "~> 9.0"
   count   = var.mode != "spoke" ? 1 : 0
 
-  name    = "cr-${local.vpc_name}-${var.default_region2}-cr8"
-  project = var.project_id
-  network = module.main.network_name
-  region  = var.default_region2
+  name       = "cr-${local.vpc_name}-${var.default_region2}-cr8"
+  project_id = var.project_id
+  network    = module.main.network_name
+  region     = var.default_region2
   bgp = {
     asn                  = var.bgp_asn_subnet
     advertised_groups    = ["ALL_SUBNETS"]

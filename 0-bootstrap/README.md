@@ -56,7 +56,7 @@ file.
 
 ## Purpose
 
-The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources and permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages. The [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) can use either Cloud Build and Cloud Source Repos or Jenkins and your own Git repos (which might live on-premises).
+The purpose of this step is to bootstrap a Google Cloud organization, creating all the required resources and permissions to start using the Cloud Foundation Toolkit (CFT). This step also configures a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) for foundations code in subsequent stages. The [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) can use Cloud Build and Cloud Source Repos with your own Git repos (which might live on-premises).
 
 ## Intended usage and support
 
@@ -86,12 +86,6 @@ To run the commands described in this document, install the following:
 **Note:** Make sure that you use the same version of [Terraform](https://www.terraform.io/downloads.html) throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
-
-- 0-bootstrap/modules/jenkins-agent/variables.tf
-
-   ```
-   default     = "1.5.7"
-   ```
 
 - 0-bootstrap/cb.tf
 
@@ -174,15 +168,6 @@ See [onprem](./onprem.md) for instructions on how to configure Cloud Build acces
 
 See [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into issues during this step.
 
-## Deploying with Jenkins
-
-*Warning: the guidance for deploying with Jenkins is no longer actively tested or maintained. While we have left the guidance available for users who prefer Jenkins, we make no guarantees about its quality, and you might be responsible for troubleshooting and modifying the directions.*
-
-If you are using the `jenkins_bootstrap` sub-module, see [README-Jenkins](./README-Jenkins.md)
-for requirements and instructions on how to run the 0-bootstrap step. Using
-Jenkins requires a few manual steps, including configuring connectivity with
-your current Jenkins manager (controller) environment.
-
 ## Deploying with GitHub Actions
 
 If you are deploying using [GitHub Actions](https://docs.github.com/en/actions), see [README-GitHub.md](./README-GitHub.md)
@@ -190,6 +175,8 @@ for requirements and instructions on how to run the 0-bootstrap step.
 Using GitHub Actions requires manual creation of the GitHub repositories used in each stage.
 
 ## Deploying with GitLab Pipelines
+
+*Warning: the guidance for deploying with GitLab Pipelines is no longer actively tested or maintained. While we have left the guidance available for users who prefer GitLab Pipelines, we make no guarantees about its quality, and you might be responsible for troubleshooting and modifying the directions.*
 
 If you are deploying using [GitLab Pipelines](https://docs.gitlab.com/ee/ci/pipelines/), see [README-GitLab.md](./README-GitLab.md)
 for requirements and instructions on how to run the 0-bootstrap step.

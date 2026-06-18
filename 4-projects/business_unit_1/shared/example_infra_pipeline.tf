@@ -159,14 +159,3 @@ module "build_confidential_space_image" {
   create_cmd_entrypoint = "bash"
   create_cmd_body       = "${local.cmd_prompt} || ( sleep 45 && ${local.cmd_prompt})"
 }
-
-/**
- * When Jenkins CI/CD is used for deployment this resource
- * is created to terraform validation works.
- * Without this resource, this module creates zero resources
- * and it breaks terraform validation throwing the error below:
- * ERROR: [Terraform plan json does not contain resource_changes key]
- */
-resource "null_resource" "jenkins_cicd" {
-  count = !local.enable_cloudbuild_deploy ? 1 : 0
-}

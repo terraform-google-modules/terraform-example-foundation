@@ -26,7 +26,7 @@ BASE_PATH="$SCRIPTS_DIR/.."
 TARGET_BUILD="$1"
 
 # Define the allowed build types for validation
-build_types=("cb" "github" "gitlab" "jenkins" "terraform_cloud")
+build_types=("cb" "github" "gitlab" "terraform_cloud")
 
 # Validate the build_type input
 if [[ ! " ${build_types[*]} " == *" ${TARGET_BUILD} "* ]]; then

@@ -29,7 +29,7 @@ Each of these Terraform projects are to be layered on top of each other, and run
 ### [0. bootstrap](./0-bootstrap/)
 
 This stage executes the [CFT Bootstrap module](https://github.com/terraform-google-modules/terraform-google-bootstrap) which bootstraps an existing Google Cloud organization, creating all the required Google Cloud resources and permissions to start using the Cloud Foundation Toolkit (CFT).
-For [CI/CD Pipelines](/docs/GLOSSARY.md#foundation-cicd-pipeline), you can use either Cloud Build (by default) or Jenkins. If you want to use Jenkins instead of Cloud Build, see [README-Jenkins](./0-bootstrap/README-Jenkins.md) on how to use the Jenkins sub-module.
+For [CI/CD Pipelines](/docs/GLOSSARY.md#foundation-cicd-pipeline), you can use Cloud Build (by default).
 
 The bootstrap step includes:
 
@@ -37,24 +37,18 @@ The bootstrap step includes:
   - Terraform state bucket
   - Custom service accounts used by Terraform to create new resources in Google Cloud
 - The `prj-b-cicd` project that contains the following:
-  - A [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) implemented with either Cloud Build or Jenkins
-  - If using Cloud Build, the following items:
+  - A [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) implemented with Cloud Build uses the following items:
     - Cloud Source Repository
     - Artifact Registry
-  - If using Jenkins, the following items:
-    - A Compute Engine instance configured as a Jenkins Agent
-    - Custom service account to run Compute Engine instances for Jenkins Agents
-    - VPN connection with on-prem (or wherever your Jenkins Controller is located)
 
 It is a best practice to separate concerns by having two projects here: one for the Terraform state and one for the CI/CD tool.
   - The `prj-b-seed` project stores Terraform state and has the service accounts that can create or modify infrastructure.
-  - The `prj-b-cicd` project holds the CI/CD tool (either Cloud Build or Jenkins) that coordinates the infrastructure deployment.
+  - The `prj-b-cicd` project holds the CI/CD tool that coordinates the infrastructure deployment.
 
 To further separate the concerns at the IAM level as well, a distinct service account is created for each stage. The Terraform custom service accounts are granted the IAM permissions required to build the foundation.
 If using Cloud Build as the CI/CD tool, these service accounts are used directly in the pipeline to execute the pipeline steps (`plan` or `apply`).
 In this configuration, the baseline permissions of the CI/CD tool are unchanged.
 
-If using Jenkins as the CI/CD tool, the service account of the Jenkins Agent (`sa-jenkins-agent-gce@prj-b-cicd-xxxx.iam.gserviceaccount.com`) is granted [impersonation](https://cloud.google.com/iam/docs/create-short-lived-credentials-direct) access so it can generate tokens over the Terraform custom Service Accounts.
 In this configuration, the baseline permissions of the CI/CD tool are limited.
 
 After executing this step, you will have the following structure:
@@ -300,7 +294,7 @@ example-organization
 
 ### Branching strategy
 
-There are three main named branches: `development`, `nonproduction`, and `production` that reflect the corresponding environments. These branches should be [protected](https://docs.github.com/en/github/administering-a-repository/about-protected-branches). When the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) (Jenkins or Cloud Build) runs on a particular named branch (say for instance `development`), only the corresponding environment (`development`) is applied. An exception is the `shared` environment, which is only applied when triggered on the `production` branch. This is because any changes in the `shared` environment may affect resources in other environments and can have adverse effects if not validated correctly.
+There are three main named branches: `development`, `nonproduction`, and `production` that reflect the corresponding environments. These branches should be [protected](https://docs.github.com/en/github/administering-a-repository/about-protected-branches). When the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) (Cloud Build) runs on a particular named branch (say for instance `development`), only the corresponding environment (`development`) is applied. An exception is the `shared` environment, which is only applied when triggered on the `production` branch. This is because any changes in the `shared` environment may affect resources in other environments and can have adverse effects if not validated correctly.
 
 Development happens on feature and bug fix branches (which can be named `feature/new-foo`, `bugfix/fix-bar`, etc.) and when complete, a [pull request (PR)](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) or [merge request (MR)](https://docs.gitlab.com/ee/user/project/merge_requests/) can be opened targeting the `development` branch. This will trigger the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) to perform a plan and validate against all environments (`development`, `nonproduction`, `shared`, and `production`). After the code review is complete and changes are validated, this branch can be merged into `development`. This will trigger a [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline) that applies the latest changes in the `development` branch on the `development` environment.
 
@@ -320,7 +314,7 @@ Step 1-org has [instructions](./1-org/README.md#deploying-with-cloud-build) on t
 
 Some variables used to deploy the steps have default values, check those **before deployment** to ensure they match your requirements. For more information, there are tables of inputs and outputs for the Terraform modules, each with a detailed description of their variables. Look for variables marked as **not required** in the section **Inputs** of these READMEs:
 
-- Step 0-bootstrap: If you are using Cloud Build in the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline), check the main [README](./0-bootstrap/README.md#Inputs) of the step. If you are using Jenkins, check the [README](./0-bootstrap/modules/jenkins-agent/README.md#Inputs) of the module `jenkins-agent`.
+- Step 0-bootstrap: If you are using Cloud Build in the [CI/CD Pipeline](/docs/GLOSSARY.md#foundation-cicd-pipeline), check the main [README](./0-bootstrap/README.md#Inputs) of the step.
 - Step 1-org: The [README](./1-org/envs/shared/README.md#Inputs) of the environment `shared`.
 - Step 2-environments: The READMEs of the environments [development](./2-environments/envs/development/README.md#Inputs), [nonproduction](./2-environments/envs/nonproduction/README.md#Inputs), and [production](./2-environments/envs/production/README.md#Inputs)
 - Step 3-networks-svpc: The READMEs of the environments [shared](./3-networks-svpc/envs/shared/README.md#inputs), [development](./3-networks-svpc/envs/development/README.md#Inputs), [nonproduction](./3-networks/envs/nonproduction/README.md#Inputs), and [production](./3-networks/envs/production/README.md#Inputs)

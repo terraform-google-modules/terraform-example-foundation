@@ -22,11 +22,6 @@ Otherwise, you might experience Terraform state snapshot lock errors.
 
 Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
 
-- 0-bootstrap/modules/jenkins-agent/variables.tf
-   ```
-   default     = "1.5.7"
-   ```
-
 - 0-bootstrap/cb.tf
    ```
    terraform_version = "1.5.7"

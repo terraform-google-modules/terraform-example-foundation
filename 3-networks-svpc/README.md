@@ -274,10 +274,6 @@ pushing to this branch triggers both _terraform plan_ and _terraform apply_. Rev
 
 1. You can now move to the instructions in the [4-projects](../4-projects/README.md) step.
 
-### Deploying with Jenkins
-
-See `0-bootstrap` [README-Jenkins.md](../0-bootstrap/README-Jenkins.md#deploying-step-3-networks-svpc).
-
 ### Deploying with GitHub Actions
 
 See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-step-3-networks-svpc).
@@ -333,8 +329,8 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
    ````
 
 We will now deploy each of our environments(development/production/nonproduction) using this script.
-When using Cloud Build or Jenkins as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks-svpc step
-and only the corresponding environment is applied.
+When using Cloud Build as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks-svpc step.
+Only the corresponding environment is applied.
 
 To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 

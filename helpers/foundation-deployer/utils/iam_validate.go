@@ -322,14 +322,22 @@ func checkResourcePermissions(ctx context.Context, scope, resource string, permi
 		if cErr != nil {
 			return fmt.Errorf("error creating folders client: %w", cErr)
 		}
-		defer client.Close()
+		defer func() {
+			if closeErr := client.Close(); closeErr != nil {
+				fmt.Fprintf(os.Stderr, "error closing folders client: %s\n", closeErr)
+			}
+		}()
 		resp, err = client.TestIamPermissions(ctx, req)
 	case strings.HasPrefix(resource, "organizations/"):
 		client, cErr := resourcemanager.NewOrganizationsClient(ctx)
 		if cErr != nil {
 			return fmt.Errorf("error creating organizations client: %w", cErr)
 		}
-		defer client.Close()
+		defer func() {
+			if closeErr := client.Close(); closeErr != nil {
+				fmt.Fprintf(os.Stderr, "error closing organizations client: %s\n", closeErr)
+			}
+		}()
 		resp, err = client.TestIamPermissions(ctx, req)
 	default:
 		return fmt.Errorf("unsupported resource for IAM check: %s", resource)
@@ -347,7 +355,11 @@ func checkOrgPermissions(ctx context.Context, resource string, permissions []str
 	if err != nil {
 		return fmt.Errorf("error creating org client: %w", err)
 	}
-	defer client.Close()
+	defer func() {
+		if closeErr := client.Close(); closeErr != nil {
+			fmt.Fprintf(os.Stderr, "error closing org client: %s\n", closeErr)
+		}
+	}()
 
 	resp, err := client.TestIamPermissions(ctx, &iampb.TestIamPermissionsRequest{
 		Resource:    resource,
@@ -365,7 +377,11 @@ func checkFolderPermissions(ctx context.Context, resource string, permissions []
 	if err != nil {
 		return fmt.Errorf("error creating folder client: %w", err)
 	}
-	defer client.Close()
+	defer func() {
+		if closeErr := client.Close(); closeErr != nil {
+			fmt.Fprintf(os.Stderr, "error closing folder client: %s\n", closeErr)
+		}
+	}()
 
 	resp, err := client.TestIamPermissions(ctx, &iampb.TestIamPermissionsRequest{
 		Resource:    resource,
@@ -383,7 +399,11 @@ func checkBillingPermissions(ctx context.Context, resource string, permissions [
 	if err != nil {
 		return fmt.Errorf("error creating billing client: %w", err)
 	}
-	defer client.Close()
+	defer func() {
+		if closeErr := client.Close(); closeErr != nil {
+			fmt.Fprintf(os.Stderr, "error closing billing client: %s\n", closeErr)
+		}
+	}()
 
 	resp, err := client.TestIamPermissions(ctx, &iampb.TestIamPermissionsRequest{
 		Resource:    resource,

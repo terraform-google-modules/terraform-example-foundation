@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 	"testing"
 	"time"
 
@@ -31,6 +32,24 @@ import (
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
+
+// envBootstrapBuildType selects which bootstrap variant the integration test expects.
+// Empty or "cb" (default): full Cloud Build assertions — requires 0-bootstrap in cb mode
+// (active build_cb.tf, outputs_cb.tf, versions_cb.tf), as in a clean clone / CI.
+// "local": skips Cloud Build / CSR / trigger checks — use after ./scripts/choose_build_type.sh local
+// and the same terraform.tfvars you would use for a local-only apply.
+const envBootstrapBuildType = "BOOTSTRAP_BUILD_TYPE"
+
+func bootstrapBuildType() string {
+	if v := strings.TrimSpace(os.Getenv(envBootstrapBuildType)); v != "" {
+		return strings.ToLower(v)
+	}
+	return "cb"
+}
+
+func isLocalBootstrapBuild() bool {
+	return bootstrapBuildType() == "local"
+}
 
 // fileExists check if a give file exists
 func fileExists(filePath string) (bool, error) {
@@ -105,23 +124,28 @@ func TestBootstrap(t *testing.T) {
 
 	bootstrap.DefineApply(
 		func(assert *assert.Assertions) {
-			// check APIs
+			// check APIs on the setup project (harness / org context) before apply
 			projectID := bootstrap.GetTFSetupStringOutput("project_id")
-			for _, api := range []string{
+			setupApis := []string{
 				"cloudresourcemanager.googleapis.com",
 				"cloudbilling.googleapis.com",
 				"iam.googleapis.com",
 				"storage-api.googleapis.com",
 				"serviceusage.googleapis.com",
-				"cloudbuild.googleapis.com",
-				"sourcerepo.googleapis.com",
 				"cloudkms.googleapis.com",
 				"bigquery.googleapis.com",
 				"accesscontextmanager.googleapis.com",
 				"securitycenter.googleapis.com",
 				"servicenetworking.googleapis.com",
 				"billingbudgets.googleapis.com",
-			} {
+			}
+			if !isLocalBootstrapBuild() {
+				setupApis = append(setupApis,
+					"cloudbuild.googleapis.com",
+					"sourcerepo.googleapis.com",
+				)
+			}
+			for _, api := range setupApis {
 				utils.Poll(t, func() (bool, error) { return testutils.CheckAPIEnabled(t, projectID, api) }, 5, 2*time.Minute)
 			}
 
@@ -150,80 +174,92 @@ func TestBootstrap(t *testing.T) {
 	bootstrap.DefineVerify(
 		func(assert *assert.Assertions) {
 
-			// cloud build project
-			cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
-			artifactsBktName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_artifacts")
-			logsBktName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_logs")
-			defaultRegion := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["default_region"]
+			if isLocalBootstrapBuild() {
+				seedProjectID := bootstrap.GetStringOutput("seed_project_id")
+				cicdProjectID := bootstrap.GetStringOutput("cicd_project_id")
+				assert.Equal(seedProjectID, cicdProjectID, "local bootstrap should reuse seed as cicd_project_id")
+				projectsStateBucket := bootstrap.GetStringOutput("projects_gcs_bucket_tfstate")
+				seedAlphaOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--json"})
+				projStateBktList := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", projectsStateBucket), seedAlphaOpts).Array()
+				if assert.NotEmpty(projStateBktList, "projects state bucket %s should exist", projectsStateBucket) {
+					assert.True(projStateBktList[0].Exists(), "projects state bucket %s should exist", projectsStateBucket)
+				}
+			} else {
+				// cloud build project
+				cbProjectID := bootstrap.GetStringOutput("cloudbuild_project_id")
+				artifactsBktName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_artifacts")
+				logsBktName := terraform.OutputMap(t, bootstrap.GetTFOptions(), "gcs_bucket_cloudbuild_logs")
+				defaultRegion := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["default_region"]
 
-			prj := gcloud.Runf(t, "projects describe %s", cbProjectID)
-			assert.True(prj.Exists(), "project %s should exist", cbProjectID)
+				prj := gcloud.Runf(t, "projects describe %s", cbProjectID)
+				assert.True(prj.Exists(), "project %s should exist", cbProjectID)
 
-			// Private Pools
-			workerPoolName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_private_worker_pool_id"), "/")
-			peeredNetworkName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_peered_network_id"), "/")
-			pool := gcloud.Runf(t, "builds worker-pools describe %s --region %s --project %s", workerPoolName, defaultRegion, cbProjectID)
-			assert.Equal(workerPoolName, pool.Get("name").String(), "pool %s should exist", workerPoolName)
-			assert.Equal("PUBLIC_EGRESS", pool.Get("privatePoolV1Config.networkConfig.egressOption").String(), "pool %s should have internet access", workerPoolName)
-			assert.Equal("e2-medium", pool.Get("privatePoolV1Config.workerConfig.machineType").String(), "pool %s should have the configured machineType", workerPoolName)
-			assert.Equal("100", pool.Get("privatePoolV1Config.workerConfig.diskSizeGb").String(), "pool %s should have the configured disk size", workerPoolName)
-			assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(pool.Get("privatePoolV1Config.networkConfig.peeredNetwork").String(), "/"), "pool %s should have peered network configured", workerPoolName)
+				// Private Pools
+				workerPoolName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_private_worker_pool_id"), "/")
+				peeredNetworkName := testutils.GetLastSplitElement(bootstrap.GetStringOutput("cloud_build_peered_network_id"), "/")
+				pool := gcloud.Runf(t, "builds worker-pools describe %s --region %s --project %s", workerPoolName, defaultRegion, cbProjectID)
+				assert.Equal(workerPoolName, pool.Get("name").String(), "pool %s should exist", workerPoolName)
+				assert.Equal("PUBLIC_EGRESS", pool.Get("privatePoolV1Config.networkConfig.egressOption").String(), "pool %s should have internet access", workerPoolName)
+				assert.Equal("e2-medium", pool.Get("privatePoolV1Config.workerConfig.machineType").String(), "pool %s should have the configured machineType", workerPoolName)
+				assert.Equal("100", pool.Get("privatePoolV1Config.workerConfig.diskSizeGb").String(), "pool %s should have the configured disk size", workerPoolName)
+				assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(pool.Get("privatePoolV1Config.networkConfig.peeredNetwork").String(), "/"), "pool %s should have peered network configured", workerPoolName)
 
-			globalAddressName := "ga-b-cbpools-worker-pool-range"
-			globalAddress := gcloud.Runf(t, "compute addresses describe %s --global --project %s", globalAddressName, cbProjectID)
-			assert.Equal(globalAddressName, globalAddress.Get("name").String(), fmt.Sprintf("global address %s should exist", globalAddressName))
-			assert.Equal("VPC_PEERING", globalAddress.Get("purpose").String(), fmt.Sprintf("global address %s purpose should be VPC peering", globalAddressName))
-			assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(globalAddress.Get("network").String(), "/"), fmt.Sprintf("global address %s should be in the peered network", globalAddressName))
+				globalAddressName := "ga-b-cbpools-worker-pool-range"
+				globalAddress := gcloud.Runf(t, "compute addresses describe %s --global --project %s", globalAddressName, cbProjectID)
+				assert.Equal(globalAddressName, globalAddress.Get("name").String(), fmt.Sprintf("global address %s should exist", globalAddressName))
+				assert.Equal("VPC_PEERING", globalAddress.Get("purpose").String(), fmt.Sprintf("global address %s purpose should be VPC peering", globalAddressName))
+				assert.Equal(peeredNetworkName, testutils.GetLastSplitElement(globalAddress.Get("network").String(), "/"), fmt.Sprintf("global address %s should be in the peered network", globalAddressName))
 
-			for _, bkts := range []struct {
-				env  string
-				repo string
-			}{
-				{
-					env:  "bootstrap",
-					repo: "gcp-bootstrap",
-				},
-				{
-					env:  "org",
-					repo: "gcp-org",
-				},
-				{
-					env:  "env",
-					repo: "gcp-environments",
-				},
-				{
-					env:  "net",
-					repo: "gcp-networks",
-				},
-				{
-					env:  "proj",
-					repo: "gcp-projects",
-				},
-			} {
-				gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--json"})
-				artifactsBkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", artifactsBktName[bkts.env]), gcAlphaOpts).Array()[0]
-				assert.True(artifactsBkt.Exists(), "bucket %s should exist", artifactsBktName[bkts.env])
-				assert.Equal(artifactsBktName[bkts.env], fmt.Sprintf("bkt-%s-%s-build-artifacts", cbProjectID, bkts.repo))
-
-				logsBkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", logsBktName[bkts.env]), gcAlphaOpts).Array()[0]
-				assert.True(logsBkt.Exists(), "bucket %s should exist", logsBktName[bkts.env])
-				assert.Equal(logsBktName[bkts.env], fmt.Sprintf("bkt-%s-%s-build-logs", cbProjectID, bkts.repo))
-			}
-
-			for _, repo := range cloudSourceRepos {
-				sourceRepoFullName := fmt.Sprintf("projects/%s/repos/%s", cbProjectID, repo)
-				sourceRepo := gcloud.Runf(t, "source repos describe %s --project %s", repo, cbProjectID)
-				assert.Equal(sourceRepoFullName, sourceRepo.Get("name").String(), fmt.Sprintf("repository %s should exist", repo))
-			}
-
-			for _, triggerRepo := range triggerRepos {
-				for _, filter := range []string{
-					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-apply'", branchesRegex, triggerRepo, triggerRepo),
-					fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-plan' AND trigger_template.invert_regex=true", branchesRegex, triggerRepo, triggerRepo),
+				for _, bkts := range []struct {
+					env  string
+					repo string
+				}{
+					{
+						env:  "bootstrap",
+						repo: "gcp-bootstrap",
+					},
+					{
+						env:  "org",
+						repo: "gcp-org",
+					},
+					{
+						env:  "env",
+						repo: "gcp-environments",
+					},
+					{
+						env:  "net",
+						repo: "gcp-networks",
+					},
+					{
+						env:  "proj",
+						repo: "gcp-projects",
+					},
 				} {
-					cbOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--region", defaultRegion, "--filter", filter, "--format", "json"})
-					cbTriggers := gcloud.Run(t, "beta builds triggers list", cbOpts).Array()
-					assert.Equal(1, len(cbTriggers), fmt.Sprintf("cloud builds trigger with filter %s should exist", filter))
+					gcAlphaOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--json"})
+					artifactsBkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", artifactsBktName[bkts.env]), gcAlphaOpts).Array()[0]
+					assert.True(artifactsBkt.Exists(), "bucket %s should exist", artifactsBktName[bkts.env])
+					assert.Equal(artifactsBktName[bkts.env], fmt.Sprintf("bkt-%s-%s-build-artifacts", cbProjectID, bkts.repo))
+
+					logsBkt := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", logsBktName[bkts.env]), gcAlphaOpts).Array()[0]
+					assert.True(logsBkt.Exists(), "bucket %s should exist", logsBktName[bkts.env])
+					assert.Equal(logsBktName[bkts.env], fmt.Sprintf("bkt-%s-%s-build-logs", cbProjectID, bkts.repo))
+				}
+
+				for _, repo := range cloudSourceRepos {
+					sourceRepoFullName := fmt.Sprintf("projects/%s/repos/%s", cbProjectID, repo)
+					sourceRepo := gcloud.Runf(t, "source repos describe %s --project %s", repo, cbProjectID)
+					assert.Equal(sourceRepoFullName, sourceRepo.Get("name").String(), fmt.Sprintf("repository %s should exist", repo))
+				}
+
+				for _, triggerRepo := range triggerRepos {
+					for _, filter := range []string{
+						fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-apply'", branchesRegex, triggerRepo, triggerRepo),
+						fmt.Sprintf("trigger_template.branch_name='%s' AND  trigger_template.repo_name='%s' AND name='%s-plan' AND trigger_template.invert_regex=true", branchesRegex, triggerRepo, triggerRepo),
+					} {
+						cbOpts := gcloud.WithCommonArgs([]string{"--project", cbProjectID, "--region", defaultRegion, "--filter", filter, "--format", "json"})
+						cbTriggers := gcloud.Run(t, "beta builds triggers list", cbOpts).Array()
+						assert.Equal(1, len(cbTriggers), fmt.Sprintf("cloud builds trigger with filter %s should exist", filter))
+					}
 				}
 			}
 

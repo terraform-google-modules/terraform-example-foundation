@@ -16,4 +16,17 @@
 
 terraform {
   required_version = ">= 1.3"
+
+  required_providers {
+    google = {
+      // version 6.26.0 and 6.27.0 removed because of the bug https://github.com/hashicorp/terraform-provider-google/issues/21950
+      source  = "hashicorp/google"
+      version = ">= 6.0, != 6.26.0, != 6.27.0, < 8.0"
+    }
+    google-beta = {
+      // version 6.26.0 and 6.27.0 removed because of the bug https://github.com/hashicorp/terraform-provider-google/issues/21950
+      source  = "hashicorp/google-beta"
+      version = ">= 6.0, != 6.26.0, != 6.27.0, < 8.0"
+    }
+  }
 }

@@ -1,3 +1,5 @@
+*Warning: the guidance for deploying with GitLab is no longer actively tested or maintained. While we have left the guidance available for users who prefer GitLab, we make no guarantees about its quality, and you might be responsible for troubleshooting and modifying the directions.*
+
 # Deploying a GitLab CI/CD compatible environment
 
 The objective of the following instructions is to configure the infrastructure that allows CI/CD deployments using
@@ -22,11 +24,6 @@ For the manual steps described in this document, you need to use the same [Terra
 Otherwise, you might experience Terraform state snapshot lock errors.
 
 Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
-
-- 0-bootstrap/modules/jenkins-agent/variables.tf
-   ```
-   default     = "1.5.7"
-   ```
 
 - 0-bootstrap/cb.tf
    ```

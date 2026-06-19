@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-terraform {
-  required_version = ">= 0.13"
+/* ----------------------------------------
+    Local bootstrap (no remote CI/CD in this stage)
+   ---------------------------------------- */
 
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = ">= 3.50"
-    }
-    google-beta = {
-      source  = "hashicorp/google-beta"
-      version = ">= 3.50"
-    }
-    random = {
-      source = "hashicorp/random"
-    }
-    template = {
-      source = "hashicorp/template"
-    }
-  }
+output "cicd_project_id" {
+  description = "Same as seed_project_id when using local bootstrap (no separate CI/CD project)."
+  value       = module.seed_bootstrap.seed_project_id
 }

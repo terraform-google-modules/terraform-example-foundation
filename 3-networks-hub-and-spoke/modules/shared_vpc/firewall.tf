@@ -20,12 +20,12 @@
  *****************************************/
 module "firewall_rules" {
   source  = "terraform-google-modules/network/google//modules/network-firewall-policy"
-  version = "~> 10.0"
+  version = "~> 18.0"
 
   project_id  = var.project_id
   policy_name = "fp-${var.environment_code}-hub-and-spoke-firewalls"
   description = "Firewall rules for hub and spoke shared vpc: ${module.main.network_name}."
-  target_vpcs = ["projects/${var.project_id}/global/networks/${module.main.network_name}"]
+  target_vpcs = ["projects/${var.project_id}/global/networks/${local.network_name}"]
 
   rules = concat(
     [

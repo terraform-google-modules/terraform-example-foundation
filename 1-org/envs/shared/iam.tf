@@ -68,7 +68,7 @@ resource "google_organization_iam_member" "billing_viewer" {
 
 module "create_kms_organization_service_agent" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 3.1"
+  version = "~> 4.0"
   upgrade = false
 
   create_cmd_triggers = {

@@ -34,7 +34,7 @@ resource "random_string" "suffix" {
 
 module "network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 10.0"
+  version = "~> 18.0"
 
   project_id                             = var.project_id
   network_name                           = var.network_name
@@ -45,9 +45,9 @@ module "network" {
       name              = "rt-${local.vpc_name}-1000-egress-internet-default"
       description       = "Tag based route through IGW to access internet"
       destination_range = "0.0.0.0/0"
-      tags              = "tfc-runner-vm"
-      next_hop_internet = "true"
-      priority          = "1000"
+      tags              = ["tfc-runner-vm"]
+      next_hop_internet = true
+      priority          = 1000
     }
   ]
 
@@ -372,7 +372,7 @@ resource "google_compute_firewall" "allow_private_api_egress" {
 
 module "private_service_connect" {
   source  = "terraform-google-modules/network/google//modules/private-service-connect"
-  version = "~> 10.0"
+  version = "~> 18.0"
 
   project_id                 = var.project_id
   dns_code                   = "dz-${local.vpc_name}"

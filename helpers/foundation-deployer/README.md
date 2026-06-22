@@ -133,8 +133,8 @@ By default the foundation regional resources are deployed in `us-west1` and `us-
     go install
     ```
 
-- Validate the tfvars file. If you configured a `validator_project_id` in the `global.tfvars` file the `validate` flag will do additional checks for the Secure Command Center notification name and for the Tag Key name.
-For these extra check you need at least the roles *Security Center Notification Configurations Viewer* (`roles/securitycenter.notificationConfigViewer`) and *Tag Viewer* (`roles/resourcemanager.tagViewer`):
+- Validate the tfvars file. When you use the -validate flag, the helper verifies that your Google account (the one you configured with Application Default Credentials) has the required permissions on your organization, folder, and billing account to complete the deployment. If any required permissions are missing, the helper prints a list of the missing permissions so that you can request the necessary access from your administrator before running the full deployment. Additionally, if you configure a validator_project_id in the global.tfvars file, the -validate flag performs additional checks for the Security Command Center notification name and the tag key name. These additional checks require your account to have the Security Center Notification Configurations Viewer (roles/securitycenter.notificationConfigViewer) and Tag Viewer (roles/resourcemanager.tagViewer) roles:
+
 
     ```bash
     $HOME/go/bin/foundation-deployer -tfvars_file <PATH TO 'global.tfvars' FILE> -validate

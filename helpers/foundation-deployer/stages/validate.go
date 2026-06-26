@@ -22,6 +22,7 @@ import (
 	"github.com/mitchellh/go-testing-interface"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gcp"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 )
 
 const (
@@ -108,6 +109,17 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 		if strings.Contains(p, "group:") {
 			fmt.Printf("# VPC Service Controls does not allow groups in the perimeter: '%s'\n", p)
 		}
+	}
+
+	// Check IAM permissions for the current principal (ADC) using TestIamPermissions and print any missing permissions.
+	err := utils.ValidateIAMPermissions(utils.IAMValidateParams{
+		OrgID:              g.OrgID,
+		FoundationCodePath: g.FoundationCodePath,
+		ParentFolder:       g.ParentFolder,
+		BillingAccount:     g.BillingAccount,
+	}, false)
+	if err != nil {
+		fmt.Printf("# Error validating IAM permissions: %v\n", err)
 	}
 }
 

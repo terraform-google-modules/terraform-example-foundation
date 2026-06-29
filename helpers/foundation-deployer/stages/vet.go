@@ -27,20 +27,26 @@ import (
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
 // TerraformVet runs gcloud terraform vet on the plan of the provided terraform directory
-func TerraformVet(t testing.TB, terraformDir, policyPath, project string) error {
+func TerraformVet(t testing.TB, terraformDir, policyPath, project string, envVars map[string]string) error {
 
 	fmt.Println("")
 	fmt.Println("# Running gcloud terraform vet")
 	fmt.Println("")
 
 	options := &terraform.Options{
-		TerraformDir: terraformDir,
-		Logger:       logger.Discard,
-		NoColor:      true,
-		PlanFilePath: filepath.Join(os.TempDir(), "plan.tfplan"),
+		TerraformDir:             terraformDir,
+		Logger:                   logger.Discard,
+		NoColor:                  true,
+		PlanFilePath:             filepath.Join(os.TempDir(), "plan.tfplan"),
+		RetryableTerraformErrors: testutils.RetryableTransientErrors,
+		MaxRetries:               MaxErrorRetries,
+		TimeBetweenRetries:       TimeBetweenErrorRetries,
+		EnvVars:                  envVars,
 	}
 	_, err := terraform.PlanE(t, options)
 	if err != nil {
@@ -51,22 +57,35 @@ func TerraformVet(t testing.TB, terraformDir, policyPath, project string) error 
 		return err
 	}
 	jsonFile, err := utils.WriteTmpFileWithExtension(jsonPlan, "json")
-	defer os.Remove(jsonFile)
-	defer os.Remove(options.PlanFilePath)
+
+	defer func() {
+		err := os.Remove(jsonFile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error removing file: %s\n", err)
+		}
+	}()
+
+	defer func() {
+		err := os.Remove(options.PlanFilePath)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error removing file: %s\n", err)
+		}
+	}()
+
 	if err != nil {
 		return err
 	}
 	command := fmt.Sprintf("beta terraform vet %s --policy-library=%s --project=%s --quiet", jsonFile, policyPath, project)
 	result, err := gcloud.RunCmdE(t, command)
-	if err != nil && !(strings.Contains(err.Error(), "Validating resources") && strings.Contains(err.Error(), "done")) {
+	if err != nil && (!strings.Contains(err.Error(), "Validating resources") || !strings.Contains(err.Error(), "done")) {
 		return err
 	}
 	if !gjson.Valid(result) {
-		return fmt.Errorf("Error parsing output, invalid json: %s", result)
+		return fmt.Errorf("error parsing output, invalid json: %s", result)
 	}
 
 	if len(gjson.Parse(result).Array()) > 0 {
-		return fmt.Errorf("Policy violations found: %s", result)
+		return fmt.Errorf("policy violations found: %s", result)
 	}
 	fmt.Println("")
 	fmt.Println("# The configuration passed tf vet.")

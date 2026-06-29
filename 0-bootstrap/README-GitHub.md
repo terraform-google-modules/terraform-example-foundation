@@ -22,11 +22,6 @@ Otherwise, you might experience Terraform state snapshot lock errors.
 
 Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
 
-- 0-bootstrap/modules/jenkins-agent/variables.tf
-   ```
-   default     = "1.5.7"
-   ```
-
 - 0-bootstrap/cb.tf
    ```
    terraform_version = "1.5.7"
@@ -66,6 +61,7 @@ Also make sure that you have the following:
     - Repository access to Only select repositories, including all the repositories in the previous item.
     - Permissions:
         - Actions: Read and Write
+        - Contents: Read and Write
         - Metadata: Read-only
         - Secrets: Read and Write
         - Variables: Read and Write
@@ -148,20 +144,9 @@ You must be [authenticated to GitHub](https://docs.github.com/en/authentication/
    cd ./envs/shared
    ```
 
-1. In the versions file `./versions.tf` un-comment the `github` required provider
-1. In the variables file `./variables.tf` un-comment variables in the section `Specific to github_bootstrap`
-1. In the outputs file `./outputs.tf` Comment-out outputs in the section `Specific to cloudbuild_module`
-1. In the outputs file `./outputs.tf` un-comment outputs in the section `Specific to github_bootstrap`
-1. Rename file `./cb.tf` to `./cb.tf.example`
-
+1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitHub version
    ```bash
-   mv ./cb.tf ./cb.tf.example
-   ```
-
-1. Rename file `./github.tf.example` to `./github.tf`
-
-   ```bash
-   mv ./github.tf.example ./github.tf
+   ./scripts/choose_build_type.sh github
    ```
 
 1. Rename file `terraform.example.tfvars` to `terraform.tfvars`
@@ -360,7 +345,7 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
    ```bash
    export ORG_STEP_SA=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -raw organization_step_terraform_service_account_email)
 
-   gcloud scc notifications describe "scc-notify" --format="value(name)" --organization=${ORGANIZATION_ID} --impersonate-service-account=${ORG_STEP_SA}
+   gcloud scc notifications describe "scc-notify" --format="value(name)" --organization=${ORGANIZATION_ID} --location=global --impersonate-service-account=${ORG_STEP_SA}
    ```
 
 1. If the notification exists the output will be:

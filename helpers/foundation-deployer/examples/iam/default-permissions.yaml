@@ -1,0 +1,44 @@
+
+# Copyright 2026 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+orgPermissions:
+  - accesscontextmanager.policies.create
+  - accesscontextmanager.policies.get
+  - accesscontextmanager.policies.getIamPolicy
+  - accesscontextmanager.policies.list
+  - accesscontextmanager.policies.setIamPolicy
+  - iam.serviceAccounts.getAccessToken
+  - resourcemanager.organizations.get
+  - resourcemanager.organizations.getIamPolicy
+  - resourcemanager.organizations.setIamPolicy
+  - resourcemanager.projects.create
+  - resourcemanager.projects.delete
+  - resourcemanager.projects.get
+  - resourcemanager.projects.getIamPolicy
+  - resourcemanager.projects.list
+  - resourcemanager.projects.setIamPolicy
+  - serviceusage.services.list
+  - serviceusage.services.use
+folderPermissions:
+  - resourcemanager.folders.get
+  - resourcemanager.folders.create
+  - resourcemanager.folders.delete
+  - resourcemanager.folders.getIamPolicy
+  - resourcemanager.folders.setIamPolicy
+billingPermissions:
+  - billing.accounts.get
+  - billing.accounts.getIamPolicy
+  - billing.resourceAssociations.create
+  - billing.accounts.setIamPolicy

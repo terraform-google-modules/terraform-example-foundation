@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/mitchellh/go-testing-interface"
@@ -28,13 +27,13 @@ import (
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
-const (
-	MaxBuildRetries = 40
+var (
+	emptyEnvVars = map[string]string{}
 )
 
-func DestroyBootstrapStage(t testing.TB, s steps.Steps, c CommonConf) error {
+func DestroyBootstrapStage(t testing.TB, s steps.Steps, c CommonConf, envVars map[string]string) error {
 
-	if err := forceBackendMigration(t, BootstrapRepo, "envs", "shared", c); err != nil {
+	if err := forceBackendMigration(t, BootstrapRepo, "envs", "shared", c, envVars); err != nil {
 		return err
 	}
 
@@ -45,13 +44,13 @@ func DestroyBootstrapStage(t testing.TB, s steps.Steps, c CommonConf) error {
 		GroupingUnits: []string{"envs"},
 		Envs:          []string{"shared"},
 	}
-	return destroyStage(t, stageConf, s, c)
+	return destroyStage(t, stageConf, s, c, envVars)
 }
 
 // forceBackendMigration removes backend.tf file to force migration of the
 // terraform state from GCS to the local directory.
 // Before changing the backend we ensure it is has been initialized.
-func forceBackendMigration(t testing.TB, repo, groupUnit, env string, c CommonConf) error {
+func forceBackendMigration(t testing.TB, repo, groupUnit, env string, c CommonConf, envVars map[string]string) error {
 	tfDir := filepath.Join(c.CheckoutPath, repo, groupUnit, env)
 	backendF := filepath.Join(tfDir, "backend.tf")
 
@@ -61,9 +60,13 @@ func forceBackendMigration(t testing.TB, repo, groupUnit, env string, c CommonCo
 	}
 	if exist {
 		options := &terraform.Options{
-			TerraformDir: tfDir,
-			Logger:       c.Logger,
-			NoColor:      true,
+			TerraformDir:             tfDir,
+			Logger:                   c.Logger,
+			NoColor:                  true,
+			RetryableTerraformErrors: testutils.RetryableTransientErrors,
+			MaxRetries:               MaxErrorRetries,
+			TimeBetweenRetries:       TimeBetweenErrorRetries,
+			EnvVars:                  envVars,
 		}
 		_, err := terraform.InitE(t, options)
 		if err != nil {
@@ -96,7 +99,7 @@ func DestroyOrgStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c Co
 		GroupingUnits: []string{"envs"},
 		Envs:          []string{"shared"},
 	}
-	return destroyStage(t, stageConf, s, c)
+	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
 
 func DestroyEnvStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c CommonConf) error {
@@ -109,7 +112,7 @@ func DestroyEnvStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c Co
 		GroupingUnits: []string{"envs"},
 		Envs:          []string{"development", "nonproduction", "production"},
 	}
-	return destroyStage(t, stageConf, s, c)
+	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
 
 func DestroyNetworksStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c CommonConf) error {
@@ -124,7 +127,7 @@ func DestroyNetworksStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		GroupingUnits: []string{"envs"},
 		Envs:          []string{"development", "nonproduction", "production"},
 	}
-	return destroyStage(t, stageConf, s, c)
+	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
 
 func DestroyProjectsStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c CommonConf) error {
@@ -138,7 +141,7 @@ func DestroyProjectsStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		GroupingUnits: []string{"business_unit_1"},
 		Envs:          []string{"development", "nonproduction", "production"},
 	}
-	return destroyStage(t, stageConf, s, c)
+	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
 
 func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOutputs, c CommonConf) error {
@@ -151,10 +154,10 @@ func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOu
 		GroupingUnits: []string{"business_unit_1"},
 		Envs:          []string{"development", "nonproduction", "production"},
 	}
-	return destroyStage(t, stageConf, s, c)
+	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
 
-func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error {
+func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf, envVars map[string]string) error {
 	gcpPath := filepath.Join(c.CheckoutPath, sc.Repo)
 	for _, e := range sc.Envs {
 		err := s.RunDestroyStep(fmt.Sprintf("%s.%s", sc.Repo, e), func() error {
@@ -164,10 +167,11 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 					Logger:                   c.Logger,
 					NoColor:                  true,
 					RetryableTerraformErrors: testutils.RetryableTransientErrors,
-					MaxRetries:               2,
-					TimeBetweenRetries:       2 * time.Minute,
+					MaxRetries:               MaxErrorRetries,
+					TimeBetweenRetries:       TimeBetweenErrorRetries,
+					EnvVars:                  envVars,
 				}
-				conf := utils.CloneCSR(t, sc.Repo, gcpPath, sc.CICDProject, c.Logger)
+				conf := utils.GetRepoOnly(t, gcpPath, c.Logger)
 				branch := e
 				if branch == "shared" {
 					branch = "production"
@@ -198,10 +202,11 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error
 				Logger:                   c.Logger,
 				NoColor:                  true,
 				RetryableTerraformErrors: testutils.RetryableTransientErrors,
-				MaxRetries:               2,
-				TimeBetweenRetries:       2 * time.Minute,
+				MaxRetries:               MaxErrorRetries,
+				TimeBetweenRetries:       TimeBetweenErrorRetries,
+				EnvVars:                  envVars,
 			}
-			conf := utils.CloneCSR(t, ProjectsRepo, gcpPath, sc.CICDProject, c.Logger)
+			conf := utils.GetRepoOnly(t, gcpPath, c.Logger)
 			err := conf.CheckoutBranch("production")
 			if err != nil {
 				return err

@@ -91,3 +91,18 @@ output "iap_firewall_tags" {
     "tagKeys/${google_tags_tag_key.firewall_tag_key_rdp[0].name}" = "tagValues/${google_tags_tag_value.firewall_tag_value_rdp[0].name}"
   } : {}
 }
+
+output "confidential_space_project" {
+  description = "Confidential Space project id."
+  value       = try(module.confidential_space_project[0].project_id, "")
+}
+
+output "confidential_space_project_number" {
+  description = "Confidential Space project number."
+  value       = try(module.confidential_space_project[0].project_number, "")
+}
+
+output "confidential_space_workload_sa" {
+  description = "Workload Service Account for confidential space"
+  value       = try(google_service_account.workload_sa[0].email, "")
+}

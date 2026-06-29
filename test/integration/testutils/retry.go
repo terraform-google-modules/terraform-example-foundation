@@ -44,7 +44,7 @@ var (
 		".*Error 400.*Service account.*does not exist*": "Error setting IAM policy",
 
 		// Error waiting for creating service network connection. This happens randomly for development, production and non-production environments
-		".*Error code 16.*Error waiting for Create Service Networking Connection*": "Request had invalid authentication credentials",
+		".*Error waiting for Create Service Networking Connection.*Error code 16.*Expected OAuth 2 access token.*": "Request had invalid authentication credentials.",
 
 		// Error 400: The eTag provided {} does not match the eTag of the current version of the Access Policy, which is {}.
 		".*Error 400: The eTag provided.*does not match the eTag of the current version of the Access Policy, which is.*": "Conflict during Access Policy configuration.",

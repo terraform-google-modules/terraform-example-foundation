@@ -27,7 +27,7 @@ workflow:
 build-image:
   stage: build
   image:
-    name: docker:stable
+    name: docker:29
   services:
    - name: docker:dind
      alias: dockerhost

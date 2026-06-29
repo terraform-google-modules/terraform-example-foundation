@@ -21,7 +21,7 @@ const uuid4 = require('uuid4')
 const moment = require('moment')
 
 // SCC client
-const { SecurityCenterClient } = require('@google-cloud/security-center');
+const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
 const client = new SecurityCenterClient();
 
 // Environment variables

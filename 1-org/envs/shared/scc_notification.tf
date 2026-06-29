@@ -31,7 +31,7 @@ resource "google_pubsub_subscription" "scc_notification_subscription" {
   project = module.scc_notifications.project_id
 }
 
-resource "google_scc_notification_config" "scc_notification_config" {
+resource "google_scc_v2_organization_notification_config" "scc_notification_config" {
   count        = var.enable_scc_resources_in_terraform ? 1 : 0
   config_id    = var.scc_notification_name
   organization = local.org_id

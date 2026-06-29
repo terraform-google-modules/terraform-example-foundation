@@ -1,0 +1,30 @@
+[
+  {
+    "current_version_string": "2025.05.30",
+    "gdu_only": false,
+    "id": "beta",
+    "is_configuration": false,
+    "is_hidden": false,
+    "latest_version_string": "2025.08.29",
+    "name": "gcloud Beta Commands",
+    "platform": {
+      "architecture": {
+        "file_name": "x86_64",
+        "id": "x86_64",
+        "name": "x86_64"
+      },
+      "operating_system": {
+        "clean_version": "6.6.87",
+        "file_name": "linux",
+        "id": "LINUX",
+        "name": "Linux",
+        "version": "6.6.87.2-microsoft-standard-WSL2"
+      }
+    },
+    "platform_required": false,
+    "size": 797,
+    "state": {
+      "name": "Not Installed"
+    }
+  }
+]

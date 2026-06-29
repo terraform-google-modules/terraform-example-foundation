@@ -34,7 +34,6 @@ import (
 
 var (
 	validatorApis = []string{
-		"securitycenter.googleapis.com",
 		"accesscontextmanager.googleapis.com",
 	}
 )
@@ -94,28 +93,53 @@ func main() {
 	// init infra
 	gotest.Init()
 	t := &testing.RuntimeT{}
+
+	// validate gcloud components
+	err = stages.ValidateComponents(t)
+	if err != nil {
+		fmt.Printf("# Failed validating gcloud components. Error: %s\n", err.Error())
+		os.Exit(1)
+	}
+
 	conf := stages.CommonConf{
 		FoundationPath:    globalTFVars.FoundationCodePath,
 		CheckoutPath:      globalTFVars.CodeCheckoutPath,
 		PolicyPath:        filepath.Join(globalTFVars.FoundationCodePath, "policy-library"),
+		BuildType:         globalTFVars.BuildType,
 		EnableHubAndSpoke: globalTFVars.EnableHubAndSpoke,
 		DisablePrompt:     cfg.disablePrompt,
 		Logger:            utils.GetLogger(cfg.quiet),
 	}
 
+	// validate git configuration for GitHub and GitLab
+	if globalTFVars.BuildType == stages.BuildTypeGiHub || globalTFVars.BuildType == stages.BuildTypeGitLab {
+		token := os.Getenv("GIT_TOKEN")
+		if token == "" {
+			fmt.Println("# GIT_TOKEN environment variable not set. It is required for GitHub and GitLab.")
+			os.Exit(1)
+		}
+		if globalTFVars.GitRepos == nil {
+			fmt.Printf("# for build type %s variable 'git_repos' is required\n", globalTFVars.BuildType)
+			os.Exit(1)
+		}
+		conf.GitToken = token
+	}
 	// only enable services if they are not already enabled
 	if globalTFVars.HasValidatorProj() {
-		conf.ValidatorProject = *globalTFVars.ValidatorProjectId
+		conf.ValidatorProject = *globalTFVars.ValidatorProjectID
 		var apis []string
 		gcpConf := gcp.NewGCP()
+		if globalTFVars.EnableSccResourcesInTerraform != nil && *globalTFVars.EnableSccResourcesInTerraform {
+			validatorApis = append(validatorApis, "securitycenter.googleapis.com")
+		}
 		for _, a := range validatorApis {
-			if !gcpConf.IsApiEnabled(t, *globalTFVars.ValidatorProjectId, a) {
+			if !gcpConf.IsAPIEnabled(t, *globalTFVars.ValidatorProjectID, a) {
 				apis = append(apis, a)
 			}
 		}
 		if len(apis) > 0 {
-			fmt.Printf("# Enabling APIs: %s in validator project '%s'\n", strings.Join(apis, ", "), *globalTFVars.ValidatorProjectId)
-			gcpConf.EnableApis(t, *globalTFVars.ValidatorProjectId, apis)
+			fmt.Printf("# Enabling APIs: %s in validator project '%s'\n", strings.Join(apis, ", "), *globalTFVars.ValidatorProjectID)
+			gcpConf.EnableAPIs(t, *globalTFVars.ValidatorProjectID, apis)
 			fmt.Println("# waiting for API propagation")
 			for i := 0; i < 20; i++ {
 				time.Sleep(10 * time.Second)
@@ -158,24 +182,37 @@ func main() {
 		return
 	}
 
+	var envVars map[string]string
+
+	switch conf.BuildType {
+	case stages.BuildTypeGiHub:
+		envVars = map[string]string{
+			"TF_VAR_gh_token": conf.GitToken,
+		}
+	case stages.BuildTypeGitLab:
+		envVars = map[string]string{
+			"TF_VAR_gitlab_token": conf.GitToken,
+		}
+	}
 	// destroy stages
 	if cfg.destroy {
 		// Note: destroy is only terraform destroy, local directories are not deleted.
-		// 5-app-infra
-		msg.PrintStageMsg("Destroying 5-app-infra stage")
-		err = s.RunDestroyStep("bu1-example-app", func() error {
-			io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
-			return stages.DestroyExampleAppStage(t, s, io, conf)
-		})
-		if err != nil {
-			fmt.Printf("# Example app step destroy failed. Error: %s\n", err.Error())
-			os.Exit(3)
+		if conf.BuildType == stages.BuildTypeCBCSR {
+			// 5-app-infra
+			msg.PrintStageMsg("Destroying 5-app-infra stage")
+			err = s.RunDestroyStep("bu1-example-app", func() error {
+				io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
+				return stages.DestroyExampleAppStage(t, s, io, conf)
+			})
+			if err != nil {
+				fmt.Printf("# Example app step destroy failed. Error: %s\n", err.Error())
+				os.Exit(3)
+			}
 		}
-
 		// 4-projects
 		msg.PrintStageMsg("Destroying 4-projects stage")
 		err = s.RunDestroyStep("gcp-projects", func() error {
-			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 			return stages.DestroyProjectsStage(t, s, bo, conf)
 		})
 		if err != nil {
@@ -186,7 +223,7 @@ func main() {
 		// 3-networks
 		msg.PrintStageMsg("Destroying 3-networks stage")
 		err = s.RunDestroyStep("gcp-networks", func() error {
-			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 			return stages.DestroyNetworksStage(t, s, bo, conf)
 		})
 		if err != nil {
@@ -197,7 +234,7 @@ func main() {
 		// 2-environments
 		msg.PrintStageMsg("Destroying 2-environments stage")
 		err = s.RunDestroyStep("gcp-environments", func() error {
-			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 			return stages.DestroyEnvStage(t, s, bo, conf)
 		})
 		if err != nil {
@@ -208,7 +245,7 @@ func main() {
 		// 1-org
 		msg.PrintStageMsg("Destroying 1-org stage")
 		err = s.RunDestroyStep("gcp-org", func() error {
-			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 			return stages.DestroyOrgStage(t, s, bo, conf)
 		})
 		if err != nil {
@@ -219,7 +256,7 @@ func main() {
 		// 0-bootstrap
 		msg.PrintStageMsg("Destroying 0-bootstrap stage")
 		err = s.RunDestroyStep("gcp-bootstrap", func() error {
-			return stages.DestroyBootstrapStage(t, s, conf)
+			return stages.DestroyBootstrapStage(t, s, conf, envVars)
 		})
 		if err != nil {
 			fmt.Printf("# Bootstrap step destroy failed. Error: %s\n", err.Error())
@@ -242,13 +279,14 @@ func main() {
 	skipInnerBuildMsg := s.IsStepComplete("gcp-bootstrap")
 	err = s.RunStep("gcp-bootstrap", func() error {
 		return stages.DeployBootstrapStage(t, s, globalTFVars, conf)
+
 	})
 	if err != nil {
 		fmt.Printf("# Bootstrap step failed. Error: %s\n", err.Error())
 		os.Exit(3)
 	}
 
-	bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath)
+	bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 
 	if skipInnerBuildMsg {
 		msg.PrintBuildMsg(bo.CICDProject, bo.DefaultRegion, conf.DisablePrompt)
@@ -300,18 +338,21 @@ func main() {
 		os.Exit(3)
 	}
 
-	// 5-app-infra
-	msg.PrintStageMsg("Deploying 5-app-infra stage")
-	io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
-	io.RemoteStateBucket = bo.RemoteStateBucketProjects
+	if conf.BuildType == stages.BuildTypeCBCSR {
+		// 5-app-infra
+		msg.PrintStageMsg("Deploying 5-app-infra stage")
+		io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
+		io.RemoteStateBucket = bo.RemoteStateBucketProjects
 
-	msg.PrintBuildMsg(io.InfraPipeProj, io.DefaultRegion, conf.DisablePrompt)
+		msg.PrintBuildMsg(io.InfraPipeProj, io.DefaultRegion, conf.DisablePrompt)
 
-	err = s.RunStep("bu1-example-app", func() error {
-		return stages.DeployExampleAppStage(t, s, globalTFVars, io, conf)
-	})
-	if err != nil {
-		fmt.Printf("# Example app step failed. Error: %s\n", err.Error())
-		os.Exit(3)
+		err = s.RunStep("bu1-example-app", func() error {
+			return stages.DeployExampleAppStage(t, s, globalTFVars, io, conf)
+		})
+		if err != nil {
+			fmt.Printf("# Example app step failed. Error: %s\n", err.Error())
+			os.Exit(3)
+		}
 	}
+
 }

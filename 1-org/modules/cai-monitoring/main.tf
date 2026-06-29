@@ -71,7 +71,7 @@ data "archive_file" "function_source_zip" {
 
 module "cloudfunction_source_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 9.0"
+  version = "~> 12.0"
 
   project_id    = var.project_id
   name          = "bkt-cai-monitoring-${random_id.suffix.hex}-sources-${data.google_project.project.number}"
@@ -121,7 +121,7 @@ resource "google_cloud_asset_organization_feed" "organization_feed" {
 
 module "pubsub_cai_feed" {
   source  = "terraform-google-modules/pubsub/google"
-  version = "~> 7.0"
+  version = "~> 8.7"
 
   topic              = "top-cai-monitoring-${random_id.suffix.hex}-event"
   project_id         = var.project_id
@@ -133,7 +133,7 @@ module "pubsub_cai_feed" {
 }
 
 // SCC source
-resource "google_scc_source" "cai_monitoring" {
+resource "google_scc_v2_organization_source" "cai_monitoring" {
   display_name = local.cai_source_name
   organization = var.org_id
   description  = "SCC Finding Source for caiMonitoring Cloud Functions."
@@ -142,13 +142,13 @@ resource "google_scc_source" "cai_monitoring" {
 // Cloud Function
 module "cloud_function" {
   source  = "GoogleCloudPlatform/cloud-functions/google"
-  version = "~> 0.6"
+  version = "~> 0.9"
 
   function_name         = "caiMonitoring"
   description           = "Check on the Organization for members (users, groups and service accounts) that contains the IAM roles listed."
   project_id            = var.project_id
   labels                = var.labels
-  function_location     = var.location
+  location              = var.location
   runtime               = "nodejs20"
   entrypoint            = "caiMonitoring"
   docker_repository     = google_artifact_registry_repository.cloudfunction.id
@@ -163,7 +163,7 @@ module "cloud_function" {
     service_account_email = google_service_account.cloudfunction.email
     runtime_env_variables = {
       ROLES     = join(",", var.roles_to_monitor)
-      SOURCE_ID = google_scc_source.cai_monitoring.id
+      SOURCE_ID = google_scc_v2_organization_source.cai_monitoring.id
     }
   }
 

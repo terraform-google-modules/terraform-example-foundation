@@ -15,15 +15,53 @@
 package gcp
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
+
 	gotest "testing"
 
 	"github.com/mitchellh/go-testing-interface"
 	"github.com/stretchr/testify/assert"
+
 	"github.com/tidwall/gjson"
 )
+
+func TestIsComponentInstalledFound(t *gotest.T) {
+	betaComponents, err := os.ReadFile(filepath.Join(".", "testdata", "beta_components_installed.json"))
+	assert.NoError(t, err)
+	gcp := GCP{
+		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
+			return gjson.Result{
+				Type: gjson.JSON,
+				Raw:  string(betaComponents[:]),
+			}
+		},
+		sleepTime: 1,
+	}
+	componentID := "beta"
+	result := gcp.IsComponentInstalled(t, componentID)
+	assert.True(t, result, "component '%s' should be installed", componentID)
+}
+
+func TestIsComponentInstalledNotFound(t *gotest.T) {
+	betaComponents, err := os.ReadFile(filepath.Join(".", "testdata", "beta_components_not_installed.json"))
+	assert.NoError(t, err)
+	gcp := GCP{
+		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
+			return gjson.Result{
+				Type: gjson.JSON,
+				Raw:  string(betaComponents[:]),
+			}
+		},
+		sleepTime: 1,
+	}
+	componentID := "beta"
+	result := gcp.IsComponentInstalled(t, componentID)
+	assert.False(t, result, "component '%s' should not be installed", componentID)
+}
 
 func TestGetLastBuildStatus(t *gotest.T) {
 	current, err := os.ReadFile(filepath.Join(".", "testdata", "success_build.json"))
@@ -37,12 +75,12 @@ func TestGetLastBuildStatus(t *gotest.T) {
 		},
 		sleepTime: 1,
 	}
-	status := gcp.GetLastBuildStatus(t, "prj-b-cicd-0123", "us-central1", "filter")
+	status, _ := gcp.GetLastBuildStatus(t, "prj-b-cicd-0123", "us-central1", "filter")
 	assert.Equal(t, StatusSuccess, status)
 
 	current, err = os.ReadFile(filepath.Join(".", "testdata", "failure_build.json"))
 	assert.NoError(t, err)
-	status = gcp.GetLastBuildStatus(t, "prj-b-cicd-0123", "us-central1", "filter")
+	status, _ = gcp.GetLastBuildStatus(t, "prj-b-cicd-0123", "us-central1", "filter")
 	assert.Equal(t, StatusFailure, status)
 }
 
@@ -98,10 +136,13 @@ func TestWaitBuildSuccess(t *gotest.T) {
 			callCount = callCount + 1
 			return resp
 		},
+		RunCmd: func(t testing.TB, cmd string, args ...interface{}) string {
+			return ""
+		},
 		sleepTime: 1,
 	}
 
-	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo","", "failed_test_for_WaitBuildSuccess", 40)
+	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo", "", "failed_test_for_WaitBuildSuccess", 40, 2, 1*time.Second)
 	assert.Error(t, err, "should have failed")
 	assert.Contains(t, err.Error(), "failed_test_for_WaitBuildSuccess", "should have failed with custom info")
 	assert.Equal(t, callCount, 3, "Runf must be called three times")
@@ -130,11 +171,66 @@ func TestWaitBuildTimeout(t *gotest.T) {
 			callCount = callCount + 1
 			return resp
 		},
+		RunCmd: func(t testing.TB, cmd string, args ...interface{}) string {
+			return ""
+		},
 		sleepTime: 1,
 	}
 
-	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo","", "failed_test_for_WaitBuildSuccess", 1)
+	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo", "", "failed_test_for_WaitBuildSuccess", 1, 1, 1*time.Second)
 	assert.Error(t, err, "should have failed")
 	assert.Contains(t, err.Error(), "timeout waiting for build '736f4689-2497-4382-afd0-b5f0f50eea5b' execution", "should have failed with timeout error")
 	assert.Equal(t, callCount, 3, "Runf must be called three times")
+}
+
+func TestWaitBuildSuccessRetry(t *gotest.T) {
+
+	working, err := os.ReadFile(filepath.Join(".", "testdata", "working_build.json"))
+	assert.NoError(t, err)
+	failure, err := os.ReadFile(filepath.Join(".", "testdata", "failure_build.json"))
+	assert.NoError(t, err)
+	retry, err := os.ReadFile(filepath.Join(".", "testdata", "working_build_retry.json"))
+	assert.NoError(t, err)
+	success, err := os.ReadFile(filepath.Join(".", "testdata", "success_build.json"))
+	assert.NoError(t, err)
+
+	runCmdCallCount := 0
+	triggerNewBuildCallCount := 0
+	runfCallCount := 0
+	runfCalls := []gjson.Result{
+		{Type: gjson.JSON,
+			Raw: fmt.Sprintf("[%s]", string(working[:]))}, // builds list
+		{Type: gjson.JSON,
+			Raw: string(working[:])}, // builds describe
+		{Type: gjson.JSON,
+			Raw: string(failure[:])}, // builds describe
+		{Type: gjson.JSON,
+			Raw: string(retry[:])}, // builds describe
+		{Type: gjson.JSON,
+			Raw: string(success[:])}, // builds describe
+	}
+
+	gcp := GCP{
+		Runf: func(t testing.TB, cmd string, args ...interface{}) gjson.Result {
+			resp := runfCalls[runfCallCount]
+			runfCallCount = runfCallCount + 1
+			return resp
+		},
+		RunCmd: func(t testing.TB, cmd string, args ...interface{}) string {
+			runCmdCallCount = runCmdCallCount + 1
+			return "a\nError 403. Compute Engine API has not been used in project\nz" // get build logs
+		},
+		TriggerNewBuild: func(t testing.TB, ctx context.Context, buildName string) (string, error) {
+			triggerNewBuildCallCount = triggerNewBuildCallCount + 1
+			return "845f5790-2497-4382-afd0-b5f0f50eea5a", nil // buildService.Projects.Locations.Builds.Retry
+		},
+		sleepTime: 1,
+	}
+
+	err = gcp.WaitBuildSuccess(t, "prj-b-cicd-0123", "us-central1", "repo", "", "", 40, 2, 1*time.Second)
+
+	assert.Nil(t, err, "should have succeeded")
+	assert.Equal(t, runfCallCount, 5, "Runf must be called five times")
+	assert.Equal(t, runCmdCallCount, 1, "runCmd getLogs must be called once")
+	assert.Equal(t, triggerNewBuildCallCount, 1, "TriggerNewBuild must be called once")
 }

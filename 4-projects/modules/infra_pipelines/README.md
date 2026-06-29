@@ -22,6 +22,7 @@
 |------|-------------|
 | apply\_triggers\_id | CB apply triggers |
 | artifact\_buckets | GCS Buckets to store Cloud Build Artifacts |
+| artifact\_registry\_repository\_id | Artifact Registry ID. |
 | default\_region | Default region to create resources where applicable. |
 | gar\_name | Artifact Registry (AR) repository name created to store runner images |
 | log\_buckets | GCS Buckets to store Cloud Build logs |

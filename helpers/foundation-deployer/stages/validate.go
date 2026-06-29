@@ -22,6 +22,7 @@ import (
 	"github.com/mitchellh/go-testing-interface"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gcp"
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 )
 
 const (
@@ -33,11 +34,30 @@ const (
 func ValidateDirectories(g GlobalTFVars) error {
 	_, err := os.Stat(g.FoundationCodePath)
 	if os.IsNotExist(err) {
-		return fmt.Errorf("Stopping execution, FoundationCodePath directory '%s' does not exits\n", g.FoundationCodePath)
+		return fmt.Errorf("stopping execution, FoundationCodePath directory '%s' does not exits", g.FoundationCodePath)
 	}
 	_, err = os.Stat(g.CodeCheckoutPath)
 	if os.IsNotExist(err) {
-		return fmt.Errorf("Stopping execution, CodeCheckoutPath directory '%s' does not exits\n", g.CodeCheckoutPath)
+		return fmt.Errorf("stopping execution, CodeCheckoutPath directory '%s' does not exits", g.CodeCheckoutPath)
+	}
+	return nil
+}
+
+// ValidateComponents checks if gcloud Beta Components and Terraform Tools are installed
+func ValidateComponents(t testing.TB) error {
+	gcpConf := gcp.NewGCP()
+	components := []string{
+		"beta",
+		"terraform-tools",
+	}
+	missing := []string{}
+	for _, c := range components {
+		if !gcpConf.IsComponentInstalled(t, c) {
+			missing = append(missing, fmt.Sprintf("'%s' not installed", c))
+		}
+	}
+	if len(missing) > 0 {
+		return fmt.Errorf("missing Google Cloud SDK component:%v", missing)
 	}
 	return nil
 }
@@ -48,10 +68,10 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 	fmt.Println("")
 	fmt.Println("# Validating tfvar file.")
 	if g.OrgID != replaceME {
-		if g.HasValidatorProj() && gcpConf.HasSccNotification(t, g.OrgID, g.SccNotificationName) {
+		if g.HasValidatorProj() && g.EnableSccResourcesInTerraform != nil && *g.EnableSccResourcesInTerraform && gcpConf.HasSccNotification(t, g.OrgID, g.SccNotificationName) {
 			fmt.Printf("# Notification '%s' exists in organization '%s'. Chose a different one.\n", g.SccNotificationName, g.OrgID)
 			fmt.Printf("# See existing Notifications for organization '%s'.\n", g.OrgID)
-			fmt.Printf("# gcloud scc notifications list organizations/%s --filter=\"name:organizations/%s/notificationConfigs/%s\" --format=\"value(name)\"\n", g.OrgID, g.OrgID, g.SccNotificationName)
+			fmt.Printf("# gcloud scc notifications list organizations/%s --location=global --filter=\"name:organizations/%s/locations/global/notificationConfigs/%s\" --format=\"value(name)\"\n", g.OrgID, g.OrgID, g.SccNotificationName)
 			fmt.Println("")
 		}
 		if g.HasValidatorProj() && !g.CreateUniqueTagKey && gcpConf.HasTagKey(t, g.OrgID, "environment") {
@@ -89,6 +109,17 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 		if strings.Contains(p, "group:") {
 			fmt.Printf("# VPC Service Controls does not allow groups in the perimeter: '%s'\n", p)
 		}
+	}
+
+	// Check IAM permissions for the current principal (ADC) using TestIamPermissions and print any missing permissions.
+	err := utils.ValidateIAMPermissions(utils.IAMValidateParams{
+		OrgID:              g.OrgID,
+		FoundationCodePath: g.FoundationCodePath,
+		ParentFolder:       g.ParentFolder,
+		BillingAccount:     g.BillingAccount,
+	}, false)
+	if err != nil {
+		fmt.Printf("# Error validating IAM permissions: %v\n", err)
 	}
 }
 

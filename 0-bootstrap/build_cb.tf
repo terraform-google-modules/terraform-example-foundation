@@ -68,7 +68,7 @@ resource "random_string" "suffix" {
 
 module "gcp_projects_state_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 9.0"
+  version = "~> 12.0"
 
   name          = "${var.bucket_prefix}-${module.seed_bootstrap.seed_project_id}-gcp-projects-tfstate"
   project_id    = module.seed_bootstrap.seed_project_id
@@ -84,7 +84,7 @@ module "gcp_projects_state_bucket" {
 
 module "tf_source" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_source"
-  version = "~> 11.0"
+  version = "~> 12.0"
 
   org_id                = var.org_id
   folder_id             = google_folder.bootstrap.id
@@ -160,11 +160,13 @@ module "tf_private_pool" {
   vpn_configuration = {
     enable_vpn = false
   }
+
+  depends_on = [module.tf_source]
 }
 
 module "tf_cloud_builder" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_builder"
-  version = "~> 11.0"
+  version = "~> 12.0"
 
   project_id                   = module.tf_source.cloudbuild_project_id
   dockerfile_repo_uri          = module.tf_source.csr_repos[local.cloudbuilder_repo].url
@@ -178,11 +180,13 @@ module "tf_cloud_builder" {
   worker_pool_id               = module.tf_private_pool.private_worker_pool_id
   bucket_name                  = "${var.bucket_prefix}-${module.tf_source.cloudbuild_project_id}-tf-cloudbuilder-build-logs"
   workflow_deletion_protection = var.workflow_deletion_protection
+
+  depends_on = [module.tf_source]
 }
 
 module "bootstrap_csr_repo" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 3.1"
+  version = "~> 4.0"
   upgrade = false
 
   create_cmd_entrypoint = "${path.module}/scripts/push-to-repo.sh"
@@ -200,7 +204,7 @@ resource "time_sleep" "cloud_builder" {
 
 module "build_terraform_image" {
   source  = "terraform-google-modules/gcloud/google"
-  version = "~> 3.1"
+  version = "~> 4.0"
   upgrade = false
 
   create_cmd_triggers = {
@@ -216,7 +220,7 @@ module "build_terraform_image" {
 
 module "tf_workspace" {
   source   = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version  = "~> 11.0"
+  version  = "~> 12.0"
   for_each = local.granular_sa
 
   project_id                = module.tf_source.cloudbuild_project_id
@@ -262,6 +266,8 @@ resource "google_artifact_registry_repository_iam_member" "terraform_sa_artifact
   repository = local.gar_repository
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+
+  depends_on = [module.tf_source]
 }
 
 resource "google_sourcerepo_repository_iam_member" "member" {
@@ -271,4 +277,6 @@ resource "google_sourcerepo_repository_iam_member" "member" {
   repository = module.tf_source.csr_repos["gcp-policies"].name
   role       = "roles/viewer"
   member     = "serviceAccount:${google_service_account.terraform-env-sa[each.key].email}"
+
+  depends_on = [module.tf_source]
 }

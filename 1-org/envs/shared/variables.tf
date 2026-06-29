@@ -21,7 +21,7 @@ variable "enable_hub_and_spoke" {
 }
 
 variable "enable_scc_resources_in_terraform" {
-  description = "Create Security Command Center resources in Terraform. If your organization has newly enabled any preview features for SCC and get an error related to the v2 API, you must set this variable to false because the v2 API does not yet support Terraform resources. See [issue 1189](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1189) for context."
+  description = "Create Security Command Center resources in Terraform. Security Command Center must be activated before the creation of the resources. See [Overview of activating Security Command Center](https://cloud.google.com/security-command-center/docs/activate-scc-overview) before enabling this feature."
   type        = bool
   default     = false
 }
@@ -38,7 +38,7 @@ variable "domains_to_allow" {
 }
 
 variable "scc_notification_name" {
-  description = "Name of the Security Command Center Notification. It must be unique in the organization. Run `gcloud scc notifications describe <scc_notification_name> --organization=org_id` to check if it already exists."
+  description = "Name of the Security Command Center Notification. It must be unique in the organization. Run `gcloud scc notifications describe <scc_notification_name> --organization=org_id --location=global` to check if it already exists."
   type        = string
 }
 

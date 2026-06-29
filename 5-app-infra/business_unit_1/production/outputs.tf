@@ -47,7 +47,45 @@ output "project_id" {
   value       = module.gce_instance.project_id
 }
 
+output "confidential_space_project_id" {
+  description = "Project where confidential compute instance was created"
+  value       = module.confidential_space.confidential_space_project_id
+}
+
+output "confidential_space_project_number" {
+  description = "Project number from confidential compute instance"
+  value       = module.confidential_space.confidential_space_project_number
+}
+
 output "region" {
   description = "Region where compute instance was created"
   value       = module.gce_instance.region
+}
+
+output "workload_pool_provider_id" {
+  description = "Workload pool provider used by confidential space."
+  value       = module.confidential_space.workload_pool_provider_id
+}
+
+output "workload_identity_pool_id" {
+  description = "Workload identity pool ID."
+  value       = module.confidential_space.workload_identity_pool_id
+
+}
+
+output "confidential_instances_names" {
+  description = "List of names for confidential compute instances."
+  value       = [for u in module.confidential_space.instances_details : u.name]
+  sensitive   = true
+}
+
+output "confidential_available_zones" {
+  description = "List of available zones in region for confidential space."
+  value       = module.confidential_space.available_zones
+}
+
+output "confidential_instances_zones" {
+  description = "List of zone for confidential compute instances."
+  value       = [for u in module.confidential_space.instances_details : u.zone]
+  sensitive   = true
 }

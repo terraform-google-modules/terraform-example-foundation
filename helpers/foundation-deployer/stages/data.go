@@ -19,6 +19,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"time"
 
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -28,20 +29,28 @@ import (
 )
 
 const (
-	PoliciesRepo     = "gcp-policies"
-	BootstrapRepo    = "gcp-bootstrap"
-	OrgRepo          = "gcp-org"
-	EnvironmentsRepo = "gcp-environments"
-	NetworksRepo     = "gcp-networks"
-	ProjectsRepo     = "gcp-projects"
-	AppInfraRepo     = "bu1-example-app"
-	BootstrapStep    = "0-bootstrap"
-	OrgStep          = "1-org"
-	EnvironmentsStep = "2-environments"
-	HubAndSpokeStep  = "3-networks-hub-and-spoke"
-	SvpcStep         = "3-networks-svpc"
-	ProjectsStep     = "4-projects"
-	AppInfraStep     = "5-app-infra"
+	PoliciesRepo              = "gcp-policies"
+	BootstrapRepo             = "gcp-bootstrap"
+	OrgRepo                   = "gcp-org"
+	EnvironmentsRepo          = "gcp-environments"
+	NetworksRepo              = "gcp-networks"
+	ProjectsRepo              = "gcp-projects"
+	AppInfraRepo              = "bu1-example-app"
+	BootstrapStep             = "0-bootstrap"
+	OrgStep                   = "1-org"
+	EnvironmentsStep          = "2-environments"
+	HubAndSpokeStep           = "3-networks-hub-and-spoke"
+	SvpcStep                  = "3-networks-svpc"
+	ProjectsStep              = "4-projects"
+	AppInfraStep              = "5-app-infra"
+	MaxErrorRetries           = 2
+	TimeBetweenErrorRetries   = 2 * time.Minute
+	MaxBuildRetries           = 40
+	BuildTypeCBCSR            = "cb"
+	BuildTypeGiHub            = "github"
+	BuildTypeGitLab           = "gitlab"
+	CloudBuildProjectIdOutput = "cloudbuild_project_id"
+	CICDProjectIdOutput       = "cicd_project_id"
 )
 
 type CommonConf struct {
@@ -49,9 +58,11 @@ type CommonConf struct {
 	CheckoutPath      string
 	PolicyPath        string
 	ValidatorProject  string
+	BuildType         string
 	EnableHubAndSpoke bool
 	DisablePrompt     bool
 	Logger            *logger.Logger
+	GitToken          string
 }
 
 type StageConf struct {
@@ -67,6 +78,8 @@ type StageConf struct {
 	GroupingUnits       []string
 	Envs                []string
 	LocalSteps          []string
+	BuildType           string
+	Executor            Executor
 }
 
 type BootstrapOutputs struct {
@@ -83,11 +96,13 @@ type BootstrapOutputs struct {
 }
 
 type InfraPipelineOutputs struct {
-	RemoteStateBucket string
-	InfraPipeProj     string
-	DefaultRegion     string
-	TerraformSA       string
-	StateBucket       string
+	RemoteStateBucket            string
+	InfraPipeProj                string
+	DefaultRegion                string
+	TerraformSA                  string
+	StateBucket                  string
+	ImageName                    string
+	BootstrapCloudbuildProjectID string
 }
 
 // ServerAddress is the element for TargetNameServerAddresses
@@ -127,6 +142,35 @@ type GcpGroups struct {
 	KmsAdmin           *string `cty:"kms_admin"`
 }
 
+type GitRepos struct {
+	Owner        string  `cty:"owner"`
+	Bootstrap    string  `cty:"bootstrap"`
+	Organization string  `cty:"organization"`
+	Environments string  `cty:"environments"`
+	Networks     string  `cty:"networks"`
+	Projects     string  `cty:"projects"`
+	CICDRunner   *string `cty:"cicd_runner"`
+}
+
+type GitHubRepos struct {
+	Owner        string `cty:"owner"`
+	Bootstrap    string `cty:"bootstrap"`
+	Organization string `cty:"organization"`
+	Environments string `cty:"environments"`
+	Networks     string `cty:"networks"`
+	Projects     string `cty:"projects"`
+}
+
+type GitLabRepos struct {
+	Owner        string `cty:"owner"`
+	Bootstrap    string `cty:"bootstrap"`
+	Organization string `cty:"organization"`
+	Environments string `cty:"environments"`
+	Networks     string `cty:"networks"`
+	Projects     string `cty:"projects"`
+	CICDRunner   string `cty:"cicd_runner"`
+}
+
 // GlobalTFVars contains all the configuration for the deploy
 type GlobalTFVars struct {
 	OrgID                                 string          `hcl:"org_id"`
@@ -148,6 +192,7 @@ type GlobalTFVars struct {
 	BucketTfstateKmsForceDestroy          *bool           `hcl:"bucket_tfstate_kms_force_destroy"`
 	WorkflowDeletionProtection            *bool           `hcl:"workflow_deletion_protection"`
 	AuditLogsTableDeleteContentsOnDestroy *bool           `hcl:"audit_logs_table_delete_contents_on_destroy"`
+	EnableSccResourcesInTerraform         *bool           `hcl:"enable_scc_resources_in_terraform"`
 	LogExportStorageForceDestroy          *bool           `hcl:"log_export_storage_force_destroy"`
 	LogExportStorageLocation              string          `hcl:"log_export_storage_location"`
 	BillingExportDatasetLocation          string          `hcl:"billing_export_dataset_location"`
@@ -158,16 +203,18 @@ type GlobalTFVars struct {
 	LocationGCS                           string          `hcl:"location_gcs"`
 	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
 	FoundationCodePath                    string          `hcl:"foundation_code_path"`
-	ValidatorProjectId                    *string         `hcl:"validator_project_id"`
+	ValidatorProjectID                    *string         `hcl:"validator_project_id"`
 	Groups                                Groups          `hcl:"groups"`
 	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
 	FolderDeletionProtection              *bool           `hcl:"folder_deletion_protection"`
 	ProjectDeletionPolicy                 string          `hcl:"project_deletion_policy"`
+	BuildType                             string          `hcl:"build_type"`
+	GitRepos                              *GitRepos       `hcl:"git_repos"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
 func (g GlobalTFVars) HasValidatorProj() bool {
-	return g.ValidatorProjectId != nil && *g.ValidatorProjectId != "" && *g.ValidatorProjectId != "EXISTING_PROJECT_ID"
+	return g.ValidatorProjectID != nil && *g.ValidatorProjectID != "" && *g.ValidatorProjectID != "EXISTING_PROJECT_ID"
 }
 
 // HasGroupsCreation checks if Groups creation is enabled
@@ -196,22 +243,24 @@ func (g GlobalTFVars) CheckString(s string) {
 }
 
 type BootstrapTfvars struct {
-	OrgID                        string  `hcl:"org_id"`
-	BillingAccount               string  `hcl:"billing_account"`
-	DefaultRegion                string  `hcl:"default_region"`
-	DefaultRegion2               string  `hcl:"default_region_2"`
-	DefaultRegionGCS             string  `hcl:"default_region_gcs"`
-	DefaultRegionKMS             string  `hcl:"default_region_kms"`
-	ParentFolder                 *string `hcl:"parent_folder"`
-	ProjectPrefix                *string `hcl:"project_prefix"`
-	FolderPrefix                 *string `hcl:"folder_prefix"`
-	BucketForceDestroy           *bool   `hcl:"bucket_force_destroy"`
-	BucketTfstateKmsForceDestroy *bool   `hcl:"bucket_tfstate_kms_force_destroy"`
-	WorkflowDeletionProtection   *bool   `hcl:"workflow_deletion_protection"`
-	Groups                       Groups  `hcl:"groups"`
-	InitialGroupConfig           *string `hcl:"initial_group_config"`
-	FolderDeletionProtection     *bool   `hcl:"folder_deletion_protection"`
-	ProjectDeletionPolicy        string  `hcl:"project_deletion_policy"`
+	OrgID                        string       `hcl:"org_id"`
+	BillingAccount               string       `hcl:"billing_account"`
+	DefaultRegion                string       `hcl:"default_region"`
+	DefaultRegion2               string       `hcl:"default_region_2"`
+	DefaultRegionGCS             string       `hcl:"default_region_gcs"`
+	DefaultRegionKMS             string       `hcl:"default_region_kms"`
+	ParentFolder                 *string      `hcl:"parent_folder"`
+	ProjectPrefix                *string      `hcl:"project_prefix"`
+	FolderPrefix                 *string      `hcl:"folder_prefix"`
+	BucketForceDestroy           *bool        `hcl:"bucket_force_destroy"`
+	BucketTfstateKmsForceDestroy *bool        `hcl:"bucket_tfstate_kms_force_destroy"`
+	WorkflowDeletionProtection   *bool        `hcl:"workflow_deletion_protection"`
+	Groups                       Groups       `hcl:"groups"`
+	InitialGroupConfig           *string      `hcl:"initial_group_config"`
+	FolderDeletionProtection     *bool        `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy        string       `hcl:"project_deletion_policy"`
+	GitHubRepos                  *GitHubRepos `hcl:"gh_repos"`
+	GitLabRepos                  *GitLabRepos `hcl:"gl_repos"`
 }
 
 type OrgTfvars struct {
@@ -223,6 +272,7 @@ type OrgTfvars struct {
 	CreateACMAPolicy                      bool      `hcl:"create_access_context_manager_access_policy"`
 	CreateUniqueTagKey                    bool      `hcl:"create_unique_tag_key"`
 	AuditLogsTableDeleteContentsOnDestroy *bool     `hcl:"audit_logs_table_delete_contents_on_destroy"`
+	EnableSccResourcesInTerraform         *bool     `hcl:"enable_scc_resources_in_terraform"`
 	LogExportStorageForceDestroy          *bool     `hcl:"log_export_storage_force_destroy"`
 	LogExportStorageLocation              string    `hcl:"log_export_storage_location"`
 	BillingExportDatasetLocation          string    `hcl:"billing_export_dataset_location"`
@@ -261,7 +311,8 @@ type ProjCommonTfvars struct {
 }
 
 type ProjSharedTfvars struct {
-	DefaultRegion string `hcl:"default_region"`
+	DefaultRegion         string `hcl:"default_region"`
+	ProjectDeletionPolicy string `hcl:"project_deletion_policy"`
 }
 
 type ProjEnvTfvars struct {
@@ -274,16 +325,22 @@ type ProjEnvTfvars struct {
 type AppInfraCommonTfvars struct {
 	InstanceRegion    string `hcl:"instance_region"`
 	RemoteStateBucket string `hcl:"remote_state_bucket"`
+	ImageDigest       string `hcl:"confidential_image_digest"`
 }
 
-func GetBootstrapStepOutputs(t testing.TB, foundationPath string) BootstrapOutputs {
+func GetBootstrapStepOutputs(t testing.TB, foundationPath string, buildType string) BootstrapOutputs {
 	options := &terraform.Options{
 		TerraformDir: filepath.Join(foundationPath, "0-bootstrap"),
 		Logger:       logger.Discard,
 		NoColor:      true,
 	}
+	cicdProjectIDOutput := CloudBuildProjectIdOutput
+	if buildType != BuildTypeCBCSR {
+		cicdProjectIDOutput = CICDProjectIdOutput
+	}
+
 	return BootstrapOutputs{
-		CICDProject:               terraform.Output(t, options, "cloudbuild_project_id"),
+		CICDProject:               terraform.Output(t, options, cicdProjectIDOutput),
 		RemoteStateBucket:         terraform.Output(t, options, "gcs_bucket_tfstate"),
 		RemoteStateBucketProjects: terraform.Output(t, options, "projects_gcs_bucket_tfstate"),
 		DefaultRegion:             terraform.OutputMap(t, options, "common_config")["default_region"],
@@ -303,10 +360,12 @@ func GetInfraPipelineOutputs(t testing.TB, checkoutPath, workspace string) Infra
 		NoColor:      true,
 	}
 	return InfraPipelineOutputs{
-		InfraPipeProj: terraform.Output(t, options, "cloudbuild_project_id"),
-		DefaultRegion: terraform.Output(t, options, "default_region"),
-		TerraformSA:   terraform.OutputMap(t, options, "terraform_service_accounts")["bu1-example-app"],
-		StateBucket:   terraform.OutputMap(t, options, "state_buckets")["bu1-example-app"],
+		InfraPipeProj:                terraform.Output(t, options, "cloudbuild_project_id"),
+		DefaultRegion:                terraform.Output(t, options, "default_region"),
+		TerraformSA:                  terraform.OutputMap(t, options, "terraform_service_accounts")["bu1-example-app"],
+		StateBucket:                  terraform.OutputMap(t, options, "state_buckets")["bu1-example-app"],
+		ImageName:                    terraform.Output(t, options, "image_name"),
+		BootstrapCloudbuildProjectID: terraform.Output(t, options, "bootstrap_cloudbuild_project_id"),
 	}
 }
 
@@ -318,11 +377,11 @@ func ReadGlobalTFVars(file string) (GlobalTFVars, error) {
 	}
 	_, err := os.Stat(file)
 	if os.IsNotExist(err) {
-		return globalTfvars, fmt.Errorf("tfvars file '%s' does not exits\n", file)
+		return globalTfvars, fmt.Errorf("tfvars file '%s' does not exits", file)
 	}
 	err = utils.ReadTfvars(file, &globalTfvars)
 	if err != nil {
-		return globalTfvars, fmt.Errorf("Failed to load tfvars file %s. Error: %s\n", file, err.Error())
+		return globalTfvars, fmt.Errorf("failed to load tfvars file %s. Error: %s", file, err.Error())
 	}
 	return globalTfvars, nil
 }

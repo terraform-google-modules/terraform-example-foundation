@@ -12,7 +12,7 @@ require (
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.11.1
 	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20260622134113-34af7b6f8505
-	github.com/tidwall/gjson v1.18.0
+	github.com/tidwall/gjson v1.19.0
 	gitlab.com/gitlab-org/api/client-go v0.158.0
 	google.golang.org/api v0.229.0
 )

@@ -17,6 +17,7 @@ package org
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -38,21 +39,11 @@ func TestOrg(t *testing.T) {
 
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
-	vars := map[string]interface{}{
-		"remote_state_bucket":              backend_bucket,
-		"log_export_storage_force_destroy": "true",
-		"folder_deletion_protection":       false,
-		"project_deletion_policy":          "DELETE",
-		"enable_scc_resources_in_terraform": true,
-	}
+	ingressPolicies := []map[string]interface{}{}
 
-	backendConfig := map[string]interface{}{
-		"bucket": backend_bucket,
-	}
+	egressPolicies := []map[string]interface{}{}
 
-	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")
-	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	// Create Access Context Manager Policy ID if needed
 	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
@@ -65,6 +56,152 @@ func TestOrg(t *testing.T) {
 			fmt.Printf("Ignore error in creation of access-context-manager policy ID for organization %s. Error: [%s]", orgID, err.Error())
 		}
 	}
+
+	vars := map[string]interface{}{
+		"remote_state_bucket":               backend_bucket,
+		"log_export_storage_force_destroy":  "true",
+		"folder_deletion_protection":        false,
+		"project_deletion_policy":           "DELETE",
+		"access_context_manager_policy_id":  policyID,
+		"ingress_policies":                  ingressPolicies,
+		"egress_policies":                   egressPolicies,
+		"perimeter_additional_members":      []string{},
+		"enable_scc_resources_in_terraform": true,
+	}
+
+	restrictedServices := []string{
+		"serviceusage.googleapis.com",
+		"essentialcontacts.googleapis.com",
+		"accessapproval.googleapis.com",
+		"adsdatahub.googleapis.com",
+		"aiplatform.googleapis.com",
+		"alloydb.googleapis.com",
+		"documentai.googleapis.com",
+		"analyticshub.googleapis.com",
+		"apigee.googleapis.com",
+		"apigeeconnect.googleapis.com",
+		"artifactregistry.googleapis.com",
+		"assuredworkloads.googleapis.com",
+		"automl.googleapis.com",
+		"baremetalsolution.googleapis.com",
+		"batch.googleapis.com",
+		"bigquery.googleapis.com",
+		"bigquerydatapolicy.googleapis.com",
+		"bigquerydatatransfer.googleapis.com",
+		"bigquerymigration.googleapis.com",
+		"bigqueryreservation.googleapis.com",
+		"bigtable.googleapis.com",
+		"binaryauthorization.googleapis.com",
+		"cloud.googleapis.com",
+		"cloudasset.googleapis.com",
+		"cloudbuild.googleapis.com",
+		"clouddebugger.googleapis.com",
+		"clouddeploy.googleapis.com",
+		"clouderrorreporting.googleapis.com",
+		"cloudfunctions.googleapis.com",
+		"cloudkms.googleapis.com",
+		"cloudprofiler.googleapis.com",
+		"cloudresourcemanager.googleapis.com",
+		"cloudscheduler.googleapis.com",
+		"cloudsearch.googleapis.com",
+		"cloudtrace.googleapis.com",
+		"composer.googleapis.com",
+		"compute.googleapis.com",
+		"connectgateway.googleapis.com",
+		"contactcenterinsights.googleapis.com",
+		"container.googleapis.com",
+		"containeranalysis.googleapis.com",
+		"containerfilesystem.googleapis.com",
+		"containerregistry.googleapis.com",
+		"containerthreatdetection.googleapis.com",
+		"datacatalog.googleapis.com",
+		"dataflow.googleapis.com",
+		"datafusion.googleapis.com",
+		"datamigration.googleapis.com",
+		"dataplex.googleapis.com",
+		"dataproc.googleapis.com",
+		"datastream.googleapis.com",
+		"dialogflow.googleapis.com",
+		"dlp.googleapis.com",
+		"dns.googleapis.com",
+		"documentai.googleapis.com",
+		"domains.googleapis.com",
+		"eventarc.googleapis.com",
+		"file.googleapis.com",
+		"firebaseappcheck.googleapis.com",
+		"firebaserules.googleapis.com",
+		"firestore.googleapis.com",
+		"gameservices.googleapis.com",
+		"gkebackup.googleapis.com",
+		"gkeconnect.googleapis.com",
+		"gkehub.googleapis.com",
+		"healthcare.googleapis.com",
+		"iam.googleapis.com",
+		"iamcredentials.googleapis.com",
+		"iaptunnel.googleapis.com",
+		"ids.googleapis.com",
+		"integrations.googleapis.com",
+		"kmsinventory.googleapis.com",
+		"krmapihosting.googleapis.com",
+		"language.googleapis.com",
+		"lifesciences.googleapis.com",
+		"logging.googleapis.com",
+		"managedidentities.googleapis.com",
+		"memcache.googleapis.com",
+		"meshca.googleapis.com",
+		"meshconfig.googleapis.com",
+		"metastore.googleapis.com",
+		"ml.googleapis.com",
+		"monitoring.googleapis.com",
+		"networkconnectivity.googleapis.com",
+		"networkmanagement.googleapis.com",
+		"networksecurity.googleapis.com",
+		"networkservices.googleapis.com",
+		"notebooks.googleapis.com",
+		"opsconfigmonitoring.googleapis.com",
+		"orgpolicy.googleapis.com",
+		"osconfig.googleapis.com",
+		"oslogin.googleapis.com",
+		"privateca.googleapis.com",
+		"pubsub.googleapis.com",
+		"pubsublite.googleapis.com",
+		"recaptchaenterprise.googleapis.com",
+		"recommender.googleapis.com",
+		"redis.googleapis.com",
+		"retail.googleapis.com",
+		"run.googleapis.com",
+		"secretmanager.googleapis.com",
+		"servicecontrol.googleapis.com",
+		"servicedirectory.googleapis.com",
+		"spanner.googleapis.com",
+		"speakerid.googleapis.com",
+		"speech.googleapis.com",
+		"sqladmin.googleapis.com",
+		"storage.googleapis.com",
+		"storagetransfer.googleapis.com",
+		"sts.googleapis.com",
+		"texttospeech.googleapis.com",
+		"timeseriesinsights.googleapis.com",
+		"tpu.googleapis.com",
+		"trafficdirector.googleapis.com",
+		"transcoder.googleapis.com",
+		"translate.googleapis.com",
+		"videointelligence.googleapis.com",
+		"vision.googleapis.com",
+		"visionai.googleapis.com",
+		"vmmigration.googleapis.com",
+		"vpcaccess.googleapis.com",
+		"webrisk.googleapis.com",
+		"workflows.googleapis.com",
+		"workstations.googleapis.com",
+	}
+
+	backendConfig := map[string]interface{}{
+		"bucket": backend_bucket,
+	}
+
+	// Configure impersonation for test execution
+	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
@@ -123,7 +260,16 @@ func TestOrg(t *testing.T) {
 			// check tags applied to common and bootstrap folder
 			commonConfig := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")
 			bootstrapFolder := testutils.GetLastSplitElement(commonConfig["bootstrap_folder_name"], "/")
-
+			servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, org.GetStringOutput("service_perimeter_name"))
+			accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, org.GetStringOutput("access_level_name_dry_run"))
+			servicePerimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID))
+			assert.NoError(err)
+			perimeterName := org.GetStringOutput("service_perimeter_name")
+			assert.True(strings.Contains(servicePerimeter, perimeterName), fmt.Sprintf("service perimeter %s should exist", perimeterName))
+			assert.True(strings.Contains(servicePerimeter, accessLevel), fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
+			for _, service := range restrictedServices {
+				assert.True(strings.Contains(servicePerimeter, service), fmt.Sprintf("service perimeter %s should restrict all supported services", servicePerimeterLink))
+			}
 			for _, tags := range []struct {
 				folderId   string
 				folderName string
@@ -378,6 +524,13 @@ func TestOrg(t *testing.T) {
 				assert.Equal(sinkBilling.destination, logSinkBilling.Get("destination").String(), fmt.Sprintf("sink %s should have destination %s", sinkBilling.name, sinkBilling.destination))
 			}
 
+			// verify seed project in perimeter
+			sharedProjectNumber := bootstrap.GetStringOutput("seed_project_number")
+			perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
+			projectFormat := fmt.Sprintf("projects/%s", sharedProjectNumber)
+			perimeterResources := utils.GetResultStrSlice(perimeter.Get("spec.resources").Array())
+			assert.Contains(perimeterResources, projectFormat, fmt.Sprintf("dry-run service perimeter %s should contain %s", perimeterName, projectFormat))
+
 			// hub and spoke infrastructure
 			enable_hub_and_spoke, err := strconv.ParseBool(bootstrap.GetTFSetupStringOutput("enable_hub_and_spoke"))
 			require.NoError(t, err)
@@ -390,6 +543,12 @@ func TestOrg(t *testing.T) {
 					projects := gcloud.Run(t, "projects list", gcOps).Array()
 					assert.Equal(1, len(projects), fmt.Sprintf("project %s should exist", projectID))
 					assert.Equal("ACTIVE", projects[0].Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
+					numberOutput := strings.ReplaceAll(hubAndSpokeProjectOutput, "_id", "_number") // "net_hub_project_number"
+					projectNumber := org.GetStringOutput(numberOutput)
+					perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
+					projectFormat := fmt.Sprintf("projects/%s", projectNumber)
+					perimeterResources := utils.GetResultStrSlice(perimeter.Get("spec.resources").Array())
+					assert.Contains(perimeterResources, projectFormat, fmt.Sprintf("dry-run service perimeter %s should contain %s", perimeterName, projectFormat))
 				}
 			}
 
@@ -446,7 +605,10 @@ func TestOrg(t *testing.T) {
 				projectID := org.GetStringOutput(projectOutput.output)
 				prj := gcloud.Runf(t, "projects describe %s", projectID)
 				assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
-
+				projectNumber := prj.Get("projectNumber").String()
+				perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID))
+				assert.NoError(err)
+				assert.True(strings.Contains(perimeter, projectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s (number: %s)", perimeterName, projectID, projectNumber))
 				enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
 				listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 				assert.Subset(listApis, projectOutput.apis, "APIs should have been enabled")
@@ -477,10 +639,14 @@ func TestOrg(t *testing.T) {
 				} {
 					envProj := terraform.OutputMapOfObjects(t, org.GetTFOptions(), "shared_vpc_projects")[envName].(map[string]interface{})
 					projectID := envProj[projectEnvOutput.projectOutput]
+					projectNumber := fmt.Sprint(envProj["shared_vpc_project_number"])
 					prj := gcloud.Runf(t, "projects describe %s", projectID)
 					assert.Equal(projectID, prj.Get("projectId").String(), fmt.Sprintf("project %s should exist", projectID))
 					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
-
+					perimeter := gcloud.Runf(t, "access-context-manager perimeters describe %s --policy %s", servicePerimeterLink, policyID)
+					projectFormat := fmt.Sprintf("projects/%s", projectNumber)
+					perimeterResources := utils.GetResultStrSlice(perimeter.Get("spec.resources").Array())
+					assert.Contains(perimeterResources, projectFormat, fmt.Sprintf("dry-run service perimeter %s should contain %s", perimeterName, projectFormat))
 					enabledAPIS := gcloud.Runf(t, "services list --project %s", projectID).Array()
 					listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 					assert.Subset(listApis, projectEnvOutput.apis, "APIs should have been enabled")

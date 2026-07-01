@@ -24,9 +24,7 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
-	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
@@ -75,11 +73,8 @@ func TestNetworks(t *testing.T) {
 		tft.WithTFDir("../../../0-bootstrap"),
 	)
 
-	orgID := terraform.OutputMap(t, bootstrap.GetTFOptions(), "common_config")["org_id"]
 	networkMode := getNetworkMode(t)
 	firewallMode := getFirewallMode(t)
-	policyID := testutils.GetOrgACMPolicyID(t, orgID)
-	require.NotEmpty(t, policyID, "Access Context Manager Policy ID must be configured in the organization for the test to proceed.")
 
 	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("networks_step_terraform_service_account_email")
@@ -88,131 +83,6 @@ func TestNetworks(t *testing.T) {
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 	backendConfig := map[string]interface{}{
 		"bucket": backend_bucket,
-	}
-
-	restrictedServices := []string{
-		"accessapproval.googleapis.com",
-		"adsdatahub.googleapis.com",
-		"aiplatform.googleapis.com",
-		"alloydb.googleapis.com",
-		"documentai.googleapis.com",
-		"analyticshub.googleapis.com",
-		"apigee.googleapis.com",
-		"apigeeconnect.googleapis.com",
-		"artifactregistry.googleapis.com",
-		"assuredworkloads.googleapis.com",
-		"automl.googleapis.com",
-		"baremetalsolution.googleapis.com",
-		"batch.googleapis.com",
-		"bigquery.googleapis.com",
-		"bigquerydatapolicy.googleapis.com",
-		"bigquerydatatransfer.googleapis.com",
-		"bigquerymigration.googleapis.com",
-		"bigqueryreservation.googleapis.com",
-		"bigtable.googleapis.com",
-		"binaryauthorization.googleapis.com",
-		"cloud.googleapis.com",
-		"cloudasset.googleapis.com",
-		"cloudbuild.googleapis.com",
-		"clouddebugger.googleapis.com",
-		"clouddeploy.googleapis.com",
-		"clouderrorreporting.googleapis.com",
-		"cloudfunctions.googleapis.com",
-		"cloudkms.googleapis.com",
-		"cloudprofiler.googleapis.com",
-		"cloudresourcemanager.googleapis.com",
-		"cloudscheduler.googleapis.com",
-		"cloudsearch.googleapis.com",
-		"cloudtrace.googleapis.com",
-		"composer.googleapis.com",
-		"compute.googleapis.com",
-		"connectgateway.googleapis.com",
-		"contactcenterinsights.googleapis.com",
-		"container.googleapis.com",
-		"containeranalysis.googleapis.com",
-		"containerfilesystem.googleapis.com",
-		"containerregistry.googleapis.com",
-		"containerthreatdetection.googleapis.com",
-		"datacatalog.googleapis.com",
-		"dataflow.googleapis.com",
-		"datafusion.googleapis.com",
-		"datamigration.googleapis.com",
-		"dataplex.googleapis.com",
-		"dataproc.googleapis.com",
-		"datastream.googleapis.com",
-		"dialogflow.googleapis.com",
-		"dlp.googleapis.com",
-		"dns.googleapis.com",
-		"documentai.googleapis.com",
-		"domains.googleapis.com",
-		"eventarc.googleapis.com",
-		"file.googleapis.com",
-		"firebaseappcheck.googleapis.com",
-		"firebaserules.googleapis.com",
-		"firestore.googleapis.com",
-		"gameservices.googleapis.com",
-		"gkebackup.googleapis.com",
-		"gkeconnect.googleapis.com",
-		"gkehub.googleapis.com",
-		"healthcare.googleapis.com",
-		"iam.googleapis.com",
-		"iamcredentials.googleapis.com",
-		"iaptunnel.googleapis.com",
-		"ids.googleapis.com",
-		"integrations.googleapis.com",
-		"kmsinventory.googleapis.com",
-		"krmapihosting.googleapis.com",
-		"language.googleapis.com",
-		"lifesciences.googleapis.com",
-		"logging.googleapis.com",
-		"managedidentities.googleapis.com",
-		"memcache.googleapis.com",
-		"meshca.googleapis.com",
-		"meshconfig.googleapis.com",
-		"metastore.googleapis.com",
-		"ml.googleapis.com",
-		"monitoring.googleapis.com",
-		"networkconnectivity.googleapis.com",
-		"networkmanagement.googleapis.com",
-		"networksecurity.googleapis.com",
-		"networkservices.googleapis.com",
-		"notebooks.googleapis.com",
-		"opsconfigmonitoring.googleapis.com",
-		"orgpolicy.googleapis.com",
-		"osconfig.googleapis.com",
-		"oslogin.googleapis.com",
-		"privateca.googleapis.com",
-		"pubsub.googleapis.com",
-		"pubsublite.googleapis.com",
-		"recaptchaenterprise.googleapis.com",
-		"recommender.googleapis.com",
-		"redis.googleapis.com",
-		"retail.googleapis.com",
-		"run.googleapis.com",
-		"secretmanager.googleapis.com",
-		"servicecontrol.googleapis.com",
-		"servicedirectory.googleapis.com",
-		"spanner.googleapis.com",
-		"speakerid.googleapis.com",
-		"speech.googleapis.com",
-		"sqladmin.googleapis.com",
-		"storage.googleapis.com",
-		"storagetransfer.googleapis.com",
-		"sts.googleapis.com",
-		"texttospeech.googleapis.com",
-		"timeseriesinsights.googleapis.com",
-		"tpu.googleapis.com",
-		"trafficdirector.googleapis.com",
-		"transcoder.googleapis.com",
-		"translate.googleapis.com",
-		"videointelligence.googleapis.com",
-		"vision.googleapis.com",
-		"visionai.googleapis.com",
-		"vmmigration.googleapis.com",
-		"vpcaccess.googleapis.com",
-		"webrisk.googleapis.com",
-		"workflows.googleapis.com",
-		"workstations.googleapis.com",
 	}
 
 	cidrRanges := map[string][]string{
@@ -225,50 +95,6 @@ func TestNetworks(t *testing.T) {
 		"development":   "10.17.0.6",
 		"nonproduction": "10.17.0.7",
 		"production":    "10.17.0.8",
-	}
-
-	ingressPolicies := []map[string]interface{}{
-		{
-			"from": map[string]interface{}{
-				"sources": map[string][]string{
-					"access_levels": {"*"},
-				},
-				"identity_type": "ANY_IDENTITY",
-			},
-			"to": map[string]interface{}{
-				"resources": []string{"*"},
-				"operations": map[string]map[string][]string{
-					"storage.googleapis.com": {
-						"methods": {
-							"google.storage.objects.get",
-							"google.storage.objects.list",
-						},
-					},
-				},
-			},
-		},
-	}
-
-	egressPolicies := []map[string]interface{}{
-		{
-			"from": map[string]interface{}{
-				"sources": map[string][]string{
-					"access_levels": {"*"},
-				},
-				"identity_type": "ANY_IDENTITY",
-			},
-			"to": map[string]interface{}{
-				"resources": []string{"*"},
-				"operations": map[string]map[string][]string{
-					"storage.googleapis.com": {
-						"methods": {
-							"google.storage.objects.get",
-							"google.storage.objects.list",
-						},
-					},
-				},
-			},
-		},
 	}
 
 	envStage := os.Getenv(utils.RUN_STAGE_ENV_VAR)
@@ -293,11 +119,7 @@ func TestNetworks(t *testing.T) {
 		t.Run(envName, func(t *testing.T) {
 
 			vars := map[string]interface{}{
-				"access_context_manager_policy_id": policyID,
-				"remote_state_bucket":              backend_bucket,
-				"ingress_policies":                 ingressPolicies,
-				"egress_policies":                  egressPolicies,
-				"perimeter_additional_members":     []string{},
+				"remote_state_bucket": backend_bucket,
 			}
 
 			var tfdDir string
@@ -327,18 +149,7 @@ func TestNetworks(t *testing.T) {
 					// Resource issue: https://github.com/hashicorp/terraform-provider-google/issues/16804
 					// networks.DefaultVerify(assert)
 
-					servicePerimeterLink := fmt.Sprintf("accessPolicies/%s/servicePerimeters/%s", policyID, networks.GetStringOutput("service_perimeter_name"))
-					accessLevel := fmt.Sprintf("accessPolicies/%s/accessLevels/%s", policyID, networks.GetStringOutput("access_level_name_dry_run"))
 					networkNames := getNetworkResourceNames(envCode, networkMode, firewallMode)
-
-					servicePerimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", servicePerimeterLink, policyID))
-					assert.NoError(err)
-					perimeterName := networks.GetStringOutput("service_perimeter_name")
-					assert.True(strings.Contains(servicePerimeter, perimeterName), fmt.Sprintf("service perimeter %s should exist", perimeterName))
-					assert.True(strings.Contains(servicePerimeter, accessLevel), fmt.Sprintf("service perimeter %s should have access level %s", servicePerimeterLink, accessLevel))
-					for _, service := range restrictedServices {
-						assert.True(strings.Contains(servicePerimeter, service), fmt.Sprintf("service perimeter %s should restrict all supported services", servicePerimeterLink))
-					}
 
 					projectID := networks.GetStringOutput("shared_vpc_host_project_id")
 

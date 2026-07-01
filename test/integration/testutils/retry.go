@@ -41,7 +41,7 @@ var (
 		".*Error 403.*Compute Engine API has not been used in project.*": "Compute Engine API not enabled",
 
 		// Error 400: Service account {} does not exist.
-		".*Error 400.*Service account.*does not exist*": "Error setting IAM policy",
+		".*Error 400.*Service account.*does not exist.*": "Error setting IAM policy",
 
 		// Error waiting for creating service network connection. This happens randomly for development, production and non-production environments
 		".*Error waiting for Create Service Networking Connection.*Error code 16.*Expected OAuth 2 access token.*": "Request had invalid authentication credentials.",

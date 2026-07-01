@@ -104,23 +104,14 @@ func TestProjects(t *testing.T) {
 			t.Parallel()
 
 			env := testutils.GetLastSplitElement(tt.name, "_")
-			netVars := map[string]interface{}{
-				"access_context_manager_policy_id": policyID,
-			}
 
 			// networks created to retrieve output from the network step for this environment
-			var networkTFDir string
-			if networkMode == "" {
-				networkTFDir = "../../../3-networks-svpc/envs/%s"
-			} else {
-				networkTFDir = "../../../3-networks-hub-and-spoke/envs/%s"
-			}
 
-			networks := tft.NewTFBlueprintTest(t,
-				tft.WithTFDir(fmt.Sprintf(networkTFDir, env)),
-				tft.WithVars(netVars),
+			org := tft.NewTFBlueprintTest(t,
+				tft.WithTFDir("../../../1-org/envs/shared"),
 			)
-			perimeterName := networks.GetStringOutput("service_perimeter_name")
+
+			perimeterName := org.GetStringOutput("service_perimeter_name")
 
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, "shared")),
@@ -161,9 +152,13 @@ func TestProjects(t *testing.T) {
 							assert.Subset(listApis, restrictedApisEnabled, "APIs should have been enabled")
 
 							sharedProjectNumber := projects.GetStringOutput("shared_vpc_project_number")
-							perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters dry-run describe %s --policy %s", perimeterName, policyID))
+							floatingProjectNumber := projects.GetStringOutput("floating_project_number")
+							peeringProjectNumber := projects.GetStringOutput("peering_project_number")
+							perimeter, err := gcloud.RunCmdE(t, fmt.Sprintf("access-context-manager perimeters describe %s --policy %s", perimeterName, policyID))
 							assert.NoError(err)
 							assert.True(strings.Contains(perimeter, sharedProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, sharedProjectNumber))
+							assert.True(strings.Contains(perimeter, floatingProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, floatingProjectNumber))
+							assert.True(strings.Contains(perimeter, peeringProjectNumber), fmt.Sprintf("dry-run service perimeter %s should contain project %s", perimeterName, peeringProjectNumber))
 
 							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s --impersonate-service-account %s", projectID, terraformSA)
 							assert.NotEmpty(sharedVPC.Map())

@@ -148,3 +148,43 @@ output "cai_monitoring_topic" {
   value       = try(module.cai_monitoring[0].topic_name, null)
   description = "CAI Monitoring Cloud Function Pub/Sub Topic name."
 }
+
+output "enforce_vpcsc" {
+  value       = module.service_control.enforce_vpcsc
+  description = "The mode of VPC Service Controls."
+}
+
+output "service_perimeter_name" {
+  value       = module.service_control.service_perimeter_name
+  description = "Access context manager service perimeter name"
+}
+
+output "access_level_name" {
+  value       = module.service_control.access_level_name
+  description = "Access context manager access level name"
+}
+
+output "access_level_name_dry_run" {
+  value       = module.service_control.access_level_name_dry_run
+  description = "Access context manager access level name for the dry-run perimeter"
+}
+
+output "access_context_manager_policy_id" {
+  value       = local.access_context_manager_policy_id
+  description = "Access Context Manager Policy ID."
+}
+
+output "log_export_billing" {
+  description = "The service account that logging uses to write log entries to the destination."
+  value       = module.logs_export.log_export_billing
+}
+
+output "log_export" {
+  description = "The service account that logging uses to write log entries to the destination."
+  value       = module.logs_export.log_export
+}
+
+output "internal_project_log_export" {
+  description = "The service account that logging uses to write log entries to the destination."
+  value       = module.logs_export.internal_project_log_export
+}

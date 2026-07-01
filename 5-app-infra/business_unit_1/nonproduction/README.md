@@ -6,6 +6,7 @@
 | confidential\_image\_digest | SHA256 digest of the Docker image to be used for running the workload in Confidential Space. This value ensures the integrity and immutability of the image, guaranteeing that only the expected and verified code is executed within the confidential environment. Expected format: `sha256:<digest>`. | `string` | `""` | no |
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | `null` | no |
 | remote\_state\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
+| workload\_pool\_propagation\_sleep\_duration | The duration to wait for Workload Identity Pool propagation (e.g., 60s, 2m). | `string` | `"60s"` | no |
 
 ## Outputs
 

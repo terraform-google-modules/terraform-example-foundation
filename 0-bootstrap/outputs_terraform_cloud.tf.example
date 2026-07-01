@@ -23,6 +23,11 @@ output "cicd_project_id" {
   value       = module.tfc_cicd.project_id
 }
 
+output "cicd_project_number" {
+  description = "Project number of the CI/CD project."
+  value       = module.tfc_cicd.project_number
+}
+
 output "tfc_org_name" {
   description = "Name of the TFC organization."
   value       = var.tfc_org_name

@@ -22,6 +22,7 @@ module "env" {
   remote_state_bucket = var.remote_state_bucket
   tfc_org_name        = var.tfc_org_name
 
-  project_deletion_policy    = var.project_deletion_policy
-  folder_deletion_protection = var.folder_deletion_protection
+  project_deletion_policy       = var.project_deletion_policy
+  folder_deletion_protection    = var.folder_deletion_protection
+  folder_destroy_sleep_duration = var.folder_destroy_sleep_duration
 }

@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+variable "access_context_manager_policy_id" {
+  description = "The id of the default Access Context Manager policy. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format=\"value(name)\"`."
+  type        = string
+  default     = ""
+}
+
 variable "enable_hub_and_spoke" {
   description = "Enable Hub-and-Spoke architecture."
   type        = bool
@@ -198,4 +204,231 @@ variable "folder_deletion_protection" {
   description = "Prevent Terraform from destroying or recreating the folder."
   type        = string
   default     = true
+}
+
+variable "custom_restricted_services" {
+  description = "List of custom services to be protected by the VPC-SC perimeter. If empty, all supported services (https://cloud.google.com/vpc-service-controls/docs/supported-products) will be protected."
+  type        = list(string)
+  default     = []
+}
+
+variable "custom_restricted_services_dry_run" {
+  description = "List of custom services to be protected by the VPC-SC perimeter. If empty, all supported services (https://cloud.google.com/vpc-service-controls/docs/supported-products) will be protected."
+  type        = list(string)
+  default     = []
+}
+
+variable "ingress_policies_dry_run" {
+  description = "A list of all [ingress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#ingress-rules-reference) to use in a dry-run perimeter. Each list object has a `from` and `to` value that describes ingress_from and ingress_to.\n\nExample: `[{ from={ sources={ resources=[], access_levels=[] }, identities=[], identity_type=\"ID_TYPE\" }, to={ resources=[], operations={ \"SRV_NAME\"={ OP_TYPE=[] }}}}]`\n\nValid Values:\n`ID_TYPE` = `null` or `IDENTITY_TYPE_UNSPECIFIED` (only allow indentities from list); `ANY_IDENTITY`; `ANY_USER_ACCOUNT`; `ANY_SERVICE_ACCOUNT`\n`SRV_NAME` = \"`*`\" (allow all services) or [Specific Services](https://cloud.google.com/vpc-service-controls/docs/supported-products#supported_products)\n`OP_TYPE` = [methods](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions) or [permissions](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions)"
+  type = list(object({
+    title = optional(string, null)
+    from = object({
+      sources = optional(object({
+        resources     = optional(list(string), [])
+        access_levels = optional(list(string), [])
+      }), {}),
+      identity_type = optional(string, null)
+      identities    = optional(list(string), null)
+    })
+    to = object({
+      operations = optional(map(object({
+        methods     = optional(list(string), [])
+        permissions = optional(list(string), [])
+      })), {}),
+      roles     = optional(list(string), null)
+      resources = optional(list(string), ["*"])
+    })
+  }))
+  default = []
+}
+
+variable "egress_policies_dry_run" {
+  description = "A list of all [egress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#egress-rules-reference) to use in a dry-run perimeter. Each list object has a `from` and `to` value that describes egress_from and egress_to.\n\nExample: `[{ from={ identities=[], identity_type=\"ID_TYPE\" }, to={ resources=[], operations={ \"SRV_NAME\"={ OP_TYPE=[] }}}}]`\n\nValid Values:\n`ID_TYPE` = `null` or `IDENTITY_TYPE_UNSPECIFIED` (only allow indentities from list); `ANY_IDENTITY`; `ANY_USER_ACCOUNT`; `ANY_SERVICE_ACCOUNT`\n`SRV_NAME` = \"`*`\" (allow all services) or [Specific Services](https://cloud.google.com/vpc-service-controls/docs/supported-products#supported_products)\n`OP_TYPE` = [methods](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions) or [permissions](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions)"
+  type = list(object({
+    title = optional(string, null)
+    from = object({
+      sources = optional(object({
+        resources     = optional(list(string), [])
+        access_levels = optional(list(string), [])
+      }), {}),
+      identity_type = optional(string, null)
+      identities    = optional(list(string), null)
+    })
+    to = object({
+      operations = optional(map(object({
+        methods     = optional(list(string), [])
+        permissions = optional(list(string), [])
+      })), {}),
+      roles              = optional(list(string), null)
+      resources          = optional(list(string), ["*"])
+      external_resources = optional(list(string), [])
+    })
+  }))
+  default = []
+}
+
+variable "ingress_policies" {
+  description = "A list of all [ingress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#ingress-rules-reference) to use in a dry-run perimeter. Each list object has a `from` and `to` value that describes ingress_from and ingress_to.\n\nExample: `[{ from={ sources={ resources=[], access_levels=[] }, identities=[], identity_type=\"ID_TYPE\" }, to={ resources=[], operations={ \"SRV_NAME\"={ OP_TYPE=[] }}}}]`\n\nValid Values:\n`ID_TYPE` = `null` or `IDENTITY_TYPE_UNSPECIFIED` (only allow indentities from list); `ANY_IDENTITY`; `ANY_USER_ACCOUNT`; `ANY_SERVICE_ACCOUNT`\n`SRV_NAME` = \"`*`\" (allow all services) or [Specific Services](https://cloud.google.com/vpc-service-controls/docs/supported-products#supported_products)\n`OP_TYPE` = [methods](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions) or [permissions](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions)"
+  type = list(object({
+    title = optional(string, null)
+    from = object({
+      sources = optional(object({
+        resources     = optional(list(string), [])
+        access_levels = optional(list(string), [])
+      }), {}),
+      identity_type = optional(string, null)
+      identities    = optional(list(string), null)
+    })
+    to = object({
+      operations = optional(map(object({
+        methods     = optional(list(string), [])
+        permissions = optional(list(string), [])
+      })), {}),
+      roles     = optional(list(string), null)
+      resources = optional(list(string), ["*"])
+    })
+  }))
+  default = []
+}
+
+variable "egress_policies" {
+  description = "A list of all [egress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#egress-rules-reference) to use in a dry-run perimeter. Each list object has a `from` and `to` value that describes egress_from and egress_to.\n\nExample: `[{ from={ identities=[], identity_type=\"ID_TYPE\" }, to={ resources=[], operations={ \"SRV_NAME\"={ OP_TYPE=[] }}}}]`\n\nValid Values:\n`ID_TYPE` = `null` or `IDENTITY_TYPE_UNSPECIFIED` (only allow indentities from list); `ANY_IDENTITY`; `ANY_USER_ACCOUNT`; `ANY_SERVICE_ACCOUNT`\n`SRV_NAME` = \"`*`\" (allow all services) or [Specific Services](https://cloud.google.com/vpc-service-controls/docs/supported-products#supported_products)\n`OP_TYPE` = [methods](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions) or [permissions](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions)"
+  type = list(object({
+    title = optional(string, null)
+    from = object({
+      sources = optional(object({
+        resources     = optional(list(string), [])
+        access_levels = optional(list(string), [])
+      }), {}),
+      identity_type = optional(string, null)
+      identities    = optional(list(string), null)
+    })
+    to = object({
+      operations = optional(map(object({
+        methods     = optional(list(string), [])
+        permissions = optional(list(string), [])
+      })), {}),
+      roles              = optional(list(string), null)
+      resources          = optional(list(string), ["*"])
+      external_resources = optional(list(string), [])
+    })
+  }))
+  default = []
+}
+
+variable "perimeter_additional_members" {
+  description = "The list of additional members to be added to the enforced perimeter access level members list. To be able to see the resources protected by the VPC Service Controls in the perimeter, add your user in this list. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`."
+  type        = list(string)
+  default     = []
+}
+
+variable "perimeter_additional_members_dry_run" {
+  description = "The list of additional members to be added to the dry-run perimeter access level members list. To be able to see the resources protected by the VPC Service Controls in the perimeter, add your user in this list. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`."
+  type        = list(string)
+  default     = []
+}
+
+variable "resources" {
+  description = "A list of GCP resources that are inside of the service perimeter. Currently only projects and VPC networks are allowed."
+  type        = list(string)
+  default     = []
+}
+
+variable "resources_dry_run" {
+  description = "A list of GCP resources that are inside of the service perimeter. Currently only projects and VPC networks are allowed. If set, a dry-run policy will be set."
+  type        = list(string)
+  default     = []
+}
+
+variable "ingress_policies_keys" {
+  description = "A list of keys to use for the Terraform state. The order should correspond to var.ingress_policies and the keys must not be dynamically computed. If `null`, var.ingress_policies will be used as keys."
+  type        = list(string)
+  default     = []
+}
+
+variable "egress_policies_keys" {
+  description = "A list of keys to use for the Terraform state. The order should correspond to var.egress_policies and the keys must not be dynamically computed. If `null`, var.egress_policies will be used as keys."
+  type        = list(string)
+  default     = []
+}
+
+variable "ingress_policies_keys_dry_run" {
+  description = "(Dry-run) A list of keys to use for the Terraform state. The order should correspond to var.ingress_policies_dry_run and the keys must not be dynamically computed. If `null`, var.ingress_policies_dry_run will be used as keys."
+  type        = list(string)
+  default     = []
+}
+
+variable "egress_policies_keys_dry_run" {
+  description = "(Dry-run) A list of keys to use for the Terraform state. The order should correspond to var.egress_policies_dry_run and the keys must not be dynamically computed. If `null`, var.egress_policies_dry_run will be used as keys."
+  type        = list(string)
+  default     = []
+}
+
+variable "required_egress_rules_app_infra" {
+  description = "Required egress rule app infra enforced mode."
+  type        = bool
+  default     = false
+}
+
+variable "required_egress_rules_app_infra_dry_run" {
+  description = "Required egress rule app infra dry run mode."
+  type        = bool
+  default     = false
+}
+
+variable "required_ingress_rules_app_infra" {
+  description = "Required ingress rule app infra enforced mode."
+  type        = bool
+  default     = false
+}
+
+variable "required_ingress_rules_app_infra_dry_run" {
+  description = "Required ingress rule app infra dry run mode."
+  type        = bool
+  default     = false
+}
+
+variable "envs" {
+  type = map(bool)
+  default = {
+    development   = true
+    nonproduction = true
+    production    = true
+  }
+}
+
+variable "logs_export_sleep_duration" {
+  description = "The duration to wait for logs export resources to initialize (e.g., 30s, 2m)."
+  type        = string
+  default     = "30s"
+}
+
+variable "projects_sleep_duration" {
+  description = "The duration to wait for core project resources (audit logs, billing, networking, KMS, etc.) to initialize."
+  type        = string
+  default     = "30s"
+}
+
+variable "kms_iam_sleep_duration" {
+  description = "The duration to wait for KMS and Cloud Function IAM bindings to propagate (e.g., 60s, 2m)."
+  type        = string
+  default     = "60s"
+}
+
+variable "bucket_sleep_duration" {
+  description = "The duration to wait for the Cloud Function source bucket to initialize (e.g., 30s, 2m)."
+  type        = string
+  default     = "30s"
+}
+
+variable "sa_iam_membership_sleep_duration" {
+  description = "The duration to wait for Service Account IAM membership propagation (e.g., 30s)."
+  type        = string
+  default     = "30s"
+}
+
+variable "vpc_sc_propagation_sleep_duration" {
+  description = "The duration to wait for VPC Service Controls propagation (e.g., 60s, 2m)."
+  type        = string
+  default     = "60s"
 }

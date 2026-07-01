@@ -54,3 +54,8 @@ variable "project_deletion_policy" {
   default     = "PREVENT"
 }
 
+variable "iam_propagation_sleep_duration" {
+  description = "The duration to wait for IAM propagation across Cloud Build, Storage, and Artifact Registry (e.g., 60s, 2m)."
+  type        = string
+  default     = "60s"
+}

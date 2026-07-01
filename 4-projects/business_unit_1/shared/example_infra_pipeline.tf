@@ -97,6 +97,11 @@ module "app_infra_cloudbuild_project" {
 
   project_deletion_policy = var.project_deletion_policy
 
+  vpc_service_control_attach_enabled = local.enforce_vpcsc ? "true" : "false"
+  vpc_service_control_attach_dry_run = !local.enforce_vpcsc ? "true" : "false"
+  vpc_service_control_perimeter_name = "accessPolicies/${local.access_context_manager_policy_id}/servicePerimeters/${local.perimeter_name}"
+  vpc_service_control_sleep_duration = "60s"
+
   activate_apis = [
     "cloudbuild.googleapis.com",
     "sourcerepo.googleapis.com",
@@ -130,7 +135,7 @@ module "infra_pipelines" {
 }
 
 resource "time_sleep" "wait_iam_propagation" {
-  create_duration = "60s"
+  create_duration = var.iam_propagation_sleep_duration
 
   depends_on = [
     module.infra_pipelines,

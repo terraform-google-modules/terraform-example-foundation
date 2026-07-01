@@ -36,3 +36,9 @@ variable "folder_deletion_protection" {
   type        = string
   default     = true
 }
+
+variable "folder_destroy_sleep_duration" {
+  description = "The duration to wait during the destruction of the environment folder (e.g., 60s)."
+  type        = string
+  default     = "60s"
+}

@@ -39,11 +39,12 @@ resource "random_string" "suffix" {
 module "logs_export" {
   source = "../../modules/centralized-logging"
 
-  resources                      = local.parent_resources
-  resource_type                  = local.parent_resource_type
-  logging_destination_project_id = module.org_audit_logs.project_id
-  billing_account                = local.billing_account
-  enable_billing_account_sink    = true
+  resources                        = local.parent_resources
+  resource_type                    = local.parent_resource_type
+  logging_destination_project_id   = module.org_audit_logs.project_id
+  billing_account                  = local.billing_account
+  sa_iam_membership_sleep_duration = var.sa_iam_membership_sleep_duration
+  enable_billing_account_sink      = true
 
 
   /******************************************

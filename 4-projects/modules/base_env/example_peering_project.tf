@@ -61,6 +61,11 @@ module "peering_project" {
     ]
   }
 
+  vpc_service_control_attach_enabled = local.enforce_vpcsc ? "true" : "false"
+  vpc_service_control_attach_dry_run = !local.enforce_vpcsc ? "true" : "false"
+  vpc_service_control_perimeter_name = "accessPolicies/${local.access_context_manager_policy_id}/servicePerimeters/${local.perimeter_name}"
+  vpc_service_control_sleep_duration = "60s"
+
   activate_apis = [
     "dns.googleapis.com"
   ]

@@ -88,3 +88,8 @@ variable "confidential_image_digest" {
   type        = string
 }
 
+variable "workload_pool_propagation_sleep_duration" {
+  description = "The duration to wait for Workload Identity Pool propagation (e.g., 60s, 2m)."
+  type        = string
+  default     = "60s"
+}

@@ -223,11 +223,14 @@ export the GitHub fine grained access token as an environment variable:
    export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
 
+   export backend_bucket_projects=$(terraform output -raw projects_gcs_bucket_tfstate)
+   echo "backend_bucket_projects = ${backend_bucket_projects}"
+
    cp backend.tf.example backend.tf
    cd ../../../
 
    for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_ME/${backend_bucket}/" $i; done
-   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${backend_bucket}/" $i; done
+   for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${backend_bucket_projects}/" $i; done
 
    cd gcp-bootstrap/envs/shared
    ```
@@ -657,16 +660,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    git push --set-upstream origin production
    ```
 
-1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/GITLAB-NETWORKS-REPO/-/merge_requests?scope=all&state=opened from the `production` branch to the `plan` branch and review the output.
-
-> NOTE: Development and Non-production branches depends on the production branch to be deployed first, for the `3-networks-dual-svpc`.
-
-1. Push your plan branch.
-
-   ```bash
-   git checkout plan --set-upstream origin plan
-   git push
-   ```
+> NOTE: Development and Non-production branches depends on the production branch to be deployed first, for the `3-networks-svpc`.
 
 1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/pull/new/plan from the `production` branch to the `development` branch and review the output.
 1. The Pull request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` in the `development` environment.
@@ -862,15 +856,12 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    git clone git@github.com:<GITHUB-OWNER>/<GITHUB-PROJECTS-REPO>.git gcp-projects
    ```
 
-1. Navigate into the repo. All subsequent
-   steps assume you are running them from the `gcp-projects` directory.
+1. Navigate into the repo. All subsequent steps assume you are running them from the `gcp-projects` directory.
    If you run them from another directory, adjust your copy paths accordingly.
 
    ```bash
    cd gcp-projects
    ```
-
-
 
 1. Seed the repository if it has not been initialized yet.
 

@@ -83,6 +83,8 @@ To run the commands described in this document, install the following:
 - [Terraform](https://www.terraform.io/downloads.html) version 1.5.7
 - [jq](https://jqlang.github.io/jq/download/) version 1.6.0 or later
 
+**Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant commands. The `-T` flag is required for Linux, but causes problems for MacOS.
+
 **Note:** Make sure that you use the same version of [Terraform](https://www.terraform.io/downloads.html) throughout this series. Otherwise, you might experience Terraform state snapshot lock errors.
 
 Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
@@ -370,13 +372,21 @@ The following steps will guide you through deploying without using Cloud Build.
    mv terraform.example.tfvars terraform.tfvars
    ```
 
-1. Rename `cb.tf` to `cb.tf.example`:
+1. Disable the Cloud Build variant files by renaming them to `.example`:
 
    ```bash
-   mv cb.tf cb.tf.example
+   mv build_cb.tf build_cb.tf.example
+   mv versions_cb.tf versions_cb.tf.example
+   mv outputs_cb.tf outputs_cb.tf.example
    ```
 
-1. Comment Cloud Build related outputs at `outputs.tf`.
+1. Enable the local variant files by removing the `.example` suffix:
+
+   ```bash
+   mv build_local.tf.example build_local.tf
+   mv versions_local.tf.example versions_local.tf
+   mv outputs_local.tf.example outputs_local.tf
+   ```
 
 1. In `sa.tf` file, comment out lines related to Cloud Build. Specifically, search for `cicd_project_iam_member` and comment out the corresponding module, as well as the "depends_on" meta-argument in any modules that depend on the commented module.
 
@@ -440,7 +450,7 @@ The following steps will guide you through deploying without using Cloud Build.
 
    ```bash
    git add .
-   git commit -m "Initial version os gcp-bootstrap."
+   git commit -m "Initial version of gcp-bootstrap."
    ```
 
 1. Checkout `shared` branch and merge the `plan` branch into it. Then, Run `terraform apply`.

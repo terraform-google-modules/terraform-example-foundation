@@ -7,7 +7,7 @@ require (
 	cloud.google.com/go/iam v1.5.0
 	cloud.google.com/go/resourcemanager v1.10.6
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.17.9
-	github.com/gruntwork-io/terratest v0.50.0
+	github.com/gruntwork-io/terratest v0.55.0
 	github.com/hashicorp/hcl/v2 v2.24.0
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.11.1

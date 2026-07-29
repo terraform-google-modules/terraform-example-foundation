@@ -10,10 +10,10 @@ cloud.google.com/go/compute/metadata v0.9.0 h1:pDUj4QMoPejqq20dK0Pg2N4yG9zIkYGdB
 cloud.google.com/go/compute/metadata v0.9.0/go.mod h1:E0bWwX5wTnLPedCKqk3pJmVgCBSM6qQI1yTBdEb3C10=
 cloud.google.com/go/iam v1.11.0 h1:KieQ9Pb+LLPak1O3Rv3GgCxhnmkYf7Xyh0P5HfF1jFM=
 cloud.google.com/go/iam v1.11.0/go.mod h1:KP+nKGugNJW4LcLx1uEZcq1ok5sQHFaQehQNl4QDgV4=
-cloud.google.com/go/longrunning v0.9.0 h1:0EzbDEGsAvOZNbqXopgniY0w0a1phvu5IdUFq8grmqY=
-cloud.google.com/go/longrunning v0.9.0/go.mod h1:pkTz846W7bF4o2SzdWJ40Hu0Re+UoNT6Q5t+igIcb8E=
-cloud.google.com/go/resourcemanager v1.15.0 h1:OwcTLrKaly0SMPoYHssPG4FBzRF0tyimeySOFD/YPJ0=
-cloud.google.com/go/resourcemanager v1.15.0/go.mod h1:ve0VNxPoDU6XxDuEMCjkineb0YzXQXx3mOWwnNckGDE=
+cloud.google.com/go/longrunning v1.2.0 h1:WjYH3YHBGCxGJP9M4dWGHBfXr/cFIjMkNgWcJj7/iMM=
+cloud.google.com/go/longrunning v1.2.0/go.mod h1:5KMQALFGOCtFoi2xSOA1u3H7WKlhmckgiyFw7+LGQp0=
+cloud.google.com/go/resourcemanager v1.16.0 h1:aDf2RuuQ1Z+kbHHDzHyJNMHPGRFK+cMYfZIhWRaeRX0=
+cloud.google.com/go/resourcemanager v1.16.0/go.mod h1:Hn4HPkLRnTuiUhFEFJg736Brt7BwlS84xYU06sc3STc=
 github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.17.9 h1:R7TF5kSOr+6fu9CFCdza5DIFLCQYGrQP923G7SaHd2Y=
 github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.17.9/go.mod h1:KfuvXj6g70rv3AI3D0+4aq9Icf/Axu156s6h1JeDJt4=
 github.com/agext/levenshtein v1.2.3 h1:YB2fHEn0UJagG8T1rrWknE3ZQzWM06O8AMAatNn7lmo=

@@ -294,6 +294,9 @@ export the GitLab personal or group access token as an environment variable:
    export backend_bucket=$(terraform output -raw gcs_bucket_tfstate)
    echo "backend_bucket = ${backend_bucket}"
 
+   export backend_bucket_projects=$(terraform output -raw projects_gcs_bucket_tfstate)
+   echo "backend_bucket_projects = ${backend_bucket_projects}"
+
    cp backend.tf.example backend.tf
    cd ../../../
 

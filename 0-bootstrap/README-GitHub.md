@@ -655,7 +655,7 @@ we recommend that you request 50 additional projects for the **projects step ser
 
 1. Push your production branch since development and nonproduction depends it.
 
-\*Note:\*\* The Production envrionment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
+\*Note:\* The Production environment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
 
 ```bash
 git add .

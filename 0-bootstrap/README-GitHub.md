@@ -11,9 +11,9 @@ On the other hand, the authentication infrastructure using [Workload identity fe
 ## Requirements
 
 To run the instructions described in this document, install the following:
-
+'
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
-  - [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
+- [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 1.5.7 or later
 
@@ -161,8 +161,7 @@ for each one of the repositories.
 
 1. Update the file `terraform.tfvars` with values from your Google Cloud environment
 1. Update the file `terraform.tfvars` with values from your GitHub repositories
-1. To prevent saving the `gh_token` in plain text in the `terraform.tfvars` file,
-   export the GitHub fine grained access token as an environment variable:
+1. To prevent saving the `gh_token` in plain text in the `terraform.tfvars` file, export the GitHub fine grained access token as an environment variable:
 
    ```bash
    export TF_VAR_gh_token="YOUR-FINE-GRAINED-ACCESS-TOKEN"
@@ -194,7 +193,7 @@ for each one of the repositories.
    gcloud beta terraform vet bootstrap.json --policy-library="../../policy-library" --project ${VET_PROJECT_ID}
    ```
 
-   _`A-VALID-PROJECT-ID`_ must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
+   `A-VALID-PROJECT-ID` must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
 
 1. No violations and an output with `done` means the validation was successful.
 

@@ -33,18 +33,21 @@ import (
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
-// envBootstrapBuildType selects which bootstrap variant the integration test expects.
-// Empty or "cb" (default): full Cloud Build assertions — requires 0-bootstrap in cb mode
-// (active build_cb.tf, outputs_cb.tf, versions_cb.tf), as in a clean clone / CI.
-// "local": skips Cloud Build / CSR / trigger checks — use after ./scripts/choose_build_type.sh local
-// and the same terraform.tfvars you would use for a local-only apply.
+// envBootstrapBuildType selects which bootstrap variant the integration test runs.
+// "local" (default): no Cloud Build / CSR / trigger resources are created. The test
+// switches 0-bootstrap to the local variant before applying and restores the original
+// build type on teardown. This is the cheap path and works for new organizations that
+// cannot use the discontinued Cloud Source Repositories.
+// "cb" (opt-in via BOOTSTRAP_BUILD_TYPE=cb): full Cloud Build assertions — requires
+// 0-bootstrap already in cb mode (active build_cb.tf, outputs_cb.tf, versions_cb.tf),
+// as in a clean clone / CI. No file switching is performed in this mode.
 const envBootstrapBuildType = "BOOTSTRAP_BUILD_TYPE"
 
 func bootstrapBuildType() string {
 	if v := strings.TrimSpace(os.Getenv(envBootstrapBuildType)); v != "" {
 		return strings.ToLower(v)
 	}
-	return "cb"
+	return "local"
 }
 
 func isLocalBootstrapBuild() bool {
@@ -64,6 +67,27 @@ func fileExists(filePath string) (bool, error) {
 }
 
 func TestBootstrap(t *testing.T) {
+
+	// When running in the default "local" build type, switch 0-bootstrap to the local
+	// variant (no CSR / Cloud Build) before any terraform init reads the files. Record
+	// the original build type and register a t.Cleanup restore so the shared checkout is
+	// returned to its original state no matter how the test exits — t.Cleanup runs even
+	// if the blueprint-test teardown is skipped (e.g. TEARDOWN not enabled) or fails.
+	const bootstrapDir = "../../../0-bootstrap"
+	var originalBuildType string
+	if isLocalBootstrapBuild() {
+		var err error
+		originalBuildType, err = testutils.CurrentBuildType(bootstrapDir)
+		require.NoError(t, err)
+		if originalBuildType != "" && originalBuildType != "local" {
+			require.NoError(t, testutils.RenameBuildFiles(bootstrapDir, "local"))
+			t.Cleanup(func() {
+				if err := testutils.RenameBuildFiles(bootstrapDir, originalBuildType); err != nil {
+					t.Errorf("failed to restore 0-bootstrap build type to %q: %v", originalBuildType, err)
+				}
+			})
+		}
+	}
 
 	vars := map[string]interface{}{
 		"bucket_force_destroy":             true,
@@ -178,6 +202,12 @@ func TestBootstrap(t *testing.T) {
 				seedProjectID := bootstrap.GetStringOutput("seed_project_id")
 				cicdProjectID := bootstrap.GetStringOutput("cicd_project_id")
 				assert.Equal(seedProjectID, cicdProjectID, "local bootstrap should reuse seed as cicd_project_id")
+
+				// guarantee no Cloud Build / CSR variant is active
+				activeBuild, err := testutils.CurrentBuildType(bootstrapDir)
+				require.NoError(t, err)
+				assert.Equal("local", activeBuild, "0-bootstrap should be on the local build type (no CSR / Cloud Build)")
+
 				projectsStateBucket := bootstrap.GetStringOutput("projects_gcs_bucket_tfstate")
 				seedAlphaOpts := gcloud.WithCommonArgs([]string{"--project", seedProjectID, "--json"})
 				projStateBktList := gcloud.Run(t, fmt.Sprintf("alpha storage ls --buckets gs://%s", projectsStateBucket), seedAlphaOpts).Array()

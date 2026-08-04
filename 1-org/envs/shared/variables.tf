@@ -218,9 +218,9 @@ variable "custom_restricted_services_dry_run" {
   default     = []
 }
 
-variable "ingress_policies_dry_run" {
-  description = "A list of all [ingress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#ingress-rules-reference) to use in a dry-run perimeter. Each list object has a `from` and `to` value that describes ingress_from and ingress_to.\n\nExample: `[{ from={ sources={ resources=[], access_levels=[] }, identities=[], identity_type=\"ID_TYPE\" }, to={ resources=[], operations={ \"SRV_NAME\"={ OP_TYPE=[] }}}}]`\n\nValid Values:\n`ID_TYPE` = `null` or `IDENTITY_TYPE_UNSPECIFIED` (only allow indentities from list); `ANY_IDENTITY`; `ANY_USER_ACCOUNT`; `ANY_SERVICE_ACCOUNT`\n`SRV_NAME` = \"`*`\" (allow all services) or [Specific Services](https://cloud.google.com/vpc-service-controls/docs/supported-products#supported_products)\n`OP_TYPE` = [methods](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions) or [permissions](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions)"
-  type = list(object({
+variable "ingress_policies_dry_run_map" {
+  description = "Map of additional ingress policies for the dry-run perimeter. Map key is the Terraform state key."
+  type = map(object({
     title = optional(string, null)
     from = object({
       sources = optional(object({
@@ -239,12 +239,12 @@ variable "ingress_policies_dry_run" {
       resources = optional(list(string), ["*"])
     })
   }))
-  default = []
+  default = {}
 }
 
-variable "egress_policies_dry_run" {
-  description = "A list of all [egress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#egress-rules-reference) to use in a dry-run perimeter. Each list object has a `from` and `to` value that describes egress_from and egress_to.\n\nExample: `[{ from={ identities=[], identity_type=\"ID_TYPE\" }, to={ resources=[], operations={ \"SRV_NAME\"={ OP_TYPE=[] }}}}]`\n\nValid Values:\n`ID_TYPE` = `null` or `IDENTITY_TYPE_UNSPECIFIED` (only allow indentities from list); `ANY_IDENTITY`; `ANY_USER_ACCOUNT`; `ANY_SERVICE_ACCOUNT`\n`SRV_NAME` = \"`*`\" (allow all services) or [Specific Services](https://cloud.google.com/vpc-service-controls/docs/supported-products#supported_products)\n`OP_TYPE` = [methods](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions) or [permissions](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions)"
-  type = list(object({
+variable "egress_policies_dry_run_map" {
+  description = "Map of additional egress policies for the dry-run perimeter. Map key is the Terraform state key."
+  type = map(object({
     title = optional(string, null)
     from = object({
       sources = optional(object({
@@ -264,12 +264,12 @@ variable "egress_policies_dry_run" {
       external_resources = optional(list(string), [])
     })
   }))
-  default = []
+  default = {}
 }
 
-variable "ingress_policies" {
-  description = "A list of all [ingress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#ingress-rules-reference) to use in a dry-run perimeter. Each list object has a `from` and `to` value that describes ingress_from and ingress_to.\n\nExample: `[{ from={ sources={ resources=[], access_levels=[] }, identities=[], identity_type=\"ID_TYPE\" }, to={ resources=[], operations={ \"SRV_NAME\"={ OP_TYPE=[] }}}}]`\n\nValid Values:\n`ID_TYPE` = `null` or `IDENTITY_TYPE_UNSPECIFIED` (only allow indentities from list); `ANY_IDENTITY`; `ANY_USER_ACCOUNT`; `ANY_SERVICE_ACCOUNT`\n`SRV_NAME` = \"`*`\" (allow all services) or [Specific Services](https://cloud.google.com/vpc-service-controls/docs/supported-products#supported_products)\n`OP_TYPE` = [methods](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions) or [permissions](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions)"
-  type = list(object({
+variable "ingress_policies_map" {
+  description = "Map of additional ingress policies for the enforced perimeter. Map key is the Terraform state key."
+  type = map(object({
     title = optional(string, null)
     from = object({
       sources = optional(object({
@@ -288,12 +288,12 @@ variable "ingress_policies" {
       resources = optional(list(string), ["*"])
     })
   }))
-  default = []
+  default = {}
 }
 
-variable "egress_policies" {
-  description = "A list of all [egress policies](https://cloud.google.com/vpc-service-controls/docs/ingress-egress-rules#egress-rules-reference) to use in a dry-run perimeter. Each list object has a `from` and `to` value that describes egress_from and egress_to.\n\nExample: `[{ from={ identities=[], identity_type=\"ID_TYPE\" }, to={ resources=[], operations={ \"SRV_NAME\"={ OP_TYPE=[] }}}}]`\n\nValid Values:\n`ID_TYPE` = `null` or `IDENTITY_TYPE_UNSPECIFIED` (only allow indentities from list); `ANY_IDENTITY`; `ANY_USER_ACCOUNT`; `ANY_SERVICE_ACCOUNT`\n`SRV_NAME` = \"`*`\" (allow all services) or [Specific Services](https://cloud.google.com/vpc-service-controls/docs/supported-products#supported_products)\n`OP_TYPE` = [methods](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions) or [permissions](https://cloud.google.com/vpc-service-controls/docs/supported-method-restrictions)"
-  type = list(object({
+variable "egress_policies_map" {
+  description = "Map of additional egress policies for the enforced perimeter. Map key is the Terraform state key."
+  type = map(object({
     title = optional(string, null)
     from = object({
       sources = optional(object({
@@ -313,7 +313,7 @@ variable "egress_policies" {
       external_resources = optional(list(string), [])
     })
   }))
-  default = []
+  default = {}
 }
 
 variable "perimeter_additional_members" {
@@ -336,30 +336,6 @@ variable "resources" {
 
 variable "resources_dry_run" {
   description = "A list of GCP resources that are inside of the service perimeter. Currently only projects and VPC networks are allowed. If set, a dry-run policy will be set."
-  type        = list(string)
-  default     = []
-}
-
-variable "ingress_policies_keys" {
-  description = "A list of keys to use for the Terraform state. The order should correspond to var.ingress_policies and the keys must not be dynamically computed. If `null`, var.ingress_policies will be used as keys."
-  type        = list(string)
-  default     = []
-}
-
-variable "egress_policies_keys" {
-  description = "A list of keys to use for the Terraform state. The order should correspond to var.egress_policies and the keys must not be dynamically computed. If `null`, var.egress_policies will be used as keys."
-  type        = list(string)
-  default     = []
-}
-
-variable "ingress_policies_keys_dry_run" {
-  description = "(Dry-run) A list of keys to use for the Terraform state. The order should correspond to var.ingress_policies_dry_run and the keys must not be dynamically computed. If `null`, var.ingress_policies_dry_run will be used as keys."
-  type        = list(string)
-  default     = []
-}
-
-variable "egress_policies_keys_dry_run" {
-  description = "(Dry-run) A list of keys to use for the Terraform state. The order should correspond to var.egress_policies_dry_run and the keys must not be dynamically computed. If `null`, var.egress_policies_dry_run will be used as keys."
   type        = list(string)
   default     = []
 }

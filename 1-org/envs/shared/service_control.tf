@@ -832,10 +832,10 @@ module "service_control" {
     "serviceAccount:${local.organization_service_account}",
     "serviceAccount:${local.environment_service_account}",
   ], var.perimeter_additional_members))
-  resources                     = [for k in local.project_keys : local.projects_map[k]]
-  resource_keys                 = local.project_keys
-  resources_dry_run             = [for k in local.project_keys : local.projects_map[k]]
-  resource_keys_dry_run         = local.project_keys
+  resources             = [for k in local.project_keys : local.projects_map[k]]
+  resource_keys         = local.project_keys
+  resources_dry_run     = [for k in local.project_keys : local.projects_map[k]]
+  resource_keys_dry_run = local.project_keys
 
   ingress_policies_dry_run_map = local.ingress_policies_dry_run_map
   ingress_policies_map         = local.ingress_policies_map

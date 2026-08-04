@@ -11,11 +11,10 @@ On the other hand, the authentication infrastructure using [Workload identity fe
 ## Requirements
 
 To run the instructions described in this document, install the following:
-
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
-    - [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
+- [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
-- [Terraform](https://www.terraform.io/downloads.html) version 1.5.7  or later
+- [Terraform](https://www.terraform.io/downloads.html) version 1.5.7 or later
 
 For the manual steps described in this document, you need to use the same [Terraform](https://www.terraform.io/downloads.html) version used on the build pipeline.
 Otherwise, you might experience Terraform state snapshot lock errors.
@@ -23,58 +22,61 @@ Otherwise, you might experience Terraform state snapshot lock errors.
 Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operational System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
 
 - 0-bootstrap/cb.tf
-   ```
-   terraform_version = "1.5.7"
-   ```
+
+  ```
+  terraform_version = "1.5.7"
+  ```
 
 - scripts/validate-requirements.sh
-   ```
-   TF_VERSION="1.5.7"
-   ```
+
+  ```
+  TF_VERSION="1.5.7"
+  ```
 
 - build/github-tf-apply.yaml
-   ```
-   terraform_version: '1.5.7'
-   ```
+
+  ```
+  terraform_version: '1.5.7'
+  ```
 
 - github-tf-pull-request.yaml
 
-   ```
-   terraform_version: "1.5.7"
-   ```
+  ```
+  terraform_version: "1.5.7"
+  ```
 
 - 0-bootstrap/Dockerfile
-   ```
-   ARG TERRAFORM_VERSION=1.5.7
-   ```
+  ```
+  ARG TERRAFORM_VERSION=1.5.7
+  ```
 
 Also make sure that you have the following:
 
 - A [GitHub account](https://docs.github.com/en/get-started/onboarding/getting-started-with-your-github-account) for your User or [Organization](https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch).
 - A **private** [GitHub repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository) for each one of the stages of Foundation:
-    - Bootstrap
-    - Organization
-    - Environments
-    - Networks
-    - Projects
+  - Bootstrap
+  - Organization
+  - Environments
+  - Networks
+  - Projects
 - A [Fine grained](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token) personal access token configured with:
-    - Repository access to Only select repositories, including all the repositories in the previous item.
-    - Permissions:
-        - Actions: Read and Write
-        - Contents: Read and Write
-        - Metadata: Read-only
-        - Secrets: Read and Write
-        - Variables: Read and Write
-        - Workflows: Read and Write
+  - Repository access to Only select repositories, including all the repositories in the previous item.
+  - Permissions:
+    - Actions: Read and Write
+    - Contents: Read and Write
+    - Metadata: Read-only
+    - Secrets: Read and Write
+    - Variables: Read and Write
+    - Workflows: Read and Write
 - A Google Cloud [organization](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 - A Google Cloud [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account).
 - Cloud Identity or Google Workspace groups for organization and billing admins.
 - For the user who will run the procedures in this document, grant the following roles:
-   - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
-   - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
-   - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
-   - The `roles/billing.admin` role on the billing account.
-   - The `roles/resourcemanager.folderCreator` role.
+  - The `roles/resourcemanager.organizationAdmin` role on the Google Cloud organization.
+  - The `roles/orgpolicy.policyAdmin` role on the Google Cloud organization.
+  - The `roles/resourcemanager.projectCreator` role on the Google Cloud organization.
+  - The `roles/billing.admin` role on the billing account.
+  - The `roles/resourcemanager.folderCreator` role.
 
 ## Instructions
 
@@ -93,7 +95,7 @@ for each one of the repositories.
    ```
 
 1. Clone the private repository you created to host the `0-bootstrap` terraform configuration at the same level of the `terraform-example-foundation` folder.
-You must be [authenticated to GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github).
+   You must be [authenticated to GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github).
 
    ```bash
    git clone git@github.com:<GITHUB-OWNER>/<GITHUB-BOOTSTRAP-REPO>.git gcp-bootstrap
@@ -145,6 +147,7 @@ You must be [authenticated to GitHub](https://docs.github.com/en/authentication/
    ```
 
 1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitHub version
+
    ```bash
    ./scripts/choose_build_type.sh github
    ```
@@ -157,8 +160,7 @@ You must be [authenticated to GitHub](https://docs.github.com/en/authentication/
 
 1. Update the file `terraform.tfvars` with values from your Google Cloud environment
 1. Update the file `terraform.tfvars` with values from your GitHub repositories
-1. To prevent saving the `gh_token` in plain text in the `terraform.tfvars` file,
-export the GitHub fine grained access token as an environment variable:
+1. To prevent saving the `gh_token` in plain text in the `terraform.tfvars` file, export the GitHub fine grained access token as an environment variable:
 
    ```bash
    export TF_VAR_gh_token="YOUR-FINE-GRAINED-ACCESS-TOKEN"
@@ -179,7 +181,7 @@ export the GitHub fine grained access token as an environment variable:
    terraform plan -input=false -out bootstrap.tfplan
    ```
 
-1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Validate policies](https://cloud.google.com/docs/terraform/policy-validation/validate-policies) instructions for the Google Cloud CLI.
+1. To validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Validate policies](https://cloud.google.com/docs/terraform/policy-validation/validate-policies) instructions for the Google Cloud CLI.
 
 1. Run the following commands and check for violations:
 
@@ -190,7 +192,7 @@ export the GitHub fine grained access token as an environment variable:
    gcloud beta terraform vet bootstrap.json --policy-library="../../policy-library" --project ${VET_PROJECT_ID}
    ```
 
-   *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
+   `A-VALID-PROJECT-ID` must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
 
 1. No violations and an output with `done` means the validation was successful.
 
@@ -319,19 +321,19 @@ we recommend that you request 50 additional projects for the **projects step ser
    ```
 
 1. Update the file `envs/shared/terraform.tfvars` with values from your GCP environment.
-See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for additional information on the values in the `terraform.tfvars` file.
+   See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for additional information on the values in the `terraform.tfvars` file.
 
 1. Un-comment the variable `create_access_context_manager_access_policy = false` if your organization already has an Access Context Manager Policy.
 
-    ```bash
-    export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -json common_config | jq '.org_id' --raw-output)
+   ```bash
+   export ORGANIZATION_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared" output -json common_config | jq '.org_id' --raw-output)
 
-    export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
+   export ACCESS_CONTEXT_MANAGER_ID=$(gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format="value(name)")
 
-    echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
+   echo "access_context_manager_policy_id = ${ACCESS_CONTEXT_MANAGER_ID}"
 
-    if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
-    ```
+   if [ ! -z "${ACCESS_CONTEXT_MANAGER_ID}" ]; then sed -i'' -e "s=//create_access_context_manager_access_policy=create_access_context_manager_access_policy=" ./envs/shared/terraform.tfvars; fi
+   ```
 
 1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap.
 
@@ -353,15 +355,15 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
 
 1. If the notification exists the output will be:
 
-    ```text
-    organizations/ORGANIZATION_ID/notificationConfigs/scc-notify
-    ```
+   ```text
+   organizations/ORGANIZATION_ID/notificationConfigs/scc-notify
+   ```
 
 1. If the notification does not exist the output will be:
 
-    ```text
-    ERROR: (gcloud.scc.notifications.describe) NOT_FOUND: Requested entity was not found.
-    ```
+   ```text
+   ERROR: (gcloud.scc.notifications.describe) NOT_FOUND: Requested entity was not found.
+   ```
 
 1. If the notification exists, choose a different value for the `scc_notification_name` variable in the `./envs/shared/terraform.tfvars` file.
 
@@ -390,7 +392,6 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
    ```bash
    cd ..
    ```
-
 
 ## Deploying step 2-environments
 
@@ -448,7 +449,7 @@ See the shared folder [README.md](../1-org/envs/shared/README.md#inputs) for add
    ```
 
 1. Update the file with values from your GCP environment.
-See any of the envs folder [README.md](../2-environments/envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
+   See any of the envs folder [README.md](../2-environments/envs/production/README.md#inputs) files for additional information on the values in the `terraform.tfvars` file.
 
 1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap.
 
@@ -496,8 +497,8 @@ See any of the envs folder [README.md](../2-environments/envs/production/README.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-ENVIRONMENTS-REPO/actions under `tf-apply`.
 
 1. You can now move to the instructions in the network stage.
-To use the [Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-svpc](#deploying-step-3-networks-svpc),
-or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
+   To use the [Shared VPC](https://cloud.google.com/architecture/security-foundations/networking#vpcsharedvpc-id7-1-shared-vpc-) network mode go to [Deploying step 3-networks-svpc](#deploying-step-3-networks-svpc),
+   or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hub-and-spoke) to use the [Hub and Spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) network mode.
 
 1. Before moving to the next step, go back to the parent directory.
 
@@ -574,7 +575,7 @@ or go to [Deploying step 3-networks-hub-and-spoke](#deploying-step-3-networks-hu
    ```
 
 1. Update `common.auto.tfvars` file with values from your GCP environment.
-See any of the envs folder [README.md](../3-networks-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
+   See any of the envs folder [README.md](../3-networks-svpc/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
 1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the project.
 1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
 
@@ -603,7 +604,7 @@ See any of the envs folder [README.md](../3-networks-svpc/envs/production/README
    ```
 
 1. The networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
-An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+   An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
 
    ```bash
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw networks_step_terraform_service_account_email)
@@ -652,13 +653,13 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 1. Push your production branch since development and nonproduction depends it.
 
-*Note:** The Production environment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
+\*Note:\* The Production environment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
 
-   ```bash
-   git add .
-   git commit -m 'Initialize networks repo - production'
-   git push --set-upstream origin production
-   ```
+```bash
+git add .
+git commit -m 'Initialize networks repo - production'
+git push --set-upstream origin production
+```
 
 > NOTE: Development and Non-production branches depends on the production branch to be deployed first, for the `3-networks-svpc`.
 
@@ -748,7 +749,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```
 
 1. Update `common.auto.tfvars` file with values from your GCP environment.
-See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
+   See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/production/README.md#inputs) files for additional information on the values in the `common.auto.tfvars` file.
 1. You must add your user email in the variable `perimeter_additional_members` to be able to see the resources created in the project.
 1. Update the `remote_state_bucket` variable with the backend bucket from step Bootstrap in the `common.auto.tfvars` file.
 
@@ -777,7 +778,7 @@ See any of the envs folder [README.md](../3-networks-hub-and-spoke/envs/producti
    ```
 
 1. The networks step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
-An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+   An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
 
    ```bash
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw networks_step_terraform_service_account_email)
@@ -832,7 +833,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 1. If the GitHub action is successful, merge the pull request in to the `production` branch.
 1. The merge will trigger a GitHub Action that will apply the terraform configuration for the `production` environment.
 1. Review merge output in GitHub https://github.com/GITHUB-OWNER/GITHUB-NETWORKS-REPO/actions under `tf-apply`.
-
 
 1. Before executing the next steps, unset the `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` environment variable.
 
@@ -922,15 +922,14 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
 
 For example, to create a new business unit similar to business_unit_1, run the following:
 
-   ```bash
-   #copy the business_unit_1 folder and it's contents to a new folder business_unit_2
-   cp -r  business_unit_1 business_unit_2
+```bash
+#copy the business_unit_1 folder and it's contents to a new folder business_unit_2
+cp -r  business_unit_1 business_unit_2
 
-   # search all files under the folder `business_unit_2` and replace strings for business_unit_1 with strings for business_unit_2
-   grep -rl bu1 business_unit_2/ | xargs sed -i 's/bu1/bu2/g'
-   grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/business_unit_2/g'
-   ```
-
+# search all files under the folder `business_unit_2` and replace strings for business_unit_1 with strings for business_unit_2
+grep -rl bu1 business_unit_2/ | xargs sed -i 's/bu1/bu2/g'
+grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/business_unit_2/g'
+```
 
 1. Commit changes.
 
@@ -950,7 +949,7 @@ For example, to create a new business unit similar to business_unit_1, run the f
    ```
 
 1. The projects step Terraform Service Account will be used for [Service Account impersonation](https://cloud.google.com/docs/authentication/use-service-account-impersonation) in the following steps.
-An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
+   An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with the Terraform Service Account to enable impersonation.
 
    ```bash
    export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_step_terraform_service_account_email)

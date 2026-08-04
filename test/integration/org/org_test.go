@@ -39,9 +39,9 @@ func TestOrg(t *testing.T) {
 
 	backend_bucket := bootstrap.GetStringOutput("gcs_bucket_tfstate")
 
-	ingressPolicies := []map[string]interface{}{}
+	ingressPolicies := map[string]interface{}{}
 
-	egressPolicies := []map[string]interface{}{}
+	egressPolicies := map[string]interface{}{}
 
 	terraformSA := bootstrap.GetStringOutput("organization_step_terraform_service_account_email")
 
@@ -63,8 +63,8 @@ func TestOrg(t *testing.T) {
 		"folder_deletion_protection":        false,
 		"project_deletion_policy":           "DELETE",
 		"access_context_manager_policy_id":  policyID,
-		"ingress_policies":                  ingressPolicies,
-		"egress_policies":                   egressPolicies,
+		"ingress_policies_map":              ingressPolicies,
+		"egress_policies_map":               egressPolicies,
 		"perimeter_additional_members":      []string{},
 		"enable_scc_resources_in_terraform": true,
 	}

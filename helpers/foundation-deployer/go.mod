@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.24.0
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
 	github.com/stretchr/testify v1.11.1
-	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20260701215744-ed07500ef63b
+	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20260811171843-0a96d8388010
 	github.com/tidwall/gjson v1.19.0
 	gitlab.com/gitlab-org/api/client-go v0.158.0
 	google.golang.org/api v0.290.0

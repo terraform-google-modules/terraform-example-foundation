@@ -114,8 +114,8 @@ github.com/rogpeppe/go-internal v1.14.1 h1:UQB4HGPB6osV0SQTLymcB4TgvyWu6ZyliaW0t
 github.com/rogpeppe/go-internal v1.14.1/go.mod h1:MaRKkUm5W0goXpeCfT7UZI6fk/L7L7so1lCWt35ZSgc=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
-github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20260701215744-ed07500ef63b h1:LP6XeaY36ahV9r60z6rOU9hGAEOuf/J959tQml26ego=
-github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20260701215744-ed07500ef63b/go.mod h1:0o3OEBePGtUVUBcOgbMIq6oMEq77wurA9jSCRHHwZpI=
+github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20260811171843-0a96d8388010 h1:NLaS20gQ/NIWvxblokL3MDoz8eGqxnsP3/1KszK3eBI=
+github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20260811171843-0a96d8388010/go.mod h1:h26lbCDWQOjtP1+D/hwpAcZ4XBY1z+ZvqB41UuRLBl8=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/gjson v1.19.0 h1:xwxm7n691Uf3u5OFjzngavjGTh55KX5q/9w9xHW88JU=
 github.com/tidwall/gjson v1.19.0/go.mod h1:V37/opeE/JbLUOfH0QTXiNez2l0RUjYUhpT4szFQAfc=

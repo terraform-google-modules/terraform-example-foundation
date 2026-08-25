@@ -43,12 +43,11 @@ func ValidateDirectories(g GlobalTFVars) error {
 	return nil
 }
 
-// ValidateComponents checks if gcloud Beta Components and Terraform Tools are installed
+// ValidateComponents checks if gcloud Beta Components is installed
 func ValidateComponents(t testing.TB) error {
 	gcpConf := gcp.NewGCP()
 	components := []string{
 		"beta",
-		"terraform-tools",
 	}
 	missing := []string{}
 	for _, c := range components {

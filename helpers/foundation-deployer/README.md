@@ -61,10 +61,10 @@ Version 1.5.7 is the last version before the license model change. To use a late
 - check if required components of `gcloud` are installed:
 
     ```bash
-    gcloud components list --filter="id=beta OR id=terraform-tools"
+    gcloud components list --filter="id=beta"
     ```
 
-- Follow the instructions in the output of the command if components `beta` and `terraform-tools` are not installed to install them.
+- Follow the instructions in the output of the command if component `beta` is not installed to install it.
 
 ### Prepare the deploy environment
 

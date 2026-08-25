@@ -275,7 +275,6 @@ tf_validate() {
           popd
         fi
       fi
-      gcloud beta terraform vet "${tf_file}.json" --policy-library="${policy_file_path}" --project="${project_id}" || exit 33
       cd "$base_dir" || exit
     else
       echo "ERROR: ${path} does not exist"

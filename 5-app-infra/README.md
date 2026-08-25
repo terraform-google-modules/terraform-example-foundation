@@ -270,8 +270,6 @@ sed -i'' -e "s/IMAGE_DIGEST/${confidential_image_digest}/" ./common.auto.tfvars
 We will now deploy each of our environments (development/production/nonproduction) using this script.
 When using Cloud Build as your CI/CD tool, each environment corresponds to a branch in the repository for the `5-app-infra` step. Only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-
 1. Use `terraform output` to get the Infra Pipeline Project ID from 4-projects output.
 
    ```bash

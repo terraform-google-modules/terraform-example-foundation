@@ -73,15 +73,10 @@ func TestBootstrap(t *testing.T) {
 		"project_deletion_policy":          "DELETE",
 	}
 
-	temp := tft.NewTFBlueprintTest(t,
-		tft.WithTFDir("../../../0-bootstrap"),
-	)
-
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
 		tft.WithVars(vars),
 		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),
-		tft.WithPolicyLibraryPath("/workspace/policy-library", temp.GetTFSetupStringOutput("project_id")),
 	)
 
 	cloudSourceRepos := []string{

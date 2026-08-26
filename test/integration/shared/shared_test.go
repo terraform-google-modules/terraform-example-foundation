@@ -67,7 +67,6 @@ func TestShared(t *testing.T) {
 		tft.WithTFDir(tfdDir),
 		tft.WithVars(vars),
 		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),
-		tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 		tft.WithBackendConfig(backendConfig),
 	)
 	shared.DefineVerify(

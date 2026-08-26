@@ -288,6 +288,7 @@ func TestBootstrap(t *testing.T) {
 						"roles/accesscontextmanager.policyAdmin",
 						"roles/resourcemanager.organizationAdmin",
 						"roles/serviceusage.serviceUsageConsumer",
+						"roles/cloudkms.admin",
 					},
 				},
 				{
@@ -295,11 +296,17 @@ func TestBootstrap(t *testing.T) {
 					orgRoles: []string{
 						"roles/accesscontextmanager.policyAdmin",
 						"roles/compute.xpnAdmin",
+						"roles/serviceusage.serviceUsageConsumer",
 					},
 				},
 				{
-					output:   "environment_step_terraform_service_account_email",
-					orgRoles: []string{},
+					output: "environment_step_terraform_service_account_email",
+					orgRoles: []string{
+						"roles/accesscontextmanager.policyAdmin",
+						"roles/assuredworkloads.admin",
+						"roles/resourcemanager.tagUser",
+						"roles/serviceusage.serviceUsageConsumer",
+					},
 				},
 				{
 					output: "organization_step_terraform_service_account_email",
@@ -310,6 +317,12 @@ func TestBootstrap(t *testing.T) {
 						"roles/securitycenter.notificationConfigEditor",
 						"roles/resourcemanager.organizationViewer",
 						"roles/accesscontextmanager.policyAdmin",
+						"roles/essentialcontacts.admin",
+						"roles/resourcemanager.tagAdmin",
+						"roles/resourcemanager.tagUser",
+						"roles/cloudasset.owner",
+						"roles/securitycenter.sourcesEditor",
+						"roles/serviceusage.serviceUsageConsumer",
 					},
 				},
 				{

@@ -524,12 +524,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ./tf-wrapper.sh plan shared
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
-   ```
-
 1. Run `apply` shared.
 
    ```bash
@@ -671,12 +665,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```bash
    ./tf-wrapper.sh init shared
    ./tf-wrapper.sh plan shared
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
    ```
 
 1. Run `apply` shared.
@@ -823,12 +811,6 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```bash
    ./tf-wrapper.sh init shared
    ./tf-wrapper.sh plan shared
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
    ```
 
 1. Run `apply` shared.

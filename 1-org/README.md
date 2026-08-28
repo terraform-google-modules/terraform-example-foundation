@@ -297,12 +297,6 @@ You can now deploy your environment (production) using this script.
    ./tf-wrapper.sh plan production
    ```
 
-1. Run `validate` and resolve any violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
 1. Commit validated code in plan branch.
 
    ```bash

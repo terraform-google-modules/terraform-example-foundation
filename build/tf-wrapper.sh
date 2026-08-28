@@ -18,10 +18,6 @@ set -e
 
 action=$1
 branch=$2
-policy_source=$3
-project_id=$4
-policy_type=$5 # FILESYSTEM | CLOUDSOURCE
-runner_env=$6 # GITHUB | CLOUDBUILD | LOCAL
 base_dir=$(pwd)
 tmp_plan="${base_dir}/tmp_plan" #if you change this, update build triggers
 

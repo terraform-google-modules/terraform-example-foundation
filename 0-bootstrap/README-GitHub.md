@@ -602,12 +602,6 @@ we recommend that you request 50 additional projects for the **projects step ser
    ./tf-wrapper.sh plan shared
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
-   ```
-
 1. Run `apply` shared.
 
    ```bash
@@ -775,12 +769,6 @@ git push --set-upstream origin production
    ./tf-wrapper.sh plan shared
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
-   ```
-
 1. Run `apply` shared.
 
    ```bash
@@ -943,12 +931,6 @@ grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/busi
    ```bash
    ./tf-wrapper.sh init shared
    ./tf-wrapper.sh plan shared
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
    ```
 
 1. Run `apply` shared.

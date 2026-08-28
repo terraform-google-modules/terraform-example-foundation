@@ -203,12 +203,6 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    ./tf-wrapper.sh plan shared
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/../gcp-policies ${CLOUD_BUILD_PROJECT_ID}
-   ```
-
 1. Run `apply` shared.
 
    ```bash
@@ -322,12 +316,6 @@ We will now deploy each of our environments(development/production/nonproduction
    ./tf-wrapper.sh plan shared
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
 1. Run `apply` shared.
 
    ```bash
@@ -343,12 +331,6 @@ We will now deploy each of our environments(development/production/nonproduction
    git merge shared
    ./tf-wrapper.sh init development
    ./tf-wrapper.sh plan development
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate development $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
 1. Run `apply` development.
@@ -368,12 +350,6 @@ We will now deploy each of our environments(development/production/nonproduction
    ./tf-wrapper.sh plan nonproduction
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate nonproduction $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
 1. Run `apply` nonproduction.
 
    ```bash
@@ -389,12 +365,6 @@ We will now deploy each of our environments(development/production/nonproduction
    git merge nonproduction
    ./tf-wrapper.sh init production
    ./tf-wrapper.sh plan production
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
 1. Run `apply` production.

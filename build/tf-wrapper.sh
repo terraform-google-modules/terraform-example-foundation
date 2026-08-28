@@ -52,7 +52,8 @@ leaf_regex_plan="^(development|nonproduction|production|shared)$"
 # leaf_regex_plan="^(business_unit_1|business_unit_2)$"
 
 #====================================================================#
-# Function used for the criteria for running terraform int/plan/show.
+# Function used for the criteria for running terraform int/plan/show
+# for all the Terraform configurations.
 #====================================================================#
 do_plan() {
   local leaf

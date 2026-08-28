@@ -287,12 +287,6 @@ When using Cloud Build as your CI/CD tool, each environment corresponds to a bra
    ./tf-wrapper.sh plan production
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
-   ```
-
 1. Run `apply` production.
 
    ```bash
@@ -306,12 +300,6 @@ When using Cloud Build as your CI/CD tool, each environment corresponds to a bra
    ./tf-wrapper.sh plan nonproduction
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate nonproduction $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
-   ```
-
 1. Run `apply` nonproduction.
 
    ```bash
@@ -323,12 +311,6 @@ When using Cloud Build as your CI/CD tool, each environment corresponds to a bra
    ```bash
    ./tf-wrapper.sh init development
    ./tf-wrapper.sh plan development
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate development $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
    ```
 
 1. Run `apply` development.

@@ -18,7 +18,7 @@ Otherwise, you might experience Terraform state snapshot lock errors.
 
 Version 1.5.7 is the last version before the license model change. To use a later version of Terraform, ensure that the Terraform version used in the Operating System to manually execute part of the steps in `3-networks` and `4-projects` is the same version configured in the following code
 
-- 0-bootstrap/cb.tf
+- 0-bootstrap/build_cb.tf
    ```
    terraform_version = "1.5.7"
    ```
@@ -33,7 +33,13 @@ Version 1.5.7 is the last version before the license model change. To use a late
    terraform_version: '1.5.7'
    ```
 
-- github-tf-pull-request.yaml
+- build/github-tf-plan-all.yaml
+
+   ```
+   terraform_version: "1.5.7"
+   ```
+
+- build/github-tf-pull-request.yaml
 
    ```
    terraform_version: "1.5.7"

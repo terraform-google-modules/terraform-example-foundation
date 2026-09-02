@@ -440,7 +440,7 @@ func DeployEnvStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		Step:          EnvironmentsStep,
 		Repo:          EnvironmentsRepo,
 		GitConf:       conf,
-		Envs:          []string{"production", "nonproduction", "development"},
+		Envs:          getEnvironments(tfvars),
 		BuildType:     c.BuildType,
 		Executor:      executor,
 	}
@@ -519,7 +519,7 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		HasLocalStep:  true,
 		LocalSteps:    localStep,
 		GroupingUnits: []string{"envs"},
-		Envs:          []string{"production", "nonproduction", "development"},
+		Envs:          getEnvironments(tfvars),
 		BuildType:     c.BuildType,
 		Executor:      executor,
 	}
@@ -592,7 +592,7 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		HasLocalStep:  true,
 		LocalSteps:    []string{"shared"},
 		GroupingUnits: []string{"business_unit_1"},
-		Envs:          []string{"production", "nonproduction", "development"},
+		Envs:          getEnvironments(tfvars),
 		BuildType:     c.BuildType,
 		Executor:      executor,
 	}
@@ -732,6 +732,13 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 	}
 
 	return deployStage(t, stageConf, s, c)
+}
+
+func getEnvironments(tfvars GlobalTFVars) []string {
+	if tfvars.ProductionOnlyDeploy != nil && *tfvars.ProductionOnlyDeploy {
+		return []string{"production"}
+	}
+	return []string{"production", "nonproduction", "development"}
 }
 
 func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error {

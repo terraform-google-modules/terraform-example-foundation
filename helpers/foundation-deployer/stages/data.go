@@ -212,6 +212,7 @@ type GlobalTFVars struct {
 	ProjectDeletionPolicy                 string          `hcl:"project_deletion_policy"`
 	BuildType                             string          `hcl:"build_type"`
 	GitRepos                              *GitRepos       `hcl:"git_repos"`
+	ProductionOnlyDeploy                  *bool           `hcl:"production_only_deploy,optional"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided

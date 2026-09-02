@@ -94,6 +94,8 @@ Version 1.5.7 is the last version before the license model change. To use a late
 - The `0-bootstrap` README [prerequisites](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md#prerequisites)  section has additional prerequisites needed to run this helper.
 - Variable `code_checkout_path` is the full path to `deploy-directory` directory.
 - Variable `foundation_code_path` is the full path to `terraform-example-foundation` directory.
+- By default, the `foundation-deployer` deploys all environments (`production`, `nonproduction`, `development`).
+- To deploy only the `production` environment, set the `production_only_deploy` variable to `true` in your `global.tfvars` file. This is useful for testing or demonstration purposes.
 - See the READMEs for the stages for additional information:
   - [0-bootstrap](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md)
   - [1-org](https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/1-org/README.md)

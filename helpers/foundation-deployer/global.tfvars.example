@@ -30,6 +30,11 @@ validator_project_id = "EXISTING_PROJECT_ID"
 project_deletion_policy    = "PREVENT" # Use "DELETE" to allow deletion of the projects
 folder_deletion_protection = true
 
+# By default, the `foundation-deployer` deploys all environments (`production`, `nonproduction`, `development`).
+# To deploy only the `production` environment, set the `production_only_deploy` variable to `true` in your `global.tfvars` file.
+# This is useful for testing or demonstration purposes.
+# production_only_deploy = false
+
 // build type to use. One of "cb", "github", "gitlab"
 build_type = "cb"
 

@@ -62,7 +62,8 @@ type CommonConf struct {
 	EnableHubAndSpoke bool
 	DisablePrompt     bool
 	Logger            *logger.Logger
-	GitToken          string
+	GitToken             string
+	ProductionOnlyDeploy bool
 }
 
 type StageConf struct {

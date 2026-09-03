@@ -102,6 +102,13 @@ func DestroyOrgStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c Co
 	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
 
+func getDestroyEnvironments(c CommonConf) []string {
+	if c.ProductionOnlyDeploy {
+		return []string{"production"}
+	}
+	return []string{"development", "nonproduction", "production"}
+}
+
 func DestroyEnvStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c CommonConf) error {
 	stageConf := StageConf{
 		Stage:         EnvironmentsRepo,
@@ -110,7 +117,7 @@ func DestroyEnvStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c Co
 		Step:          EnvironmentsStep,
 		Repo:          EnvironmentsRepo,
 		GroupingUnits: []string{"envs"},
-		Envs:          []string{"development", "nonproduction", "production"},
+		Envs:          getDestroyEnvironments(c),
 	}
 	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
@@ -125,7 +132,7 @@ func DestroyNetworksStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		Repo:          NetworksRepo,
 		HasLocalStep:  true,
 		GroupingUnits: []string{"envs"},
-		Envs:          []string{"development", "nonproduction", "production"},
+		Envs:          getDestroyEnvironments(c),
 	}
 	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
@@ -139,7 +146,7 @@ func DestroyProjectsStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 		Repo:          ProjectsRepo,
 		HasLocalStep:  true,
 		GroupingUnits: []string{"business_unit_1"},
-		Envs:          []string{"development", "nonproduction", "production"},
+		Envs:          getDestroyEnvironments(c),
 	}
 	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
@@ -152,7 +159,7 @@ func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOu
 		Step:          AppInfraStep,
 		Repo:          AppInfraRepo,
 		GroupingUnits: []string{"business_unit_1"},
-		Envs:          []string{"development", "nonproduction", "production"},
+		Envs:          getDestroyEnvironments(c),
 	}
 	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }

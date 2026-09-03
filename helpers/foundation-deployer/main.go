@@ -108,8 +108,9 @@ func main() {
 		PolicyPath:        filepath.Join(globalTFVars.FoundationCodePath, "policy-library"),
 		BuildType:         globalTFVars.BuildType,
 		EnableHubAndSpoke: globalTFVars.EnableHubAndSpoke,
-		DisablePrompt:     cfg.disablePrompt,
-		Logger:            utils.GetLogger(cfg.quiet),
+		DisablePrompt:        cfg.disablePrompt,
+		Logger:               utils.GetLogger(cfg.quiet),
+		ProductionOnlyDeploy: globalTFVars.ProductionOnlyDeploy != nil && *globalTFVars.ProductionOnlyDeploy,
 	}
 
 	// validate git configuration for GitHub and GitLab

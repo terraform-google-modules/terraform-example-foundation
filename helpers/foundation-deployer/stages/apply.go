@@ -726,7 +726,7 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 		Step:          AppInfraStep,
 		Repo:          AppInfraRepo,
 		GitConf:       conf,
-		Envs:          []string{"production", "nonproduction", "development"},
+		Envs:          getEnvironments(tfvars),
 		BuildType:     c.BuildType,
 		Executor:      executor,
 	}

@@ -43,3 +43,32 @@ func TestGetEnvironments(t *testing.T) {
 		})
 	}
 }
+
+func TestGetDestroyEnvironments(t *testing.T) {
+	tests := []struct {
+		name     string
+		conf     CommonConf
+		expected []string
+	}{
+		{
+			name: "production_only_deploy is true",
+			conf: CommonConf{
+				ProductionOnlyDeploy: true,
+			},
+			expected: []string{"production"},
+		},
+		{
+			name: "production_only_deploy is false",
+			conf: CommonConf{
+				ProductionOnlyDeploy: false,
+			},
+			expected: []string{"development", "nonproduction", "production"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expected, getDestroyEnvironments(tt.conf))
+		})
+	}
+}

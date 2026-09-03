@@ -29,9 +29,9 @@ locals {
   bootstrap_folder_name        = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
   common_folder_name           = data.terraform_remote_state.org.outputs.common_folder_name
   network_folder_name          = data.terraform_remote_state.org.outputs.network_folder_name
-  development_folder_name      = data.terraform_remote_state.env_development.outputs.env_folder
-  nonproduction_folder_name    = data.terraform_remote_state.env_nonproduction.outputs.env_folder
-  production_folder_name       = data.terraform_remote_state.env_production.outputs.env_folder
+  development_folder_name      = try(data.terraform_remote_state.env_development.outputs.env_folder, "")
+  nonproduction_folder_name    = try(data.terraform_remote_state.env_nonproduction.outputs.env_folder, "")
+  production_folder_name       = try(data.terraform_remote_state.env_production.outputs.env_folder, "")
   development_net_project_id   = data.terraform_remote_state.org.outputs.shared_vpc_projects["development"].shared_vpc_project_id
   nonproduction_net_project_id = data.terraform_remote_state.org.outputs.shared_vpc_projects["nonproduction"].shared_vpc_project_id
   production_net_project_id    = data.terraform_remote_state.org.outputs.shared_vpc_projects["production"].shared_vpc_project_id

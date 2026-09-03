@@ -120,6 +120,7 @@ By default the foundation regional resources are deployed in `us-west1` and `us-
 
     gcloud services enable \
     "cloudresourcemanager.googleapis.com" \
+    "cloudbilling.googleapis.com" \
     "iamcredentials.googleapis.com" \
     "cloudbuild.googleapis.com" \
     "securitycenter.googleapis.com" \

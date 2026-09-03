@@ -35,6 +35,7 @@ import (
 var (
 	validatorApis = []string{
 		"accesscontextmanager.googleapis.com",
+		"cloudbilling.googleapis.com",
 	}
 )
 

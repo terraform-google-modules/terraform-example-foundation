@@ -749,7 +749,7 @@ func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error 
 	}
 
 	err = s.RunStep(fmt.Sprintf("%s.copy-code", sc.Stage), func() error {
-		return copyStepCode(t, sc.GitConf, c.FoundationPath, c.CheckoutPath, sc.Repo, sc.Step, sc.CustomTargetDirPath, sc.BuildType)
+		return copyStepCode(t, sc.GitConf, c.FoundationPath, c.CheckoutPath, sc.Repo, sc.Step, sc.CustomTargetDirPath, sc.BuildType, c.ProductionOnlyDeploy)
 	})
 	if err != nil {
 		return err
@@ -820,7 +820,7 @@ func preparePoliciesRepo(policiesConf utils.GitRepo, policiesBranch, foundationP
 	return policiesConf.PushBranch(policiesBranch, "origin")
 }
 
-func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath, repo, step, customPath, buildType string) error {
+func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath, repo, step, customPath, buildType string, productionOnlyDeploy bool) error {
 	gcpPath := filepath.Join(checkoutPath, repo)
 	targetDir := gcpPath
 	if customPath != "" {
@@ -839,10 +839,10 @@ func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath
 		}
 	}
 
-	return copyCICDConfig(t, conf, foundationPath, checkoutPath, repo, buildType)
+	return copyCICDConfig(t, conf, foundationPath, checkoutPath, repo, buildType, productionOnlyDeploy)
 }
 
-func copyCICDConfig(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath, repo, buildType string) error {
+func copyCICDConfig(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath, repo, buildType string, productionOnlyDeploy bool) error {
 	var err error
 	gcpPath := filepath.Join(checkoutPath, repo)
 	switch buildType {
@@ -883,7 +883,20 @@ func copyCICDConfig(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPa
 		}
 	}
 
-	return utils.CopyFile(filepath.Join(foundationPath, "build/tf-wrapper.sh"), filepath.Join(gcpPath, "tf-wrapper.sh"))
+	err = utils.CopyFile(filepath.Join(foundationPath, "build/tf-wrapper.sh"), filepath.Join(gcpPath, "tf-wrapper.sh"))
+	if err != nil {
+		return err
+	}
+
+	if productionOnlyDeploy {
+		return utils.ReplaceStringInFile(
+			filepath.Join(gcpPath, "tf-wrapper.sh"),
+			`leaf_regex_plan="^(development|nonproduction|production|shared)$"`,
+			`leaf_regex_plan="^(production|shared)$"`,
+		)
+	}
+
+	return nil
 }
 
 func planStage(t testing.TB, conf utils.GitRepo, project, region, repo string, buildExecutor Executor) error {
@@ -913,7 +926,7 @@ func saveBootstrapCodeOnly(t testing.TB, sc StageConf, s steps.Steps, c CommonCo
 	}
 
 	err = s.RunStep(fmt.Sprintf("%s.copy-code", sc.Stage), func() error {
-		return copyStepCode(t, sc.GitConf, c.FoundationPath, c.CheckoutPath, sc.Repo, sc.Step, sc.CustomTargetDirPath, sc.BuildType)
+		return copyStepCode(t, sc.GitConf, c.FoundationPath, c.CheckoutPath, sc.Repo, sc.Step, sc.CustomTargetDirPath, sc.BuildType, c.ProductionOnlyDeploy)
 	})
 	if err != nil {
 		return err

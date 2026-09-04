@@ -54,14 +54,14 @@ const (
 )
 
 type CommonConf struct {
-	FoundationPath    string
-	CheckoutPath      string
-	PolicyPath        string
-	ValidatorProject  string
-	BuildType         string
-	EnableHubAndSpoke bool
-	DisablePrompt     bool
-	Logger            *logger.Logger
+	FoundationPath       string
+	CheckoutPath         string
+	PolicyPath           string
+	ValidatorProject     string
+	BuildType            string
+	EnableHubAndSpoke    bool
+	DisablePrompt        bool
+	Logger               *logger.Logger
 	GitToken             string
 	ProductionOnlyDeploy bool
 }
@@ -287,6 +287,7 @@ type OrgTfvars struct {
 	GcpGroups                             GcpGroups `hcl:"gcp_groups"`
 	FolderDeletionProtection              *bool     `hcl:"folder_deletion_protection"`
 	ProjectDeletionPolicy                 string    `hcl:"project_deletion_policy"`
+	ProductionOnlyDeploy                  *bool     `hcl:"production_only_deploy"`
 }
 
 type EnvsTfvars struct {

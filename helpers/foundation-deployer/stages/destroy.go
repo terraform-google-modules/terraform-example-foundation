@@ -102,13 +102,6 @@ func DestroyOrgStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c Co
 	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
 
-func getDestroyEnvironments(c CommonConf) []string {
-	if c.ProductionOnlyDeploy {
-		return []string{"production"}
-	}
-	return []string{"development", "nonproduction", "production"}
-}
-
 func DestroyEnvStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs, c CommonConf) error {
 	stageConf := StageConf{
 		Stage:         EnvironmentsRepo,

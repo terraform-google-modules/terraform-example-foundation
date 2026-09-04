@@ -343,6 +343,7 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		ProjectDeletionPolicy:                 tfvars.ProjectDeletionPolicy,
 		RequiredEgressRulesAppInfraDryRun:     tfvars.RequiredEgressRulesAppInfraDryRun,
 		RequiredIngressRulesAppInfraDryRun:    tfvars.RequiredIngressRulesAppInfraDryRun,
+		ProductionOnlyDeploy:                  tfvars.ProductionOnlyDeploy,
 	}
 	orgTfvars.GcpGroups = GcpGroups{}
 	if tfvars.HasOptionalGroupsCreation() {
@@ -732,13 +733,6 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 	}
 
 	return deployStage(t, stageConf, s, c)
-}
-
-func getEnvironments(tfvars GlobalTFVars) []string {
-	if tfvars.ProductionOnlyDeploy != nil && *tfvars.ProductionOnlyDeploy {
-		return []string{"production"}
-	}
-	return []string{"production", "nonproduction", "development"}
 }
 
 func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error {

@@ -21,10 +21,16 @@ locals {
     "roles/resourcemanager.projectIamAdmin",
     "roles/iam.serviceAccountUser",
   ]
+  all_environments = {
+    "development"   = "d"
+    "nonproduction" = "n"
+    "production"    = "p"
+  }
+
   environments = {
-    "development" : "d",
-    "nonproduction" : "n",
-    "production" : "p"
+    for env, code in local.all_environments :
+    env => code
+    if !var.production_only_deploy || env == "production"
   }
 }
 

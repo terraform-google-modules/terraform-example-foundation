@@ -103,11 +103,11 @@ func main() {
 	}
 
 	conf := stages.CommonConf{
-		FoundationPath:    globalTFVars.FoundationCodePath,
-		CheckoutPath:      globalTFVars.CodeCheckoutPath,
-		PolicyPath:        filepath.Join(globalTFVars.FoundationCodePath, "policy-library"),
-		BuildType:         globalTFVars.BuildType,
-		EnableHubAndSpoke: globalTFVars.EnableHubAndSpoke,
+		FoundationPath:       globalTFVars.FoundationCodePath,
+		CheckoutPath:         globalTFVars.CodeCheckoutPath,
+		PolicyPath:           filepath.Join(globalTFVars.FoundationCodePath, "policy-library"),
+		BuildType:            globalTFVars.BuildType,
+		EnableHubAndSpoke:    globalTFVars.EnableHubAndSpoke,
 		DisablePrompt:        cfg.disablePrompt,
 		Logger:               utils.GetLogger(cfg.quiet),
 		ProductionOnlyDeploy: globalTFVars.ProductionOnlyDeploy != nil && *globalTFVars.ProductionOnlyDeploy,

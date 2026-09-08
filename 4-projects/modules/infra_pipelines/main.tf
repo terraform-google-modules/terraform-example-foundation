@@ -55,7 +55,7 @@ resource "google_storage_bucket" "cloudbuild_bucket" {
 
 module "tf_workspace" {
   source  = "terraform-google-modules/bootstrap/google//modules/tf_cloudbuild_workspace"
-  version = "~> 12.0"
+  version = "~> 13.0"
 
   for_each = toset(var.app_infra_repos)
 
@@ -115,15 +115,6 @@ resource "google_storage_bucket_iam_member" "tf_state" {
 
   bucket = var.remote_tfstate_bucket
   role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${local.workspace_sa_email[each.key]}"
-}
-
-// Required by gcloud beta terraform vet
-resource "google_organization_iam_member" "browser" {
-  for_each = toset(var.app_infra_repos)
-
-  org_id = var.org_id
-  role   = "roles/browser"
   member = "serviceAccount:${local.workspace_sa_email[each.key]}"
 }
 

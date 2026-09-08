@@ -45,7 +45,7 @@ jobs:
 
       - uses: 'google-github-actions/setup-gcloud@v2'
         with:
-          install_components: "beta,terraform-tools"
+          install_components: "beta"
 
       - uses: 'hashicorp/setup-terraform@v3'
         with:
@@ -70,11 +70,6 @@ jobs:
         run: |
           echo "terraform plan"
           ${GITHUB_WORKSPACE}/tf-wrapper.sh plan "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"
-
-      - id: validate
-        run: |
-          echo "validate"
-          ${GITHUB_WORKSPACE}/tf-wrapper.sh validate "${GITHUB_REF_NAME}" "${GITHUB_WORKSPACE}/policy-library" "${PROJECT_ID}" "FILESYSTEM" "GITHUB"
 
       - id: apply
         run: |

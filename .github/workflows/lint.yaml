@@ -1,4 +1,4 @@
-# Copyright 2023-2025 Google LLC
+# Copyright 2023-2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,8 +34,9 @@ jobs:
   lint:
     name: 'lint'
     runs-on: 'ubuntu-latest'
+    timeout-minutes: 60
     steps:
-      - uses: 'actions/checkout@v6'
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' # v7.0.1
       - id: variables
         run: |
           MAKEFILE=$(find . -name Makefile -print -quit)
@@ -47,26 +48,28 @@ jobs:
             REGISTRY=$(grep "REGISTRY_URL := " $MAKEFILE | cut -d\  -f3)
             echo dev-tools=${REGISTRY}/${IMAGE}:${VERSION} >> "$GITHUB_OUTPUT"
           fi
-      - run: docker run --rm -e DISABLE_TFLINT -e ENABLE_PARALLEL -e EXCLUDE_LINT_DIRS -v ${{ github.workspace }}:/workspace ${STEPS_VARIABLES_OUTPUTS_DEV_TOOLS} module-swapper
+      - run: docker run --rm -e DISABLE_TFLINT -e ENABLE_PARALLEL -e EXCLUDE_LINT_DIRS -v "$GITHUB_WORKSPACE":/workspace "$STEPS_VARIABLES_OUTPUTS_DEV_TOOLS" module-swapper
         env:
           DISABLE_TFLINT: 1
           ENABLE_PARALLEL: 0
           EXCLUDE_LINT_DIRS: \./3-networks/modules/transitivity/assets
           STEPS_VARIABLES_OUTPUTS_DEV_TOOLS: ${{ steps.variables.outputs.dev-tools }}
-      - run: docker run --rm -e DISABLE_TFLINT -e ENABLE_PARALLEL -e EXCLUDE_LINT_DIRS -v ${{ github.workspace }}:/workspace ${STEPS_VARIABLES_OUTPUTS_DEV_TOOLS} /usr/local/bin/test_lint.sh
+      - run: docker run --rm -e DISABLE_TFLINT -e ENABLE_PARALLEL -e EXCLUDE_LINT_DIRS -v "$GITHUB_WORKSPACE":/workspace "$STEPS_VARIABLES_OUTPUTS_DEV_TOOLS" /usr/local/bin/test_lint.sh
         env:
           DISABLE_TFLINT: 1
           ENABLE_PARALLEL: 0
           EXCLUDE_LINT_DIRS: \./3-networks/modules/transitivity/assets
           STEPS_VARIABLES_OUTPUTS_DEV_TOOLS: ${{ steps.variables.outputs.dev-tools }}
   commitlint:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Setup node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: lts/*
       - name: Install commitlint
@@ -75,7 +78,6 @@ jobs:
           echo "module.exports = { extends: ['@commitlint/config-conventional'], rules: {'subject-case': [0], 'header-max-length': [0]} };" > commitlint.config.js
           npx commitlint --version
       - name: Validate PR commits with commitlint
-        if: github.event_name == 'pull_request'
         env:
           TITLE: ${{ github.event.pull_request.title }}
         run: 'echo "$TITLE" | npx commitlint --verbose'

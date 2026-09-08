@@ -155,14 +155,14 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    chmod 755 ./tf-wrapper.sh
    ```
 
-2. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `production.auto.example.tfvars` to `production.auto.tfvars`.
+1. Rename `common.auto.example.tfvars` to `common.auto.tfvars`, rename `production.auto.example.tfvars` to `production.auto.tfvars`.
 
    ```bash
    mv common.auto.example.tfvars common.auto.tfvars
    mv production.auto.example.tfvars production.auto.tfvars
    ```
 
-3. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
+1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
    Update `production.auto.tfvars` file with the `target_name_server_addresses`.
    Use `terraform output` to get the backend bucket value from 0-bootstrap output.
 
@@ -173,16 +173,16 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${backend_bucket}/" ./common.auto.tfvars
    ```
 
-4. Commit changes
+1. Commit changes
 
    ```bash
    git add .
    git commit -m 'Initialize networks repo'
    ```
 
-5. You must manually plan and apply the `shared` environment (only once) since the `development`, `nonproduction` and `production` environments depend on it.
-6. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-7. Use `terraform output` to get the Cloud Build project ID and the networks step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+1. You must manually plan and apply the `shared` environment (only once) since the `development`, `nonproduction` and `production` environments depend on it.
+
+1. Use `terraform output` to get the Cloud Build project ID and the networks step Terraform Service Account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
    export CLOUD_BUILD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw cloudbuild_project_id)
@@ -192,45 +192,39 @@ Run `terraform output cloudbuild_project_id` in the `0-bootstrap` folder to get 
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
-8. Run `init` and `plan` and review output for environment shared.
+1. Run `init` and `plan` and review output for environment shared.
 
    ```bash
    ./tf-wrapper.sh init shared
    ./tf-wrapper.sh plan shared
    ```
 
-9. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/../gcp-policies ${CLOUD_BUILD_PROJECT_ID}
-   ```
-
-10. Run `apply` shared.
+1. Run `apply` shared.
 
    ```bash
    ./tf-wrapper.sh apply shared
    ```
 
-11. You must manually plan and apply the `production` environment since the `development`, `nonproduction` and `plan` environments depend on it.
+1. You must manually plan and apply the `production` environment since the `development`, `nonproduction` and `plan` environments depend on it.
 
    ```bash
    git checkout -b production
    ```
 
-12. Run `init` and `plan` and review output for environment production.
+1. Run `init` and `plan` and review output for environment production.
 
    ```bash
    ./tf-wrapper.sh init production
    ./tf-wrapper.sh plan production
    ```
 
-13. Run `apply` production.
+1. Run `apply` production.
 
    ```bash
    ./tf-wrapper.sh apply production
    ```
 
-14. Push your production branch since development and nonproduction depends it.  Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
+1. Push your production branch since development and nonproduction depends it.  Because this is a [named environment branch](../docs/FAQ.md#what-is-a-named-branch),
 pushing to this branch triggers both _terraform plan_ and _terraform apply_. Review the apply output in your Cloud Build project https://console.cloud.google.com/cloud-build/builds;region=DEFAULT_REGION?project=YOUR_CLOUD_BUILD_PROJECT_ID
 
 *Note:** The Production environment must be the first branch to be pushed as it includes the DNS Hub communication that will be used by other environments.
@@ -319,7 +313,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 
 1. Update `common.auto.tfvars` file with values from your environment and bootstrap. See any of the envs folder [README.md](./envs/production/README.md) files for additional information on the values in the `common.auto.tfvars` file.
 1. Update `production.auto.tfvars` file with the `target_name_server_addresses`.
-2. Use `terraform output` to get the backend bucket value from gcp-bootstrap output.
+1. Use `terraform output` to get the backend bucket value from gcp-bootstrap output.
 
    ```bash
    export backend_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
@@ -331,8 +325,6 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 We will now deploy each of our environments(development/production/nonproduction) using this script.
 When using Cloud Build as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks-svpc step.
 Only the corresponding environment is applied.
-
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
 
 1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
@@ -352,12 +344,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ./tf-wrapper.sh plan shared
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
 1. Run `apply` shared.
 
    ```bash
@@ -371,12 +357,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    git merge shared
    ./tf-wrapper.sh init production
    ./tf-wrapper.sh plan production
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
 1. Run `apply` production.
@@ -405,12 +385,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ./tf-wrapper.sh plan development
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate development $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
 1. Run `apply` development.
 
    ```bash
@@ -426,12 +400,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    git merge development
    ./tf-wrapper.sh init nonproduction
    ./tf-wrapper.sh plan nonproduction
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate nonproduction $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
 1. Run `apply` nonproduction.

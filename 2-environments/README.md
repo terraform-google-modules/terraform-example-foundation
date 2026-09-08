@@ -214,8 +214,6 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 
 We will now deploy each of our environments(development/production/nonproduction) using this script.
 
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-
 1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
@@ -232,12 +230,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    git checkout development
    ./tf-wrapper.sh init development
    ./tf-wrapper.sh plan development
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate development $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
 1. Run `apply` development and commit the initial version of `development` branch.
@@ -257,12 +249,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ./tf-wrapper.sh plan nonproduction
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate nonproduction $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
-   ```
-
 1. Run `apply` production and commit initial version of nonproduction.
 
    ```bash
@@ -278,12 +264,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    git merge nonproduction
    ./tf-wrapper.sh init production
    ./tf-wrapper.sh plan production
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../gcp-policies ${SEED_PROJECT_ID}
    ```
 
 1. Run `apply` production and commit initial version of production.

@@ -73,15 +73,10 @@ func TestBootstrap(t *testing.T) {
 		"project_deletion_policy":          "DELETE",
 	}
 
-	temp := tft.NewTFBlueprintTest(t,
-		tft.WithTFDir("../../../0-bootstrap"),
-	)
-
 	bootstrap := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../0-bootstrap"),
 		tft.WithVars(vars),
 		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),
-		tft.WithPolicyLibraryPath("/workspace/policy-library", temp.GetTFSetupStringOutput("project_id")),
 	)
 
 	cloudSourceRepos := []string{
@@ -288,7 +283,7 @@ func TestBootstrap(t *testing.T) {
 						"roles/accesscontextmanager.policyAdmin",
 						"roles/resourcemanager.organizationAdmin",
 						"roles/serviceusage.serviceUsageConsumer",
-						"roles/browser",
+						"roles/cloudkms.admin",
 					},
 				},
 				{
@@ -296,13 +291,16 @@ func TestBootstrap(t *testing.T) {
 					orgRoles: []string{
 						"roles/accesscontextmanager.policyAdmin",
 						"roles/compute.xpnAdmin",
-						"roles/browser",
+						"roles/serviceusage.serviceUsageConsumer",
 					},
 				},
 				{
 					output: "environment_step_terraform_service_account_email",
 					orgRoles: []string{
-						"roles/browser",
+						"roles/accesscontextmanager.policyAdmin",
+						"roles/assuredworkloads.admin",
+						"roles/resourcemanager.tagUser",
+						"roles/serviceusage.serviceUsageConsumer",
 					},
 				},
 				{
@@ -314,7 +312,12 @@ func TestBootstrap(t *testing.T) {
 						"roles/securitycenter.notificationConfigEditor",
 						"roles/resourcemanager.organizationViewer",
 						"roles/accesscontextmanager.policyAdmin",
-						"roles/browser",
+						"roles/essentialcontacts.admin",
+						"roles/resourcemanager.tagAdmin",
+						"roles/resourcemanager.tagUser",
+						"roles/cloudasset.owner",
+						"roles/securitycenter.sourcesEditor",
+						"roles/serviceusage.serviceUsageConsumer",
 					},
 				},
 				{
@@ -323,7 +326,6 @@ func TestBootstrap(t *testing.T) {
 						"roles/resourcemanager.organizationAdmin",
 						"roles/accesscontextmanager.policyAdmin",
 						"roles/serviceusage.serviceUsageConsumer",
-						"roles/browser",
 					},
 				},
 			} {

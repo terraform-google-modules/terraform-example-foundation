@@ -270,8 +270,6 @@ sed -i'' -e "s/IMAGE_DIGEST/${confidential_image_digest}/" ./common.auto.tfvars
 We will now deploy each of our environments (development/production/nonproduction) using this script.
 When using Cloud Build as your CI/CD tool, each environment corresponds to a branch in the repository for the `5-app-infra` step. Only the corresponding environment is applied.
 
-To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-
 1. Use `terraform output` to get the Infra Pipeline Project ID from 4-projects output.
 
    ```bash
@@ -289,12 +287,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ./tf-wrapper.sh plan production
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate production $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
-   ```
-
 1. Run `apply` production.
 
    ```bash
@@ -308,12 +300,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ./tf-wrapper.sh plan nonproduction
    ```
 
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate nonproduction $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
-   ```
-
 1. Run `apply` nonproduction.
 
    ```bash
@@ -325,12 +311,6 @@ To use the `validate` option of the `tf-wrapper.sh` script, please follow the [i
    ```bash
    ./tf-wrapper.sh init development
    ./tf-wrapper.sh plan development
-   ```
-
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate development $(pwd)/../policy-library ${INFRA_PIPELINE_PROJECT_ID}
    ```
 
 1. Run `apply` development.

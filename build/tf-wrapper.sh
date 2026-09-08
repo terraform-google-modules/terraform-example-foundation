@@ -18,10 +18,6 @@ set -e
 
 action=$1
 branch=$2
-policy_source=$3
-project_id=$4
-policy_type=$5 # FILESYSTEM | CLOUDSOURCE
-runner_env=$6 # GITHUB | CLOUDBUILD | LOCAL
 base_dir=$(pwd)
 tmp_plan="${base_dir}/tmp_plan" #if you change this, update build triggers
 
@@ -53,7 +49,7 @@ leaf_regex_plan="^(development|nonproduction|production|shared)$"
 
 #====================================================================#
 # Function used for the criteria for running terraform int/plan/show
-# and gcloud beta terraform vet for all the Terraform configurations.
+# for all the Terraform configurations.
 #====================================================================#
 do_plan() {
   local leaf
@@ -204,7 +200,6 @@ tf_plan_validate_all() {
       if [[ "$(do_plan "$env_path")" == "true" ]] ; then
         tf_init "$env_path"
         tf_plan "$env_path"
-        tf_validate "$env_path" "$policy_source"
       else
         echo "${env_path#"$base_dir"/} doesn't match $leaf_regex_plan; skipping"
       fi
@@ -227,59 +222,6 @@ tf_show() {
     cd "$base_dir" || exit
   else
     echo "ERROR: ${path} does not exist"
-  fi
-}
-
-## terraform validate for single environment.
-tf_validate() {
-  local path=$1
-  local policy_file_path=$2
-  local tf_env="${path#"$base_dir"/}"
-  local tf_file
-  tf_file="${tmp_plan}/$(convert_path "$tf_env")"
-  echo "*************** TERRAFORM VALIDATE ******************"
-  echo "      At environment: ${tf_env} "
-  echo "      Using policy from: ${policy_file_path} "
-  echo "*****************************************************"
-  if [ -z "$policy_file_path" ]; then
-    echo "no policy repo found! Check the argument provided for policy_source to this script."
-    echo "https://github.com/GoogleCloudPlatform/policy-library/blob/main/docs/user_guide.md#how-to-set-up-constraints-with-policy-library"
-  else
-    if [ -d "$path" ]; then
-      cd "$path" || exit
-      # In GitHub actions environment 'terraform' is not the terraform binary but a wrapper around it
-      # that prints the command 'terraform show' itself in the redirection to the json file, making
-      # the json file to have an invalid format. 'terraform-bin' is the actual terraform binary.
-      if [[ "$runner_env" == "GITHUB" ]]; then
-        terraform-bin show -no-color -json "${tf_file}.tfplan" > "${tf_file}.json" || exit 32
-        terraform-bin show -no-color "${tf_file}.tfplan" > "${tf_file}.txt" || exit 36
-      else
-        terraform show -no-color -json "${tf_file}.tfplan" > "${tf_file}.json" || exit 32
-        terraform show -no-color  "${tf_file}.tfplan" > "${tf_file}.txt" || exit 36
-      fi
-      if [[ "$policy_type" == "CLOUDSOURCE" ]]; then
-        # Check if $policy_file_path is empty so we clone the policies repo only once
-        if [ -z "$(ls -A "${policy_file_path}" 2> /dev/null)" ]; then
-          gcloud source repos clone gcp-policies "${policy_file_path}" --project="${project_id}" || exit 34
-          pushd .
-          cd "${policy_file_path}"
-          # Commented command below works only on Git 2.22.0+
-          # current_branch=$(git branch --show-current)
-          # As Cloud Build is based on step 4-projects docker image having
-          # git version 2.20.1 installed the command below keeps compatibility
-          current_branch=$(git symbolic-ref --short HEAD)
-          echo "current gcp-policies branch $current_branch"
-          if [[ "$current_branch" != "main" ]]; then
-            git checkout main || exit 35
-          fi
-          popd
-        fi
-      fi
-      gcloud beta terraform vet "${tf_file}.json" --policy-library="${policy_file_path}" --project="${project_id}" || exit 33
-      cd "$base_dir" || exit
-    else
-      echo "ERROR: ${path} does not exist"
-    fi
   fi
 }
 
@@ -313,9 +255,6 @@ single_action_runner() {
             tf_show "$env_path"
             ;;
 
-          validate )
-            tf_validate "$env_path" "$policy_source"
-            ;;
           * )
             echo "unknown option: ${action}"
             ;;
@@ -328,7 +267,7 @@ single_action_runner() {
 }
 
 case "$action" in
-  init|plan|apply|show|validate )
+  init|plan|apply|show )
     single_action_runner
     ;;
 

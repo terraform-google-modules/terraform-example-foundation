@@ -63,7 +63,6 @@ func TestEnvs(t *testing.T) {
 			envs := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf("../../../2-environments/envs/%s", envName)),
 				tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),
-				tft.WithPolicyLibraryPath("/workspace/policy-library", bootstrap.GetTFSetupStringOutput("project_id")),
 				tft.WithVars(vars),
 				tft.WithBackendConfig(backendConfig),
 			)

@@ -267,18 +267,6 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
    terraform plan -input=false -out bootstrap.tfplan
    ```
 
-1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Install Google Cloud CLI](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install).
-
-1. Run the following commands and check for violations:
-
-   ```bash
-   export VET_PROJECT_ID=A-VALID-PROJECT-ID
-   terraform show -json bootstrap.tfplan > bootstrap.json
-   gcloud beta terraform vet bootstrap.json --policy-library="../policy-library" --project ${VET_PROJECT_ID}
-   ```
-
-   *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because `gcloud beta terraform vet` needs to link resources to a valid Google Cloud Platform project.
-
 1. Run `terraform apply`.
 
    ```bash
@@ -468,19 +456,7 @@ The following steps will guide you through deploying without using Cloud Build.
    cd ../gcp-bootstrap
    ```
 
-1. To  validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Install Google Cloud CLI](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install).
-
-1. Run the following commands and check for violations:
-
-   ```bash
-   export VET_PROJECT_ID=A-VALID-PROJECT-ID
-   terraform show -json bootstrap.tfplan > bootstrap.json
-   gcloud beta terraform vet bootstrap.json --policy-library="$(pwd)/../gcp-policies" --project ${VET_PROJECT_ID}
-   ```
-
-   *`A-VALID-PROJECT-ID`* must be an existing project you have access to. This is necessary because `gcloud beta terraform vet` needs to link resources to a valid Google Cloud Platform project.
-
-1. Commit validated code in plan branch.
+1. Commit the code in plan branch.
 
    ```bash
    git add .

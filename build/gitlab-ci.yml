@@ -75,7 +75,6 @@ terraform-plan-mr:
     - gcloud config set project "$PROJECT_ID"
     - bash tf-wrapper.sh init $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     - bash tf-wrapper.sh plan $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
-    - bash tf-wrapper.sh validate $CI_MERGE_REQUEST_TARGET_BRANCH_NAME "$CI_PROJECT_DIR/policy-library" $PROJECT_ID "FILESYSTEM"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
@@ -91,7 +90,6 @@ terraform-apply:
     - gcloud config set project "$PROJECT_ID"
     - bash tf-wrapper.sh init $CI_COMMIT_REF_NAME
     - bash tf-wrapper.sh plan $CI_COMMIT_REF_NAME
-    - bash tf-wrapper.sh validate $CI_COMMIT_REF_NAME "$CI_PROJECT_DIR/policy-library" $PROJECT_ID "FILESYSTEM"
     - bash tf-wrapper.sh apply $CI_COMMIT_REF_NAME
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'

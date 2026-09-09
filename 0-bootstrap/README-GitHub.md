@@ -12,7 +12,6 @@ On the other hand, the authentication infrastructure using [Workload identity fe
 
 To run the instructions described in this document, install the following:
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
-- [terraform-tools](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) component
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 1.5.7 or later
 
@@ -180,21 +179,6 @@ for each one of the repositories.
    terraform init
    terraform plan -input=false -out bootstrap.tfplan
    ```
-
-1. To validate your policies, run `gcloud beta terraform vet`. For installation instructions, see [Validate policies](https://cloud.google.com/docs/terraform/policy-validation/validate-policies) instructions for the Google Cloud CLI.
-
-1. Run the following commands and check for violations:
-
-   ```bash
-   export VET_PROJECT_ID=A-VALID-PROJECT-ID
-
-   terraform show -json bootstrap.tfplan > bootstrap.json
-   gcloud beta terraform vet bootstrap.json --policy-library="../../policy-library" --project ${VET_PROJECT_ID}
-   ```
-
-   `A-VALID-PROJECT-ID` must be an existing project you have access to. This is necessary because Terraform-validator needs to link resources to a valid Google Cloud Platform project.
-
-1. No violations and an output with `done` means the validation was successful.
 
 1. Run `terraform apply`.
 
@@ -618,13 +602,6 @@ we recommend that you request 50 additional projects for the **projects step ser
    ./tf-wrapper.sh plan shared
    ```
 
-1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
-   ```
-
 1. Run `apply` shared.
 
    ```bash
@@ -792,13 +769,6 @@ git push --set-upstream origin production
    ./tf-wrapper.sh plan shared
    ```
 
-1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
-   ```
-
 1. Run `apply` shared.
 
    ```bash
@@ -961,13 +931,6 @@ grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/busi
    ```bash
    ./tf-wrapper.sh init shared
    ./tf-wrapper.sh plan shared
-   ```
-
-1. To use the `validate` option of the `tf-wrapper.sh` script, please follow the [instructions](https://cloud.google.com/docs/terraform/policy-validation/validate-policies#install) to install the terraform-tools component.
-1. Run `validate` and check for violations.
-
-   ```bash
-   ./tf-wrapper.sh validate shared $(pwd)/policy-library ${CICD_PROJECT_ID}
    ```
 
 1. Run `apply` shared.

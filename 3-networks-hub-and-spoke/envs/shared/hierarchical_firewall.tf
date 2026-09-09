@@ -19,6 +19,8 @@ module "hierarchical_firewall_policy" {
 
   parent = local.common_folder_name
   name   = "common-firewall-rules"
+  # Use compact() to strip empty strings generated when environments are skipped (e.g. production_only_deploy),
+  # ensuring only valid, active folder IDs are passed to the GCP API.
   associations = compact([
     local.common_folder_name,
     local.network_folder_name,

@@ -31,7 +31,7 @@ project_deletion_policy    = "PREVENT" # Use "DELETE" to allow deletion of the p
 folder_deletion_protection = true
 
 # By default, the `foundation-deployer` deploys all environments (`production`, `nonproduction`, `development`).
-# To deploy only the `production` environment, set the `production_only_deploy` variable to `true` in your `global.tfvars` file.
+# To deploy only the `production` environment, uncomment the `production_only_deploy` variable and set it to `true`.
 # This is useful for testing or demonstration purposes.
 # production_only_deploy = false
 

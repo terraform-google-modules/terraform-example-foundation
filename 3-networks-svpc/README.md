@@ -74,7 +74,7 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 ## Usage
 
-- To deploy **only the production environment** (skipping development and nonproduction), only deploy `envs/shared` and `envs/production`. `envs/shared/remote.tf` utilizes `try()` to gracefully handle absent development/nonproduction remote state files, and `envs/shared/hierarchical_firewall.tf` uses `compact()` to associate firewall policies only with active folders.
+- To deploy **only the production environment** (skipping development and nonproduction), only deploy `envs/shared` and `envs/production`.
 
 - If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.

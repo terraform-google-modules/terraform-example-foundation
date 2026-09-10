@@ -221,6 +221,11 @@ func (g GlobalTFVars) HasValidatorProj() bool {
 	return g.ValidatorProjectID != nil && *g.ValidatorProjectID != "" && *g.ValidatorProjectID != "EXISTING_PROJECT_ID"
 }
 
+// IsProdOnly checks if production only deploy is enabled
+func (g GlobalTFVars) IsProdOnly() bool {
+	return g.ProductionOnlyDeploy != nil && *g.ProductionOnlyDeploy
+}
+
 // HasGroupsCreation checks if Groups creation is enabled
 func (g GlobalTFVars) HasGroupsCreation() bool {
 	return g.HasRequiredGroupsCreation() || g.HasOptionalGroupsCreation()

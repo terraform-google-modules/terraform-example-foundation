@@ -83,7 +83,7 @@ to Bigquery and Pub/Sub. This will result in additional charges for those copies
 
 - To use the **hub-and-spoke** architecture described in the **Networking** section of the [Google Cloud security foundations guide](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke), set the `enable_hub_and_spoke` variable to `true`.
 
-- To deploy **only the production environment** (skipping development and nonproduction), set the `production_only_deploy` variable to `true` (or configure `production_only_deploy = true` in `global.tfvars` when using the `foundation-deployer` helper). This restricts the creation of Shared VPC host projects to `prj-p-svpc` only.
+- To deploy **only the production environment** (skipping development and nonproduction), set the `production_only_deploy` variable to `true` (or configure `production_only_deploy = true` in `global.tfvars` when using the `foundation-deployer` helper). This restricts the creation of Shared VPC host projects to only the production environment project e.g. `prj-p-svpc` .
 
 - If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is required for Linux, but causes problems for MacOS.

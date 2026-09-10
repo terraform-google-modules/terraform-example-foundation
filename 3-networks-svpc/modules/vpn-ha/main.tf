@@ -30,7 +30,7 @@ data "google_secret_manager_secret_version" "psk" {
 
 module "vpn_ha_region1_router1" {
   source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  version = "~> 4.0"
+  version = "~> 7.0"
 
   project_id = var.project_id
   region     = var.default_region1
@@ -78,7 +78,7 @@ module "vpn_ha_region1_router1" {
 
 module "vpn_ha_region1_router2" {
   source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  version = "~> 4.0"
+  version = "~> 7.0"
 
   project_id = var.project_id
   region     = var.default_region1
@@ -126,7 +126,7 @@ module "vpn_ha_region1_router2" {
 
 module "vpn_ha_region2_router1" {
   source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  version = "~> 4.0"
+  version = "~> 7.0"
 
   project_id = var.project_id
   region     = var.default_region2
@@ -174,7 +174,7 @@ module "vpn_ha_region2_router1" {
 
 module "vpn_ha_region2_router2" {
   source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  version = "~> 4.0"
+  version = "~> 7.0"
 
   project_id = var.project_id
   region     = var.default_region2
@@ -217,5 +217,47 @@ module "vpn_ha_region2_router2" {
       peer_external_gateway_interface = 1
       shared_secret                   = local.psk_secret_data
     }
+  }
+}
+
+# ---------------------------------------------------------
+# NCC Spoke for Region 1
+# ---------------------------------------------------------
+resource "google_network_connectivity_spoke" "region1_vpn_spoke" {
+  name        = "vpn-spoke-${var.vpc_name}-${var.default_region1}"
+  project     = var.project_id
+  location    = var.default_region1
+  hub         = var.ncc_hub_uri
+  group       = var.ncc_hub_group
+  description = "NCC Spoke containing HA VPNs for region 1"
+
+  linked_vpn_tunnels {
+    # Combine the tunnel URIs from both VPN modules in Region 1
+    uris = concat(
+      module.vpn_ha_region1_router1.tunnel_self_links,
+      module.vpn_ha_region1_router2.tunnel_self_links
+    )
+
+    site_to_site_data_transfer = var.site_to_site_data_transfer
+  }
+}
+
+# ---------------------------------------------------------
+# NCC Spoke for Region 2
+# ---------------------------------------------------------
+resource "google_network_connectivity_spoke" "region2_vpn_spoke" {
+  name        = "vpn-spoke-${var.vpc_name}-${var.default_region2}"
+  project     = var.project_id
+  location    = var.default_region2
+  hub         = var.ncc_hub_uri
+  group       = var.ncc_hub_group
+  description = "NCC Spoke containing HA VPNs for region 2"
+  linked_vpn_tunnels {
+    uris = concat(
+      module.vpn_ha_region2_router1.tunnel_self_links,
+      module.vpn_ha_region2_router2.tunnel_self_links
+    )
+
+    site_to_site_data_transfer = var.site_to_site_data_transfer
   }
 }

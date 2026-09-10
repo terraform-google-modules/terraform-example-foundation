@@ -35,11 +35,13 @@ module "shared_vpn" {
   default_region1       = var.default_region1
   default_region2       = var.default_region2
   vpc_name              = "${var.environment_code}-svpc"
-  region1_router1_name  = module.shared_vpc.region1_router1.router.name
-  region1_router2_name  = module.shared_vpc.region1_router2.router.name
-  region2_router1_name  = module.shared_vpc.region2_router1.router.name
-  region2_router2_name  = module.shared_vpc.region2_router2.router.name
+  region1_router1_name  = module.routers.region1_router1.router.name
+  region1_router2_name  = module.routers.region1_router2.router.name
+  region2_router1_name  = module.routers.region2_router1.router.name
+  region2_router2_name  = module.routers.region2_router2.router.name
   vpn_psk_secret_name   = "<VPN_PSK_SECRET_NAME>"
+  ncc_hub_uri           = module.shared_vpc.ncc_hub_uri
+  ncc_hub_group         = "default"
 
   on_prem_router_ip_address1 = "<8.8.8.8>" # on-prem router ip address 1
   on_prem_router_ip_address2 = "<8.8.8.8>" # on-prem router ip address 2
@@ -70,6 +72,7 @@ module "shared_vpn" {
   region2_router2_tunnel1_bgp_peer_range   = "169.254.14.2/30"
 
   depends_on = [
-    module.shared_vpc
+    module.shared_vpc,
+    module.routers
   ]
 }

@@ -18,17 +18,19 @@
 module "shared_vpc_interconnect" {
   source = "../../modules/dedicated_interconnect"
 
-  vpc_name                = "c-svpc"
+  vpc_name                = "c-svpc-hub"
   interconnect_project_id = local.net_hub_project_id
+  ncc_hub_uri             = module.shared_vpc.ncc_hub_uri
+  ncc_hub_group           = var.enable_hub_and_spoke_transitivity ? "default" : "center"
 
   region1                                 = local.default_region1
-  region1_router1_name                    = module.shared_vpc.region1_router1.router.name
+  region1_router1_name                    = module.routers.region1_router1.router.name
   region1_interconnect1_candidate_subnets = ["169.254.0.32/29"]
   region1_interconnect1_vlan_tag8021q     = "3921"
   region1_interconnect1                   = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-1"
   region1_interconnect1_location          = "las-zone1-770"
   region1_interconnect1_onprem_dc         = "onprem-dc-1"
-  region1_router2_name                    = module.shared_vpc.region1_router2.router.name
+  region1_router2_name                    = module.routers.region1_router2.router.name
   region1_interconnect2_candidate_subnets = ["169.254.0.40/29"]
   region1_interconnect2_vlan_tag8021q     = "3922"
   region1_interconnect2                   = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-2"
@@ -36,13 +38,13 @@ module "shared_vpc_interconnect" {
   region1_interconnect2_onprem_dc         = "onprem-dc-2"
 
   region2                                 = local.default_region2
-  region2_router1_name                    = module.shared_vpc.region2_router1.router.name
+  region2_router1_name                    = module.routers.region2_router1.router.name
   region2_interconnect1_candidate_subnets = ["169.254.0.48/29"]
   region2_interconnect1_vlan_tag8021q     = "3923"
   region2_interconnect1                   = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-3"
   region2_interconnect1_location          = "lax-zone2-19"
   region2_interconnect1_onprem_dc         = "onprem-dc-3"
-  region2_router2_name                    = module.shared_vpc.region2_router2.router.name
+  region2_router2_name                    = module.routers.region2_router2.router.name
   region2_interconnect2_candidate_subnets = ["169.254.0.56/29"]
   region2_interconnect2_vlan_tag8021q     = "3924"
   region2_interconnect2                   = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-4"
@@ -52,14 +54,8 @@ module "shared_vpc_interconnect" {
   peer_asn  = "64515"
   peer_name = "interconnect-peer"
 
-  cloud_router_labels = {
-    vlan_1 = "cr5",
-    vlan_2 = "cr6",
-    vlan_3 = "cr7",
-    vlan_4 = "cr8"
-  }
-
   depends_on = [
-    module.shared_vpc
+    module.shared_vpc,
+    module.routers
   ]
 }

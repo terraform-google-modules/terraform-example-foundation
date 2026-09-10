@@ -124,12 +124,6 @@ variable "region2_router2_name" {
   description = "Name of the Router 2 for Region 2 where the attachment resides"
 }
 
-variable "cloud_router_labels" {
-  type        = map(string)
-  description = "A map of suffixes for labelling vlans with four entries like \"vlan_1\" => \"suffix1\" with keys from `vlan_1` to `vlan_4`."
-  default     = {}
-}
-
 variable "region1_interconnect1_candidate_subnets" {
   type        = list(string)
   description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
@@ -174,4 +168,20 @@ variable "region2_interconnect2_vlan_tag8021q" {
   type        = string
   description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
   default     = null
+}
+
+variable "ncc_hub_uri" {
+  type        = string
+  description = "The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached."
+}
+
+variable "ncc_hub_group" {
+  type        = string
+  description = "Network Connectivity Center Group to attach the spoke to"
+}
+
+variable "site_to_site_data_transfer" {
+  type        = bool
+  description = "Set to true to allow Google Cloud routing to act as a transit network between on-premises sites."
+  default     = false
 }

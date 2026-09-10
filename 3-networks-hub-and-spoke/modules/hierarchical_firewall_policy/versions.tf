@@ -33,10 +33,10 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:hierarchical_firewall_policy/v5.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:hierarchical_firewall_policy/v6.0.0"
   }
 
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:hierarchical_firewall_policy/v5.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:hierarchical_firewall_policy/v6.0.0"
   }
 }

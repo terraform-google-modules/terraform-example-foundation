@@ -31,4 +31,12 @@ terraform {
       source = "hashicorp/random"
     }
   }
+
+  provider_meta "google" {
+    module_name = "blueprints/terraform/terraform-example-foundation:routers/v6.0.0"
+  }
+
+  provider_meta "google-beta" {
+    module_name = "blueprints/terraform/terraform-example-foundation:routers/v6.0.0"
+  }
 }

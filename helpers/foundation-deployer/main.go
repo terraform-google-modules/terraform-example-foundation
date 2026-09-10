@@ -110,7 +110,7 @@ func main() {
 		EnableHubAndSpoke:    globalTFVars.EnableHubAndSpoke,
 		DisablePrompt:        cfg.disablePrompt,
 		Logger:               utils.GetLogger(cfg.quiet),
-		ProductionOnlyDeploy: globalTFVars.ProductionOnlyDeploy != nil && *globalTFVars.ProductionOnlyDeploy,
+		ProductionOnlyDeploy: globalTFVars.IsProdOnly(),
 	}
 
 	// validate git configuration for GitHub and GitLab

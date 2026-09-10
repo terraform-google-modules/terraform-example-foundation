@@ -35,8 +35,7 @@ func GetEnvironments(productionOnlyDeploy bool, isDestroy bool) []string {
 }
 
 func getEnvironments(tfvars GlobalTFVars) []string {
-	isProdOnly := tfvars.ProductionOnlyDeploy != nil && *tfvars.ProductionOnlyDeploy
-	return GetEnvironments(isProdOnly, false)
+	return GetEnvironments(tfvars.IsProdOnly(), false)
 }
 
 func getDestroyEnvironments(c CommonConf) []string {

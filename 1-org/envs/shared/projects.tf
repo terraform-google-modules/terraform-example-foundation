@@ -261,7 +261,8 @@ module "network_hub" {
     "servicenetworking.googleapis.com",
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "billingbudgets.googleapis.com"
+    "billingbudgets.googleapis.com",
+    "networkconnectivity.googleapis.com"
   ]
 
   labels = {

@@ -22,26 +22,39 @@ locals {
   hub_subnet_ranges = ["10.8.0.0/24", "10.9.0.0/24"]
 }
 
+
 /******************************************
  Shared VPC
 *****************************************/
 
 module "shared_vpc" {
-  source = "../shared_vpc"
+  source  = "terraform-google-modules/network/google//modules/foundation/network"
+  version = "~> 18.2"
 
-  project_id                   = local.shared_vpc_project_id
-  project_number               = local.shared_vpc_project_number
-  net_hub_project_id           = local.net_hub_project_id
-  net_hub_project_number       = local.net_hub_project_number
-  environment_code             = var.environment_code
-  private_service_cidr         = var.private_service_cidr
-  private_service_connect_ip   = var.private_service_connect_ip
-  bgp_asn_subnet               = local.bgp_asn_number
-  default_region1              = var.default_region1
-  default_region2              = var.default_region2
-  domain                       = var.domain
-  mode                         = "spoke"
-  target_name_server_addresses = var.target_name_server_addresses
+  project_id      = local.shared_vpc_project_id
+  vpc_name        = "svpc-spoke"
+  shared_vpc_host = true
+
+  resource_code = var.environment_code
+
+  private_service_cidr       = var.private_service_cidr
+  private_service_connect_ip = var.private_service_connect_ip
+
+  ncc_hub_config = {
+    create_hub  = false
+    uri         = local.ncc_hub_uri
+    spoke_group = local.ncc_spoke_group
+  }
+
+  dns_config = {
+    type                      = "spoke"
+    domain                    = var.domain
+    enable_logging            = true
+    enable_inbound_forwarding = true
+    onprem_forwarding         = true
+    dns_hub_project_id        = local.net_hub_project_id
+    dns_hub_network_name      = regex("networks/(.+)", local.net_hub_network_self_link)[0]
+  }
 
   subnets = [
     {
@@ -71,22 +84,24 @@ module "shared_vpc" {
       description                      = "Second ${var.env} subnet example."
     },
     {
-      subnet_name      = "sb-${var.environment_code}-svpc-${var.default_region1}-proxy"
-      subnet_ip        = var.subnet_proxy_ranges[var.default_region1]
-      subnet_region    = var.default_region1
-      subnet_flow_logs = false
-      description      = "First ${var.env} proxy-only subnet example."
-      role             = "ACTIVE"
-      purpose          = "REGIONAL_MANAGED_PROXY"
+      subnet_name           = "sb-${var.environment_code}-svpc-${var.default_region1}-proxy"
+      subnet_ip             = var.subnet_proxy_ranges[var.default_region1]
+      subnet_region         = var.default_region1
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "First ${var.env} proxy-only subnet example."
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     },
     {
-      subnet_name      = "sb-${var.environment_code}-svpc-${var.default_region2}-proxy"
-      subnet_ip        = var.subnet_proxy_ranges[var.default_region2]
-      subnet_region    = var.default_region2
-      subnet_flow_logs = false
-      description      = "Second ${var.env} proxy-only subnet example."
-      role             = "ACTIVE"
-      purpose          = "REGIONAL_MANAGED_PROXY"
+      subnet_name           = "sb-${var.environment_code}-svpc-${var.default_region2}-proxy"
+      subnet_ip             = var.subnet_proxy_ranges[var.default_region2]
+      subnet_region         = var.default_region2
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "Second ${var.env} proxy-only subnet example."
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     }
   ]
   secondary_ranges = {

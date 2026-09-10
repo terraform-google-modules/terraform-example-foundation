@@ -54,6 +54,7 @@ spec:
     - "iamcredentials.googleapis.com"
     - "logging.googleapis.com"
     - "monitoring.googleapis.com"
+    - "networkconnectivity.googleapis.com"
     - "oslogin.googleapis.com"
     - "pubsub.googleapis.com"
     - "secretmanager.googleapis.com"

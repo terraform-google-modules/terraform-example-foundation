@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
+module "routers" {
+  source = "../routers"
 
-module "private_service_connect" {
-  source  = "terraform-google-modules/network/google//modules/private-service-connect"
-  version = "~> 18.0"
+  project_id     = local.shared_vpc_project_id
+  region1        = var.default_region1
+  region2        = var.default_region2
+  vpc_name       = "${var.environment_code}-svpc"
+  bgp_asn_subnet = local.bgp_asn_number
 
-  project_id                 = var.project_id
-  dns_code                   = "dz-${var.environment_code}-svpc"
-  network_self_link          = module.main.network_self_link
-  private_service_connect_ip = var.private_service_connect_ip
-  forwarding_rule_target     = "vpc-sc"
-  service_directory_region   = var.default_region1
+  advertised_ip_ranges = [
+    { range = local.dns_forward_source_range },
+    { range = "${var.private_service_connect_ip}/32" }
+  ]
+
+  depends_on = [
+    module.shared_vpc
+  ]
 }

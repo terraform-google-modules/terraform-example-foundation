@@ -24,6 +24,8 @@
 
 | Name | Description |
 |------|-------------|
+| ncc\_hub\_uri | The NCC Hub ID |
+| ncc\_spoke\_group | The NCC group to be used by spokes |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
 | shared\_vpc\_host\_project\_id | The shared vpc host project ID |

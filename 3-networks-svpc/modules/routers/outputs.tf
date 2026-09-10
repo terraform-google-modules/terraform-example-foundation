@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,41 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-output "network_name" {
-  value       = module.main.network_name
-  description = "The name of the VPC being created"
-}
-
-output "network_self_link" {
-  value       = module.main.network_self_link
-  description = "The URI of the VPC being created"
-}
-
-output "subnets_names" {
-  value       = module.main.subnets_names
-  description = "The names of the subnets being created"
-}
-
-output "subnets_ips" {
-  value       = module.main.subnets_ips
-  description = "The IPs and CIDRs of the subnets being created"
-}
-
-output "subnets_self_links" {
-  value       = module.main.subnets_self_links
-  description = "The self-links of subnets being created"
-}
-
-output "subnets_regions" {
-  value       = module.main.subnets_regions
-  description = "The region where the subnets will be created"
-}
-
-output "subnets_secondary_ranges" {
-  value       = module.main.subnets_secondary_ranges
-  description = "The secondary ranges associated with these subnets"
-}
 
 output "region1_router1" {
   value       = module.region1_router1

@@ -86,13 +86,16 @@ locals {
       "roles/compute.orgSecurityPolicyAdmin",
       "roles/compute.orgSecurityResourceAdmin",
       "roles/dns.admin",
+      "roles/networkconnectivity.hubAdmin",
     ],
     "proj" = [
       "roles/resourcemanager.folderAdmin",
       "roles/artifactregistry.admin",
       "roles/compute.networkAdmin",
       "roles/compute.xpnAdmin",
-      "roles/iam.serviceAccountAdmin"
+      "roles/iam.serviceAccountAdmin",
+      "roles/networkconnectivity.hubUser",
+      "roles/networkconnectivity.groupUser"
     ],
   }
 
@@ -240,4 +243,3 @@ resource "google_billing_account_iam_member" "billing_account_sink" {
   role               = "roles/logging.configWriter"
   member             = "serviceAccount:${google_service_account.terraform-env-sa["org"].email}"
 }
-

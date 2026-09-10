@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-locals {
-  suffix1 = lookup(var.cloud_router_labels, "vlan_1", "cr1")
-  suffix2 = lookup(var.cloud_router_labels, "vlan_2", "cr2")
-  suffix3 = lookup(var.cloud_router_labels, "vlan_3", "cr3")
-  suffix4 = lookup(var.cloud_router_labels, "vlan_4", "cr4")
-}
-
-
 resource "google_compute_interconnect_attachment" "interconnect_attachment1_region1" {
-  name    = "vl-${var.region1_interconnect1_onprem_dc}-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-${local.suffix1}"
+  name    = "vl-${var.region1_interconnect1_onprem_dc}-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-cr5"
   project = var.attachment_project_id
   region  = var.region1
   router  = var.region1_router1_name
@@ -34,7 +26,7 @@ resource "google_compute_interconnect_attachment" "interconnect_attachment1_regi
 }
 
 resource "google_compute_interconnect_attachment" "interconnect_attachment2_region1" {
-  name    = "vl-${var.region1_interconnect2_onprem_dc}-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-${local.suffix2}"
+  name    = "vl-${var.region1_interconnect2_onprem_dc}-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-cr6"
   project = var.attachment_project_id
   region  = var.region1
   router  = var.region1_router2_name
@@ -45,7 +37,7 @@ resource "google_compute_interconnect_attachment" "interconnect_attachment2_regi
 }
 
 resource "google_compute_interconnect_attachment" "interconnect_attachment1_region2" {
-  name    = "vl-${var.region2_interconnect1_onprem_dc}-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-${local.suffix3}"
+  name    = "vl-${var.region2_interconnect1_onprem_dc}-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-cr7"
   project = var.attachment_project_id
   region  = var.region2
   router  = var.region2_router1_name
@@ -56,7 +48,7 @@ resource "google_compute_interconnect_attachment" "interconnect_attachment1_regi
 }
 
 resource "google_compute_interconnect_attachment" "interconnect_attachment2_region2" {
-  name    = "vl-${var.region2_interconnect2_onprem_dc}-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-${local.suffix4}"
+  name    = "vl-${var.region2_interconnect2_onprem_dc}-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-cr8"
   project = var.attachment_project_id
   region  = var.region2
   router  = var.region2_router2_name

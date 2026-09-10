@@ -32,6 +32,9 @@ locals {
   kms_project_number                  = data.terraform_remote_state.environments_env.outputs.env_kms_project_number
   cloudbuild_project_id               = try(data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_id, "")
   default_region                      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  ncc_hub_uri                         = data.terraform_remote_state.network_env.outputs.ncc_hub_uri
+  ncc_spoke_group                     = data.terraform_remote_state.network_env.outputs.ncc_spoke_group
+
 }
 
 data "terraform_remote_state" "bootstrap" {

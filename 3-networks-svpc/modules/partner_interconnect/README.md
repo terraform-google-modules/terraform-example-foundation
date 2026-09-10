@@ -8,12 +8,10 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 
 ## Usage
 
-1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` in the shared envs folder in `3-networks-svpc/envs/shared`
-1. Rename `partner_interconnect.auto.tfvars.example` to `partner_interconnect.auto.tfvars` in the shared envs folder in `3-networks-svpc/envs/shared`
-1. Update the file `interconnect.tf` with values that are valid for your environment for the interconnects, locations, candidate subnetworks, vlan_tag8021q and peer info.
+1. Rename `routers.tf.example` to `routers.tf` in the base-env folder in `3-networks-svpc/modules/base_env`
 1. Rename `partner_interconnect.tf.example` to `partner_interconnect.tf` in the base-env folder in `3-networks-svpc/modules/base_env` .
-1. Update the `enable_partner_interconnect` to `true` in each `main.tf` file in the environment folder in `3-networks-svpc/envs/<environment>` .
 1. Update the file `partner_interconnect.tf` with values that are valid for your environment for the VLAN attachments, locations.
+1. Update the `enable_partner_interconnect` to `true` in each `main.tf` file in the environment folder in `3-networks-svpc/envs/<environment>` .
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
@@ -22,6 +20,8 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 |------|-------------|------|---------|:--------:|
 | attachment\_project\_id | the Interconnect project ID. | `string` | n/a | yes |
 | cloud\_router\_labels | A map of suffixes for labelling vlans with four entries like "vlan\_1" => "suffix1" with keys from `vlan_1` to `vlan_4`. | `map(string)` | `{}` | no |
+| ncc\_hub\_group | Network Connectivity Center Group to attach the spoke to | `string` | n/a | yes |
+| ncc\_hub\_uri | The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached. | `string` | n/a | yes |
 | preactivate | Preactivate Partner Interconnect attachments, works only for level3 Partner Interconnect | `string` | `false` | no |
 | region1 | First subnet region. The Partner Interconnect module only configures two regions. | `string` | n/a | yes |
 | region1\_interconnect1\_location | Name of the interconnect location used in the creation of the Interconnect for the first location of region1 | `string` | n/a | yes |
@@ -37,6 +37,7 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 | region2\_interconnect2\_onprem\_dc | Name of the on premisses data center used in the creation of the Interconnect for the second location of region2. | `string` | n/a | yes |
 | region2\_router1\_name | Name of the Router 1 for Region 2 where the attachment resides. | `string` | n/a | yes |
 | region2\_router2\_name | Name of the Router 2 for Region 2 where the attachment resides | `string` | n/a | yes |
+| site\_to\_site\_data\_transfer | Set to true to allow Google Cloud routing to act as a transit network between on-premises sites. | `bool` | `false` | no |
 | vpc\_name | Label to identify the VPC associated with shared VPC that will use the Interconnect. | `string` | n/a | yes |
 
 ## Outputs

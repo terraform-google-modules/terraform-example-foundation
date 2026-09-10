@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2026 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
+output "region1_router1" {
+  value       = module.region1_router1
+  description = "Router 1 for Region 1"
+}
 
-module "private_service_connect" {
-  source  = "terraform-google-modules/network/google//modules/private-service-connect"
-  version = "~> 18.0"
+output "region1_router2" {
+  value       = module.region1_router2
+  description = "Router 2 for Region 1"
+}
 
-  project_id                 = var.project_id
-  dns_code                   = "dz-${var.environment_code}-svpc"
-  network_self_link          = module.main.network_self_link
-  private_service_connect_ip = var.private_service_connect_ip
-  forwarding_rule_target     = "vpc-sc"
+output "region2_router1" {
+  value       = module.region2_router1
+  description = "Router 1 for Region 2"
+}
+
+output "region2_router2" {
+  value       = module.region2_router2
+  description = "Router 2 for Region 2"
 }

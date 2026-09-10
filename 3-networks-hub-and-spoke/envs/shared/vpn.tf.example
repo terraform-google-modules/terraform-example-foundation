@@ -15,31 +15,24 @@
  */
 
 locals {
-  env_secret_project_id = data.terraform_remote_state.environments_env.outputs.env_secrets_project_id
-}
-
-data "terraform_remote_state" "environments_env" {
-  backend = "gcs"
-
-  config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/${var.env}"
-  }
+  org_secret_project_id = data.terraform_remote_state.org.outputs.org_secrets_project_id
 }
 
 module "shared_vpn" {
-  source = "../vpn-ha"
+  source = "../../modules/vpn-ha"
 
-  project_id            = local.project_id
-  env_secret_project_id = local.env_secret_project_id
-  default_region1       = var.default_region1
-  default_region2       = var.default_region2
-  vpc_name              = "${var.environment_code}-svpc"
-  region1_router1_name  = module.shared_vpc.region1_router1.router.name
-  region1_router2_name  = module.shared_vpc.region1_router2.router.name
-  region2_router1_name  = module.shared_vpc.region2_router1.router.name
-  region2_router2_name  = module.shared_vpc.region2_router2.router.name
+  project_id            = local.net_hub_project_id
+  env_secret_project_id = local.org_secret_project_id
+  default_region1       = local.default_region1
+  default_region2       = local.default_region2
+  vpc_name              = "c-svpc-hub"
+  region1_router1_name  = module.routers.region1_router1.router.name
+  region1_router2_name  = module.routers.region1_router2.router.name
+  region2_router1_name  = module.routers.region2_router1.router.name
+  region2_router2_name  = module.routers.region2_router2.router.name
   vpn_psk_secret_name   = "<VPN_PSK_SECRET_NAME>"
+  ncc_hub_uri           = module.shared_vpc.ncc_hub_uri
+  ncc_hub_group         = var.enable_hub_and_spoke_transitivity ? "default" : "center"
 
   on_prem_router_ip_address1 = "<8.8.8.8>" # on-prem router ip address 1
   on_prem_router_ip_address2 = "<8.8.8.8>" # on-prem router ip address 2
@@ -70,6 +63,7 @@ module "shared_vpn" {
   region2_router2_tunnel1_bgp_peer_range   = "169.254.14.2/30"
 
   depends_on = [
-    module.shared_vpc
+    module.shared_vpc,
+    module.routers
   ]
 }

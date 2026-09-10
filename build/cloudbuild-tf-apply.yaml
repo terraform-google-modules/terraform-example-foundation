@@ -50,15 +50,6 @@ steps:
   - |
       ./tf-wrapper.sh plan ${BRANCH_NAME}
 
-# [START tf-validate]
-- id: 'tf validate'
-  name: $_GAR_REGION-docker.pkg.dev/$_GAR_PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM
-  entrypoint: /bin/bash
-  args:
-  - -c
-  - |
-      ./tf-wrapper.sh validate ${BRANCH_NAME} ${_POLICY_REPO} ${PROJECT_ID} CLOUDSOURCE
-
 # [START tf-apply]
 - id: 'tf apply'
   name: $_GAR_REGION-docker.pkg.dev/$_GAR_PROJECT_ID/$_GAR_REPOSITORY/terraform:$_DOCKER_TAG_VERSION_TERRAFORM

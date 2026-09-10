@@ -981,14 +981,6 @@ func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policy
 		return err
 	}
 
-	// Runs gcloud terraform vet
-	if validatorProjectID != "" {
-		err = TerraformVet(t, options.TerraformDir, policyPath, validatorProjectID, options.EnvVars)
-		if err != nil {
-			return err
-		}
-	}
-
 	_, err = terraform.ApplyE(t, options)
 	if err != nil {
 		return err

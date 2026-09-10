@@ -47,7 +47,7 @@ jobs:
 
       - uses: "google-github-actions/setup-gcloud@v2"
         with:
-          install_components: "beta,terraform-tools"
+          install_components: "beta"
 
       - uses: "hashicorp/setup-terraform@v3"
         with:

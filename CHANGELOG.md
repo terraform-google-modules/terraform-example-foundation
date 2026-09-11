@@ -1,5 +1,24 @@
 # Changelog
 
+## [6.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v5.0.0...v6.0.0) (2026-09-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* one default common perimeter ([#1429](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1429))
+
+### Features
+
+* one default common perimeter ([#1429](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1429)) ([d4a58eb](https://github.com/terraform-google-modules/terraform-example-foundation/commit/d4a58eb3d2c415400c1d7f9f88c56af66c481ecd))
+
+
+### Bug Fixes
+
+* consolidate dependabot and renovate updates ([#1494](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1494)) ([f639a2a](https://github.com/terraform-google-modules/terraform-example-foundation/commit/f639a2aaa69c9caf0a925aa3f9ef5ea9db2aabff))
+* **iam-validate:** accept minimal tfvars for bootstrap IAM checks ([#1512](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1512)) ([0a96d83](https://github.com/terraform-google-modules/terraform-example-foundation/commit/0a96d838801082e4ab60f9047fa445b1afebc47b))
+* remove terraform tools and gsutils ([#1514](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1514)) ([01ca534](https://github.com/terraform-google-modules/terraform-example-foundation/commit/01ca5341b01783794f977969104099e2a3686027))
+* update projects backend sed replacement ([#1500](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1500)) ([6cb9c0e](https://github.com/terraform-google-modules/terraform-example-foundation/commit/6cb9c0e82f8154c5c420942fc948d02058c59d87))
+
 ## [5.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v4.1.0...v5.0.0) (2026-07-01)
 
 

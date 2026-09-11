@@ -38,10 +38,10 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:infra_pipelines/v5.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:infra_pipelines/v6.0.0"
   }
 
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:infra_pipelines/v5.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:infra_pipelines/v6.0.0"
   }
 }

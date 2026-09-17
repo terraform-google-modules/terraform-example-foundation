@@ -39,9 +39,9 @@ locals {
   projects_service_account     = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
   # Use try() to gracefully handle single-environment deployments (e.g. production_only_deploy from helper),
   # where development and nonproduction remote states do not exist in GCS.
-  development_folder_name      = try(data.terraform_remote_state.env_development.outputs.env_folder, "")
-  nonproduction_folder_name    = try(data.terraform_remote_state.env_nonproduction.outputs.env_folder, "")
-  production_folder_name       = try(data.terraform_remote_state.env_production.outputs.env_folder, "")
+  development_folder_name   = try(data.terraform_remote_state.env_development.outputs.env_folder, "")
+  nonproduction_folder_name = try(data.terraform_remote_state.env_nonproduction.outputs.env_folder, "")
+  production_folder_name    = try(data.terraform_remote_state.env_production.outputs.env_folder, "")
 }
 
 data "terraform_remote_state" "bootstrap" {

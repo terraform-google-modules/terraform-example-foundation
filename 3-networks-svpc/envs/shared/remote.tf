@@ -15,15 +15,15 @@
  */
 
 locals {
-  env                       = "common"
-  environment_code          = "c"
-  default_region1           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region2           = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
-  folder_prefix             = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
-  parent_id                 = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
-  bootstrap_folder_name     = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
-  common_folder_name        = data.terraform_remote_state.org.outputs.common_folder_name
-  network_folder_name       = data.terraform_remote_state.org.outputs.network_folder_name
+  env                   = "common"
+  environment_code      = "c"
+  default_region1       = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region2       = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
+  folder_prefix         = data.terraform_remote_state.bootstrap.outputs.common_config.folder_prefix
+  parent_id             = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id
+  bootstrap_folder_name = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
+  common_folder_name    = data.terraform_remote_state.org.outputs.common_folder_name
+  network_folder_name   = data.terraform_remote_state.org.outputs.network_folder_name
   # Use try() to gracefully handle single-environment deployments (e.g. production_only_deploy from helper),
   # where development and nonproduction remote states do not exist in GCS.
   development_folder_name   = try(data.terraform_remote_state.env_development.outputs.env_folder, "")

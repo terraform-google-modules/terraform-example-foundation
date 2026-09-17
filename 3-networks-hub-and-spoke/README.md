@@ -74,7 +74,7 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 ## Usage
 
-- To deploy **only the production environment** (skipping development and nonproduction), only deploy `envs/shared` and `envs/production`. 
+- To deploy **only the production environment** (skipping development and nonproduction), only deploy `envs/shared` and `envs/production`.
 
 - If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.

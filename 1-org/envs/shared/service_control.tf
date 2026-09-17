@@ -156,65 +156,37 @@ locals {
   access_level_name         = module.service_control.access_level_name
   access_level_dry_run_name = module.service_control.access_level_name_dry_run
 
-  shared_vpc_projects_numbers = [
-    for v in values({
-      for k, m in module.environment_network :
-      k => m.shared_vpc_project_number
-    }) : tostring(v)
-  ]
+  # Dynamic mapping of Shared VPC network projects based on the deployed environments
+  # (handles both full multi-environment deployments and single-environment 'production_only_deploy').
+  shared_vpc_projects_map = {
+    for k, m in module.environment_network :
+    "prj-net-${local.environments[k]}-svpc" => tostring(m.shared_vpc_project_number)
+  }
 
-  projects = var.enable_hub_and_spoke ? (concat([
-    local.seed_project_number,
-    module.org_audit_logs.project_number,
-    module.org_billing_export.project_number,
-    module.common_kms.project_number,
-    module.org_secrets.project_number,
-    module.interconnect.project_number,
-    module.network_hub[0].project_number,
-    module.scc_notifications.project_number,
-    ], local.shared_vpc_projects_numbers)) : (concat([
-    local.seed_project_number,
-    module.org_audit_logs.project_number,
-    module.org_billing_export.project_number,
-    module.common_kms.project_number,
-    module.org_secrets.project_number,
-    module.interconnect.project_number,
-    module.scc_notifications.project_number,
-  ], local.shared_vpc_projects_numbers))
+  base_projects_map = var.enable_hub_and_spoke ? {
+    "prj-b-seed"           = tostring(local.seed_project_number)
+    "prj-org-audit"        = tostring(module.org_audit_logs.project_number)
+    "prj-org-billing"      = tostring(module.org_billing_export.project_number)
+    "prj-org-kms"          = tostring(module.common_kms.project_number)
+    "prj-org-secrets"      = tostring(module.org_secrets.project_number)
+    "prj-org-interconnect" = tostring(module.interconnect.project_number)
+    "prj-net-hub-svpc"     = tostring(module.network_hub[0].project_number)
+    "prj-org-scc"          = tostring(module.scc_notifications.project_number)
+    } : {
+    "prj-b-seed"           = tostring(local.seed_project_number)
+    "prj-org-audit"        = tostring(module.org_audit_logs.project_number)
+    "prj-org-billing"      = tostring(module.org_billing_export.project_number)
+    "prj-org-kms"          = tostring(module.common_kms.project_number)
+    "prj-org-secrets"      = tostring(module.org_secrets.project_number)
+    "prj-org-interconnect" = tostring(module.interconnect.project_number)
+    "prj-org-scc"          = tostring(module.scc_notifications.project_number)
+  }
 
-  # IMPORTANT: These project key lists are hardcoded and MUST be manually kept in sync
-  # with the values defined in `local.projects`.
-  # A mismatch in the number of items or their order will cause the `zipmap` function to fail.
-  # If you add or remove a project, you must update these lists accordingly.
-  project_keys = var.enable_hub_and_spoke ? [
-    "prj-b-seed",
-    "prj-org-audit",
-    "prj-org-billing",
-    "prj-org-kms",
-    "prj-org-secrets",
-    "prj-org-interconnect",
-    "prj-org-scc",
-    "prj-net-hub-svpc",
-    "prj-net-p-svpc",
-    "prj-net-d-svpc",
-    "prj-net-n-svpc",
-    ] : [
-    "prj-b-seed",
-    "prj-org-audit",
-    "prj-org-billing",
-    "prj-org-kms",
-    "prj-org-secrets",
-    "prj-org-interconnect",
-    "prj-org-scc",
-    "prj-net-p-svpc",
-    "prj-net-d-svpc",
-    "prj-net-n-svpc",
-  ]
-
-  projects_map = zipmap(
-    local.project_keys,
-    [for p in local.projects : "${p}"]
-  )
+  # Declaratively merge base and network projects map so keys and values always remain
+  # strictly paired regardless of deployment topology, avoiding zipmap list-length mismatches.
+  projects_map = merge(local.base_projects_map, local.shared_vpc_projects_map)
+  project_keys = keys(local.projects_map)
+  projects     = values(local.projects_map)
 
   enable_cb_egress_dry_run = local.enable_cloudbuild_deploy
   enable_cb_egress         = local.enable_cloudbuild_deploy

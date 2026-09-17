@@ -29,14 +29,16 @@ locals {
   bootstrap_folder_name        = data.terraform_remote_state.bootstrap.outputs.common_config.bootstrap_folder_name
   common_folder_name           = data.terraform_remote_state.org.outputs.common_folder_name
   network_folder_name          = data.terraform_remote_state.org.outputs.network_folder_name
-  development_folder_name      = data.terraform_remote_state.env_development.outputs.env_folder
-  nonproduction_folder_name    = data.terraform_remote_state.env_nonproduction.outputs.env_folder
-  production_folder_name       = data.terraform_remote_state.env_production.outputs.env_folder
   net_hub_project_id           = data.terraform_remote_state.org.outputs.net_hub_project_id
   net_hub_project_number       = data.terraform_remote_state.org.outputs.net_hub_project_number
   organization_service_account = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
   networks_service_account     = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
   projects_service_account     = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+  # Use try() to gracefully handle single-environment deployments (e.g. production_only_deploy from helper),
+  # where development and nonproduction remote states do not exist in GCS.
+  development_folder_name   = try(data.terraform_remote_state.env_development.outputs.env_folder, "")
+  nonproduction_folder_name = try(data.terraform_remote_state.env_nonproduction.outputs.env_folder, "")
+  production_folder_name    = try(data.terraform_remote_state.env_production.outputs.env_folder, "")
 }
 
 data "terraform_remote_state" "bootstrap" {

@@ -84,21 +84,6 @@ module "shared_vpc" {
     }
   )
 
-  nat_config = {
-    enabled = var.hub_nat_enabled
-    bgp_asn = local.bgp_asn_number
-    regions = [
-      {
-        name          = local.default_region1
-        num_addresses = var.hub_nat_num_addresses_region1
-      },
-      {
-        name          = local.default_region2
-        num_addresses = var.hub_nat_num_addresses_region2
-      }
-    ]
-  }
-
   dns_config = {
     type                         = "hub"
     enable_logging               = var.hub_dns_enable_logging
@@ -157,4 +142,27 @@ module "shared_vpc" {
     }
   ]
   secondary_ranges = {}
+}
+
+module "nat_config" {
+  source = "../../modules/nat"
+  count  = var.hub_nat_enabled ? 1 : 0
+
+  project_id        = local.net_hub_project_id
+  vpc_name          = "svpc-hub"
+  resource_code     = local.environment_code
+  network_self_link = module.shared_vpc.network_self_link
+  nat_config = {
+    bgp_asn = local.bgp_asn_number
+    regions = [
+      {
+        name          = local.default_region1
+        num_addresses = var.hub_nat_num_addresses_region1
+      },
+      {
+        name          = local.default_region2
+        num_addresses = var.hub_nat_num_addresses_region2
+      }
+    ]
+  }
 }

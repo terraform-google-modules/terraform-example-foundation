@@ -10,6 +10,10 @@
 | enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | env | The environment to prepare (ex. development) | `string` | n/a | yes |
 | environment\_code | A short form of the folder level resources (environment) within the Google Cloud organization (ex. d). | `string` | n/a | yes |
+| nat\_bgp\_asn | BGP ASN for first NAT cloud routes in the environment. | `number` | `64514` | no |
+| nat\_enabled | Toggle creation of NAT cloud router in the environment. | `bool` | `false` | no |
+| nat\_num\_addresses\_region1 | Number of external IPs to reserve for first Cloud NAT in the environment. | `number` | `2` | no |
+| nat\_num\_addresses\_region2 | Number of external IPs to reserve for second Cloud NAT in the environment. | `number` | `2` | no |
 | private\_service\_cidr | CIDR range for private service networking. Used for Cloud SQL and other managed services in the Shared Vpc. | `string` | n/a | yes |
 | private\_service\_connect\_ip | The base subnet internal IP to be used as the private service connect endpoint in the Shared VPC | `string` | n/a | yes |
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |

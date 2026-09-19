@@ -46,11 +46,15 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 |------|-------------|
 | interconnect\_attachment1\_region1 | The interconnect attachment 1 for region 1 |
 | interconnect\_attachment1\_region1\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
+| interconnect\_attachment1\_region1\_pairing\_key | The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain' |
 | interconnect\_attachment1\_region2 | The interconnect attachment 1 for region 2 |
 | interconnect\_attachment1\_region2\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
+| interconnect\_attachment1\_region2\_pairing\_key | The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain' |
 | interconnect\_attachment2\_region1 | The interconnect attachment 2 for region 1 |
 | interconnect\_attachment2\_region1\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
+| interconnect\_attachment2\_region1\_pairing\_key | The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain' |
 | interconnect\_attachment2\_region2 | The interconnect attachment 2 for region 2 |
 | interconnect\_attachment2\_region2\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
+| interconnect\_attachment2\_region2\_pairing\_key | The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain' |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

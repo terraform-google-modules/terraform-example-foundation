@@ -20,23 +20,20 @@ terraform {
     google = {
       // version 6.26.0 and 6.27.0 removed because of the bug https://github.com/hashicorp/terraform-provider-google/issues/21950
       source  = "hashicorp/google"
-      version = ">= 6.0, != 6.26.0, != 6.27.0, < 8.0"
+      version = ">= 3.50, != 6.26.0, != 6.27.0, < 8.0"
     }
     google-beta = {
       // version 6.26.0 and 6.27.0 removed because of the bug https://github.com/hashicorp/terraform-provider-google/issues/21950
       source  = "hashicorp/google-beta"
-      version = ">= 6.0, != 6.26.0, != 6.27.0, < 8.0"
-    }
-    random = {
-      source = "hashicorp/random"
+      version = ">= 3.50, != 6.26.0, != 6.27.0, < 8.0"
     }
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:routers/v6.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:partner_interconnect/v6.0.0"
   }
 
   provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-example-foundation:routers/v6.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:partner_interconnect/v6.0.0"
   }
 }

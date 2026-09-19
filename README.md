@@ -173,12 +173,13 @@ This step focuses on creating a [Shared VPC](https://cloud.google.com/architectu
 - Default routes to internet removed, with tag based route `egress-internet` required on VMs in order to reach the internet.
 - (Optional) Cloud NAT configured for all subnets with logging and static outbound IPs.
 - Default Cloud DNS policy applied, with DNS logging and [inbound query forwarding](https://cloud.google.com/dns/docs/overview#dns-server-policy-in) turned on.
+- Network Connectivity Center
 
 Usage instructions are available for the networks step in the [README](./3-networks-svpc/README.md).
 
 ### [3. networks-hub-and-spoke](./3-networks-hub-and-spoke/)
 
-This step configures the same network resources that the step 3-networks-svpc does, but this time it makes use of the architecture based on the [hub-and-spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) reference network model.
+This step configures the same network resources that the step 3-networks-svpc does, but this time it makes use of the architecture based on the [hub-and-spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) reference network model using Network Connectivity Center.
 
 Usage instructions are available for the networks step in the [README](./3-networks-hub-and-spoke/README.md).
 

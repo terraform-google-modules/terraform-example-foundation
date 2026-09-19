@@ -60,21 +60,6 @@ module "shared_vpc" {
     auto_accept_projects_default = [local.shared_vpc_project_id]
   }
 
-  nat_config = {
-    enabled = false
-    bgp_asn = local.bgp_asn_number
-    regions = [
-      {
-        name          = var.default_region1
-        num_addresses = 2
-      },
-      {
-        name          = var.default_region2
-        num_addresses = 2
-      }
-    ]
-  }
-
   dns_config = merge(
     {
       type                         = var.environment_code == "p" ? "hub" : "spoke"
@@ -140,5 +125,28 @@ module "shared_vpc" {
   ]
   secondary_ranges = {
     "sb-${var.environment_code}-svpc-${var.default_region1}" = var.subnet_secondary_ranges[var.default_region1]
+  }
+}
+
+module "nat_config" {
+  source = "../../modules/nat"
+  count  = var.nat_enabled ? 1 : 0
+
+  project_id        = local.shared_vpc_project_id
+  vpc_name          = "svpc"
+  resource_code     = var.environment_code
+  network_self_link = module.shared_vpc.network_self_link
+  nat_config = {
+    bgp_asn = var.nat_bgp_asn
+    regions = [
+      {
+        name          = var.default_region1
+        num_addresses = var.nat_num_addresses_region1
+      },
+      {
+        name          = var.default_region2
+        num_addresses = var.nat_num_addresses_region2
+      }
+    ]
   }
 }

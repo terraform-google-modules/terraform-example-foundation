@@ -16,38 +16,6 @@
 
 locals {
   interconnect_project_id = data.terraform_remote_state.org.outputs.interconnect_project_id
-  base_config = {
-    "development" = {
-      region1_interconnect1_candidate_subnets = ["169.254.0.192/29"]
-      region1_interconnect1_vlan_tag8021q     = "3905"
-      region1_interconnect2_candidate_subnets = ["169.254.0.200/29"]
-      region1_interconnect2_vlan_tag8021q     = "3906"
-      region2_interconnect1_candidate_subnets = ["169.254.0.208/29"]
-      region2_interconnect1_vlan_tag8021q     = "3907"
-      region2_interconnect2_candidate_subnets = ["169.254.0.216/29"]
-      region2_interconnect2_vlan_tag8021q     = "3908"
-    },
-    "nonproduction" = {
-      region1_interconnect1_candidate_subnets = ["169.254.0.128/29"]
-      region1_interconnect1_vlan_tag8021q     = "3915"
-      region1_interconnect2_candidate_subnets = ["169.254.0.136/29"]
-      region1_interconnect2_vlan_tag8021q     = "3916"
-      region2_interconnect1_candidate_subnets = ["169.254.0.144/29"]
-      region2_interconnect1_vlan_tag8021q     = "3917"
-      region2_interconnect2_candidate_subnets = ["169.254.0.152/29"]
-      region2_interconnect2_vlan_tag8021q     = "3918"
-    },
-    "production" = {
-      region1_interconnect1_candidate_subnets = ["169.254.0.64/29"]
-      region1_interconnect1_vlan_tag8021q     = "3925"
-      region1_interconnect2_candidate_subnets = ["169.254.0.72/29"]
-      region1_interconnect2_vlan_tag8021q     = "3926"
-      region2_interconnect1_candidate_subnets = ["169.254.0.80/29"]
-      region2_interconnect1_vlan_tag8021q     = "3927"
-      region2_interconnect2_candidate_subnets = ["169.254.0.88/29"]
-      region2_interconnect2_vlan_tag8021q     = "3928"
-    },
-  }
 
   restricted_config = {
     "development" = {

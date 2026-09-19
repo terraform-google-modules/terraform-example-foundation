@@ -17,7 +17,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | dns\_vpc\_flow\_logs | enable\_logging: set to true to enable VPC flow logging for the subnetworks.<br>  aggregation\_interval: Toggles the aggregation interval for collecting flow logs. Increasing the interval time will reduce the amount of generated flow logs for long lasting connections. Possible values are: INTERVAL\_5\_SEC, INTERVAL\_30\_SEC, INTERVAL\_1\_MIN, INTERVAL\_5\_MIN, INTERVAL\_10\_MIN, INTERVAL\_15\_MIN.<br>  flow\_sampling: Set the sampling rate of VPC flow logs within the subnetwork where 1.0 means all collected logs are reported and 0.0 means no logs are reported. The value of the field must be in [0, 1].<br>  metadata: Configures whether metadata fields should be added to the reported VPC flow logs. Possible values are: EXCLUDE\_ALL\_METADATA, INCLUDE\_ALL\_METADATA, CUSTOM\_METADATA.<br>  metadata\_fields: ist of metadata fields that should be added to reported logs. Can only be specified if VPC flow logs for this subnetwork is enabled and "metadata" is set to CUSTOM\_METADATA.<br>  filter\_expr: Export filter used to define which VPC flow logs should be logged, as as CEL expression. See https://cloud.google.com/vpc/docs/flow-logs#filtering for details on how to format this field. | <pre>object({<br>    enable_logging       = optional(string, "true")<br>    aggregation_interval = optional(string, "INTERVAL_5_SEC")<br>    flow_sampling        = optional(string, "0.5")<br>    metadata             = optional(string, "INCLUDE_ALL_METADATA")<br>    metadata_fields      = optional(list(string), [])<br>    filter_expr          = optional(string, "true")<br>  })</pre> | `{}` | no |
 | domain | The DNS name of forwarding managed zone, for instance 'example.com'. Must end with a period. | `string` | n/a | yes |
 | enable\_dedicated\_interconnect | Enable Dedicated Interconnect in the environment. | `bool` | `false` | no |
-| enable\_hub\_and\_spoke\_transitivity | Enable transitivity via gateway VMs on Hub-and-Spoke architecture. | `bool` | `false` | no |
+| enable\_hub\_and\_spoke\_transitivity | Enable transitivity by changing Network Connectivity Center topology on Hub-and-Spoke architecture from STAR to MESH. | `bool` | `false` | no |
 | enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | firewall\_policies\_enable\_logging | Toggle hierarchical firewall logging. | `bool` | `true` | no |
 | hub\_dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for Shared Hub VPC DNS. | `bool` | `true` | no |
@@ -39,7 +39,10 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | Name | Description |
 |------|-------------|
 | dns\_policy | The name of the DNS policy being created |
+| ncc\_hub\_uri | The NCC Hub ID |
+| ncc\_spoke\_group | The NCC group to be used by spokes |
 | network\_name | The name of the Shared VPC being created |
+| network\_self\_link | The URI of the Shared VPC being created |
 | shared\_vpc\_host\_project\_id | The host project ID |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

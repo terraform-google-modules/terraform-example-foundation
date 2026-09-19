@@ -158,3 +158,19 @@ variable "region2_router2_tunnel1_bgp_peer_range" {
   type        = string
   description = "BGP session range for router 2 in region 1 tunnel 1"
 }
+
+variable "ncc_hub_uri" {
+  type        = string
+  description = "The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached. Format: projects/{{project}}/locations/global/hubs/{{hub_name}}"
+}
+
+variable "ncc_hub_group" {
+  type        = string
+  description = "Network Connectivity Center Group to attach the spoke to"
+}
+
+variable "site_to_site_data_transfer" {
+  type        = bool
+  description = "Set to true to allow Google Cloud routing to act as a transit network between on-premises sites connected to the NCC Hub."
+  default     = false
+}

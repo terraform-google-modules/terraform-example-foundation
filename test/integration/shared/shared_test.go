@@ -16,6 +16,7 @@ package shared
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -83,8 +84,7 @@ func TestShared(t *testing.T) {
 				// Resource issue: https://github.com/hashicorp/terraform-provider-google/issues/16804
 				// shared.DefaultVerify(assert)
 
-				dnsFwZoneName := "fz-dns-hub"
-				bgpAdvertisedIpRange := "35.199.192.0/19"
+				dnsFwZoneName := "fz-c-dns-hub"
 
 				projectID := shared.GetStringOutput("shared_vpc_host_project_id")
 				networkName := shared.GetStringOutput("network_name")
@@ -122,39 +122,39 @@ func TestShared(t *testing.T) {
 					assert.Equal(subnet.cidrRange, sharedSubnet.Get("ipCidrRange").String(), fmt.Sprintf("IP CIDR range %s should be", subnet.cidrRange))
 				}
 
-				for _, router := range []struct {
-					name   string
-					region string
-				}{
-					{
-						name:   "cr-c-svpc-hub-us-central1-cr5",
-						region: "us-central1",
-					},
-					{
-						name:   "cr-c-svpc-hub-us-central1-cr6",
-						region: "us-central1",
-					},
-					{
-						name:   "cr-c-svpc-hub-us-west1-cr7",
-						region: "us-west1",
-					},
-					{
-						name:   "cr-c-svpc-hub-us-west1-cr8",
-						region: "us-west1",
-					},
-				} {
-					sharedComputeRouter := gcloud.Runf(t, "compute routers describe %s --region %s --project %s", router.name, router.region, projectID)
-					assert.Equal(router.name, sharedComputeRouter.Get("name").String(), fmt.Sprintf("router %s should exist", router.name))
-					assert.Equal("64514", sharedComputeRouter.Get("bgp.asn").String(), fmt.Sprintf("router %s should have bgp asm 64514", router.name))
+				if isHubAndSpokeMode(t) {
+					nccHubURI := shared.GetStringOutput("ncc_hub_uri")
+					op := gcloud.Runf(t, "network-connectivity hubs describe %s --project %s", nccHubURI, projectID)
+					presetTopology := op.Get("presetTopology").String()
+					assert.Equal("STAR", presetTopology, "should have star topology")
+					nccSpokeStateCount := op.Get("spokeSummary.spokeStateCounts").Array()
+					assert.Equal(1, len(nccSpokeStateCount), "should have spokes in one State")
+					assert.Equal("ACTIVE", nccSpokeStateCount[0].Get("state").String(), "should have only active spokes")
 
-					advertisedRanges := sharedComputeRouter.Get("bgp.advertisedIpRanges").Array()
-					var actualRanges []string
-					for _, r := range advertisedRanges {
-						actualRanges = append(actualRanges, r.Get("range").String())
+					groups := gcloud.Runf(t, "network-connectivity hubs groups list --hub %s --project %s", nccHubURI, projectID).Array()
+					assert.Equal(2, len(groups), "should have two group")
+					hasCenter := false
+					hasEdge := false
+					for _, group := range groups {
+						assert.Equal("ACTIVE", group.Get("state").String(), "should have active group")
+
+						n := strings.Split(group.Get("name").String(), "/")
+						gName := n[len(n)-1]
+						if gName == "center" {
+							hasCenter = true
+							assert.Equal(projectID, group.Get("autoAccept.autoAcceptProjects.0").String(), "%s should be on auto accept", projectID)
+							fullGroupName := fmt.Sprintf("%s/groups/%s", nccHubURI, "center")
+							assert.Equal(fullGroupName, group.Get("name").String(), "should have center group")
+						}
+						if gName == "edge" {
+							hasEdge = true
+							assert.Equal(3, len(group.Get("autoAccept.autoAcceptProjects").Array()), "should have 3 projects on auto accept")
+							fullGroupName := fmt.Sprintf("%s/groups/%s", nccHubURI, "edge")
+							assert.Equal(fullGroupName, group.Get("name").String(), "should have edge group")
+						}
 					}
-					assert.Contains(actualRanges, bgpAdvertisedIpRange, fmt.Sprintf("router %s should have range %s. Actual ranges found: %v", router.name, bgpAdvertisedIpRange, actualRanges))
-
-					assert.Equal(sharedDNSHubNetworkUrl, sharedComputeRouter.Get("network").String(), fmt.Sprintf("router %s should be on network vpc-c-svpc-hub", router.name))
+					assert.True(hasCenter, "must have a center group")
+					assert.True(hasEdge, "must have a edge group")
 				}
 			}
 		})

@@ -14,6 +14,22 @@
  * limitations under the License.
  */
 
+locals {
+  ncc_spoke_subnets = [
+    {
+      subnet_name   = "sb-dev-ncc-${local.default_region_2}"
+      subnet_ip     = "10.101.0.0/24"
+      subnet_region = local.default_region
+    },
+    {
+      subnet_name   = "sb-dev-ncc-${local.default_region_2}"
+      subnet_ip     = "10.101.1.0/24"
+      subnet_region = local.default_region_2
+    }
+  ]
+  private_service_connect_ip = "10.17.0.10"
+}
+
 module "env" {
   source = "../../modules/base_env"
 
@@ -30,12 +46,13 @@ module "env" {
       upper(local.default_region_2),
     ]
   }
-  tfc_org_name                 = var.tfc_org_name
-  peering_module_depends_on    = var.peering_module_depends_on
-  peering_iap_fw_rules_enabled = true
-  subnet_region                = coalesce(var.instance_region, local.default_region)
-  subnet_ip_range              = "10.3.128.0/21"
-  project_deletion_policy      = var.project_deletion_policy
-  folder_deletion_protection   = var.folder_deletion_protection
+  tfc_org_name                   = var.tfc_org_name
+  peering_module_depends_on      = var.peering_module_depends_on
+  peering_iap_fw_rules_enabled   = true
+  subnet_region                  = coalesce(var.instance_region, local.default_region)
+  subnet_ip_range                = "10.3.128.0/21"
+  project_deletion_policy        = var.project_deletion_policy
+  folder_deletion_protection     = var.folder_deletion_protection
+  ncc_spoke_subnets              = local.ncc_spoke_subnets
+  ncc_private_service_connect_ip = local.private_service_connect_ip
 }
-

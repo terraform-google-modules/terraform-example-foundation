@@ -192,3 +192,31 @@ variable "folder_deletion_protection" {
   type        = string
   default     = true
 }
+
+variable "ncc_spoke_subnets" {
+  description = "The list of subnets being created for the NCC sample project. See https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork"
+  type = list(object({
+    subnet_name                      = string
+    subnet_ip                        = string
+    subnet_region                    = string
+    subnet_private_access            = optional(string, "true")
+    subnet_private_ipv6_access       = optional(string)
+    subnet_flow_logs                 = optional(string, "true")
+    subnet_flow_logs_interval        = optional(string, "INTERVAL_5_SEC")
+    subnet_flow_logs_sampling        = optional(string, "0.5")
+    subnet_flow_logs_metadata        = optional(string, "INCLUDE_ALL_METADATA")
+    subnet_flow_logs_metadata_fields = optional(list(string), [])
+    subnet_flow_logs_filter          = optional(string, "true")
+    description                      = optional(string)
+    purpose                          = optional(string)
+    role                             = optional(string)
+    stack_type                       = optional(string)
+    ipv6_access_type                 = optional(string)
+  }))
+  default = []
+}
+
+variable "ncc_private_service_connect_ip" {
+  type        = string
+  description = "The subnet internal IP to be used as the private service connect endpoint in the NCC VPC"
+}

@@ -53,3 +53,13 @@ output "subnets_secondary_ranges" {
   value       = module.shared_vpc.subnets_secondary_ranges
   description = "The secondary ranges associated with these subnets"
 }
+
+output "ncc_spoke_group" {
+  value       = local.spoke_group
+  description = "The NCC group to be used by spokes"
+}
+
+output "ncc_hub_uri" {
+  value       = module.shared_vpc.ncc_hub_uri
+  description = "The NCC Hub ID"
+}

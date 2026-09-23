@@ -24,7 +24,7 @@ import (
 	"github.com/mitchellh/go-testing-interface"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 
-	gitlab "gitlab.com/gitlab-org/api/client-go"
+	gitlab "gitlab.com/gitlab-org/api/client-go/v2"
 )
 
 const (

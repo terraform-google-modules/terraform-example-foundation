@@ -24,6 +24,11 @@ output "interconnect_attachment1_region1_customer_router_ip_address" {
   description = "IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment."
 }
 
+output "interconnect_attachment1_region1_pairing_key" {
+  value       = google_compute_interconnect_attachment.interconnect_attachment1_region1.pairing_key
+  description = "The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain'"
+}
+
 output "interconnect_attachment2_region1" {
   value       = google_compute_interconnect_attachment.interconnect_attachment2_region1
   description = "The interconnect attachment 2 for region 1"
@@ -32,6 +37,11 @@ output "interconnect_attachment2_region1" {
 output "interconnect_attachment2_region1_customer_router_ip_address" {
   value       = google_compute_interconnect_attachment.interconnect_attachment2_region1.customer_router_ip_address
   description = "IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment."
+}
+
+output "interconnect_attachment2_region1_pairing_key" {
+  value       = google_compute_interconnect_attachment.interconnect_attachment2_region1.pairing_key
+  description = "The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain'"
 }
 
 output "interconnect_attachment1_region2" {
@@ -44,6 +54,11 @@ output "interconnect_attachment1_region2_customer_router_ip_address" {
   description = "IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment."
 }
 
+output "interconnect_attachment1_region2_pairing_key" {
+  value       = google_compute_interconnect_attachment.interconnect_attachment1_region2.pairing_key
+  description = "The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain'"
+}
+
 output "interconnect_attachment2_region2" {
   value       = google_compute_interconnect_attachment.interconnect_attachment2_region2
   description = "The interconnect attachment 2 for region 2"
@@ -52,4 +67,9 @@ output "interconnect_attachment2_region2" {
 output "interconnect_attachment2_region2_customer_router_ip_address" {
   value       = google_compute_interconnect_attachment.interconnect_attachment2_region2.customer_router_ip_address
   description = "IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment."
+}
+
+output "interconnect_attachment2_region2_pairing_key" {
+  value       = google_compute_interconnect_attachment.interconnect_attachment2_region2.pairing_key
+  description = "The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain'"
 }

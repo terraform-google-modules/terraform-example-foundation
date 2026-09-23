@@ -24,7 +24,22 @@ output "network_name" {
   description = "The name of the Shared VPC being created"
 }
 
+output "network_self_link" {
+  value       = module.shared_vpc.network_self_link
+  description = "The URI of the Shared VPC being created"
+}
+
 output "dns_policy" {
   value       = module.shared_vpc.dns_policy
   description = "The name of the DNS policy being created"
+}
+
+output "ncc_spoke_group" {
+  value       = var.enable_hub_and_spoke_transitivity ? "default" : "edge"
+  description = "The NCC group to be used by spokes"
+}
+
+output "ncc_hub_uri" {
+  value       = module.shared_vpc.ncc_hub_uri
+  description = "The NCC Hub ID"
 }

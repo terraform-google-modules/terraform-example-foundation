@@ -19,6 +19,6 @@
     "@tootallnate/once": "^3.0.0",
     "form-data": "^4.0.0",
     "jws": "^4.0.1",
-    "protobufjs": "^7.6.1"
+    "protobufjs": "^8.0.0"
   }
 }

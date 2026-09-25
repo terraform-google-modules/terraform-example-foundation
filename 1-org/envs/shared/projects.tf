@@ -21,10 +21,18 @@ locals {
     "roles/resourcemanager.projectIamAdmin",
     "roles/iam.serviceAccountUser",
   ]
+  all_environments = {
+    "development"   = "d"
+    "nonproduction" = "n"
+    "production"    = "p"
+  }
+
+  # Dynamically filter environments based on var.production_only_deploy (configured via foundation-deployer helper).
+  # When true, only the production network host project (prj-p-svpc) is created, skipping development and nonproduction.
   environments = {
-    "development" : "d",
-    "nonproduction" : "n",
-    "production" : "p"
+    for env, code in local.all_environments :
+    env => code
+    if !var.production_only_deploy || env == "production"
   }
 }
 

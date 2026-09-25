@@ -1,5 +1,17 @@
 # Changelog
 
+## [7.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v6.0.0...v7.0.0) (2026-09-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* add Network Connectivity Center usage in the foundation ([#1515](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1515))
+
+### Features
+
+* add Network Connectivity Center usage in the foundation ([#1515](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1515)) ([57d0fc2](https://github.com/terraform-google-modules/terraform-example-foundation/commit/57d0fc28cbceabc907dc505f2c3e8ef00f21baeb))
+* add support for single environment (production only) deployment ([#1519](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1519)) ([4b9c908](https://github.com/terraform-google-modules/terraform-example-foundation/commit/4b9c908eb8820d494d86a2b82e1a7def362e830f))
+
 ## [6.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v5.0.0...v6.0.0) (2026-09-08)
 
 

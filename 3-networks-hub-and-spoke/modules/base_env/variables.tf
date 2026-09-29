@@ -63,7 +63,7 @@ variable "enable_partner_interconnect" {
 }
 
 variable "enable_hub_and_spoke_transitivity" {
-  description = "Enable transitivity via gateway VMs on Hub-and-Spoke architecture."
+  description = "Enable transitivity by changing Network Connectivity Center topology on Hub-and-Spoke architecture from STAR to MESH."
   type        = bool
   default     = false
 }

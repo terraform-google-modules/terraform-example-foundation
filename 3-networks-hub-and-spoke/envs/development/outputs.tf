@@ -49,3 +49,12 @@ output "subnets_secondary_ranges" {
   description = "The secondary ranges associated with these subnets"
 }
 
+output "ncc_spoke_group" {
+  value       = module.base_env.ncc_spoke_group
+  description = "The NCC group to be used by spokes"
+}
+
+output "ncc_hub_uri" {
+  value       = module.base_env.ncc_hub_uri
+  description = "The NCC Hub ID"
+}

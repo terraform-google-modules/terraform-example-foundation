@@ -408,3 +408,9 @@ variable "vpc_sc_propagation_sleep_duration" {
   type        = string
   default     = "60s"
 }
+
+variable "production_only_deploy" {
+  description = "If true, only the production environment will be deployed, development and nonproduction will be skipped."
+  type        = bool
+  default     = false
+}

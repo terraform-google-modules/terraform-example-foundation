@@ -54,15 +54,16 @@ const (
 )
 
 type CommonConf struct {
-	FoundationPath    string
-	CheckoutPath      string
-	PolicyPath        string
-	ValidatorProject  string
-	BuildType         string
-	EnableHubAndSpoke bool
-	DisablePrompt     bool
-	Logger            *logger.Logger
-	GitToken          string
+	FoundationPath       string
+	CheckoutPath         string
+	PolicyPath           string
+	ValidatorProject     string
+	BuildType            string
+	EnableHubAndSpoke    bool
+	DisablePrompt        bool
+	Logger               *logger.Logger
+	GitToken             string
+	ProductionOnlyDeploy bool
 }
 
 type StageConf struct {
@@ -212,11 +213,17 @@ type GlobalTFVars struct {
 	ProjectDeletionPolicy                 string          `hcl:"project_deletion_policy"`
 	BuildType                             string          `hcl:"build_type"`
 	GitRepos                              *GitRepos       `hcl:"git_repos"`
+	ProductionOnlyDeploy                  *bool           `hcl:"production_only_deploy,optional"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
 func (g GlobalTFVars) HasValidatorProj() bool {
 	return g.ValidatorProjectID != nil && *g.ValidatorProjectID != "" && *g.ValidatorProjectID != "EXISTING_PROJECT_ID"
+}
+
+// IsProdOnly checks if production only deploy is enabled
+func (g GlobalTFVars) IsProdOnly() bool {
+	return g.ProductionOnlyDeploy != nil && *g.ProductionOnlyDeploy
 }
 
 // HasGroupsCreation checks if Groups creation is enabled
@@ -285,6 +292,7 @@ type OrgTfvars struct {
 	GcpGroups                             GcpGroups `hcl:"gcp_groups"`
 	FolderDeletionProtection              *bool     `hcl:"folder_deletion_protection"`
 	ProjectDeletionPolicy                 string    `hcl:"project_deletion_policy"`
+	ProductionOnlyDeploy                  *bool     `hcl:"production_only_deploy"`
 }
 
 type EnvsTfvars struct {

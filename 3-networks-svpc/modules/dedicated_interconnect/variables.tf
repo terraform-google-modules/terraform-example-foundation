@@ -175,3 +175,19 @@ variable "region2_interconnect2_vlan_tag8021q" {
   description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
   default     = null
 }
+
+variable "ncc_hub_uri" {
+  type        = string
+  description = "The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached."
+}
+
+variable "ncc_hub_group" {
+  type        = string
+  description = "Network Connectivity Center Group to attach the spoke to"
+}
+
+variable "site_to_site_data_transfer" {
+  type        = bool
+  description = "Set to true to allow Google Cloud routing to act as a transit network between on-premises sites."
+  default     = false
+}

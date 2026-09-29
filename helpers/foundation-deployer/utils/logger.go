@@ -34,8 +34,8 @@ func NewCustomLogger() CustomLogger {
 func (c CustomLogger) Logf(t grunttest.TestingT, format string, args ...interface{}) {
 	_, err := fmt.Fprintln(os.Stdout, fmt.Sprintf(c.baseFmt, fmt.Sprintf(format, args...)))
 	if err != nil {
-        fmt.Fprintf(os.Stderr, "Error writing log: %s\n", err)
-    }
+		fmt.Fprintf(os.Stderr, "Error writing log: %s\n", err)
+	}
 }
 
 func GetLogger(quiet bool) *logger.Logger {

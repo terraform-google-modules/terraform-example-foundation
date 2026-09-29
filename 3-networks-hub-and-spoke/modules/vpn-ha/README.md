@@ -7,8 +7,9 @@ If you are not able to use Dedicated Interconnect or Partner Interconnect you ca
 
 ## Usage
 
-1. Rename `vpn.tf.example` to `vpn.tf` in the environment folder in `3-networks-hub-and-spoke/envs/<environment>`
-1. Create secret for VPN pre-shared key `echo 'MY_PSK' | gcloud secrets create VPN_PSK_SECRET_NAME --project ENV_SECRETS_PROJECT --replication-policy=automatic --data-file=-`
+1. Rename `routers.tf.example` to `routers..tf` in the shared envs folder in `3-networks-hub-and-spoke/envs/shared`
+1. Rename `vpn.tf.example` to `vpn.tf` in the environment folder in `3-networks-hub-and-spoke/envs/shared`
+1. Create secret for VPN pre-shared key `echo 'MY_PSK' | gcloud secrets create VPN_PSK_SECRET_NAME --project ORG_SECRETS_PROJECT --replication-policy=automatic --data-file=-`
 1. Update in the file the values for `environment`, `vpn_psk_secret_name`, `on_prem_router_ip_address1`, `on_prem_router_ip_address2` and `bgp_peer_asn`.
 1. Verify other default values are valid for your environment.
 
@@ -24,6 +25,8 @@ If you are not able to use Dedicated Interconnect or Partner Interconnect you ca
 | default\_region1 | Default region 1 for Cloud Routers | `string` | n/a | yes |
 | default\_region2 | Default region 2 for Cloud Routers | `string` | n/a | yes |
 | env\_secret\_project\_id | the environment secrets project ID | `string` | n/a | yes |
+| ncc\_hub\_group | Network Connectivity Center Group to attach the spoke to | `string` | n/a | yes |
+| ncc\_hub\_uri | The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached. Format: projects/{{project}}/locations/global/hubs/{{hub\_name}} | `string` | n/a | yes |
 | on\_prem\_router\_ip\_address1 | On-Prem Router IP address | `string` | n/a | yes |
 | on\_prem\_router\_ip\_address2 | On-Prem Router IP address | `string` | n/a | yes |
 | project\_id | VPC Project ID | `string` | n/a | yes |
@@ -47,6 +50,7 @@ If you are not able to use Dedicated Interconnect or Partner Interconnect you ca
 | region2\_router2\_tunnel0\_bgp\_peer\_range | BGP session range for router 2 in region 2 tunnel 0 | `string` | n/a | yes |
 | region2\_router2\_tunnel1\_bgp\_peer\_address | BGP session address for router 2 in region 1 tunnel 1 | `string` | n/a | yes |
 | region2\_router2\_tunnel1\_bgp\_peer\_range | BGP session range for router 2 in region 1 tunnel 1 | `string` | n/a | yes |
+| site\_to\_site\_data\_transfer | Set to true to allow Google Cloud routing to act as a transit network between on-premises sites connected to the NCC Hub. | `bool` | `false` | no |
 | vpc\_name | Label to identify the VPC associated with shared VPC that will use the Interconnect. | `string` | n/a | yes |
 | vpn\_psk\_secret\_name | The name of the secret to retrieve from secret manager. This will be retrieved from the environment secrets project. | `string` | n/a | yes |
 

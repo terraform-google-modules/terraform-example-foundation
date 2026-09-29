@@ -173,12 +173,13 @@ This step focuses on creating a [Shared VPC](https://cloud.google.com/architectu
 - Default routes to internet removed, with tag based route `egress-internet` required on VMs in order to reach the internet.
 - (Optional) Cloud NAT configured for all subnets with logging and static outbound IPs.
 - Default Cloud DNS policy applied, with DNS logging and [inbound query forwarding](https://cloud.google.com/dns/docs/overview#dns-server-policy-in) turned on.
+- Network Connectivity Center
 
 Usage instructions are available for the networks step in the [README](./3-networks-svpc/README.md).
 
 ### [3. networks-hub-and-spoke](./3-networks-hub-and-spoke/)
 
-This step configures the same network resources that the step 3-networks-svpc does, but this time it makes use of the architecture based on the [hub-and-spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) reference network model.
+This step configures the same network resources that the step 3-networks-svpc does, but this time it makes use of the architecture based on the [hub-and-spoke](https://cloud.google.com/architecture/security-foundations/networking#hub-and-spoke) reference network model using Network Connectivity Center.
 
 Usage instructions are available for the networks step in the [README](./3-networks-hub-and-spoke/README.md).
 
@@ -320,6 +321,33 @@ Some variables used to deploy the steps have default values, check those **befor
 - Step 3-networks-svpc: The READMEs of the environments [shared](./3-networks-svpc/envs/shared/README.md#inputs), [development](./3-networks-svpc/envs/development/README.md#Inputs), [nonproduction](./3-networks/envs/nonproduction/README.md#Inputs), and [production](./3-networks/envs/production/README.md#Inputs)
 - Step 3-networks-hub-and-spoke: The READMEs of the environments [shared](./3-networks-hub-and-spoke/envs/shared/README.md#inputs), [development](./3-networks-hub-and-spoke/envs/development/README.md#Inputs), [nonproduction](./3-networks/envs/nonproduction/README.md#Inputs), and [production](./3-networks/envs/production/README.md#Inputs)
 - Step 4-projects: The READMEs of the environments [shared](./4-projects/business_unit_1/shared/README.md#inputs), [development](./4-projects/business_unit_1/development/README.md#Inputs), [nonproduction](./4-projects/business_unit_1/nonproduction/README.md#Inputs), and [production](./4-projects/business_unit_1/production/README.md#Inputs)
+
+## Single-Environment Deployment (Production Only)
+
+By default, the foundation deploys a 3-environment topology (`development`, `nonproduction`, and `production`). If you wish to deploy only the `production` environment (for testing, demonstration, training, or cloud billing cost optimization), this foundation natively supports single-environment deployment.
+
+### Automated Deployment (via Foundation Deployer)
+Set `production_only_deploy = true` in your `global.tfvars` file before running the deployer:
+```hcl
+production_only_deploy = true
+```
+The helper will automatically:
+- Limit folder and project creation to `production` and `shared` across all stages (`1-org` through `4-projects`).
+- Configure CI/CD branch scanning (`leaf_regex_plan`) to bypass uninitialized non-production branches.
+- Execute symmetric reverse-order teardown when running with `-destroy`.
+
+### Manual Step-by-Step Deployment
+If deploying manually with the `terraform` CLI without the helper:
+1. **0-bootstrap:** Run `terraform init` and `terraform apply` normally.
+2. **1-org:** In `1-org/envs/shared/terraform.tfvars`, set `production_only_deploy = true` and run `terraform apply`. This provisions only `prj-p-svpc` (and `prj-net-hub-svpc` if Hub-and-Spoke is enabled) and adapts VPC Service Controls.
+3. **2-environments:** Skip `envs/development` and `envs/nonproduction`. Run `terraform apply` only in `envs/production`.
+4. **3-networks:** Run `terraform apply` in `envs/shared`, then in `envs/production`. Skip `envs/development` and `envs/nonproduction`.
+5. **4-projects:** Run `terraform apply` in `business_unit_1/shared`, then in `business_unit_1/production`. Skip `development` and `nonproduction`.
+
+### Impacts and Operational Considerations
+- **Cost Reduction:** Reduces the provisioned project footprint by ~60% (omits development and non-production network, logging, secret, and workload projects).
+- **Zero Drift / Backwards Compatibility:** When `production_only_deploy = false` (default), the foundation behaves identically to standard CFT 3-environment architecture.
+- **Future Expansion:** You can later provision `development` and `nonproduction` environments on top of an existing deployment by toggling `production_only_deploy = false` and applying the stages.
 
 ## Errata summary
 

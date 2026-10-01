@@ -38,15 +38,29 @@ variable "nat_config" {
   description = <<-EOT
     Configuration for Cloud NAT and underlying Cloud Routers.
     Attributes:
-    - egress_tags: Network tags used for routing internet egress traffic (default: ["egress-internet"]).
-    - bgp_asn: The BGP Autonomous System Number assigned to the Cloud Router (default: 64512).
+    - create_internet_route: Set to true to create the default internet route.
+    - create_egress_firewall: Set to true to create the egress firewall rule.
+    - allow_udp_dns:  Set to true to allow outbound UDP DNS resolution traffic (port 53) in the egress firewall rule.
+    - egress_tcp_ports: List of TCP ports to allow outbound in the egress firewall rule.
+    - allow_icmp: Set to true to allow ICMP traffic in the egress firewall rule.
+    - egress_tags: Network tags used for routing internet egress traffic.
+    - bgp_asn: The BGP Autonomous System Number assigned to the Cloud Router.
+    - egress_internet_route_priority: Route priority.
+    - egress_firewall_priority: Firewall rule priority.
     - regions: Defines which regions get a NAT router.
       - name: The GCP region name (e.g., "us-central1") where the router and NAT will be deployed.
-      - num_addresses: The number of static external IP addresses to manually allocate and assign to the NAT gateway in this region (default: 2).
+      - num_addresses: The number of static external IP addresses to manually allocate and assign to the NAT gateway in this region.
   EOT
   type = object({
-    egress_tags = optional(list(string), ["egress-internet"])
-    bgp_asn     = optional(number, 64512)
+    create_internet_route          = optional(bool, true)
+    create_egress_firewall         = optional(bool, true)
+    egress_tcp_ports               = optional(list(string), ["443"])
+    allow_udp_dns                  = optional(bool, true)
+    allow_icmp                     = optional(bool, true)
+    egress_tags                    = optional(list(string), ["egress-internet"])
+    bgp_asn                        = optional(number, 64512)
+    egress_internet_route_priority = optional(number, 1000)
+    egress_firewall_priority       = optional(number, 1000)
     regions = optional(list(object({
       name          = string
       num_addresses = optional(number, 2)

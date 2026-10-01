@@ -54,7 +54,7 @@ func forceBackendMigration(t testing.TB, repo, groupUnit, env string, c CommonCo
 	tfDir := filepath.Join(c.CheckoutPath, repo, groupUnit, env)
 	backendF := filepath.Join(tfDir, "backend.tf")
 
-	exist, err := utils.FileExists(backendF)
+	exist, err := testutils.FileExists(backendF)
 	if err != nil {
 		return err
 	}

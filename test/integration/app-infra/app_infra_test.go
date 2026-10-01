@@ -40,8 +40,12 @@ func TestAppInfra(t *testing.T) {
 	)
 
 	// Configure impersonation for test execution
-	terraformSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")["bu1-example-app"]
-	backend_bucket := terraform.OutputMap(t, shared.GetTFOptions(), "state_buckets")["bu1-example-app"]
+	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
+	backend_bucket := projects_backend_bucket
+	if shared.GetStringOutput("enable_cloudbuild_deploy") == "true" {
+		terraformSA = terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")["bu1-example-app"]
+		backend_bucket = terraform.OutputMap(t, shared.GetTFOptions(), "state_buckets")["bu1-example-app"]
+	}
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 	backendConfig := map[string]interface{}{
 		"bucket": backend_bucket,
@@ -76,32 +80,34 @@ func TestAppInfra(t *testing.T) {
 					assert.Equal(machineType, instance.Get("machineType").String(), "should have machine_type f1-micro")
 
 					confidentialProjectID := appInfra.GetStringOutput("confidential_space_project_id")
-					confidentialInstanceName := terraform.OutputList(t, appInfra.GetTFOptions(), "confidential_instances_names")[0]
-					confidentialInstanceZone := terraform.OutputList(t, appInfra.GetTFOptions(), "confidential_instances_zones")[0]
-					confidentialProjectNumber := appInfra.GetStringOutput("confidential_space_project_number")
+					if confidentialProjectID != "" {
+						confidentialInstanceName := terraform.OutputList(t, appInfra.GetTFOptions(), "confidential_instances_names")[0]
+						confidentialInstanceZone := terraform.OutputList(t, appInfra.GetTFOptions(), "confidential_instances_zones")[0]
+						confidentialProjectNumber := appInfra.GetStringOutput("confidential_space_project_number")
 
-					gcPoolOps := gcloud.WithCommonArgs([]string{"--project", confidentialProjectID, "--format", "json"})
-					poolDetails := gcloud.Run(t, fmt.Sprintf("iam workload-identity-pools describe %s --location=global", workloadIdentityPool), gcPoolOps)
-					name := poolDetails.Get("name").String()
-					expectedName := fmt.Sprintf("projects/%s/locations/global/workloadIdentityPools/%s", confidentialProjectNumber, workloadIdentityPool)
-					assert.Equal(expectedName, name, "Workload Identity Pool full name should match")
+						gcPoolOps := gcloud.WithCommonArgs([]string{"--project", confidentialProjectID, "--format", "json"})
+						poolDetails := gcloud.Run(t, fmt.Sprintf("iam workload-identity-pools describe %s --location=global", workloadIdentityPool), gcPoolOps)
+						name := poolDetails.Get("name").String()
+						expectedName := fmt.Sprintf("projects/%s/locations/global/workloadIdentityPools/%s", confidentialProjectNumber, workloadIdentityPool)
+						assert.Equal(expectedName, name, "Workload Identity Pool full name should match")
 
-					gcPoolProviderOps := gcloud.WithCommonArgs([]string{fmt.Sprintf("--workload-identity-pool=%s", workloadIdentityPool), "--location=global", "--project", confidentialProjectID, "--format", "json"})
-					workloadIdentityPoolProviderID := gcloud.Run(t, fmt.Sprintf("iam workload-identity-pools providers describe %s", workloadPoolProvider), gcPoolProviderOps)
-					assert.Equal(workloadPoolProvider, workloadIdentityPoolProviderID.Get("displayName").String(), fmt.Sprintf("workload identity pool provider should have name equals to %s", workloadPoolProvider))
+						gcPoolProviderOps := gcloud.WithCommonArgs([]string{fmt.Sprintf("--workload-identity-pool=%s", workloadIdentityPool), "--location=global", "--project", confidentialProjectID, "--format", "json"})
+						workloadIdentityPoolProviderID := gcloud.Run(t, fmt.Sprintf("iam workload-identity-pools providers describe %s", workloadPoolProvider), gcPoolProviderOps)
+						assert.Equal(workloadPoolProvider, workloadIdentityPoolProviderID.Get("displayName").String(), fmt.Sprintf("workload identity pool provider should have name equals to %s", workloadPoolProvider))
 
-					gcInstanceOps := gcloud.WithCommonArgs([]string{"--project", confidentialProjectID, "--zone", confidentialInstanceZone, "--format", "json"})
-					computeInstanceList := gcloud.Run(t, fmt.Sprintf("compute instances describe %s", confidentialInstanceName), gcInstanceOps)
-					assert.NotEmpty(computeInstanceList, "Expected instance details to be present")
-					computeInstance := computeInstanceList
-					assert.Equal(confidentialInstanceName, computeInstance.Get("name").String(), "Confidential instance name must match expected")
-					confidentialInstanceConfig := computeInstance.Get("confidentialInstanceConfig")
-					assert.True(confidentialInstanceConfig.Get("enableConfidentialCompute").Bool(), "Confidential Compute should be enabled")
-					assert.Equal("SEV", confidentialInstanceConfig.Get("confidentialInstanceType").String())
-					assert.Equal("MIGRATE", computeInstance.Get("scheduling").Get("onHostMaintenance").String())
-					serviceAccounts := computeInstance.Get("serviceAccounts").Array()
-					assert.Len(serviceAccounts, 1)
-					assert.Equal(fmt.Sprintf("confidential-space-workload-sa@%s.iam.gserviceaccount.com", confidentialProjectID), serviceAccounts[0].Get("email").String())
+						gcInstanceOps := gcloud.WithCommonArgs([]string{"--project", confidentialProjectID, "--zone", confidentialInstanceZone, "--format", "json"})
+						computeInstanceList := gcloud.Run(t, fmt.Sprintf("compute instances describe %s", confidentialInstanceName), gcInstanceOps)
+						assert.NotEmpty(computeInstanceList, "Expected instance details to be present")
+						computeInstance := computeInstanceList
+						assert.Equal(confidentialInstanceName, computeInstance.Get("name").String(), "Confidential instance name must match expected")
+						confidentialInstanceConfig := computeInstance.Get("confidentialInstanceConfig")
+						assert.True(confidentialInstanceConfig.Get("enableConfidentialCompute").Bool(), "Confidential Compute should be enabled")
+						assert.Equal("SEV", confidentialInstanceConfig.Get("confidentialInstanceType").String())
+						assert.Equal("MIGRATE", computeInstance.Get("scheduling").Get("onHostMaintenance").String())
+						serviceAccounts := computeInstance.Get("serviceAccounts").Array()
+						assert.Len(serviceAccounts, 1)
+						assert.Equal(fmt.Sprintf("confidential-space-workload-sa@%s.iam.gserviceaccount.com", confidentialProjectID), serviceAccounts[0].Get("email").String())
+					}
 				})
 
 			appInfra.Test()

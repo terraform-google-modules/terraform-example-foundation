@@ -92,7 +92,12 @@ func TestProjectsShared(t *testing.T) {
 					// perform default verification ensuring Terraform reports no additional changes on an applied blueprint
 					shared.DefaultVerify(assert)
 
+					if shared.GetStringOutput("enable_cloudbuild_deploy") != "true" {
+						return
+					}
+
 					projectID := shared.GetStringOutput("cloudbuild_project_id")
+
 					projectNumber := shared.GetStringOutput("cloudbuild_project_number")
 					prj := gcloud.Runf(t, "projects describe %s", projectID)
 					assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))

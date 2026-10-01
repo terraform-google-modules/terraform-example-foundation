@@ -33,18 +33,17 @@ import (
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
-// envBootstrapBuildType selects which bootstrap variant the integration test expects.
-// Empty or "cb" (default): full Cloud Build assertions — requires 0-bootstrap in cb mode
-// (active build_cb.tf, outputs_cb.tf, versions_cb.tf), as in a clean clone / CI.
-// "local": skips Cloud Build / CSR / trigger checks — use after ./scripts/choose_build_type.sh local
-// and the same terraform.tfvars you would use for a local-only apply.
+// envBootstrapBuildType selects which bootstrap variant the integration test runs.
+// "local" (default): no Cloud Build / CSR / trigger resources are created.
+// "cb" (opt-in via BOOTSTRAP_BUILD_TYPE=cb): full Cloud Build assertions — requires
+// 0-bootstrap already in cb mode (active build_cb.tf, outputs_cb.tf, versions_cb.tf).
 const envBootstrapBuildType = "BOOTSTRAP_BUILD_TYPE"
 
 func bootstrapBuildType() string {
 	if v := strings.TrimSpace(os.Getenv(envBootstrapBuildType)); v != "" {
 		return strings.ToLower(v)
 	}
-	return "cb"
+	return "local"
 }
 
 func isLocalBootstrapBuild() bool {
@@ -64,6 +63,11 @@ func fileExists(filePath string) (bool, error) {
 }
 
 func TestBootstrap(t *testing.T) {
+
+	const bootstrapDir = "../../../0-bootstrap"
+	if isLocalBootstrapBuild() {
+		require.NoError(t, testutils.RenameBuildFiles(bootstrapDir, "local"))
+	}
 
 	vars := map[string]interface{}{
 		"bucket_force_destroy":             true,

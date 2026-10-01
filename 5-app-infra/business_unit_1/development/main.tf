@@ -15,8 +15,9 @@
  */
 
 locals {
-  business_unit = "business_unit_1"
-  environment   = "development"
+  business_unit             = "business_unit_1"
+  environment               = "development"
+  enable_confidential_space = try(data.terraform_remote_state.projects_env.outputs.confidential_space_project, "") != ""
 }
 
 module "gce_instance" {
@@ -41,6 +42,7 @@ module "peering_gce_instance" {
 
 module "confidential_space" {
   source = "../../modules/confidential_space"
+  count  = local.enable_confidential_space ? 1 : 0
 
   environment                              = local.environment
   confidential_image_digest                = var.confidential_image_digest

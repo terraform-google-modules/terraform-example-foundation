@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This logic is also implemented in the deploy helper.
-# The deploy helper RenameBuildFiles function mirrors these build types; see
-# helpers/foundation-deployer/utils/files.go (note: the helper automates extra steps only for cb, github, and gitlab).
+# This logic is also implemented in the deploy helper and testutils.
+# The RenameBuildFiles function mirrors these build types; see
+# test/integration/testutils/files.go (note: the helper automates extra steps only for cb, github, and gitlab).
 
 set -e
 

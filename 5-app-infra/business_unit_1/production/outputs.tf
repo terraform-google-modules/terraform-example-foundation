@@ -49,12 +49,12 @@ output "project_id" {
 
 output "confidential_space_project_id" {
   description = "Project where confidential compute instance was created"
-  value       = module.confidential_space.confidential_space_project_id
+  value       = try(module.confidential_space[0].confidential_space_project_id, "")
 }
 
 output "confidential_space_project_number" {
   description = "Project number from confidential compute instance"
-  value       = module.confidential_space.confidential_space_project_number
+  value       = try(module.confidential_space[0].confidential_space_project_number, "")
 }
 
 output "region" {
@@ -64,28 +64,27 @@ output "region" {
 
 output "workload_pool_provider_id" {
   description = "Workload pool provider used by confidential space."
-  value       = module.confidential_space.workload_pool_provider_id
+  value       = try(module.confidential_space[0].workload_pool_provider_id, "")
 }
 
 output "workload_identity_pool_id" {
   description = "Workload identity pool ID."
-  value       = module.confidential_space.workload_identity_pool_id
-
+  value       = try(module.confidential_space[0].workload_identity_pool_id, "")
 }
 
 output "confidential_instances_names" {
-  description = "List of names for confidential compute instances."
-  value       = [for u in module.confidential_space.instances_details : u.name]
+  description = "List of names for confidential compute instances"
+  value       = try([for u in module.confidential_space[0].instances_details : u.name], [])
   sensitive   = true
 }
 
 output "confidential_available_zones" {
   description = "List of available zones in region for confidential space."
-  value       = module.confidential_space.available_zones
+  value       = try(module.confidential_space[0].available_zones, [])
 }
 
 output "confidential_instances_zones" {
   description = "List of zone for confidential compute instances."
-  value       = [for u in module.confidential_space.instances_details : u.zone]
+  value       = try([for u in module.confidential_space[0].instances_details : u.zone], [])
   sensitive   = true
 }

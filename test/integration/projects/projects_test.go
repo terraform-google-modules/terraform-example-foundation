@@ -116,7 +116,7 @@ func TestProjects(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, "shared")),
 			)
-			sharedCloudBuildSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")[tt.repo]
+			enableCB := shared.GetStringOutput("enable_cloudbuild_deploy") == "true"
 
 			vars := map[string]interface{}{
 				"remote_state_bucket":        backend_bucket,
@@ -134,12 +134,16 @@ func TestProjects(t *testing.T) {
 			projects.DefineVerify(
 				func(assert *assert.Assertions) {
 
-					for _, projectOutput := range []string{
+					projectsToVerify := []string{
 						"floating_project",
 						"peering_project",
 						"shared_vpc_project",
-						"confidential_space_project",
-					} {
+					}
+					if enableCB {
+						projectsToVerify = append(projectsToVerify, "confidential_space_project")
+					}
+
+					for _, projectOutput := range projectsToVerify {
 						projectID := projects.GetStringOutput(projectOutput)
 						prj := gcloud.Runf(t, "projects describe %s", projectID)
 						assert.Equal("ACTIVE", prj.Get("lifecycleState").String(), fmt.Sprintf("project %s should be ACTIVE", projectID))
@@ -192,11 +196,14 @@ func TestProjects(t *testing.T) {
 						if projectOutput == "peering_project" {
 
 							peeringProjectSaRoles := append(project_sa_roles, "roles/resourcemanager.tagUser")
-							iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", sharedCloudBuildSA)
-							iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
-							projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()
-							listRoles := testutils.GetResultFieldStrSlice(projectPolicy, "bindings.role")
-							assert.Subset(listRoles, peeringProjectSaRoles, fmt.Sprintf("service account %s should have project level roles", sharedCloudBuildSA))
+							if enableCB {
+								sharedCloudBuildSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")[tt.repo]
+								iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", sharedCloudBuildSA)
+								iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
+								projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()
+								listRoles := testutils.GetResultFieldStrSlice(projectPolicy, "bindings.role")
+								assert.Subset(listRoles, peeringProjectSaRoles, fmt.Sprintf("service account %s should have project level roles", sharedCloudBuildSA))
+							}
 
 							peering := gcloud.Runf(t, "compute networks peerings list --project %s", projectID).Array()[0]
 							assert.Contains(peering.Get("peerings.0.network").String(), tt.sharedNetwork, "should have a peering network")

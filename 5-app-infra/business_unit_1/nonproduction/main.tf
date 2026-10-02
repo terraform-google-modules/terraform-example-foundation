@@ -15,8 +15,8 @@
  */
 
 locals {
-  business_unit = "business_unit_1"
-  environment   = "nonproduction"
+  business_unit             = "business_unit_1"
+  environment               = "nonproduction"
   enable_confidential_space = try(data.terraform_remote_state.projects_env.outputs.confidential_space_project, "") != ""
 }
 

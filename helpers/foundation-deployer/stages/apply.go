@@ -111,6 +111,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		ProjectDeletionPolicy:        tfvars.ProjectDeletionPolicy,
 		UniversePrefix:               tfvars.UniversePrefix,
 		UniverseDomain:               tfvars.UniverseDomain,
+		AvailableUniverseServices:    tfvars.AvailableUniverseServices,
 	}
 
 	if tfvars.BuildType == BuildTypeGiHub {
@@ -164,7 +165,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 	}
 
 	// terraform deploy
-	err = applyLocal(t, options, "", c.PolicyPath, c.ValidatorProject)
+	err = applyLocal(t, options, "")
 	if err != nil {
 		return err
 	}
@@ -752,7 +753,7 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 			MaxRetries:               MaxErrorRetries,
 			TimeBetweenRetries:       TimeBetweenErrorRetries,
 		}
-		return planLocal(t, options, stageConf.StageSA, c.PolicyPath, c.ValidatorProject)
+		return planLocal(t, options, stageConf.StageSA)
 	} else {
 		if err := conf.PushBranch("plan", "origin"); err != nil {
 			return err
@@ -784,7 +785,7 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 			MaxRetries:               MaxErrorRetries,
 			TimeBetweenRetries:       TimeBetweenErrorRetries,
 		}
-		return applyLocal(t, options, stageConf.StageSA, c.PolicyPath, c.ValidatorProject)
+		return applyLocal(t, options, stageConf.StageSA)
 	} else {
 		if err := conf.PushBranch("production", "origin"); err != nil {
 			return err
@@ -899,7 +900,7 @@ func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error 
 			}
 
 			err := s.RunStep(fmt.Sprintf("%s.%s.apply-%s", sc.Stage, bu, localStep), func() error {
-				return applyLocal(t, buOptions, sc.StageSA, c.PolicyPath, c.ValidatorProject)
+				return applyLocal(t, buOptions, sc.StageSA)
 			})
 			if err != nil {
 				return err
@@ -1052,7 +1053,7 @@ func runPlanStage(t testing.TB, sc StageConf, c CommonConf, environment string) 
 			MaxRetries:               MaxErrorRetries,
 			TimeBetweenRetries:       TimeBetweenErrorRetries,
 		}
-		return planLocal(t, options, sc.StageSA, c.PolicyPath, c.ValidatorProject)
+		return planLocal(t, options, sc.StageSA)
 	}
 
 	if err := sc.GitConf.PushBranch("plan", "origin"); err != nil {
@@ -1129,7 +1130,7 @@ func applyEnvironment(t testing.TB, sc StageConf, c CommonConf, environment stri
 			MaxRetries:               MaxErrorRetries,
 			TimeBetweenRetries:       TimeBetweenErrorRetries,
 		}
-		return applyLocal(t, options, sc.StageSA, c.PolicyPath, c.ValidatorProject)
+		return applyLocal(t, options, sc.StageSA)
 	}
 	// remote execution has shared on the same branch as production
 	aBranch := executionEnv(environment)
@@ -1149,9 +1150,10 @@ func applyEnvironment(t testing.TB, sc StageConf, c CommonConf, environment stri
 	return sc.Executor.WaitBuildSuccess(t, commitSha, fmt.Sprintf("Terraform %s apply %s build Failed.", sc.Repo, environment))
 }
 
-func runTerraformLocal(t testing.TB, options *terraform.Options, serviceAccount, policyPath, validatorProjectID string, doApply bool) error {
+func runTerraformLocal(t testing.TB, options *terraform.Options, serviceAccount string, doApply bool) error {
 	if serviceAccount != "" {
-		if err := os.Setenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", serviceAccount); err != nil {
+		accessToken := gcp.NewGCP().GetServiceAccountAccessToken(t, serviceAccount)
+		if err := os.Setenv("GOOGLE_OAUTH_ACCESS_TOKEN", accessToken); err != nil {
 			return err
 		}
 	}
@@ -1170,7 +1172,7 @@ func runTerraformLocal(t testing.TB, options *terraform.Options, serviceAccount,
 	}
 
 	if serviceAccount != "" {
-		if err := os.Unsetenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT"); err != nil {
+		if err := os.Unsetenv("GOOGLE_OAUTH_ACCESS_TOKEN"); err != nil {
 			return err
 		}
 	}
@@ -1178,12 +1180,12 @@ func runTerraformLocal(t testing.TB, options *terraform.Options, serviceAccount,
 	return nil
 }
 
-func planLocal(t testing.TB, options *terraform.Options, serviceAccount, policyPath, validatorProjectID string) error {
-	return runTerraformLocal(t, options, serviceAccount, policyPath, validatorProjectID, false)
+func planLocal(t testing.TB, options *terraform.Options, serviceAccount string) error {
+	return runTerraformLocal(t, options, serviceAccount, false)
 }
 
-func applyLocal(t testing.TB, options *terraform.Options, serviceAccount, policyPath, validatorProjectID string) error {
-	return runTerraformLocal(t, options, serviceAccount, policyPath, validatorProjectID, true)
+func applyLocal(t testing.TB, options *terraform.Options, serviceAccount string) error {
+	return runTerraformLocal(t, options, serviceAccount, true)
 }
 
 func setBoolInTfvarsFile(path, key string, value bool) error {

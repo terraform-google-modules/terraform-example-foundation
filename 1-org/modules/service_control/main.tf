@@ -61,8 +61,14 @@ module "regular_service_perimeter" {
   access_levels           = var.enforce_vpcsc ? [module.access_level.name] : []
   restricted_services     = var.enforce_vpcsc ? var.restricted_services : []
   vpc_accessible_services = var.enforce_vpcsc ? ["*"] : []
-  ingress_policies_map    = var.enforce_vpcsc ? merge(var.ingress_policies_map, local.member_policies_map) : {}
-  egress_policies_map     = var.enforce_vpcsc ? var.egress_policies_map : {}
+
+  # using a for-loop conditional instead of a ternary
+  ingress_policies_map = {
+    for k, v in merge(var.ingress_policies_map, local.member_policies_map) : k => v if var.enforce_vpcsc
+  }
+  egress_policies_map = {
+    for k, v in var.egress_policies_map : k => v if var.enforce_vpcsc
+  }
 
   # configurations for a perimeter in dry run mode.
   resources_dry_run               = !var.enforce_vpcsc ? var.resources_dry_run : []
@@ -70,8 +76,14 @@ module "regular_service_perimeter" {
   access_levels_dry_run           = !var.enforce_vpcsc && length(module.access_level_dry_run) > 0 ? [module.access_level_dry_run[0].name] : []
   restricted_services_dry_run     = !var.enforce_vpcsc ? var.restricted_services_dry_run : []
   vpc_accessible_services_dry_run = !var.enforce_vpcsc ? ["*"] : []
-  ingress_policies_dry_run_map    = !var.enforce_vpcsc ? merge(var.ingress_policies_dry_run_map, local.member_policies_dry_run_map) : {}
-  egress_policies_dry_run_map     = !var.enforce_vpcsc ? var.egress_policies_dry_run_map : {}
+
+  # using a for-loop conditional instead of a ternary 
+  ingress_policies_dry_run_map = {
+    for k, v in merge(var.ingress_policies_dry_run_map, local.member_policies_dry_run_map) : k => v if !var.enforce_vpcsc
+  }
+  egress_policies_dry_run_map = {
+    for k, v in var.egress_policies_dry_run_map : k => v if !var.enforce_vpcsc
+  }
 }
 
 resource "time_sleep" "wait_vpc_sc_propagation" {

@@ -19,17 +19,17 @@ locals {
 
   member_policies_map = var.allow_additional_member_types ? {
     member_ingress = {
-      ingress_from = {
+      from = {
         identities = var.members
         sources = {
           access_level = "*" # Allows access from any IP/network, matching standard Access Level behavior
         }
       }
 
-      ingress_to = {
+      to = {
         resources = ["*"] # Applies to all projects within this perimeter
         operations = {
-          service_name = "*" # Allows all services
+          service_name = { "*" = {} } # Allows all services
         }
       }
     }
@@ -37,17 +37,17 @@ locals {
 
   member_policies_dry_run_map = var.allow_additional_member_types ? {
     member_ingress_dry_run = {
-      ingress_from = {
+      from = {
         identities = var.members_dry_run
         sources = {
           access_level = "*" # Allows access from any IP/network, matching standard Access Level behavior
         }
       }
 
-      ingress_to = {
+      to = {
         resources = ["*"] # Applies to all projects within this perimeter
         operations = {
-          service_name = "*" # Allows all services
+          service_name = { "*" = {} } # Allows all services
         }
       }
     }

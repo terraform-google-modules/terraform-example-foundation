@@ -26,6 +26,11 @@ locals {
     "nonproduction" : "n",
     "production" : "p"
   }
+
+  budget_api             = local.available_universe_services.billing_budget ? "billingbudgets.googleapis.com" : ""
+  secret_manager_api     = local.available_universe_services.secret_manager ? "secretmanager.googleapis.com" : ""
+  security_center_api    = local.available_universe_services.security_center ? "securitycenter.googleapis.com" : ""
+  service_networking_api = local.available_universe_services.service_networking ? "servicenetworking.googleapis.com" : ""
 }
 
 /******************************************
@@ -45,7 +50,11 @@ module "org_audit_logs" {
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "bigquery.googleapis.com",
+    local.budget_api
+  ])
 
   labels = {
     environment       = "common"
@@ -80,7 +89,11 @@ module "org_billing_export" {
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "bigquery.googleapis.com",
+    local.budget_api
+  ])
 
   labels = {
     environment       = "common"
@@ -116,7 +129,11 @@ module "common_kms" {
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "cloudkms.googleapis.com",
+    local.budget_api
+  ])
 
   labels = {
     environment       = "common"
@@ -152,7 +169,11 @@ module "org_secrets" {
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    local.secret_manager_api,
+    local.budget_api
+  ])
 
 
   labels = {
@@ -188,7 +209,10 @@ module "interconnect" {
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
+  activate_apis = compact([
+    "compute.googleapis.com",
+    local.budget_api
+  ])
 
   labels = {
     environment       = "network"
@@ -224,7 +248,13 @@ module "scc_notifications" {
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com", "cloudkms.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "pubsub.googleapis.com",
+    "cloudkms.googleapis.com",
+    local.security_center_api,
+    local.budget_api,
+  ])
 
   labels = {
     environment       = "common"
@@ -262,14 +292,14 @@ module "network_hub" {
   folder_id                = google_folder.network.id
   deletion_policy          = var.project_deletion_policy
 
-  activate_apis = [
+  activate_apis = compact([
     "compute.googleapis.com",
     "dns.googleapis.com",
-    "servicenetworking.googleapis.com",
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "billingbudgets.googleapis.com"
-  ]
+    local.service_networking_api,
+    local.budget_api
+  ])
 
   labels = {
     environment       = "network"
@@ -309,10 +339,10 @@ module "environment_network" {
   env_code = each.value
 
   project_budget = {
-    network_budget_amount            = var.project_budget.shared_network_budget_amount
-    network_alert_spent_percents     = var.project_budget.shared_network_alert_spent_percents
-    network_alert_pubsub_topic       = var.project_budget.shared_network_alert_pubsub_topic
-    network_budget_alert_spend_basis = var.project_budget.shared_network_budget_alert_spend_basis
+    network_budget_amount            = local.available_universe_services.billing_budget ? var.project_budget.shared_network_budget_amount : null
+    network_alert_spent_percents     = local.available_universe_services.billing_budget ? var.project_budget.shared_network_alert_spent_percents : null
+    network_alert_pubsub_topic       = local.available_universe_services.billing_budget ? var.project_budget.shared_network_alert_pubsub_topic : null
+    network_budget_alert_spend_basis = local.available_universe_services.billing_budget ? var.project_budget.shared_network_budget_alert_spend_basis : null
   }
 }
 

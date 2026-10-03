@@ -77,7 +77,7 @@ module "regular_service_perimeter" {
   restricted_services_dry_run     = !var.enforce_vpcsc ? var.restricted_services_dry_run : []
   vpc_accessible_services_dry_run = !var.enforce_vpcsc ? ["*"] : []
 
-  # using a for-loop conditional instead of a ternary 
+  # using a for-loop conditional instead of a ternary
   ingress_policies_dry_run_map = {
     for k, v in merge(var.ingress_policies_dry_run_map, local.member_policies_dry_run_map) : k => v if !var.enforce_vpcsc
   }

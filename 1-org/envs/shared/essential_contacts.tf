@@ -34,11 +34,13 @@ locals {
   # Convert a map indexed by category to a map indexed by email
   # this way is simpler to understand and maintain than the opposite
   # google_essential_contacts_contact resource needs one email with a list of categories
-  contacts_list = transpose(local.categories_map)
+  contacts_list           = transpose(local.categories_map)
+  effective_contacts_list = var.universe_domain == "googleapis.com" ? local.contacts_list : {}
 }
 
 resource "google_essential_contacts_contact" "essential_contacts" {
-  for_each                            = local.contacts_list
+  for_each = local.effective_contacts_list
+
   parent                              = local.parent
   email                               = each.key
   language_tag                        = var.essential_contacts_language

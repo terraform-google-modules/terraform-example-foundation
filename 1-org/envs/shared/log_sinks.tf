@@ -44,13 +44,13 @@ module "logs_export" {
   logging_destination_project_id   = module.org_audit_logs.project_id
   billing_account                  = local.billing_account
   sa_iam_membership_sleep_duration = var.sa_iam_membership_sleep_duration
-  enable_billing_account_sink      = true
+  enable_billing_account_sink      = var.universe_domain == "googleapis.com" ? true : false
 
 
   /******************************************
     Send logs to Storage
   *****************************************/
-  storage_options = {
+  storage_options = var.universe_domain == "googleapis.com" ? {
     logging_sink_filter          = local.logs_filter
     logging_sink_name            = "sk-c-logging-bkt"
     storage_bucket_name          = "bkt-${module.org_audit_logs.project_id}-org-logs-${random_string.suffix.result}"
@@ -60,7 +60,7 @@ module "logs_export" {
     retention_policy_period_days = var.log_export_storage_retention_policy == null ? null : var.log_export_storage_retention_policy.retention_period_days
     force_destroy                = var.log_export_storage_force_destroy
     versioning                   = var.log_export_storage_versioning
-  }
+  } : null
 
   /******************************************
     Send logs to Pub\Sub
@@ -81,8 +81,9 @@ module "logs_export" {
     log_bucket_id              = "AggregatedLogs"
     log_bucket_description     = "Project destination log bucket for aggregated logs"
     location                   = local.default_region
-    linked_dataset_id          = "ds_c_prj_aggregated_logs_analytics"
-    linked_dataset_description = "Project destination BigQuery Dataset for Logbucket analytics"
+    enable_analytics           = var.universe_domain == "googleapis.com" ? true : false
+    linked_dataset_id          = var.universe_domain == "googleapis.com" ? "ds_c_prj_aggregated_logs_analytics" : null
+    linked_dataset_description = var.universe_domain == "googleapis.com" ? "Project destination BigQuery Dataset for Logbucket analytics" : null
   }
 }
 

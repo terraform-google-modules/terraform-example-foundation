@@ -15,6 +15,11 @@
  * limitations under the License.
  */
 
+locals {
+  billing_budgets_api = local.available_universe_services.billing_budget ? "billingbudgets.googleapis.com" : ""
+  secret_manager_api  = local.available_universe_services.secret_manager ? "secretmanager.googleapis.com" : ""
+}
+
 /******************************************
   Project for Environment Secrets
 *****************************************/
@@ -33,8 +38,12 @@ module "env_secrets" {
   folder_id                   = google_folder.env.id
   disable_services_on_destroy = false
   depends_on                  = [time_sleep.wait_60_seconds]
-  activate_apis               = ["logging.googleapis.com", "secretmanager.googleapis.com"]
   deletion_policy             = var.project_deletion_policy
+  activate_apis = compact([
+    "logging.googleapis.com",
+    local.secret_manager_api,
+    local.billing_budgets_api
+  ])
 
   vpc_service_control_attach_enabled = local.enforce_vpcsc ? "true" : "false"
   vpc_service_control_attach_dry_run = !local.enforce_vpcsc ? "true" : "false"

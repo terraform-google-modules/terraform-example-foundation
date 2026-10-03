@@ -33,8 +33,12 @@ module "env_kms" {
   folder_id                   = google_folder.env.id
   disable_services_on_destroy = false
   depends_on                  = [time_sleep.wait_60_seconds]
-  activate_apis               = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
   deletion_policy             = var.project_deletion_policy
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "cloudkms.googleapis.com",
+    local.billing_budgets_api
+  ])
 
   vpc_service_control_attach_enabled = local.enforce_vpcsc ? "true" : "false"
   vpc_service_control_attach_dry_run = !local.enforce_vpcsc ? "true" : "false"

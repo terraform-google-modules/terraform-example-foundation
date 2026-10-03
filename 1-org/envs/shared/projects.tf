@@ -27,7 +27,7 @@ locals {
     "production" : "p"
   }
 
-  budget_api             = local.available_universe_services.billing_budget ? "billingbudgets.googleapis.com" : ""
+  billing_budgets_api    = local.available_universe_services.billing_budget ? "billingbudgets.googleapis.com" : ""
   secret_manager_api     = local.available_universe_services.secret_manager ? "secretmanager.googleapis.com" : ""
   security_center_api    = local.available_universe_services.security_center ? "securitycenter.googleapis.com" : ""
   service_networking_api = local.available_universe_services.service_networking ? "servicenetworking.googleapis.com" : ""
@@ -53,7 +53,7 @@ module "org_audit_logs" {
   activate_apis = compact([
     "logging.googleapis.com",
     "bigquery.googleapis.com",
-    local.budget_api
+    local.billing_budgets_api
   ])
 
   labels = {
@@ -92,7 +92,7 @@ module "org_billing_export" {
   activate_apis = compact([
     "logging.googleapis.com",
     "bigquery.googleapis.com",
-    local.budget_api
+    local.billing_budgets_api
   ])
 
   labels = {
@@ -132,7 +132,7 @@ module "common_kms" {
   activate_apis = compact([
     "logging.googleapis.com",
     "cloudkms.googleapis.com",
-    local.budget_api
+    local.billing_budgets_api
   ])
 
   labels = {
@@ -172,7 +172,7 @@ module "org_secrets" {
   activate_apis = compact([
     "logging.googleapis.com",
     local.secret_manager_api,
-    local.budget_api
+    local.billing_budgets_api
   ])
 
 
@@ -211,7 +211,7 @@ module "interconnect" {
   deletion_policy          = var.project_deletion_policy
   activate_apis = compact([
     "compute.googleapis.com",
-    local.budget_api
+    local.billing_budgets_api
   ])
 
   labels = {
@@ -253,7 +253,7 @@ module "scc_notifications" {
     "pubsub.googleapis.com",
     "cloudkms.googleapis.com",
     local.security_center_api,
-    local.budget_api,
+    local.billing_budgets_api,
   ])
 
   labels = {
@@ -298,7 +298,7 @@ module "network_hub" {
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     local.service_networking_api,
-    local.budget_api
+    local.billing_budgets_api
   ])
 
   labels = {

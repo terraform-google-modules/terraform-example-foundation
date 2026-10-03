@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+locals {
+  billing_budgets_api    = var.available_universe_services.billing_budget ? "billingbudgets.googleapis.com" : ""
+  service_networking_api = var.available_universe_services.service_networking ? "servicenetworking.googleapis.com" : ""
+}
+
 /******************************************
   Projects for Shared VPCs
 *****************************************/
@@ -32,16 +37,16 @@ module "shared_vpc_host_project" {
   disable_services_on_destroy = false
   deletion_policy             = var.project_deletion_policy
 
-  activate_apis = [
+  activate_apis = compact([
     "compute.googleapis.com",
     "dns.googleapis.com",
-    "servicenetworking.googleapis.com",
     "container.googleapis.com",
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "accesscontextmanager.googleapis.com",
-    "billingbudgets.googleapis.com"
-  ]
+    local.service_networking_api,
+    local.billing_budgets_api
+  ])
 
   labels = {
     environment       = var.env

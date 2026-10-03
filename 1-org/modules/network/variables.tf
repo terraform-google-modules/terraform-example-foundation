@@ -54,6 +54,7 @@ variable "available_universe_services" {
     cloud_build        = optional(bool, true)
     cloud_asset        = optional(bool, true)
     secret_manager     = optional(bool, true)
+    multi_region       = optional(bool, true)
   })
   default = {}
 }

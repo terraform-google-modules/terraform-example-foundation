@@ -106,7 +106,7 @@ module "org_domain_restricted_sharing" {
   organization_id       = local.organization_id
   folder_id             = local.folder_id
   policy_for            = local.policy_for
-  domains_to_allow      = var.domains_to_allow
+  domains_to_allow      = var.universe_domain == "googleapis.com" ? var.domains_to_allow : []
   principal_set_org_ids = var.principal_set_org_ids
 
   depends_on = [

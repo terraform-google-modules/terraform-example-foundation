@@ -21,6 +21,7 @@ locals {
   organization_service_account = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
   networks_service_account     = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
   projects_service_account     = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+  available_universe_services  = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
   dns_project_id               = data.terraform_remote_state.org.outputs.shared_vpc_projects["production"].shared_vpc_project_id
 }
 

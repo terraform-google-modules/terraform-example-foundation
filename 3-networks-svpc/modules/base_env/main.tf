@@ -16,32 +16,32 @@
 
 locals {
   bgp_asn_number = var.enable_partner_interconnect ? "16550" : "64514"
-}
 
-/******************************************
- Shared VPC
-*****************************************/
-module "shared_vpc" {
-  source = "../shared_vpc"
-
-  project_id                   = local.shared_vpc_project_id
-  project_number               = local.shared_vpc_project_number
-  dns_project_id               = local.dns_project_id
-  environment_code             = var.environment_code
-  private_service_cidr         = var.private_service_cidr
-  private_service_connect_ip   = var.private_service_connect_ip
-  bgp_asn_subnet               = local.bgp_asn_number
-  default_region1              = var.default_region1
-  default_region2              = var.default_region2
-  domain                       = var.domain
-  target_name_server_addresses = var.target_name_server_addresses
-  universe_domain              = var.universe_domain
-  pkg_dev_domain               = var.pkg_dev_domain
-  enable_gcr_dns               = var.enable_gcr_dns
-
-
-
-  subnets = [
+  subnet_single_region = [
+    {
+      subnet_name                      = "sb-${var.environment_code}-svpc-${var.default_region1}"
+      subnet_ip                        = var.subnet_primary_ranges[var.default_region1]
+      subnet_region                    = var.default_region1
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = true
+      subnet_flow_logs_interval        = var.vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
+      description                      = "First ${var.env} subnet example."
+    },
+    {
+      subnet_name      = "sb-${var.environment_code}-svpc-${var.default_region1}-proxy"
+      subnet_ip        = var.subnet_proxy_ranges[var.default_region1]
+      subnet_region    = var.default_region1
+      subnet_flow_logs = false
+      description      = "First ${var.env} proxy-only subnet example."
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
+    }
+  ]
+  subnet_dual_region = [
     {
       subnet_name                      = "sb-${var.environment_code}-svpc-${var.default_region1}"
       subnet_ip                        = var.subnet_primary_ranges[var.default_region1]
@@ -87,6 +87,36 @@ module "shared_vpc" {
       purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
+}
+
+/******************************************
+ Shared VPC
+*****************************************/
+module "shared_vpc" {
+  source = "../shared_vpc"
+
+  project_id                   = local.shared_vpc_project_id
+  project_number               = local.shared_vpc_project_number
+  dns_project_id               = local.dns_project_id
+  environment_code             = var.environment_code
+  private_service_cidr         = local.available_universe_services.service_networking ? var.private_service_cidr : null
+  private_service_connect_ip   = var.private_service_connect_ip
+  bgp_asn_subnet               = local.bgp_asn_number
+  default_region1              = var.default_region1
+  default_region2              = var.default_region2
+  domain                       = var.domain
+  target_name_server_addresses = var.target_name_server_addresses
+  universe_domain              = var.universe_domain
+  pkg_dev_domain               = var.pkg_dev_domain
+  enable_gcr_dns               = var.enable_gcr_dns
+  multi_region                 = local.available_universe_services.multi_region
+
+
+
+  subnets = [
+    local.subnet_dual_region,  # index 0
+    local.subnet_single_region # index 1
+  ][local.available_universe_services.multi_region ? 0 : 1]
   secondary_ranges = {
     "sb-${var.environment_code}-svpc-${var.default_region1}" = var.subnet_secondary_ranges[var.default_region1]
   }

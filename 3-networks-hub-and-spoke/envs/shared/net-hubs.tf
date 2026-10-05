@@ -25,38 +25,31 @@ locals {
     (local.default_region2) = "10.27.0.0/23"
   }
 
-}
-
-/******************************************
-  Shared Network VPC
-*****************************************/
-
-module "shared_vpc" {
-  source = "../../modules/shared_vpc"
-
-  project_id                    = local.net_hub_project_id
-  project_number                = local.net_hub_project_number
-  environment_code              = local.environment_code
-  private_service_connect_ip    = "10.17.0.5"
-  bgp_asn_subnet                = local.bgp_asn_number
-  default_region1               = local.default_region1
-  default_region2               = local.default_region2
-  domain                        = var.domain
-  dns_enable_inbound_forwarding = var.hub_dns_enable_inbound_forwarding
-  dns_enable_logging            = var.hub_dns_enable_logging
-  firewall_enable_logging       = var.hub_firewall_enable_logging
-  nat_enabled                   = var.hub_nat_enabled
-  nat_bgp_asn                   = var.hub_nat_bgp_asn
-  nat_num_addresses_region1     = var.hub_nat_num_addresses_region1
-  nat_num_addresses_region2     = var.hub_nat_num_addresses_region2
-  windows_activation_enabled    = var.hub_windows_activation_enabled
-  target_name_server_addresses  = var.target_name_server_addresses
-  mode                          = "hub"
-  universe_domain               = var.universe_domain
-  pkg_dev_domain                = var.pkg_dev_domain
-  enable_gcr_dns                = var.enable_gcr_dns
-
-  subnets = [
+  subnet_single_region = [
+    {
+      subnet_name                      = "sb-c-svpc-hub-${local.default_region1}"
+      subnet_ip                        = local.subnet_primary_ranges[local.default_region1]
+      subnet_region                    = local.default_region1
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = var.vpc_flow_logs.enable_logging
+      subnet_flow_logs_interval        = var.vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
+      description                      = "Network hub subnet for ${local.default_region1}"
+    },
+    {
+      subnet_name      = "sb-c-svpc-hub-${local.default_region1}-proxy"
+      subnet_ip        = local.subnet_proxy_ranges[local.default_region1]
+      subnet_region    = local.default_region1
+      subnet_flow_logs = false
+      description      = "Network hub proxy-only subnet for ${local.default_region1}"
+      role             = "ACTIVE"
+      purpose          = "REGIONAL_MANAGED_PROXY"
+    }
+  ]
+  subnet_dual_region = [
     {
       subnet_name                      = "sb-c-svpc-hub-${local.default_region1}"
       subnet_ip                        = local.subnet_primary_ranges[local.default_region1]
@@ -102,5 +95,42 @@ module "shared_vpc" {
       purpose          = "REGIONAL_MANAGED_PROXY"
     }
   ]
+
+}
+
+/******************************************
+  Shared Network VPC
+*****************************************/
+
+module "shared_vpc" {
+  source = "../../modules/shared_vpc"
+
+  project_id                    = local.net_hub_project_id
+  project_number                = local.net_hub_project_number
+  environment_code              = local.environment_code
+  private_service_connect_ip    = "10.17.0.5"
+  bgp_asn_subnet                = local.bgp_asn_number
+  default_region1               = local.default_region1
+  default_region2               = local.default_region2
+  domain                        = var.domain
+  dns_enable_inbound_forwarding = var.hub_dns_enable_inbound_forwarding
+  dns_enable_logging            = var.hub_dns_enable_logging
+  firewall_enable_logging       = var.hub_firewall_enable_logging
+  nat_enabled                   = var.hub_nat_enabled
+  nat_bgp_asn                   = var.hub_nat_bgp_asn
+  nat_num_addresses_region1     = var.hub_nat_num_addresses_region1
+  nat_num_addresses_region2     = var.hub_nat_num_addresses_region2
+  windows_activation_enabled    = var.hub_windows_activation_enabled
+  target_name_server_addresses  = var.target_name_server_addresses
+  mode                          = "hub"
+  universe_domain               = var.universe_domain
+  pkg_dev_domain                = var.pkg_dev_domain
+  enable_gcr_dns                = var.enable_gcr_dns
+  multi_region                  = local.available_universe_services.multi_region
+
+  subnets = [
+    local.subnet_dual_region,  # index 0
+    local.subnet_single_region # index 1
+  ][local.available_universe_services.multi_region ? 0 : 1]
   secondary_ranges = {}
 }

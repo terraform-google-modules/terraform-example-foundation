@@ -181,3 +181,9 @@ variable "enable_gcr_dns" {
   type        = bool
   default     = true
 }
+
+variable "multi_region" {
+  description = "If multi region configuration is enabled."
+  type        = bool
+  default     = true
+}

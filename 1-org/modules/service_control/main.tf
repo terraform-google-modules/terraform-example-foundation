@@ -32,7 +32,7 @@ module "access_level" {
   description = "${local.prefix} Access Level for use in an enforced perimeter"
   policy      = var.access_context_manager_policy_id
   name        = local.access_level_name
-  members     = var.allow_additional_member_types ? [] : var.members
+  members     = var.members
 }
 
 module "access_level_dry_run" {
@@ -44,7 +44,7 @@ module "access_level_dry_run" {
   description = "${local.prefix} Access Level for testing with a dry run perimeter"
   policy      = var.access_context_manager_policy_id
   name        = local.access_level_name_dry_run
-  members     = var.allow_additional_member_types ? [] : var.members_dry_run
+  members     = var.members_dry_run
 }
 
 module "regular_service_perimeter" {

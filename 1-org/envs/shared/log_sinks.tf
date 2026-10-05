@@ -45,6 +45,7 @@ module "logs_export" {
   billing_account                  = local.billing_account
   sa_iam_membership_sleep_duration = var.sa_iam_membership_sleep_duration
   enable_billing_account_sink      = var.universe_domain == "googleapis.com" ? true : false
+  universe_domain                  = var.universe_domain
 
 
   /******************************************

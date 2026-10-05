@@ -35,6 +35,12 @@ variable "allow_additional_member_types" {
   default     = false
 }
 
+variable "perimeter_additional_members" {
+  description = "The list of additional members to be added to the enforced perimeter access level members list. To be able to see the resources protected by the VPC Service Controls in the perimeter, add your user in this list. Entries must be in the standard GCP form: `user:email@example.com` or `serviceAccount:my-service-account@example.com`."
+  type        = list(string)
+  default     = []
+}
+
 variable "restricted_services" {
   type        = list(string)
   description = "List of services to restrict in an enforced perimeter."

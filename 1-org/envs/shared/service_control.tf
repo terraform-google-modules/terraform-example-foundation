@@ -679,6 +679,36 @@ locals {
     }
   }
 
+  required_ingress_rules_dry_run_universe = {
+    sinks_sa_to_logs = {
+      title = "IR sinks"
+      from = {
+        identities = [
+          "serviceAccount:service-${local.parent_id}@gcp-sa-logging.${local.universe_prefix}-system.iam.gserviceaccount.com"
+        ]
+        sources = {
+          access_levels = ["*"]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_audit_logs.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "pubsub.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    }
+  }
+
   required_egress_rules_dry_run = {
     org_sa_to_scc = {
       title = "ER seed -> scc"
@@ -783,8 +813,39 @@ locals {
     }
   }
 
+  required_ingress_rules_universe = {
+    sinks_sa_to_logs = {
+      title = "IR sinks"
+      from = {
+        identities = [
+          "serviceAccount:service-${local.parent_id}@gcp-sa-logging.${local.universe_prefix}-system.iam.gserviceaccount.com"
+        ]
+        sources = {
+          access_levels = ["*"]
+        }
+      }
+      to = {
+        resources = [
+          "projects/${module.org_audit_logs.project_number}"
+        ]
+        operations = {
+          "logging.googleapis.com" = {
+            methods = ["*"]
+          }
+          "pubsub.googleapis.com" = {
+            methods = ["*"]
+          }
+          "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+        }
+      }
+    }
+  }
+
   ingress_policies_dry_run_map = merge(
-    local.required_ingress_rules_dry_run,
+    var.universe_domain == "googleapis.com" ? local.required_ingress_rules_dry_run : {},
+    var.universe_domain != "googleapis.com" ? local.required_ingress_rules_dry_run_universe : {},
     local.enable_cloudbuild_deploy ? local.required_ingress_rules_dry_run_cb : {},
     var.required_ingress_rules_app_infra_dry_run ? local.required_ingress_rules_app_infra_dry_run : {},
     var.enable_scc_resources_in_terraform ? local.required_ingress_rule_scc_dry_run : {},
@@ -792,7 +853,8 @@ locals {
   )
 
   ingress_policies_map = merge(
-    local.required_ingress_rules,
+    var.universe_domain == "googleapis.com" ? local.required_ingress_rules : {},
+    var.universe_domain != "googleapis.com" ? local.required_ingress_rules_universe : {},
     local.enable_cloudbuild_deploy ? local.required_ingress_rules_cb : {},
     var.required_ingress_rules_app_infra ? local.required_ingress_rules_app_infra : {},
     var.enable_scc_resources_in_terraform ? local.required_ingress_rule_scc : {},
@@ -821,18 +883,18 @@ module "service_control" {
   restricted_services              = local.restricted_services
   restricted_services_dry_run      = local.restricted_services_dry_run
   allow_additional_member_types    = var.allow_additional_member_types
-  members = distinct(concat([
+  members = [
     "serviceAccount:${local.networks_service_account}",
     "serviceAccount:${local.projects_service_account}",
     "serviceAccount:${local.organization_service_account}",
     "serviceAccount:${local.environment_service_account}",
-  ], var.perimeter_additional_members))
-  members_dry_run = distinct(concat([
+  ]
+  members_dry_run = [
     "serviceAccount:${local.networks_service_account}",
     "serviceAccount:${local.projects_service_account}",
     "serviceAccount:${local.organization_service_account}",
     "serviceAccount:${local.environment_service_account}",
-  ], var.perimeter_additional_members))
+  ]
   resources             = [for k in local.project_keys : local.projects_map[k]]
   resource_keys         = local.project_keys
   resources_dry_run     = [for k in local.project_keys : local.projects_map[k]]

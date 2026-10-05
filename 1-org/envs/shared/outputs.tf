@@ -75,7 +75,7 @@ output "interconnect_project_number" {
 }
 
 output "scc_notifications_project_id" {
-  value       = module.scc_notifications[0].project_id
+  value       = module.scc_notifications.project_id
   description = "The SCC notifications project ID"
 }
 

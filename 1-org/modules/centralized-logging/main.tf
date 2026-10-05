@@ -191,7 +191,7 @@ resource "terracurl_request" "exclude_external_logs" {
 
   name           = "exclude_external_logs"
   destroy_skip   = true
-  url            = "https://logging.googleapis.com/v2/projects/${var.logging_destination_project_id}/sinks/_Default?updateMask=exclusions"
+  url            = "https://logging.${var.universe_domain}/v2/projects/${var.logging_destination_project_id}/sinks/_Default?updateMask=exclusions"
   method         = "PUT"
   response_codes = [200]
   headers = {

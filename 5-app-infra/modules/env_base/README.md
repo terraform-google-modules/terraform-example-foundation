@@ -4,6 +4,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | business\_unit | The business (ex. business\_unit\_1). | `string` | `"business_unit_1"` | no |
+| disk\_type | Boot disk type, can be either pd-ssd, local-ssd, pd-standard, or hyperdisk-balanced(Air Gapped) | `string` | `"pd-standard"` | no |
 | environment | The environment the single project belongs to | `string` | n/a | yes |
 | hostname | Hostname of instances | `string` | `"example-app"` | no |
 | machine\_type | Machine type to create, e.g. n1-standard-1 | `string` | `"f1-micro"` | no |
@@ -11,6 +12,7 @@
 | project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
 | region | The GCP region to create and test resources in | `string` | `"us-central1"` | no |
 | remote\_state\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
+| source\_image | Source disk image. if not provided defaults to the latest public Rocky Linux 9 optimized for GCP image. | `string` | `""` | no |
 | universe\_domain | The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Distributed Cloud (GDC), Trusted Partner Cloud (TPC), or other sovereign cloud environments. | `string` | `"googleapis.com"` | no |
 
 ## Outputs

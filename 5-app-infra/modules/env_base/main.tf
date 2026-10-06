@@ -62,10 +62,12 @@ module "instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
   version = "15.4.0" # See https://github.com/terraform-google-modules/terraform-google-vm/issues/602
 
-  machine_type = var.machine_type
   region       = var.region
   project_id   = local.env_project_id
   subnetwork   = local.subnetwork_self_link
+  machine_type = var.machine_type
+  disk_type    = var.disk_type
+  source_image = var.source_image
 
   metadata = {
     block-project-ssh-keys = "true"

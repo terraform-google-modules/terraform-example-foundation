@@ -883,6 +883,7 @@ module "service_control" {
   restricted_services              = local.restricted_services
   restricted_services_dry_run      = local.restricted_services_dry_run
   allow_additional_member_types    = var.allow_additional_member_types
+  perimeter_additional_members     = var.perimeter_additional_members
   members = [
     "serviceAccount:${local.networks_service_account}",
     "serviceAccount:${local.projects_service_account}",

@@ -50,7 +50,7 @@ module "gcs_buckets" {
   location                = var.location_gcs
   name                    = "${var.gcs_bucket_prefix}-${replace(module.shared_vpc_project.project_id, ":", "-")}-cmek-encrypted-${random_string.bucket_name.result}"
   bucket_policy_only      = true
-  custom_placement_config = var.gcs_custom_placement_config
+  custom_placement_config = var.universe_domain == "googleapis.com" ? var.gcs_custom_placement_config : null
 
   encryption = {
     default_kms_key_name = module.kms.keys[var.key_name]

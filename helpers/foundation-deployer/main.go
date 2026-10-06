@@ -197,12 +197,13 @@ func main() {
 	// destroy stages
 	if cfg.destroy {
 		// Note: destroy is only terraform destroy, local directories are not deleted.
-		if conf.BuildType == stages.BuildTypeCBCSR {
+		if conf.BuildType == stages.BuildTypeCBCSR || conf.BuildType == stages.BuildTypeLocal {
 			// 5-app-infra
 			msg.PrintStageMsg("Destroying 5-app-infra stage")
 			err = s.RunDestroyStep("bu1-example-app", func() error {
+				bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 				io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
-				return stages.DestroyExampleAppStage(t, s, io, conf)
+				return stages.DestroyExampleAppStage(t, s, io, bo.ProjectsSA, conf)
 			})
 			if err != nil {
 				fmt.Printf("# Example app step destroy failed. Error: %s\n", err.Error())
@@ -211,9 +212,9 @@ func main() {
 		}
 
 		// Rerun org only to disable ingress and egress rules
-		bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 		msg.PrintStageMsg("Re-applying 1-org (disable app-infra dry-run rules)")
 		err = s.RunStep("gcp-org.disable-app-infra-dry-run-rules", func() error {
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 			return stages.DeployOrgStageWithRules(t, s, globalTFVars, bo, conf, false)
 		})
 		if err != nil {
@@ -369,7 +370,7 @@ func main() {
 		msg.PrintBuildMsg(io.InfraPipeProj, io.DefaultRegion, conf.DisablePrompt)
 
 		err = s.RunStep("bu1-example-app", func() error {
-			return stages.DeployExampleAppStage(t, s, globalTFVars, io, conf)
+			return stages.DeployExampleAppStage(t, s, globalTFVars, io, bo.ProjectsSA, conf)
 		})
 		if err != nil {
 			fmt.Printf("# Example app step failed. Error: %s\n", err.Error())

@@ -145,10 +145,14 @@ func DestroyProjectsStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
 
-func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOutputs, c CommonConf) error {
+func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOutputs, projectsSA string, c CommonConf) error {
+	stageSA := outputs.TerraformSA
+	if c.BuildType == BuildTypeLocal {
+		stageSA = projectsSA
+	}
 	stageConf := StageConf{
 		Stage:         AppInfraRepo,
-		StageSA:       outputs.TerraformSA,
+		StageSA:       stageSA,
 		CICDProject:   outputs.InfraPipeProj,
 		Step:          AppInfraStep,
 		Repo:          AppInfraRepo,

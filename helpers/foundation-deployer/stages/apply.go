@@ -803,7 +803,7 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 	return nil
 }
 
-func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs InfraPipelineOutputs, c CommonConf) error {
+func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs InfraPipelineOutputs, projectsSA string, c CommonConf) error {
 	// create tfvars file
 	commonTfvars := AppInfraCommonTfvars{
 		InstanceRegion:    tfvars.DefaultRegion,
@@ -840,6 +840,8 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 	var conf utils.GitRepo
 	var executor Executor
 
+	stageSA := outputs.TerraformSA
+
 	switch c.BuildType {
 	case BuildTypeLocal:
 		executor = NewEmptyExecutor(AppInfraRepo)
@@ -847,6 +849,7 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 		if err != nil {
 			return err
 		}
+		stageSA = projectsSA
 	default:
 		executor = NewGCPExecutor(outputs.InfraPipeProj, outputs.DefaultRegion, AppInfraRepo)
 		conf = utils.GitClone(t, "CSR", AppInfraRepo, "", filepath.Join(c.CheckoutPath, AppInfraRepo), outputs.InfraPipeProj, c.Logger)
@@ -854,7 +857,7 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 
 	stageConf := StageConf{
 		Stage:         AppInfraRepo,
-		StageSA:       outputs.TerraformSA,
+		StageSA:       stageSA,
 		CICDProject:   outputs.InfraPipeProj,
 		DefaultRegion: outputs.DefaultRegion,
 		Step:          AppInfraStep,

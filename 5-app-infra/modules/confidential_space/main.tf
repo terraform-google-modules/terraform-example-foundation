@@ -95,7 +95,7 @@ EOT
 
 module "confidential_instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 15.1"
+  version = "15.4.0" # See https://github.com/terraform-google-modules/terraform-google-vm/issues/602
 
   region     = var.region
   project_id = local.env_project_id
@@ -126,7 +126,7 @@ module "confidential_instance_template" {
 
 module "confidential_compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
-  version = "~> 15.1"
+  version = "15.4.0" # See https://github.com/terraform-google-modules/terraform-google-vm/issues/602
 
   project_id            = local.env_project_id
   region                = var.region

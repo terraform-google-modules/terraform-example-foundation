@@ -60,7 +60,7 @@ resource "google_service_account" "compute_engine_service_account" {
 
 module "instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 15.1"
+  version = "15.4.0" # See https://github.com/terraform-google-modules/terraform-google-vm/issues/602
 
   machine_type = var.machine_type
   region       = var.region
@@ -79,7 +79,7 @@ module "instance_template" {
 
 module "compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
-  version = "~> 15.1"
+  version = "15.4.0" # See https://github.com/terraform-google-modules/terraform-google-vm/issues/602
 
   project_id            = local.env_project_id
   region                = var.region

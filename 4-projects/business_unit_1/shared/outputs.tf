@@ -14,72 +14,79 @@
  * limitations under the License.
  */
 
+# Universal Outputs
 output "default_region" {
   description = "Default region to create resources where applicable."
-  value       = try(module.infra_pipelines[0].default_region, "")
-}
-
-output "cloudbuild_project_id" {
-  description = "APP Infra cloudbuild project id."
-  value       = try(module.app_infra_cloudbuild_project[0].project_id, "")
-}
-
-output "cloudbuild_project_number" {
-  description = "APP Infra cloudbuild project number."
-  value       = try(module.app_infra_cloudbuild_project[0].project_number, "")
+  value       = module.app_infra_pipeline.default_region
 }
 
 output "terraform_service_accounts" {
   description = "APP Infra Pipeline Terraform Accounts."
-  value       = try(module.infra_pipelines[0].terraform_service_accounts, {})
-}
-
-output "repos" {
-  description = "CSRs to store source code"
-  value       = try(module.infra_pipelines[0].repos, toset([]))
-}
-
-output "artifact_buckets" {
-  description = "GCS Buckets to store Cloud Build Artifacts"
-  value       = try(module.infra_pipelines[0].artifact_buckets, {})
+  value       = module.app_infra_pipeline.terraform_service_accounts
 }
 
 output "state_buckets" {
-  description = "GCS Buckets to store TF state"
-  value       = try(module.infra_pipelines[0].state_buckets, {})
+  description = "GCS Buckets to store TF state."
+  value       = module.app_infra_pipeline.state_buckets
 }
 
-output "log_buckets" {
-  description = "GCS Buckets to store Cloud Build logs"
-  value       = try(module.infra_pipelines[0].log_buckets, {})
-}
-
-output "plan_triggers_id" {
-  description = "CB plan triggers"
-  value       = try(module.infra_pipelines[0].plan_triggers_id, [])
-}
-
-output "apply_triggers_id" {
-  description = "CB apply triggers"
-  value       = try(module.infra_pipelines[0].apply_triggers_id, [])
+output "cicd_project_id" {
+  description = "APP Infra CI/CD Project ID (CB, GitHub, or GitLab project; empty for local)."
+  value       = module.app_infra_pipeline.cicd_project_id
 }
 
 output "enable_cloudbuild_deploy" {
   description = "Enable infra deployment using Cloud Build."
-  value       = local.enable_cloudbuild_deploy
+  value       = module.app_infra_pipeline.enable_cloudbuild_deploy
+}
+
+# Temporary Legacy Outputs (Pass-through to dummy values in non-CB submodules)
+output "cloudbuild_project_id" {
+  description = "APP Infra cloudbuild project id."
+  value       = module.app_infra_pipeline.cloudbuild_project_id
+}
+
+output "cloudbuild_project_number" {
+  description = "APP Infra cloudbuild project number."
+  value       = module.app_infra_pipeline.cloudbuild_project_number
+}
+
+output "repos" {
+  description = "CSRs to store source code."
+  value       = module.app_infra_pipeline.repos
+}
+
+output "artifact_buckets" {
+  description = "GCS Buckets to store Cloud Build Artifacts."
+  value       = module.app_infra_pipeline.artifact_buckets
+}
+
+output "log_buckets" {
+  description = "GCS Buckets to store Cloud Build logs."
+  value       = module.app_infra_pipeline.log_buckets
+}
+
+output "plan_triggers_id" {
+  description = "CB plan triggers."
+  value       = module.app_infra_pipeline.plan_triggers_id
+}
+
+output "apply_triggers_id" {
+  description = "CB apply triggers."
+  value       = module.app_infra_pipeline.apply_triggers_id
 }
 
 output "artifact_registry_repository_id" {
   description = "Artifact Registry ID."
-  value       = try(module.infra_pipelines[0].artifact_registry_repository_id, "")
+  value       = module.app_infra_pipeline.artifact_registry_repository_id
 }
 
 output "bootstrap_cloudbuild_project_id" {
   description = "Cloudbuild project ID."
-  value       = try(local.cloudbuild_project_id, "")
+  value       = module.app_infra_pipeline.bootstrap_cloudbuild_project_id
 }
 
 output "image_name" {
   description = "Image path used by confidential space instance."
-  value       = try(local.confidential_space_image_tag, "")
+  value       = module.app_infra_pipeline.image_name
 }

@@ -65,3 +65,51 @@ variable "iam_propagation_sleep_duration" {
   type        = string
   default     = "60s"
 }
+
+variable "bucket_prefix" {
+  description = "Name prefix to use for state bucket created."
+  type        = string
+  default     = "bkt"
+}
+
+variable "terraform_docker_tag_version" {
+  description = "TAG version of the terraform docker image."
+  type        = string
+  default     = "v1"
+}
+
+variable "gh_repos" {
+  description = "Configuration for GitHub Repositories (owner)."
+  type = object({
+    owner = string
+  })
+  default = null
+}
+
+variable "gh_token" {
+  description = "Personal access token for GitHub."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "gl_repos" {
+  description = "Configuration for GitLab Repositories (owner)."
+  type = object({
+    owner = string
+  })
+  default = null
+}
+
+variable "gitlab_token" {
+  description = "Personal access token for GitLab."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "gitlab_url" {
+  description = "GitLab URL."
+  type        = string
+  default     = "https://gitlab.com"
+}

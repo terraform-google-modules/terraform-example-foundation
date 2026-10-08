@@ -15,6 +15,7 @@
  */
 
 locals {
+  repo_names                         = ["bu1-example-app"]
   org_id                             = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
   parent_folder                      = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder
   parent                             = data.terraform_remote_state.bootstrap.outputs.common_config.parent_id

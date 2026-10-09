@@ -7,7 +7,6 @@ This module implements the GitHub Actions CI/CD pipeline for Step 5 (`5-app-infr
 - **Keyless Authentication:** Establishes Workload Identity Federation with GitHub Actions using the `gh-oidc` module.
 - **Core Baseline Integration:** Consumes `app_infra_core` for dedicated GCS state buckets and least-privilege Terraform service accounts.
 - **Automatic Secrets Injection:** Injects `PROJECT_ID`, `WIF_PROVIDER_NAME`, `TF_BACKEND`, and `SERVICE_ACCOUNT_EMAIL` into GitHub Actions repository secrets.
-- **Universal Output Contract:** Implements the 5 Lean Universal Outputs contract and returns dummy pass-throughs for legacy Cloud Build outputs.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

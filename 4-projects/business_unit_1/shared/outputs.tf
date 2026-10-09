@@ -40,7 +40,6 @@ output "enable_cloudbuild_deploy" {
   value       = module.app_infra_pipeline.enable_cloudbuild_deploy
 }
 
-# Temporary Legacy Outputs (Pass-through to dummy values in non-CB submodules)
 output "cloudbuild_project_id" {
   description = "APP Infra cloudbuild project id."
   value       = module.app_infra_pipeline.cloudbuild_project_id

@@ -39,7 +39,6 @@ output "enable_cloudbuild_deploy" {
   value       = false
 }
 
-# Legacy outputs maintained for backward compatibility (Dummy values for non-CB runners)
 output "cloudbuild_project_id" {
   description = "APP Infra cloudbuild project id."
   value       = ""

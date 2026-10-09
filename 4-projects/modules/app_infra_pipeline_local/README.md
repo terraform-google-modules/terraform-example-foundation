@@ -6,7 +6,6 @@ This module implements the Local deployment pipeline for Step 5 (`5-app-infra`).
 
 - **Local Execution Support:** Enables developers to deploy `5-app-infra` directly from workstations using `./tf-wrapper.sh` and ADC Service Account impersonation (`GOOGLE_IMPERSONATE_SERVICE_ACCOUNT`).
 - **Core Baseline Integration:** Consumes `app_infra_core` for dedicated GCS state buckets and scoped application service accounts.
-- **Universal Output Contract:** Implements the 5 Lean Universal Outputs contract (returning `cicd_project_id = ""` for local) and returns dummy pass-throughs for legacy Cloud Build outputs.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

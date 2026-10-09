@@ -26,10 +26,10 @@ locals {
 
   common_vars = {
     for k in var.app_infra_repos : k => {
-      "GCP_PROJECT_ID"      = module.app_infra_project.project_id
-      "GCP_WIF_PROVIDER"    = google_iam_workload_identity_pool_provider.gitlab_provider.name
-      "GCP_SERVICE_ACCOUNT" = module.core.terraform_service_accounts[k]
-      "TF_STATE_BUCKET"     = module.core.state_buckets[k]
+      "PROJECT_ID"            = module.app_infra_project.project_id
+      "WIF_PROVIDER_NAME"     = google_iam_workload_identity_pool_provider.gitlab_provider.name
+      "SERVICE_ACCOUNT_EMAIL" = module.core.terraform_service_accounts[k]
+      "TF_BACKEND"            = module.core.state_buckets[k]
     }
   }
 

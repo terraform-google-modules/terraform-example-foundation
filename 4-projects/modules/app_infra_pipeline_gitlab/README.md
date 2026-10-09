@@ -6,8 +6,7 @@ This module implements the GitLab CI CI/CD pipeline for Step 5 (`5-app-infra`). 
 
 - **Keyless Authentication:** Establishes Workload Identity Federation with GitLab CI via OIDC.
 - **Core Baseline Integration:** Consumes `app_infra_core` for dedicated GCS state buckets and least-privilege Terraform service accounts.
-- **Automatic Variables Injection:** Injects `GCP_PROJECT_ID`, `GCP_WIF_PROVIDER`, `GCP_SERVICE_ACCOUNT`, and `TF_STATE_BUCKET` into GitLab project CI/CD variables.
-- **Universal Output Contract:** Implements the 5 Lean Universal Outputs contract and returns dummy pass-throughs for legacy Cloud Build outputs.
+- **Automatic Variables Injection:** Injects `PROJECT_ID`, `WIF_PROVIDER_NAME`, `TF_BACKEND`, and `SERVICE_ACCOUNT_EMAIL` into GitLab project CI/CD variables.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

@@ -101,6 +101,22 @@ locals {
     }
   ]
 
+  nat_single_region = [
+    {
+      name          = local.default_region1
+      num_addresses = var.hub_nat_num_addresses_region1
+    }
+  ]
+  nat_dual_region = [
+    {
+      name          = local.default_region1
+      num_addresses = var.hub_nat_num_addresses_region1
+    },
+    {
+      name          = local.default_region2
+      num_addresses = var.hub_nat_num_addresses_region2
+    }
+  ]
 }
 
 
@@ -172,8 +188,8 @@ module "shared_vpc" {
   }
 
   subnets = [
-    local.subnet_dual_region,  # index 0
-    local.subnet_single_region # index 1
+    local.subnet_dual_region,
+    local.subnet_single_region
   ][local.available_universe_services.multi_region ? 0 : 1]
   secondary_ranges = {}
 }
@@ -191,14 +207,8 @@ module "nat_config" {
   nat_config = {
     bgp_asn = local.bgp_asn_number
     regions = [
-      {
-        name          = local.default_region1
-        num_addresses = var.hub_nat_num_addresses_region1
-      },
-      {
-        name          = local.default_region2
-        num_addresses = var.hub_nat_num_addresses_region2
-      }
-    ]
+      local.nat_dual_region,
+      local.nat_single_region
+    ][local.available_universe_services.multi_region ? 0 : 1]
   }
 }

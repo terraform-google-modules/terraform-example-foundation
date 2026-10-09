@@ -19,6 +19,24 @@ locals {
   spoke_group              = "default"
   dns_forward_source_range = "35.199.192.0/19"
 
+  nat_single_region = [
+    {
+      name          = var.default_region1
+      num_addresses = var.nat_num_addresses_region1
+    }
+  ]
+  nat_dual_region = [
+    {
+      name          = var.default_region1
+      num_addresses = var.nat_num_addresses_region1
+    },
+    {
+      name          = var.default_region2
+      num_addresses = var.nat_num_addresses_region2
+    }
+  ]
+
+
   subnet_single_region = [
     {
       subnet_name                      = "sb-${var.environment_code}-svpc-${var.default_region1}"
@@ -152,14 +170,13 @@ module "shared_vpc" {
   )
 
   subnets = [
-    local.subnet_dual_region,  # index 0
-    local.subnet_single_region # index 1
+    local.subnet_dual_region,
+    local.subnet_single_region
   ][local.available_universe_services.multi_region ? 0 : 1]
   secondary_ranges = {
     "sb-${var.environment_code}-svpc-${var.default_region1}" = var.subnet_secondary_ranges[var.default_region1]
   }
 }
-
 
 
 module "nat_config" {
@@ -173,14 +190,8 @@ module "nat_config" {
   nat_config = {
     bgp_asn = var.nat_bgp_asn
     regions = [
-      {
-        name          = var.default_region1
-        num_addresses = var.nat_num_addresses_region1
-      },
-      {
-        name          = var.default_region2
-        num_addresses = var.nat_num_addresses_region2
-      }
-    ]
+      local.nat_dual_region,
+      local.nat_single_region
+    ][local.available_universe_services.multi_region ? 0 : 1]
   }
 }

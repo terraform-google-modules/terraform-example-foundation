@@ -18,3 +18,5 @@
 
 remote_state_bucket       = "REMOTE_STATE_BUCKET"
 confidential_image_digest = "IMAGE_DIGEST"
+# Set custom_tee_image_reference when deploying locally or without Cloud Build:
+# custom_tee_image_reference = "us-central1-docker.pkg.dev/my-project/my-repo/confidential_space_image:latest"

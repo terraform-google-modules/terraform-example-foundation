@@ -242,41 +242,51 @@ sed -i'' -e "s/IMAGE_DIGEST/${confidential_image_digest}/" ./common.auto.tfvars
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
    ```
 
-1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role to the bu1 Terraform service account.
-1. Provide the user permissions to run the terraform locally with the `serviceAccountTokenCreator` permission.
+1. Configure Confidential Space container image and digest (if deploying Confidential Space).
+
+   When using an automated CI/CD pipeline (Cloud Build, GitHub Actions, GitLab CI), the container image is resolved automatically from `cicd_project_id`.
+
+   When deploying **locally** (`build_type = local`), there is no automated CI/CD pipeline that builds `confidential_space_image:latest`. To test or run Confidential Space locally, specify a custom container image reference in `custom_tee_image_reference` and its SHA256 digest in `confidential_image_digest`:
+
+   ```bash
+   export CUSTOM_TEE_IMAGE="us-central1-docker.pkg.dev/YOUR_PROJECT/YOUR_REPO/YOUR_IMAGE:latest"
+   export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${CUSTOM_TEE_IMAGE} --format="value(image_summary.digest)")
+
+   sed -i'' -e "s|# custom_tee_image_reference = .*|custom_tee_image_reference = \"${CUSTOM_TEE_IMAGE}\"|" ./common.auto.tfvars
+   sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
+   ```
+
+   > [!NOTE]
+   > Hardware attestation in Confidential Space requires the image digest in `confidential_image_digest` to exactly match the signed container running in the enclave.
+
+1. Provide the user that will be running `./tf-wrapper.sh` the Service Account Token Creator role on the bu1 Terraform service account.
 
    ```bash
    member="user:$(gcloud auth list --filter="status=ACTIVE" --format="value(account)")"
    echo ${member}
 
-   project_id=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
-   echo ${project_id}
-
-   terraform_sa=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '."bu1-example-app"' --raw-output)
+   terraform_sa=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq -r '."bu1-example-app"')
    echo ${terraform_sa}
 
-   gcloud iam service-accounts add-iam-policy-binding ${terraform_sa} --project ${project_id} --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
+   gcloud iam service-accounts add-iam-policy-binding "${terraform_sa}" --member="${member}" --role="roles/iam.serviceAccountTokenCreator"
    ```
 
 1. Update `backend.tf` with your bucket from the infra pipeline output.
 
    ```bash
-   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq '."bu1-example-app"' --raw-output)
+   export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq -r '."bu1-example-app"')
    echo "backend_bucket = ${backend_bucket}"
 
    for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_APP_INFRA_BUCKET/${backend_bucket}/" $i; done
    ```
 
 We will now deploy each of our environments (development/production/nonproduction) using this script.
-When using Cloud Build as your CI/CD tool, each environment corresponds to a branch in the repository for the `5-app-infra` step. Only the corresponding environment is applied.
+When using Cloud Build as your CI/CD tool, each environment corresponds to a branch in the repository for the `5-app-infra` step. Only the corresponding environment is applied.
 
-1. Use `terraform output` to get the Infra Pipeline Project ID from 4-projects output.
+1. Set the impersonation service account to run `./tf-wrapper.sh`:
 
    ```bash
-   export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
-   echo ${INFRA_PIPELINE_PROJECT_ID}
-
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq '."bu1-example-app"' --raw-output)
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq -r '."bu1-example-app"')
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 

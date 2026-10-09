@@ -49,7 +49,7 @@ func getNetworkResourceNames(envCode string, networkMode string, firewallMode st
 	return map[string]string{
 		"network_name":          fmt.Sprintf("vpc-%s-svpc%s", envCode, networkMode),
 		"global_address":        fmt.Sprintf("ga-%s-svpc%s-vpc-peering-internal", envCode, networkMode),
-		"dns_zone_forward":      "fz-dns-hub",
+		"dns_zone_forward":      fmt.Sprintf("fz-%s-dns-hub", envCode),
 		"dns_zone_googleapis":   fmt.Sprintf("dz-%s-svpc-apis", envCode),
 		"dns_zone_gcr":          fmt.Sprintf("dz-%s-svpc-gcr", envCode),
 		"dns_zone_pkg_dev":      fmt.Sprintf("dz-%s-svpc-pkg-dev", envCode),
@@ -57,11 +57,7 @@ func getNetworkResourceNames(envCode string, networkMode string, firewallMode st
 		"dns_policy_name":       fmt.Sprintf("dp-%s-svpc-default-policy", envCode),
 		"subnet_name1":          fmt.Sprintf("sb-%s-svpc-us-central1", envCode),
 		"subnet_name2":          fmt.Sprintf("sb-%s-svpc-us-west1", envCode),
-		"region1_router1":       fmt.Sprintf("cr-%s-svpc%s-us-central1-cr5", envCode, networkMode),
-		"region1_router2":       fmt.Sprintf("cr-%s-svpc%s-us-central1-cr6", envCode, networkMode),
-		"region2_router1":       fmt.Sprintf("cr-%s-svpc%s-us-west1-cr7", envCode, networkMode),
-		"region2_router2":       fmt.Sprintf("cr-%s-svpc%s-us-west1-cr8", envCode, networkMode),
-		"firewall_policy":       fmt.Sprintf("fp-%s-%s-firewalls", envCode, firewallMode),
+		"firewall_policy":       fmt.Sprintf("fp-%s-firewalls", envCode),
 		"fw_deny_all_egress":    fmt.Sprintf("fw-%s-svpc-65530-e-d-all-all-all", envCode),
 		"fw_allow_api_egress":   fmt.Sprintf("fw-%s-svpc-1000-e-a-allow-google-apis-all-tcp-443", envCode),
 	}
@@ -220,52 +216,20 @@ func TestNetworks(t *testing.T) {
 					assert.True(allowApiEgressRule.Get("enableLogging").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", allowApiEgressName))
 					assert.Equal(googleapisCIDR[envName], allowApiEgressRule.Get("match.destIpRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be %s", allowApiEgressName, googleapisCIDR[envName]))
 
-					if networkMode == "" {
-						for _, router := range []struct {
-							router string
-							region string
-						}{
-							{
-								router: "region1_router1",
-								region: "us-central1",
-							},
-							{
-								router: "region1_router2",
-								region: "us-central1",
-							},
-							{
-								router: "region2_router1",
-								region: "us-west1",
-							},
-							{
-								router: "region2_router2",
-								region: "us-west1",
-							},
-						} {
-
-							routerName := networkNames[router.router]
-							bgpAdvertisedIpRange := "35.199.192.0/19"
-							computeRouter := gcloud.Runf(t, "compute routers describe %s --region %s --project %s --impersonate-service-account %s", routerName, router.region, projectID, terraformSA)
-							networkSelfLink := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectID, networkNames["network_name"])
-							assert.Equal(routerName, computeRouter.Get("name").String(), fmt.Sprintf("router %s should exist", routerName))
-							assert.Equal("64514", computeRouter.Get("bgp.asn").String(), fmt.Sprintf("router %s should have bgp asm 64514", routerName))
-							assert.Equal(networkSelfLink, computeRouter.Get("network").String(), fmt.Sprintf("router %s should be on network %s", routerName, networkNames["network_name"]))
-							assert.Contains(googleapisCIDR[envName], computeRouter.Get("bgp.advertisedIpRanges.1.range").String(), fmt.Sprintf("router %s should have range %s", routerName, googleapisCIDR[envName]))
-
-							if strings.Contains(projectID, "prj-p") && networkMode != "-spoke" {
-								advertisedIpRanges := computeRouter.Get("bgp.advertisedIpRanges").Array()
-								found := false
-								for _, ipRange := range advertisedIpRanges {
-									if ipRange.Get("range").String() == bgpAdvertisedIpRange {
-										found = true
-										break
-									}
-								}
-								assert.True(found, fmt.Sprintf("router %s should have range %s", routerName, bgpAdvertisedIpRange))
-								assert.True(found, fmt.Sprintf("router %s should have range %s", routerName, googleapisCIDR[envName]))
-							}
-
-						}
+					if networkMode == "" { // Env Hubs
+						nccHubURI := networks.GetStringOutput("ncc_hub_uri")
+						op := gcloud.Runf(t, "network-connectivity hubs describe %s --project %s", nccHubURI, projectID)
+						presetTopology := op.Get("presetTopology").String()
+						assert.Equal("MESH", presetTopology, "should have mesh topology")
+						nccSpokeStateCount := op.Get("spokeSummary.spokeStateCounts").Array()
+						assert.Equal(1, len(nccSpokeStateCount), "should have spokes in one State")
+						assert.Equal("ACTIVE", nccSpokeStateCount[0].Get("state").String(), "should have only active spokes")
+						groups := gcloud.Runf(t, "network-connectivity hubs groups list --hub %s --project %s", nccHubURI, projectID).Array()
+						assert.Equal(1, len(groups), "should have one group")
+						assert.Equal("ACTIVE", groups[0].Get("state").String(), "should have active group")
+						assert.Equal(projectID, groups[0].Get("autoAccept.autoAcceptProjects.0").String(), "%s should be on auto accept", projectID)
+						fullGroupName := fmt.Sprintf("%s/groups/%s", nccHubURI, "default")
+						assert.Equal(fullGroupName, groups[0].Get("name").String(), "should have default group")
 					}
 				})
 			networks.Test()

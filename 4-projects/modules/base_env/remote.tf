@@ -34,6 +34,9 @@ locals {
   default_region                      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   universe_prefix                     = data.terraform_remote_state.bootstrap.outputs.common_config.universe_prefix
   available_universe_services         = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
+  ncc_hub_uri                         = data.terraform_remote_state.network_env.outputs.ncc_hub_uri
+  ncc_spoke_group                     = data.terraform_remote_state.network_env.outputs.ncc_spoke_group
+
 }
 
 data "terraform_remote_state" "bootstrap" {

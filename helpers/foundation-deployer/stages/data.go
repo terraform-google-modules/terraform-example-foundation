@@ -56,15 +56,16 @@ const (
 )
 
 type CommonConf struct {
-	FoundationPath    string
-	CheckoutPath      string
-	PolicyPath        string
-	ValidatorProject  string
-	BuildType         string
-	EnableHubAndSpoke bool
-	DisablePrompt     bool
-	Logger            *logger.Logger
-	GitToken          string
+	FoundationPath       string
+	CheckoutPath         string
+	PolicyPath           string
+	ValidatorProject     string
+	BuildType            string
+	EnableHubAndSpoke    bool
+	DisablePrompt        bool
+	Logger               *logger.Logger
+	GitToken             string
+	ProductionOnlyDeploy bool
 }
 
 func (c *CommonConf) IsLocalBuild() bool {
@@ -233,6 +234,7 @@ type GlobalTFVars struct {
 	ProjectDeletionPolicy                 string                     `hcl:"project_deletion_policy"`
 	BuildType                             string                     `hcl:"build_type"`
 	GitRepos                              *GitRepos                  `hcl:"git_repos"`
+	ProductionOnlyDeploy                  *bool                      `hcl:"production_only_deploy,optional"`
 	UniversePrefix                        *string                    `hcl:"universe_prefix"`
 	UniverseDomain                        *string                    `hcl:"universe_domain"`
 	PkgDevDomain                          *string                    `hcl:"pkg_dev_domain"`
@@ -250,6 +252,11 @@ func (g GlobalTFVars) IsDefaultUniverse() bool {
 		return true
 	}
 	return *g.UniverseDomain == DefaultUniverseDomain
+}
+
+// IsProdOnly checks if production only deploy is enabled
+func (g GlobalTFVars) IsProdOnly() bool {
+	return g.ProductionOnlyDeploy != nil && *g.ProductionOnlyDeploy
 }
 
 // HasGroupsCreation checks if Groups creation is enabled
@@ -323,6 +330,7 @@ type OrgTfvars struct {
 	FolderDeletionProtection              *bool     `hcl:"folder_deletion_protection"`
 	ProjectDeletionPolicy                 string    `hcl:"project_deletion_policy"`
 	AllowAdditionalMemberTypes            *bool     `hcl:"allow_additional_member_types"`
+	ProductionOnlyDeploy                  *bool     `hcl:"production_only_deploy"`
 }
 
 type EnvsTfvars struct {

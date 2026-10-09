@@ -83,7 +83,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 ## Usage
 
-**Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
+- To deploy **only the production environment** (skipping development and nonproduction), only deploy `business_unit_1/shared` and `business_unit_1/production`. Development and nonproduction business unit directories are omitted.
+
+- If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Deploying with Cloud Build

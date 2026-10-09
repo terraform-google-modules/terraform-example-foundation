@@ -19,14 +19,16 @@ module "hierarchical_firewall_policy" {
 
   parent = local.common_folder_name
   name   = "common-firewall-rules"
-  associations = [
+  # Use compact() to strip empty strings generated when environments are skipped (e.g. production_only_deploy),
+  # ensuring only valid, active folder IDs are passed to the GCP API.
+  associations = compact([
     local.common_folder_name,
     local.network_folder_name,
     local.bootstrap_folder_name,
     local.development_folder_name,
     local.production_folder_name,
     local.nonproduction_folder_name,
-  ]
+  ])
   rules = {
     delegate-rfc1918-ingress = {
       description = "Delegate RFC1918 ingress"

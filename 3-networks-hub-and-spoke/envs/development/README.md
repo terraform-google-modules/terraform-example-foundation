@@ -17,7 +17,7 @@ The purpose of this step is to set up shared VPCs with default DNS, NAT (optiona
 |------|-------------|------|---------|:--------:|
 | domain | The DNS name of peering managed zone, for instance 'example.com.'. Must end with a period. | `string` | n/a | yes |
 | enable\_gcr\_dns | Enable DNS zone creation for legacy gcr.io. Set to false for GDC/TPC environments where Container Registry is not available. | `bool` | `true` | no |
-| enable\_hub\_and\_spoke\_transitivity | Enable transitivity via gateway VMs on Hub-and-Spoke architecture. | `bool` | `false` | no |
+| enable\_hub\_and\_spoke\_transitivity | Enable transitivity by changing Network Connectivity Center topology on Hub-and-Spoke architecture from STAR to MESH. | `bool` | `false` | no |
 | pkg\_dev\_domain | Domain for Artifact Registry. Change if using a custom universe\_domain. | `string` | `"pkg.dev"` | no |
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | tfc\_org\_name | Name of the TFC organization | `string` | `""` | no |
@@ -27,6 +27,8 @@ The purpose of this step is to set up shared VPCs with default DNS, NAT (optiona
 
 | Name | Description |
 |------|-------------|
+| ncc\_hub\_uri | The NCC Hub ID |
+| ncc\_spoke\_group | The NCC group to be used by spokes |
 | network\_name | The name of the VPC being created |
 | network\_self\_link | The URI of the VPC being created |
 | shared\_vpc\_host\_project\_id | The host project ID |

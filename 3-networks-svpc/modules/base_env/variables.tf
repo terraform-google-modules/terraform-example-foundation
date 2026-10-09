@@ -137,3 +137,27 @@ variable "tfc_org_name" {
   description = "Name of the TFC organization"
   type        = string
 }
+
+variable "nat_enabled" {
+  type        = bool
+  description = "Toggle creation of NAT cloud router in the environment."
+  default     = false
+}
+
+variable "nat_bgp_asn" {
+  type        = number
+  description = "BGP ASN for first NAT cloud routes in the environment."
+  default     = 64514
+}
+
+variable "nat_num_addresses_region1" {
+  type        = number
+  description = "Number of external IPs to reserve for first Cloud NAT in the environment."
+  default     = 2
+}
+
+variable "nat_num_addresses_region2" {
+  type        = number
+  description = "Number of external IPs to reserve for second Cloud NAT in the environment."
+  default     = 2
+}

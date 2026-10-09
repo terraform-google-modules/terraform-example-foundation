@@ -44,6 +44,7 @@ module "shared_vpc_host_project" {
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "accesscontextmanager.googleapis.com",
+    "networkconnectivity.googleapis.com",
     local.service_networking_api,
     local.billing_budgets_api
   ])

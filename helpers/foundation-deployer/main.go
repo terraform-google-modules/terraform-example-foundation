@@ -35,6 +35,7 @@ import (
 var (
 	validatorApis = []string{
 		"accesscontextmanager.googleapis.com",
+		"cloudbilling.googleapis.com",
 	}
 )
 
@@ -102,13 +103,14 @@ func main() {
 	}
 
 	conf := stages.CommonConf{
-		FoundationPath:    globalTFVars.FoundationCodePath,
-		CheckoutPath:      globalTFVars.CodeCheckoutPath,
-		PolicyPath:        filepath.Join(globalTFVars.FoundationCodePath, "policy-library"),
-		BuildType:         globalTFVars.BuildType,
-		EnableHubAndSpoke: globalTFVars.EnableHubAndSpoke,
-		DisablePrompt:     cfg.disablePrompt,
-		Logger:            utils.GetLogger(cfg.quiet),
+		FoundationPath:       globalTFVars.FoundationCodePath,
+		CheckoutPath:         globalTFVars.CodeCheckoutPath,
+		PolicyPath:           filepath.Join(globalTFVars.FoundationCodePath, "policy-library"),
+		BuildType:            globalTFVars.BuildType,
+		EnableHubAndSpoke:    globalTFVars.EnableHubAndSpoke,
+		DisablePrompt:        cfg.disablePrompt,
+		Logger:               utils.GetLogger(cfg.quiet),
+		ProductionOnlyDeploy: globalTFVars.IsProdOnly(),
 	}
 
 	// validate git configuration for GitHub and GitLab

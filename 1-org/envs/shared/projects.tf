@@ -21,10 +21,18 @@ locals {
     "roles/resourcemanager.projectIamAdmin",
     "roles/iam.serviceAccountUser",
   ]
+  all_environments = {
+    "development"   = "d"
+    "nonproduction" = "n"
+    "production"    = "p"
+  }
+
+  # Dynamically filter environments based on var.production_only_deploy (configured via foundation-deployer helper).
+  # When true, only the production network host project (prj-p-svpc) is created, skipping development and nonproduction.
   environments = {
-    "development" : "d",
-    "nonproduction" : "n",
-    "production" : "p"
+    for env, code in local.all_environments :
+    env => code
+    if !var.production_only_deploy || env == "production"
   }
 
   billing_budgets_api    = local.available_universe_services.billing_budget ? "billingbudgets.googleapis.com" : ""
@@ -297,6 +305,7 @@ module "network_hub" {
     "dns.googleapis.com",
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
+    "networkconnectivity.googleapis.com",
     local.service_networking_api,
     local.billing_budgets_api
   ])

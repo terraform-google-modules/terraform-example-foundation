@@ -81,7 +81,9 @@ Use the [GCP console](https://console.cloud.google.com/compliance/assuredworkloa
 
 ## Usage
 
-**Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
+- To deploy **only the production environment** (skipping development and nonproduction), only deploy `envs/production`. If you are using the `foundation-deployer` helper with `production_only_deploy = true`, the creation and execution of `development` and `nonproduction` branches are automatically omitted.
+
+- If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Deploying with Cloud Build

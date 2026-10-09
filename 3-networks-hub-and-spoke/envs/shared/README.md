@@ -18,7 +18,7 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | domain | The DNS name of forwarding managed zone, for instance 'example.com'. Must end with a period. | `string` | n/a | yes |
 | enable\_dedicated\_interconnect | Enable Dedicated Interconnect in the environment. | `bool` | `false` | no |
 | enable\_gcr\_dns | Enable DNS zone creation for legacy gcr.io. Set to false for GDC/TPC environments where Container Registry is not available. | `bool` | `true` | no |
-| enable\_hub\_and\_spoke\_transitivity | Enable transitivity via gateway VMs on Hub-and-Spoke architecture. | `bool` | `false` | no |
+| enable\_hub\_and\_spoke\_transitivity | Enable transitivity by changing Network Connectivity Center topology on Hub-and-Spoke architecture from STAR to MESH. | `bool` | `false` | no |
 | enable\_partner\_interconnect | Enable Partner Interconnect in the environment. | `bool` | `false` | no |
 | firewall\_policies\_enable\_logging | Toggle hierarchical firewall logging. | `bool` | `true` | no |
 | hub\_dns\_enable\_inbound\_forwarding | Toggle inbound query forwarding for Shared Hub VPC DNS. | `bool` | `true` | no |
@@ -42,7 +42,10 @@ The purpose of this step is to set up the global [DNS Hub](https://cloud.google.
 | Name | Description |
 |------|-------------|
 | dns\_policy | The name of the DNS policy being created |
+| ncc\_hub\_uri | The NCC Hub ID |
+| ncc\_spoke\_group | The NCC group to be used by spokes |
 | network\_name | The name of the Shared VPC being created |
+| network\_self\_link | The URI of the Shared VPC being created |
 | shared\_vpc\_host\_project\_id | The host project ID |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -15,7 +15,9 @@
  */
 
 locals {
-  bgp_asn_number = var.enable_partner_interconnect ? "16550" : "64514"
+  bgp_asn_number           = var.enable_partner_interconnect ? "16550" : "64514"
+  spoke_group              = "default"
+  dns_forward_source_range = "35.199.192.0/19"
 
   subnet_single_region = [
     {
@@ -69,49 +71,85 @@ locals {
       description                      = "Second ${var.env} subnet example."
     },
     {
-      subnet_name      = "sb-${var.environment_code}-svpc-${var.default_region1}-proxy"
-      subnet_ip        = var.subnet_proxy_ranges[var.default_region1]
-      subnet_region    = var.default_region1
-      subnet_flow_logs = false
-      description      = "First ${var.env} proxy-only subnet example."
-      role             = "ACTIVE"
-      purpose          = "REGIONAL_MANAGED_PROXY"
+      subnet_name           = "sb-${var.environment_code}-svpc-${var.default_region1}-proxy"
+      subnet_ip             = var.subnet_proxy_ranges[var.default_region1]
+      subnet_region         = var.default_region1
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "First ${var.env} proxy-only subnet example."
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     },
     {
-      subnet_name      = "sb-${var.environment_code}-svpc-${var.default_region2}-proxy"
-      subnet_ip        = var.subnet_proxy_ranges[var.default_region2]
-      subnet_region    = var.default_region2
-      subnet_flow_logs = false
-      description      = "Second ${var.env} proxy-only subnet example."
-      role             = "ACTIVE"
-      purpose          = "REGIONAL_MANAGED_PROXY"
+      subnet_name           = "sb-${var.environment_code}-svpc-${var.default_region2}-proxy"
+      subnet_ip             = var.subnet_proxy_ranges[var.default_region2]
+      subnet_region         = var.default_region2
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "Second ${var.env} proxy-only subnet example."
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     }
   ]
+}
+
+data "google_compute_network" "vpc_dns_hub" {
+  count = var.environment_code != "p" ? 1 : 0
+
+  name    = "vpc-p-svpc"
+  project = local.dns_project_id
 }
 
 /******************************************
  Shared VPC
 *****************************************/
 module "shared_vpc" {
-  source = "../shared_vpc"
+  source  = "terraform-google-modules/network/google//modules/foundation/network"
+  version = "~> 18.2"
 
-  project_id                   = local.shared_vpc_project_id
-  project_number               = local.shared_vpc_project_number
-  dns_project_id               = local.dns_project_id
-  environment_code             = var.environment_code
-  private_service_cidr         = local.available_universe_services.service_networking ? var.private_service_cidr : null
-  private_service_connect_ip   = var.private_service_connect_ip
-  bgp_asn_subnet               = local.bgp_asn_number
-  default_region1              = var.default_region1
-  default_region2              = var.default_region2
-  domain                       = var.domain
-  target_name_server_addresses = var.target_name_server_addresses
-  universe_domain              = var.universe_domain
-  pkg_dev_domain               = var.pkg_dev_domain
-  enable_gcr_dns               = var.enable_gcr_dns
-  multi_region                 = local.available_universe_services.multi_region
+  project_id                 = local.shared_vpc_project_id
+  vpc_name                   = "svpc"
+  shared_vpc_host            = true
+  resource_code              = var.environment_code
+  private_service_cidr       = local.available_universe_services.service_networking ? var.private_service_cidr : null
+  private_service_connect_ip = var.private_service_connect_ip
+  firewall_enable_logging    = true
+  windows_activation_enabled = false
+  universe_domain            = var.universe_domain
+  pkg_dev_domain             = var.pkg_dev_domain
+  enable_gcr_dns             = var.enable_gcr_dns
 
 
+  ncc_hub_config = {
+    create_hub                  = true
+    name                        = "ncc-hub-${var.env}"
+    description                 = "NCC Hub for ${var.env}"
+    hub_labels                  = { environment = var.env }
+    spoke_labels                = { type = "hub_vpc" }
+    spoke_include_export_ranges = [local.dns_forward_source_range, "${var.private_service_connect_ip}/32"]
+
+
+    preset_topology              = "MESH"
+    spoke_group                  = "default"
+    auto_accept_projects_center  = null
+    auto_accept_projects_edge    = null
+    auto_accept_projects_default = [local.shared_vpc_project_id]
+  }
+
+  dns_config = merge(
+    {
+      type                         = var.environment_code == "p" ? "hub" : "spoke"
+      domain                       = var.domain
+      enable_logging               = true
+      enable_inbound_forwarding    = true
+      onprem_forwarding            = true
+      target_name_server_addresses = var.target_name_server_addresses
+    },
+    var.environment_code == "p" ? {} : {
+      dns_hub_project_id   = local.dns_project_id
+      dns_hub_network_name = regex("networks/(.+)", data.google_compute_network.vpc_dns_hub[0].self_link)[0]
+    }
+  )
 
   subnets = [
     local.subnet_dual_region,  # index 0
@@ -119,5 +157,30 @@ module "shared_vpc" {
   ][local.available_universe_services.multi_region ? 0 : 1]
   secondary_ranges = {
     "sb-${var.environment_code}-svpc-${var.default_region1}" = var.subnet_secondary_ranges[var.default_region1]
+  }
+}
+
+
+
+module "nat_config" {
+  source = "../../modules/nat"
+  count  = var.nat_enabled ? 1 : 0
+
+  project_id        = local.shared_vpc_project_id
+  vpc_name          = "svpc"
+  resource_code     = var.environment_code
+  network_self_link = module.shared_vpc.network_self_link
+  nat_config = {
+    bgp_asn = var.nat_bgp_asn
+    regions = [
+      {
+        name          = var.default_region1
+        num_addresses = var.nat_num_addresses_region1
+      },
+      {
+        name          = var.default_region2
+        num_addresses = var.nat_num_addresses_region2
+      }
+    ]
   }
 }

@@ -57,3 +57,5 @@ access_context_manager_policy_id = ACCESS_CONTEXT_MANAGER_ID
 //required_ingress_rules_app_infra_dry_run = true
 
 //required_ingress_rules_app_infra = true
+
+//production_only_deploy = false

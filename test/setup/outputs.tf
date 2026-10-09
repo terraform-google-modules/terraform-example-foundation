@@ -98,7 +98,7 @@ output "enable_hub_and_spoke" {
 }
 
 output "enable_hub_and_spoke_transitivity" {
-  value = var.example_foundations_mode == "HubAndSpoke" ? "true" : "false"
+  value = "false"
 }
 
 output "create_access_context_manager_access_policy" {

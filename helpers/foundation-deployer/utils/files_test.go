@@ -21,6 +21,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
 
 func writeTempFile(dir, name, content string) (string, error) {
@@ -139,12 +141,12 @@ func checkRenamedFiles(t *testing.T, tempDir string, targetBuild string, default
 }
 
 func TestRenameFiles(t *testing.T) {
-	for _, targetBuild := range AllowedBuildTypes {
+	for _, targetBuild := range testutils.AllowedBuildTypes {
 		t.Run(targetBuild, func(t *testing.T) {
 			tempDir := t.TempDir()
 			createRenameTestFiles(t, tempDir, targetBuild, DefaultBuild)
 
-			err := RenameBuildFiles(tempDir, targetBuild)
+			err := testutils.RenameBuildFiles(tempDir, targetBuild)
 			assert.NoError(t, err, "RenameBuildFiles failed for targetBuild %s: %v", targetBuild, err)
 			checkRenamedFiles(t, tempDir, targetBuild, DefaultBuild)
 		})
@@ -152,7 +154,7 @@ func TestRenameFiles(t *testing.T) {
 	// Add a test case for an invalid build type
 	t.Run("invalid", func(t *testing.T) {
 		tempDir := t.TempDir()
-		err := RenameBuildFiles(tempDir, "invalid_build_type")
+		err := testutils.RenameBuildFiles(tempDir, "invalid_build_type")
 		assert.Error(t, err, "RenameBuildFiles should have failed for invalid build type")
 		assert.Contains(t, err.Error(), "invalid build type", "RenameFiles should have returned an error about the build type")
 	})

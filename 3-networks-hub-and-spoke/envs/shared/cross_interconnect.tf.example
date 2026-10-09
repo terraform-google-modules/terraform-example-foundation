@@ -1,0 +1,84 @@
+/**
+ * Copyright 2026 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+module "shared_vpc_interconnect" {
+  source = "../../modules/cross_dedicated_interconnect"
+
+  vpc_name                = "c-svpc-hub"
+  interconnect_project_id = local.net_hub_project_id
+  ncc_hub_uri             = module.shared_vpc.ncc_hub_uri
+  ncc_hub_group           = var.enable_hub_and_spoke_transitivity ? "default" : "center"
+  region1                 = local.default_region1
+  region2                 = local.default_region2
+
+  cross_cloud_config = {
+    peer_asn              = "64515"
+    peer_name             = "interconnect-peer"
+    remote_cloud_provider = "oci"
+
+    attachments = {
+      "region1_cross1" = {
+        region            = local.default_region1
+        router            = module.routers.region1_router1.router.name
+        cross_dc          = "oci-dc-1"
+        location          = "las-zone1-770"
+        cr_suffix         = "cr5"
+        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-1"
+        candidate_subnets = ["169.254.0.32/29"]
+        vlan_tag8021q     = "3921"
+        # md5_key           = "REPLACE" // required for AWS
+      },
+      "region1_cross2" = {
+        region            = local.default_region1
+        router            = module.routers.region1_router2.router.name
+        cross_dc          = "oci-dc-2"
+        location          = "las-zone1-770"
+        cr_suffix         = "cr6"
+        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-2"
+        candidate_subnets = ["169.254.0.40/29"]
+        vlan_tag8021q     = "3922"
+        # md5_key           = "REPLACE" // required for AWS
+      },
+      "region2_cross1" = {
+        region            = local.default_region2
+        router            = module.routers.region2_router1.router.name
+        cross_dc          = "oci-dc-3"
+        location          = "lax-zone2-19"
+        cr_suffix         = "cr7"
+        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-3"
+        candidate_subnets = ["169.254.0.48/29"]
+        vlan_tag8021q     = "3923"
+        # md5_key           = "REPLACE" // required for AWS
+      },
+      "region2_cross2" = {
+        region            = local.default_region2
+        router            = module.routers.region2_router2.router.name
+        cross_dc          = "oci-dc-4"
+        location          = "lax-zone1-403"
+        cr_suffix         = "cr8"
+        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-4"
+        candidate_subnets = ["169.254.0.56/29"]
+        vlan_tag8021q     = "3924"
+        # md5_key           = "REPLACE" // required for AWS
+      },
+    }
+  }
+
+  depends_on = [
+    module.shared_vpc,
+    module.routers
+  ]
+}

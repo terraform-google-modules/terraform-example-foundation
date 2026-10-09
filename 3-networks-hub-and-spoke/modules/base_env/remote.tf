@@ -23,6 +23,9 @@ locals {
   networks_service_account     = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
   projects_service_account     = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
   available_universe_services  = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
+  ncc_hub_uri                  = data.terraform_remote_state.net_shared.outputs.ncc_hub_uri
+  net_hub_network_self_link    = data.terraform_remote_state.net_shared.outputs.network_self_link
+  ncc_spoke_group              = data.terraform_remote_state.net_shared.outputs.ncc_spoke_group
 }
 
 data "terraform_remote_state" "bootstrap" {
@@ -42,5 +45,15 @@ data "terraform_remote_state" "org" {
     bucket                  = var.remote_state_bucket
     prefix                  = "terraform/org/state"
     storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
+  }
+}
+
+
+data "terraform_remote_state" "net_shared" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.remote_state_bucket
+    prefix = "terraform/networks/envs/shared"
   }
 }

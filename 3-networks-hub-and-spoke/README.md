@@ -58,7 +58,7 @@ For an overview of the architecture and the parts, see the
 The purpose of this step is to:
 
 - Set up the global [DNS Hub](https://cloud.google.com/blog/products/networking/cloud-forwarding-peering-and-zones).
-- Set up the Hub and it corresponding Spokes. With default DNS, NAT (optional), Private Service networking, VPC Service Controls (optional), on-premises Dedicated or Partner Interconnect, and baseline firewall rules for each environment.
+- Set up the Hub and it corresponding Spokes. With default DNS, NAT (optional), Private Service networking, VPC Service Controls (optional), Network Connectivity Center, on-premises Dedicated or Partner Interconnect, Cross-Cloud Dedicated or Partner Interconnect, and baseline firewall rules for each environment.
 
 ## Prerequisites
 
@@ -74,7 +74,9 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 ## Usage
 
-**Note:** If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
+- To deploy **only the production environment** (skipping development and nonproduction), only deploy `envs/shared` and `envs/production`.
+
+- If you are using MacOS, replace `cp -RT` with `cp -R` in the relevant
 commands. The `-T` flag is needed for Linux, but causes problems for MacOS.
 
 ### Networking Architecture

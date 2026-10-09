@@ -143,7 +143,7 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		}
 	}
 
-	err = utils.RenameBuildFiles(filepath.Join(c.FoundationPath, BootstrapStep), tfvars.BuildType)
+	err = testutils.RenameBuildFiles(filepath.Join(c.FoundationPath, BootstrapStep), tfvars.BuildType)
 	if err != nil {
 		return err
 	}
@@ -399,7 +399,7 @@ func DeployOrgStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		ProjectDeletionPolicy:                 tfvars.ProjectDeletionPolicy,
 		RequiredEgressRulesAppInfraDryRun:     tfvars.RequiredEgressRulesAppInfraDryRun,
 		RequiredIngressRulesAppInfraDryRun:    tfvars.RequiredIngressRulesAppInfraDryRun,
-		AllowAdditionalMemberTypes:            tfvars.AllowAdditionalMemberTypes,
+		ProductionOnlyDeploy:                  tfvars.ProductionOnlyDeploy,
 	}
 	orgTfvars.GcpGroups = GcpGroups{}
 	if tfvars.HasOptionalGroupsCreation() {
@@ -513,7 +513,7 @@ func DeployEnvStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs Bo
 		Repo:          EnvironmentsRepo,
 		GitConf:       conf,
 		GroupingUnits: []string{"envs"},
-		Envs:          []string{"production", "nonproduction", "development"},
+		Envs:          getEnvironments(tfvars),
 		BuildType:     c.BuildType,
 		Executor:      executor,
 	}
@@ -598,7 +598,7 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		HasLocalStep:  true,
 		LocalSteps:    localStep,
 		GroupingUnits: []string{"envs"},
-		Envs:          []string{"production", "nonproduction", "development"},
+		Envs:          getEnvironments(tfvars),
 		BuildType:     c.BuildType,
 		Executor:      executor,
 	}
@@ -677,7 +677,7 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		HasLocalStep:  true,
 		LocalSteps:    []string{"shared"},
 		GroupingUnits: []string{"business_unit_1"},
-		Envs:          []string{"production", "nonproduction", "development"},
+		Envs:          getEnvironments(tfvars),
 		BuildType:     c.BuildType,
 		Executor:      executor,
 	}
@@ -733,7 +733,7 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 	}
 
 	err := s.RunStep(fmt.Sprintf("%s.copy-code-again", stageConf.Stage), func() error {
-		return copyStepCode(t, conf, c.FoundationPath, c.CheckoutPath, stageConf.Repo, stageConf.Step, stageConf.CustomTargetDirPath, stageConf.BuildType)
+		return copyStepCode(t, conf, c.FoundationPath, c.CheckoutPath, stageConf.Repo, stageConf.Step, stageConf.CustomTargetDirPath, stageConf.BuildType, tfvars.IsProdOnly())
 	})
 
 	if err != nil {
@@ -864,7 +864,7 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 		Repo:          AppInfraRepo,
 		GitConf:       conf,
 		GroupingUnits: []string{"business_unit_1"},
-		Envs:          []string{"production", "nonproduction", "development"},
+		Envs:          getEnvironments(tfvars),
 		BuildType:     c.BuildType,
 		Executor:      executor,
 	}
@@ -880,7 +880,7 @@ func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error 
 	}
 
 	err = s.RunStep(fmt.Sprintf("%s.copy-code", sc.Stage), func() error {
-		return copyStepCode(t, sc.GitConf, c.FoundationPath, c.CheckoutPath, sc.Repo, sc.Step, sc.CustomTargetDirPath, sc.BuildType)
+		return copyStepCode(t, sc.GitConf, c.FoundationPath, c.CheckoutPath, sc.Repo, sc.Step, sc.CustomTargetDirPath, sc.BuildType, c.ProductionOnlyDeploy)
 	})
 	if err != nil {
 		return err
@@ -976,7 +976,7 @@ func preparePoliciesRepo(policiesConf utils.GitRepo, policiesBranch, foundationP
 	return policiesConf.PushBranch(policiesBranch, "origin")
 }
 
-func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath, repo, step, customPath, buildType string) error {
+func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath, repo, step, customPath, buildType string, productionOnlyDeploy bool) error {
 	gcpPath := filepath.Join(checkoutPath, repo)
 	targetDir := gcpPath
 	if customPath != "" {
@@ -995,10 +995,10 @@ func copyStepCode(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath
 		}
 	}
 
-	return copyCICDConfig(t, conf, foundationPath, checkoutPath, repo, buildType)
+	return copyCICDConfig(t, conf, foundationPath, checkoutPath, repo, buildType, productionOnlyDeploy)
 }
 
-func copyCICDConfig(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath, repo, buildType string) error {
+func copyCICDConfig(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPath, repo, buildType string, productionOnlyDeploy bool) error {
 	var err error
 	gcpPath := filepath.Join(checkoutPath, repo)
 	switch buildType {
@@ -1039,7 +1039,20 @@ func copyCICDConfig(t testing.TB, conf utils.GitRepo, foundationPath, checkoutPa
 		}
 	}
 
-	return utils.CopyFile(filepath.Join(foundationPath, "build/tf-wrapper.sh"), filepath.Join(gcpPath, "tf-wrapper.sh"))
+	err = utils.CopyFile(filepath.Join(foundationPath, "build/tf-wrapper.sh"), filepath.Join(gcpPath, "tf-wrapper.sh"))
+	if err != nil {
+		return err
+	}
+
+	if productionOnlyDeploy {
+		return utils.ReplaceStringInFile(
+			filepath.Join(gcpPath, "tf-wrapper.sh"),
+			`leaf_regex_plan="^(development|nonproduction|production|shared)$"`,
+			`leaf_regex_plan="^(production|shared)$"`,
+		)
+	}
+
+	return nil
 }
 
 func runPlanStage(t testing.TB, sc StageConf, c CommonConf, environment string) error {
@@ -1079,7 +1092,7 @@ func saveBootstrapCodeOnly(t testing.TB, sc StageConf, s steps.Steps, c CommonCo
 	}
 
 	err = s.RunStep(fmt.Sprintf("%s.copy-code", sc.Stage), func() error {
-		return copyStepCode(t, sc.GitConf, c.FoundationPath, c.CheckoutPath, sc.Repo, sc.Step, sc.CustomTargetDirPath, sc.BuildType)
+		return copyStepCode(t, sc.GitConf, c.FoundationPath, c.CheckoutPath, sc.Repo, sc.Step, sc.CustomTargetDirPath, sc.BuildType, c.ProductionOnlyDeploy)
 	})
 	if err != nil {
 		return err

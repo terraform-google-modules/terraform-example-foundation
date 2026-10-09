@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+provider "google" {
+  universe_domain = var.universe_domain
+}
+
 provider "google-beta" {
   user_project_override = true
   billing_project       = var.groups.billing_project
+  universe_domain       = var.universe_domain
 }
 
 # If you are using Terraform Cloud Agents, un-comment this block after the first apply according README instructions

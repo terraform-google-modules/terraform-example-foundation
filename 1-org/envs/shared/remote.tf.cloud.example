@@ -32,6 +32,8 @@ locals {
   bootstrap_folder_name                         = data.tfe_outputs.bootstrap.nonsensitive_values.common_config.bootstrap_folder_name
   cloud_build_private_worker_pool_id            = try(data.tfe_outputs.bootstrap.nonsensitive_values.cloud_build_private_worker_pool_id, "")
   org_step_terraform_service_account_email      = data.tfe_outputs.bootstrap.nonsensitive_values.organization_step_terraform_service_account_email
+  universe_prefix                               = data.terraform_remote_state.bootstrap.outputs.common_config.universe_prefix
+  available_universe_services                   = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
 }
 
 data "tfe_outputs" "bootstrap" {

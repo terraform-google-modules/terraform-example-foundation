@@ -75,7 +75,7 @@ output "interconnect_project_number" {
 }
 
 output "scc_notifications_project_id" {
-  value       = try(module.scc_notifications.project_id, null)
+  value       = module.scc_notifications.project_id
   description = "The SCC notifications project ID"
 }
 
@@ -115,7 +115,7 @@ output "logs_export_project_linked_dataset_name" {
 }
 
 output "billing_sink_names" {
-  value       = module.logs_export.billing_sink_names
+  value       = try(module.logs_export.billing_sink_names, null)
   description = "The name of the sinks under billing account level."
 }
 

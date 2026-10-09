@@ -60,6 +60,63 @@ variable "parent_folder" {
   default     = ""
 }
 
+variable "universe_prefix" {
+  description = "Universe_prefix is the universe short name prefix to prepend to the project ID (e.g., 'eu0'). A colon (:) is automatically appended to the project ID, and a hyphen (-) is used for the state bucket name."
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = var.universe_prefix == "" || can(regex("^[a-z0-9]+$", var.universe_prefix))
+    error_message = "The universe_prefix variable must be empty or contain only lowercase alphanumeric characters."
+  }
+}
+
+variable "universe_domain" {
+  description = "The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD)."
+  type        = string
+  default     = "googleapis.com"
+
+  validation {
+    condition     = var.universe_domain != null && length(trimspace(coalesce(var.universe_domain, ""))) > 0
+    error_message = "The universe_domain variable cannot be null or an empty string."
+  }
+}
+
+variable "pkg_dev_domain" {
+  description = "Domain for Artifact Registry. Change if using a custom universe_domain."
+  type        = string
+  default     = "pkg.dev"
+
+  validation {
+    condition     = var.pkg_dev_domain != null && length(trimspace(coalesce(var.pkg_dev_domain, ""))) > 0
+    error_message = "The pkg_dev_domain variable cannot be null or an empty string."
+  }
+}
+
+variable "enable_gcr_dns" {
+  description = "Enable DNS zone creation for legacy gcr.io. Set to false for GCD environments where Container Registry is not available."
+  type        = bool
+  default     = true
+}
+
+variable "available_universe_services" {
+  description = "A general configuration object to toggle available services in the universe. All services default to true if omitted."
+  type = object({
+    billing_budget     = optional(bool, true)
+    security_center    = optional(bool, true)
+    service_networking = optional(bool, true)
+    storage_api        = optional(bool, true)
+    admin              = optional(bool, true)
+    appengine          = optional(bool, true)
+    assured_workloads  = optional(bool, true)
+    cloud_build        = optional(bool, true)
+    cloud_asset        = optional(bool, true)
+    secret_manager     = optional(bool, true)
+    multi_region       = optional(bool, true)
+  })
+  default = {}
+}
+
 variable "org_policy_admin_role" {
   description = "Additional Org Policy Admin role for admin group. You can use this for testing purposes."
   type        = bool
@@ -118,7 +175,11 @@ variable "workflow_deletion_protection" {
     Specific to Groups creation
    ---------------------------------------- */
 variable "groups" {
-  description = "Contain the details of the Groups to be created."
+  description = <<EOT
+  Contains the details of the IAM groups to be created or used for permissions.
+  The group identifiers inside 'required_groups' and 'optional_groups' accept either standard Google Group email addresses or principalSet URIs (e.g., 'principalSet://...').
+  Note: If providing principalSet URIs, ensure that 'create_required_groups' and 'create_optional_groups' are set to false, as principalSets are external identities and cannot be created as Google Groups.
+  EOT
   type = object({
     create_required_groups = optional(bool, false)
     create_optional_groups = optional(bool, false)
@@ -138,29 +199,43 @@ variable "groups" {
     }), {})
   })
 
+  # Prevent trying to create a principalSet as if it were a Google Group
   validation {
-    condition     = var.groups.create_required_groups || var.groups.create_optional_groups ? (var.groups.billing_project != null ? true : false) : true
+    condition = (
+      (var.groups.create_required_groups != true || !anytrue([
+        for v in values(var.groups.required_groups) : try(startswith(v, "principalSet://"), false)
+      ]))
+      &&
+      (var.groups.create_optional_groups != true || !anytrue([
+        for v in values(var.groups.optional_groups != null ? var.groups.optional_groups : {}) : try(startswith(v, "principalSet://"), false)
+      ]))
+    )
+    error_message = "You cannot set create_required_groups or create_optional_groups to true if any of the provided group variables contain a 'principalSet://' URI. principalSets are external identities and cannot be created as Google Groups."
+  }
+
+  validation {
+    condition     = var.groups.create_required_groups || var.groups.create_optional_groups ? var.groups.billing_project != null : true
     error_message = "A billing_project must be passed to use the automatic group creation."
   }
 
   validation {
     condition     = var.groups.required_groups.group_org_admins != ""
-    error_message = "The group group_org_admins is invalid, it must be a valid email"
+    error_message = "The group_org_admins is invalid, it must be a valid email or principalSet URI."
   }
 
   validation {
     condition     = var.groups.required_groups.group_billing_admins != ""
-    error_message = "The group group_billing_admins is invalid, it must be a valid email"
+    error_message = "The group_billing_admins is invalid, it must be a valid email or principalSet URI."
   }
 
   validation {
     condition     = var.groups.required_groups.billing_data_users != ""
-    error_message = "The group billing_data_users is invalid, it must be a valid email"
+    error_message = "The billing_data_users is invalid, it must be a valid email or principalSet URI."
   }
 
   validation {
     condition     = var.groups.required_groups.audit_data_users != ""
-    error_message = "The group audit_data_users is invalid, it must be a valid email"
+    error_message = "The audit_data_users is invalid, it must be a valid email or principalSet URI."
   }
 }
 
@@ -169,5 +244,3 @@ variable "initial_group_config" {
   type        = string
   default     = "WITH_INITIAL_OWNER"
 }
-
-

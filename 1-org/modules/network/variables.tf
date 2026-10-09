@@ -30,6 +30,35 @@ variable "project_prefix" {
   default     = "prj"
 }
 
+variable "universe_prefix" {
+  description = "The universe short name prefix to prepend to the project ID (e.g., 'eu0'). A colon (:) is automatically appended to the project ID, and a hyphen (-) is used for the state bucket name."
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = var.universe_prefix == "" || can(regex("^[a-z0-9]+$", var.universe_prefix))
+    error_message = "The universe_prefix variable must be empty or contain only lowercase alphanumeric characters."
+  }
+}
+
+variable "available_universe_services" {
+  description = "A general configuration object to toggle available services in the universe. All services default to true if omitted."
+  type = object({
+    billing_budget     = optional(bool, true)
+    security_center    = optional(bool, true)
+    service_networking = optional(bool, true)
+    storage_api        = optional(bool, true)
+    admin              = optional(bool, true)
+    appengine          = optional(bool, true)
+    assured_workloads  = optional(bool, true)
+    cloud_build        = optional(bool, true)
+    cloud_asset        = optional(bool, true)
+    secret_manager     = optional(bool, true)
+    multi_region       = optional(bool, true)
+  })
+  default = {}
+}
+
 variable "folder_id" {
   description = "The folder where the projects will be deployed."
   type        = string

@@ -309,7 +309,7 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
 
    cd 0-bootstrap
    ```
-
+//TODO add replace of universe_domain maybe replace with a script that does all this stuff "universe-config.sh"
 1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Cloud Storage.
 
    ```bash
@@ -523,6 +523,7 @@ The following steps will guide you through deploying without using Cloud Build.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | attribute\_condition | Workload Identity Pool Provider attribute condition expression. [More info](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool_provider#attribute_condition) | `string` | `null` | no |
+| available\_universe\_services | A general configuration object to toggle available services in the universe. All services default to true if omitted. | <pre>object({<br>    billing_budget     = optional(bool, true)<br>    security_center    = optional(bool, true)<br>    service_networking = optional(bool, true)<br>    storage_api        = optional(bool, true)<br>    admin              = optional(bool, true)<br>    appengine          = optional(bool, true)<br>    assured_workloads  = optional(bool, true)<br>    cloud_build        = optional(bool, true)<br>    cloud_asset        = optional(bool, true)<br>    secret_manager     = optional(bool, true)<br>    multi_region       = optional(bool, true)<br>  })</pre> | `{}` | no |
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
 | bucket\_force\_destroy | When deleting a bucket, this boolean option will delete all contained objects. If false, Terraform will fail to delete buckets which contain objects. | `bool` | `false` | no |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
@@ -532,15 +533,19 @@ The following steps will guide you through deploying without using Cloud Build.
 | default\_region\_2 | Secondary default region to create resources where applicable. | `string` | `"us-west1"` | no |
 | default\_region\_gcs | Case-Sensitive default region to create gcs resources where applicable. | `string` | `"US"` | no |
 | default\_region\_kms | Secondary default region to create kms resources where applicable. | `string` | `"us"` | no |
+| enable\_gcr\_dns | Enable DNS zone creation for legacy gcr.io. Set to false for GCD environments where Container Registry is not available. | `bool` | `true` | no |
 | folder\_deletion\_protection | Prevent Terraform from destroying or recreating the folder. | `string` | `true` | no |
 | folder\_prefix | Name prefix to use for folders created. Should be the same in all steps. | `string` | `"fldr"` | no |
-| groups | Contain the details of the Groups to be created. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins     = string<br>      group_billing_admins = string<br>      billing_data_users   = string<br>      audit_data_users     = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
+| groups | Contains the details of the IAM groups to be created or used for permissions.<br>  The group identifiers inside 'required\_groups' and 'optional\_groups' accept either standard Google Group email addresses or principalSet URIs (e.g., 'principalSet://...').<br>  Note: If providing principalSet URIs, ensure that 'create\_required\_groups' and 'create\_optional\_groups' are set to false, as principalSets are external identities and cannot be created as Google Groups. | <pre>object({<br>    create_required_groups = optional(bool, false)<br>    create_optional_groups = optional(bool, false)<br>    billing_project        = optional(string, null)<br>    required_groups = object({<br>      group_org_admins     = string<br>      group_billing_admins = string<br>      billing_data_users   = string<br>      audit_data_users     = string<br>    })<br>    optional_groups = optional(object({<br>      gcp_security_reviewer    = optional(string, "")<br>      gcp_network_viewer       = optional(string, "")<br>      gcp_scc_admin            = optional(string, "")<br>      gcp_global_secrets_admin = optional(string, "")<br>      gcp_kms_admin            = optional(string, "")<br>    }), {})<br>  })</pre> | n/a | yes |
 | initial\_group\_config | Define the group configuration when it is initialized. Valid values are: WITH\_INITIAL\_OWNER, EMPTY and INITIAL\_GROUP\_CONFIG\_UNSPECIFIED. | `string` | `"WITH_INITIAL_OWNER"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |
 | org\_policy\_admin\_role | Additional Org Policy Admin role for admin group. You can use this for testing purposes. | `bool` | `false` | no |
 | parent\_folder | Optional - for an organization with existing projects or for development/validation. It will place all the example foundation resources under the provided folder instead of the root organization. The value is the numeric folder ID. The folder must already exist. | `string` | `""` | no |
+| pkg\_dev\_domain | Domain for Artifact Registry. Change if using a custom universe\_domain. | `string` | `"pkg.dev"` | no |
 | project\_deletion\_policy | The deletion policy for the project created. | `string` | `"PREVENT"` | no |
 | project\_prefix | Name prefix to use for projects created. Should be the same in all steps. Max size is 3 characters. | `string` | `"prj"` | no |
+| universe\_domain | The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD). | `string` | `"googleapis.com"` | no |
+| universe\_prefix | Universe\_prefix is the universe short name prefix to prepend to the project ID (e.g., 'eu0'). A colon (:) is automatically appended to the project ID, and a hyphen (-) is used for the state bucket name. | `string` | `""` | no |
 | workflow\_deletion\_protection | Whether Terraform will be prevented from destroying a workflow. When the field is set to true or unset in Terraform state, a `terraform apply` or `terraform destroy` that would delete the workflow will fail. When the field is set to false, deleting the workflow is allowed. | `bool` | `true` | no |
 
 ## Outputs

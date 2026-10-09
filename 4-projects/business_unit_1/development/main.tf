@@ -36,6 +36,7 @@ module "env" {
   business_code       = "bu1"
   business_unit       = "business_unit_1"
   remote_state_bucket = var.remote_state_bucket
+  universe_domain     = var.universe_domain
   location_kms        = coalesce(var.location_kms, local.default_region_kms)
   location_gcs        = coalesce(var.location_gcs, local.default_region_gcs)
   keyring_name        = "bu1-sample-keyring"

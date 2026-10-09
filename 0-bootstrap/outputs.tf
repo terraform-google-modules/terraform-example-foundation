@@ -57,17 +57,22 @@ output "projects_gcs_bucket_tfstate" {
 output "common_config" {
   description = "Common configuration data to be used in other steps."
   value = {
-    org_id                = var.org_id,
-    parent_folder         = var.parent_folder,
-    billing_account       = var.billing_account,
-    default_region        = var.default_region,
-    default_region_2      = var.default_region_2,
-    default_region_gcs    = var.default_region_gcs,
-    default_region_kms    = var.default_region_kms,
-    project_prefix        = var.project_prefix,
-    folder_prefix         = var.folder_prefix
-    parent_id             = local.parent
-    bootstrap_folder_name = google_folder.bootstrap.name
+    org_id                      = var.org_id,
+    parent_folder               = var.parent_folder,
+    billing_account             = var.billing_account,
+    default_region              = var.default_region,
+    default_region_2            = var.default_region_2,
+    default_region_gcs          = var.default_region_gcs,
+    default_region_kms          = var.default_region_kms,
+    project_prefix              = var.project_prefix,
+    universe_prefix             = var.universe_prefix
+    universe_domain             = var.universe_domain
+    pkg_dev_domain              = var.pkg_dev_domain
+    enable_gcr_dns              = var.enable_gcr_dns
+    available_universe_services = var.available_universe_services
+    folder_prefix               = var.folder_prefix
+    parent_id                   = local.parent
+    bootstrap_folder_name       = google_folder.bootstrap.name
   }
 }
 

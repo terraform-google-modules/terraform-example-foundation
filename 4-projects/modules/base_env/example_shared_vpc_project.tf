@@ -26,6 +26,8 @@ module "shared_vpc_project" {
   shared_vpc_subnets         = local.subnets_self_links
   project_budget             = var.project_budget
   project_prefix             = local.project_prefix
+  universe_prefix            = local.universe_prefix
+  billing_budget_available   = local.available_universe_services.billing_budget
   project_deletion_policy    = var.project_deletion_policy
 
   enable_cloudbuild_deploy            = local.enable_cloudbuild_deploy

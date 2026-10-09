@@ -34,6 +34,11 @@ locals {
     env => code
     if !var.production_only_deploy || env == "production"
   }
+
+  billing_budgets_api    = local.available_universe_services.billing_budget ? "billingbudgets.googleapis.com" : ""
+  secret_manager_api     = local.available_universe_services.secret_manager ? "secretmanager.googleapis.com" : ""
+  security_center_api    = local.available_universe_services.security_center ? "securitycenter.googleapis.com" : ""
+  service_networking_api = local.available_universe_services.service_networking ? "servicenetworking.googleapis.com" : ""
 }
 
 /******************************************
@@ -48,11 +53,16 @@ module "org_audit_logs" {
   random_project_id_length = 4
   default_service_account  = "deprivilege"
   name                     = "${local.project_prefix}-c-logging"
+  universe_prefix          = local.universe_prefix
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "bigquery.googleapis.com",
+    local.billing_budgets_api
+  ])
 
   labels = {
     environment       = "common"
@@ -64,10 +74,10 @@ module "org_audit_logs" {
     env_code          = "c"
     vpc               = "none"
   }
-  budget_alert_pubsub_topic   = var.project_budget.org_audit_logs_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.org_audit_logs_alert_spent_percents
-  budget_amount               = var.project_budget.org_audit_logs_budget_amount
-  budget_alert_spend_basis    = var.project_budget.org_audit_logs_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = local.available_universe_services.billing_budget ? var.project_budget.org_audit_logs_alert_pubsub_topic : null
+  budget_alert_spent_percents = local.available_universe_services.billing_budget ? var.project_budget.org_audit_logs_alert_spent_percents : null
+  budget_amount               = local.available_universe_services.billing_budget ? var.project_budget.org_audit_logs_budget_amount : null
+  budget_alert_spend_basis    = local.available_universe_services.billing_budget ? var.project_budget.org_audit_logs_budget_alert_spend_basis : null
 }
 
 /******************************************
@@ -82,11 +92,16 @@ module "org_billing_export" {
   random_project_id_length = 4
   default_service_account  = "deprivilege"
   name                     = "${local.project_prefix}-c-billing-export"
+  universe_prefix          = local.universe_prefix
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "bigquery.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "bigquery.googleapis.com",
+    local.billing_budgets_api
+  ])
 
   labels = {
     environment       = "common"
@@ -99,10 +114,10 @@ module "org_billing_export" {
     vpc               = "none"
   }
 
-  budget_alert_pubsub_topic   = var.project_budget.org_billing_export_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.org_billing_export_alert_spent_percents
-  budget_amount               = var.project_budget.org_billing_export_budget_amount
-  budget_alert_spend_basis    = var.project_budget.org_billing_export_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = local.available_universe_services.billing_budget ? var.project_budget.org_billing_export_alert_pubsub_topic : null
+  budget_alert_spent_percents = local.available_universe_services.billing_budget ? var.project_budget.org_billing_export_alert_spent_percents : null
+  budget_amount               = local.available_universe_services.billing_budget ? var.project_budget.org_billing_export_budget_amount : null
+  budget_alert_spend_basis    = local.available_universe_services.billing_budget ? var.project_budget.org_billing_export_budget_alert_spend_basis : null
 }
 
 /******************************************
@@ -117,11 +132,16 @@ module "common_kms" {
   random_project_id_length = 4
   default_service_account  = "deprivilege"
   name                     = "${local.project_prefix}-c-kms"
+  universe_prefix          = local.universe_prefix
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "cloudkms.googleapis.com",
+    local.billing_budgets_api
+  ])
 
   labels = {
     environment       = "common"
@@ -134,10 +154,10 @@ module "common_kms" {
     vpc               = "none"
   }
 
-  budget_alert_pubsub_topic   = var.project_budget.common_kms_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.common_kms_alert_spent_percents
-  budget_amount               = var.project_budget.common_kms_budget_amount
-  budget_alert_spend_basis    = var.project_budget.common_kms_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = local.available_universe_services.billing_budget ? var.project_budget.common_kms_alert_pubsub_topic : null
+  budget_alert_spent_percents = local.available_universe_services.billing_budget ? var.project_budget.common_kms_alert_spent_percents : null
+  budget_amount               = local.available_universe_services.billing_budget ? var.project_budget.common_kms_budget_amount : null
+  budget_alert_spend_basis    = local.available_universe_services.billing_budget ? var.project_budget.common_kms_budget_alert_spend_basis : null
 }
 
 /******************************************
@@ -152,11 +172,16 @@ module "org_secrets" {
   random_project_id_length = 4
   default_service_account  = "deprivilege"
   name                     = "${local.project_prefix}-c-secrets"
+  universe_prefix          = local.universe_prefix
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "secretmanager.googleapis.com", "billingbudgets.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    local.secret_manager_api,
+    local.billing_budgets_api
+  ])
 
 
   labels = {
@@ -169,10 +194,10 @@ module "org_secrets" {
     env_code          = "c"
     vpc               = "none"
   }
-  budget_alert_pubsub_topic   = var.project_budget.org_secrets_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.org_secrets_alert_spent_percents
-  budget_amount               = var.project_budget.org_secrets_budget_amount
-  budget_alert_spend_basis    = var.project_budget.org_secrets_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = local.available_universe_services.billing_budget ? var.project_budget.org_secrets_alert_pubsub_topic : null
+  budget_alert_spent_percents = local.available_universe_services.billing_budget ? var.project_budget.org_secrets_alert_spent_percents : null
+  budget_amount               = local.available_universe_services.billing_budget ? var.project_budget.org_secrets_budget_amount : null
+  budget_alert_spend_basis    = local.available_universe_services.billing_budget ? var.project_budget.org_secrets_budget_alert_spend_basis : null
 }
 
 /******************************************
@@ -187,11 +212,15 @@ module "interconnect" {
   random_project_id_length = 4
   default_service_account  = "deprivilege"
   name                     = "${local.project_prefix}-net-interconnect"
+  universe_prefix          = local.universe_prefix
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["billingbudgets.googleapis.com", "compute.googleapis.com"]
+  activate_apis = compact([
+    "compute.googleapis.com",
+    local.billing_budgets_api
+  ])
 
   labels = {
     environment       = "network"
@@ -204,10 +233,10 @@ module "interconnect" {
     vpc               = "none"
   }
 
-  budget_alert_pubsub_topic   = var.project_budget.interconnect_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.interconnect_alert_spent_percents
-  budget_amount               = var.project_budget.interconnect_budget_amount
-  budget_alert_spend_basis    = var.project_budget.interconnect_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = local.available_universe_services.billing_budget ? var.project_budget.interconnect_alert_pubsub_topic : null
+  budget_alert_spent_percents = local.available_universe_services.billing_budget ? var.project_budget.interconnect_alert_spent_percents : null
+  budget_amount               = local.available_universe_services.billing_budget ? var.project_budget.interconnect_budget_amount : null
+  budget_alert_spend_basis    = local.available_universe_services.billing_budget ? var.project_budget.interconnect_budget_alert_spend_basis : null
 }
 
 /******************************************
@@ -222,11 +251,18 @@ module "scc_notifications" {
   random_project_id_length = 4
   default_service_account  = "deprivilege"
   name                     = "${local.project_prefix}-c-scc"
+  universe_prefix          = local.universe_prefix
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.common.id
   deletion_policy          = var.project_deletion_policy
-  activate_apis            = ["logging.googleapis.com", "pubsub.googleapis.com", "securitycenter.googleapis.com", "billingbudgets.googleapis.com", "cloudkms.googleapis.com"]
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "pubsub.googleapis.com",
+    "cloudkms.googleapis.com",
+    local.security_center_api,
+    local.billing_budgets_api,
+  ])
 
   labels = {
     environment       = "common"
@@ -239,10 +275,10 @@ module "scc_notifications" {
     vpc               = "none"
   }
 
-  budget_alert_pubsub_topic   = var.project_budget.scc_notifications_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.scc_notifications_alert_spent_percents
-  budget_amount               = var.project_budget.scc_notifications_budget_amount
-  budget_alert_spend_basis    = var.project_budget.scc_notifications_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = local.available_universe_services.billing_budget ? var.project_budget.scc_notifications_alert_pubsub_topic : null
+  budget_alert_spent_percents = local.available_universe_services.billing_budget ? var.project_budget.scc_notifications_alert_spent_percents : null
+  budget_amount               = local.available_universe_services.billing_budget ? var.project_budget.scc_notifications_budget_amount : null
+  budget_alert_spend_basis    = local.available_universe_services.billing_budget ? var.project_budget.scc_notifications_budget_alert_spend_basis : null
 }
 
 /******************************************
@@ -258,20 +294,21 @@ module "network_hub" {
   random_project_id_length = 4
   default_service_account  = "deprivilege"
   name                     = "${local.project_prefix}-net-hub"
+  universe_prefix          = local.universe_prefix
   org_id                   = local.org_id
   billing_account          = local.billing_account
   folder_id                = google_folder.network.id
   deletion_policy          = var.project_deletion_policy
 
-  activate_apis = [
+  activate_apis = compact([
     "compute.googleapis.com",
     "dns.googleapis.com",
-    "servicenetworking.googleapis.com",
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "billingbudgets.googleapis.com",
-    "networkconnectivity.googleapis.com"
-  ]
+    "networkconnectivity.googleapis.com",
+    local.service_networking_api,
+    local.billing_budgets_api
+  ])
 
   labels = {
     environment       = "network"
@@ -284,10 +321,10 @@ module "network_hub" {
     vpc               = "svpc"
   }
 
-  budget_alert_pubsub_topic   = var.project_budget.net_hub_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.net_hub_alert_spent_percents
-  budget_amount               = var.project_budget.net_hub_budget_amount
-  budget_alert_spend_basis    = var.project_budget.net_hub_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = local.available_universe_services.billing_budget ? var.project_budget.net_hub_alert_pubsub_topic : null
+  budget_alert_spent_percents = local.available_universe_services.billing_budget ? var.project_budget.net_hub_alert_spent_percents : null
+  budget_amount               = local.available_universe_services.billing_budget ? var.project_budget.net_hub_budget_amount : null
+  budget_alert_spend_basis    = local.available_universe_services.billing_budget ? var.project_budget.net_hub_budget_alert_spend_basis : null
 }
 
 /************************************************************
@@ -298,10 +335,12 @@ module "environment_network" {
   source   = "../../modules/network"
   for_each = local.environments
 
-  org_id          = local.org_id
-  billing_account = local.billing_account
-  project_prefix  = local.project_prefix
-  folder_id       = google_folder.network.id
+  org_id                      = local.org_id
+  billing_account             = local.billing_account
+  project_prefix              = local.project_prefix
+  universe_prefix             = local.universe_prefix
+  folder_id                   = google_folder.network.id
+  available_universe_services = local.available_universe_services
 
   project_deletion_policy = var.project_deletion_policy
 
@@ -309,10 +348,10 @@ module "environment_network" {
   env_code = each.value
 
   project_budget = {
-    network_budget_amount            = var.project_budget.shared_network_budget_amount
-    network_alert_spent_percents     = var.project_budget.shared_network_alert_spent_percents
-    network_alert_pubsub_topic       = var.project_budget.shared_network_alert_pubsub_topic
-    network_budget_alert_spend_basis = var.project_budget.shared_network_budget_alert_spend_basis
+    network_budget_amount            = local.available_universe_services.billing_budget ? var.project_budget.shared_network_budget_amount : null
+    network_alert_spent_percents     = local.available_universe_services.billing_budget ? var.project_budget.shared_network_alert_spent_percents : null
+    network_alert_pubsub_topic       = local.available_universe_services.billing_budget ? var.project_budget.shared_network_alert_pubsub_topic : null
+    network_budget_alert_spend_basis = local.available_universe_services.billing_budget ? var.project_budget.shared_network_budget_alert_spend_basis : null
   }
 }
 

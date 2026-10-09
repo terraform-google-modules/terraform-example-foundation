@@ -45,8 +45,9 @@ data "terraform_remote_state" "projects_env" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/projects/${var.business_unit}/${var.environment}"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/projects/${var.business_unit}/${var.environment}"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -59,12 +60,14 @@ resource "google_service_account" "compute_engine_service_account" {
 
 module "instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 15.1"
+  version = "15.4.0" # See https://github.com/terraform-google-modules/terraform-google-vm/issues/602
 
-  machine_type = var.machine_type
   region       = var.region
   project_id   = local.env_project_id
   subnetwork   = local.subnetwork_self_link
+  machine_type = var.machine_type
+  disk_type    = var.disk_type
+  source_image = var.source_image
 
   metadata = {
     block-project-ssh-keys = "true"
@@ -78,7 +81,7 @@ module "instance_template" {
 
 module "compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
-  version = "~> 15.1"
+  version = "15.4.0" # See https://github.com/terraform-google-modules/terraform-google-vm/issues/602
 
   project_id            = local.env_project_id
   region                = var.region
@@ -89,4 +92,3 @@ module "compute_instance" {
   instance_template     = module.instance_template.self_link
   resource_manager_tags = local.resource_manager_tags
 }
-

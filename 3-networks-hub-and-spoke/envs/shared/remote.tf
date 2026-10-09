@@ -37,6 +37,7 @@ locals {
   organization_service_account = data.terraform_remote_state.bootstrap.outputs.organization_step_terraform_service_account_email
   networks_service_account     = data.terraform_remote_state.bootstrap.outputs.networks_step_terraform_service_account_email
   projects_service_account     = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+  available_universe_services  = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
   # Use try() to gracefully handle single-environment deployments (e.g. production_only_deploy from helper),
   # where development and nonproduction remote states do not exist in GCS.
   development_folder_name   = try(data.terraform_remote_state.env_development.outputs.env_folder, "")
@@ -48,8 +49,9 @@ data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/bootstrap/state"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/bootstrap/state"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -57,8 +59,9 @@ data "terraform_remote_state" "org" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/org/state"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/org/state"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -66,8 +69,9 @@ data "terraform_remote_state" "env_development" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/development"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/environments/development"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -75,8 +79,9 @@ data "terraform_remote_state" "env_nonproduction" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/nonproduction"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/environments/nonproduction"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -84,7 +89,8 @@ data "terraform_remote_state" "env_production" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/production"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/environments/production"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }

@@ -33,12 +33,14 @@ data "google_netblock_ip_ranges" "iap_forwarders" {
 module "peering_project" {
   source = "../single_project"
 
-  org_id          = local.org_id
-  billing_account = local.billing_account
-  folder_id       = google_folder.env_business_unit.name
-  environment     = var.env
-  project_budget  = var.project_budget
-  project_prefix  = local.project_prefix
+  org_id                   = local.org_id
+  billing_account          = local.billing_account
+  folder_id                = google_folder.env_business_unit.name
+  environment              = var.env
+  project_budget           = var.project_budget
+  project_prefix           = local.project_prefix
+  universe_prefix          = local.universe_prefix
+  billing_budget_available = local.available_universe_services.billing_budget
 
   project_deletion_policy = var.project_deletion_policy
 

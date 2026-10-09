@@ -49,8 +49,10 @@ const (
 	BuildTypeCBCSR            = "cb"
 	BuildTypeGiHub            = "github"
 	BuildTypeGitLab           = "gitlab"
+	BuildTypeLocal            = "local"
 	CloudBuildProjectIdOutput = "cloudbuild_project_id"
 	CICDProjectIdOutput       = "cicd_project_id"
+	DefaultUniverseDomain     = "googleapis.com"
 )
 
 type CommonConf struct {
@@ -64,6 +66,10 @@ type CommonConf struct {
 	Logger               *logger.Logger
 	GitToken             string
 	ProductionOnlyDeploy bool
+}
+
+func (c *CommonConf) IsLocalBuild() bool {
+	return c.BuildType == BuildTypeLocal
 }
 
 type StageConf struct {
@@ -172,53 +178,80 @@ type GitLabRepos struct {
 	CICDRunner   string `cty:"cicd_runner"`
 }
 
+type AvailableUniverseServices struct {
+	BillingBudget     *bool `cty:"billing_budget"`
+	SecurityCenter    *bool `cty:"security_center"`
+	ServiceNetworking *bool `cty:"service_networking"`
+	StorageApi        *bool `cty:"storage_api"`
+	Admin             *bool `cty:"admin"`
+	AppEngine         *bool `cty:"appengine"`
+	AssuredWorkloads  *bool `cty:"assured_workloads"`
+	CloudBuild        *bool `cty:"cloud_build"`
+	CloudAsset        *bool `cty:"cloud_asset"`
+	SecretManager     *bool `cty:"secret_manager"`
+	MultiRegion       *bool `cty:"multi_region"`
+}
+
 // GlobalTFVars contains all the configuration for the deploy
 type GlobalTFVars struct {
-	OrgID                                 string          `hcl:"org_id"`
-	BillingAccount                        string          `hcl:"billing_account"`
-	DefaultRegion                         string          `hcl:"default_region"`
-	DefaultRegion2                        string          `hcl:"default_region_2"`
-	DefaultRegionGCS                      string          `hcl:"default_region_gcs"`
-	DefaultRegionKMS                      string          `hcl:"default_region_kms"`
-	ParentFolder                          *string         `hcl:"parent_folder"`
-	Domain                                string          `hcl:"domain"`
-	DomainsToAllow                        []string        `hcl:"domains_to_allow"`
-	RequiredEgressRulesAppInfraDryRun     *bool           `hcl:"required_egress_rules_app_infra_dry_run"`
-	RequiredIngressRulesAppInfraDryRun    *bool           `hcl:"required_ingress_rules_app_infra_dry_run"`
-	EssentialContactsDomains              []string        `hcl:"essential_contacts_domains_to_allow"`
-	PerimeterAdditionalMembers            []string        `hcl:"perimeter_additional_members"`
-	TargetNameServerAddresses             []ServerAddress `hcl:"target_name_server_addresses"`
-	SccNotificationName                   string          `hcl:"scc_notification_name"`
-	ProjectPrefix                         *string         `hcl:"project_prefix"`
-	FolderPrefix                          *string         `hcl:"folder_prefix"`
-	BucketForceDestroy                    *bool           `hcl:"bucket_force_destroy"`
-	BucketTfstateKmsForceDestroy          *bool           `hcl:"bucket_tfstate_kms_force_destroy"`
-	WorkflowDeletionProtection            *bool           `hcl:"workflow_deletion_protection"`
-	AuditLogsTableDeleteContentsOnDestroy *bool           `hcl:"audit_logs_table_delete_contents_on_destroy"`
-	EnableSccResourcesInTerraform         *bool           `hcl:"enable_scc_resources_in_terraform"`
-	LogExportStorageForceDestroy          *bool           `hcl:"log_export_storage_force_destroy"`
-	LogExportStorageLocation              string          `hcl:"log_export_storage_location"`
-	BillingExportDatasetLocation          string          `hcl:"billing_export_dataset_location"`
-	EnableHubAndSpoke                     bool            `hcl:"enable_hub_and_spoke"`
-	EnableHubAndSpokeTransitivity         bool            `hcl:"enable_hub_and_spoke_transitivity"`
-	CreateUniqueTagKey                    bool            `hcl:"create_unique_tag_key"`
-	LocationKMS                           string          `hcl:"location_kms"`
-	LocationGCS                           string          `hcl:"location_gcs"`
-	CodeCheckoutPath                      string          `hcl:"code_checkout_path"`
-	FoundationCodePath                    string          `hcl:"foundation_code_path"`
-	ValidatorProjectID                    *string         `hcl:"validator_project_id"`
-	Groups                                Groups          `hcl:"groups"`
-	InitialGroupConfig                    *string         `hcl:"initial_group_config"`
-	FolderDeletionProtection              *bool           `hcl:"folder_deletion_protection"`
-	ProjectDeletionPolicy                 string          `hcl:"project_deletion_policy"`
-	BuildType                             string          `hcl:"build_type"`
-	GitRepos                              *GitRepos       `hcl:"git_repos"`
-	ProductionOnlyDeploy                  *bool           `hcl:"production_only_deploy,optional"`
+	OrgID                                 string                     `hcl:"org_id"`
+	BillingAccount                        string                     `hcl:"billing_account"`
+	DefaultRegion                         string                     `hcl:"default_region"`
+	DefaultRegion2                        string                     `hcl:"default_region_2"`
+	DefaultRegionGCS                      string                     `hcl:"default_region_gcs"`
+	DefaultRegionKMS                      string                     `hcl:"default_region_kms"`
+	ParentFolder                          *string                    `hcl:"parent_folder"`
+	Domain                                string                     `hcl:"domain"`
+	DomainsToAllow                        *[]string                  `hcl:"domains_to_allow"`
+	PrincipalSetOrgIds                    *[]string                  `hcl:"principal_set_org_ids"`
+	RequiredEgressRulesAppInfraDryRun     *bool                      `hcl:"required_egress_rules_app_infra_dry_run"`
+	RequiredIngressRulesAppInfraDryRun    *bool                      `hcl:"required_ingress_rules_app_infra_dry_run"`
+	EssentialContactsDomains              []string                   `hcl:"essential_contacts_domains_to_allow"`
+	PerimeterAdditionalMembers            []string                   `hcl:"perimeter_additional_members"`
+	TargetNameServerAddresses             []ServerAddress            `hcl:"target_name_server_addresses"`
+	SccNotificationName                   string                     `hcl:"scc_notification_name"`
+	ProjectPrefix                         *string                    `hcl:"project_prefix"`
+	FolderPrefix                          *string                    `hcl:"folder_prefix"`
+	BucketForceDestroy                    *bool                      `hcl:"bucket_force_destroy"`
+	BucketTfstateKmsForceDestroy          *bool                      `hcl:"bucket_tfstate_kms_force_destroy"`
+	WorkflowDeletionProtection            *bool                      `hcl:"workflow_deletion_protection"`
+	AuditLogsTableDeleteContentsOnDestroy *bool                      `hcl:"audit_logs_table_delete_contents_on_destroy"`
+	EnableSccResourcesInTerraform         *bool                      `hcl:"enable_scc_resources_in_terraform"`
+	LogExportStorageForceDestroy          *bool                      `hcl:"log_export_storage_force_destroy"`
+	LogExportStorageLocation              string                     `hcl:"log_export_storage_location"`
+	BillingExportDatasetLocation          string                     `hcl:"billing_export_dataset_location"`
+	EnableHubAndSpoke                     bool                       `hcl:"enable_hub_and_spoke"`
+	EnableHubAndSpokeTransitivity         bool                       `hcl:"enable_hub_and_spoke_transitivity"`
+	CreateUniqueTagKey                    bool                       `hcl:"create_unique_tag_key"`
+	LocationKMS                           string                     `hcl:"location_kms"`
+	LocationGCS                           string                     `hcl:"location_gcs"`
+	CodeCheckoutPath                      string                     `hcl:"code_checkout_path"`
+	FoundationCodePath                    string                     `hcl:"foundation_code_path"`
+	ValidatorProjectID                    *string                    `hcl:"validator_project_id"`
+	Groups                                Groups                     `hcl:"groups"`
+	InitialGroupConfig                    *string                    `hcl:"initial_group_config"`
+	FolderDeletionProtection              *bool                      `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy                 string                     `hcl:"project_deletion_policy"`
+	BuildType                             string                     `hcl:"build_type"`
+	GitRepos                              *GitRepos                  `hcl:"git_repos"`
+	ProductionOnlyDeploy                  *bool                      `hcl:"production_only_deploy,optional"`
+	UniversePrefix                        *string                    `hcl:"universe_prefix"`
+	UniverseDomain                        *string                    `hcl:"universe_domain"`
+	PkgDevDomain                          *string                    `hcl:"pkg_dev_domain"`
+	EnableGcrDns                          *bool                      `hcl:"enable_gcr_dns"`
+	AllowAdditionalMemberTypes            *bool                      `hcl:"allow_additional_member_types"`
+	AvailableUniverseServices             *AvailableUniverseServices `hcl:"available_universe_services"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
 func (g GlobalTFVars) HasValidatorProj() bool {
 	return g.ValidatorProjectID != nil && *g.ValidatorProjectID != "" && *g.ValidatorProjectID != "EXISTING_PROJECT_ID"
+}
+func (g GlobalTFVars) IsDefaultUniverse() bool {
+	if g.UniverseDomain == nil || *g.UniverseDomain == "" {
+		return true
+	}
+	return *g.UniverseDomain == DefaultUniverseDomain
 }
 
 // IsProdOnly checks if production only deploy is enabled
@@ -252,30 +285,34 @@ func (g GlobalTFVars) CheckString(s string) {
 }
 
 type BootstrapTfvars struct {
-	OrgID                        string       `hcl:"org_id"`
-	BillingAccount               string       `hcl:"billing_account"`
-	DefaultRegion                string       `hcl:"default_region"`
-	DefaultRegion2               string       `hcl:"default_region_2"`
-	DefaultRegionGCS             string       `hcl:"default_region_gcs"`
-	DefaultRegionKMS             string       `hcl:"default_region_kms"`
-	ParentFolder                 *string      `hcl:"parent_folder"`
-	ProjectPrefix                *string      `hcl:"project_prefix"`
-	FolderPrefix                 *string      `hcl:"folder_prefix"`
-	BucketForceDestroy           *bool        `hcl:"bucket_force_destroy"`
-	BucketTfstateKmsForceDestroy *bool        `hcl:"bucket_tfstate_kms_force_destroy"`
-	WorkflowDeletionProtection   *bool        `hcl:"workflow_deletion_protection"`
-	Groups                       Groups       `hcl:"groups"`
-	InitialGroupConfig           *string      `hcl:"initial_group_config"`
-	FolderDeletionProtection     *bool        `hcl:"folder_deletion_protection"`
-	ProjectDeletionPolicy        string       `hcl:"project_deletion_policy"`
-	GitHubRepos                  *GitHubRepos `hcl:"gh_repos"`
-	GitLabRepos                  *GitLabRepos `hcl:"gl_repos"`
+	OrgID                        string                     `hcl:"org_id"`
+	BillingAccount               string                     `hcl:"billing_account"`
+	DefaultRegion                string                     `hcl:"default_region"`
+	DefaultRegion2               string                     `hcl:"default_region_2"`
+	DefaultRegionGCS             string                     `hcl:"default_region_gcs"`
+	DefaultRegionKMS             string                     `hcl:"default_region_kms"`
+	ParentFolder                 *string                    `hcl:"parent_folder"`
+	ProjectPrefix                *string                    `hcl:"project_prefix"`
+	FolderPrefix                 *string                    `hcl:"folder_prefix"`
+	BucketForceDestroy           *bool                      `hcl:"bucket_force_destroy"`
+	BucketTfstateKmsForceDestroy *bool                      `hcl:"bucket_tfstate_kms_force_destroy"`
+	WorkflowDeletionProtection   *bool                      `hcl:"workflow_deletion_protection"`
+	Groups                       Groups                     `hcl:"groups"`
+	InitialGroupConfig           *string                    `hcl:"initial_group_config"`
+	FolderDeletionProtection     *bool                      `hcl:"folder_deletion_protection"`
+	ProjectDeletionPolicy        string                     `hcl:"project_deletion_policy"`
+	GitHubRepos                  *GitHubRepos               `hcl:"gh_repos"`
+	GitLabRepos                  *GitLabRepos               `hcl:"gl_repos"`
+	UniversePrefix               *string                    `hcl:"universe_prefix"`
+	UniverseDomain               *string                    `hcl:"universe_domain"`
+	AvailableUniverseServices    *AvailableUniverseServices `hcl:"available_universe_services"`
 }
 
 type OrgTfvars struct {
 	AccessContextManagerPolicyID          string    `hcl:"access_context_manager_policy_id"`
 	PerimeterAdditionalMembers            []string  `hcl:"perimeter_additional_members"`
-	DomainsToAllow                        []string  `hcl:"domains_to_allow"`
+	DomainsToAllow                        *[]string `hcl:"domains_to_allow"`
+	PrincipalSetOrgIds                    *[]string `hcl:"principal_set_org_ids"`
 	EssentialContactsDomains              []string  `hcl:"essential_contacts_domains_to_allow"`
 	RequiredEgressRulesAppInfraDryRun     *bool     `hcl:"required_egress_rules_app_infra_dry_run"`
 	RequiredIngressRulesAppInfraDryRun    *bool     `hcl:"required_ingress_rules_app_infra_dry_run"`
@@ -292,6 +329,7 @@ type OrgTfvars struct {
 	GcpGroups                             GcpGroups `hcl:"gcp_groups"`
 	FolderDeletionProtection              *bool     `hcl:"folder_deletion_protection"`
 	ProjectDeletionPolicy                 string    `hcl:"project_deletion_policy"`
+	AllowAdditionalMemberTypes            *bool     `hcl:"allow_additional_member_types"`
 	ProductionOnlyDeploy                  *bool     `hcl:"production_only_deploy"`
 }
 
@@ -335,6 +373,12 @@ type AppInfraCommonTfvars struct {
 	InstanceRegion    string `hcl:"instance_region"`
 	RemoteStateBucket string `hcl:"remote_state_bucket"`
 	ImageDigest       string `hcl:"confidential_image_digest"`
+}
+
+type UniverseTfvars struct {
+	UniverseDomain *string `hcl:"universe_domain"`
+	PkgDevDomain   *string `hcl:"pkg_dev_domain"`
+	EnableGcrDns   *bool   `hcl:"enable_gcr_dns"`
 }
 
 func GetBootstrapStepOutputs(t testing.TB, foundationPath string, buildType string) BootstrapOutputs {

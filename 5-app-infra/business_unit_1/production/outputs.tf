@@ -73,7 +73,7 @@ output "workload_identity_pool_id" {
 }
 
 output "confidential_instances_names" {
-  description = "List of names for confidential compute instances"
+  description = "List of names for confidential compute instances."
   value       = try([for u in module.confidential_space[0].instances_details : u.name], [])
   sensitive   = true
 }

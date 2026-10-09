@@ -35,8 +35,27 @@ folder_deletion_protection = true
 # This is useful for testing or demonstration purposes.
 # production_only_deploy = false
 
-// build type to use. One of "cb", "github", "gitlab"
+// build type to use. One of "cb", "github", "gitlab", "local"
 build_type = "cb"
+
+// Google universe configuration
+universe_prefix = ""
+universe_domain = "googleapis.com"
+pkg_dev_domain  = "pkg.dev"
+enable_gcr_dns  = true
+available_universe_services = {
+  billing_budget     = "true"
+  security_center    = "true"
+  service_networking = "true"
+  storage_api        = "true"
+  admin              = "true"
+  appengine          = "true"
+  assured_workloads  = "true"
+  cloud_build        = "true"
+  cloud_asset        = "true"
+  secret_manager     = "true"
+  multi_region       = "true"
+}
 
 // 0-bootstrap inputs
 // https://github.com/terraform-google-modules/terraform-example-foundation/blob/master/0-bootstrap/README.md#inputs
@@ -76,17 +95,17 @@ groups = {
   create_optional_groups = false # Change to true to create the optional_groups
   billing_project        = null  # Fill to create required or optional groups
   required_groups = {
-    group_org_admins           = "REPLACE_ME" # "gcp-organization-admins@example.com"
-    group_billing_admins       = "REPLACE_ME" # "gcp-billing-admins@example.com"
-    billing_data_users         = "REPLACE_ME" #"billing_data_users_local_test@example.com"
-    audit_data_users           = "REPLACE_ME" #"audit_data_users_local_test@example.com"
+    group_org_admins     = "REPLACE_ME" # "gcp-organization-admins@example.com"
+    group_billing_admins = "REPLACE_ME" # "gcp-billing-admins@example.com"
+    billing_data_users   = "REPLACE_ME" #"billing_data_users_local_test@example.com"
+    audit_data_users     = "REPLACE_ME" #"audit_data_users_local_test@example.com"
   }
   optional_groups = {
-    gcp_security_reviewer      = "" #"gcp_security_reviewer_local_test@example.com"
-    gcp_network_viewer         = "" #"gcp_network_viewer_local_test@example.com"
-    gcp_scc_admin              = "" #"gcp_scc_admin_local_test@example.com"
-    gcp_global_secrets_admin   = "" #"gcp_global_secrets_admin_local_test@example.com"
-    gcp_kms_admin              = "" #"gcp_kms_admin_local_test@example.com"
+    gcp_security_reviewer    = "" #"gcp_security_reviewer_local_test@example.com"
+    gcp_network_viewer       = "" #"gcp_network_viewer_local_test@example.com"
+    gcp_scc_admin            = "" #"gcp_scc_admin_local_test@example.com"
+    gcp_global_secrets_admin = "" #"gcp_global_secrets_admin_local_test@example.com"
+    gcp_kms_admin            = "" #"gcp_kms_admin_local_test@example.com"
   }
 }
 
@@ -120,6 +139,8 @@ groups = {
 
 domains_to_allow                    = ["example.com"] # Must include the domain of the organization you are deploying the foundation.
 essential_contacts_domains_to_allow = ["@example.com"]
+// Uncomment to use Organization Principal Sets in the Domain Restricted Sharing Organization Policy
+//principal_set_org_ids             = ["000000000000"]
 
 scc_notification_name                       = "scc-notify"
 enable_scc_resources_in_terraform           = false # See https://cloud.google.com/security-command-center/docs/activate-scc-overview before enabling this feature
@@ -157,7 +178,8 @@ domain = "example.com." # The DNS name of peering managed zone. Must end with a 
 // Add your email in the perimeter_additional_members list.
 // You must be in this list to be able to view/access resources in the project protected by the VPC service controls.
 
-perimeter_additional_members = ["user:YOUR-USER-EMAIL@example.com"]
+perimeter_additional_members  = ["user:YOUR-USER-EMAIL@example.com"]
+allow_additional_member_types = false // enable to use 'group:', 'principal:', or 'principalSet:'. Identities will be added as an ingress rule to the perimeter
 
 enable_hub_and_spoke_transitivity = false
 

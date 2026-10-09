@@ -26,8 +26,10 @@ import (
 )
 
 const (
-	replaceME     = "REPLACE_ME"
-	exampleDotCom = "example.com"
+	replaceME             = "REPLACE_ME"
+	exampleDotCom         = "example.com"
+	principalSetOrg       = "000000000000"
+	defaultUniverseDomain = "googleapis.com"
 )
 
 // ValidateDirectories checks if the required directories exist
@@ -88,12 +90,29 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 	if g.Domain != "" && g.Domain[len(g.Domain)-1:] != "." {
 		fmt.Println("# Value for input 'domain' must end with '.'")
 	}
-	for _, d := range g.DomainsToAllow {
-		if strings.Contains(d, exampleDotCom) {
-			fmt.Println("# Replace value 'example.com' for input 'domains_to_allow'")
+	if g.DomainsToAllow != nil {
+		for _, d := range *g.DomainsToAllow {
+			if strings.Contains(d, exampleDotCom) {
+				fmt.Println("# Replace value 'example.com' for input 'domains_to_allow'")
+			}
 		}
 	}
-	for _, e := range g.EssentialContactsDomains {
+
+	if g.PrincipalSetOrgIds != nil {
+		for _, p := range *g.PrincipalSetOrgIds {
+			if strings.Contains(p, principalSetOrg) {
+				fmt.Println("# Replace value '000000000000' for input 'principal_set_org_ids'")
+			}
+		}
+	}
+
+	domainsHasValues := g.DomainsToAllow != nil && len(*g.DomainsToAllow) > 0
+	principalsHaveValues := g.PrincipalSetOrgIds != nil && len(*g.PrincipalSetOrgIds) > 0
+	if !domainsHasValues && !principalsHaveValues {
+		fmt.Println("# At least one of 'domains_to_allow' or 'principal_set_org_ids' must be provided and not empty")
+	}
+
+	for _, e := range g.EssentialContactsDomains { // TODO use check of available services
 		if strings.Contains(e, exampleDotCom) {
 			fmt.Println("# Replace value 'example.com' for input 'essential_contacts_domains_to_allow'")
 		}
@@ -101,25 +120,57 @@ func ValidateBasicFields(t testing.TB, g GlobalTFVars) {
 			fmt.Printf("# Essential contacts must start with '@': '%s'\n", e)
 		}
 	}
+
+	allowAdditionalTypes := g.AllowAdditionalMemberTypes != nil && *g.AllowAdditionalMemberTypes
 	for _, p := range g.PerimeterAdditionalMembers {
 		if strings.Contains(p, exampleDotCom) {
 			fmt.Printf("# Replace value for input 'perimeter_additional_members': '%s'\n", p)
 		}
-		if strings.Contains(p, "group:") {
-			fmt.Printf("# VPC Service Controls does not allow groups in the perimeter: '%s'\n", p)
+
+		hasRestrictedPrefix := strings.HasPrefix(p, "group:") ||
+			strings.HasPrefix(p, "principal:") ||
+			strings.HasPrefix(p, "principalSet:")
+
+		if hasRestrictedPrefix && !allowAdditionalTypes {
+			fmt.Printf("# VPC Service Controls does not allow 'group:', 'principal:', or 'principalSet:' in the perimeter unless 'allow_additional_member_types' is true: '%s'\n", p)
+		}
+	}
+
+	if g.UniverseDomain != nil && *g.UniverseDomain != defaultUniverseDomain {
+		if g.UniversePrefix == nil || *g.UniversePrefix == "" {
+			fmt.Println("# Input 'universe_prefix' cannot be empty when 'universe_domain' is not 'googleapis.com'")
+		}
+
+		if g.AllowAdditionalMemberTypes == nil || !*g.AllowAdditionalMemberTypes {
+			fmt.Println("# Input 'allow_additional_member_types' must be set to 'true' when 'universe_domain' is not 'googleapis.com'")
+		}
+
+		if g.BuildType != "local" {
+			fmt.Printf("# Input 'build_type' must be 'local' when 'universe_domain' is not 'googleapis.com' (currently set to: '%s')\n", g.BuildType)
+		}
+	}
+
+	if g.UniversePrefix != nil && *g.UniversePrefix != "" {
+		if g.UniverseDomain == nil || *g.UniverseDomain == defaultUniverseDomain {
+			fmt.Println("# Input 'universe_domain' cannot be 'googleapis.com' (or omitted) when 'universe_prefix' is provided")
 		}
 	}
 
 	// Check IAM permissions for the current principal (ADC) using TestIamPermissions and print any missing permissions.
-	err := utils.ValidateIAMPermissions(utils.IAMValidateParams{
-		OrgID:              g.OrgID,
-		FoundationCodePath: g.FoundationCodePath,
-		ParentFolder:       g.ParentFolder,
-		BillingAccount:     g.BillingAccount,
-	}, false)
-	if err != nil {
-		fmt.Printf("# Error validating IAM permissions: %v\n", err)
+	// Skip if not in the default universe
+	if g.IsDefaultUniverse() {
+		err := utils.ValidateIAMPermissions(utils.IAMValidateParams{
+			OrgID:              g.OrgID,
+			FoundationCodePath: g.FoundationCodePath,
+			ParentFolder:       g.ParentFolder,
+			BillingAccount:     g.BillingAccount,
+			UniverseDomain:     *g.UniverseDomain,
+		}, false)
+		if err != nil {
+			fmt.Printf("# Error validating IAM permissions: %v\n", err)
+		}
 	}
+
 }
 
 // ValidateDestroyFlags checks if the flags to allow the destruction of the infrastructure are enabled

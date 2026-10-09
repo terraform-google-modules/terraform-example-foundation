@@ -35,8 +35,9 @@ data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/bootstrap/state"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/bootstrap/state"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -44,8 +45,9 @@ data "terraform_remote_state" "org" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/org/state"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/org/state"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -53,8 +55,9 @@ data "terraform_remote_state" "env_development" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/development"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/environments/development"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -62,8 +65,9 @@ data "terraform_remote_state" "env_nonproduction" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/nonproduction"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/environments/nonproduction"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -71,7 +75,8 @@ data "terraform_remote_state" "env_production" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/production"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/environments/production"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }

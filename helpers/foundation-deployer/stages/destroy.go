@@ -22,6 +22,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/mitchellh/go-testing-interface"
 
+	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/gcp"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/steps"
 	"github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer/utils"
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
@@ -144,10 +145,14 @@ func DestroyProjectsStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 	return destroyStage(t, stageConf, s, c, emptyEnvVars)
 }
 
-func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOutputs, c CommonConf) error {
+func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOutputs, projectsSA string, c CommonConf) error {
+	stageSA := outputs.TerraformSA
+	if c.BuildType == BuildTypeLocal {
+		stageSA = projectsSA
+	}
 	stageConf := StageConf{
 		Stage:         AppInfraRepo,
-		StageSA:       outputs.TerraformSA,
+		StageSA:       stageSA,
 		CICDProject:   outputs.InfraPipeProj,
 		Step:          AppInfraStep,
 		Repo:          AppInfraRepo,
@@ -223,27 +228,23 @@ func destroyStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf, envVa
 }
 
 func destroyEnv(t testing.TB, options *terraform.Options, serviceAccount string) error {
-	var err error
 
 	if serviceAccount != "" {
-		err = os.Setenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", serviceAccount)
-		if err != nil {
+		accessToken := gcp.NewGCP().GetServiceAccountAccessToken(t, serviceAccount)
+		if err := os.Setenv("GOOGLE_OAUTH_ACCESS_TOKEN", accessToken); err != nil {
 			return err
 		}
 	}
 
-	_, err = terraform.InitE(t, options)
-	if err != nil {
+	if _, err := terraform.InitE(t, options); err != nil {
 		return err
 	}
-	_, err = terraform.DestroyE(t, options)
-	if err != nil {
+	if _, err := terraform.DestroyE(t, options); err != nil {
 		return err
 	}
 
 	if serviceAccount != "" {
-		err = os.Unsetenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT")
-		if err != nil {
+		if err := os.Unsetenv("GOOGLE_OAUTH_ACCESS_TOKEN"); err != nil {
 			return err
 		}
 	}

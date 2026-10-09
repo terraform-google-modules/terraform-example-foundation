@@ -25,6 +25,20 @@ type Executor interface {
 	WaitBuildSuccess(t testing.TB, commitSha, failureMsg string) error
 }
 
+type EmptyExecutor struct {
+	repo string
+}
+
+func (e *EmptyExecutor) WaitBuildSuccess(t testing.TB, commitSha, failureMsg string) error {
+	return nil
+}
+
+func NewEmptyExecutor(repo string) *EmptyExecutor {
+	return &EmptyExecutor{
+		repo: repo,
+	}
+}
+
 type GCPExecutor struct {
 	executor gcp.GCP
 	project  string

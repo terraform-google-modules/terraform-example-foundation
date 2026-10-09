@@ -27,6 +27,8 @@ locals {
   cloud_build_private_worker_pool_id = try(data.tfe_outputs.bootstrap.nonsensitive_values.cloud_build_private_worker_pool_id, "")
   cloud_builder_artifact_repo        = try(data.tfe_outputs.bootstrap.nonsensitive_values.cloud_builder_artifact_repo, "")
   enable_cloudbuild_deploy           = local.cloud_builder_artifact_repo != ""
+  universe_prefix                    = data.terraform_remote_state.bootstrap.outputs.common_config.universe_prefix
+  available_universe_services        = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
 }
 
 data "tfe_outputs" "bootstrap" {

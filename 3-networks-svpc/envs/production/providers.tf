@@ -19,8 +19,10 @@
  *****************************************/
 provider "google" {
   request_timeout = "5m"
+  universe_domain = var.universe_domain
 }
 
 provider "google-beta" {
   request_timeout = "5m"
+  universe_domain = var.universe_domain
 }

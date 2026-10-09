@@ -18,6 +18,16 @@ locals {
   business_unit             = "business_unit_1"
   environment               = "development"
   enable_confidential_space = try(data.terraform_remote_state.projects_env.outputs.confidential_space_project, "") != ""
+
+  machine_config = var.universe_domain == "googleapis.com" ? {
+    machine_type = "f1-micro"
+    disk_type    = "pd-standard"
+    source_image = ""
+    } : {
+    machine_type = "c3-standard-4"
+    disk_type    = "hyperdisk-balanced"
+    source_image = "projects/eu0-system:debian-cloud/global/images/debian-12--tpc-20260413-2332"
+  }
 }
 
 module "gce_instance" {
@@ -28,6 +38,10 @@ module "gce_instance" {
   project_suffix      = "sample-svpc"
   region              = coalesce(var.instance_region, local.default_region)
   remote_state_bucket = var.remote_state_bucket
+  universe_domain     = var.universe_domain
+  machine_type        = local.machine_config["machine_type"]
+  disk_type           = local.machine_config["disk_type"]
+  source_image        = local.machine_config["source_image"]
 }
 
 module "peering_gce_instance" {
@@ -38,6 +52,10 @@ module "peering_gce_instance" {
   project_suffix      = "sample-peering"
   region              = coalesce(var.instance_region, local.default_region)
   remote_state_bucket = var.remote_state_bucket
+  universe_domain     = var.universe_domain
+  machine_type        = local.machine_config["machine_type"]
+  disk_type           = local.machine_config["disk_type"]
+  source_image        = local.machine_config["source_image"]
 }
 
 module "confidential_space" {
@@ -51,4 +69,5 @@ module "confidential_space" {
   region                                   = coalesce(var.instance_region, local.default_region)
   remote_state_bucket                      = var.remote_state_bucket
   workload_pool_propagation_sleep_duration = var.workload_pool_propagation_sleep_duration
+  universe_domain                          = var.universe_domain
 }

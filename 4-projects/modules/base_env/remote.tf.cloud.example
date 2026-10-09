@@ -21,12 +21,13 @@ locals {
   projects_backend_bucket             = ""
   perimeter_name                      = data.tfe_outputs.network_env.nonsensitive_values.service_perimeter_name
   shared_vpc_host_project_id          = data.tfe_outputs.network_env.nonsensitive_values.shared_vpc_host_project_id
-  shared_vpc_host_project_id          = data.tfe_outputs.network_env.nonsensitive_values.shared_vpc_host_project_id
   subnets_self_links                  = data.tfe_outputs.network_env.nonsensitive_values.subnets_self_links
   access_context_manager_policy_id    = data.tfe_outputs.network_env.nonsensitive_values.access_context_manager_policy_id
   env_folder_name                     = data.tfe_outputs.environments_env.nonsensitive_values.env_folder
   app_infra_pipeline_service_accounts = data.tfe_outputs.business_unit_shared.nonsensitive_values.terraform_service_accounts
   enable_cloudbuild_deploy            = data.tfe_outputs.business_unit_shared.nonsensitive_values.enable_cloudbuild_deploy
+  universe_prefix                     = data.terraform_remote_state.bootstrap.outputs.common_config.universe_prefix
+  available_universe_services         = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
 }
 
 data "tfe_outputs" "bootstrap" {

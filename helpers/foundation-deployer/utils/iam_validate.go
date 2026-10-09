@@ -26,6 +26,7 @@ import (
 	billing "cloud.google.com/go/billing/apiv1"
 	iampb "cloud.google.com/go/iam/apiv1/iampb"
 	resourcemanager "cloud.google.com/go/resourcemanager/apiv3"
+	"google.golang.org/api/option"
 	"gopkg.in/yaml.v3"
 )
 
@@ -58,6 +59,7 @@ type IAMValidateParams struct {
 	IAMPermissionsYAMLPath *string
 	ParentFolder           *string
 	BillingAccount         string
+	UniverseDomain         string
 }
 
 // ValidateIAMPermissions runs TestIamPermissions checks against organization, folder, and billing resources for the ADC principal.
@@ -93,26 +95,31 @@ func ValidateIAMPermissions(p IAMValidateParams, verbose bool) error {
 		fmt.Printf("# note: skipped %d permissions not valid for org TestIamPermissions (validated via other checks): %s\n", len(perms.Skipped), strings.Join(perms.Skipped, ", "))
 	}
 
+	var opts []option.ClientOption
+	if p.UniverseDomain != "" {
+		opts = append(opts, option.WithUniverseDomain(p.UniverseDomain))
+	}
+
 	orgRes := "organizations/" + p.OrgID
-	if err := checkOrgPermissions(ctx, orgRes, perms.Org, verbose); err != nil {
+	if err := checkOrgPermissions(ctx, orgRes, perms.Org, verbose, opts); err != nil {
 		return err
 	}
 
 	if checkFolder {
 		folderRes := "folders/" + folderID
-		if err := checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, perms.ProjectParent, verbose); err != nil {
+		if err := checkResourcePermissions(ctx, "FOLDER-PROJECTS", folderRes, perms.ProjectParent, verbose, opts); err != nil {
 			return err
 		}
-		if err := checkFolderPermissions(ctx, folderRes, perms.Folder, verbose); err != nil {
+		if err := checkFolderPermissions(ctx, folderRes, perms.Folder, verbose, opts); err != nil {
 			return err
 		}
 	} else {
-		if err := checkResourcePermissions(ctx, "ORG-PROJECTS", orgRes, perms.ProjectParent, verbose); err != nil {
+		if err := checkResourcePermissions(ctx, "ORG-PROJECTS", orgRes, perms.ProjectParent, verbose, opts); err != nil {
 			return err
 		}
 	}
 
-	if err := checkBillingPermissions(ctx, "billingAccounts/"+p.BillingAccount, perms.Billing, verbose); err != nil {
+	if err := checkBillingPermissions(ctx, "billingAccounts/"+p.BillingAccount, perms.Billing, verbose, opts); err != nil {
 		return err
 	}
 
@@ -305,7 +312,7 @@ func resolvePermissionsYAMLPath(p IAMValidateParams) (string, error) {
 	return absPath, nil
 }
 
-func checkResourcePermissions(ctx context.Context, scope, resource string, permissions []string, verbose bool) error {
+func checkResourcePermissions(ctx context.Context, scope, resource string, permissions []string, verbose bool, opts []option.ClientOption) error {
 	var (
 		resp *iampb.TestIamPermissionsResponse
 		err  error
@@ -318,7 +325,7 @@ func checkResourcePermissions(ctx context.Context, scope, resource string, permi
 
 	switch {
 	case strings.HasPrefix(resource, "folders/"):
-		client, cErr := resourcemanager.NewFoldersClient(ctx)
+		client, cErr := resourcemanager.NewFoldersClient(ctx, opts...)
 		if cErr != nil {
 			return fmt.Errorf("error creating folders client: %w", cErr)
 		}
@@ -329,7 +336,7 @@ func checkResourcePermissions(ctx context.Context, scope, resource string, permi
 		}()
 		resp, err = client.TestIamPermissions(ctx, req)
 	case strings.HasPrefix(resource, "organizations/"):
-		client, cErr := resourcemanager.NewOrganizationsClient(ctx)
+		client, cErr := resourcemanager.NewOrganizationsClient(ctx, opts...)
 		if cErr != nil {
 			return fmt.Errorf("error creating organizations client: %w", cErr)
 		}
@@ -350,8 +357,8 @@ func checkResourcePermissions(ctx context.Context, scope, resource string, permi
 	return nil
 }
 
-func checkOrgPermissions(ctx context.Context, resource string, permissions []string, verbose bool) error {
-	client, err := resourcemanager.NewOrganizationsClient(ctx)
+func checkOrgPermissions(ctx context.Context, resource string, permissions []string, verbose bool, opts []option.ClientOption) error {
+	client, err := resourcemanager.NewOrganizationsClient(ctx, opts...)
 	if err != nil {
 		return fmt.Errorf("error creating org client: %w", err)
 	}
@@ -372,8 +379,8 @@ func checkOrgPermissions(ctx context.Context, resource string, permissions []str
 	return nil
 }
 
-func checkFolderPermissions(ctx context.Context, resource string, permissions []string, verbose bool) error {
-	client, err := resourcemanager.NewFoldersClient(ctx)
+func checkFolderPermissions(ctx context.Context, resource string, permissions []string, verbose bool, opts []option.ClientOption) error {
+	client, err := resourcemanager.NewFoldersClient(ctx, opts...)
 	if err != nil {
 		return fmt.Errorf("error creating folder client: %w", err)
 	}
@@ -394,8 +401,8 @@ func checkFolderPermissions(ctx context.Context, resource string, permissions []
 	return nil
 }
 
-func checkBillingPermissions(ctx context.Context, resource string, permissions []string, verbose bool) error {
-	client, err := billing.NewCloudBillingClient(ctx)
+func checkBillingPermissions(ctx context.Context, resource string, permissions []string, verbose bool, opts []option.ClientOption) error {
+	client, err := billing.NewCloudBillingClient(ctx, opts...)
 	if err != nil {
 		return fmt.Errorf("error creating billing client: %w", err)
 	}

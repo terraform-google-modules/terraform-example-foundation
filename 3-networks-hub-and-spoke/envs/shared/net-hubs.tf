@@ -27,7 +27,99 @@ locals {
     (local.default_region1) = "10.26.0.0/23"
     (local.default_region2) = "10.27.0.0/23"
   }
+
+  subnet_single_region = [
+    {
+      subnet_name                      = "sb-c-svpc-hub-${local.default_region1}"
+      subnet_ip                        = local.subnet_primary_ranges[local.default_region1]
+      subnet_region                    = local.default_region1
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = var.vpc_flow_logs.enable_logging
+      subnet_flow_logs_interval        = var.vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
+      description                      = "Network hub subnet for ${local.default_region1}"
+    },
+    {
+      subnet_name           = "sb-c-svpc-hub-${local.default_region1}-proxy"
+      subnet_ip             = local.subnet_proxy_ranges[local.default_region1]
+      subnet_region         = local.default_region1
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "Network hub proxy-only subnet for ${local.default_region1}"
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
+    }
+  ]
+  subnet_dual_region = [
+    {
+      subnet_name                      = "sb-c-svpc-hub-${local.default_region1}"
+      subnet_ip                        = local.subnet_primary_ranges[local.default_region1]
+      subnet_region                    = local.default_region1
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = var.vpc_flow_logs.enable_logging
+      subnet_flow_logs_interval        = var.vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
+      description                      = "Network hub subnet for ${local.default_region1}"
+    },
+    {
+      subnet_name                      = "sb-c-svpc-hub-${local.default_region2}"
+      subnet_ip                        = local.subnet_primary_ranges[local.default_region2]
+      subnet_region                    = local.default_region2
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = var.vpc_flow_logs.enable_logging
+      subnet_flow_logs_interval        = var.vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
+      description                      = "Network hub subnet for ${local.default_region2}"
+    },
+    {
+      subnet_name           = "sb-c-svpc-hub-${local.default_region1}-proxy"
+      subnet_ip             = local.subnet_proxy_ranges[local.default_region1]
+      subnet_region         = local.default_region1
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "Network hub proxy-only subnet for ${local.default_region1}"
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
+    },
+    {
+      subnet_name           = "sb-c-svpc-hub-${local.default_region2}-proxy"
+      subnet_ip             = local.subnet_proxy_ranges[local.default_region2]
+      subnet_region         = local.default_region2
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "Network hub proxy-only subnet for ${local.default_region2}"
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
+    }
+  ]
+
+  nat_single_region = [
+    {
+      name          = local.default_region1
+      num_addresses = var.hub_nat_num_addresses_region1
+    }
+  ]
+  nat_dual_region = [
+    {
+      name          = local.default_region1
+      num_addresses = var.hub_nat_num_addresses_region1
+    },
+    {
+      name          = local.default_region2
+      num_addresses = var.hub_nat_num_addresses_region2
+    }
+  ]
 }
+
 
 /******************************************
   Shared Network VPC
@@ -44,6 +136,9 @@ module "shared_vpc" {
   private_service_connect_ip = local.private_service_connect_ip
   firewall_enable_logging    = var.hub_firewall_enable_logging
   windows_activation_enabled = var.hub_windows_activation_enabled
+  universe_domain            = var.universe_domain
+  pkg_dev_domain             = var.pkg_dev_domain
+  enable_gcr_dns             = var.enable_gcr_dns
 
 
   ncc_hub_config = merge(
@@ -94,55 +189,13 @@ module "shared_vpc" {
   }
 
   subnets = [
-    {
-      subnet_name                      = "sb-c-svpc-hub-${local.default_region1}"
-      subnet_ip                        = local.subnet_primary_ranges[local.default_region1]
-      subnet_region                    = local.default_region1
-      subnet_private_access            = "true"
-      subnet_flow_logs                 = var.vpc_flow_logs.enable_logging
-      subnet_flow_logs_interval        = var.vpc_flow_logs.aggregation_interval
-      subnet_flow_logs_sampling        = var.vpc_flow_logs.flow_sampling
-      subnet_flow_logs_metadata        = var.vpc_flow_logs.metadata
-      subnet_flow_logs_metadata_fields = var.vpc_flow_logs.metadata_fields
-      subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
-      description                      = "Network hub subnet for ${local.default_region1}"
-    },
-    {
-      subnet_name                      = "sb-c-svpc-hub-${local.default_region2}"
-      subnet_ip                        = local.subnet_primary_ranges[local.default_region2]
-      subnet_region                    = local.default_region2
-      subnet_private_access            = "true"
-      subnet_flow_logs                 = var.vpc_flow_logs.enable_logging
-      subnet_flow_logs_interval        = var.vpc_flow_logs.aggregation_interval
-      subnet_flow_logs_sampling        = var.vpc_flow_logs.flow_sampling
-      subnet_flow_logs_metadata        = var.vpc_flow_logs.metadata
-      subnet_flow_logs_metadata_fields = var.vpc_flow_logs.metadata_fields
-      subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
-      description                      = "Network hub subnet for ${local.default_region2}"
-    },
-    {
-      subnet_name           = "sb-c-svpc-hub-${local.default_region1}-proxy"
-      subnet_ip             = local.subnet_proxy_ranges[local.default_region1]
-      subnet_region         = local.default_region1
-      subnet_private_access = "false"
-      subnet_flow_logs      = false
-      description           = "Network hub proxy-only subnet for ${local.default_region1}"
-      role                  = "ACTIVE"
-      purpose               = "REGIONAL_MANAGED_PROXY"
-    },
-    {
-      subnet_name           = "sb-c-svpc-hub-${local.default_region2}-proxy"
-      subnet_ip             = local.subnet_proxy_ranges[local.default_region2]
-      subnet_region         = local.default_region2
-      subnet_private_access = "false"
-      subnet_flow_logs      = false
-      description           = "Network hub proxy-only subnet for ${local.default_region2}"
-      role                  = "ACTIVE"
-      purpose               = "REGIONAL_MANAGED_PROXY"
-    }
-  ]
+    local.subnet_dual_region,
+    local.subnet_single_region
+  ][local.available_universe_services.multi_region ? 0 : 1]
   secondary_ranges = {}
 }
+
+
 
 module "nat_config" {
   source = "../../modules/nat"
@@ -155,14 +208,8 @@ module "nat_config" {
   nat_config = {
     bgp_asn = local.bgp_asn_number
     regions = [
-      {
-        name          = local.default_region1
-        num_addresses = var.hub_nat_num_addresses_region1
-      },
-      {
-        name          = local.default_region2
-        num_addresses = var.hub_nat_num_addresses_region2
-      }
-    ]
+      local.nat_dual_region,
+      local.nat_single_region
+    ][local.available_universe_services.multi_region ? 0 : 1]
   }
 }

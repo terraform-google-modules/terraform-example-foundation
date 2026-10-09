@@ -20,6 +20,7 @@ module "env" {
   env                 = "production"
   environment_code    = "p"
   remote_state_bucket = var.remote_state_bucket
+  universe_domain     = var.universe_domain
   tfc_org_name        = var.tfc_org_name
 
   project_deletion_policy       = var.project_deletion_policy

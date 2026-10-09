@@ -22,8 +22,9 @@ data "terraform_remote_state" "environments_env" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/${var.env}"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/environments/${var.env}"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 

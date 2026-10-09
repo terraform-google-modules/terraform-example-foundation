@@ -18,5 +18,6 @@ terraform {
   backend "gcs" {
     bucket = "UPDATE_ME"
     prefix = "terraform/networks/production"
+    # UPDATE_ENDPOINT
   }
 }

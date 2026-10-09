@@ -19,6 +19,12 @@ variable "remote_state_bucket" {
   type        = string
 }
 
+variable "universe_domain" {
+  description = "The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD)."
+  type        = string
+  default     = "googleapis.com"
+}
+
 variable "dns_enable_logging" {
   type        = bool
   description = "Toggle DNS logging for VPC DNS."

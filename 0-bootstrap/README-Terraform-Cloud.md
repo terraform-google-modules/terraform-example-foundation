@@ -888,7 +888,3 @@ For example, to create a new business unit similar to business_unit_1, run the f
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
-
-
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

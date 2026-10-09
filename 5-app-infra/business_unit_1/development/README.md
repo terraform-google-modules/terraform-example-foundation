@@ -4,6 +4,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | confidential\_image\_digest | SHA256 digest of the Docker image to be used for running the workload in Confidential Space. This value ensures the integrity and immutability of the image, guaranteeing that only the expected and verified code is executed within the confidential environment. Expected format: `sha256:<digest>`. | `string` | `""` | no |
+| custom\_tee\_image\_reference | Custom TEE container image reference to override the default image derived from cicd\_project\_id. | `string` | `""` | no |
 | disk\_type | Boot disk type, can be either pd-ssd, local-ssd, pd-standard, or hyperdisk-balanced(Air Gapped) | `string` | `"pd-standard"` | no |
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | `null` | no |
 | machine\_type | Machine type to create, e.g. n1-standard-1 | `string` | `"f1-micro"` | no |

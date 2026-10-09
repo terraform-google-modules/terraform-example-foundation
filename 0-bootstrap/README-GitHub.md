@@ -973,6 +973,3 @@ grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/busi
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
-
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -131,6 +131,12 @@ for each one of the repositories.
    git checkout -b plan
    ```
 
+1. In the `terraform-example-foundation` repository, run the helper script `choose_build_type.sh` to enable the Bootstrap GitHub version:
+
+   ```bash
+   ../terraform-example-foundation/scripts/choose_build_type.sh github
+   ```
+
 1. Copy contents of foundation to new repo (modify accordingly based on your current directory).
 
    ```bash
@@ -143,12 +149,6 @@ for each one of the repositories.
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    chmod 755 ./tf-wrapper.sh
    cd ./envs/shared
-   ```
-
-1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitHub version
-
-   ```bash
-   ./scripts/choose_build_type.sh github
    ```
 
 1. Rename file `terraform.example.tfvars` to `terraform.tfvars`
@@ -973,3 +973,6 @@ grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/busi
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -129,17 +129,18 @@ You must be authenticated to the VCS provider. See [GitHub authentication](https
    git checkout -b plan
    ```
 
+1. In the `terraform-example-foundation` repository, run the helper script `choose_build_type.sh` to enable the Bootstrap Terraform Cloud version:
+
+   ```bash
+   ../terraform-example-foundation/scripts/choose_build_type.sh terraform_cloud
+   ```
+
 1. Copy contents of foundation to new repo (modify accordingly based on your current directory).
 
    ```bash
    mkdir -p envs/shared
    cp -RT ../terraform-example-foundation/0-bootstrap/ ./envs/shared
    cd ./envs/shared
-   ```
-
-1. Run the helper script `choose_build_type.sh` to enable Bootstrap Terraform Cloud version
-   ```bash
-   ./scripts/choose_build_type.sh terraform_cloud
    ```
 
 1. Rename file `terraform.example.tfvars` to `terraform.tfvars`
@@ -887,3 +888,7 @@ For example, to create a new business unit similar to business_unit_1, run the f
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
+
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

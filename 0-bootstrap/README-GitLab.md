@@ -200,6 +200,12 @@ Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create the
    git checkout plan
    ```
 
+1. In the `terraform-example-foundation` repository, run the helper script `choose_build_type.sh` to enable the Bootstrap GitLab version:
+
+   ```bash
+   ../terraform-example-foundation/scripts/choose_build_type.sh gitlab
+   ```
+
 1. Copy contents of foundation to cloned project (modify accordingly based on your current directory).
 
    ```bash
@@ -212,11 +218,6 @@ Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create the
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    chmod 755 ./*.sh
    cd ./envs/shared
-   ```
-
-1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitLab version
-   ```bash
-   ./scripts/choose_build_type.sh gitlab
    ```
 
 1. Rename file `terraform.example.tfvars` to `terraform.tfvars`
@@ -945,3 +946,7 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
+   
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

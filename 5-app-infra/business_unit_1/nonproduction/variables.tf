@@ -60,3 +60,9 @@ variable "source_image" {
   type        = string
   default     = ""
 }
+
+variable "custom_tee_image_reference" {
+  description = "Custom TEE container image reference to override the default image derived from cicd_project_id."
+  type        = string
+  default     = ""
+}

@@ -60,4 +60,5 @@ module "confidential_space" {
   remote_state_bucket                      = var.remote_state_bucket
   workload_pool_propagation_sleep_duration = var.workload_pool_propagation_sleep_duration
   universe_domain                          = var.universe_domain
+  custom_tee_image_reference               = var.custom_tee_image_reference
 }

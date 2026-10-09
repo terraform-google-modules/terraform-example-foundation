@@ -20,7 +20,7 @@ variable "remote_state_bucket" {
 }
 
 variable "universe_domain" {
-  description = "The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Distributed Cloud (GDC), Trusted Partner Cloud (TPC), or other sovereign cloud environments."
+  description = "The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD)."
   type        = string
   default     = "googleapis.com"
 
@@ -42,7 +42,7 @@ variable "pkg_dev_domain" {
 }
 
 variable "enable_gcr_dns" {
-  description = "Enable DNS zone creation for legacy gcr.io. Set to false for GDC/TPC environments where Container Registry is not available."
+  description = "Enable DNS zone creation for legacy gcr.io. Set to false for GCD environments where Container Registry is not available."
   type        = bool
   default     = true
 }

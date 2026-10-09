@@ -8,7 +8,7 @@
 | project\_deletion\_policy | The deletion policy for the project created. | `string` | `"PREVENT"` | no |
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | tfc\_org\_name | Name of the TFC organization | `string` | `""` | no |
-| universe\_domain | The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Distributed Cloud (GDC), Trusted Partner Cloud (TPC), or other sovereign cloud environments. | `string` | `"googleapis.com"` | no |
+| universe\_domain | The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD). | `string` | `"googleapis.com"` | no |
 
 ## Outputs
 
@@ -23,5 +23,3 @@
 | env\_secrets\_project\_number | Project number for environment related secrets. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
-

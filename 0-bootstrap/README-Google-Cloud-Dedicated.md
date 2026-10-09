@@ -1,6 +1,6 @@
-# Deploying a Sovereign Cloud compatible environment
+# Deploying a Google Cloud Dedicated compatible  
 
-The objective of the following instructions is to explain the use of Deploy Helper to deploy the Terraform Example Foundation on a Sovereign Cloud.
+The objective of the following instructions is to explain the use of Deploy Helper to deploy the Terraform Example Foundation on a [Google Cloud Dedicated](https://cloud.google.com/products/dedicated?hl=en) environment.
 
 This deployment is a subset of the options available in the original Google Cloud.
 
@@ -17,7 +17,7 @@ Terraform version 1.5.7 is the last version before the license model change.
 
 ## Differences
 
-These are some of differences of the Sovereign Cloud deploy to a deployment in the original Google Cloud
+These are some of differences of the Google Cloud Dedicated deploy to a deployment in the original Google Cloud
 
 - The deploy is single region
 - It uses WorkForce Federation users for authentication
@@ -88,8 +88,8 @@ When asked if you want to change the universe domain configuration accept the su
 
 Use the inline instructions of the file.
 
-The configuration under `Google universe configuration` require values from your Sovereign Cloud environment.
-- `universe_prefix`, `universe_domain`, and `pkg_dev_domain` should be in your onboarding configuration or your Sovereign Cloud documentation.
+The configuration under `Google universe configuration` require values from your Google Cloud Dedicated  environment.
+- `universe_prefix`, `universe_domain`, and `pkg_dev_domain` should be in your onboarding configuration or your Google Cloud Dedicated documentation.
 - `enable_gcr_dns` should be set to false.
 - The values under `available_universe_services` should also be set to false.
 - Uncomment `principal_set_org_ids` and set it with your Organization ID

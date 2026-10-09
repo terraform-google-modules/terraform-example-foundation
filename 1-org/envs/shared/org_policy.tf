@@ -130,7 +130,7 @@ resource "null_resource" "input_validation" {
 module "domain_restricted_contacts" {
   source  = "terraform-google-modules/org-policy/google"
   version = "~> 7.0"
-  count   = var.universe_domain == "googleapis.com" ? 1 : 0 # automatic in Sovereign baseline
+  count   = var.universe_domain == "googleapis.com" ? 1 : 0 # automatic in Google Cloud Dedicated baseline
 
   organization_id   = local.organization_id
   folder_id         = local.folder_id

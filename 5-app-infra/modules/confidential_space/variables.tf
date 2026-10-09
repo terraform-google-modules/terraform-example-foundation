@@ -99,3 +99,9 @@ variable "workload_pool_propagation_sleep_duration" {
   type        = string
   default     = "60s"
 }
+
+variable "custom_tee_image_reference" {
+  description = "Custom TEE container image reference to override the default image derived from cicd_project_id."
+  type        = string
+  default     = ""
+}

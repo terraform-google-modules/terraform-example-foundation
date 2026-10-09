@@ -15,7 +15,14 @@
  */
 
 locals {
-  default_tee_image_reference = "${local.default_region}-docker.pkg.dev/${local.cloudbuild_project_id}/${local.artifact_registry_repository}/confidential_space_image:latest"
+  cicd_project_id = try(data.terraform_remote_state.business_unit_shared.outputs.cicd_project_id, "")
+  default_region  = data.terraform_remote_state.projects_env.outputs.default_region
+
+  default_tee_image_reference = var.custom_tee_image_reference != "" ? var.custom_tee_image_reference : (
+    local.cicd_project_id != "" ? "${local.default_region}-docker.pkg.dev/${local.cicd_project_id}/${local.artifact_registry_repository}/confidential_space_image:latest" : ""
+  )
+  tee_image_reference = local.default_tee_image_reference
+
   env_project_ids = {
     "conf-space" = data.terraform_remote_state.projects_env.outputs.confidential_space_project,
   }
@@ -29,8 +36,6 @@ locals {
   subnetwork_self_links     = data.terraform_remote_state.projects_env.outputs.subnets_self_links
   svpc_subnetwork_self_link = [for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
 
-  cloudbuild_project_id             = data.terraform_remote_state.business_unit_shared.outputs.bootstrap_cloudbuild_project_id
-  default_region                    = data.terraform_remote_state.projects_env.outputs.default_region
   env_project_id                    = local.env_project_ids[var.project_suffix]
   subnetwork_self_link              = local.env_project_subnets[var.project_suffix]
   subnetwork_project                = element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1, )
@@ -115,7 +120,7 @@ module "confidential_instance_template" {
   }
 
   metadata = {
-    tee-image-reference = local.default_tee_image_reference
+    tee-image-reference = local.tee_image_reference
   }
 
   service_account = {

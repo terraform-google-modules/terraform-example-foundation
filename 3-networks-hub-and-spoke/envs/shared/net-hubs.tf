@@ -43,13 +43,14 @@ locals {
       description                      = "Network hub subnet for ${local.default_region1}"
     },
     {
-      subnet_name      = "sb-c-svpc-hub-${local.default_region1}-proxy"
-      subnet_ip        = local.subnet_proxy_ranges[local.default_region1]
-      subnet_region    = local.default_region1
-      subnet_flow_logs = false
-      description      = "Network hub proxy-only subnet for ${local.default_region1}"
-      role             = "ACTIVE"
-      purpose          = "REGIONAL_MANAGED_PROXY"
+      subnet_name           = "sb-c-svpc-hub-${local.default_region1}-proxy"
+      subnet_ip             = local.subnet_proxy_ranges[local.default_region1]
+      subnet_region         = local.default_region1
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "Network hub proxy-only subnet for ${local.default_region1}"
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     }
   ]
   subnet_dual_region = [

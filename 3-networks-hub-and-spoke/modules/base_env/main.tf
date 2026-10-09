@@ -35,13 +35,14 @@ locals {
       description                      = "First ${var.env} subnet example."
     },
     {
-      subnet_name      = "sb-${var.environment_code}-svpc-${var.default_region1}-proxy"
-      subnet_ip        = var.subnet_proxy_ranges[var.default_region1]
-      subnet_region    = var.default_region1
-      subnet_flow_logs = false
-      description      = "First ${var.env} proxy-only subnet example."
-      role             = "ACTIVE"
-      purpose          = "REGIONAL_MANAGED_PROXY"
+      subnet_name           = "sb-${var.environment_code}-svpc-${var.default_region1}-proxy"
+      subnet_ip             = var.subnet_proxy_ranges[var.default_region1]
+      subnet_region         = var.default_region1
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "First ${var.env} proxy-only subnet example."
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     }
   ]
   subnet_dual_region = [

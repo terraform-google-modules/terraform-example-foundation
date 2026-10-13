@@ -28,6 +28,6 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:app_infra_pipeline_github/v6.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:app_infra_pipeline_github/v7.0.0"
   }
 }

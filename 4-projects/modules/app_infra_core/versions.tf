@@ -24,6 +24,6 @@ terraform {
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-example-foundation:app_infra_core/v6.0.0"
+    module_name = "blueprints/terraform/terraform-example-foundation:app_infra_core/v7.0.0"
   }
 }

@@ -15,10 +15,11 @@
  */
 
 locals {
-  default_region     = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region_2   = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
-  default_region_gcs = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_gcs
-  default_region_kms = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_kms
+  default_region              = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region_2            = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
+  default_region_gcs          = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_gcs
+  default_region_kms          = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_kms
+  available_universe_services = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
 }
 
 data "terraform_remote_state" "bootstrap" {

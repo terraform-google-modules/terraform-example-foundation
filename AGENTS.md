@@ -175,5 +175,4 @@ Before completing any task or proposing changes, verify that:
 *   **CL / Commit Guidelines**: [Google Engineering Practices on Writing Good CL Descriptions](https://google.github.io/eng-practices/review/developer/cl-descriptions.html)
 *   **Code Review Speed**: [Google Engineering Practices on Code Review Speed](https://google.github.io/eng-practices/review/reviewer/speed.html)
 *   **Enterprise Foundation Blueprint**: [Google Cloud Documentation](https://cloud.google.com/architecture/security-foundations)
-*   **Enterprise Application Blueprint**: [terraform-google-enterprise-application](https://github.com/GoogleCloudPlatform/terraform-google-enterprise-application)
 *   **Troubleshooting Guide**: Consult [`docs/TROUBLESHOOTING.md`](./docs/TROUBLESHOOTING.md) for known edge cases and resolutions.

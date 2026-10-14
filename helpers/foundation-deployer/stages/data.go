@@ -241,6 +241,9 @@ type GlobalTFVars struct {
 	EnableGcrDns                          *bool                      `hcl:"enable_gcr_dns"`
 	AllowAdditionalMemberTypes            *bool                      `hcl:"allow_additional_member_types"`
 	AvailableUniverseServices             *AvailableUniverseServices `hcl:"available_universe_services"`
+	MachineType                           *string                    `hcl:"machine_type"`
+	DiskType                              *string                    `hcl:"disk_type"`
+	SourceImage                           *string                    `hcl:"source_image"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
@@ -370,9 +373,12 @@ type ProjEnvTfvars struct {
 }
 
 type AppInfraCommonTfvars struct {
-	InstanceRegion    string `hcl:"instance_region"`
-	RemoteStateBucket string `hcl:"remote_state_bucket"`
-	ImageDigest       string `hcl:"confidential_image_digest"`
+	InstanceRegion    string  `hcl:"instance_region"`
+	RemoteStateBucket string  `hcl:"remote_state_bucket"`
+	ImageDigest       string  `hcl:"confidential_image_digest"`
+	MachineType       *string `hcl:"machine_type"`
+	DiskType          *string `hcl:"disk_type"`
+	SourceImage       *string `hcl:"source_image"`
 }
 
 type UniverseTfvars struct {

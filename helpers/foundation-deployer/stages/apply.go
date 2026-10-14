@@ -809,6 +809,9 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 	commonTfvars := AppInfraCommonTfvars{
 		InstanceRegion:    tfvars.DefaultRegion,
 		RemoteStateBucket: outputs.RemoteStateBucket,
+		MachineType:       tfvars.MachineType,
+		DiskType:          tfvars.DiskType,
+		SourceImage:       tfvars.SourceImage,
 	}
 
 	if c.BuildType == BuildTypeCBCSR {

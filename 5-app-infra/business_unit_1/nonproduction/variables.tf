@@ -42,3 +42,21 @@ variable "workload_pool_propagation_sleep_duration" {
   type        = string
   default     = "60s"
 }
+
+variable "machine_type" {
+  description = "Machine type to create, e.g. n1-standard-1"
+  type        = string
+  default     = "f1-micro"
+}
+
+variable "disk_type" {
+  description = "Boot disk type, can be either pd-ssd, local-ssd, pd-standard, or hyperdisk-balanced(Air Gapped)"
+  type        = string
+  default     = "pd-standard"
+}
+
+variable "source_image" {
+  description = "Source disk image. if not provided defaults to the latest public Rocky Linux 9 optimized for GCP image."
+  type        = string
+  default     = ""
+}

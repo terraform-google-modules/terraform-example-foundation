@@ -205,3 +205,14 @@ target_name_server_addresses = [
 
 location_kms = "us"
 location_gcs = "US"
+
+// 5-app-infra
+
+// on Google Cloud Dedicated the following values need to be updated with values available on the environment
+// gcloud compute machine-types list
+// gcloud compute disk-types list
+// gcloud compute images list
+
+machine_type = "f1-micro"
+disk_type    = "pd-standard"
+source_image = "" // format "projects/PROJECT/global/images/NAME"

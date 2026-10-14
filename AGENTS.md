@@ -2,15 +2,19 @@ This guide is designed for **AI coding assistants, LLMs, and autonomous agents**
 
 ---
 
+## 1. Repository Identity & Mission
+
 This repository implements the Google Cloud Platform (GCP) **Enterprise Foundations blueprint** (`terraform-example-foundation`). It provides a secure baseline to build and customize a Google Cloud foundation using Cloud Foundation Toolkit (CFT) Terraform modules.
 
 *   **Automate Organization and Environment Provisioning**: Provisions the GCP resource hierarchy (folders and projects) across `development`, `nonproduction`, and `production` environments (with support for `production_only_deploy`).
 *   **Enforce Separation of Duties**: Isolates permissions across stages using dedicated, least-privileged Service Accounts for platform, security, network, and application operations.
-*   **Enforce Security Guardrails by Default**: Implements organization policies, centralized audit logging (BigQuery and Cloud Storage sinks), SCC notifications, Cloud KMS, Secret Manager, and OPA policy validation.
+*   **Enforce Security Guardrails by Default**: Implements organization policies, centralized audit logging (Cloud Storage, Pub/Sub, and log bucket sinks), SCC notifications, Cloud KMS, Secret Manager, and OPA policy validation.
 *   **Configure Enterprise Networking**: Deploys Shared VPC networks (Standard or NCC Hub-and-Spoke), subnets, hierarchical firewall policies, Private Google Access, Cloud NAT, and Cloud DNS.
 *   **Automate CI/CD for Subsequent Stages**: Provisions CI/CD pipelines in `0-bootstrap` to automate the deployment of stages `1-org` through `5-app-infra` via pull requests (`plan`) and environment branch merges (`apply`), supporting Cloud Build, GitHub Actions, GitLab CI, and Terraform Cloud.
 
 ---
+
+## 2. Architecture & Stage Execution Model
 
 When reasoning about this codebase, agents must maintain a clear mental model of the progressive 6-stage lifecycle:
 
@@ -43,7 +47,7 @@ terraform-example-foundation/
 │   └── modules/env_baseline/     # Shared environment baseline module
 ├── 3-networks-svpc/              # Stage 3 (Standard): Shared VPC topology, firewall, NAT, DNS, IAP
 │   ├── envs/                     # Environments: shared, development, nonproduction, production
-│   └── modules/                  # Modules: base_env, hierarchical_firewall_policy, nat, routers, interconnect, vpn-ha
+│   └── modules/                  # Modules: base_env, hierarchical_firewall_policy, nat, routers, dedicated_interconnect, partner_interconnect, cross_dedicated_interconnect, cross_partner_interconnect, vpn-ha
 ├── 3-networks-hub-and-spoke/     # Stage 3 (Hub-and-Spoke): NCC-based hub-and-spoke network topology
 │   ├── envs/                     # Environments: shared, development, nonproduction, production
 │   └── modules/                  # Modules matching 3-networks-svpc with NCC routing
@@ -100,6 +104,8 @@ When generating or updating code, AI agents MUST strictly adhere to the followin
 
 ---
 
+## 5. Step-by-Step Contribution Workflows for Agents
+
 ### Workflow A: Adding or Modifying a Terraform Module (`modules/` or stage submodules)
 1. **Implement Terraform Changes**: Update or create resources in stage module directories.
 2. **Expose Variables & Outputs**: Ensure all inputs and outputs in `variables.tf` and `outputs.tf` have type constraints and descriptions.
@@ -113,11 +119,13 @@ When generating or updating code, AI agents MUST strictly adhere to the followin
 3. **Test with Harness**: Verify that the changes pass integration tests in `test/setup/` or `test/integration/`.
 
 ### Workflow C: Adding or Updating Governance Policies (`policy-library/`)
-1. **Define Constraints**: Add or modify constraint templates and YAML definitions under `policy-library/policies/constraints/`.
+1. **Define Constraints**: Add or modify constraint templates under `policy-library/policies/templates/` and YAML definitions under `policy-library/policies/constraints/`.
 2. **Lint Policies**: Execute `make docker_test_lint` to validate YAML formatting and syntax.
 3. **Validate Plans & Test Integration**: Test policies against generated Terraform plans using policy validation tools (`gcloud beta terraform vet` or `terraform-tools`), and verify that stage integration tests run without policy denial violations.
 
 ---
+
+## 6. Testing & Quality Assurance Playbook
 
 Agents should use the following tools and commands to validate changes:
 
@@ -157,7 +165,7 @@ Before completing any task or proposing changes, verify that:
 - [ ] IAM roles strictly follow the Principle of Least Privilege.
 - [ ] Any modified module has its documentation updated (`README.md` inputs/outputs).
 - [ ] Go test files follow `gofmt` style and compile without errors (`go vet ./...`).
-- [ ] Commit descriptions follow the Google Engineering Practices standard (clear summary line + explanatory "Why" body).
+- [ ] Commit descriptions follow the Conventional Commits standard (`feat:`, `fix:`, or `feat!:` summary line + explanatory "Why" body).
 - [ ] Documentation updates comply with the [Google Developer Documentation Style Guide](https://developers.google.com/style).
 
 ---

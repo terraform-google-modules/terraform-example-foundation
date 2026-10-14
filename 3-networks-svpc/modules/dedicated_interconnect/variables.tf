@@ -24,170 +24,54 @@ variable "vpc_name" {
   description = "Label to identify the VPC associated with shared VPC that will use the Interconnect."
 }
 
-variable "region1" {
-  type        = string
-  description = "First subnet region. The Dedicated Interconnect module only configures two regions."
-}
-
-variable "region2" {
-  type        = string
-  description = "Second subnet region. The Dedicated Interconnect module only configures two regions."
-}
-
-variable "peer_name" {
-  type        = string
-  description = "Name of this BGP peer. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?"
-}
-
-variable "peer_asn" {
-  type        = number
-  description = "Peer BGP Autonomous System Number (ASN)."
-}
-
-variable "region1_interconnect1_onprem_dc" {
-  type        = string
-  description = "Name of the on premisses data center used in the creation of the Interconnect for the first location of region1."
-}
-
-variable "region1_interconnect2_onprem_dc" {
-  type        = string
-  description = "Name of the on premisses data center used in the creation of the Interconnect for the second location of region1."
-}
-
-variable "region2_interconnect1_onprem_dc" {
-  type        = string
-  description = "Name of the on premisses data center used in the creation of the Interconnect for the first location of region2."
-}
-
-variable "region2_interconnect2_onprem_dc" {
-  type        = string
-  description = "Name of the on premisses data center used in the creation of the Interconnect for the second location of region2."
-}
-
-variable "region1_interconnect1_location" {
-  type        = string
-  description = "Name of the interconnect location used in the creation of the Interconnect for the first location of region1"
-}
-
-variable "region1_interconnect2_location" {
-  type        = string
-  description = "Name of the interconnect location used in the creation of the Interconnect for the second location of region1"
-}
-
-variable "region2_interconnect1_location" {
-  type        = string
-  description = "Name of the interconnect location used in the creation of the Interconnect for the first location of region2"
-}
-
-variable "region2_interconnect2_location" {
-  type        = string
-  description = "Name of the interconnect location used in the creation of the Interconnect for the second location of region2"
-}
-
-variable "region1_interconnect1" {
-  type        = string
-  description = "URL of the underlying Interconnect object that this attachment's traffic will traverse through."
-}
-
-variable "region1_interconnect2" {
-  type        = string
-  description = "URL of the underlying Interconnect object that this attachment's traffic will traverse through."
-}
-
-variable "region2_interconnect1" {
-  type        = string
-  description = "URL of the underlying Interconnect object that this attachment's traffic will traverse through."
-}
-
-variable "region2_interconnect2" {
-  type        = string
-  description = "URL of the underlying Interconnect object that this attachment's traffic will traverse through."
-}
-
-variable "region1_router1_name" {
-  type        = string
-  description = "Name of the Router 1 for Region 1 where the attachment resides."
-}
-
-variable "region1_router2_name" {
-  type        = string
-  description = "Name of the Router 2 for Region 1 where the attachment resides."
-}
-
-variable "region2_router1_name" {
-  type        = string
-  description = "Name of the Router 1 for Region 2 where the attachment resides."
-}
-
-variable "region2_router2_name" {
-  type        = string
-  description = "Name of the Router 2 for Region 2 where the attachment resides"
-}
-
-variable "cloud_router_labels" {
-  type        = map(string)
-  description = "A map of suffixes for labelling vlans with four entries like \"vlan_1\" => \"suffix1\" with keys from `vlan_1` to `vlan_4`."
-  default     = {}
-}
-
-variable "region1_interconnect1_candidate_subnets" {
-  type        = list(string)
-  description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
-  default     = null
-}
-
-variable "region1_interconnect2_candidate_subnets" {
-  type        = list(string)
-  description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
-  default     = null
-}
-variable "region2_interconnect1_candidate_subnets" {
-  type        = list(string)
-  description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
-  default     = null
-}
-variable "region2_interconnect2_candidate_subnets" {
-  type        = list(string)
-  description = "Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc)."
-  default     = null
-}
-
-variable "region1_interconnect1_vlan_tag8021q" {
-  type        = string
-  description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
-  default     = null
-}
-
-variable "region1_interconnect2_vlan_tag8021q" {
-  type        = string
-  description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
-  default     = null
-}
-
-variable "region2_interconnect1_vlan_tag8021q" {
-  type        = string
-  description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
-  default     = null
-}
-
-variable "region2_interconnect2_vlan_tag8021q" {
-  type        = string
-  description = "The IEEE 802.1Q VLAN tag for this attachment, in the range 2-4094."
-  default     = null
-}
-
 variable "ncc_hub_uri" {
   type        = string
-  description = "The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached."
+  description = "The full URI of the existing Network Connectivity Center Hub."
 }
 
 variable "ncc_hub_group" {
   type        = string
-  description = "Network Connectivity Center Group to attach the spoke to"
+  description = "Network Connectivity Center Group name to attach spokes to."
 }
 
-variable "site_to_site_data_transfer" {
+variable "enable_site_to_site_data_transfer" {
   type        = bool
-  description = "Set to true to allow Google Cloud routing to act as a transit network between on-premises sites."
+  description = "Set to true to enable site-to-site data transfer on NCC spokes."
   default     = false
+}
+
+variable "dedicated_interconnect_config" {
+  description = <<EOT
+Dedicated Interconnect configuration map and default settings.
+
+Top-level attributes:
+  - peer_asn:   (Optional) Default BGP Autonomous System Number (ASN) of the on-premises peer.
+  - peer_name:  (Optional) Default name for the on-premises BGP peer.
+  - attachments: Map of Dedicated Interconnect attachment objects keyed by a unique identifier.
+
+Attachment attributes (map values):
+  - region:            Google Cloud region where the attachment and Cloud Router reside.
+  - router:            Name of the Google Cloud Router.
+  - onprem_dc:         Identifier for the on-premises data center (e.g., 'equinix-dc1').
+  - location:          Google Cloud Interconnect edge location code (e.g., 'iad-zone1-1').
+  - cr_suffix:         Suffix used for interface/subinterface naming (e.g., 'cr5', 'cr6').
+  - interconnect:      Resource URL or ID of the physical Dedicated Interconnect port.
+  - candidate_subnets: (Optional) Up to 16 candidate prefixes that can be used to restrict the allocation of cloudRouterIpAddress and customerRouterIpAddress for this attachment. All prefixes must be within link-local address space (169.254.0.0/16) and must be /29 or shorter (/28, /27, etc).
+  - vlan_tag8021q:     (Optional) The IEEE 802.1Q VLAN tag for this attachment, in the range (2-4094).
+EOT
+
+  type = object({
+    peer_asn  = optional(number)
+    peer_name = optional(string)
+    attachments = map(object({
+      region            = string
+      router            = string
+      onprem_dc         = string
+      location          = string
+      cr_suffix         = string
+      interconnect      = string
+      candidate_subnets = optional(list(string))
+      vlan_tag8021q     = optional(number)
+    }))
+  })
 }

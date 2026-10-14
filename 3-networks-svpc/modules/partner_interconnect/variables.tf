@@ -16,7 +16,7 @@
 
 variable "attachment_project_id" {
   type        = string
-  description = "the Interconnect project ID."
+  description = "The Interconnect Google Cloud project ID."
 }
 
 variable "vpc_name" {
@@ -24,100 +24,49 @@ variable "vpc_name" {
   description = "Label to identify the VPC associated with shared VPC that will use the Interconnect."
 }
 
-variable "region1" {
-  type        = string
-  description = "First subnet region. The Partner Interconnect module only configures two regions."
-}
-
-variable "region2" {
-  type        = string
-  description = "Second subnet region. The Partner Interconnect module only configures two regions."
-}
-
-variable "region1_interconnect1_onprem_dc" {
-  type        = string
-  description = "Name of the on premisses data center used in the creation of the Interconnect for the first location of region1."
-}
-
-variable "region1_interconnect2_onprem_dc" {
-  type        = string
-  description = "Name of the on premisses data center used in the creation of the Interconnect for the second location of region1."
-}
-
-variable "region2_interconnect1_onprem_dc" {
-  type        = string
-  description = "Name of the on premisses data center used in the creation of the Interconnect for the first location of region2."
-}
-
-variable "region2_interconnect2_onprem_dc" {
-  type        = string
-  description = "Name of the on premisses data center used in the creation of the Interconnect for the second location of region2."
-}
-
-variable "region1_interconnect1_location" {
-  type        = string
-  description = "Name of the interconnect location used in the creation of the Interconnect for the first location of region1"
-}
-
-variable "region1_interconnect2_location" {
-  type        = string
-  description = "Name of the interconnect location used in the creation of the Interconnect for the second location of region1"
-}
-
-variable "region2_interconnect1_location" {
-  type        = string
-  description = "Name of the interconnect location used in the creation of the Interconnect for the first location of region2"
-}
-
-variable "region2_interconnect2_location" {
-  type        = string
-  description = "Name of the interconnect location used in the creation of the Interconnect for the second location of region2"
-}
-
-variable "region1_router1_name" {
-  type        = string
-  description = "Name of the Router 1 for Region 1 where the attachment resides."
-}
-
-variable "region1_router2_name" {
-  type        = string
-  description = "Name of the Router 2 for Region 1 where the attachment resides."
-}
-
-variable "region2_router1_name" {
-  type        = string
-  description = "Name of the Router 1 for Region 2 where the attachment resides."
-}
-
-variable "region2_router2_name" {
-  type        = string
-  description = "Name of the Router 2 for Region 2 where the attachment resides"
-}
-
-variable "cloud_router_labels" {
-  type        = map(string)
-  description = "A map of suffixes for labelling vlans with four entries like \"vlan_1\" => \"suffix1\" with keys from `vlan_1` to `vlan_4`."
-  default     = {}
-}
-
-variable "preactivate" {
-  description = "Preactivate Partner Interconnect attachments, works only for level3 Partner Interconnect"
-  type        = string
-  default     = false
-}
-
 variable "ncc_hub_uri" {
   type        = string
-  description = "The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached."
+  description = "The full URI of the existing Network Connectivity Center Hub."
 }
 
 variable "ncc_hub_group" {
   type        = string
-  description = "Network Connectivity Center Group to attach the spoke to"
+  description = "Network Connectivity Center Group name to attach spokes to."
 }
 
 variable "site_to_site_data_transfer" {
   type        = bool
   description = "Set to true to allow Google Cloud routing to act as a transit network between on-premises sites."
   default     = false
+}
+
+variable "partner_interconnect_config" {
+  description = <<EOT
+Partner Interconnect configuration map containing attachment definitions and default settings.
+
+Top-level attributes:
+  - preactivate: (Optional) Default preactivate setting for all Partner Interconnect attachments (defaults to false).
+  - attachments: Map of Partner Interconnect attachment configuration objects keyed by a unique identifier.
+
+Attachment attributes (map values):
+  - region:                   Google Cloud region where the attachment and Cloud Router reside.
+  - router:                   Name or resource ID of the Google Cloud Router to attach to.
+  - location:                 Google Cloud Interconnect edge location or city code.
+  - cr_suffix:                Suffix used for interface naming (e.g., 'cr1', 'cr2').
+  - edge_availability_domain: Edge availability domain assignment ('AVAILABILITY_DOMAIN_1', 'AVAILABILITY_DOMAIN_2', or 'AVAILABILITY_DOMAIN_ANY').
+  - onprem_dc:                 (Optional) On-premises data center identifier.
+  - preactivate:              (Optional) Override preactivate setting for this specific attachment.
+EOT
+
+  type = object({
+    preactivate = optional(bool, false)
+    attachments = map(object({
+      region                   = string
+      router                   = string
+      location                 = string
+      cr_suffix                = string
+      edge_availability_domain = string
+      onprem_dc                = optional(string)
+    }))
+  })
 }

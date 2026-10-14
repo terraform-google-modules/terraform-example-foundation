@@ -24,16 +24,6 @@ variable "vpc_name" {
   description = "Label to identify the VPC associated with shared VPC that will use the Interconnect."
 }
 
-variable "region1" {
-  type        = string
-  description = "First subnet region. The Dedicated Interconnect module only configures two regions."
-}
-
-variable "region2" {
-  type        = string
-  description = "Second subnet region. The Dedicated Interconnect module only configures two regions."
-}
-
 variable "cross_cloud_config" {
   description = <<EOT
   Cross-Cloud Interconnect configuration containing remote provider settings and attachment definitions.

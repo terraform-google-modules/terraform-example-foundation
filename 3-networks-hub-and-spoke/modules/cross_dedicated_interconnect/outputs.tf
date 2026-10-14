@@ -23,3 +23,8 @@ output "customer_router_ip_addresses" {
   description = "Map of IPv4 addresses + prefix lengths to configure on customer router subinterfaces."
   value       = { for k, v in module.interconnect_attachments : k => v.customer_router_ip_address }
 }
+
+output "ncc_spoke_ids" {
+  description = "Map of Network Connectivity Center spoke IDs keyed by region."
+  value       = { for k, v in google_network_connectivity_spoke.interconnect_spoke : k => v.id }
+}

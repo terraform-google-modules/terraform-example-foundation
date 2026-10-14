@@ -1,4 +1,4 @@
-# Deploying a Google Cloud Dedicated compatible  
+# Deploying a Google Cloud Dedicated compatible
 
 The objective of the following instructions is to explain the use of Deploy Helper to deploy the Terraform Example Foundation on a [Google Cloud Dedicated](https://cloud.google.com/products/dedicated?hl=en) environment.
 

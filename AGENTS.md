@@ -8,7 +8,7 @@ This repository implements the Google Cloud Platform (GCP) **Enterprise Foundati
 
 *   **Automate Organization and Environment Provisioning**: Provisions the GCP resource hierarchy (folders and projects) across `development`, `nonproduction`, and `production` environments (with support for `production_only_deploy`).
 *   **Enforce Separation of Duties**: Isolates permissions across stages using dedicated, least-privileged Service Accounts for platform, security, network, and application operations.
-*   **Enforce Security Guardrails by Default**: Implements organization policies, centralized audit logging (Cloud Storage, Pub/Sub, and log bucket sinks), SCC notifications, Cloud KMS, Secret Manager, and OPA policy validation.
+*   **Enforce Security Guardrails by Default**: Implements organization policies, centralized audit logging (Cloud Storage, Pub/Sub, and log bucket sinks), SCC notifications, Cloud KMS, and Secret Manager.
 *   **Configure Enterprise Networking**: Deploys Shared VPC networks (Standard or NCC Hub-and-Spoke), subnets, hierarchical firewall policies, Private Google Access, Cloud NAT, and Cloud DNS.
 *   **Automate CI/CD for Subsequent Stages**: Provisions CI/CD pipelines in `0-bootstrap` to automate the deployment of stages `1-org` through `5-app-infra` via pull requests (`plan`) and environment branch merges (`apply`), supporting Cloud Build, GitHub Actions, GitLab CI, and Terraform Cloud.
 

@@ -9,7 +9,7 @@ This repository implements the Google Cloud Platform (GCP) **Enterprise Foundati
 *   **Automate Organization and Environment Provisioning**: Provisions the GCP resource hierarchy (folders and projects) across `development`, `nonproduction`, and `production` environments (with support for `production_only_deploy`).
 *   **Enforce Separation of Duties**: Isolates permissions across stages using dedicated, least-privileged Service Accounts for platform, security, network, and application operations.
 *   **Enforce Security Guardrails by Default**: Implements organization policies, centralized audit logging (Cloud Storage, Pub/Sub, and log bucket sinks), SCC notifications, Cloud KMS, and Secret Manager.
-*   **Configure Enterprise Networking**: Deploys Shared VPC networks (Standard or NCC Hub-and-Spoke), subnets, hierarchical firewall policies, Private Google Access, Cloud NAT, and Cloud DNS.
+*   **Configure Enterprise Networking**: Deploys Shared VPC or Hub-and-Spoke networks, subnets, hierarchical firewall policies, Private Google Access, Cloud NAT, Cloud DNS, and Network Connectivity Center (NCC).
 *   **Automate CI/CD for Subsequent Stages**: Provisions CI/CD pipelines in `0-bootstrap` to automate the deployment of stages `1-org` through `5-app-infra` via pull requests (`plan`) and environment branch merges (`apply`), supporting Cloud Build, GitHub Actions, GitLab CI, and Terraform Cloud.
 
 ---
@@ -27,7 +27,7 @@ When reasoning about this codebase, agents must maintain a clear mental model of
 | **0 - Bootstrap** | `0-bootstrap/`<br>`0-bootstrap/modules/` | Seed project (`prj-b-seed`), Terraform state buckets, per-stage Service Accounts, and initial CI/CD pipeline infrastructure (`prj-b-cicd`) supporting Cloud Build, GitHub Actions, GitLab CI, or Terraform Cloud. | Platform Admin |
 | **1 - Org** | `1-org/envs/shared/`<br>`1-org/modules/` | Top-level folders (`fldr-common`, `fldr-network`), organization policies, centralized audit logging (`prj-c-logging`), billing export (`prj-c-billing-export`), SCC notifications (`prj-c-scc`), Cloud Asset Inventory monitoring (`cai-monitoring`), global KMS/Secrets (`prj-c-kms`, `prj-c-secrets`), DNS hub (`prj-net-dns`), Interconnect host project (`prj-net-interconnect`), and network host projects (`prj-*-svpc`, `prj-net-hub-svpc`). | Cloud Security / Platform Admin |
 | **2 - Environments** | `2-environments/envs/`<br>`2-environments/modules/` | Environment folders (`fldr-development`, `fldr-nonproduction`, `fldr-production`) and shared per-environment services (`prj-{d,n,p}-kms`, `prj-{d,n,p}-secrets`). | Platform Admin |
-| **3 - Networks** | `3-networks-svpc/`<br>`3-networks-hub-and-spoke/` | Shared VPCs per environment, subnets with secondary ranges (GKE-ready), hierarchical firewall policies (IAP, health checks, Windows KMS), Cloud NAT, Private Service Access (Cloud SQL/AlloyDB), Cloud DNS, and Dedicated/Partner Interconnect or HA-VPN (Standard Shared VPC or NCC Hub-and-Spoke). | Network Admin |
+| **3 - Networks** | `3-networks-svpc/`<br>`3-networks-hub-and-spoke/` | Shared VPCs per environment, subnets with secondary ranges (GKE-ready), hierarchical firewall policies (IAP, health checks, Windows KMS), Cloud NAT, Private Service Access (Cloud SQL/AlloyDB), Cloud DNS, on-premises Interconnect (Dedicated or Partner), Cross-Cloud Interconnect (Dedicated or Partner), and HA-VPN (Standard Shared VPC or Hub-and-Spoke). | Network Admin |
 | **4 - Projects** | `4-projects/business_unit_1/`<br>`4-projects/modules/` | Business Unit folders (`bu1`, `bu2`), service projects attached to Shared VPCs (`sample-svpc`, `sample-peering`, `sample-floating`), and dedicated application infra CI/CD pipelines (`prj-c-bu*-infra-pipeline`). | Platform Admin / Team Lead |
 | **5 - App Infra** | `5-app-infra/business_unit_1/`<br>`5-app-infra/modules/` | Workload backing resources & sample compute instances (e.g., Compute Engine VM instance or Confidential Space) deployed through the stage 4 application infra pipeline. | Application Developer |
 
@@ -57,16 +57,13 @@ terraform-example-foundation/
 ├── 5-app-infra/                  # Stage 5: Sample workload deployment (Compute Engine / Confidential Space)
 │   ├── business_unit_1/          # Workload deployment per environment
 │   └── modules/                  # Modules: env_base, confidential_space
-├── policy-library/               # Gatekeeper/OPA policies & Scorecard constraints for Terraform validation
-│   ├── policies/constraints/     # Constraint configurations (e.g., allow basic APIs, enforce private access)
-│   └── policies/templates/       # Constraint templates
 ├── helpers/                      # Auxiliary developer and operator tools
 │   └── foundation-deployer/      # Go CLI to automate and sequence multi-stage deployments & teardown
 ├── build/                        # CI/CD pipelines & automation scripts (tf-wrapper.sh, cloudbuild, github, gitlab)
 ├── scripts/                      # Prerequisites validation and helper scripts (validate-requirements.sh)
 ├── test/                         # Quality assurance and testing harness
 │   ├── setup/                    # Terraform harness provisioning CI test environment
-│   └── integration/              # Terratest integration tests (bootstrap, org, envs, networks, projects, app-infra)
+│   └── integration/              # Blueprint-test integration tests (bootstrap, org, envs, networks, projects, app-infra)
 └── docs/                         # Architecture guides, policy rules, glossary, and troubleshooting
 ```
 
@@ -93,7 +90,7 @@ When generating or updating code, AI agents MUST strictly adhere to the followin
 *   **Isolated CI/CD**: Cloud Build triggers must run inside private worker pools connected to dedicated VPCs with least-privileged service accounts per stage.
 
 ### 4.3. Go & Integration Test Conventions (`test/integration/`)
-*   **Framework**: Integration tests are written in Go using [Terratest](https://terratest.gruntwork.io/).
+*   **Framework**: Integration tests are written in Go using CFT [blueprint-test](https://github.com/GoogleCloudPlatform/cloud-foundation-toolkit/tree/main/infra/blueprint-test).
 *   **Formatting**: Format all Go files with `gofmt -s -w <file.go>`.
 *   **Test Isolation**: Tests must create unique resource names or utilize prefixes to prevent collision during concurrent CI test runs.
 
@@ -111,17 +108,16 @@ When generating or updating code, AI agents MUST strictly adhere to the followin
 2. **Expose Variables & Outputs**: Ensure all inputs and outputs in `variables.tf` and `outputs.tf` have type constraints and descriptions.
 3. **Format Code**: Run `terraform fmt` in the module directory.
 4. **Update Documentation**: Update module `README.md` or execute `make docker_generate_docs`.
-5. **Add Integration Tests**: Add or update the corresponding Go Terratest suite under `test/integration/`.
+5. **Add Integration Tests**: Add or update the corresponding Go integration test suite under `test/integration/`.
 
 ### Workflow B: Updating IAM Permissions & Security Policies
 1. **Identify Required Role**: Check the minimal required IAM permissions for the specific API calls.
 2. **Avoid Wildcard / Admin Roles**: Replace any overly permissive roles with scoped alternatives.
 3. **Test with Harness**: Verify that the changes pass integration tests in `test/setup/` or `test/integration/`.
 
-### Workflow C: Adding or Updating Governance Policies (`policy-library/`)
-1. **Define Constraints**: Add or modify constraint templates under `policy-library/policies/templates/` and YAML definitions under `policy-library/policies/constraints/`.
-2. **Lint Policies**: Execute `make docker_test_lint` to validate YAML formatting and syntax.
-3. **Validate Plans & Test Integration**: Test policies against generated Terraform plans using policy validation tools (`gcloud beta terraform vet` or `terraform-tools`), and verify that stage integration tests run without policy denial violations.
+### Workflow C: Code Linting & Plan Validation
+1. **Lint Code & Configurations**: Execute `make docker_test_lint` to validate Terraform, Shell, YAML, and Go formatting and syntax.
+2. **Validate Plans & Test Integration**: Run stage integration tests (`test/integration/`) to verify generated Terraform plans and ensure deployments pass without policy denial or execution errors.
 
 ---
 
@@ -149,7 +145,7 @@ make docker_generate_docs
 
 ### 3. Running Integration Tests Locally
 ```bash
-# Run specific Terratest integration test
+# Run specific blueprint-test integration test
 cd test/integration
 go test -v -run TestOrg ./org -timeout 60m
 ```

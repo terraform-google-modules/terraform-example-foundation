@@ -24,11 +24,12 @@ locals {
   log_buckets                      = { for k, ws in module.tf_workspace : k => split("/", ws.logs_bucket)[length(split("/", ws.logs_bucket)) - 1] }
   confidential_space_image_version = "latest"
   confidential_space_image_tag     = "${var.default_region}-docker.pkg.dev/${module.app_infra_cloudbuild_project.project_id}/tf-runners/confidential_space_image:${local.confidential_space_image_version}"
-  cmd_prompt                       = "gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project.project_id} --service-account=projects/${module.app_infra_cloudbuild_project.project_id}/serviceAccounts/tf-cb-builder-sa@${module.app_infra_cloudbuild_project.project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://${local.log_buckets[local.first_repo]} --worker-pool=${var.cloud_build_private_worker_pool_id} || ( sleep 46 && gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project.project_id} --service-account=projects/${module.app_infra_cloudbuild_project.project_id}/serviceAccounts/tf-cb-builder-sa@${module.app_infra_cloudbuild_project.project_id}.iam.gserviceaccount.com --gcs-log-dir=gs://${local.log_buckets[local.first_repo]} --worker-pool=${var.cloud_build_private_worker_pool_id})"
+  cmd_prompt                       = "gcloud builds submit . --tag ${local.confidential_space_image_tag} --project=${module.app_infra_cloudbuild_project.project_id} --service-account=${google_service_account.tf_cb_builder_sa.id} --gcs-log-dir=gs://${local.log_buckets[local.first_repo]} --worker-pool=${var.cloud_build_private_worker_pool_id}"
 
   iam_roles_build = [
     "roles/storage.objectAdmin",
     "roles/cloudbuild.builds.builder",
+    "roles/artifactregistry.writer",
   ]
 }
 
@@ -124,7 +125,7 @@ module "tf_workspace" {
   tf_repo_uri               = google_sourcerepo_repository.app_infra_repo[each.key].url
 
   create_cloudbuild_sa = false
-  cloudbuild_sa        = module.core.terraform_service_accounts[each.key]
+  cloudbuild_sa        = module.core.terraform_service_accounts_names[each.key]
 
   diff_sa_project       = true
   buckets_force_destroy = true
@@ -167,12 +168,31 @@ resource "google_sourcerepo_repository_iam_member" "member" {
   member     = "serviceAccount:${module.core.terraform_service_accounts[each.key]}"
 }
 
+resource "google_service_account" "tf_cb_builder_sa" {
+  project      = module.app_infra_cloudbuild_project.project_id
+  account_id   = "tf-cb-builder-sa"
+  display_name = "Cloud Build builder service account for Confidential Space"
+}
+
+resource "google_service_account_iam_member" "cloudbuild_service_agent_user" {
+  service_account_id = google_service_account.tf_cb_builder_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:service-${module.app_infra_cloudbuild_project.project_number}@gcp-sa-cloudbuild.iam.gserviceaccount.com"
+}
+
+resource "google_service_account_iam_member" "projects_sa_builder_user" {
+  count              = var.projects_terraform_sa != "" ? 1 : 0
+  service_account_id = google_service_account.tf_cb_builder_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${var.projects_terraform_sa}"
+}
+
 resource "google_project_iam_member" "build_roles" {
   for_each = toset(local.iam_roles_build)
 
   project = module.app_infra_cloudbuild_project.project_id
   role    = each.key
-  member  = "serviceAccount:tf-cb-builder-sa@${module.app_infra_cloudbuild_project.project_id}.iam.gserviceaccount.com"
+  member  = "serviceAccount:${google_service_account.tf_cb_builder_sa.email}"
 }
 
 resource "google_project_iam_member" "bucket_admin_binding" {
@@ -216,13 +236,17 @@ resource "google_storage_bucket_iam_member" "cloudbuild_sa_storage_admin" {
 
   bucket = local.log_buckets[each.key]
   role   = "roles/storage.admin"
-  member = "serviceAccount:tf-cb-builder-sa@${module.app_infra_cloudbuild_project.project_id}.iam.gserviceaccount.com"
+  member = "serviceAccount:${google_service_account.tf_cb_builder_sa.email}"
 }
 
 resource "time_sleep" "wait_iam_propagation" {
   create_duration = var.iam_propagation_sleep_duration
 
   depends_on = [
+    google_service_account.tf_cb_builder_sa,
+    google_service_account_iam_member.cloudbuild_service_agent_user,
+    google_service_account_iam_member.projects_sa_builder_user,
+    google_project_iam_member.build_roles,
     module.tf_workspace,
     module.app_infra_cloudbuild_project,
     google_project_iam_member.bucket_admin_binding,

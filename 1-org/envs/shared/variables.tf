@@ -39,8 +39,15 @@ variable "enable_kms_key_usage_tracking" {
 }
 
 variable "domains_to_allow" {
-  description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the Terraform Service Account used in the deploy."
+  description = "The list of domains to allow users from in IAM. Used by Domain Restricted Sharing Organization Policy. Must include the domain of the organization you are deploying the foundation. To add other domains you must also grant access to these domains to the Terraform Service Account used in the deploy. At least one valid value for 'domains_to_allow' or 'principal_set_org_ids' must be provided"
   type        = list(string)
+  default     = []
+}
+
+variable "principal_set_org_ids" {
+  description = "The list of GCP Organization IDs to allow via Organization Principal Sets (e.g., ['123456789012']). At least one valid value for 'principal_set_org_ids' or 'domains_to_allow' must be provided. See https://docs.cloud.google.com/organization-policy/restrict-domains#retrieving_organization_id"
+  type        = list(string)
+  default     = []
 }
 
 variable "scc_notification_name" {
@@ -147,13 +154,14 @@ variable "project_budget" {
 
 variable "gcp_groups" {
   description = <<EOT
-  Groups to grant specific roles in the Organization.
-  platform_viewer: Google Workspace or Cloud Identity group that have the ability to view resource information across the Google Cloud organization.
-  security_reviewer: Google Workspace or Cloud Identity group that members are part of the security team responsible for reviewing cloud security
-  network_viewer: Google Workspace or Cloud Identity group that members are part of the networking team and review network configurations.
-  scc_admin: Google Workspace or Cloud Identity group that can administer Security Command Center.
-  audit_viewer: Google Workspace or Cloud Identity group that members are part of an audit team and view audit logs in the logging project.
-  global_secrets_admin: Google Workspace or Cloud Identity group that members are responsible for putting secrets into Secrets Management.
+  Identifiers (Google Workspace/Cloud Identity group emails or principalSet URIs) to grant specific roles in the Organization. The 'group:' prefix is added automatically for emails, while 'principalSet://' is passed as-is.
+  platform_viewer: Group or principalSet that has the ability to view resource information across the Google Cloud organization.
+  security_reviewer: Group or principalSet whose members are part of the security team responsible for reviewing cloud security.
+  network_viewer: Group or principalSet whose members are part of the networking team and review network configurations.
+  scc_admin: Group or principalSet that can administer Security Command Center.
+  audit_viewer: Group or principalSet whose members are part of an audit team and view audit logs in the logging project.
+  global_secrets_admin: Group or principalSet whose members are responsible for putting secrets into Secrets Management.
+  kms_admin: Group or principalSet that can administer Cloud Key Management Service (KMS).
   EOT
   type = object({
     audit_viewer         = optional(string, null)
@@ -175,6 +183,12 @@ variable "essential_contacts_language" {
 variable "remote_state_bucket" {
   description = "Backend bucket to load Terraform Remote State Data from previous steps."
   type        = string
+}
+
+variable "universe_domain" {
+  description = "The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD)."
+  type        = string
+  default     = "googleapis.com"
 }
 
 variable "essential_contacts_domains_to_allow" {
@@ -314,6 +328,12 @@ variable "egress_policies_map" {
     })
   }))
   default = {}
+}
+
+variable "allow_additional_member_types" {
+  description = "Allows use of additional member types: `group`, `principal`, and `principalSet` as members of the perimeter. If true the members will be added in a ingress rules instead of in the access level."
+  type        = bool
+  default     = false
 }
 
 variable "perimeter_additional_members" {

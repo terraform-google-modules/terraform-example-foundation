@@ -17,16 +17,36 @@
 module "routers" {
   source = "../../modules/routers"
 
-  project_id     = local.net_hub_project_id
-  region1        = local.default_region1
-  region2        = local.default_region2
-  vpc_name       = "c-svpc-hub"
-  bgp_asn_subnet = local.bgp_asn_number
+  project_id = local.net_hub_project_id
+  vpc_name   = "c-svpc-hub"
 
-  advertised_ip_ranges = [
-    { range = local.dns_forward_source_range },
-    { range = "${local.private_service_connect_ip}/32" }
-  ]
+  router_config = {
+    bgp_asn           = local.bgp_asn_number
+    advertised_groups = ["ALL_SUBNETS"]
+    advertised_ip_ranges = [
+      { range = local.dns_forward_source_range },
+      { range = "${local.private_service_connect_ip}/32" }
+    ]
+
+    routers = { // comment entries related to region 2 if you are in a single region environment
+      "region1_router1" = {
+        region    = local.default_region1
+        cr_suffix = "cr1"
+      }
+      "region1_router2" = {
+        region    = local.default_region1
+        cr_suffix = "cr2"
+      }
+      "region2_router1" = {
+        region    = local.default_region2
+        cr_suffix = "cr3"
+      }
+      "region2_router2" = {
+        region    = local.default_region2
+        cr_suffix = "cr4"
+      }
+    }
+  }
 
   depends_on = [
     module.shared_vpc

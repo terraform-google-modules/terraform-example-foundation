@@ -14,90 +14,40 @@
  * limitations under the License.
  */
 
-
-resource "google_compute_interconnect_attachment" "interconnect_attachment1_region1" {
-  name    = "vl-${var.region1_interconnect1_onprem_dc}-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-cr5"
-  project = var.attachment_project_id
-  region  = var.region1
-  router  = var.region1_router1_name
-
-  admin_enabled            = var.preactivate
-  edge_availability_domain = "AVAILABILITY_DOMAIN_1"
-  type                     = "PARTNER"
-}
-
-resource "google_compute_interconnect_attachment" "interconnect_attachment2_region1" {
-  name    = "vl-${var.region1_interconnect2_onprem_dc}-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-cr6"
-  project = var.attachment_project_id
-  region  = var.region1
-  router  = var.region1_router2_name
-
-  admin_enabled            = var.preactivate
-  edge_availability_domain = "AVAILABILITY_DOMAIN_2"
-  type                     = "PARTNER"
-}
-
-resource "google_compute_interconnect_attachment" "interconnect_attachment1_region2" {
-  name    = "vl-${var.region2_interconnect1_onprem_dc}-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-cr7"
-  project = var.attachment_project_id
-  region  = var.region2
-  router  = var.region2_router1_name
-
-  admin_enabled            = var.preactivate
-  edge_availability_domain = "AVAILABILITY_DOMAIN_1"
-  type                     = "PARTNER"
-}
-
-resource "google_compute_interconnect_attachment" "interconnect_attachment2_region2" {
-  name    = "vl-${var.region2_interconnect2_onprem_dc}-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-cr8"
-  project = var.attachment_project_id
-  region  = var.region2
-  router  = var.region2_router2_name
-
-  admin_enabled            = var.preactivate
-  edge_availability_domain = "AVAILABILITY_DOMAIN_2"
-  type                     = "PARTNER"
-}
-
-# ---------------------------------------------------------
-# NCC Spoke for Partner Interconnects - Region 1
-# ---------------------------------------------------------
-resource "google_network_connectivity_spoke" "region1_partner_ic_spoke" {
-  name        = "pic-spoke-${var.vpc_name}-${var.region1}"
-  project     = var.attachment_project_id
-  location    = var.region1
-  hub         = var.ncc_hub_uri
-  group       = var.ncc_hub_group
-  description = "NCC Spoke containing Partner Interconnects for region 1"
-
-  linked_interconnect_attachments {
-    # Reference the IDs natively from the google_compute_interconnect_attachment resources
-    uris = [
-      google_compute_interconnect_attachment.interconnect_attachment1_region1.id,
-      google_compute_interconnect_attachment.interconnect_attachment2_region1.id
-    ]
-
-    site_to_site_data_transfer = var.site_to_site_data_transfer
+locals {
+  attachments_by_region = {
+    for k, v in var.partner_interconnect_config.attachments : v.region => [
+      for att_key, att_val in google_compute_interconnect_attachment.partner_attachment : att_val.id
+      if var.partner_interconnect_config.attachments[att_key].region == v.region
+    ]...
   }
 }
 
-# ---------------------------------------------------------
-# NCC Spoke for Partner Interconnects - Region 2
-# ---------------------------------------------------------
-resource "google_network_connectivity_spoke" "region2_partner_ic_spoke" {
-  name        = "pic-spoke-${var.vpc_name}-${var.region2}"
+resource "google_compute_interconnect_attachment" "partner_attachment" {
+  for_each = var.partner_interconnect_config.attachments
+
+  name                     = "vl-${each.value.location}-${var.vpc_name}-${each.value.region}-${each.value.cr_suffix}"
+  project                  = var.attachment_project_id
+  region                   = each.value.region
+  router                   = each.value.router
+  type                     = "PARTNER"
+  edge_availability_domain = each.value.edge_availability_domain
+  admin_enabled            = var.partner_interconnect_config.preactivate
+}
+
+# Dynamic Network Connectivity Center (NCC) Spokes (One per Region)
+resource "google_network_connectivity_spoke" "partner_ic_spoke" {
+  for_each = local.attachments_by_region
+
+  name        = "pic-spoke-${var.vpc_name}-${each.key}"
   project     = var.attachment_project_id
-  location    = var.region2
+  location    = each.key
   hub         = var.ncc_hub_uri
   group       = var.ncc_hub_group
-  description = "NCC Spoke containing Partner Interconnects for region 2"
+  description = "NCC Spoke containing Partner Interconnects for region ${each.key}"
 
   linked_interconnect_attachments {
-    uris = [
-      google_compute_interconnect_attachment.interconnect_attachment1_region2.id,
-      google_compute_interconnect_attachment.interconnect_attachment2_region2.id
-    ]
-
+    uris                       = each.value
     site_to_site_data_transfer = var.site_to_site_data_transfer
   }
 }

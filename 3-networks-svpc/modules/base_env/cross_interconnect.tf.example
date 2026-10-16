@@ -15,9 +15,9 @@
  */
 
 locals {
-  interconnect_project_id = data.terraform_remote_state.org.outputs.interconnect_project_id
+  cross_interconnect_project_id = data.terraform_remote_state.org.outputs.interconnect_project_id
 
-  restricted_config = {
+  restricted_config_cross = {
     "development" = {
       region1_interconnect1_candidate_subnets = ["169.254.0.160/29"]
       region1_interconnect1_vlan_tag8021q     = "3901"
@@ -72,57 +72,54 @@ module "shared_vpc_cross_interconnect" {
   ncc_hub_uri             = module.shared_vpc.ncc_hub_uri
   ncc_hub_group           = "default"
 
-  region1 = var.default_region1
-  region2 = var.default_region2
-
   cross_cloud_config = {
     peer_asn              = "64515"
     peer_name             = "interconnect-peer"
     remote_cloud_provider = "oci"
 
-    attachments = {
+    attachments = { // comment entries related to region 2 if you are in a single region environment
       "region1_cross1" = {
         region            = var.default_region1
-        router            = module.routers.region1_router1.router.name
+        router            = module.routers["region1_router1"].router.name
         cross_dc          = "oci-dc-1"
         location          = "las-zone1-770"
         cr_suffix         = "cr5"
-        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-1"
-        candidate_subnets = local.restricted_config[var.env]["region1_interconnect1_candidate_subnets"]
-        vlan_tag8021q     = local.restricted_config[var.env]["region1_interconnect1_vlan_tag8021q"]
+        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.cross_interconnect_project_id}/global/interconnects/example-interconnect-1"
+        candidate_subnets = local.restricted_config_cross[var.env]["region1_interconnect1_candidate_subnets"]
+        vlan_tag8021q     = local.restricted_config_cross[var.env]["region1_interconnect1_vlan_tag8021q"]
         # md5_key           = local.restricted_config[var.env]["region1_interconnect1_md5_key"] // required for AWS
       },
       "region1_cross2" = {
         region            = var.default_region1
-        router            = module.routers.region1_router2.router.name
+        router            = module.routers["region1_router2"].router.name
         cross_dc          = "oci-dc-2"
         location          = "las-zone1-770"
         cr_suffix         = "cr6"
-        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-2"
-        candidate_subnets = local.restricted_config[var.env]["region1_interconnect2_candidate_subnets"]
-        vlan_tag8021q     = local.restricted_config[var.env]["region1_interconnect2_vlan_tag8021q"]
+        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.cross_interconnect_project_id}/global/interconnects/example-interconnect-2"
+        candidate_subnets = local.restricted_config_cross[var.env]["region1_interconnect2_candidate_subnets"]
+        vlan_tag8021q     = local.restricted_config_cross[var.env]["region1_interconnect2_vlan_tag8021q"]
         # md5_key           = local.restricted_config[var.env]["region1_interconnect2_md5_key"]  // required for AWS
       },
       "region2_cross1" = {
         region            = var.default_region2
-        router            = module.routers.region2_router1.router.name
+        router            = module.routers["region2_router1"].router.name
         cross_dc          = "oci-dc-3"
         location          = "lax-zone2-19"
         cr_suffix         = "cr7"
-        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-3"
-        candidate_subnets = local.restricted_config[var.env]["region2_interconnect1_candidate_subnets"]
-        vlan_tag8021q     = local.restricted_config[var.env]["region2_interconnect1_vlan_tag8021q"]
+        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.cross_interconnect_project_id}/global/interconnects/example-interconnect-3"
+        candidate_subnets = local.restricted_config_cross[var.env]["region2_interconnect1_candidate_subnets"]
+        vlan_tag8021q     = local.restricted_config_cross[var.env]["region2_interconnect1_vlan_tag8021q"]
         # md5_key           = local.restricted_config[var.env]["region2_interconnect1_md5_key"]  // required for AWS
       },
       "region2_cross2" = {
         region            = var.default_region2
-        router            = module.routers.region2_router2.router.name
+        router            = module.routers["region2_router2"].router.name
         cross_dc          = "oci-dc-4"
         location          = "lax-zone1-403"
         cr_suffix         = "cr8"
-        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.interconnect_project_id}/global/interconnects/example-interconnect-4"
-        candidate_subnets = local.restricted_config[var.env]["region2_interconnect2_candidate_subnets"]
-        vlan_tag8021q     = local.restricted_config[var.env]["region2_interconnect2_vlan_tag8021q"]
+        interconnect      = "https://www.googleapis.com/compute/v1/projects/${local.cross_interconnect_project_id}/global/interconnects/example-interconnect-4"
+        candidate_subnets = local.restricted_config_cross[var.env]["region2_interconnect2_candidate_subnets"]
+        vlan_tag8021q     = local.restricted_config_cross[var.env]["region2_interconnect2_vlan_tag8021q"]
         # md5_key           = local.restricted_config[var.env]["region2_interconnect2_md5_key"]  // required for AWS
       },
     }

@@ -19,6 +19,34 @@ variable "remote_state_bucket" {
   type        = string
 }
 
+variable "universe_domain" {
+  description = "The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD)."
+  type        = string
+  default     = "googleapis.com"
+
+  validation {
+    condition     = var.universe_domain != null && length(trimspace(coalesce(var.universe_domain, ""))) > 0
+    error_message = "The universe_domain variable cannot be null or an empty string."
+  }
+}
+
+variable "pkg_dev_domain" {
+  description = "Domain for Artifact Registry. Change if using a custom universe_domain."
+  type        = string
+  default     = "pkg.dev"
+
+  validation {
+    condition     = var.pkg_dev_domain != null && length(trimspace(coalesce(var.pkg_dev_domain, ""))) > 0
+    error_message = "The pkg_dev_domain variable cannot be null or an empty string."
+  }
+}
+
+variable "enable_gcr_dns" {
+  description = "Enable DNS zone creation for legacy gcr.io. Set to false for GCD environments where Container Registry is not available."
+  type        = bool
+  default     = true
+}
+
 variable "dns_enable_logging" {
   type        = bool
   description = "Toggle DNS logging for VPC DNS."

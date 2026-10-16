@@ -16,60 +16,106 @@
 
 locals {
   env_secret_project_id = data.terraform_remote_state.environments_env.outputs.env_secrets_project_id
+  bgp_peer_asn          = 64515
 }
 
 data "terraform_remote_state" "environments_env" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/environments/${var.env}"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/environments/${var.env}"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
+
 
 module "shared_vpn" {
   source = "../vpn-ha"
 
   project_id            = local.shared_vpc_project_id
   env_secret_project_id = local.env_secret_project_id
-  default_region1       = var.default_region1
-  default_region2       = var.default_region2
   vpc_name              = "${var.environment_code}-svpc"
-  region1_router1_name  = module.routers.region1_router1.router.name
-  region1_router2_name  = module.routers.region1_router2.router.name
-  region2_router1_name  = module.routers.region2_router1.router.name
-  region2_router2_name  = module.routers.region2_router2.router.name
   vpn_psk_secret_name   = "<VPN_PSK_SECRET_NAME>"
   ncc_hub_uri           = module.shared_vpc.ncc_hub_uri
   ncc_hub_group         = "default"
 
-  on_prem_router_ip_address1 = "<8.8.8.8>" # on-prem router ip address 1
-  on_prem_router_ip_address2 = "<8.8.8.8>" # on-prem router ip address 2
-  bgp_peer_asn               = "64515"
-
-  region1_router1_tunnel0_bgp_peer_address = "169.254.1.1"
-  region1_router1_tunnel0_bgp_peer_range   = "169.254.1.2/30"
-
-  region1_router1_tunnel1_bgp_peer_address = "169.254.2.1"
-  region1_router1_tunnel1_bgp_peer_range   = "169.254.2.2/30"
-
-  region1_router2_tunnel0_bgp_peer_address = "169.254.4.1"
-  region1_router2_tunnel0_bgp_peer_range   = "169.254.4.2/30"
-
-  region1_router2_tunnel1_bgp_peer_address = "169.254.6.1"
-  region1_router2_tunnel1_bgp_peer_range   = "169.254.6.2/30"
-
-  region2_router1_tunnel0_bgp_peer_address = "169.254.8.1"
-  region2_router1_tunnel0_bgp_peer_range   = "169.254.8.2/30"
-
-  region2_router1_tunnel1_bgp_peer_address = "169.254.10.1"
-  region2_router1_tunnel1_bgp_peer_range   = "169.254.10.2/30"
-
-  region2_router2_tunnel0_bgp_peer_address = "169.254.12.1"
-  region2_router2_tunnel0_bgp_peer_range   = "169.254.12.2/30"
-
-  region2_router2_tunnel1_bgp_peer_address = "169.254.14.1"
-  region2_router2_tunnel1_bgp_peer_range   = "169.254.14.2/30"
+  ha_vpn_config = {
+    gateways = { // comment entries related to region 2 if you are in a single region environment
+      "region1_gateway1" = {
+        region                           = var.default_region1
+        router                           = module.routers["region1_router1"].router.name
+        cr_suffix                        = "cr1"
+        peer_external_gateway_interfaces = ["<8.8.8.8>", "<8.8.8.8>"]
+        tunnels = {
+          "0" = {
+            bgp_peer_address  = "169.254.1.1"
+            bgp_peer_asn      = local.bgp_peer_asn
+            bgp_session_range = "169.254.1.2/30"
+          }
+          "1" = {
+            bgp_peer_address  = "169.254.2.1"
+            bgp_peer_asn      = local.bgp_peer_asn
+            bgp_session_range = "169.254.2.2/30"
+          }
+        }
+      }
+      "region1_gateway2" = {
+        region                           = var.default_region1
+        router                           = module.routers["region1_router2"].router.name
+        cr_suffix                        = "cr2"
+        peer_external_gateway_interfaces = ["<8.8.8.8>", "<8.8.8.8>"]
+        tunnels = {
+          "0" = {
+            bgp_peer_address  = "169.254.4.1"
+            bgp_peer_asn      = local.bgp_peer_asn
+            bgp_session_range = "169.254.4.2/30"
+          }
+          "1" = {
+            bgp_peer_address  = "169.254.6.1"
+            bgp_peer_asn      = local.bgp_peer_asn
+            bgp_session_range = "169.254.6.2/30"
+          }
+        }
+      }
+      "region2_gateway1" = {
+        region                           = var.default_region2
+        router                           = module.routers["region2_router1"].router.name
+        cr_suffix                        = "cr1"
+        peer_external_gateway_interfaces = ["<8.8.8.8>", "<8.8.8.8>"]
+        tunnels = {
+          "0" = {
+            bgp_peer_address  = "169.254.8.1"
+            bgp_peer_asn      = local.bgp_peer_asn
+            bgp_session_range = "169.254.8.2/30"
+          }
+          "1" = {
+            bgp_peer_address  = "169.254.10.1"
+            bgp_peer_asn      = local.bgp_peer_asn
+            bgp_session_range = "169.254.10.2/30"
+          }
+        }
+      }
+      "region2_gateway2" = {
+        region                           = var.default_region2
+        router                           = module.routers["region2_router2"].router.name
+        cr_suffix                        = "cr2"
+        peer_external_gateway_interfaces = ["<8.8.8.8>", "<8.8.8.8>"]
+        tunnels = {
+          "0" = {
+            bgp_peer_address  = "169.254.12.1"
+            bgp_peer_asn      = local.bgp_peer_asn
+            bgp_session_range = "169.254.12.2/30"
+          }
+          "1" = {
+            bgp_peer_address  = "169.254.14.1"
+            bgp_peer_asn      = local.bgp_peer_asn
+            bgp_session_range = "169.254.14.2/30"
+          }
+        }
+      }
+    }
+  }
 
   depends_on = [
     module.shared_vpc,

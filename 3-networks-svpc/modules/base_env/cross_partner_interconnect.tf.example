@@ -23,15 +23,12 @@ module "shared_vpc_cross_partner_interconnect" {
   ncc_hub_uri           = module.shared_vpc.ncc_hub_uri
   ncc_hub_group         = "default"
 
-  region1 = var.default_region1
-  region2 = var.default_region2
-
   partner_cross_cloud_config = {
     remote_cloud_provider = "oci"
-    attachments = {
+    attachments = { // comment entries related to region 2 if you are in a single region environment
       "region1_cross1" = {
         region                   = var.default_region1
-        router                   = module.routers.region1_router1.router.name
+        router                   = module.routers["region1_router1"].router.name
         location                 = "las-zone1-770"
         cross_dc                 = "cross-dc1"
         preactivate              = true
@@ -41,7 +38,7 @@ module "shared_vpc_cross_partner_interconnect" {
       "region1_cross2" = {
         region                   = var.default_region1
         preactivate              = true
-        router                   = module.routers.region1_router2.router.name
+        router                   = module.routers["region1_router2"].router.name
         location                 = "las-zone1-770"
         cross_dc                 = "cross-dc2"
         edge_availability_domain = "AVAILABILITY_DOMAIN_2"
@@ -50,7 +47,7 @@ module "shared_vpc_cross_partner_interconnect" {
       "region2_cross1" = {
         region                   = var.default_region2
         preactivate              = true
-        router                   = module.routers.region2_router1.router.name
+        router                   = module.routers["region2_router1"].router.name
         location                 = "lax-zone2-19"
         cross_dc                 = "cross-dc3"
         edge_availability_domain = "AVAILABILITY_DOMAIN_1"
@@ -59,7 +56,7 @@ module "shared_vpc_cross_partner_interconnect" {
       "region2_cross2" = {
         region                   = var.default_region2
         preactivate              = true
-        router                   = module.routers.region2_router2.router.name
+        router                   = module.routers["region2_router2"].router.name
         location                 = "lax-zone1-403"
         cross_dc                 = "cross-dc4"
         edge_availability_domain = "AVAILABILITY_DOMAIN_2"

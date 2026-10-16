@@ -118,3 +118,13 @@ output "confidential_space_workload_sa" {
   description = "Workload Service Account for confidential space from base_env"
   value       = module.env.confidential_space_workload_sa
 }
+
+output "ncc_spoke_group" {
+  value       = module.ncc_spoke_group
+  description = "The NCC group to be used by spokes"
+}
+
+output "ncc_hub_uri" {
+  value       = module.ncc_hub_uri
+  description = "The NCC Hub ID"
+}

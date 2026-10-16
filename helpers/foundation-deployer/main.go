@@ -303,10 +303,10 @@ func main() {
 
 	bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
 
-	if skipInnerBuildMsg {
+	if skipInnerBuildMsg && conf.BuildType == stages.BuildTypeCBCSR {
 		msg.PrintBuildMsg(bo.CICDProject, bo.DefaultRegion, conf.DisablePrompt)
 	}
-	msg.PrintQuotaMsg(bo.ProjectsSA, conf.DisablePrompt)
+	msg.PrintQuotaMsg(bo.OrgSA, bo.ProjectsSA, conf.DisablePrompt)
 	if globalTFVars.HasGroupsCreation() {
 		msg.PrintAdminGroupPermissionMsg(bo.BootstrapSA, conf.DisablePrompt)
 	}
@@ -369,8 +369,9 @@ func main() {
 		io := stages.GetInfraPipelineOutputs(t, conf.CheckoutPath, "bu1-example-app")
 		io.RemoteStateBucket = bo.RemoteStateBucketProjects
 
-		msg.PrintBuildMsg(io.InfraPipeProj, io.DefaultRegion, conf.DisablePrompt)
-
+		if conf.BuildType == stages.BuildTypeCBCSR {
+			msg.PrintBuildMsg(io.InfraPipeProj, io.DefaultRegion, conf.DisablePrompt)
+		}
 		err = s.RunStep("bu1-example-app", func() error {
 			return stages.DeployExampleAppStage(t, s, globalTFVars, io, bo.ProjectsSA, conf)
 		})

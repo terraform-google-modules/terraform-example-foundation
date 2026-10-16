@@ -107,10 +107,13 @@ func PrintGLJobsMsg(owner, repo string, disablePrompt bool) {
 	}
 }
 
-func PrintQuotaMsg(sa string, disablePrompt bool) {
+func PrintQuotaMsg(saOrg, saProjects string, disablePrompt bool) {
+	fmt.Println("")
+	fmt.Println("# Request a billing quota increase for the service account of stage 1-org")
+	fmt.Printf("# %s \n", saOrg)
 	fmt.Println("")
 	fmt.Println("# Request a billing quota increase for the service account of stage 4-projects")
-	fmt.Printf("# %s \n", sa)
+	fmt.Printf("# %s \n", saProjects)
 	fmt.Printf("# Link: %s\n", quotaURL)
 	fmt.Println("")
 	fmt.Printf("# See: %s\n", troubleQuotaURL)

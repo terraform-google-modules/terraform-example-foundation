@@ -476,3 +476,40 @@ If you received any errors or made any changes to the Terraform config or any `.
 ## Warning
 
 If you previously enabled the dry-run variables `required_ingress_rules_app_infra_dry_run` and `required_egress_rules_app_infra_dry_run`, you must **disable both of them before running the 4-projects step in enforced mode**. Once enforced mode is activated and the **4-projects** step is executed, the projects created in that step are removed from the dry-run perimeter. Keeping these dry-run variables active creates conflicts, because they define rules for projects that will no longer be part of the dry-run perimeter after this transition.
+
+##  Network Connectivity Center (NCC) post deployment configuration
+
+After finishing the deployment or after adding a new project that joins the NCC Hub it is necessary to accept the new project into the Hub.
+
+To accept a new project into the Hub go to the [NCC Hub console page](https://console.cloud.google.com/hybrid/hubs/list) for the Hub project, switch to the tab "Spokes" and accept the project with Spoke status `Inactive, pending review`.
+
+You can also accept the project using `gcloud`. To accept the project using `gcloud` follow these steps:
+
+1. cd to gcp-projects/business_unit_1/ENVIRONMENT
+
+   ```sh
+   export ENVIRONMENT="YOUR-ENVIRONMENT" # production/nonproduction/development
+   cd gcp-projects/business_unit_1/${ENVIRONMENT}
+   ```
+
+1. Get the NCC Hub URI
+
+   ```sh
+   terraform init
+   export NCC_HUB_URI=$(terraform output -raw ncc_hub_uri)
+   echo ${NCC_HUB_URI}
+   ```
+
+1. Get the `INACTIVE` spoke for the hub:
+   *(Note: This command captures the first inactive spoke. If you have multiple pending spokes, you will need to repeat this process).*
+
+   ```sh
+   export SPOKE_NAME=$(gcloud network-connectivity hubs list-spokes ${NCC_HUB_URI}  --filter="state=INACTIVE" --format="json(name)" | jq -r '.[0].name')
+   echo ${SPOKE_NAME}
+   ```
+
+1. Accept the spoke
+
+   ```sh
+   gcloud network-connectivity hubs accept-spoke ${NCC_HUB_URI} --spoke=${SPOKE_NAME}
+   ```

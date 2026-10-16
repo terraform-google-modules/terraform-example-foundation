@@ -107,7 +107,7 @@ When generating or updating code, AI agents MUST strictly adhere to the followin
 1. **Implement Terraform Changes**: Update or create resources in stage module directories.
 2. **Expose Variables & Outputs**: Ensure all inputs and outputs in `variables.tf` and `outputs.tf` have type constraints and descriptions.
 3. **Format Code**: Run `terraform fmt` in the module directory.
-4. **Update Documentation**: Update module `README.md` or execute `make docker_generate_docs`.
+4. **Update Documentation**: Update module `README.md` and execute `make docker_generate_docs`.
 5. **Add Integration Tests**: Add or update the corresponding Go integration test suite under `test/integration/`.
 
 ### Workflow B: Updating IAM Permissions & Security Policies

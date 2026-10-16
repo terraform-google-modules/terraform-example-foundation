@@ -138,6 +138,9 @@ locals {
       "roles/dns.admin",
       "roles/iam.workloadIdentityPoolAdmin",
     ],
+    "proj" = [
+      "roles/cloudbuild.workerPoolUser",
+    ],
   }
 
   bootstrap_projects = {

@@ -66,3 +66,9 @@ variable "custom_tee_image_reference" {
   type        = string
   default     = ""
 }
+
+variable "confidential_instance_zone" {
+  description = "Zone where the confidential compute instance should be created (e.g. us-central1-b, us-central1-c). If null, defaults to us-central1-b."
+  type        = string
+  default     = null
+}

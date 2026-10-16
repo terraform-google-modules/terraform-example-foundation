@@ -135,6 +135,7 @@ module "confidential_compute_instance" {
 
   project_id            = local.env_project_id
   region                = var.region
+  zone                  = var.zone != null ? var.zone : "${var.region}-b"
   subnetwork_project    = local.subnetwork_project
   subnetwork            = local.subnetwork_self_link
   num_instances         = var.num_instances

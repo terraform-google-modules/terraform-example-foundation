@@ -54,6 +54,7 @@ gcloud artifacts docker images describe us-central1-docker.pkg.dev/my-project/my
 | source\_image\_project | Project where the source image comes from. The default project contains confidential-space-images images. See: https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-images | `string` | `"confidential-space-images"` | no |
 | universe\_domain | The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD). | `string` | `"googleapis.com"` | no |
 | workload\_pool\_propagation\_sleep\_duration | The duration to wait for Workload Identity Pool propagation (e.g., 60s, 2m). | `string` | `"60s"` | no |
+| zone | Zone where the confidential compute instance should be created. If null, defaults to <region>-b. | `string` | `null` | no |
 
 ## Outputs
 

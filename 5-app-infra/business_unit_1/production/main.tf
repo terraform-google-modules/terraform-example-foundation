@@ -58,6 +58,7 @@ module "confidential_space" {
   business_unit                            = local.business_unit
   project_suffix                           = "conf-space"
   region                                   = coalesce(var.instance_region, local.default_region)
+  zone                                     = var.confidential_instance_zone
   remote_state_bucket                      = var.remote_state_bucket
   workload_pool_propagation_sleep_duration = var.workload_pool_propagation_sleep_duration
   universe_domain                          = var.universe_domain

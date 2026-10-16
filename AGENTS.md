@@ -161,7 +161,7 @@ Before completing any task or proposing changes, verify that:
 - [ ] IAM roles strictly follow the Principle of Least Privilege.
 - [ ] Any modified module has its documentation updated (`README.md` inputs/outputs).
 - [ ] Go test files follow `gofmt` style and compile without errors (`go vet ./...`).
-- [ ] Commit descriptions follow the Conventional Commits standard (`feat:`, `fix:`, or `feat!:` summary line + explanatory "Why" body).
+- [ ] Commit descriptions follow the Conventional Commits standard (`feat:`, `fix:`, `feat!:` , or `fix!:` summary line + explanatory "Why" body).
 - [ ] Documentation updates comply with the [Google Developer Documentation Style Guide](https://developers.google.com/style).
 
 ---

@@ -25,6 +25,12 @@ variable "remote_state_bucket" {
   type        = string
 }
 
+variable "universe_domain" {
+  description = "The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD)."
+  type        = string
+  default     = "googleapis.com"
+}
+
 variable "confidential_image_digest" {
   description = "SHA256 digest of the Docker image to be used for running the workload in Confidential Space. This value ensures the integrity and immutability of the image, guaranteeing that only the expected and verified code is executed within the confidential environment. Expected format: `sha256:<digest>`."
   type        = string
@@ -35,4 +41,22 @@ variable "workload_pool_propagation_sleep_duration" {
   description = "The duration to wait for Workload Identity Pool propagation (e.g., 60s, 2m)."
   type        = string
   default     = "60s"
+}
+
+variable "machine_type" {
+  description = "Machine type to create, e.g. n1-standard-1"
+  type        = string
+  default     = "f1-micro"
+}
+
+variable "disk_type" {
+  description = "Boot disk type, can be either pd-ssd, local-ssd, pd-standard, or hyperdisk-balanced(Air Gapped)"
+  type        = string
+  default     = "pd-standard"
+}
+
+variable "source_image" {
+  description = "Source disk image. if not provided defaults to the latest public Rocky Linux 9 optimized for GCP image."
+  type        = string
+  default     = ""
 }

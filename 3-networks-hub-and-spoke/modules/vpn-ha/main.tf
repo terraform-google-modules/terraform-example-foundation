@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,14 @@
  *****************************************/
 
 locals {
-  network_name    = "vpc-${var.vpc_name}"
-  psk_secret_data = chomp(data.google_secret_manager_secret_version.psk.secret_data)
+  network_name = "vpc-${var.vpc_name}"
+
+  tunnels_by_region = {
+    for k, v in var.ha_vpn_config.gateways : v.region => flatten([
+      for mod_key, mod_val in module.vpn_ha : mod_val.tunnel_self_links
+      if var.ha_vpn_config.gateways[mod_key].region == v.region
+    ])...
+  }
 }
 
 data "google_secret_manager_secret_version" "psk" {
@@ -28,232 +34,60 @@ data "google_secret_manager_secret_version" "psk" {
   secret  = var.vpn_psk_secret_name
 }
 
-module "vpn_ha_region1_router1" {
+# ------------------------------------------------------------------------------
+# Dynamic HA VPN Module Invocation
+# ------------------------------------------------------------------------------
+
+module "vpn_ha" {
   source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
   version = "~> 7.0"
 
-  project_id = var.project_id
-  region     = var.default_region1
-  network    = local.network_name
-  name       = "vpn-${var.vpc_name}-${var.default_region1}-cr1"
+  for_each = var.ha_vpn_config.gateways
+
+  project_id  = var.project_id
+  region      = each.value.region
+  network     = local.network_name
+  name        = "vpn-${var.vpc_name}-${each.value.region}-${each.value.cr_suffix}"
+  router_name = each.value.router
+
   peer_external_gateway = {
-    redundancy_type = "TWO_IPS_REDUNDANCY"
-    interfaces = [{
-      id         = 0
-      ip_address = var.on_prem_router_ip_address1
-      },
-      {
-        id         = 1
-        ip_address = var.on_prem_router_ip_address2
-    }]
+    redundancy_type = length(each.value.peer_external_gateway_interfaces) > 1 ? "TWO_IPS_REDUNDANT" : "SINGLE_IP_INTERNALLY_REDUNDANT"
+    interfaces = [
+      for idx, ip in each.value.peer_external_gateway_interfaces : {
+        id         = idx
+        ip_address = ip
+      }
+    ]
   }
+
   tunnels = {
-    remote-0 = {
+    for tunnel_key, tunnel_val in each.value.tunnels : tunnel_key => {
       bgp_peer = {
-        address = var.region1_router1_tunnel0_bgp_peer_address
-        asn     = var.bgp_peer_asn
+        address = tunnel_val.bgp_peer_address
+        asn     = tunnel_val.bgp_peer_asn
       }
-      bgp_peer_options                = null
-      bgp_session_range               = var.region1_router1_tunnel0_bgp_peer_range
-      ike_version                     = 2
-      vpn_gateway_interface           = 0
-      peer_external_gateway_interface = 0
-      shared_secret                   = local.psk_secret_data
-    }
-    remote-1 = {
-      bgp_peer = {
-        address = var.region1_router1_tunnel1_bgp_peer_address
-        asn     = var.bgp_peer_asn
-      }
-      bgp_peer_options                = null
-      bgp_session_range               = var.region1_router1_tunnel1_bgp_peer_range
-      ike_version                     = 2
-      vpn_gateway_interface           = 1
-      peer_external_gateway_interface = 1
-      shared_secret                   = local.psk_secret_data
+      bgp_session_range = tunnel_val.bgp_session_range
+      shared_secret     = data.google_secret_manager_secret_version.psk.secret_data
     }
   }
 }
 
-module "vpn_ha_region1_router2" {
-  source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  version = "~> 7.0"
+# ------------------------------------------------------------------------------
+# Dynamic Network Connectivity Center (NCC) Spokes (One per Region)
+# ------------------------------------------------------------------------------
 
-  project_id = var.project_id
-  region     = var.default_region1
-  network    = local.network_name
-  name       = "vpn-${var.vpc_name}-${var.default_region1}-cr2"
-  peer_external_gateway = {
-    redundancy_type = "TWO_IPS_REDUNDANCY"
-    interfaces = [{
-      id         = 0
-      ip_address = var.on_prem_router_ip_address1
-      },
-      {
-        id         = 1
-        ip_address = var.on_prem_router_ip_address2
-    }]
-  }
-  tunnels = {
-    remote-0 = {
-      bgp_peer = {
-        address = var.region1_router2_tunnel0_bgp_peer_address
-        asn     = var.bgp_peer_asn
-      }
-      bgp_peer_options                = null
-      bgp_session_range               = var.region1_router2_tunnel0_bgp_peer_range
-      ike_version                     = 2
-      vpn_gateway_interface           = 0
-      peer_external_gateway_interface = 0
-      shared_secret                   = local.psk_secret_data
-    }
-    remote-1 = {
-      bgp_peer = {
-        address = var.region1_router2_tunnel1_bgp_peer_address
-        asn     = var.bgp_peer_asn
-      }
-      bgp_peer_options                = null
-      bgp_session_range               = var.region1_router2_tunnel1_bgp_peer_range
-      ike_version                     = 2
-      vpn_gateway_interface           = 1
-      peer_external_gateway_interface = 1
-      shared_secret                   = local.psk_secret_data
-    }
-  }
-}
+resource "google_network_connectivity_spoke" "vpn_spoke" {
+  for_each = local.tunnels_by_region
 
-module "vpn_ha_region2_router1" {
-  source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  version = "~> 7.0"
-
-  project_id = var.project_id
-  region     = var.default_region2
-  network    = local.network_name
-  name       = "vpn-${var.vpc_name}-${var.default_region2}-cr1"
-  peer_external_gateway = {
-    redundancy_type = "TWO_IPS_REDUNDANCY"
-    interfaces = [{
-      id         = 0
-      ip_address = var.on_prem_router_ip_address1
-      },
-      {
-        id         = 1
-        ip_address = var.on_prem_router_ip_address2
-    }]
-  }
-  tunnels = {
-    remote-0 = {
-      bgp_peer = {
-        address = var.region2_router1_tunnel0_bgp_peer_address
-        asn     = var.bgp_peer_asn
-      }
-      bgp_peer_options                = null
-      bgp_session_range               = var.region2_router1_tunnel0_bgp_peer_range
-      ike_version                     = 2
-      vpn_gateway_interface           = 0
-      peer_external_gateway_interface = 0
-      shared_secret                   = local.psk_secret_data
-    }
-    remote-1 = {
-      bgp_peer = {
-        address = var.region2_router1_tunnel1_bgp_peer_address
-        asn     = var.bgp_peer_asn
-      }
-      bgp_peer_options                = null
-      bgp_session_range               = var.region2_router1_tunnel1_bgp_peer_range
-      ike_version                     = 2
-      vpn_gateway_interface           = 1
-      peer_external_gateway_interface = 1
-      shared_secret                   = local.psk_secret_data
-    }
-  }
-}
-
-module "vpn_ha_region2_router2" {
-  source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
-  version = "~> 7.0"
-
-  project_id = var.project_id
-  region     = var.default_region2
-  network    = local.network_name
-  name       = "vpn-${var.vpc_name}-${var.default_region2}-cr2"
-  peer_external_gateway = {
-    redundancy_type = "TWO_IPS_REDUNDANCY"
-    interfaces = [{
-      id         = 0
-      ip_address = var.on_prem_router_ip_address1
-      },
-      {
-        id         = 1
-        ip_address = var.on_prem_router_ip_address2
-    }]
-  }
-  tunnels = {
-    remote-0 = {
-      bgp_peer = {
-        address = var.region2_router2_tunnel0_bgp_peer_address
-        asn     = var.bgp_peer_asn
-      }
-      bgp_peer_options                = null
-      bgp_session_range               = var.region2_router2_tunnel0_bgp_peer_range
-      ike_version                     = 2
-      vpn_gateway_interface           = 0
-      peer_external_gateway_interface = 0
-      shared_secret                   = local.psk_secret_data
-    }
-    remote-1 = {
-      bgp_peer = {
-        address = var.region2_router2_tunnel1_bgp_peer_address
-        asn     = var.bgp_peer_asn
-      }
-      bgp_peer_options                = null
-      bgp_session_range               = var.region2_router2_tunnel1_bgp_peer_range
-      ike_version                     = 2
-      vpn_gateway_interface           = 1
-      peer_external_gateway_interface = 1
-      shared_secret                   = local.psk_secret_data
-    }
-  }
-}
-
-# ---------------------------------------------------------
-# NCC Spoke for Region 1
-# ---------------------------------------------------------
-resource "google_network_connectivity_spoke" "region1_vpn_spoke" {
-  name        = "vpn-spoke-${var.vpc_name}-${var.default_region1}"
+  name        = "vpn-spoke-${var.vpc_name}-${each.key}"
   project     = var.project_id
-  location    = var.default_region1
+  location    = each.key
   hub         = var.ncc_hub_uri
   group       = var.ncc_hub_group
-  description = "NCC Spoke containing HA VPNs for region 1"
+  description = "NCC Spoke containing HA VPN tunnels for region ${each.key}"
 
   linked_vpn_tunnels {
-    # Combine the tunnel URIs from both VPN modules in Region 1
-    uris = concat(
-      module.vpn_ha_region1_router1.tunnel_self_links,
-      module.vpn_ha_region1_router2.tunnel_self_links
-    )
-
-    site_to_site_data_transfer = var.site_to_site_data_transfer
-  }
-}
-
-# ---------------------------------------------------------
-# NCC Spoke for Region 2
-# ---------------------------------------------------------
-resource "google_network_connectivity_spoke" "region2_vpn_spoke" {
-  name        = "vpn-spoke-${var.vpc_name}-${var.default_region2}"
-  project     = var.project_id
-  location    = var.default_region2
-  hub         = var.ncc_hub_uri
-  group       = var.ncc_hub_group
-  description = "NCC Spoke containing HA VPNs for region 2"
-  linked_vpn_tunnels {
-    uris = concat(
-      module.vpn_ha_region2_router1.tunnel_self_links,
-      module.vpn_ha_region2_router2.tunnel_self_links
-    )
-
+    uris                       = each.value
     site_to_site_data_transfer = var.site_to_site_data_transfer
   }
 }

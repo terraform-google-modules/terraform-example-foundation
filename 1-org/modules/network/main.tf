@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+locals {
+  billing_budgets_api    = var.available_universe_services.billing_budget ? "billingbudgets.googleapis.com" : ""
+  service_networking_api = var.available_universe_services.service_networking ? "servicenetworking.googleapis.com" : ""
+}
+
 /******************************************
   Projects for Shared VPCs
 *****************************************/
@@ -25,23 +30,24 @@ module "shared_vpc_host_project" {
   random_project_id           = true
   random_project_id_length    = 4
   name                        = format("%s-%s-svpc", var.project_prefix, var.env_code)
+  universe_prefix             = var.universe_prefix
   org_id                      = var.org_id
   billing_account             = var.billing_account
   folder_id                   = var.folder_id
   disable_services_on_destroy = false
   deletion_policy             = var.project_deletion_policy
 
-  activate_apis = [
+  activate_apis = compact([
     "compute.googleapis.com",
     "dns.googleapis.com",
-    "servicenetworking.googleapis.com",
     "container.googleapis.com",
     "logging.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "accesscontextmanager.googleapis.com",
-    "billingbudgets.googleapis.com",
-    "networkconnectivity.googleapis.com"
-  ]
+    "networkconnectivity.googleapis.com",
+    local.service_networking_api,
+    local.billing_budgets_api
+  ])
 
   labels = {
     environment       = var.env
@@ -53,8 +59,8 @@ module "shared_vpc_host_project" {
     env_code          = var.env_code
   }
 
-  budget_alert_pubsub_topic   = var.project_budget.shared_network_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.shared_network_alert_spent_percents
-  budget_amount               = var.project_budget.shared_network_budget_amount
-  budget_alert_spend_basis    = var.project_budget.shared_network_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = var.available_universe_services.billing_budget ? var.project_budget.shared_network_alert_pubsub_topic : null
+  budget_alert_spent_percents = var.available_universe_services.billing_budget ? var.project_budget.shared_network_alert_spent_percents : null
+  budget_amount               = var.available_universe_services.billing_budget ? var.project_budget.shared_network_budget_amount : null
+  budget_alert_spend_basis    = var.available_universe_services.billing_budget ? var.project_budget.shared_network_budget_alert_spend_basis : null
 }

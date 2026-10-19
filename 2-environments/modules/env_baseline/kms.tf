@@ -27,13 +27,18 @@ module "env_kms" {
   random_project_id_length    = 4
   default_service_account     = "deprivilege"
   name                        = "${local.project_prefix}-${var.environment_code}-kms"
+  universe_prefix             = local.universe_prefix
   org_id                      = local.org_id
   billing_account             = local.billing_account
   folder_id                   = google_folder.env.id
   disable_services_on_destroy = false
   depends_on                  = [time_sleep.wait_60_seconds]
-  activate_apis               = ["logging.googleapis.com", "cloudkms.googleapis.com", "billingbudgets.googleapis.com"]
   deletion_policy             = var.project_deletion_policy
+  activate_apis = compact([
+    "logging.googleapis.com",
+    "cloudkms.googleapis.com",
+    local.billing_budgets_api
+  ])
 
   vpc_service_control_attach_enabled = local.enforce_vpcsc ? "true" : "false"
   vpc_service_control_attach_dry_run = !local.enforce_vpcsc ? "true" : "false"
@@ -50,8 +55,8 @@ module "env_kms" {
     vpc               = "none"
   }
 
-  budget_alert_pubsub_topic   = var.project_budget.kms_alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.kms_alert_spent_percents
-  budget_amount               = var.project_budget.kms_budget_amount
-  budget_alert_spend_basis    = var.project_budget.kms_budget_alert_spend_basis
+  budget_alert_pubsub_topic   = local.available_universe_services.billing_budget ? var.project_budget.kms_alert_pubsub_topic : null
+  budget_alert_spent_percents = local.available_universe_services.billing_budget ? var.project_budget.kms_alert_spent_percents : null
+  budget_amount               = local.available_universe_services.billing_budget ? var.project_budget.kms_budget_amount : null
+  budget_alert_spend_basis    = local.available_universe_services.billing_budget ? var.project_budget.kms_budget_alert_spend_basis : null
 }

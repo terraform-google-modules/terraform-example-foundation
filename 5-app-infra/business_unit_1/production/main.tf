@@ -28,6 +28,11 @@ module "gce_instance" {
   project_suffix      = "sample-svpc"
   region              = coalesce(var.instance_region, local.default_region)
   remote_state_bucket = var.remote_state_bucket
+  universe_domain     = var.universe_domain
+  machine_type        = var.machine_type
+  disk_type           = var.disk_type
+  source_image        = var.source_image
+
 }
 
 module "peering_gce_instance" {
@@ -38,6 +43,10 @@ module "peering_gce_instance" {
   project_suffix      = "sample-peering"
   region              = coalesce(var.instance_region, local.default_region)
   remote_state_bucket = var.remote_state_bucket
+  universe_domain     = var.universe_domain
+  machine_type        = var.machine_type
+  disk_type           = var.disk_type
+  source_image        = var.source_image
 }
 
 module "confidential_space" {
@@ -51,4 +60,5 @@ module "confidential_space" {
   region                                   = coalesce(var.instance_region, local.default_region)
   remote_state_bucket                      = var.remote_state_bucket
   workload_pool_propagation_sleep_duration = var.workload_pool_propagation_sleep_duration
+  universe_domain                          = var.universe_domain
 }

@@ -39,6 +39,23 @@ variable "application_name" {
   type        = string
 }
 
+variable "universe_prefix" {
+  description = "The universe short name prefix to prepend to the project ID (e.g., 'eu0'). A colon (:) is automatically appended to the project ID, and a hyphen (-) is used for the state bucket name."
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = var.universe_prefix == "" || can(regex("^[a-z0-9]+$", var.universe_prefix))
+    error_message = "The universe_prefix variable must be empty or contain only lowercase alphanumeric characters."
+  }
+}
+
+variable "billing_budget_available" {
+  description = "Indicate that billing budget API is available."
+  type        = bool
+  default     = true
+}
+
 variable "billing_code" {
   description = "The code that's used to provide chargeback information"
   type        = string

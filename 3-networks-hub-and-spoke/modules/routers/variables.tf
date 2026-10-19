@@ -16,7 +16,7 @@
 
 variable "project_id" {
   type        = string
-  description = "project ID to create the routers."
+  description = "Project ID to create the routers."
 }
 
 variable "vpc_name" {
@@ -24,26 +24,31 @@ variable "vpc_name" {
   description = "Label to identify the VPC associated with VPC that will use the Routers."
 }
 
-variable "region1" {
-  type        = string
-  description = "First subnet region."
-}
+variable "router_config" {
+  description = <<EOT
+Cloud Routers configuration map containing router definitions.
 
-variable "region2" {
-  type        = string
-  description = "Second subnet region."
-}
+Top-level attributes:
+  - bgp_asn:              Default BGP Autonomous System Number (ASN) for the Cloud Routers.
+  - advertised_groups:    (Optional) Default list of advertised groups (defaults to ["ALL_SUBNETS"]).
+  - advertised_ip_ranges: (Optional) Default list of custom IP ranges to advertise.
+  - routers:              Map of Cloud Router objects keyed by a unique identifier.
 
-variable "bgp_asn_subnet" {
-  type        = number
-  description = "BGP ASN for Subnets cloud routers."
-}
+Router attributes (map values):
+  - region:    Google Cloud region where the Cloud Router resides.
+  - cr_suffix: Suffix used for router naming (e.g., 'cr1', 'cr2').
+EOT
 
-variable "advertised_ip_ranges" {
-  type = list(object({
-    range       = string
-    description = optional(string)
-  }))
-  description = "User-specified list of individual IP ranges to advertise."
-  default     = []
+  type = object({
+    bgp_asn           = number
+    advertised_groups = optional(list(string), ["ALL_SUBNETS"])
+    advertised_ip_ranges = optional(list(object({
+      range       = string
+      description = optional(string)
+    })), [])
+    routers = map(object({
+      region    = string
+      cr_suffix = string
+    }))
+  })
 }

@@ -21,8 +21,6 @@ This module implements the recommendation proposed in [Cross-Cloud Interconnect 
 | interconnect\_project\_id | Interconnect project ID. | `string` | n/a | yes |
 | ncc\_hub\_group | Network Connectivity Center Group to attach the spoke to | `string` | n/a | yes |
 | ncc\_hub\_uri | The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached. | `string` | n/a | yes |
-| region1 | First subnet region. The Dedicated Interconnect module only configures two regions. | `string` | n/a | yes |
-| region2 | Second subnet region. The Dedicated Interconnect module only configures two regions. | `string` | n/a | yes |
 | site\_to\_site\_data\_transfer | Set to true to allow Google Cloud routing to act as a transit network between on-premises sites. | `bool` | `false` | no |
 | vpc\_name | Label to identify the VPC associated with shared VPC that will use the Interconnect. | `string` | n/a | yes |
 
@@ -32,5 +30,6 @@ This module implements the recommendation proposed in [Cross-Cloud Interconnect 
 |------|-------------|
 | customer\_router\_ip\_addresses | Map of IPv4 addresses + prefix lengths to configure on customer router subinterfaces. |
 | interconnect\_attachments | Map of all interconnect attachment objects keyed by attachment name. |
+| ncc\_spoke\_ids | Map of Network Connectivity Center spoke IDs keyed by region. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

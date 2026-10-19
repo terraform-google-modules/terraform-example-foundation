@@ -15,18 +15,19 @@
  */
 
 locals {
-  default_region     = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
-  default_region_2   = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
-  default_region_gcs = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_gcs
-  default_region_kms = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_kms
+  default_region              = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  default_region_2            = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_2
+  default_region_gcs          = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_gcs
+  default_region_kms          = data.terraform_remote_state.bootstrap.outputs.common_config.default_region_kms
+  available_universe_services = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
 }
 
 data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/bootstrap/state"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/bootstrap/state"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
-

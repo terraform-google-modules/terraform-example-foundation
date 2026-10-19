@@ -30,6 +30,7 @@ import (
 
 type GitRepo struct {
 	conf *git.CmdCfg
+	path string
 }
 
 // GitClone clones git repositories, supporting CSR, Github and Gitlab type of source control
@@ -48,13 +49,28 @@ func cloneCSR(t testing.TB, repositoryName, path, project string, logger *logger
 	}
 	return GitRepo{
 		conf: git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger)),
+		path: path,
 	}
 }
 
 func GetRepoOnly(t testing.TB, path string, logger *logger.Logger) GitRepo {
 	return GitRepo{
 		conf: git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger)),
+		path: path,
 	}
+}
+
+// GitInit initialize a directory as a local git repository. If path does not exist it will be created.
+func GitInit(t testing.TB, path string, logger *logger.Logger) (GitRepo, error) {
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		if err := os.MkdirAll(path, 0755); err != nil {
+			return GitRepo{}, fmt.Errorf("failed to create directory %q: %w", path, err)
+		}
+	}
+	local := GetRepoOnly(t, path, logger)
+	local.conf.Init()
+	return local, nil
 }
 
 // cloneGit clones a Github or Gitlab repository and returns a CmdConfig pointing to the repository.
@@ -72,7 +88,13 @@ func cloneGit(t testing.TB, repositoryUrl, path string, logger *logger.Logger) G
 
 	return GitRepo{
 		conf: git.NewCmdConfig(t, git.WithDir(path), git.WithLogger(logger)),
+		path: path,
 	}
+}
+
+// GetPath gets the file system path to repository
+func (g *GitRepo) GetPath() string {
+	return g.path
 }
 
 // GetCurrentBranch gets the current branch in the repository.

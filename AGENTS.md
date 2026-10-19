@@ -116,8 +116,8 @@ When generating or updating code, AI agents MUST strictly adhere to the followin
 3. **Test with Harness**: Verify that the changes pass integration tests in `test/setup/` or `test/integration/`.
 
 ### Workflow C: Code Linting & Plan Validation
-1. **Lint Code & Configurations**: Execute `make docker_test_lint` to validate Terraform, Shell, YAML, and Go formatting and syntax.
-2. **Validate Plans & Test Integration**: Run stage integration tests (`test/integration/`) to verify generated Terraform plans and ensure deployments pass without policy denial or execution errors.
+1. **Lint Code**: Execute `make docker_test_lint` to validate Terraform, Shell, YAML, and Go formatting and syntax.
+2. **Validate Plans & Test Integration**: Run stage integration tests (`test/integration/`) to verify generated Terraform plans and ensure deployments pass without execution errors.
 
 ---
 
@@ -144,11 +144,46 @@ make docker_generate_docs
 ```
 
 ### 3. Running Integration Tests Locally
-```bash
-# Run specific blueprint-test integration test
-cd test/integration
-go test -v -run TestOrg ./org -timeout 60m
+
+Integration tests require a test harness provisioned via `test/setup/`.
+
+#### Step 1: Configure Test Variables (`test/setup/terraform.tfvars`)
+Create a `terraform.tfvars` file inside `test/setup/` with the required parameters:
+```hcl
+org_id                   = "012345678901"
+folder_id                = "123456789012"
+billing_account          = "XXXXXX-YYYYYY-ZZZZZZ"
+group_email              = "gcp-admins@example.com"
+domain_to_allow          = "example.com"
+example_foundations_mode = "default" # or "production_only_deploy"
 ```
+
+#### Step 2: Provision Harness & Run Tests
+```bash
+# 1. Provision test harness environment
+cd test/setup
+terraform init && terraform apply -auto-approve
+
+# 2. Run stage integration tests sequentially
+cd ../integration
+
+# Control lifecycle execution via RUN_STAGE (e.g., init,apply,verify,teardown)
+export RUN_STAGE="init,apply,verify,teardown"
+
+go test -v -run TestBootstrap ./bootstrap -timeout 60m
+go test -v -run TestOrg ./org -timeout 60m
+go test -v -run TestEnvs ./envs -timeout 60m
+go test -v -run TestNetworks ./networks -timeout 60m
+go test -v -run TestProjects ./projects -timeout 60m
+go test -v -run TestAppInfra ./app-infra -timeout 60m
+
+# 3. Clean up test harness environment
+cd ../setup
+terraform destroy -auto-approve
+```
+
+> [!NOTE]
+> **Sequential Execution & Teardown Order**: When executing stages without immediate destruction (e.g., `RUN_STAGE="init,apply,verify"`), execute stage tests in progressive order (`0-bootstrap` → `5-app-infra`). For stage teardown (`RUN_STAGE="teardown"`), execute tests in reverse order (`5-app-infra` → `0-bootstrap`).
 
 ---
 
@@ -157,7 +192,7 @@ Before completing any task or proposing changes, verify that:
 
 - [ ] `terraform fmt -recursive` runs cleanly without formatting errors.
 - [ ] All new variables have explicit `type` definitions and meaningful `description` strings.
-- [ ] No hardcoded GCP project IDs, credentials, or sensitive secrets exist in `.tf` or `.yaml` files.
+- [ ] No hardcoded GCP project IDs, credentials, or sensitive secrets exist in `.tf`, `.tfvars`, or `.yaml` files.
 - [ ] IAM roles strictly follow the Principle of Least Privilege.
 - [ ] Any modified module has its documentation updated (`README.md` inputs/outputs).
 - [ ] Go test files follow `gofmt` style and compile without errors (`go vet ./...`).
@@ -171,4 +206,5 @@ Before completing any task or proposing changes, verify that:
 *   **CL / Commit Guidelines**: [Google Engineering Practices on Writing Good CL Descriptions](https://google.github.io/eng-practices/review/developer/cl-descriptions.html)
 *   **Code Review Speed**: [Google Engineering Practices on Code Review Speed](https://google.github.io/eng-practices/review/reviewer/speed.html)
 *   **Enterprise Foundation Blueprint**: [Google Cloud Documentation](https://cloud.google.com/architecture/security-foundations)
+*   **CFT Blueprint Test Framework**: [CFT blueprint-test](https://github.com/GoogleCloudPlatform/cloud-foundation-toolkit/tree/main/infra/blueprint-test) (and [Go package documentation](https://pkg.go.dev/github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test))
 *   **Troubleshooting Guide**: Consult [`docs/TROUBLESHOOTING.md`](./docs/TROUBLESHOOTING.md) for known edge cases and resolutions.

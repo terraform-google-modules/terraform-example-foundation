@@ -21,41 +21,21 @@ If you are not able to use Dedicated Interconnect or Partner Interconnect you ca
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| bgp\_peer\_asn | BGP ASN for cloud routes. | `number` | n/a | yes |
-| default\_region1 | Default region 1 for Cloud Routers | `string` | n/a | yes |
-| default\_region2 | Default region 2 for Cloud Routers | `string` | n/a | yes |
-| env\_secret\_project\_id | the environment secrets project ID | `string` | n/a | yes |
-| ncc\_hub\_group | Network Connectivity Center Group to attach the spoke to | `string` | n/a | yes |
-| ncc\_hub\_uri | The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached. Format: projects/{{project}}/locations/global/hubs/{{hub\_name}} | `string` | n/a | yes |
-| on\_prem\_router\_ip\_address1 | On-Prem Router IP address | `string` | n/a | yes |
-| on\_prem\_router\_ip\_address2 | On-Prem Router IP address | `string` | n/a | yes |
-| project\_id | VPC Project ID | `string` | n/a | yes |
-| region1\_router1\_name | Name of the Router 1 for Region 1 where the attachment resides. | `string` | n/a | yes |
-| region1\_router1\_tunnel0\_bgp\_peer\_address | BGP session address for router 1 in region 1 tunnel 0 | `string` | n/a | yes |
-| region1\_router1\_tunnel0\_bgp\_peer\_range | BGP session range for router 1 in region 1 tunnel 0 | `string` | n/a | yes |
-| region1\_router1\_tunnel1\_bgp\_peer\_address | BGP session address for router 1 in region 1 tunnel 1 | `string` | n/a | yes |
-| region1\_router1\_tunnel1\_bgp\_peer\_range | BGP session range for router 1 in region 1 tunnel 1 | `string` | n/a | yes |
-| region1\_router2\_name | Name of the Router 2 for Region 1 where the attachment resides. | `string` | n/a | yes |
-| region1\_router2\_tunnel0\_bgp\_peer\_address | BGP session address for router 2 in region 1 tunnel 0 | `string` | n/a | yes |
-| region1\_router2\_tunnel0\_bgp\_peer\_range | BGP session range for router 2 in region 1 tunnel 0 | `string` | n/a | yes |
-| region1\_router2\_tunnel1\_bgp\_peer\_address | BGP session address for router 2 in region 1 tunnel 1 | `string` | n/a | yes |
-| region1\_router2\_tunnel1\_bgp\_peer\_range | BGP session range for router 2 in region 1 tunnel 1 | `string` | n/a | yes |
-| region2\_router1\_name | Name of the Router 1 for Region 2 where the attachment resides. | `string` | n/a | yes |
-| region2\_router1\_tunnel0\_bgp\_peer\_address | BGP session address for router 1 in region 2 tunnel 0 | `string` | n/a | yes |
-| region2\_router1\_tunnel0\_bgp\_peer\_range | BGP session range for router 1 in region 2 tunnel 0 | `string` | n/a | yes |
-| region2\_router1\_tunnel1\_bgp\_peer\_address | BGP session address for router 1 in region 2 tunnel 2 | `string` | n/a | yes |
-| region2\_router1\_tunnel1\_bgp\_peer\_range | BGP session range for router 1 in region 2 tunnel 2 | `string` | n/a | yes |
-| region2\_router2\_name | Name of the Router 2 for Region 2 where the attachment resides | `string` | n/a | yes |
-| region2\_router2\_tunnel0\_bgp\_peer\_address | BGP session address for router 2 in region 2 tunnel 0 | `string` | n/a | yes |
-| region2\_router2\_tunnel0\_bgp\_peer\_range | BGP session range for router 2 in region 2 tunnel 0 | `string` | n/a | yes |
-| region2\_router2\_tunnel1\_bgp\_peer\_address | BGP session address for router 2 in region 1 tunnel 1 | `string` | n/a | yes |
-| region2\_router2\_tunnel1\_bgp\_peer\_range | BGP session range for router 2 in region 1 tunnel 1 | `string` | n/a | yes |
-| site\_to\_site\_data\_transfer | Set to true to allow Google Cloud routing to act as a transit network between on-premises sites connected to the NCC Hub. | `bool` | `false` | no |
-| vpc\_name | Label to identify the VPC associated with shared VPC that will use the Interconnect. | `string` | n/a | yes |
-| vpn\_psk\_secret\_name | The name of the secret to retrieve from secret manager. This will be retrieved from the environment secrets project. | `string` | n/a | yes |
+| env\_secret\_project\_id | Project ID where Secret Manager holds the PSK secret. | `string` | n/a | yes |
+| ha\_vpn\_config | HA VPN configuration map containing gateway definitions.<br><br>Top-level attributes:<br>  - gateways: Map of HA VPN gateway objects keyed by a unique identifier.<br><br>Gateway attributes (map values):<br>  - region:                           Google Cloud region where the HA VPN gateway and Cloud Router reside.<br>  - router:                           Name of the Google Cloud Router.<br>  - cr\_suffix:                        Suffix used for gateway naming (e.g., 'cr1', 'cr2').<br>  - peer\_external\_gateway\_interfaces: List of on-premises / external peer IP addresses.<br>  - tunnels:                          Map of tunnel configurations (keyed by tunnel index or identifier). | <pre>object({<br>    gateways = map(object({<br>      region                           = string<br>      router                           = string<br>      cr_suffix                        = string<br>      peer_external_gateway_interfaces = list(string)<br>      tunnels = map(object({<br>        bgp_peer_address  = string<br>        bgp_peer_asn      = number<br>        bgp_session_range = string<br>      }))<br>    }))<br>  })</pre> | n/a | yes |
+| ncc\_hub\_group | Network Connectivity Center Group name to attach spokes to. | `string` | n/a | yes |
+| ncc\_hub\_uri | The full URI of the existing Network Connectivity Center Hub. | `string` | n/a | yes |
+| project\_id | VPC Project ID where HA VPN gateways will be created. | `string` | n/a | yes |
+| site\_to\_site\_data\_transfer | Set to true to allow Google Cloud routing to act as a transit network between on-premises sites. | `bool` | `false` | no |
+| vpc\_name | Label to identify the VPC associated with shared VPC that will use the HA VPN. | `string` | n/a | yes |
+| vpn\_psk\_secret\_name | Name of the pre-shared key secret in Secret Manager. | `string` | n/a | yes |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| ncc\_vpn\_spoke\_ids | Map of Network Connectivity Center VPN spoke IDs keyed by region. |
+| vpn\_gateways | Map of all HA VPN gateway module instances. |
+| vpn\_tunnel\_self\_links | Map of VPN tunnel self links grouped by gateway key. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

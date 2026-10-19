@@ -42,6 +42,7 @@ type iamValidateTFVars struct {
 	FoundationCodePath string  `hcl:"foundation_code_path,optional"`
 	ParentFolder       *string `hcl:"parent_folder,optional"`
 	ParentFolderID     *string `hcl:"parent_folder_id,optional"`
+	UniverseDomain     *string `hcl:"universe_domain,optional"`
 }
 
 func readIAMValidateTFVars(file string) (iamValidateTFVars, error) {
@@ -65,6 +66,7 @@ func (v iamValidateTFVars) toParams() utils.IAMValidateParams {
 		BillingAccount:     v.BillingAccount,
 		FoundationCodePath: v.FoundationCodePath,
 		ParentFolder:       parentFolder,
+		UniverseDomain:     *v.UniverseDomain,
 	}
 }
 
@@ -72,11 +74,13 @@ func main() {
 	var (
 		tfvarsFile      string
 		permissionsYAML string
+		universeDomain  string
 		verbose         bool
 	)
 
 	flag.StringVar(&tfvarsFile, "tfvars_file", "", "Full path to the Terraform .tfvars file with the configuration to be used.")
 	flag.StringVar(&permissionsYAML, "permissions_yaml", "", "Optional absolute path to a permissions YAML file.")
+	flag.StringVar(&universeDomain, "universe_domain", "googleapis.com", "Optional Universe Domain for Google Distributed Cloud.")
 	flag.BoolVar(&verbose, "v", false, "show full output (allowed + missing permissions)")
 	flag.Parse()
 

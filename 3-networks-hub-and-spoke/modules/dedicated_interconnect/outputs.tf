@@ -14,42 +14,23 @@
  * limitations under the License.
  */
 
-output "interconnect_attachment1_region1" {
-  value       = module.interconnect_attachment1_region1.attachment
-  description = "The interconnect attachment 1 for region 1"
+
+output "interconnect_attachments" {
+  description = "Map of all Dedicated Interconnect attachment objects keyed by attachment identifier."
+  value       = { for k, v in module.interconnect_attachments : k => v.attachment }
 }
 
-output "interconnect_attachment1_region1_customer_router_ip_address" {
-  value       = module.interconnect_attachment1_region1.attachment.customer_router_ip_address
-  description = "IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment."
+output "customer_router_ip_addresses" {
+  description = "Map of customer router IP addresses for all attachments keyed by attachment identifier."
+  value       = { for k, v in module.interconnect_attachments : k => v.customer_router_ip_address }
 }
 
-output "interconnect_attachment2_region1" {
-  value       = module.interconnect_attachment2_region1.attachment
-  description = "The interconnect attachment 2 for region 1"
+output "google_cloud_router_ip_addresses" {
+  description = "Map of Google Cloud Router BGP IP addresses for all attachments keyed by attachment identifier."
+  value       = { for k, v in module.interconnect_attachments : k => v.attachment.cloud_router_ip_address }
 }
 
-output "interconnect_attachment2_region1_customer_router_ip_address" {
-  value       = module.interconnect_attachment2_region1.attachment.customer_router_ip_address
-  description = "IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment."
-}
-
-output "interconnect_attachment1_region2" {
-  value       = module.interconnect_attachment1_region2.attachment
-  description = "The interconnect attachment 1 for region 2"
-}
-
-output "interconnect_attachment1_region2_customer_router_ip_address" {
-  value       = module.interconnect_attachment1_region2.attachment.customer_router_ip_address
-  description = "IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment."
-}
-
-output "interconnect_attachment2_region2" {
-  value       = module.interconnect_attachment2_region2.attachment
-  description = "The interconnect attachment 2 for region 2"
-}
-
-output "interconnect_attachment2_region2_customer_router_ip_address" {
-  value       = module.interconnect_attachment2_region2.attachment.customer_router_ip_address
-  description = "IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment."
+output "ncc_spoke_ids" {
+  description = "Map of Network Connectivity Center spoke IDs keyed by region."
+  value       = { for k, v in google_network_connectivity_spoke.interconnect_spoke : k => v.id }
 }

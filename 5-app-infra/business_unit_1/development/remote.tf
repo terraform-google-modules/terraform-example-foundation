@@ -16,13 +16,15 @@
 
 locals {
   default_region = data.terraform_remote_state.projects_env.outputs.default_region
+  // TODO get flag if is a cloud build deploy and use it for a flag on the confidential space module
 }
 
 data "terraform_remote_state" "projects_env" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/projects/${local.business_unit}/${local.environment}"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/projects/${local.business_unit}/${local.environment}"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }

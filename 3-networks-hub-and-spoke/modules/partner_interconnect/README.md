@@ -18,25 +18,10 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| attachment\_project\_id | the Interconnect project ID. | `string` | n/a | yes |
-| cloud\_router\_labels | A map of suffixes for labelling vlans with four entries like "vlan\_1" => "suffix1" with keys from `vlan_1` to `vlan_4`. | `map(string)` | `{}` | no |
-| ncc\_hub\_group | Network Connectivity Center Group to attach the spoke to | `string` | n/a | yes |
-| ncc\_hub\_uri | The full URI (ID) of the existing Network Connectivity Center Hub where the spokes will be attached. | `string` | n/a | yes |
-| preactivate | Preactivate Partner Interconnect attachments, works only for level3 Partner Interconnect | `string` | `false` | no |
-| region1 | First subnet region. The Partner Interconnect module only configures two regions. | `string` | n/a | yes |
-| region1\_interconnect1\_location | Name of the interconnect location used in the creation of the Interconnect for the first location of region1 | `string` | n/a | yes |
-| region1\_interconnect1\_onprem\_dc | Name of the on premisses data center used in the creation of the Interconnect for the first location of region1. | `string` | n/a | yes |
-| region1\_interconnect2\_location | Name of the interconnect location used in the creation of the Interconnect for the second location of region1 | `string` | n/a | yes |
-| region1\_interconnect2\_onprem\_dc | Name of the on premisses data center used in the creation of the Interconnect for the second location of region1. | `string` | n/a | yes |
-| region1\_router1\_name | Name of the Router 1 for Region 1 where the attachment resides. | `string` | n/a | yes |
-| region1\_router2\_name | Name of the Router 2 for Region 1 where the attachment resides. | `string` | n/a | yes |
-| region2 | Second subnet region. The Partner Interconnect module only configures two regions. | `string` | n/a | yes |
-| region2\_interconnect1\_location | Name of the interconnect location used in the creation of the Interconnect for the first location of region2 | `string` | n/a | yes |
-| region2\_interconnect1\_onprem\_dc | Name of the on premisses data center used in the creation of the Interconnect for the first location of region2. | `string` | n/a | yes |
-| region2\_interconnect2\_location | Name of the interconnect location used in the creation of the Interconnect for the second location of region2 | `string` | n/a | yes |
-| region2\_interconnect2\_onprem\_dc | Name of the on premisses data center used in the creation of the Interconnect for the second location of region2. | `string` | n/a | yes |
-| region2\_router1\_name | Name of the Router 1 for Region 2 where the attachment resides. | `string` | n/a | yes |
-| region2\_router2\_name | Name of the Router 2 for Region 2 where the attachment resides | `string` | n/a | yes |
+| attachment\_project\_id | The Interconnect Google Cloud project ID. | `string` | n/a | yes |
+| ncc\_hub\_group | Network Connectivity Center Group name to attach spokes to. | `string` | n/a | yes |
+| ncc\_hub\_uri | The full URI of the existing Network Connectivity Center Hub. | `string` | n/a | yes |
+| partner\_interconnect\_config | Partner Interconnect configuration map containing attachment definitions and default settings.<br><br>Top-level attributes:<br>  - preactivate: (Optional) Default preactivate setting for all Partner Interconnect attachments (defaults to false).<br>  - attachments: Map of Partner Interconnect attachment configuration objects keyed by a unique identifier.<br><br>Attachment attributes (map values):<br>  - region:                   Google Cloud region where the attachment and Cloud Router reside.<br>  - router:                   Name or resource ID of the Google Cloud Router to attach to.<br>  - location:                 Google Cloud Interconnect edge location or city code.<br>  - cr\_suffix:                Suffix used for interface naming (e.g., 'cr1', 'cr2').<br>  - edge\_availability\_domain: Edge availability domain assignment ('AVAILABILITY\_DOMAIN\_1', 'AVAILABILITY\_DOMAIN\_2', or 'AVAILABILITY\_DOMAIN\_ANY').<br>  - onprem\_dc:                 (Optional) On-premises data center identifier.<br>  - preactivate:              (Optional) Override preactivate setting for this specific attachment. | <pre>object({<br>    preactivate = optional(bool, false)<br>    attachments = map(object({<br>      region                   = string<br>      router                   = string<br>      location                 = string<br>      cr_suffix                = string<br>      edge_availability_domain = string<br>      onprem_dc                = optional(string)<br>    }))<br>  })</pre> | n/a | yes |
 | site\_to\_site\_data\_transfer | Set to true to allow Google Cloud routing to act as a transit network between on-premises sites. | `bool` | `false` | no |
 | vpc\_name | Label to identify the VPC associated with shared VPC that will use the Interconnect. | `string` | n/a | yes |
 
@@ -44,17 +29,8 @@ This module implements the recommendation proposed in [Establishing 99.99% Avail
 
 | Name | Description |
 |------|-------------|
-| interconnect\_attachment1\_region1 | The interconnect attachment 1 for region 1 |
-| interconnect\_attachment1\_region1\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
-| interconnect\_attachment1\_region1\_pairing\_key | The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain' |
-| interconnect\_attachment1\_region2 | The interconnect attachment 1 for region 2 |
-| interconnect\_attachment1\_region2\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
-| interconnect\_attachment1\_region2\_pairing\_key | The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain' |
-| interconnect\_attachment2\_region1 | The interconnect attachment 2 for region 1 |
-| interconnect\_attachment2\_region1\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
-| interconnect\_attachment2\_region1\_pairing\_key | The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain' |
-| interconnect\_attachment2\_region2 | The interconnect attachment 2 for region 2 |
-| interconnect\_attachment2\_region2\_customer\_router\_ip\_address | IPv4 address + prefix length to be configured on the customer router subinterface for this interconnect attachment. |
-| interconnect\_attachment2\_region2\_pairing\_key | The opaque identifier of an PARTNER attachment used to initiate provisioning with a selected partner. Of the form 'XXXXX/region/domain' |
+| interconnect\_attachments | Map of all Partner Interconnect attachment objects keyed by attachment identifier. |
+| ncc\_spoke\_ids | Map of Network Connectivity Center spoke IDs keyed by region. |
+| pairing\_keys | Map of pairing keys for all Partner Interconnect attachments keyed by attachment identifier. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

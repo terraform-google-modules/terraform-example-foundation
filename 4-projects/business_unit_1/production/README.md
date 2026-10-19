@@ -12,6 +12,7 @@
 | project\_deletion\_policy | The deletion policy for the project created. | `string` | `"PREVENT"` | no |
 | remote\_state\_bucket | Backend bucket to load Terraform Remote State Data from previous steps. | `string` | n/a | yes |
 | tfc\_org\_name | Name of the TFC organization. | `string` | `""` | no |
+| universe\_domain | The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD). | `string` | `"googleapis.com"` | no |
 
 ## Outputs
 
@@ -28,6 +29,8 @@
 | iap\_firewall\_tags | The security tags created for IAP (SSH and RDP) firewall rules and to be used on the VM created on step 5-app-infra on the peering network project. |
 | keyring | The name of the keyring. |
 | keys | List of created key names. |
+| ncc\_hub\_uri | The NCC Hub ID |
+| ncc\_spoke\_group | The NCC group to be used by spokes |
 | peering\_complete | Output to be used as a module dependency. |
 | peering\_network | Peer network peering resource. |
 | peering\_project | Project sample peering project id. |

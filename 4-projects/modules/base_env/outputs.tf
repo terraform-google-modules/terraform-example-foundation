@@ -116,3 +116,13 @@ output "confidential_space_workload_sa" {
   description = "Workload Service Account for confidential space"
   value       = try(google_service_account.workload_sa[0].email, "")
 }
+
+output "ncc_spoke_group" {
+  value       = local.ncc_spoke_group
+  description = "The NCC group to be used by spokes"
+}
+
+output "ncc_hub_uri" {
+  value       = local.ncc_hub_uri
+  description = "The NCC Hub ID"
+}

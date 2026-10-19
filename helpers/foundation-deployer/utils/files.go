@@ -27,6 +27,7 @@ const (
 	DefaultBuild      = "cb"
 	GitHubBuild       = "github"
 	GitLabBuild       = "gitlab"
+	LocalBuild        = "local"
 )
 
 // CopyFile copies a single file from the src path to the dest path
@@ -94,4 +95,3 @@ func FindFiles(dir, filename string) ([]string, error) {
 	})
 	return found, err
 }
-

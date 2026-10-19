@@ -24,10 +24,10 @@ locals {
     [for domain in var.essential_contacts_domains_to_allow : "@${domain}" if can(regex("^@.*$", domain)) == false]
   )
 
-  boolean_type_organization_policies = toset([
+  boolean_type_organization_policies = toset(compact([
     "compute.disableNestedVirtualization",
     "compute.disableSerialPortAccess",
-    "compute.skipDefaultNetworkCreation",
+    var.universe_domain == "googleapis.com" ? "compute.skipDefaultNetworkCreation" : "",
     "compute.restrictXpnProjectLienRemoval",
     "compute.disableVpcExternalIpv6",
     "compute.setNewProjectDefaultToZonalDNSOnly",
@@ -39,7 +39,7 @@ locals {
     "iam.disableServiceAccountKeyUpload",
     "storage.uniformBucketLevelAccess",
     "storage.publicAccessPrevention"
-  ])
+  ]))
 
   private_pools                    = [local.cloud_build_private_worker_pool_id]
   access_context_manager_policy_id = var.create_access_context_manager_access_policy ? google_access_context_manager_access_policy.access_policy[0].id : var.access_context_manager_policy_id
@@ -103,14 +103,24 @@ module "org_domain_restricted_sharing" {
   source  = "terraform-google-modules/org-policy/google//modules/domain_restricted_sharing"
   version = "~> 7.0"
 
-  organization_id  = local.organization_id
-  folder_id        = local.folder_id
-  policy_for       = local.policy_for
-  domains_to_allow = var.domains_to_allow
+  organization_id       = local.organization_id
+  folder_id             = local.folder_id
+  policy_for            = local.policy_for
+  domains_to_allow      = var.universe_domain == "googleapis.com" ? var.domains_to_allow : []
+  principal_set_org_ids = var.principal_set_org_ids
 
   depends_on = [
     time_sleep.wait_logs_export
   ]
+}
+
+resource "null_resource" "input_validation" {
+  lifecycle {
+    precondition {
+      condition     = length(var.domains_to_allow) > 0 || length(var.principal_set_org_ids) > 0
+      error_message = "Error: You must provide at least one domain in 'domains_to_allow' or at least one Org ID in 'principal_set_org_ids'."
+    }
+  }
 }
 
 /******************************************
@@ -120,6 +130,7 @@ module "org_domain_restricted_sharing" {
 module "domain_restricted_contacts" {
   source  = "terraform-google-modules/org-policy/google"
   version = "~> 7.0"
+  count   = var.universe_domain == "googleapis.com" ? 1 : 0 # automatic in Google Cloud Dedicated baseline
 
   organization_id   = local.organization_id
   folder_id         = local.folder_id
@@ -137,7 +148,7 @@ module "domain_restricted_contacts" {
 module "allowed_worker_pools" {
   source  = "terraform-google-modules/org-policy/google"
   version = "~> 7.0"
-  count   = var.enforce_allowed_worker_pools && local.cloud_build_private_worker_pool_id != "" ? 1 : 0
+  count   = var.universe_domain == "googleapis.com" && var.enforce_allowed_worker_pools && local.cloud_build_private_worker_pool_id != "" ? 1 : 0
 
   organization_id   = local.organization_id
   folder_id         = local.folder_id

@@ -16,20 +16,16 @@ This module creates 4 routers, 2 for each region to be used by Dedicated Interco
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| advertised\_ip\_ranges | User-specified list of individual IP ranges to advertise. | <pre>list(object({<br>    range       = string<br>    description = optional(string)<br>  }))</pre> | `[]` | no |
-| bgp\_asn\_subnet | BGP ASN for Subnets cloud routers. | `number` | n/a | yes |
-| project\_id | project ID to create the routers. | `string` | n/a | yes |
-| region1 | First subnet region. | `string` | n/a | yes |
-| region2 | Second subnet region. | `string` | n/a | yes |
+| project\_id | Project ID to create the routers. | `string` | n/a | yes |
+| router\_config | Cloud Routers configuration map containing router definitions.<br><br>Top-level attributes:<br>  - bgp\_asn:              Default BGP Autonomous System Number (ASN) for the Cloud Routers.<br>  - advertised\_groups:    (Optional) Default list of advertised groups (defaults to ["ALL\_SUBNETS"]).<br>  - advertised\_ip\_ranges: (Optional) Default list of custom IP ranges to advertise.<br>  - routers:              Map of Cloud Router objects keyed by a unique identifier.<br><br>Router attributes (map values):<br>  - region:    Google Cloud region where the Cloud Router resides.<br>  - cr\_suffix: Suffix used for router naming (e.g., 'cr1', 'cr2'). | <pre>object({<br>    bgp_asn           = number<br>    advertised_groups = optional(list(string), ["ALL_SUBNETS"])<br>    advertised_ip_ranges = optional(list(object({<br>      range       = string<br>      description = optional(string)<br>    })), [])<br>    routers = map(object({<br>      region    = string<br>      cr_suffix = string<br>    }))<br>  })</pre> | n/a | yes |
 | vpc\_name | Label to identify the VPC associated with VPC that will use the Routers. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| region1\_router1 | Router 1 for Region 1 |
-| region1\_router2 | Router 2 for Region 1 |
-| region2\_router1 | Router 1 for Region 2 |
-| region2\_router2 | Router 2 for Region 2 |
+| router\_ids | Map of Cloud Router IDs keyed by router identifier. |
+| router\_names | Map of Cloud Router names keyed by router identifier. |
+| routers | Map of all created Cloud Router module instances keyed by router identifier. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

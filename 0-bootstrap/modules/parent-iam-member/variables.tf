@@ -30,8 +30,19 @@ variable "parent_id" {
 }
 
 variable "member" {
-  description = "Member to have the given roles in the parent resource. Prefix of `group:`, `user:` or `serviceAccount:` is required."
+  description = "Member to have the given roles in the parent resource. Prefix of `group:`, `user:`, `serviceAccount:`, `principal:`, or `principalSet:` is required."
   type        = string
+
+  validation {
+    condition = (
+      startswith(var.member, "group:") ||
+      startswith(var.member, "user:") ||
+      startswith(var.member, "serviceAccount:") ||
+      startswith(var.member, "principal:") ||
+      startswith(var.member, "principalSet:")
+    )
+    error_message = "The member variable must start with one of the following prefixes: 'group:', 'user:', 'serviceAccount:', 'principal:', or 'principalSet:'."
+  }
 }
 
 variable "roles" {

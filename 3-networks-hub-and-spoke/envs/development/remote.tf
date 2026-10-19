@@ -23,7 +23,8 @@ data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/bootstrap/state"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/bootstrap/state"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }

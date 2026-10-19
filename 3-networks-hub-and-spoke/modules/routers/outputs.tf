@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-output "region1_router1" {
-  value       = module.region1_router1
-  description = "Router 1 for Region 1"
+output "routers" {
+  description = "Map of all created Cloud Router module instances keyed by router identifier."
+  value       = { for k, v in module.routers : k => v }
 }
 
-output "region1_router2" {
-  value       = module.region1_router2
-  description = "Router 2 for Region 1"
+output "router_names" {
+  description = "Map of Cloud Router names keyed by router identifier."
+  value       = { for k, v in module.routers : k => v.router.name }
 }
 
-output "region2_router1" {
-  value       = module.region2_router1
-  description = "Router 1 for Region 2"
-}
-
-output "region2_router2" {
-  value       = module.region2_router2
-  description = "Router 2 for Region 2"
+output "router_ids" {
+  description = "Map of Cloud Router IDs keyed by router identifier."
+  value       = { for k, v in module.routers : k => v.router.id }
 }

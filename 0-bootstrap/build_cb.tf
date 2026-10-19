@@ -70,7 +70,7 @@ module "gcp_projects_state_bucket" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
   version = "~> 12.0"
 
-  name          = "${var.bucket_prefix}-${module.seed_bootstrap.seed_project_id}-gcp-projects-tfstate"
+  name          = "${var.bucket_prefix}-${replace(module.seed_bootstrap.seed_project_id, ":", "-")}-gcp-projects-tfstate"
   project_id    = module.seed_bootstrap.seed_project_id
   location      = var.default_region
   force_destroy = var.bucket_force_destroy

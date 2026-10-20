@@ -144,6 +144,18 @@ tf_apply() {
   if [ -d "$path" ]; then
     cd "$path" || exit
     terraform apply -no-color -input=false -auto-approve "${tmp_plan}/${tf_file}.tfplan" || exit 1
+    if [ -f "Dockerfile" ]; then
+      local image_name
+      image_name="$(terraform output -raw image_name 2>/dev/null || echo "")"
+      if [ -n "$image_name" ] && command -v docker &>/dev/null; then
+        echo "Found Dockerfile and image_name: ${image_name}. Building and pushing..."
+        local registry_host
+        registry_host="$(echo "$image_name" | cut -d/ -f1)"
+        gcloud auth configure-docker "${registry_host}" --quiet
+        docker build -t "${image_name}" .
+        docker push "${image_name}"
+      fi
+    fi
     cd "$base_dir" || exit
   else
     echo "ERROR: ${path} does not exist"

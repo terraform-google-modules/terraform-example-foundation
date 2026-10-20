@@ -162,19 +162,19 @@ module "shared_vpc" {
     var.enable_hub_and_spoke_transitivity ? {
       auto_accept_projects_center = []
       auto_accept_projects_edge   = []
-      auto_accept_projects_default = [
+      auto_accept_projects_default = compact([
         local.net_hub_project_id,
         local.development_net_project_id,
         local.nonproduction_net_project_id,
         local.production_net_project_id
-      ]
+      ])
       } : {
       auto_accept_projects_center = [local.net_hub_project_id]
-      auto_accept_projects_edge = [
+      auto_accept_projects_edge = compact([
         local.development_net_project_id,
         local.nonproduction_net_project_id,
         local.production_net_project_id
-      ]
+      ])
       auto_accept_projects_default = []
     }
   )

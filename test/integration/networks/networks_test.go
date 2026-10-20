@@ -47,19 +47,20 @@ func getFirewallMode(t *testing.T) string {
 
 func getNetworkResourceNames(envCode string, networkMode string, firewallMode string) map[string]string {
 	return map[string]string{
-		"network_name":          fmt.Sprintf("vpc-%s-svpc%s", envCode, networkMode),
-		"global_address":        fmt.Sprintf("ga-%s-svpc%s-vpc-peering-internal", envCode, networkMode),
-		"dns_zone_forward":      fmt.Sprintf("fz-%s-dns-hub", envCode),
-		"dns_zone_googleapis":   fmt.Sprintf("dz-%s-svpc-apis", envCode),
-		"dns_zone_gcr":          fmt.Sprintf("dz-%s-svpc-gcr", envCode),
-		"dns_zone_pkg_dev":      fmt.Sprintf("dz-%s-svpc-pkg-dev", envCode),
-		"dns_zone_peering_zone": fmt.Sprintf("dz-%s-svpc-to-dns-hub", envCode),
-		"dns_policy_name":       fmt.Sprintf("dp-%s-svpc-default-policy", envCode),
-		"subnet_name1":          fmt.Sprintf("sb-%s-svpc-us-central1", envCode),
-		"subnet_name2":          fmt.Sprintf("sb-%s-svpc-us-west1", envCode),
-		"firewall_policy":       fmt.Sprintf("fp-%s-firewalls", envCode),
-		"fw_deny_all_egress":    fmt.Sprintf("fw-%s-svpc-65530-e-d-all-all-all", envCode),
-		"fw_allow_api_egress":   fmt.Sprintf("fw-%s-svpc-1000-e-a-allow-google-apis-all-tcp-443", envCode),
+		"network_name":             fmt.Sprintf("vpc-%s-svpc%s", envCode, networkMode),
+		"global_address":           fmt.Sprintf("ga-%s-svpc%s-vpc-peering-internal", envCode, networkMode),
+		"dns_zone_forward":         fmt.Sprintf("fz-%s-dns-hub", envCode),
+		"dns_zone_googleapis":      fmt.Sprintf("dz-%s-svpc-apis", envCode),
+		"dns_zone_gcr":             fmt.Sprintf("dz-%s-svpc-gcr", envCode),
+		"dns_zone_pkg_dev":         fmt.Sprintf("dz-%s-svpc-pkg-dev", envCode),
+		"dns_zone_peering_zone":    fmt.Sprintf("dz-%s-svpc-to-dns-hub", envCode),
+		"dns_policy_name":          fmt.Sprintf("dp-%s-svpc-default-policy", envCode),
+		"subnet_name1":             fmt.Sprintf("sb-%s-svpc-us-central1", envCode),
+		"subnet_name2":             fmt.Sprintf("sb-%s-svpc-us-west1", envCode),
+		"firewall_policy":          fmt.Sprintf("fp-%s-firewalls", envCode),
+		"fw_deny_all_egress":       fmt.Sprintf("fw-%s-svpc-65530-e-d-all-all-all", envCode),
+		"fw_allow_api_egress":      fmt.Sprintf("fw-%s-svpc-1000-e-a-allow-google-apis-all-tcp-443", envCode),
+		"fw_allow_api_http_egress": fmt.Sprintf("fw-%s-svpc-1001-e-a-allow-google-apis-all-tcp-80", envCode),
 	}
 }
 
@@ -215,6 +216,14 @@ func TestNetworks(t *testing.T) {
 					assert.Equal("allow", allowApiEgressRule.Get("action").String(), fmt.Sprintf("firewall rule %s action should be allow", allowApiEgressName))
 					assert.True(allowApiEgressRule.Get("enableLogging").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", allowApiEgressName))
 					assert.Equal(googleapisCIDR[envName], allowApiEgressRule.Get("match.destIpRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be %s", allowApiEgressName, googleapisCIDR[envName]))
+
+					allowApiHttpEgressName := networkNames["fw_allow_api_http_egress"]
+					allowApiHttpEgressRule := gcloud.Runf(t, "compute network-firewall-policies rules describe 1001 --firewall-policy %s --global-firewall-policy --project %s --impersonate-service-account %s", networkNames["firewall_policy"], projectID, terraformSA).Array()[0]
+					assert.Equal(allowApiHttpEgressName, allowApiHttpEgressRule.Get("ruleName").String(), fmt.Sprintf("firewall rule %s should exist", allowApiHttpEgressName))
+					assert.Equal("EGRESS", allowApiHttpEgressRule.Get("direction").String(), fmt.Sprintf("firewall rule %s direction should be EGRESS", allowApiHttpEgressName))
+					assert.Equal("allow", allowApiHttpEgressRule.Get("action").String(), fmt.Sprintf("firewall rule %s action should be allow", allowApiHttpEgressName))
+					assert.True(allowApiHttpEgressRule.Get("enableLogging").Bool(), fmt.Sprintf("firewall rule %s should have log configuration enabled", allowApiHttpEgressName))
+					assert.Equal(googleapisCIDR[envName], allowApiHttpEgressRule.Get("match.destIpRanges").Array()[0].String(), fmt.Sprintf("firewall rule %s destination ranges should be %s", allowApiHttpEgressName, googleapisCIDR[envName]))
 
 					if networkMode == "" { // Env Hubs
 						nccHubURI := networks.GetStringOutput("ncc_hub_uri")

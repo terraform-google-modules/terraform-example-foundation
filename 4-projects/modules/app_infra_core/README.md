@@ -29,6 +29,7 @@ This module provisions the runner-agnostic core baseline infrastructure required
 | artifact\_registry\_name | Primary Artifact Registry repository name. |
 | artifact\_registry\_repositories | Artifact Registry repositories mapped by repo. |
 | default\_region | Default region where resources were created. |
+| image\_name | Canonical image path for confidential space instance. |
 | state\_bucket\_self\_links | GCS State Buckets self links mapped by repo. |
 | state\_buckets | GCS State Buckets mapped by repo. |
 | terraform\_service\_accounts | App Infra Pipeline Terraform Service Accounts emails mapped by repo. |

@@ -28,6 +28,7 @@
 
 | Name | Description |
 |------|-------------|
+| firewall\_policy | Policy created for firewall policy rules. |
 | ncc\_hub\_uri | The NCC Hub ID |
 | ncc\_spoke\_group | The NCC group to be used by spokes |
 | network\_name | The name of the VPC being created |

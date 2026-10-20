@@ -86,5 +86,5 @@ output "bootstrap_cloudbuild_project_id" {
 
 output "image_name" {
   description = "Image path used by confidential space instance."
-  value       = ""
+  value       = module.core.image_name
 }

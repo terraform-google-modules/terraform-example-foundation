@@ -53,3 +53,8 @@ output "artifact_registry_name" {
   description = "Primary Artifact Registry repository name."
   value       = length(var.app_infra_repos) > 0 ? google_artifact_registry_repository.tf_runners[tolist(var.app_infra_repos)[0]].repository_id : ""
 }
+
+output "image_name" {
+  description = "Canonical image path for confidential space instance."
+  value       = length(var.app_infra_repos) > 0 ? "${var.default_region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.tf_runners[tolist(var.app_infra_repos)[0]].repository_id}/confidential_space_image:latest" : ""
+}

@@ -31,6 +31,7 @@ locals {
   kms_project_id                      = data.terraform_remote_state.environments_env.outputs.env_kms_project_id
   kms_project_number                  = data.terraform_remote_state.environments_env.outputs.env_kms_project_number
   cloudbuild_project_id               = try(data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_id, "")
+  cicd_project_id                     = try(data.terraform_remote_state.business_unit_shared.outputs.cicd_project_id, "")
   default_region                      = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   universe_prefix                     = data.terraform_remote_state.bootstrap.outputs.common_config.universe_prefix
   available_universe_services         = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services

@@ -39,9 +39,9 @@ resource "google_project_iam_member" "workload_sa_roles" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
-  count = local.enable_cloudbuild_deploy ? 1 : 0
+  count = local.cicd_project_id != "" ? 1 : 0
 
-  project    = local.cloudbuild_project_id
+  project    = local.cicd_project_id
   repository = "tf-runners"
   location   = local.default_region
   role       = "roles/artifactregistry.reader"
@@ -86,7 +86,8 @@ module "confidential_space_project" {
     "iamcredentials.googleapis.com",
     "compute.googleapis.com",
     "confidentialcomputing.googleapis.com",
-    "cloudkms.googleapis.com"
+    "cloudkms.googleapis.com",
+    "logging.googleapis.com"
   ]
   vpc_service_control_attach_enabled = local.enforce_vpcsc ? "true" : "false"
   vpc_service_control_attach_dry_run = !local.enforce_vpcsc ? "true" : "false"

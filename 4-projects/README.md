@@ -477,9 +477,25 @@ If you received any errors or made any changes to the Terraform config or any `.
 
 If you previously enabled the dry-run variables `required_ingress_rules_app_infra_dry_run` and `required_egress_rules_app_infra_dry_run`, you must **disable both of them before running the 4-projects step in enforced mode**. Once enforced mode is activated and the **4-projects** step is executed, the projects created in that step are removed from the dry-run perimeter. Keeping these dry-run variables active creates conflicts, because they define rules for projects that will no longer be part of the dry-run perimeter after this transition.
 
-##  Network Connectivity Center (NCC) post deployment configuration
+## Network Connectivity Center (NCC) post-deployment configuration
 
-After finishing the deployment or after adding a new project that joins the NCC Hub it is necessary to accept the new project into the Hub.
+After finishing the deployment, or after adding a new project that joins the NCC Hub it is necessary to accept the new project into the Hub.
+
+To complete these instructions you need one of the following roles:
+
+- Hub & Spoke Admin - `roles/networkconnectivity.hubAdmin`
+- Network Connectivity Editor - `roles/networkconnectivity.editor`
+
+Use a gcloud command to grant the required role:
+
+```sh
+gcloud projects add-iam-policy-binding HUB-PROJECT \
+  --member="PRINCIPAL-TYPE:ID" --role="roles/networkconnectivity.hubAdmin"
+```
+
+Replace `HUB-PROJECT` with the ID of the project where the Hub was created in the networks step. It is the project in the `NCC_HUB_URI` output.
+
+See [Principal identifiers](https://docs.cloud.google.com/iam/docs/principal-identifiers) for the full list of values of `PRINCIPAL-TYPE` and `ID`.
 
 To accept a new project into the Hub go to the [NCC Hub console page](https://console.cloud.google.com/hybrid/hubs/list) for the Hub project, switch to the tab "Spokes" and accept the project with Spoke status `Inactive, pending review`.
 

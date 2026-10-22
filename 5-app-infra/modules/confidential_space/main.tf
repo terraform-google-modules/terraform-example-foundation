@@ -45,8 +45,9 @@ data "terraform_remote_state" "projects_env" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/projects/${var.business_unit}/${var.environment}"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/projects/${var.business_unit}/${var.environment}"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -54,8 +55,9 @@ data "terraform_remote_state" "business_unit_shared" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/projects/${var.business_unit}/shared"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/projects/${var.business_unit}/shared"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }
 
@@ -93,7 +95,7 @@ EOT
 
 module "confidential_instance_template" {
   source  = "terraform-google-modules/vm/google//modules/instance_template"
-  version = "~> 15.1"
+  version = "15.4.0" # See https://github.com/terraform-google-modules/terraform-google-vm/issues/602
 
   region     = var.region
   project_id = local.env_project_id
@@ -124,7 +126,7 @@ module "confidential_instance_template" {
 
 module "confidential_compute_instance" {
   source  = "terraform-google-modules/vm/google//modules/compute_instance"
-  version = "~> 15.1"
+  version = "15.4.0" # See https://github.com/terraform-google-modules/terraform-google-vm/issues/602
 
   project_id            = local.env_project_id
   region                = var.region

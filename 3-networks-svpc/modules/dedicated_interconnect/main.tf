@@ -14,136 +14,55 @@
  * limitations under the License.
  */
 
-module "interconnect_attachment1_region1" {
-  source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 9.0"
-
-  name    = "vl-${var.region1_interconnect1_onprem_dc}-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-cr5"
-  project = var.interconnect_project_id
-  region  = var.region1
-  router  = var.region1_router1_name
-
-  interconnect      = var.region1_interconnect1
-  candidate_subnets = var.region1_interconnect1_candidate_subnets
-  vlan_tag8021q     = var.region1_interconnect1_vlan_tag8021q
-
-  interface = {
-    name = "if-${var.region1_interconnect1_location}-${var.vpc_name}-${var.region1}-cr5"
-  }
-
-  peer = {
-    name     = var.peer_name
-    peer_asn = var.peer_asn
+# Dynamic Local Grouping of Attachments by Region for NCC Spokes
+locals {
+  attachments_by_region = {
+    for k, v in var.dedicated_interconnect_config.attachments : v.region => [
+      for mod_key, mod_val in module.interconnect_attachments : mod_val.attachment.id
+      if var.dedicated_interconnect_config.attachments[mod_key].region == v.region
+    ]...
   }
 }
 
-module "interconnect_attachment2_region1" {
+module "interconnect_attachments" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
   version = "~> 9.0"
 
-  name    = "vl-${var.region1_interconnect2_onprem_dc}-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-cr6"
-  project = var.interconnect_project_id
-  region  = var.region1
-  router  = var.region1_router2_name
+  for_each = var.dedicated_interconnect_config.attachments
 
-  interconnect      = var.region1_interconnect2
-  candidate_subnets = var.region1_interconnect2_candidate_subnets
-  vlan_tag8021q     = var.region1_interconnect2_vlan_tag8021q
+  name    = "vl-${each.value.onprem_dc}-${each.value.location}-${var.vpc_name}-${each.value.region}-${each.value.cr_suffix}"
+  project = var.interconnect_project_id
+  region  = each.value.region
+  router  = each.value.router
+
+  interconnect      = each.value.interconnect
+  candidate_subnets = lookup(each.value, "candidate_subnets", null)
+  vlan_tag8021q     = lookup(each.value, "vlan_tag8021q", null)
 
   interface = {
-    name = "if-${var.region1_interconnect2_location}-${var.vpc_name}-${var.region1}-cr6"
+    name = "if-${each.value.location}-${var.vpc_name}-${each.value.region}-${each.value.cr_suffix}"
   }
 
   peer = {
-    name     = var.peer_name
-    peer_asn = var.peer_asn
+    name     = var.dedicated_interconnect_config.peer_name
+    peer_asn = var.dedicated_interconnect_config.peer_asn
   }
 }
 
-module "interconnect_attachment1_region2" {
-  source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 9.0"
 
-  name    = "vl-${var.region2_interconnect1_onprem_dc}-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-cr7"
-  project = var.interconnect_project_id
-  region  = var.region2
-  router  = var.region2_router1_name
+# Dynamic Network Connectivity Center (NCC) Spokes (One per Region)
+resource "google_network_connectivity_spoke" "interconnect_spoke" {
+  for_each = local.attachments_by_region
 
-  interconnect      = var.region2_interconnect1
-  candidate_subnets = var.region2_interconnect1_candidate_subnets
-  vlan_tag8021q     = var.region2_interconnect1_vlan_tag8021q
-
-  interface = {
-    name = "if-${var.region2_interconnect1_location}-${var.vpc_name}-${var.region2}-cr7"
-  }
-
-  peer = {
-    name     = var.peer_name
-    peer_asn = var.peer_asn
-  }
-}
-
-module "interconnect_attachment2_region2" {
-  source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
-  version = "~> 9.0"
-
-  name    = "vl-${var.region2_interconnect2_onprem_dc}-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-cr8"
-  project = var.interconnect_project_id
-  region  = var.region2
-  router  = var.region2_router2_name
-
-  interconnect      = var.region2_interconnect2
-  candidate_subnets = var.region2_interconnect2_candidate_subnets
-  vlan_tag8021q     = var.region2_interconnect2_vlan_tag8021q
-
-  interface = {
-    name = "if-${var.region2_interconnect2_location}-${var.vpc_name}-${var.region2}-cr8"
-  }
-
-  peer = {
-    name     = var.peer_name
-    peer_asn = var.peer_asn
-  }
-}
-
-# ---------------------------------------------------------
-# NCC Spoke for Interconnects - Region 1
-# ---------------------------------------------------------
-resource "google_network_connectivity_spoke" "region1_interconnect_spoke" {
-  name        = "ic-spoke-${var.vpc_name}-${var.region1}"
+  name        = "ic-spoke-${var.vpc_name}-${each.key}"
   project     = var.interconnect_project_id
-  location    = var.region1
+  location    = each.key
   hub         = var.ncc_hub_uri
   group       = var.ncc_hub_group
-  description = "NCC Spoke containing Dedicated Interconnects for region 1"
+  description = "NCC Spoke containing Dedicated Interconnects for region ${each.key}"
 
   linked_interconnect_attachments {
-    uris = [
-      module.interconnect_attachment1_region1.attachment.id,
-      module.interconnect_attachment2_region1.attachment.id
-    ]
-
-    site_to_site_data_transfer = var.site_to_site_data_transfer
-  }
-}
-
-# ---------------------------------------------------------
-# NCC Spoke for Interconnects - Region 2
-# ---------------------------------------------------------
-resource "google_network_connectivity_spoke" "region2_interconnect_spoke" {
-  name        = "ic-spoke-${var.vpc_name}-${var.region2}"
-  project     = var.interconnect_project_id
-  location    = var.region2
-  hub         = var.ncc_hub_uri
-  group       = var.ncc_hub_group
-  description = "NCC Spoke containing Dedicated Interconnects for region 2"
-
-  linked_interconnect_attachments {
-    uris = [
-      module.interconnect_attachment1_region2.attachment.id,
-      module.interconnect_attachment2_region2.attachment.id
-    ]
-
-    site_to_site_data_transfer = var.site_to_site_data_transfer
+    uris                       = each.value
+    site_to_site_data_transfer = var.enable_site_to_site_data_transfer
   }
 }

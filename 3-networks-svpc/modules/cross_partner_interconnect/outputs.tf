@@ -33,3 +33,8 @@ output "partner_asns" {
   description = "Map of partner ASNs assigned to each Partner Interconnect attachment."
   value       = { for k, v in module.partner_interconnect_attachments : k => v.attachment.partner_asn }
 }
+
+output "ncc_spoke_ids" {
+  description = "Map of Network Connectivity Center spoke IDs keyed by region."
+  value       = { for k, v in google_network_connectivity_spoke.partner_ic_spoke : k => v.id }
+}

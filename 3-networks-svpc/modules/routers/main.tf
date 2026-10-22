@@ -18,62 +18,21 @@ locals {
   network_name = "vpc-${var.vpc_name}"
 }
 
-module "region1_router1" {
+module "routers" {
   source  = "terraform-google-modules/cloud-router/google"
   version = "~> 9.0"
 
-  name       = "cr-${var.vpc_name}-${var.region1}-cr5"
+  for_each = var.router_config.routers
+
+  name       = "cr-${var.vpc_name}-${each.value.region}-${each.value.cr_suffix}"
   project_id = var.project_id
+  region     = each.value.region
   network    = local.network_name
-  region     = var.region1
+
   bgp = {
-    asn                  = var.bgp_asn_subnet
-    advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = var.advertised_ip_ranges
+    asn                  = var.router_config.bgp_asn
+    advertised_groups    = var.router_config.advertised_groups
+    advertised_ip_ranges = var.router_config.advertised_ip_ranges
   }
-}
 
-module "region1_router2" {
-  source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 9.0"
-
-  name       = "cr-${var.vpc_name}-${var.region1}-cr6"
-  project_id = var.project_id
-  network    = local.network_name
-  region     = var.region1
-  bgp = {
-    asn                  = var.bgp_asn_subnet
-    advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = var.advertised_ip_ranges
-  }
-}
-
-module "region2_router1" {
-  source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 9.0"
-
-  name       = "cr-${var.vpc_name}-${var.region2}-cr7"
-  project_id = var.project_id
-  network    = local.network_name
-  region     = var.region2
-  bgp = {
-    asn                  = var.bgp_asn_subnet
-    advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = var.advertised_ip_ranges
-  }
-}
-
-module "region2_router2" {
-  source  = "terraform-google-modules/cloud-router/google"
-  version = "~> 9.0"
-
-  name       = "cr-${var.vpc_name}-${var.region2}-cr8"
-  project_id = var.project_id
-  network    = local.network_name
-  region     = var.region2
-  bgp = {
-    asn                  = var.bgp_asn_subnet
-    advertised_groups    = ["ALL_SUBNETS"]
-    advertised_ip_ranges = var.advertised_ip_ranges
-  }
 }

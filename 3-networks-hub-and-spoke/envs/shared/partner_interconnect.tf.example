@@ -15,30 +15,52 @@
  */
 
 
-module "interconnect" {
+module "partner_interconnect" {
   source = "../../modules/partner_interconnect"
 
   attachment_project_id = local.net_hub_project_id
   vpc_name              = "c-svpc-hub"
-  preactivate           = var.preactivate_partner_interconnect
   ncc_hub_uri           = module.shared_vpc.ncc_hub_uri
   ncc_hub_group         = var.enable_hub_and_spoke_transitivity ? "default" : "center"
 
-  region1                         = local.default_region1
-  region1_router1_name            = module.routers.region1_router1.router.name
-  region1_interconnect1_location  = "las-zone1-770"
-  region1_interconnect1_onprem_dc = "onprem-dc1"
-  region1_router2_name            = module.routers.region1_router2.router.name
-  region1_interconnect2_location  = "las-zone1-770"
-  region1_interconnect2_onprem_dc = "onprem-dc2"
+  partner_interconnect_config = {
+    preactivate = var.preactivate_partner_interconnect
 
-  region2                         = local.default_region2
-  region2_router1_name            = module.routers.region2_router1.router.name
-  region2_interconnect1_location  = "lax-zone2-19"
-  region2_interconnect1_onprem_dc = "onprem-dc3"
-  region2_router2_name            = module.routers.region2_router2.router.name
-  region2_interconnect2_location  = "lax-zone1-403"
-  region2_interconnect2_onprem_dc = "onprem-dc4"
+    attachments = { // comment entries related to region 2 if you are in a single region environment
+      "region1_attachment1" = {
+        region                   = local.default_region1
+        router                   = module.routers["region1_router1"].router.name
+        location                 = "las-zone1-770"
+        cr_suffix                = "cr1"
+        onprem_dc                = "onprem-dc1"
+        edge_availability_domain = "AVAILABILITY_DOMAIN_1"
+      }
+      "region1_attachment2" = {
+        region                   = local.default_region1
+        router                   = module.routers["region1_router2"].router.name
+        location                 = "las-zone1-770"
+        cr_suffix                = "cr2"
+        onprem_dc                = "onprem-dc2"
+        edge_availability_domain = "AVAILABILITY_DOMAIN_2"
+      }
+      "region2_attachment1" = {
+        region                   = local.default_region2
+        router                   = module.routers["region2_router1"].router.name
+        location                 = "lax-zone2-19"
+        cr_suffix                = "cr3"
+        onprem_dc                = "onprem-dc3"
+        edge_availability_domain = "AVAILABILITY_DOMAIN_1"
+      }
+      "region2_attachment2" = {
+        region                   = local.default_region2
+        router                   = module.routers["region2_router2"].router.name
+        location                 = "lax-zone1-403"
+        cr_suffix                = "cr4"
+        onprem_dc                = "onprem-dc4"
+        edge_availability_domain = "AVAILABILITY_DOMAIN_2"
+      }
+    }
+  }
 
   depends_on = [
     module.shared_vpc,

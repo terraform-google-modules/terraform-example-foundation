@@ -76,3 +76,50 @@ module "cloud_router" {
     }
   ]
 }
+
+resource "google_compute_route" "nat_default_internet_route" {
+  count = var.nat_config.create_internet_route ? 1 : 0
+
+  name             = "rt-${var.resource_code}-${var.vpc_name}-default-internet"
+  project          = var.project_id
+  network          = var.network_self_link
+  dest_range       = "0.0.0.0/0"
+  next_hop_gateway = "default-internet-gateway"
+  priority         = var.nat_config.egress_internet_route_priority
+}
+
+resource "google_compute_firewall" "net_allow_egress_internet" {
+  count = var.nat_config.create_egress_firewall ? 1 : 0
+
+  name        = "fw-${var.resource_code}-${var.vpc_name}-nat-allow-egress-internet"
+  project     = var.project_id
+  network     = var.network_self_link
+  description = "Allows outbound traffic to the internet via Cloud NAT"
+
+  direction = "EGRESS"
+  priority  = var.nat_config.egress_firewall_priority
+
+  destination_ranges = ["0.0.0.0/0"]
+
+  allow {
+    protocol = "tcp"
+    ports    = var.nat_config.egress_tcp_ports
+  }
+
+  dynamic "allow" {
+    for_each = var.nat_config.allow_udp_dns ? [1] : []
+    content {
+      protocol = "udp"
+      ports    = ["53"]
+    }
+  }
+
+  dynamic "allow" {
+    for_each = var.nat_config.allow_icmp ? [1] : []
+    content {
+      protocol = "icmp"
+    }
+  }
+
+  target_tags = var.nat_config.egress_tags
+}

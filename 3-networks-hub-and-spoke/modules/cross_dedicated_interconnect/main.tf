@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+locals {
+  attachments_by_region = {
+    for k, v in var.cross_cloud_config.attachments : v.region => [
+      for mod_key, mod_val in module.interconnect_attachments : mod_val.attachment.id
+      if var.cross_cloud_config.attachments[mod_key].region == v.region
+    ]...
+  }
+}
+
 module "interconnect_attachments" {
   source  = "terraform-google-modules/cloud-router/google//modules/interconnect_attachment"
   version = "~> 9.0"
@@ -45,44 +54,19 @@ module "interconnect_attachments" {
   }
 }
 
-# ---------------------------------------------------------
-# NCC Spoke for Interconnects - Region 1
-# ---------------------------------------------------------
-resource "google_network_connectivity_spoke" "region1_interconnect_spoke" {
-  name        = "ic-spoke-${var.vpc_name}-${var.region1}"
+resource "google_network_connectivity_spoke" "interconnect_spoke" {
+  for_each = local.attachments_by_region
+
+  name        = "ic-spoke-${var.vpc_name}-${each.key}"
   project     = var.interconnect_project_id
-  location    = var.region1
+  location    = each.key
   hub         = var.ncc_hub_uri
   group       = var.ncc_hub_group
-  description = "NCC Spoke containing Cross Dedicated Interconnects for region 1"
+  description = "NCC Spoke containing Cross Dedicated Interconnects for region ${each.key}"
 
   linked_interconnect_attachments {
-    uris = [
-      for k, v in module.interconnect_attachments : v.attachment.id
-      if var.cross_cloud_config.attachments[k].region == var.region1
-    ]
-
+    uris                       = each.value
     site_to_site_data_transfer = var.site_to_site_data_transfer
   }
 }
 
-# ---------------------------------------------------------
-# NCC Spoke for Interconnects - Region 2
-# ---------------------------------------------------------
-resource "google_network_connectivity_spoke" "region2_interconnect_spoke" {
-  name        = "ic-spoke-${var.vpc_name}-${var.region2}"
-  project     = var.interconnect_project_id
-  location    = var.region2
-  hub         = var.ncc_hub_uri
-  group       = var.ncc_hub_group
-  description = "NCC Spoke containing Cross Dedicated Interconnects for region 2"
-
-  linked_interconnect_attachments {
-    uris = [
-      for k, v in module.interconnect_attachments : v.attachment.id
-      if var.cross_cloud_config.attachments[k].region == var.region2
-    ]
-
-    site_to_site_data_transfer = var.site_to_site_data_transfer
-  }
-}

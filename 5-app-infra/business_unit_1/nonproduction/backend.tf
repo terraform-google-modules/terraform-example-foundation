@@ -18,5 +18,6 @@ terraform {
   backend "gcs" {
     bucket = "UPDATE_APP_INFRA_BUCKET"
     prefix = "terraform/app-infra/business_unit_1/nonproduction"
+    # UPDATE_ENDPOINT
   }
 }

@@ -42,6 +42,7 @@ locals {
       }
     ]
   ]) : []
+  extra_api = var.billing_budget_available ? ["billingbudgets.googleapis.com"] : []
 }
 
 module "project" {
@@ -50,8 +51,9 @@ module "project" {
 
   random_project_id        = true
   random_project_id_length = 4
-  activate_apis            = distinct(concat(var.activate_apis, ["billingbudgets.googleapis.com"]))
+  activate_apis            = distinct(concat(var.activate_apis, local.extra_api))
   name                     = "${var.project_prefix}-${local.env_code}-${var.business_code}-${var.project_suffix}"
+  universe_prefix          = var.universe_prefix
   org_id                   = var.org_id
   billing_account          = var.billing_account
   folder_id                = var.folder_id
@@ -75,10 +77,10 @@ module "project" {
     env_code          = local.env_code
     vpc               = var.vpc
   }
-  budget_alert_pubsub_topic   = var.project_budget.alert_pubsub_topic
-  budget_alert_spent_percents = var.project_budget.alert_spent_percents
-  budget_amount               = var.project_budget.budget_amount
-  budget_alert_spend_basis    = var.project_budget.alert_spend_basis
+  budget_alert_pubsub_topic   = var.billing_budget_available ? var.project_budget.alert_pubsub_topic : null
+  budget_alert_spent_percents = var.billing_budget_available ? var.project_budget.alert_spent_percents : null
+  budget_amount               = var.billing_budget_available ? var.project_budget.budget_amount : null
+  budget_alert_spend_basis    = var.billing_budget_available ? var.project_budget.alert_spend_basis : null
 }
 
 # Additional roles to the App Infra Pipeline service account

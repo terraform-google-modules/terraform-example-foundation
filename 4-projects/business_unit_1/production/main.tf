@@ -15,9 +15,17 @@
  */
 
 locals {
-  ncc_spoke_subnets = [
+  ncc_spoke_single_region_subnets = [
     {
-      subnet_name   = "sb-dev-ncc-${local.default_region_2}"
+      subnet_name   = "sb-dev-ncc-${local.default_region}"
+      subnet_ip     = "10.102.0.0/24"
+      subnet_region = local.default_region
+    }
+  ]
+
+  ncc_spoke_dual_region_subnets = [
+    {
+      subnet_name   = "sb-dev-ncc-${local.default_region}"
       subnet_ip     = "10.102.0.0/24"
       subnet_region = local.default_region
     },
@@ -27,6 +35,12 @@ locals {
       subnet_region = local.default_region_2
     }
   ]
+
+  effective_subnets = [
+    local.ncc_spoke_dual_region_subnets,
+    local.ncc_spoke_single_region_subnets
+  ][local.available_universe_services.multi_region ? 0 : 1]
+
   private_service_connect_ip = "10.17.0.11"
 }
 
@@ -37,6 +51,7 @@ module "env" {
   business_code       = "bu1"
   business_unit       = "business_unit_1"
   remote_state_bucket = var.remote_state_bucket
+  universe_domain     = var.universe_domain
   location_kms        = coalesce(var.location_kms, local.default_region_kms)
   keyring_name        = "bu1-sample-keyring"
   location_gcs        = coalesce(var.location_gcs, local.default_region_gcs)
@@ -53,6 +68,6 @@ module "env" {
   subnet_ip_range                = "10.3.192.0/21"
   project_deletion_policy        = var.project_deletion_policy
   folder_deletion_protection     = var.folder_deletion_protection
-  ncc_spoke_subnets              = local.ncc_spoke_subnets
+  ncc_spoke_subnets              = local.effective_subnets
   ncc_private_service_connect_ip = local.private_service_connect_ip
 }

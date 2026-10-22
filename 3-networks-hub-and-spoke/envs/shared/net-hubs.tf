@@ -27,73 +27,33 @@ locals {
     (local.default_region1) = "10.26.0.0/23"
     (local.default_region2) = "10.27.0.0/23"
   }
-}
 
-/******************************************
-  Shared Network VPC
-*****************************************/
-
-module "shared_vpc" {
-  source  = "terraform-google-modules/network/google//modules/foundation/network"
-  version = "~> 18.2"
-
-  project_id                 = local.net_hub_project_id
-  vpc_name                   = "svpc-hub"
-  shared_vpc_host            = true
-  resource_code              = local.environment_code
-  private_service_connect_ip = local.private_service_connect_ip
-  firewall_enable_logging    = var.hub_firewall_enable_logging
-  windows_activation_enabled = var.hub_windows_activation_enabled
-
-
-  ncc_hub_config = merge(
+  subnet_single_region = [
     {
-      create_hub                  = true
-      name                        = "ncc-hub-${local.env}"
-      description                 = "NCC Hub for ${local.env}"
-      hub_labels                  = { environment = local.env }
-      spoke_labels                = { type = "hub_vpc" }
-      spoke_include_export_ranges = [local.dns_forward_source_range, "${local.private_service_connect_ip}/32"]
+      subnet_name                      = "sb-c-svpc-hub-${local.default_region1}"
+      subnet_ip                        = local.subnet_primary_ranges[local.default_region1]
+      subnet_region                    = local.default_region1
+      subnet_private_access            = "true"
+      subnet_flow_logs                 = var.vpc_flow_logs.enable_logging
+      subnet_flow_logs_interval        = var.vpc_flow_logs.aggregation_interval
+      subnet_flow_logs_sampling        = var.vpc_flow_logs.flow_sampling
+      subnet_flow_logs_metadata        = var.vpc_flow_logs.metadata
+      subnet_flow_logs_metadata_fields = var.vpc_flow_logs.metadata_fields
+      subnet_flow_logs_filter          = var.vpc_flow_logs.filter_expr
+      description                      = "Network hub subnet for ${local.default_region1}"
     },
-
-    var.enable_hub_and_spoke_transitivity ? {
-      preset_topology = "MESH"
-      spoke_group     = "default"
-    } :
     {
-      preset_topology = "STAR"
-      spoke_group     = "center"
-    },
-    var.enable_hub_and_spoke_transitivity ? {
-      auto_accept_projects_center = []
-      auto_accept_projects_edge   = []
-      auto_accept_projects_default = [
-        local.net_hub_project_id,
-        local.development_net_project_id,
-        local.nonproduction_net_project_id,
-        local.production_net_project_id
-      ]
-      } : {
-      auto_accept_projects_center = [local.net_hub_project_id]
-      auto_accept_projects_edge = [
-        local.development_net_project_id,
-        local.nonproduction_net_project_id,
-        local.production_net_project_id
-      ]
-      auto_accept_projects_default = []
+      subnet_name           = "sb-c-svpc-hub-${local.default_region1}-proxy"
+      subnet_ip             = local.subnet_proxy_ranges[local.default_region1]
+      subnet_region         = local.default_region1
+      subnet_private_access = "false"
+      subnet_flow_logs      = false
+      description           = "Network hub proxy-only subnet for ${local.default_region1}"
+      role                  = "ACTIVE"
+      purpose               = "REGIONAL_MANAGED_PROXY"
     }
-  )
-
-  dns_config = {
-    type                         = "hub"
-    enable_logging               = var.hub_dns_enable_logging
-    enable_inbound_forwarding    = var.hub_dns_enable_inbound_forwarding
-    onprem_forwarding            = true
-    domain                       = var.domain
-    target_name_server_addresses = var.target_name_server_addresses
-  }
-
-  subnets = [
+  ]
+  subnet_dual_region = [
     {
       subnet_name                      = "sb-c-svpc-hub-${local.default_region1}"
       subnet_ip                        = local.subnet_primary_ranges[local.default_region1]
@@ -141,8 +101,101 @@ module "shared_vpc" {
       purpose               = "REGIONAL_MANAGED_PROXY"
     }
   ]
+
+  nat_single_region = [
+    {
+      name          = local.default_region1
+      num_addresses = var.hub_nat_num_addresses_region1
+    }
+  ]
+  nat_dual_region = [
+    {
+      name          = local.default_region1
+      num_addresses = var.hub_nat_num_addresses_region1
+    },
+    {
+      name          = local.default_region2
+      num_addresses = var.hub_nat_num_addresses_region2
+    }
+  ]
+}
+
+
+/******************************************
+  Shared Network VPC
+*****************************************/
+
+module "shared_vpc" {
+  source  = "terraform-google-modules/network/google//modules/foundation/network"
+  version = "~> 18.2"
+
+  project_id                 = local.net_hub_project_id
+  vpc_name                   = "svpc-hub"
+  shared_vpc_host            = true
+  resource_code              = local.environment_code
+  private_service_connect_ip = local.private_service_connect_ip
+  firewall_enable_logging    = var.hub_firewall_enable_logging
+  windows_activation_enabled = var.hub_windows_activation_enabled
+  universe_domain            = var.universe_domain
+  pkg_dev_domain             = var.pkg_dev_domain
+  enable_gcr_dns             = var.enable_gcr_dns
+
+
+  ncc_hub_config = merge(
+    {
+      create_hub                  = true
+      name                        = "ncc-hub-${local.env}"
+      description                 = "NCC Hub for ${local.env}"
+      hub_labels                  = { environment = local.env }
+      spoke_labels                = { type = "hub_vpc" }
+      spoke_include_export_ranges = [local.dns_forward_source_range, "${local.private_service_connect_ip}/32"]
+    },
+
+    var.enable_hub_and_spoke_transitivity ? {
+      preset_topology = "MESH"
+      spoke_group     = "default"
+    } :
+    {
+      preset_topology = "STAR"
+      spoke_group     = "center"
+    },
+    var.enable_hub_and_spoke_transitivity ? {
+      auto_accept_projects_center = []
+      auto_accept_projects_edge   = []
+      auto_accept_projects_default = compact([
+        local.net_hub_project_id,
+        local.development_net_project_id,
+        local.nonproduction_net_project_id,
+        local.production_net_project_id
+      ])
+      } : {
+      auto_accept_projects_center = [local.net_hub_project_id]
+      auto_accept_projects_edge = compact([
+        local.development_net_project_id,
+        local.nonproduction_net_project_id,
+        local.production_net_project_id
+      ])
+      auto_accept_projects_default = []
+    }
+  )
+
+  dns_config = {
+    type                         = "hub"
+    enable_logging               = var.hub_dns_enable_logging
+    enable_inbound_forwarding    = var.hub_dns_enable_inbound_forwarding
+    onprem_forwarding            = true
+    domain                       = var.domain
+    target_name_server_addresses = var.target_name_server_addresses
+  }
+
+  subnets = [
+    local.subnet_dual_region,
+    local.subnet_single_region
+  ][local.available_universe_services.multi_region ? 0 : 1]
   secondary_ranges = {}
 }
+
+
 
 module "nat_config" {
   source = "../../modules/nat"
@@ -155,14 +208,8 @@ module "nat_config" {
   nat_config = {
     bgp_asn = local.bgp_asn_number
     regions = [
-      {
-        name          = local.default_region1
-        num_addresses = var.hub_nat_num_addresses_region1
-      },
-      {
-        name          = local.default_region2
-        num_addresses = var.hub_nat_num_addresses_region2
-      }
-    ]
+      local.nat_dual_region,
+      local.nat_single_region
+    ][local.available_universe_services.multi_region ? 0 : 1]
   }
 }

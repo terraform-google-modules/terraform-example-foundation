@@ -112,6 +112,7 @@ module "confidential_instance_template" {
   min_cpu_platform           = var.cpu_platform
   enable_confidential_vm     = true
   confidential_instance_type = var.confidential_instance_type
+  enable_shielded_vm         = true
 
   shielded_instance_config = {
     enable_secure_boot          = true
@@ -120,7 +121,8 @@ module "confidential_instance_template" {
   }
 
   metadata = {
-    tee-image-reference = local.tee_image_reference
+    tee-image-reference        = local.tee_image_reference
+    tee-container-log-redirect = "true"
   }
 
   service_account = {

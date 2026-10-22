@@ -38,4 +38,5 @@ module "app_infra_pipeline" {
   gl_repos                         = var.gl_repos
   gitlab_token                     = var.gitlab_token
   gitlab_url                       = var.gitlab_url
+  allowed_audiences                = var.allowed_audiences
 }

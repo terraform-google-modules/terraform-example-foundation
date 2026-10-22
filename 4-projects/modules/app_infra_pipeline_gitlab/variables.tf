@@ -105,3 +105,9 @@ variable "gitlab_url" {
   type        = string
   default     = "https://gitlab.com"
 }
+
+variable "allowed_audiences" {
+  description = "Workload Identity Pool Provider allowed audiences."
+  type        = list(string)
+  default     = []
+}

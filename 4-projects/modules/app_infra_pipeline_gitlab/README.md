@@ -14,6 +14,7 @@ This module implements the GitLab CI CI/CD pipeline for Step 5 (`5-app-infra`). 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. | `string` | `""` | no |
+| allowed\_audiences | Workload Identity Pool Provider allowed audiences. | `list(string)` | `[]` | no |
 | app\_infra\_repos | A list of repositories / workloads to create pipelines for. | `list(string)` | n/a | yes |
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |

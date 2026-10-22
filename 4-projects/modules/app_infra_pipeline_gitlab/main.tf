@@ -115,7 +115,7 @@ resource "google_iam_workload_identity_pool_provider" "gitlab_provider" {
     "attribute.ref_type"       = "assertion.ref_type"
   }
   oidc {
-    allowed_audiences = [var.gitlab_url]
+    allowed_audiences = var.allowed_audiences
     issuer_uri        = var.gitlab_url
   }
 }
@@ -125,6 +125,14 @@ resource "google_service_account_iam_member" "wif_sa" {
   service_account_id = each.value.sa_name
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.gitlab_pool.name}/${each.value.attribute}"
+}
+
+resource "google_service_account_iam_member" "token_creator" {
+  for_each = toset(var.app_infra_repos)
+
+  service_account_id = module.core.terraform_service_accounts_ids[each.key]
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${module.core.terraform_service_accounts[each.key]}"
 }
 
 resource "gitlab_project_variable" "variables" {

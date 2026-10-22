@@ -1,5 +1,22 @@
 # Changelog
 
+## [8.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v7.0.0...v8.0.0) (2026-10-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* Add support for other google universes ([#1528](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1528))
+
+### Features
+
+* Add support for other google universes ([#1528](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1528)) ([8a2225b](https://github.com/terraform-google-modules/terraform-example-foundation/commit/8a2225b460ba75748991d9c32da5a3414a08d6e8))
+
+
+### Bug Fixes
+
+* list required NCC roles for accepting new spokes ([#1537](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1537)) ([3fbc5dc](https://github.com/terraform-google-modules/terraform-example-foundation/commit/3fbc5dca886411a90405b6ae791a1eeab9fdefa9))
+* **networks:** support single-environment deployments in hub-and-spoke shared env ([#1533](https://github.com/terraform-google-modules/terraform-example-foundation/issues/1533)) ([604ccae](https://github.com/terraform-google-modules/terraform-example-foundation/commit/604ccae37fab20571dc65d57a6ff949b91d4143f))
+
 ## [7.0.0](https://github.com/terraform-google-modules/terraform-example-foundation/compare/v6.0.0...v7.0.0) (2026-10-06)
 
 

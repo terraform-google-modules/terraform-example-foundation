@@ -26,7 +26,7 @@ resource "google_storage_bucket" "state_buckets" {
   for_each = toset(var.app_infra_repos)
 
   project                     = var.project_id
-  name                        = "${var.bucket_prefix}-${var.project_id}-${each.key}-state"
+  name                        = "${var.bucket_prefix}-${replace(var.project_id, ":", "-")}-${each.key}-state"
   location                    = var.default_region
   uniform_bucket_level_access = true
   force_destroy               = var.bucket_force_destroy

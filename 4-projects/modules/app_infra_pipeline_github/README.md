@@ -28,6 +28,7 @@ This module implements the GitHub Actions CI/CD pipeline for Step 5 (`5-app-infr
 | project\_deletion\_policy | The deletion policy for the project created. | `string` | `"PREVENT"` | no |
 | project\_prefix | Prefix to use for project names. | `string` | n/a | yes |
 | remote\_tfstate\_bucket | Bucket with remote state data to be used by the pipeline. | `string` | n/a | yes |
+| universe\_prefix | The universe short name prefix to prepend to the project ID (e.g., 'eu0'). A colon (:) is automatically appended to the project ID, and a hyphen (-) is used for the state bucket name. | `string` | `""` | no |
 
 ## Outputs
 

@@ -39,4 +39,5 @@ module "app_infra_pipeline" {
   gitlab_token                     = var.gitlab_token
   gitlab_url                       = var.gitlab_url
   allowed_audiences                = var.allowed_audiences
+  universe_prefix                  = local.universe_prefix
 }

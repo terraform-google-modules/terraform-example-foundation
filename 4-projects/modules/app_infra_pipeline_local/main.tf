@@ -23,6 +23,7 @@ module "app_infra_project" {
   environment     = "common"
   project_budget  = var.project_budget
   project_prefix  = var.project_prefix
+  universe_prefix = var.universe_prefix
 
   project_deletion_policy = var.project_deletion_policy
 

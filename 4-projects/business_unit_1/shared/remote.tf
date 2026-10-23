@@ -33,6 +33,7 @@ locals {
   access_context_manager_policy_id   = data.terraform_remote_state.org.outputs.access_context_manager_policy_id
   cloudbuild_project_id              = try(data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_id, "")
   projects_terraform_sa              = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
+  universe_prefix                    = try(data.terraform_remote_state.bootstrap.outputs.common_config.universe_prefix, "")
 }
 
 data "terraform_remote_state" "bootstrap" {

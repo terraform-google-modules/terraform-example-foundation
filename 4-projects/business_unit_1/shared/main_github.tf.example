@@ -37,4 +37,5 @@ module "app_infra_pipeline" {
   bucket_prefix                    = var.bucket_prefix
   gh_repos                         = var.gh_repos
   gh_token                         = var.gh_token
+  universe_prefix                  = local.universe_prefix
 }

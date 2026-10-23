@@ -30,4 +30,5 @@ module "app_infra_pipeline" {
   project_budget                   = var.project_budget
   project_deletion_policy          = var.project_deletion_policy
   bucket_prefix                    = var.bucket_prefix
+  universe_prefix                  = local.universe_prefix
 }

@@ -33,6 +33,7 @@ This module implements the Cloud Build CI/CD pipeline for Step 5 (`5-app-infra`)
 | projects\_terraform\_sa | Projects Step Terraform Service Account. | `string` | `""` | no |
 | remote\_tfstate\_bucket | Bucket with remote state data to be used by the pipeline. | `string` | n/a | yes |
 | terraform\_docker\_tag\_version | TAG version of the terraform docker image. | `string` | `"v1"` | no |
+| universe\_prefix | The universe short name prefix to prepend to the project ID (e.g., 'eu0'). A colon (:) is automatically appended to the project ID, and a hyphen (-) is used for the state bucket name. | `string` | `""` | no |
 
 ## Outputs
 

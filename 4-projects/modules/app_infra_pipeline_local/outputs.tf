@@ -30,8 +30,8 @@ output "state_buckets" {
 }
 
 output "cicd_project_id" {
-  description = "APP Infra CI/CD Project ID (CB, GitHub, or GitLab project; empty for local)."
-  value       = ""
+  description = "APP Infra CI/CD Project ID (CB, GitHub, or GitLab project; project hosting Artifact Registry for local)."
+  value       = module.app_infra_project.project_id
 }
 
 output "enable_cloudbuild_deploy" {

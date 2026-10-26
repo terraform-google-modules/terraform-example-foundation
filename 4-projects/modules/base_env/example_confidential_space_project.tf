@@ -22,6 +22,7 @@ locals {
     "roles/storage.admin",
     "roles/logging.logWriter",
   ]
+  ar_project_id = local.cicd_project_id != "" ? local.cicd_project_id : try(data.terraform_remote_state.business_unit_shared.outputs.artifact_registry_repository_id, "")
 }
 
 resource "google_service_account" "workload_sa" {
@@ -39,9 +40,9 @@ resource "google_project_iam_member" "workload_sa_roles" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
-  count = local.cicd_project_id != "" ? 1 : 0
+  count = local.ar_project_id != "" ? 1 : 0
 
-  project    = local.cicd_project_id
+  project    = local.ar_project_id
   repository = "tf-runners"
   location   = local.default_region
   role       = "roles/artifactregistry.reader"

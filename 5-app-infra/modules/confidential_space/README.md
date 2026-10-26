@@ -9,16 +9,15 @@ This module provisions Google Cloud [Confidential Space](https://cloud.google.co
 
 Confidential Space requires a container image running inside the hardware-isolated enclave. The container image reference is injected into the instance metadata under the key `tee-image-reference`.
 
-### 1. CI/CD Deployment Mode (Cloud Build, GitHub Actions, GitLab CI)
-When using an automated CI/CD runner:
+### 1. Default Image Discovery (All Runners: Cloud Build, GitHub Actions, GitLab CI, Local)
+When using any runner mode (including `build_type = local`):
 - The Artifact Registry project is automatically discovered via `data.terraform_remote_state.business_unit_shared.outputs.cicd_project_id`.
 - The image reference defaults to:
   `${local.default_region}-docker.pkg.dev/${local.cicd_project_id}/${local.artifact_registry_repository}/confidential_space_image:latest`
 
-### 2. Local Deployment Mode & Custom Workloads
-When deploying locally with `./tf-wrapper.sh` or running a custom container image:
-- In local mode (`build_type = local`), `cicd_project_id` is empty (`""`) because no automated CI/CD pipeline or pre-built runner image exists.
-- You **must** provide `custom_tee_image_reference` pointing to your container image in Artifact Registry or Google Container Registry.
+### 2. Custom Container Workloads & Attestation
+When running a custom container image:
+- You can override the default image by providing `custom_tee_image_reference` pointing to your container image in Artifact Registry or Google Container Registry.
 - You **must** also provide the corresponding `confidential_image_digest` (`sha256:<digest>`). Hardware attestation in the Workload Identity Pool provider validates this digest; if the digest does not match the image, the enclave fails attestation.
 
 Example in `common.auto.tfvars`:

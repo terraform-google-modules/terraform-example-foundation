@@ -404,17 +404,11 @@ The following steps will guide you through deploying without using Cloud Build.
    mv terraform.example.tfvars terraform.tfvars
    ```
 
-1. Rename `cb.tf` to `cb.tf.example`:
+1. Activate the local build type using the `choose_build_type.sh` script:
 
    ```bash
-   mv cb.tf cb.tf.example
+   ../terraform-example-foundation/scripts/choose_build_type.sh local
    ```
-
-1. Comment Cloud Build related outputs at `outputs.tf`.
-
-1. In `sa.tf` file, comment out lines related to Cloud Build. Specifically, search for `cicd_project_iam_member` and comment out the corresponding module, as well as the "depends_on" meta-argument in any modules that depend on the commented module.
-
-1. In `sa.tf` file, search for `local.cicd_project_id` and comment out the corresponding code.
 
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
@@ -518,6 +512,26 @@ The following steps will guide you through deploying without using Cloud Build.
    git commit -m "Init gcs backend."
    cd ../
    ```
+
+### Destroying the bootstrap stage locally
+
+When destroying `0-bootstrap` locally, you must first migrate the state back from the remote Cloud Storage bucket to your local machine before executing `terraform destroy`. This prevents Terraform from attempting to destroy the Cloud Storage bucket that holds its own active state:
+
+```bash
+cd gcp-bootstrap
+
+# 1. Ensure NO service account impersonation is active
+unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
+
+# 2. Remove backend.tf to switch back to local backend
+rm -f backend.tf
+
+# 3. Pull remote state back down to local workstation
+terraform init -migrate-state -force-copy
+
+# 4. Destroy bootstrap resources locally
+terraform destroy
+```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

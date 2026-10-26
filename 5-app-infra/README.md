@@ -373,15 +373,22 @@ sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
 ```
 
 Configure Confidential Space container image and digest:
-When deploying locally (`build_type = local`), there is no automated CI/CD pipeline that builds `confidential_space_image:latest`. To test or run Confidential Space locally, specify a custom container image reference in `custom_tee_image_reference` and its SHA256 digest in `confidential_image_digest`:
+When deploying locally (`build_type = local`), if Docker was available during `4-projects/business_unit_1/shared`, `tf-wrapper.sh` automatically built and pushed the container image to Artifact Registry. You can retrieve its image name and digest directly:
 
 ```bash
-export CUSTOM_TEE_IMAGE="us-central1-docker.pkg.dev/YOUR_PROJECT/YOUR_REPO/YOUR_IMAGE:latest"
+# Retrieve image name from Stage 4 shared output
+export CUSTOM_TEE_IMAGE=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw image_name)
 export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${CUSTOM_TEE_IMAGE} --format="value(image_summary.digest)")
 
 sed -i'' -e "s|# custom_tee_image_reference = .*|custom_tee_image_reference = \"${CUSTOM_TEE_IMAGE}\"|" ./common.auto.tfvars
 sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
 ```
+
+*(Alternatively, if using an externally managed TEE container image, set `CUSTOM_TEE_IMAGE` to your container URI).*
+
+> [!TIP]
+> **Confidential VM Zone Resource Availability:**
+> Confidential computing instances (AMD Milan/Genoa SEV/SEV-SNP) may experience `ZONE_RESOURCE_POOL_EXHAUSTED` in high-demand zones such as `us-central1-b`. You can override the target zone by setting `confidential_instance_zone = "us-central1-c"` (or `"us-central1-a"`) in `common.auto.tfvars`.
 
 > [!NOTE]
 > Hardware attestation in Confidential Space requires the image digest in `confidential_image_digest` to exactly match the signed container running in the enclave. If you are not testing Confidential Space enclaves, any syntactically valid SHA256 string (for example, `sha256:0000000000000000000000000000000000000000000000000000000000000000`) satisfies Terraform validation for the instance template.

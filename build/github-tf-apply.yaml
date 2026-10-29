@@ -50,6 +50,7 @@ jobs:
       - uses: 'hashicorp/setup-terraform@v3'
         with:
           terraform_version: '1.5.7'
+          terraform_wrapper: false
 
       - id: setup
         shell: bash
@@ -85,8 +86,7 @@ jobs:
             shared_dir="$(dirname "$bu_shared")"
             if [ -d "$shared_dir" ]; then
               echo "Found Dockerfile in $shared_dir. Checking for image_name output..."
-              image_name="$(terraform -chdir="$shared_dir" output -raw image_name 2>/dev/null || echo "")"
-              if [ -n "$image_name" ]; then
+              if image_name="$(terraform -chdir="$shared_dir" output -raw image_name 2>/dev/null)" && [ -n "$image_name" ] && [[ ! "$image_name" =~ "::error::" ]]; then
                 echo "Configuring Docker auth for Google Artifact Registry..."
                 registry_host="$(echo "$image_name" | cut -d/ -f1)"
                 gcloud auth configure-docker "${registry_host}" --quiet

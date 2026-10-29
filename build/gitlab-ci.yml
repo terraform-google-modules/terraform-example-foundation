@@ -100,3 +100,40 @@ terraform-apply:
     - if: $CI_COMMIT_REF_NAME == "development"
     - if: $CI_COMMIT_REF_NAME == "production"
     - if: $CI_COMMIT_REF_NAME == "nonproduction"
+
+build-confidential-image:
+  stage: apply
+  needs: ["terraform-apply"]
+  image:
+    name: docker:29
+  services:
+    - name: docker:dind
+      alias: dockerhost
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
+  variables:
+    DOCKER_HOST: tcp://dockerhost:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: "$SERVICE_ACCOUNT_EMAIL"
+  script:
+    - apk add --no-cache bash curl jq python3
+    - curl -sSL https://sdk.cloud.google.com | bash -s -- --disable-prompts --install-dir=/opt
+    - export PATH="/opt/google-cloud-sdk/bin:$PATH"
+    - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
+    - |
+      for bu_shared in $(find . -maxdepth 3 -name "Dockerfile" -path "*/shared/Dockerfile"); do
+        shared_dir="$(dirname "$bu_shared")"
+        if [ -d "$shared_dir" ]; then
+          registry_host="${DEFAULT_REGION:-us-central1}-docker.pkg.dev"
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin "https://${registry_host}"
+          image_name="${registry_host}/${PROJECT_ID}/tf-runners/confidential_space_image:latest"
+          docker build -t "${image_name}" "$shared_dir"
+          docker push "${image_name}"
+        fi
+      done
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "production"

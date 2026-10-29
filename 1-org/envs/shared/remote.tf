@@ -63,7 +63,7 @@ locals {
 
   app_infra_cicd_identity = (
     local.app_infra_project_id != ""
-    ? "serviceAccount:sa-tf-cb-bu1-example-app@${local.app_infra_project_id}.iam.gserviceaccount.com"
+    ? "serviceAccount:sa-tf-bu1-example-app@${local.app_infra_project_id}.iam.gserviceaccount.com"
     : null
   )
 

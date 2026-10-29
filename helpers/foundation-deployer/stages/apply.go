@@ -608,10 +608,26 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 
 func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf) error {
 
+	buSharedDirs, _ := filepath.Glob(filepath.Join(c.FoundationPath, ProjectsStep, "business_unit_*", "shared"))
+	for _, buSharedDir := range buSharedDirs {
+		if err := testutils.RenameBuildFiles(buSharedDir, tfvars.BuildType); err != nil {
+			return err
+		}
+	}
+
 	// shared
 	sharedTfvars := ProjSharedTfvars{
 		DefaultRegion:         tfvars.DefaultRegion,
 		ProjectDeletionPolicy: tfvars.ProjectDeletionPolicy,
+	}
+	if c.BuildType == BuildTypeGiHub && tfvars.GitRepos != nil {
+		sharedTfvars.GHRepos = &ProjSharedGitHubRepos{
+			Owner: tfvars.GitRepos.Owner,
+		}
+	} else if c.BuildType == BuildTypeGitLab && tfvars.GitRepos != nil {
+		sharedTfvars.GLRepos = &ProjSharedGitLabRepos{
+			Owner: tfvars.GitRepos.Owner,
+		}
 	}
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, ProjectsStep, "shared.auto.tfvars"), sharedTfvars)
 	if err != nil {
@@ -807,19 +823,26 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs InfraPipelineOutputs, projectsSA string, c CommonConf) error {
 	// create tfvars file
 	commonTfvars := AppInfraCommonTfvars{
-		InstanceRegion:    tfvars.DefaultRegion,
-		RemoteStateBucket: outputs.RemoteStateBucket,
-		MachineType:       tfvars.MachineType,
-		DiskType:          tfvars.DiskType,
-		SourceImage:       tfvars.SourceImage,
+		InstanceRegion:           tfvars.DefaultRegion,
+		RemoteStateBucket:        outputs.RemoteStateBucket,
+		MachineType:              tfvars.MachineType,
+		DiskType:                 tfvars.DiskType,
+		SourceImage:              tfvars.SourceImage,
+		CustomTeeImageReference:  tfvars.CustomTeeImageReference,
+		ConfidentialInstanceZone: tfvars.ConfidentialInstanceZone,
 	}
 
-	if c.BuildType == BuildTypeCBCSR {
+	if c.BuildType == BuildTypeCBCSR && outputs.BootstrapCloudbuildProjectID != "" && outputs.ImageName != "" {
 		digest, err := gcp.NewGCP().GetDockerImageDigest(t, outputs.BootstrapCloudbuildProjectID, outputs.ImageName)
 		if err != nil {
 			return err
 		}
 		commonTfvars.ImageDigest = digest
+	} else if tfvars.ConfidentialImageDigest != "" {
+		commonTfvars.ImageDigest = tfvars.ConfidentialImageDigest
+	} else {
+		// Valid default digest for syntax/attestation verifier validation when not using Cloud Build
+		commonTfvars.ImageDigest = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
 	}
 
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, AppInfraStep, "common.auto.tfvars"), commonTfvars)
@@ -845,15 +868,29 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 	var executor Executor
 
 	stageSA := outputs.TerraformSA
+	appRepo := AppInfraRepo
+	if tfvars.GitRepos != nil && tfvars.GitRepos.AppInfra != nil && *tfvars.GitRepos.AppInfra != "" {
+		appRepo = *tfvars.GitRepos.AppInfra
+	}
 
 	switch c.BuildType {
+	case BuildTypeGiHub:
+		msg.PrintGHActionMsg(tfvars.GitRepos.Owner, appRepo, c.DisablePrompt)
+		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, appRepo, c.GitToken)
+		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, appRepo, c.GitToken)
+		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, AppInfraRepo), "", c.Logger)
+	case BuildTypeGitLab:
+		msg.PrintGLJobsMsg(tfvars.GitRepos.Owner, appRepo, c.DisablePrompt)
+		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, appRepo, c.GitToken)
+		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, appRepo, c.GitToken)
+		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, AppInfraRepo), "", c.Logger)
 	case BuildTypeLocal:
 		executor = NewEmptyExecutor(AppInfraRepo)
 		conf, err = utils.GitInit(t, filepath.Join(c.CheckoutPath, AppInfraRepo), c.Logger)
 		if err != nil {
 			return err
 		}
-		stageSA = projectsSA
+		stageSA = outputs.TerraformSA
 	default:
 		executor = NewGCPExecutor(outputs.InfraPipeProj, outputs.DefaultRegion, AppInfraRepo)
 		conf = utils.GitClone(t, "CSR", AppInfraRepo, "", filepath.Join(c.CheckoutPath, AppInfraRepo), outputs.InfraPipeProj, c.Logger)

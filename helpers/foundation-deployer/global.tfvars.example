@@ -118,6 +118,7 @@ groups = {
 //     environments = "ENVIRONMENTS_REPO"
 //     networks     = "NETWORKS_REPO"
 //     projects     = "PROJECTS_REPO"
+//     app_infra    = "bu1-example-app" // Optional, defaults to bu1-example-app
 //     cicd_runner  = "" // Required for GitLab
 // }
 
@@ -216,3 +217,8 @@ location_gcs = "US"
 machine_type = "f1-micro"
 disk_type    = "pd-standard"
 source_image = "" // format "projects/PROJECT/global/images/NAME"
+
+// Optional configurations for Confidential Space in 5-app-infra
+// confidential_image_digest  = "sha256:..."
+// custom_tee_image_reference = "" // e.g., "us-central1-docker.pkg.dev/my-project/my-repo/confidential_space_image:latest"
+// confidential_instance_zone = "us-central1-c" // zone failover if default us-central1-b is resource exhausted

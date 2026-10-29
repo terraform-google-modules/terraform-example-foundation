@@ -147,9 +147,6 @@ func DestroyProjectsStage(t testing.TB, s steps.Steps, outputs BootstrapOutputs,
 
 func DestroyExampleAppStage(t testing.TB, s steps.Steps, outputs InfraPipelineOutputs, projectsSA string, c CommonConf) error {
 	stageSA := outputs.TerraformSA
-	if c.BuildType == BuildTypeLocal {
-		stageSA = projectsSA
-	}
 	stageConf := StageConf{
 		Stage:         AppInfraRepo,
 		StageSA:       stageSA,

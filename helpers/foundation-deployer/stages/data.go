@@ -105,6 +105,7 @@ type BootstrapOutputs struct {
 type InfraPipelineOutputs struct {
 	RemoteStateBucket            string
 	InfraPipeProj                string
+	CICDProjectID                string
 	DefaultRegion                string
 	TerraformSA                  string
 	StateBucket                  string
@@ -156,6 +157,7 @@ type GitRepos struct {
 	Environments string  `cty:"environments"`
 	Networks     string  `cty:"networks"`
 	Projects     string  `cty:"projects"`
+	AppInfra     *string `cty:"app_infra"`
 	CICDRunner   *string `cty:"cicd_runner"`
 }
 
@@ -244,6 +246,9 @@ type GlobalTFVars struct {
 	MachineType                           *string                    `hcl:"machine_type"`
 	DiskType                              *string                    `hcl:"disk_type"`
 	SourceImage                           *string                    `hcl:"source_image"`
+	CustomTeeImageReference               string                     `hcl:"custom_tee_image_reference"`
+	ConfidentialImageDigest               string                     `hcl:"confidential_image_digest"`
+	ConfidentialInstanceZone              *string                    `hcl:"confidential_instance_zone"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
@@ -360,9 +365,19 @@ type ProjCommonTfvars struct {
 	RemoteStateBucket string `hcl:"remote_state_bucket"`
 }
 
+type ProjSharedGitHubRepos struct {
+	Owner string `cty:"owner" hcl:"owner"`
+}
+
+type ProjSharedGitLabRepos struct {
+	Owner string `cty:"owner" hcl:"owner"`
+}
+
 type ProjSharedTfvars struct {
-	DefaultRegion         string `hcl:"default_region"`
-	ProjectDeletionPolicy string `hcl:"project_deletion_policy"`
+	DefaultRegion         string                 `hcl:"default_region"`
+	ProjectDeletionPolicy string                 `hcl:"project_deletion_policy"`
+	GHRepos               *ProjSharedGitHubRepos `hcl:"gh_repos"`
+	GLRepos               *ProjSharedGitLabRepos `hcl:"gl_repos"`
 }
 
 type ProjEnvTfvars struct {
@@ -373,12 +388,14 @@ type ProjEnvTfvars struct {
 }
 
 type AppInfraCommonTfvars struct {
-	InstanceRegion    string  `hcl:"instance_region"`
-	RemoteStateBucket string  `hcl:"remote_state_bucket"`
-	ImageDigest       string  `hcl:"confidential_image_digest"`
-	MachineType       *string `hcl:"machine_type"`
-	DiskType          *string `hcl:"disk_type"`
-	SourceImage       *string `hcl:"source_image"`
+	InstanceRegion           string  `hcl:"instance_region"`
+	RemoteStateBucket        string  `hcl:"remote_state_bucket"`
+	ImageDigest              string  `hcl:"confidential_image_digest"`
+	MachineType              *string `hcl:"machine_type"`
+	DiskType                 *string `hcl:"disk_type"`
+	SourceImage              *string `hcl:"source_image"`
+	CustomTeeImageReference  string  `hcl:"custom_tee_image_reference"`
+	ConfidentialInstanceZone *string `hcl:"confidential_instance_zone"`
 }
 
 type UniverseTfvars struct {
@@ -418,13 +435,28 @@ func GetInfraPipelineOutputs(t testing.TB, checkoutPath, workspace string) Infra
 		Logger:       logger.Discard,
 		NoColor:      true,
 	}
+
+	cicdProj, _ := terraform.OutputE(t, options, "cicd_project_id")
+	cbProj, _ := terraform.OutputE(t, options, "cloudbuild_project_id")
+	if cicdProj == "" {
+		cicdProj = cbProj
+	}
+	infraPipeProj := cbProj
+	if infraPipeProj == "" {
+		infraPipeProj = cicdProj
+	}
+
+	imageName, _ := terraform.OutputE(t, options, "image_name")
+	bootstrapCBProj, _ := terraform.OutputE(t, options, "bootstrap_cloudbuild_project_id")
+
 	return InfraPipelineOutputs{
-		InfraPipeProj:                terraform.Output(t, options, "cloudbuild_project_id"),
+		InfraPipeProj:                infraPipeProj,
+		CICDProjectID:                cicdProj,
 		DefaultRegion:                terraform.Output(t, options, "default_region"),
 		TerraformSA:                  terraform.OutputMap(t, options, "terraform_service_accounts")["bu1-example-app"],
 		StateBucket:                  terraform.OutputMap(t, options, "state_buckets")["bu1-example-app"],
-		ImageName:                    terraform.Output(t, options, "image_name"),
-		BootstrapCloudbuildProjectID: terraform.Output(t, options, "bootstrap_cloudbuild_project_id"),
+		ImageName:                    imageName,
+		BootstrapCloudbuildProjectID: bootstrapCBProj,
 	}
 }
 

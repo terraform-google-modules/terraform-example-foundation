@@ -27,6 +27,7 @@ locals {
   common_vars = {
     for k in var.app_infra_repos : k => {
       "PROJECT_ID"            = module.app_infra_project.project_id
+      "CICD_RUNNER_REPO"      = coalesce(var.cicd_runner_repo, "gcp-cicd-runner")
       "WIF_PROVIDER_NAME"     = google_iam_workload_identity_pool_provider.gitlab_provider.name
       "SERVICE_ACCOUNT_EMAIL" = module.core.terraform_service_accounts[k]
       "TF_BACKEND"            = module.core.state_buckets[k]
@@ -143,5 +144,5 @@ resource "gitlab_project_variable" "variables" {
   key       = each.value.name
   value     = each.value.value
   protected = false
-  masked    = true
+  masked    = false
 }

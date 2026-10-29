@@ -36,6 +36,7 @@ module "app_infra_pipeline" {
   project_deletion_policy          = var.project_deletion_policy
   bucket_prefix                    = var.bucket_prefix
   gl_repos                         = var.gl_repos
+  cicd_runner_repo                 = local.cicd_runner_repo
   gitlab_token                     = var.gitlab_token
   gitlab_url                       = var.gitlab_url
   allowed_audiences                = var.allowed_audiences

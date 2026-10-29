@@ -18,6 +18,7 @@ This module implements the GitLab CI CI/CD pipeline for Step 5 (`5-app-infra`). 
 | app\_infra\_repos | A list of repositories / workloads to create pipelines for. | `list(string)` | n/a | yes |
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
+| cicd\_runner\_repo | GitLab repository name for the CI/CD runner image. | `string` | `"gcp-cicd-runner"` | no |
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
 | enforce\_vpcsc | Whether to enforce VPC Service Controls. | `bool` | `false` | no |
 | folder\_id | The folder ID where the CI/CD project should be created. | `string` | n/a | yes |

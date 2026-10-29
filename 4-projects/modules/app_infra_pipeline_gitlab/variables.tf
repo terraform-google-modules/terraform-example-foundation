@@ -93,6 +93,12 @@ variable "gl_repos" {
   default = null
 }
 
+variable "cicd_runner_repo" {
+  description = "GitLab repository name for the CI/CD runner image."
+  type        = string
+  default     = "gcp-cicd-runner"
+}
+
 variable "gitlab_token" {
   description = "Personal access token for GitLab."
   type        = string

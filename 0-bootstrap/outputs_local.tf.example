@@ -25,5 +25,5 @@ output "cicd_project_id" {
 
 output "cicd_project_number" {
   description = "Same as seed_project_number when using local bootstrap (no separate CI/CD project)."
-  value       = module.seed_bootstrap.seed_project_number
+  value       = data.google_project.seed_project.number
 }

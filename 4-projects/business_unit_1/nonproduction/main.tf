@@ -71,4 +71,5 @@ module "env" {
   folder_deletion_protection     = var.folder_deletion_protection
   ncc_spoke_subnets              = local.effective_subnets
   ncc_private_service_connect_ip = local.private_service_connect_ip
+  enable_confidential_space      = var.enable_confidential_space
 }

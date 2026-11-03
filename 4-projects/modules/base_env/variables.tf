@@ -226,3 +226,10 @@ variable "ncc_private_service_connect_ip" {
   type        = string
   description = "The subnet internal IP to be used as the private service connect endpoint in the NCC VPC"
 }
+
+variable "enable_confidential_space" {
+  description = "Enable Confidential Space project, service account, and workload IAM."
+  type        = bool
+  default     = true
+  nullable    = false
+}

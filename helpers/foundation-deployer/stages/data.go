@@ -246,9 +246,10 @@ type GlobalTFVars struct {
 	MachineType                           *string                    `hcl:"machine_type"`
 	DiskType                              *string                    `hcl:"disk_type"`
 	SourceImage                           *string                    `hcl:"source_image"`
-	CustomTeeImageReference               string                     `hcl:"custom_tee_image_reference"`
-	ConfidentialImageDigest               string                     `hcl:"confidential_image_digest"`
-	ConfidentialInstanceZone              *string                    `hcl:"confidential_instance_zone"`
+	CustomTeeImageReference               string                     `hcl:"custom_tee_image_reference,optional"`
+	ConfidentialImageDigest               string                     `hcl:"confidential_image_digest,optional"`
+	ConfidentialInstanceZone              *string                    `hcl:"confidential_instance_zone,optional"`
+	EnableConfidentialSpace               *bool                      `hcl:"enable_confidential_space,optional"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
@@ -385,6 +386,7 @@ type ProjEnvTfvars struct {
 	LocationGCS              string `hcl:"location_gcs"`
 	FolderDeletionProtection *bool  `hcl:"folder_deletion_protection"`
 	ProjectDeletionPolicy    string `hcl:"project_deletion_policy"`
+	EnableConfidentialSpace  *bool  `hcl:"enable_confidential_space"`
 }
 
 type AppInfraCommonTfvars struct {
@@ -396,6 +398,7 @@ type AppInfraCommonTfvars struct {
 	SourceImage              *string `hcl:"source_image"`
 	CustomTeeImageReference  string  `hcl:"custom_tee_image_reference"`
 	ConfidentialInstanceZone *string `hcl:"confidential_instance_zone"`
+	EnableConfidentialSpace  *bool   `hcl:"enable_confidential_space"`
 }
 
 type UniverseTfvars struct {

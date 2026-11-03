@@ -207,6 +207,10 @@ target_name_server_addresses = [
 location_kms = "us"
 location_gcs = "US"
 
+// Optional toggle to enable/disable Confidential Space across 4-projects and 5-app-infra
+// Defaults to true. Set to false to skip confidential project, workload SA, and confidential VM deployment.
+enable_confidential_space = true
+
 // 5-app-infra
 
 // on Google Cloud Dedicated the following values need to be updated with values available on the environment

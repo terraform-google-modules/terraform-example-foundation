@@ -72,3 +72,9 @@ variable "confidential_instance_zone" {
   type        = string
   default     = null
 }
+
+variable "enable_confidential_space" {
+  description = "Explicitly enable or disable Confidential Space. If null, derived automatically from Stage 4 remote state."
+  type        = bool
+  default     = null
+}

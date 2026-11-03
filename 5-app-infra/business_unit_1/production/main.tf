@@ -17,7 +17,7 @@
 locals {
   business_unit             = "business_unit_1"
   environment               = "production"
-  enable_confidential_space = try(data.terraform_remote_state.projects_env.outputs.confidential_space_project, "") != ""
+  enable_confidential_space = (var.enable_confidential_space != null ? var.enable_confidential_space : true) && (try(data.terraform_remote_state.projects_env.outputs.confidential_space_project, "") != "")
 }
 
 module "gce_instance" {

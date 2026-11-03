@@ -5,6 +5,7 @@
 |------|-------------|------|---------|:--------:|
 | business\_code | The business code (ex. bu1). | `string` | n/a | yes |
 | business\_unit | The business (ex. business\_unit\_1). | `string` | n/a | yes |
+| enable\_confidential\_space | Enable Confidential Space project, service account, and workload IAM. | `bool` | `true` | no |
 | env | The environment to prepare (ex. development). | `string` | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_deletion\_protection | Prevent Terraform from destroying or recreating the folder. | `string` | `true` | no |

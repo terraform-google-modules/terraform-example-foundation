@@ -26,31 +26,34 @@ locals {
 }
 
 resource "google_service_account" "workload_sa" {
+  count = var.enable_confidential_space ? 1 : 0
+
   account_id   = "confidential-space-workload-sa"
   display_name = "Workload Service Account for confidential space"
-  project      = module.confidential_space_project.project_id
+  project      = module.confidential_space_project[0].project_id
 }
 
 resource "google_project_iam_member" "workload_sa_roles" {
-  for_each = toset(local.iam_roles)
+  for_each = toset(var.enable_confidential_space ? local.iam_roles : [])
 
-  project = module.confidential_space_project.project_id
+  project = module.confidential_space_project[0].project_id
   role    = each.key
-  member  = "serviceAccount:${google_service_account.workload_sa.email}"
+  member  = "serviceAccount:${google_service_account.workload_sa[0].email}"
 }
 
 resource "google_artifact_registry_repository_iam_member" "artifact_registry_reader" {
-  count = local.ar_project_id != "" ? 1 : 0
+  count = var.enable_confidential_space && local.ar_project_id != "" ? 1 : 0
 
   project    = local.ar_project_id
   repository = "tf-runners"
   location   = local.default_region
   role       = "roles/artifactregistry.reader"
-  member     = "serviceAccount:${google_service_account.workload_sa.email}"
+  member     = "serviceAccount:${google_service_account.workload_sa[0].email}"
 }
 
 module "confidential_space_project" {
   source = "../single_project"
+  count  = var.enable_confidential_space ? 1 : 0
 
   org_id                     = local.org_id
   billing_account            = local.billing_account

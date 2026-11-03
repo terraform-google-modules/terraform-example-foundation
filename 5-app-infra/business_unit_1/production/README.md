@@ -7,6 +7,7 @@
 | confidential\_instance\_zone | Zone where the confidential compute instance should be created (e.g. us-central1-b, us-central1-c). If null, defaults to us-central1-b. | `string` | `null` | no |
 | custom\_tee\_image\_reference | Custom TEE container image reference to override the default image derived from cicd\_project\_id. | `string` | `""` | no |
 | disk\_type | Boot disk type, can be either pd-ssd, local-ssd, pd-standard, or hyperdisk-balanced(Air Gapped) | `string` | `"pd-standard"` | no |
+| enable\_confidential\_space | Explicitly enable or disable Confidential Space. If null, derived automatically from Stage 4 remote state. | `bool` | `null` | no |
 | instance\_region | The region where compute instance will be created. A subnetwork must exists in the instance region. | `string` | `null` | no |
 | machine\_type | Machine type to create, e.g. n1-standard-1 | `string` | `"f1-micro"` | no |
 | remote\_state\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |

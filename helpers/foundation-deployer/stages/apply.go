@@ -222,12 +222,6 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 			if err != nil {
 				return err
 			}
-			if c.BuildType == BuildTypeLocal { // We don't have new buckets created in 4-projects/shared
-				err = utils.ReplaceStringInFile(file, "UPDATE_APP_INFRA_BUCKET", backendBucketProjects)
-				if err != nil {
-					return err
-				}
-			}
 			err = utils.ReplaceStringInFile(file, "# UPDATE_ENDPOINT", customEndpoint)
 			if err != nil {
 				return err
@@ -641,12 +635,18 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	if err != nil {
 		return err
 	}
+	enableConfidentialSpace := true
+	if tfvars.EnableConfidentialSpace != nil {
+		enableConfidentialSpace = *tfvars.EnableConfidentialSpace
+	}
+
 	//for each environment
 	envTfvars := ProjEnvTfvars{
 		LocationKMS:              tfvars.LocationKMS,
 		LocationGCS:              tfvars.LocationGCS,
 		FolderDeletionProtection: tfvars.FolderDeletionProtection,
 		ProjectDeletionPolicy:    tfvars.ProjectDeletionPolicy,
+		EnableConfidentialSpace:  &enableConfidentialSpace,
 	}
 	for _, envfile := range []string{
 		"development.auto.tfvars",
@@ -821,6 +821,11 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 }
 
 func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs InfraPipelineOutputs, projectsSA string, c CommonConf) error {
+	enableConfidentialSpace := true
+	if tfvars.EnableConfidentialSpace != nil {
+		enableConfidentialSpace = *tfvars.EnableConfidentialSpace
+	}
+
 	// create tfvars file
 	commonTfvars := AppInfraCommonTfvars{
 		InstanceRegion:           tfvars.DefaultRegion,
@@ -830,9 +835,10 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 		SourceImage:              tfvars.SourceImage,
 		CustomTeeImageReference:  tfvars.CustomTeeImageReference,
 		ConfidentialInstanceZone: tfvars.ConfidentialInstanceZone,
+		EnableConfidentialSpace:  &enableConfidentialSpace,
 	}
 
-	if c.BuildType == BuildTypeCBCSR && outputs.BootstrapCloudbuildProjectID != "" && outputs.ImageName != "" {
+	if enableConfidentialSpace && c.BuildType == BuildTypeCBCSR && outputs.BootstrapCloudbuildProjectID != "" && outputs.ImageName != "" {
 		digest, err := gcp.NewGCP().GetDockerImageDigest(t, outputs.BootstrapCloudbuildProjectID, outputs.ImageName)
 		if err != nil {
 			return err

@@ -74,3 +74,10 @@ variable "folder_deletion_protection" {
   type        = string
   default     = true
 }
+
+variable "enable_confidential_space" {
+  description = "Enable Confidential Space project, service account, and workload IAM."
+  type        = bool
+  default     = true
+  nullable    = false
+}

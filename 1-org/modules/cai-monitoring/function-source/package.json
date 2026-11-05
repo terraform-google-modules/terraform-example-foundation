@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/security-center": "^9.4.0",
-    "moment": "2.30.1",
+    "moment": "2.31.0",
     "uuid4": "2.0.3"
   },
   "overrides": {

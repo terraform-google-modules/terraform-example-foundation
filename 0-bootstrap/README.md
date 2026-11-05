@@ -228,13 +228,15 @@ Using GitLab Pipeline requires manual creation of the GitLab projects (repositor
 
 ## Deploying with Terraform Cloud
 
+*Warning: Deploying with Terraform Cloud is no longer actively maintained and will be removed in a future release. While this guidance remains available for users who currently use Terraform Cloud, please consider adopting another deployment method for new environments.*
+
 If you are deploying using [Terraform Cloud](https://developer.hashicorp.com/terraform/cloud-docs), see [README-Terraform-Cloud.md](./README-Terraform-Cloud.md)
 for requirements and instructions on how to run the 0-bootstrap step.
 Using Terraform Cloud requires manual creation of the GitHub repositories or GitLab projects used in each stage.
 
 ## Deploying with Cloud Build
 
-*Warning: This method has a dependency on Cloud Source Repositories, which is [no longer available to new customers](https://cloud.google.com/source-repositories/docs). If you have previously used the CSR API in your organization then you can use this method, but a newly created organization will not be able to enable CSR and cannot use this deployment method. In that case, we recommend that you follow the directions for deploying locally, Github, Gitlab, or Terraform Cloud instead.*
+*Warning: This method has a dependency on Cloud Source Repositories, which is [no longer available to new customers](https://cloud.google.com/source-repositories/docs). If you have previously used the CSR API in your organization then you can use this method, but a newly created organization will not be able to enable CSR and cannot use this deployment method. In that case, we recommend that you follow the directions for deploying locally, Github, or Gitlab instead.*
 
 The following steps introduce the steps to deploy with Cloud Build Alternatively, use the [helper script](../helpers/foundation-deployer/README.md) to automate all the stages of. Use the helper script when you want to rapidly create and destroy the entire organization for demonstration or testing purposes, without much customization at each stage.
 

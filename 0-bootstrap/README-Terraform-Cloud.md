@@ -1,3 +1,5 @@
+*Warning: Deploying with Terraform Cloud is no longer actively maintained and will be removed in a future release. While this guidance remains available for users who currently use Terraform Cloud, please consider adopting another deployment method for new environments.*
+
 # Deploying a Terraform Cloud (TFC) compatible environment
 
 The objective of the instructions below is to configure the infrastructure that allows you to run CI/CD deployments using

@@ -10,7 +10,7 @@ This repository implements the Google Cloud Platform (GCP) **Enterprise Foundati
 *   **Enforce Separation of Duties**: Isolates permissions across stages using dedicated, least-privileged Service Accounts for platform, security, network, and application operations.
 *   **Enforce Security Guardrails by Default**: Implements organization policies, centralized audit logging (Cloud Storage, Pub/Sub, and log bucket sinks), SCC notifications, Cloud KMS, and Secret Manager.
 *   **Configure Enterprise Networking**: Deploys Shared VPC or Hub-and-Spoke networks, subnets, hierarchical firewall policies, Private Google Access, Cloud NAT, Cloud DNS, and Network Connectivity Center (NCC).
-*   **Automate CI/CD for Subsequent Stages**: Provisions CI/CD pipelines in `0-bootstrap` to automate the deployment of stages `1-org` through `5-app-infra` via pull requests (`plan`) and environment branch merges (`apply`), supporting Cloud Build, GitHub Actions, GitLab CI, and Terraform Cloud.
+*   **Automate CI/CD for Subsequent Stages**: Provisions CI/CD pipelines in `0-bootstrap` to automate the deployment of stages `1-org` through `5-app-infra` via pull requests (`plan`) and environment branch merges (`apply`), supporting Cloud Build, GitHub Actions, and GitLab CI.
 
 ---
 
@@ -24,7 +24,7 @@ When reasoning about this codebase, agents must maintain a clear mental model of
 
 | Stage | Path / Module | Responsibility & Scope | Target Audience |
 | :--- | :--- | :--- | :--- |
-| **0 - Bootstrap** | `0-bootstrap/`<br>`0-bootstrap/modules/` | Seed project (`prj-b-seed`), Terraform state buckets, per-stage Service Accounts, and initial CI/CD pipeline infrastructure (`prj-b-cicd`) supporting Cloud Build, GitHub Actions, GitLab CI, or Terraform Cloud. | Platform Admin |
+| **0 - Bootstrap** | `0-bootstrap/`<br>`0-bootstrap/modules/` | Seed project (`prj-b-seed`), Terraform state buckets, per-stage Service Accounts, and initial CI/CD pipeline infrastructure (`prj-b-cicd`) supporting Cloud Build, GitHub Actions, or GitLab CI. | Platform Admin |
 | **1 - Org** | `1-org/envs/shared/`<br>`1-org/modules/` | Top-level folders (`fldr-common`, `fldr-network`), organization policies, centralized audit logging (`prj-c-logging`), billing export (`prj-c-billing-export`), SCC notifications (`prj-c-scc`), Cloud Asset Inventory monitoring (`cai-monitoring`), global KMS/Secrets (`prj-c-kms`, `prj-c-secrets`), DNS hub (`prj-net-dns`), Interconnect host project (`prj-net-interconnect`), and network host projects (`prj-*-svpc`, `prj-net-hub-svpc`). | Cloud Security / Platform Admin |
 | **2 - Environments** | `2-environments/envs/`<br>`2-environments/modules/` | Environment folders (`fldr-development`, `fldr-nonproduction`, `fldr-production`) and shared per-environment services (`prj-{d,n,p}-kms`, `prj-{d,n,p}-secrets`). | Platform Admin |
 | **3 - Networks** | `3-networks-svpc/`<br>`3-networks-hub-and-spoke/` | Shared VPCs per environment, subnets with secondary ranges (GKE-ready), hierarchical firewall policies (IAP, health checks, Windows KMS), Cloud NAT, Private Service Access (Cloud SQL/AlloyDB), Cloud DNS, on-premises Interconnect (Dedicated or Partner), Cross-Cloud Interconnect (Dedicated or Partner), and HA-VPN (Standard Shared VPC or Hub-and-Spoke). | Network Admin |

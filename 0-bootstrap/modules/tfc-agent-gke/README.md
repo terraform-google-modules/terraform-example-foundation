@@ -1,3 +1,5 @@
+*Warning: This module for deploying self-hosted Terraform Cloud agents on GKE is no longer actively maintained and will be removed in a future release.*
+
 # Self Hosted Terraform Cloud agent on GKE
 
 This module handles the opinionated creation of infrastructure necessary to deploy Terraform Cloud agents on a private autopilot Google Kubernetes Engine (GKE).

@@ -15,7 +15,6 @@
  */
 
 locals {
-  env_code = substr(var.env, 0, 1)
   iam_roles = [
     "roles/iam.serviceAccountUser",
     "roles/confidentialcomputing.workloadUser",
@@ -60,7 +59,6 @@ module "confidential_space_project" {
   billing_account          = local.billing_account
   folder_id                = google_folder.env_business_unit.name
   environment              = var.env
-  vpc                      = "standalone"
   project_budget           = var.project_budget
   project_prefix           = local.project_prefix
   universe_prefix          = local.universe_prefix

@@ -23,22 +23,29 @@ locals {
   )
   tee_image_reference = local.default_tee_image_reference
 
+  # Safe fallback preventing out-of-bounds indexing if Shared VPC outputs are absent
+  svpc_subnetwork_self_link = try([for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0], "")
+
+  dedicated_subnetwork_self_link = try(data.terraform_remote_state.projects_env.outputs.confidential_space_subnetwork_self_link, null)
+  effective_subnetwork_self_link = coalesce(local.dedicated_subnetwork_self_link != "" && local.dedicated_subnetwork_self_link != null ? local.dedicated_subnetwork_self_link : null, local.svpc_subnetwork_self_link)
+
+  dedicated_firewall_tags = try(data.terraform_remote_state.projects_env.outputs.confidential_space_firewall_tags, null)
+
   env_project_ids = {
     "conf-space" = data.terraform_remote_state.projects_env.outputs.confidential_space_project,
   }
   env_project_subnets = {
-    "conf-space" = local.svpc_subnetwork_self_link,
+    "conf-space" = local.effective_subnetwork_self_link,
   }
   env_project_resource_manager_tags = {
-    "conf-space" = null,
+    "conf-space" = local.dedicated_firewall_tags != null && length(local.dedicated_firewall_tags) > 0 ? local.dedicated_firewall_tags : null,
   }
 
-  subnetwork_self_links     = data.terraform_remote_state.projects_env.outputs.subnets_self_links
-  svpc_subnetwork_self_link = [for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
+  subnetwork_self_links = data.terraform_remote_state.projects_env.outputs.subnets_self_links
 
   env_project_id                    = local.env_project_ids[var.project_suffix]
   subnetwork_self_link              = local.env_project_subnets[var.project_suffix]
-  subnetwork_project                = element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1, )
+  subnetwork_project                = try(element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1), local.env_project_id)
   resource_manager_tags             = local.env_project_resource_manager_tags[var.project_suffix]
   artifact_registry_repository      = "tf-runners"
   confidential_space_project_id     = data.terraform_remote_state.projects_env.outputs.confidential_space_project

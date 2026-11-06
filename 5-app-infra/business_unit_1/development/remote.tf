@@ -33,7 +33,8 @@ data "terraform_remote_state" "business_unit_shared" {
   backend = "gcs"
 
   config = {
-    bucket = var.remote_state_bucket
-    prefix = "terraform/projects/${local.business_unit}/shared"
+    bucket                  = var.remote_state_bucket
+    prefix                  = "terraform/projects/${local.business_unit}/shared"
+    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }

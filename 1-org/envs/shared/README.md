@@ -5,6 +5,7 @@
 |------|-------------|------|---------|:--------:|
 | access\_context\_manager\_policy\_id | The id of the default Access Context Manager policy. Can be obtained by running `gcloud access-context-manager policies list --organization YOUR_ORGANIZATION_ID --format="value(name)"`. | `string` | `""` | no |
 | allow\_additional\_member\_types | Allows use of additional member types: `group`, `principal`, and `principalSet` as members of the perimeter. If true the members will be added in a ingress rules instead of in the access level. | `bool` | `false` | no |
+| app\_infra\_target\_project\_numbers | List of target GCP project numbers to be added to VPC-SC ingress rules, allowing the App Infra pipeline to provision and manage resources within them. | `list(string)` | `[]` | no |
 | billing\_export\_dataset\_location | The location of the dataset for billing data export. | `string` | `null` | no |
 | bucket\_sleep\_duration | The duration to wait for the Cloud Function source bucket to initialize (e.g., 30s, 2m). | `string` | `"30s"` | no |
 | create\_access\_context\_manager\_access\_policy | Whether to create access context manager access policy. | `bool` | `true` | no |

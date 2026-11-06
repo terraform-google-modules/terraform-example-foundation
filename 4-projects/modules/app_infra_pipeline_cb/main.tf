@@ -51,15 +51,17 @@ module "app_infra_cloudbuild_project" {
   vpc_service_control_perimeter_name = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${var.perimeter_name}"
   vpc_service_control_sleep_duration = "60s"
 
-  activate_apis = [
+  billing_budget_available = var.billing_budget_available
+
+  activate_apis = compact([
     "cloudbuild.googleapis.com",
     "sourcerepo.googleapis.com",
     "cloudkms.googleapis.com",
     "iam.googleapis.com",
     "artifactregistry.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "confidentialcomputing.googleapis.com"
-  ]
+    var.enable_confidential_space ? "confidentialcomputing.googleapis.com" : ""
+  ])
   # Metadata
   project_suffix    = "infra-pipeline"
   application_name  = "app-infra-pipelines"

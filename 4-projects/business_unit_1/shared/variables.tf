@@ -119,3 +119,10 @@ variable "allowed_audiences" {
   type        = list(string)
   default     = []
 }
+
+variable "enable_confidential_space" {
+  description = "Enable Confidential Space project, service account, and workload IAM."
+  type        = bool
+  default     = true
+  nullable    = false
+}

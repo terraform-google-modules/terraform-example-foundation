@@ -18,10 +18,12 @@ This module implements the Cloud Build CI/CD pipeline for Step 5 (`5-app-infra`)
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. | `string` | `""` | no |
 | app\_infra\_repos | A list of Cloud Source Repos to be created to hold app infra Terraform configs. | `list(string)` | n/a | yes |
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| billing\_budget\_available | Indicate that billing budget API is available. | `bool` | `true` | no |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | cloud\_build\_private\_worker\_pool\_id | ID of the Cloud Build private worker pool. | `string` | n/a | yes |
 | cloud\_builder\_artifact\_repo | Artifact Registry (AR) repository that stores TF Cloud Builder images. | `string` | n/a | yes |
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
+| enable\_confidential\_space | Whether to enable Confidential Space resources. | `bool` | `true` | no |
 | enforce\_vpcsc | Whether to enforce VPC Service Controls. | `bool` | `false` | no |
 | folder\_id | The folder ID where the CI/CD project should be created. | `string` | n/a | yes |
 | iam\_propagation\_sleep\_duration | The duration to wait for IAM propagation across Cloud Build, Storage, and Artifact Registry. | `string` | `"60s"` | no |

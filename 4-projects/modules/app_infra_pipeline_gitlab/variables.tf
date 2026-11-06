@@ -128,3 +128,17 @@ variable "universe_prefix" {
     error_message = "The universe_prefix variable must be empty or contain only lowercase alphanumeric characters."
   }
 }
+
+variable "enable_confidential_space" {
+  description = "Whether to enable Confidential Space resources."
+  type        = bool
+  default     = true
+  nullable    = false
+}
+
+variable "billing_budget_available" {
+  description = "Indicate that billing budget API is available."
+  type        = bool
+  default     = true
+  nullable    = false
+}

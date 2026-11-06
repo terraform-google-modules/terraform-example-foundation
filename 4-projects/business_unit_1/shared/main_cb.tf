@@ -35,5 +35,7 @@ module "app_infra_pipeline" {
   projects_terraform_sa              = local.projects_terraform_sa
   bucket_prefix                      = var.bucket_prefix
   terraform_docker_tag_version       = var.terraform_docker_tag_version
+  enable_confidential_space          = var.enable_confidential_space
+  billing_budget_available           = try(local.available_universe_services.billing_budget, true)
   universe_prefix                    = local.universe_prefix
 }

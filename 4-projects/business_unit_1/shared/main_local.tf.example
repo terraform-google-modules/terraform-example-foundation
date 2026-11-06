@@ -30,5 +30,7 @@ module "app_infra_pipeline" {
   project_budget                   = var.project_budget
   project_deletion_policy          = var.project_deletion_policy
   bucket_prefix                    = var.bucket_prefix
+  enable_confidential_space        = var.enable_confidential_space
+  billing_budget_available         = try(local.available_universe_services.billing_budget, true)
   universe_prefix                  = local.universe_prefix
 }

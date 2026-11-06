@@ -58,19 +58,21 @@ module "app_infra_project" {
 
   project_deletion_policy = var.project_deletion_policy
 
+  billing_budget_available = var.billing_budget_available
+
   vpc_service_control_attach_enabled = var.enforce_vpcsc ? "true" : "false"
   vpc_service_control_attach_dry_run = !var.enforce_vpcsc ? "true" : "false"
   vpc_service_control_perimeter_name = "accessPolicies/${var.access_context_manager_policy_id}/servicePerimeters/${var.perimeter_name}"
   vpc_service_control_sleep_duration = "60s"
 
-  activate_apis = [
+  activate_apis = compact([
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "sts.googleapis.com",
     "artifactregistry.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "confidentialcomputing.googleapis.com"
-  ]
+    var.enable_confidential_space ? "confidentialcomputing.googleapis.com" : ""
+  ])
   # Metadata
   project_suffix    = "infra-pipeline"
   application_name  = "app-infra-pipelines"

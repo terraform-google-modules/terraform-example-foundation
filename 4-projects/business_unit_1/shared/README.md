@@ -29,6 +29,7 @@ To switch runner type across stages, execute:
 | allowed\_audiences | Workload Identity Pool Provider allowed audiences. | `list(string)` | `[]` | no |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | default\_region | Default region to create resources where applicable. | `string` | `"us-central1"` | no |
+| enable\_confidential\_space | Enable Confidential Space project, service account, and workload IAM. | `bool` | `true` | no |
 | gh\_repos | Configuration for GitHub Repositories (owner). | <pre>object({<br>    owner = string<br>  })</pre> | `null` | no |
 | gh\_token | Personal access token for GitHub. | `string` | `""` | no |
 | gitlab\_token | Personal access token for GitLab. | `string` | `""` | no |

@@ -15,8 +15,10 @@ This module implements the Local deployment pipeline for Step 5 (`5-app-infra`).
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. | `string` | `""` | no |
 | app\_infra\_repos | A list of repositories / workloads to create pipelines for. | `list(string)` | n/a | yes |
 | billing\_account | The ID of the billing account to associate projects with. | `string` | n/a | yes |
+| billing\_budget\_available | Indicate that billing budget API is available. | `bool` | `true` | no |
 | bucket\_prefix | Name prefix to use for state bucket created. | `string` | `"bkt"` | no |
 | default\_region | Default region to create resources where applicable. | `string` | n/a | yes |
+| enable\_confidential\_space | Whether to enable Confidential Space resources. | `bool` | `true` | no |
 | enforce\_vpcsc | Whether to enforce VPC Service Controls. | `bool` | `false` | no |
 | folder\_id | The folder ID where the project should be created. | `string` | n/a | yes |
 | org\_id | GCP Organization ID. | `string` | n/a | yes |

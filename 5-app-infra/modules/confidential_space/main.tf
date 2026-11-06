@@ -136,6 +136,8 @@ module "confidential_instance_template" {
     email  = local.confidential_space_workload_sa
     scopes = ["cloud-platform"]
   }
+
+  resource_manager_tags = local.resource_manager_tags
 }
 
 module "confidential_compute_instance" {

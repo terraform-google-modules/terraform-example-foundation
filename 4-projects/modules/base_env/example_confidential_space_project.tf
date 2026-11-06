@@ -141,44 +141,6 @@ module "confidential_space_psc" {
   forwarding_rule_target     = local.enforce_vpcsc ? "vpc-sc" : "all-apis"
 }
 
-resource "google_dns_managed_zone" "pkg_dev" {
-  count = var.enable_confidential_space ? 1 : 0
-
-  project     = module.confidential_space_project[0].project_id
-  name        = "pkg-dev-${local.env_code}-conf-space"
-  dns_name    = "pkg.dev."
-  description = "Private DNS zone for Artifact Registry (pkg.dev) routing to Private Service Connect"
-  visibility  = "private"
-
-  private_visibility_config {
-    networks {
-      network_url = module.confidential_space_network[0].network_self_link
-    }
-  }
-}
-
-resource "google_dns_record_set" "pkg_dev_cname" {
-  count = var.enable_confidential_space ? 1 : 0
-
-  project      = module.confidential_space_project[0].project_id
-  managed_zone = google_dns_managed_zone.pkg_dev[0].name
-  name         = "*.pkg.dev."
-  type         = "CNAME"
-  ttl          = 300
-  rrdatas      = ["pkg.dev."]
-}
-
-resource "google_dns_record_set" "pkg_dev_a" {
-  count = var.enable_confidential_space ? 1 : 0
-
-  project      = module.confidential_space_project[0].project_id
-  managed_zone = google_dns_managed_zone.pkg_dev[0].name
-  name         = "pkg.dev."
-  type         = "A"
-  ttl          = 300
-  rrdatas      = [var.confidential_space_private_service_connect_ip]
-}
-
 resource "google_dns_policy" "confidential_space_dns_policy" {
   count = var.enable_confidential_space ? 1 : 0
 

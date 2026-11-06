@@ -107,6 +107,9 @@ func TestAppInfra(t *testing.T) {
 						serviceAccounts := computeInstance.Get("serviceAccounts").Array()
 						assert.Len(serviceAccounts, 1)
 						assert.Equal(fmt.Sprintf("confidential-space-workload-sa@%s.iam.gserviceaccount.com", confidentialProjectID), serviceAccounts[0].Get("email").String())
+						networkInterfaces := computeInstance.Get("networkInterfaces").Array()
+						assert.Len(networkInterfaces, 1)
+						assert.Contains(networkInterfaces[0].Get("subnetwork").String(), fmt.Sprintf("projects/%s/regions", confidentialProjectID), "Confidential instance subnetwork must belong to the confidential space project")
 					}
 				})
 

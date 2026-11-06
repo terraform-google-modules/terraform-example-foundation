@@ -183,6 +183,9 @@ func TestProjects(t *testing.T) {
 
 						if projectOutput == "confidential_space_project" {
 
+							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
+							assert.Empty(sharedVPC.Map(), "Confidential Space project must not be attached to Shared VPC host")
+
 							enabledAPIS := gcloud.Runf(t, "services list --project %s --impersonate-service-account %s", projectID, terraformSA).Array()
 							listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 							assert.Subset(listApis, confidentialRestrictedApisEnabled, "API should have been enabled")

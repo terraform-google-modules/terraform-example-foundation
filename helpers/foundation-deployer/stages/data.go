@@ -375,10 +375,11 @@ type ProjSharedGitLabRepos struct {
 }
 
 type ProjSharedTfvars struct {
-	DefaultRegion         string                 `hcl:"default_region"`
-	ProjectDeletionPolicy string                 `hcl:"project_deletion_policy"`
-	GHRepos               *ProjSharedGitHubRepos `hcl:"gh_repos"`
-	GLRepos               *ProjSharedGitLabRepos `hcl:"gl_repos"`
+	DefaultRegion           string                 `hcl:"default_region"`
+	ProjectDeletionPolicy   string                 `hcl:"project_deletion_policy"`
+	GHRepos                 *ProjSharedGitHubRepos `hcl:"gh_repos"`
+	GLRepos                 *ProjSharedGitLabRepos `hcl:"gl_repos"`
+	EnableConfidentialSpace *bool                  `hcl:"enable_confidential_space"`
 }
 
 type ProjEnvTfvars struct {

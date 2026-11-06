@@ -609,10 +609,16 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 		}
 	}
 
+	enableConfidentialSpace := true
+	if tfvars.EnableConfidentialSpace != nil {
+		enableConfidentialSpace = *tfvars.EnableConfidentialSpace
+	}
+
 	// shared
 	sharedTfvars := ProjSharedTfvars{
-		DefaultRegion:         tfvars.DefaultRegion,
-		ProjectDeletionPolicy: tfvars.ProjectDeletionPolicy,
+		DefaultRegion:           tfvars.DefaultRegion,
+		ProjectDeletionPolicy:   tfvars.ProjectDeletionPolicy,
+		EnableConfidentialSpace: &enableConfidentialSpace,
 	}
 	if c.BuildType == BuildTypeGiHub && tfvars.GitRepos != nil {
 		sharedTfvars.GHRepos = &ProjSharedGitHubRepos{
@@ -634,10 +640,6 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	err = utils.WriteTfvars(filepath.Join(c.FoundationPath, ProjectsStep, "common.auto.tfvars"), commonTfvars)
 	if err != nil {
 		return err
-	}
-	enableConfidentialSpace := true
-	if tfvars.EnableConfidentialSpace != nil {
-		enableConfidentialSpace = *tfvars.EnableConfidentialSpace
 	}
 
 	//for each environment

@@ -477,6 +477,11 @@ If you received any errors or made any changes to the Terraform config or any `.
 
 If you previously enabled the dry-run variables `required_ingress_rules_app_infra_dry_run` and `required_egress_rules_app_infra_dry_run`, you must **disable both of them before running the 4-projects step in enforced mode**. Once enforced mode is activated and the **4-projects** step is executed, the projects created in that step are removed from the dry-run perimeter. Keeping these dry-run variables active creates conflicts, because they define rules for projects that will no longer be part of the dry-run perimeter after this transition.
 
+## post-deployment configuration after creating new projects
+
+after creating new projects add their project numbers to the variable `app_infra_target_project_numbers` in step 1-org, commit the change and push the change to the code repository.
+
+
 ## Network Connectivity Center (NCC) post-deployment configuration
 
 After finishing the deployment, or after adding a new project that joins the NCC Hub it is necessary to accept the new project into the Hub.

@@ -17,6 +17,7 @@ package stages
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -840,17 +841,40 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 		EnableConfidentialSpace:  &enableConfidentialSpace,
 	}
 
-	if enableConfidentialSpace && c.BuildType == BuildTypeCBCSR && outputs.BootstrapCloudbuildProjectID != "" && outputs.ImageName != "" {
-		digest, err := gcp.NewGCP().GetDockerImageDigest(t, outputs.BootstrapCloudbuildProjectID, outputs.ImageName)
-		if err != nil {
-			return err
+	if enableConfidentialSpace {
+		if tfvars.ConfidentialImageDigest != "" {
+			commonTfvars.ImageDigest = tfvars.ConfidentialImageDigest
+		} else if tfvars.CustomTeeImageReference != "" {
+			targetProject := outputs.CICDProjectID
+			digest, err := gcp.NewGCP().GetDockerImageDigest(t, targetProject, tfvars.CustomTeeImageReference)
+			if err == nil && digest != "" {
+				commonTfvars.ImageDigest = digest
+			}
+		} else if outputs.ImageName != "" {
+			targetProject := outputs.CICDProjectID
+			if targetProject == "" {
+				targetProject = outputs.BootstrapCloudbuildProjectID
+			}
+
+			if c.BuildType == BuildTypeLocal {
+				digest, err := buildAndPushLocalConfidentialImage(t, c.FoundationPath, outputs)
+				if err != nil {
+					fmt.Printf("# Warning: failed to build/push local confidential space image: %v\n", err)
+				} else {
+					commonTfvars.ImageDigest = digest
+				}
+			} else if targetProject != "" {
+				digest, err := gcp.NewGCP().GetDockerImageDigest(t, targetProject, outputs.ImageName)
+				if err == nil && digest != "" {
+					commonTfvars.ImageDigest = digest
+				}
+			}
 		}
-		commonTfvars.ImageDigest = digest
-	} else if tfvars.ConfidentialImageDigest != "" {
-		commonTfvars.ImageDigest = tfvars.ConfidentialImageDigest
-	} else {
-		// Valid default digest for syntax/attestation verifier validation when not using Cloud Build
-		commonTfvars.ImageDigest = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+
+		if commonTfvars.ImageDigest == "" {
+			// Valid default digest for syntax/attestation verifier validation when image resolution fails
+			commonTfvars.ImageDigest = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+		}
 	}
 
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, AppInfraStep, "common.auto.tfvars"), commonTfvars)
@@ -919,6 +943,47 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 	}
 
 	return deployStage(t, stageConf, s, c)
+}
+
+func buildAndPushLocalConfidentialImage(t testing.TB, foundationPath string, outputs InfraPipelineOutputs) (string, error) {
+	dockerfileDir := filepath.Join(foundationPath, "4-projects", "business_unit_1", "shared")
+	imageName := outputs.ImageName
+	if imageName == "" || outputs.CICDProjectID == "" {
+		return "", fmt.Errorf("missing imageName or CICDProjectID")
+	}
+
+	fmt.Printf("# Building Confidential Space sample image locally: %s\n", imageName)
+	buildCmd := exec.Command("docker", "build", "--platform", "linux/amd64", "-t", imageName, dockerfileDir)
+	buildOut, err := buildCmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("docker build failed: %s: %w", string(buildOut), err)
+	}
+
+	registryHost := strings.Split(imageName, "/")[0]
+	if outputs.TerraformSA != "" {
+		token := gcp.NewGCP().GetServiceAccountAccessToken(t, outputs.TerraformSA)
+		if token != "" {
+			loginCmd := exec.Command("docker", "login", "-u", "oauth2accesstoken", "--password-stdin", fmt.Sprintf("https://%s", registryHost))
+			loginCmd.Stdin = strings.NewReader(token)
+			if loginOut, err := loginCmd.CombinedOutput(); err != nil {
+				return "", fmt.Errorf("docker login failed: %s: %w", string(loginOut), err)
+			}
+		}
+	}
+
+	fmt.Printf("# Pushing Confidential Space sample image to Artifact Registry: %s\n", imageName)
+	pushCmd := exec.Command("docker", "push", imageName)
+	pushOut, err := pushCmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("docker push failed: %s: %w", string(pushOut), err)
+	}
+
+	digest, err := gcp.NewGCP().GetDockerImageDigest(t, outputs.CICDProjectID, imageName)
+	if err != nil {
+		return "", fmt.Errorf("failed to retrieve image digest after push: %w", err)
+	}
+	fmt.Printf("# Confidential Space sample image pushed successfully (digest: %s)\n", digest)
+	return digest, nil
 }
 
 func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error {

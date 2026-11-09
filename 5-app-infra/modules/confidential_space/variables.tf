@@ -54,7 +54,7 @@ variable "universe_domain" {
 }
 
 variable "source_image_family" {
-  description = "Source image family used for confidential instance. The default is confidential-space."
+  description = "Source image family used for confidential instance. The default is 'confidential-space'. Use 'confidential-space-debug' if you need to view workload and container launcher logs in Cloud Logging (Logs Explorer) or serial console during debugging and development, as the hardened 'confidential-space' production image disables logging export and stops immediately on exit."
   type        = string
   default     = "confidential-space"
 }

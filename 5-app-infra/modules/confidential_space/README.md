@@ -32,6 +32,18 @@ gcloud artifacts docker images describe us-central1-docker.pkg.dev/my-project/my
   --format="value(image_summary.digest)"
 ```
 
+### 3. Debug Logging & Image Family Selection
+By default, the module configures `source_image_family = "confidential-space"`. This hardened production image:
+- Disables serial console logging and Cloud Logging export to maintain confidential computing isolation.
+- Automatically shuts down the VM as soon as the workload task finishes.
+
+If you are developing, testing, or need to inspect workload output and attestation events in **Cloud Logging (Logs Explorer)** or the serial console:
+- Set `source_image_family = "confidential-space-debug"`.
+- In debug mode, the VM remains running after the container completes execution (`exit_code=4 exit_msg="VM remains running"`), allowing inspection and log streaming.
+
+> [!CAUTION]
+> Do not use `confidential-space-debug` in production environments handling sensitive secrets, as it enables logging and leaves the debug console accessible.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
@@ -49,7 +61,7 @@ gcloud artifacts docker images describe us-central1-docker.pkg.dev/my-project/my
 | project\_suffix | The name of the GCP project. Max 16 characters with 3 character business unit code. | `string` | n/a | yes |
 | region | The GCP region to create and test resources in | `string` | `"us-central1"` | no |
 | remote\_state\_bucket | Backend bucket to load remote state information from previous steps. | `string` | n/a | yes |
-| source\_image\_family | Source image family used for confidential instance. The default is confidential-space. | `string` | `"confidential-space"` | no |
+| source\_image\_family | Source image family used for confidential instance. The default is 'confidential-space'. Use 'confidential-space-debug' if you need to view workload and container launcher logs in Cloud Logging (Logs Explorer) or serial console during debugging and development, as the hardened 'confidential-space' production image disables logging export and stops immediately on exit. | `string` | `"confidential-space"` | no |
 | source\_image\_project | Project where the source image comes from. The default project contains confidential-space-images images. See: https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-images | `string` | `"confidential-space-images"` | no |
 | universe\_domain | The universe domain to use for Google Cloud APIs. This defines the API endpoint boundary for your deployment. The default is 'googleapis.com' for the standard public Google Cloud. Modify this value if you are deploying to isolated environments like Google Cloud Dedicated (GCD). | `string` | `"googleapis.com"` | no |
 | workload\_pool\_propagation\_sleep\_duration | The duration to wait for Workload Identity Pool propagation (e.g., 60s, 2m). | `string` | `"60s"` | no |

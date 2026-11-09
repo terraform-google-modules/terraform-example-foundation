@@ -66,6 +66,12 @@ As part of this deployment, the provided Terraform code automates the provisioni
 
 To better understand the structure and content of the tokens used in Confidential Space, refer to the reference documentation on [Token Claims](https://cloud.google.com/confidential-computing/confidential-space/docs/reference/token-claims).
 
+> [!NOTE]
+> **Viewing Workload Logs in Cloud Logging (Logs Explorer):**
+> By default, Confidential Space instances use the hardened production image family `confidential-space`, which disables serial port logging and Cloud Logging export, and stops the VM immediately after workload execution.
+>
+> If you want to view workload execution logs, container launcher outputs, and attestation token details in **Logs Explorer** or via the serial console, change `source_image_family` in `5-app-infra/modules/confidential_space/variables.tf` (or override it) to `confidential-space-debug`. In debug mode, the VM stays running upon workload exit to permit live inspection.
+
 This Compute Engine instance is deployed into the Shared VPC network configured in step `3-networks` and is used to access private services across environments (`development`, `nonproduction`, `production`).
 
 ## Prerequisites

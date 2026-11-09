@@ -42,9 +42,14 @@ func TestAppInfra(t *testing.T) {
 	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
 	backend_bucket := projects_backend_bucket
-	if shared.GetStringOutput("enable_cloudbuild_deploy") == "true" {
-		terraformSA = terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")["bu1-example-app"]
-		backend_bucket = terraform.OutputMap(t, shared.GetTFOptions(), "state_buckets")["bu1-example-app"]
+
+	sharedStateBuckets := terraform.OutputMap(t, shared.GetTFOptions(), "state_buckets")
+	sharedPipelineSAs := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")
+	if appBucket, ok := sharedStateBuckets["bu1-example-app"]; ok && appBucket != "" {
+		backend_bucket = appBucket
+	}
+	if appSA, ok := sharedPipelineSAs["bu1-example-app"]; ok && appSA != "" {
+		terraformSA = appSA
 	}
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 	backendConfig := map[string]interface{}{

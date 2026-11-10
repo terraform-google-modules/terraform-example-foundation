@@ -434,3 +434,9 @@ variable "production_only_deploy" {
   type        = bool
   default     = false
 }
+
+variable "app_infra_target_project_numbers" {
+  description = "List of target GCP project numbers to be added to VPC-SC ingress rules, allowing the App Infra pipeline to provision and manage resources within them."
+  type        = list(string)
+  default     = []
+}

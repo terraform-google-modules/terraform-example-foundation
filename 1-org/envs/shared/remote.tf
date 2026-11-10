@@ -69,7 +69,8 @@ locals {
 
   app_infra_targets = distinct(concat(
     [for n in local.shared_vpc_project_numbers : "projects/${n}"],
-    [for n in local.peering_projects_numbers : "projects/${n}"]
+    [for n in local.peering_projects_numbers : "projects/${n}"],
+    [for n in var.app_infra_target_project_numbers : "projects/${n}"],
   ))
 }
 

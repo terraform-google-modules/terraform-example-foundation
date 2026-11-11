@@ -3,8 +3,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| confidential\_space\_private\_service\_connect\_ip | The internal IP address to be used as the Private Service Connect endpoint in the Confidential Space VPC. | `string` | `"10.17.0.12"` | no |
-| confidential\_space\_subnet\_ip\_range | IP range for the Confidential Space dedicated subnetwork. | `string` | `"10.4.64.0/24"` | no |
 | enable\_confidential\_space | Enable Confidential Space project, service account, and workload IAM. | `bool` | `true` | no |
 | folder\_deletion\_protection | Prevent Terraform from destroying or recreating the folder. | `string` | `true` | no |
 | gcs\_custom\_placement\_config | Configuration of the bucket's custom location in a dual-region bucket setup. If the bucket is designated a single or multi-region, the variable are null. | <pre>object({<br>    data_locations = list(string)<br>  })</pre> | `null` | no |

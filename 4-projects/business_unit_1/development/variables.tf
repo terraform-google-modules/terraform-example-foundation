@@ -81,15 +81,3 @@ variable "enable_confidential_space" {
   default     = true
   nullable    = false
 }
-
-variable "confidential_space_subnet_ip_range" {
-  description = "IP range for the Confidential Space dedicated subnetwork."
-  type        = string
-  default     = "10.4.64.0/24"
-}
-
-variable "confidential_space_private_service_connect_ip" {
-  description = "The internal IP address to be used as the Private Service Connect endpoint in the Confidential Space VPC."
-  type        = string
-  default     = "10.17.0.12"
-}

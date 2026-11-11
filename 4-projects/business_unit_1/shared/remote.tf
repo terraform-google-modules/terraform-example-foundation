@@ -33,9 +33,9 @@ locals {
   access_context_manager_policy_id   = data.terraform_remote_state.org.outputs.access_context_manager_policy_id
   cloudbuild_project_id              = try(data.terraform_remote_state.bootstrap.outputs.cloudbuild_project_id, "")
   projects_terraform_sa              = data.terraform_remote_state.bootstrap.outputs.projects_step_terraform_service_account_email
-  universe_prefix                    = try(data.terraform_remote_state.bootstrap.outputs.common_config.universe_prefix, "")
+  universe_prefix                    = data.terraform_remote_state.bootstrap.outputs.common_config.universe_prefix
   cicd_runner_repo                   = try(data.terraform_remote_state.bootstrap.outputs.cicd_runner_repo, "gcp-cicd-runner")
-  available_universe_services        = try(data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services, {})
+  available_universe_services        = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
 }
 
 data "terraform_remote_state" "bootstrap" {

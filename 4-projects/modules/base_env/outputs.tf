@@ -119,12 +119,12 @@ output "confidential_space_workload_sa" {
 
 output "confidential_space_subnetwork_self_link" {
   description = "The subnetwork self link of the Confidential Space dedicated network."
-  value       = var.enable_confidential_space ? try(module.confidential_space_network[0].subnets_self_links[0], "") : ""
+  value       = try(module.confidential_space_network[0].subnets_self_links[0], "")
 }
 
 output "confidential_space_network_name" {
   description = "The network name of the Confidential Space dedicated network."
-  value       = var.enable_confidential_space ? try(module.confidential_space_network[0].network_name, "") : ""
+  value       = try(module.confidential_space_network[0].network_name, "")
 }
 
 output "confidential_space_firewall_tags" {

@@ -379,17 +379,17 @@ The following steps will guide you through deploying without using Cloud Build.
    ```bash
    git clone https://github.com/terraform-google-modules/terraform-example-foundation.git
 
-   mkdir gcp-bootstrap
+   mkdir gcp-bootstrap/envs/shared -p
 
-   cp -R terraform-example-foundation/0-bootstrap/* gcp-bootstrap/
+   cp -R terraform-example-foundation/0-bootstrap/* gcp-bootstrap/envs/shared/
 
-   cp terraform-example-foundation/.gitignore gcp-bootstrap
+   cp terraform-example-foundation/.gitignore gcp-bootstrap/envs/shared/
    ```
 
-1. Navigate to `gcp-bootstrap` and initialize a local Git repository to manage versions locally. Then, Create the environment branches.
+1. Navigate to `gcp-bootstrap/envs/shared` and initialize a local Git repository to manage versions locally. Then, Create the environment branches.
 
    ```bash
-   cd gcp-bootstrap
+   cd gcp-bootstrap/envs/shared
 
    git init
    git commit -m "initialize empty directory" --allow-empty
@@ -491,12 +491,12 @@ The following steps will guide you through deploying without using Cloud Build.
 
    cp backend.tf.example backend.tf
 
-   cd ../
+   cd ../../../
 
    for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_ME/${backend_bucket}/" $i; done
    for i in `find . -name 'backend.tf'`; do sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${backend_bucket_projects}/" $i; done
 
-   cd gcp-bootstrap
+   cd gcp-bootstrap/envs/shared
    ```
 
 1. Re-run `terraform init`. When you're prompted, agree to copy Terraform state to Cloud Storage.
@@ -510,7 +510,7 @@ The following steps will guide you through deploying without using Cloud Build.
    ```sh
    git add backend.tf
    git commit -m "Init gcs backend."
-   cd ../
+   cd ../../../
    ```
 
 ### Destroying the bootstrap stage locally
@@ -518,7 +518,7 @@ The following steps will guide you through deploying without using Cloud Build.
 When destroying `0-bootstrap` locally, you must first migrate the state back from the remote Cloud Storage bucket to your local machine before executing `terraform destroy`. This prevents Terraform from attempting to destroy the Cloud Storage bucket that holds its own active state:
 
 ```bash
-cd gcp-bootstrap
+cd gcp-bootstrap/envs/shared
 
 # 1. Ensure NO service account impersonation is active
 unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT

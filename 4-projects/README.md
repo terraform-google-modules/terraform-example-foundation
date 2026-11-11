@@ -305,12 +305,12 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 
    ```bash
    # Set remote_state_bucket in common.auto.tfvars (reads Stages 0, 1, 2, 3)
-   export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/" output -raw gcs_bucket_tfstate)
+   export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${remote_state_bucket}"
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
 
    # Update all backend.tf files with dedicated projects state bucket
-   export projects_bucket=$(terraform -chdir="../gcp-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+   export projects_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_gcs_bucket_tfstate)
    echo "projects_bucket = ${projects_bucket}"
    for env in business_unit_1/*; do
      sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${projects_bucket}/" "$env/backend.tf"
@@ -322,10 +322,10 @@ We will now deploy each of our environments(development/production/nonproduction
 1. Use `terraform output` to get the Seed project ID and the projects step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
-   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/" output -raw seed_project_id)
+   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw seed_project_id)
    echo ${SEED_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/" output -raw projects_step_terraform_service_account_email)
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 

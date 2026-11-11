@@ -17,12 +17,12 @@
 module "app_infra_pipeline" {
   source = "../../modules/app_infra_pipeline_local"
 
-  org_id                  = local.org_id
-  billing_account         = local.billing_account
-  folder_id               = local.common_folder_name
-  project_prefix          = local.project_prefix
-  default_region          = var.default_region
-  app_infra_repos         = local.repo_names
+  org_id                           = local.org_id
+  billing_account                  = local.billing_account
+  folder_id                        = local.common_folder_name
+  project_prefix                   = local.project_prefix
+  default_region                   = var.default_region
+  app_infra_repos                  = local.repo_names
   remote_tfstate_bucket            = local.projects_remote_bucket_tfstate
   enforce_vpcsc                    = local.enforce_vpcsc
   access_context_manager_policy_id = local.access_context_manager_policy_id

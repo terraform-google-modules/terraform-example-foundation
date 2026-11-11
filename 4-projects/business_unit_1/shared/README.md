@@ -48,7 +48,7 @@ To switch runner type across stages, execute:
 | Name | Description |
 |------|-------------|
 | apply\_triggers\_id | CB apply triggers. |
-| artifact\_buckets | GCS Buckets to store Cloud Build Artifacts. |
+| artifact\_buckets | GCS Buckets to store pipeline artifacts (Cloud Build artifacts; empty for external VCS providers). |
 | artifact\_registry\_repository\_id | Artifact Registry ID. |
 | bootstrap\_cloudbuild\_project\_id | Cloudbuild project ID. |
 | cicd\_project\_id | APP Infra CI/CD Project ID (CB, GitHub, or GitLab project; empty for local). |
@@ -57,9 +57,9 @@ To switch runner type across stages, execute:
 | default\_region | Default region to create resources where applicable. |
 | enable\_cloudbuild\_deploy | Enable infra deployment using Cloud Build. |
 | image\_name | Image path used by confidential space instance. |
-| log\_buckets | GCS Buckets to store Cloud Build logs. |
+| log\_buckets | GCS Buckets to store pipeline build logs (Cloud Build logs; empty for external VCS providers). |
 | plan\_triggers\_id | CB plan triggers. |
-| repos | CSRs to store source code. |
+| repos | Source code repositories (CSRs when using Cloud Build; empty for external VCS providers). |
 | state\_buckets | GCS Buckets to store TF state. |
 | terraform\_service\_accounts | APP Infra Pipeline Terraform Accounts. |
 

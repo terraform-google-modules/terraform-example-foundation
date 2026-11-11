@@ -50,17 +50,17 @@ output "cloudbuild_project_number" {
 }
 
 output "repos" {
-  description = "CSRs to store source code."
+  description = "Source code repositories (CSRs when using Cloud Build; empty for external VCS providers)."
   value       = toset([])
 }
 
 output "artifact_buckets" {
-  description = "GCS Buckets to store Cloud Build Artifacts."
+  description = "GCS Buckets to store pipeline artifacts (Cloud Build artifacts; empty for external VCS providers)."
   value       = {}
 }
 
 output "log_buckets" {
-  description = "GCS Buckets to store Cloud Build logs."
+  description = "GCS Buckets to store pipeline build logs (Cloud Build logs; empty for external VCS providers)."
   value       = {}
 }
 

@@ -15,6 +15,11 @@
  */
 
 locals {
+  # List of application repository names within this business unit.
+  # This list defines the application infra pipelines, service accounts,
+  # and state buckets provisioned for CI/CD across Cloud Build, GitHub Actions,
+  # GitLab CI, or Local deployments. To onboard new applications, append
+  # their repository names to this list.
   repo_names                         = ["bu1-example-app"]
   org_id                             = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
   parent_folder                      = data.terraform_remote_state.bootstrap.outputs.common_config.parent_folder

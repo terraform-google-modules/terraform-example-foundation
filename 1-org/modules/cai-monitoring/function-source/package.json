@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/security-center": "^9.4.0",
+    "@google-cloud/security-center": "^10.0.0",
     "moment": "2.30.1",
     "uuid4": "2.0.3"
   },
@@ -19,6 +19,6 @@
     "@tootallnate/once": "^3.0.0",
     "form-data": "^4.0.0",
     "jws": "^4.0.1",
-    "protobufjs": "^7.6.1"
+    "protobufjs": "^8.0.0"
   }
 }

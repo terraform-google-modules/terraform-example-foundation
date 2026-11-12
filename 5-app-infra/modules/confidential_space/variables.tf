@@ -107,7 +107,7 @@ variable "custom_tee_image_reference" {
 }
 
 variable "zone" {
-  description = "Zone where the confidential compute instance should be created. If null, defaults to <region>-b."
+  description = "Zone where the confidential compute instance should be created. If null, a zone is automatically selected within the region."
   type        = string
   default     = null
 }

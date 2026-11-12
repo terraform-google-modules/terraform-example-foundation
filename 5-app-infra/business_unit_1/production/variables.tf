@@ -68,7 +68,7 @@ variable "custom_tee_image_reference" {
 }
 
 variable "confidential_instance_zone" {
-  description = "Zone where the confidential compute instance should be created (e.g. us-central1-b, us-central1-c). If null, defaults to us-central1-b."
+  description = "Zone where the confidential compute instance should be created (e.g. us-central1-b, us-central1-c). If null, a zone is automatically selected within the region."
   type        = string
   default     = null
 }

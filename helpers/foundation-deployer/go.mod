@@ -1,6 +1,6 @@
 module github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer
 
-go 1.25.0
+go 1.26.0
 
 require (
 	cloud.google.com/go/billing v1.26.0

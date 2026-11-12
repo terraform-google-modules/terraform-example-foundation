@@ -298,23 +298,12 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 
 1. See any of the envs folder [README.md](./business_unit_1/production/README.md) files for additional information on the values in the `common.auto.tfvars`, `development.auto.tfvars`, `nonproduction.auto.tfvars`, and `production.auto.tfvars` files.
    See any of the shared folder [README.md](./business_unit_1/shared/README.md) files for additional information on the values in the `shared.auto.tfvars` file.
-
-   **Dual State Bucket Configuration:**
-   - `common.auto.tfvars` uses the root remote state bucket (`gcs_bucket_tfstate`) to read remote state from Stages 0, 1, 2, and 3.
-   - `backend.tf` across all business units must point to the **dedicated projects state bucket** (`projects_gcs_bucket_tfstate`) via token `UPDATE_PROJECTS_BACKEND`.
+   Use `terraform output` to get the remote state bucket (the backend bucket used by previous steps) value from `gcp-bootstrap` output and update `common.auto.tfvars`.
 
    ```bash
-   # Set remote_state_bucket in common.auto.tfvars (reads Stages 0, 1, 2, 3)
    export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw gcs_bucket_tfstate)
    echo "remote_state_bucket = ${remote_state_bucket}"
    sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
-
-   # Update all backend.tf files with dedicated projects state bucket
-   export projects_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_gcs_bucket_tfstate)
-   echo "projects_bucket = ${projects_bucket}"
-   for env in business_unit_1/*; do
-     sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${projects_bucket}/" "$env/backend.tf"
-   done
    ```
 
 We will now deploy each of our environments(development/production/nonproduction) using the `tf-wrapper.sh` script.

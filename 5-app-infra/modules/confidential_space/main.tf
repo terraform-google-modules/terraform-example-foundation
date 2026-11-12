@@ -15,7 +15,7 @@
  */
 
 locals {
-  cicd_project_id = try(data.terraform_remote_state.business_unit_shared.outputs.cicd_project_id, "")
+  cicd_project_id = data.terraform_remote_state.business_unit_shared.outputs.cicd_project_id
   default_region  = data.terraform_remote_state.projects_env.outputs.default_region
 
   default_tee_image_reference = var.custom_tee_image_reference != "" ? var.custom_tee_image_reference : (
@@ -26,10 +26,10 @@ locals {
   # Safe fallback preventing out-of-bounds indexing if Shared VPC outputs are absent
   svpc_subnetwork_self_link = try([for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0], "")
 
-  dedicated_subnetwork_self_link = try(data.terraform_remote_state.projects_env.outputs.confidential_space_subnetwork_self_link, null)
+  dedicated_subnetwork_self_link = data.terraform_remote_state.projects_env.outputs.confidential_space_subnetwork_self_link
   effective_subnetwork_self_link = coalesce(local.dedicated_subnetwork_self_link != "" && local.dedicated_subnetwork_self_link != null ? local.dedicated_subnetwork_self_link : null, local.svpc_subnetwork_self_link)
 
-  dedicated_firewall_tags = try(data.terraform_remote_state.projects_env.outputs.confidential_space_firewall_tags, null)
+  dedicated_firewall_tags = data.terraform_remote_state.projects_env.outputs.confidential_space_firewall_tags
 
   env_project_ids = {
     "conf-space" = data.terraform_remote_state.projects_env.outputs.confidential_space_project,

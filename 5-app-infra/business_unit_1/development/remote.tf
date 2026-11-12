@@ -15,8 +15,7 @@
  */
 
 locals {
-  default_region  = data.terraform_remote_state.projects_env.outputs.default_region
-  cicd_project_id = try(data.terraform_remote_state.business_unit_shared.outputs.cicd_project_id, "")
+  default_region = data.terraform_remote_state.projects_env.outputs.default_region
 }
 
 data "terraform_remote_state" "projects_env" {
@@ -25,16 +24,6 @@ data "terraform_remote_state" "projects_env" {
   config = {
     bucket                  = var.remote_state_bucket
     prefix                  = "terraform/projects/${local.business_unit}/${local.environment}"
-    storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
-  }
-}
-
-data "terraform_remote_state" "business_unit_shared" {
-  backend = "gcs"
-
-  config = {
-    bucket                  = var.remote_state_bucket
-    prefix                  = "terraform/projects/${local.business_unit}/shared"
     storage_custom_endpoint = var.universe_domain != "googleapis.com" ? "https://storage.${var.universe_domain}/storage/v1/" : null
   }
 }

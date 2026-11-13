@@ -1,18 +1,18 @@
 module github.com/terraform-google-modules/terraform-example-foundation/helpers/foundation-deployer
 
-go 1.26.0
+go 1.25.0
 
 require (
 	cloud.google.com/go/billing v1.26.0
 	cloud.google.com/go/iam v1.12.0
 	cloud.google.com/go/resourcemanager v1.16.0
-	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.17.9
+	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.18.0
 	github.com/gruntwork-io/terratest v0.55.0
 	github.com/hashicorp/hcl/v2 v2.24.0
 	github.com/mitchellh/go-testing-interface v1.14.2-0.20210821155943-2d9075ca8770
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.1
 	github.com/terraform-google-modules/terraform-example-foundation/test/integration v0.0.0-20261022180513-48cbcc881441
-	github.com/tidwall/gjson v1.19.0
+	github.com/tidwall/gjson v1.20.0
 	gitlab.com/gitlab-org/api/client-go v0.158.0
 	google.golang.org/api v0.290.0
 )
@@ -25,6 +25,7 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.8 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.67.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/exp v0.0.0-20260611194520-c48552f49976 // indirect
 	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/genproto v0.0.0-20260319201613-d00831a3d3e7 // indirect
@@ -38,7 +39,6 @@ require (
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -54,14 +54,13 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
-	github.com/hashicorp/terraform-json v0.26.0 // indirect
+	github.com/hashicorp/terraform-json v0.27.2 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/klauspost/compress v1.18.7 // indirect
 	github.com/mattn/go-shellwords v1.0.12 // indirect
 	github.com/mattn/go-zglob v0.0.4 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
-	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect

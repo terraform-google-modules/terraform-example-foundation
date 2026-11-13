@@ -268,6 +268,14 @@ func (g GlobalTFVars) IsProdOnly() bool {
 	return g.ProductionOnlyDeploy != nil && *g.ProductionOnlyDeploy
 }
 
+// IsConfidentialSpaceEnabled checks if Confidential Space is enabled (defaults to true)
+func (g GlobalTFVars) IsConfidentialSpaceEnabled() bool {
+	if g.EnableConfidentialSpace != nil {
+		return *g.EnableConfidentialSpace
+	}
+	return true
+}
+
 // HasGroupsCreation checks if Groups creation is enabled
 func (g GlobalTFVars) HasGroupsCreation() bool {
 	return g.HasRequiredGroupsCreation() || g.HasOptionalGroupsCreation()
@@ -440,8 +448,8 @@ func GetInfraPipelineOutputs(t testing.TB, checkoutPath, workspace string) Infra
 		NoColor:      true,
 	}
 
-	cicdProj, _ := terraform.OutputE(t, options, "cicd_project_id")
-	cbProj, _ := terraform.OutputE(t, options, "cloudbuild_project_id")
+	cicdProj := terraform.Output(t, options, "cicd_project_id")
+	cbProj := terraform.Output(t, options, "cloudbuild_project_id")
 	if cicdProj == "" {
 		cicdProj = cbProj
 	}
@@ -450,17 +458,14 @@ func GetInfraPipelineOutputs(t testing.TB, checkoutPath, workspace string) Infra
 		infraPipeProj = cicdProj
 	}
 
-	imageName, _ := terraform.OutputE(t, options, "image_name")
-	bootstrapCBProj, _ := terraform.OutputE(t, options, "bootstrap_cloudbuild_project_id")
-
 	return InfraPipelineOutputs{
 		InfraPipeProj:                infraPipeProj,
 		CICDProjectID:                cicdProj,
 		DefaultRegion:                terraform.Output(t, options, "default_region"),
 		TerraformSA:                  terraform.OutputMap(t, options, "terraform_service_accounts")["bu1-example-app"],
 		StateBucket:                  terraform.OutputMap(t, options, "state_buckets")["bu1-example-app"],
-		ImageName:                    imageName,
-		BootstrapCloudbuildProjectID: bootstrapCBProj,
+		ImageName:                    terraform.Output(t, options, "image_name"),
+		BootstrapCloudbuildProjectID: terraform.Output(t, options, "bootstrap_cloudbuild_project_id"),
 	}
 }
 

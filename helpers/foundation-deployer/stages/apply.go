@@ -824,10 +824,7 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 }
 
 func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs InfraPipelineOutputs, projectsSA string, c CommonConf) error {
-	enableConfidentialSpace := true
-	if tfvars.EnableConfidentialSpace != nil {
-		enableConfidentialSpace = *tfvars.EnableConfidentialSpace
-	}
+	enableConfidentialSpace := tfvars.IsConfidentialSpaceEnabled()
 
 	// create tfvars file
 	commonTfvars := AppInfraCommonTfvars{
@@ -946,7 +943,11 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 }
 
 func buildAndPushLocalConfidentialImage(t testing.TB, foundationPath string, outputs InfraPipelineOutputs) (string, error) {
-	dockerfileDir := filepath.Join(foundationPath, "4-projects", "business_unit_1", "shared")
+	if _, err := exec.LookPath("docker"); err != nil {
+		return "", fmt.Errorf("docker is required for local build and push of confidential image, but was not found in PATH: %w", err)
+	}
+
+	dockerfileDir := filepath.Join(foundationPath, ProjectsStep, "business_unit_1", "shared")
 	imageName := outputs.ImageName
 	if imageName == "" || outputs.CICDProjectID == "" {
 		return "", fmt.Errorf("missing imageName or CICDProjectID")
@@ -962,12 +963,13 @@ func buildAndPushLocalConfidentialImage(t testing.TB, foundationPath string, out
 	registryHost := strings.Split(imageName, "/")[0]
 	if outputs.TerraformSA != "" {
 		token := gcp.NewGCP().GetServiceAccountAccessToken(t, outputs.TerraformSA)
-		if token != "" {
-			loginCmd := exec.Command("docker", "login", "-u", "oauth2accesstoken", "--password-stdin", fmt.Sprintf("https://%s", registryHost))
-			loginCmd.Stdin = strings.NewReader(token)
-			if loginOut, err := loginCmd.CombinedOutput(); err != nil {
-				return "", fmt.Errorf("docker login failed: %s: %w", string(loginOut), err)
-			}
+		if token == "" {
+			return "", fmt.Errorf("failed to obtain access token for service account %s to login to registry %s", outputs.TerraformSA, registryHost)
+		}
+		loginCmd := exec.Command("docker", "login", "-u", "oauth2accesstoken", "--password-stdin", fmt.Sprintf("https://%s", registryHost))
+		loginCmd.Stdin = strings.NewReader(token)
+		if loginOut, err := loginCmd.CombinedOutput(); err != nil {
+			return "", fmt.Errorf("docker login failed: %s: %w", string(loginOut), err)
 		}
 	}
 

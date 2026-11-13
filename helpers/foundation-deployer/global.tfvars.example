@@ -225,4 +225,6 @@ source_image = "" // format "projects/PROJECT/global/images/NAME"
 // Optional configurations for Confidential Space in 5-app-infra
 // confidential_image_digest  = "sha256:..."
 // custom_tee_image_reference = "" // e.g., "us-central1-docker.pkg.dev/my-project/my-repo/confidential_space_image:latest"
-// confidential_instance_zone = "us-central1-c" // zone failover if default us-central1-b is resource exhausted
+// Zone within default_region for confidential compute instance (e.g. us-central1-c).
+// If omitted or null, a zone is automatically selected within default_region.
+// confidential_instance_zone = "us-central1-c"

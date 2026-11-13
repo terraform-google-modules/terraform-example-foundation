@@ -58,6 +58,7 @@ Also make sure that you have the following:
   - Environments
   - Networks
   - Projects
+  - bu1-example-app (Application Infrastructure)
 - A [Fine grained](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token) personal access token configured with:
   - Repository access to Only select repositories, including all the repositories in the previous item.
   - Permissions:
@@ -973,3 +974,117 @@ grep -rl business_unit_1 business_unit_2/ | xargs sed -i 's/business_unit_1/busi
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
+
+### Deploying step 5-app-infra
+
+When deploying with GitHub Actions, the application infrastructure pipeline created in `4-projects/business_unit_1/shared` provisions a Workload Identity Pool and automatically configures repository secrets in the target GitHub repository (`bu1-example-app`):
+- `PROJECT_ID`: The application infrastructure CI/CD project ID.
+- `WIF_PROVIDER_NAME`: The full resource name of the Workload Identity Provider.
+- `TF_BACKEND`: The dedicated GCS state bucket created for `bu1-example-app`.
+- `SERVICE_ACCOUNT_EMAIL`: The dedicated application Terraform service account (`sa-tf-bu1-example-app@...`).
+
+Because these secrets are injected automatically by Terraform in step `4-projects`, zero manual secret management is required.
+
+1. Clone the private repository created to host the `5-app-infra` code. The following instructions assume `bu1-example-app` is cloned at the same directory level as `terraform-example-foundation`.
+
+   ```bash
+   git clone git@github.com:<GITHUB-OWNER>/bu1-example-app.git
+   ```
+
+1. Navigate into the repo. All subsequent steps assume you are running them from the `bu1-example-app` directory.
+
+   ```bash
+   cd bu1-example-app
+   ```
+
+1. Seed repository branches:
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b nonproduction
+   git push --set-upstream origin nonproduction
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. Checkout the `plan` branch and copy foundation files:
+
+   ```bash
+   git checkout -b plan
+
+   # Copy application infrastructure code
+   cp -RT ../terraform-example-foundation/5-app-infra/ .
+
+   # Copy policy library for automated compliance validation
+   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+
+   # Set up GitHub Actions CI workflows and execution wrapper
+   mkdir -p .github/workflows
+   cp ../terraform-example-foundation/build/github-tf-* ./.github/workflows/
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./tf-wrapper.sh
+   ```
+
+1. Rename the example tfvars file and populate environment inputs:
+
+   ```bash
+   mv common.auto.example.tfvars common.auto.tfvars
+
+   # Set the remote state bucket pointing to 4-projects state
+   export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${remote_state_bucket}"
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
+   ```
+
+1. Configure Confidential Space container image and digest:
+   - If using the image built in the `tf-runners` Artifact Registry in `cicd_project_id`:
+
+     ```bash
+     export CICD_PROJECT_ID=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw cicd_project_id)
+     export DEFAULT_REGION=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw default_region)
+     export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${DEFAULT_REGION}-docker.pkg.dev/${CICD_PROJECT_ID}/tf-runners/confidential_space_image:latest --format="value(image_summary.digest)")
+     sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
+     ```
+
+   - Alternatively, if using an existing custom container image from another registry:
+
+     ```bash
+     export CUSTOM_TEE_IMAGE="us-central1-docker.pkg.dev/YOUR_PROJECT/YOUR_REPO/YOUR_IMAGE:latest"
+     export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${CUSTOM_TEE_IMAGE} --format="value(image_summary.digest)")
+     sed -i'' -e "s|# custom_tee_image_reference = .*|custom_tee_image_reference = \"${CUSTOM_TEE_IMAGE}\"|" ./common.auto.tfvars
+     sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
+     ```
+
+   > [!NOTE]
+   > The GitHub Actions workflow automatically substitutes `UPDATE_APP_INFRA_BUCKET` in all `backend.tf` files using the injected `TF_BACKEND` secret during pipeline execution. You do not need to manually edit `backend.tf`.
+
+1. Commit and push the `plan` branch:
+
+   ```bash
+   git add .
+   git commit -m 'feat: initialize bu1-example-app infrastructure'
+   git push --set-upstream origin plan
+   ```
+
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/bu1-example-app/pull/new/plan from the `plan` branch to the `development` branch and review the output.
+1. The Pull Request will trigger a GitHub Action that will run Terraform `init`/`plan`/`validate` via WIF authentication.
+1. Review the GitHub Action output in GitHub under `tf-pull-request`.
+1. Once approved, merge the pull request into the `development` branch. Merging triggers `tf-apply`, applying the Terraform configuration in the `development` service projects.
+1. Review merge output in GitHub under `tf-apply`.
+
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/bu1-example-app/pull/new/development from the `development` branch to the `nonproduction` branch and review the output.
+1. Review the plan output in GitHub Actions under `tf-pull-request`.
+1. Merge the pull request into `nonproduction` to apply.
+1. Review merge output under `tf-apply`.
+
+1. Open a pull request in GitHub https://github.com/GITHUB-OWNER/bu1-example-app/pull/new/nonproduction from the `nonproduction` branch to the `production` branch and review the output.
+1. Review the plan output in GitHub Actions under `tf-pull-request`.
+1. Merge the pull request into `production` to apply.
+1. Review merge output under `tf-apply`.
+

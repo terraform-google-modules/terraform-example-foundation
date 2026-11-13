@@ -114,233 +114,13 @@ Please refer to [troubleshooting](../docs/TROUBLESHOOTING.md) if you run into is
 
 ### Deploying with GitHub Actions
 
-When deploying with GitHub Actions, the application infrastructure pipeline created in `4-projects/business_unit_1/shared` provisions a Workload Identity Pool and automatically configures repository secrets in the target GitHub repository (`bu1-example-app`):
-- `PROJECT_ID`: The application infrastructure CI/CD project ID.
-- `WIF_PROVIDER_NAME`: The full resource name of the Workload Identity Provider.
-- `TF_BACKEND`: The dedicated GCS state bucket created for `bu1-example-app`.
-- `SERVICE_ACCOUNT_EMAIL`: The dedicated application Terraform service account (`sa-tf-bu1-example-app@...`).
-
-Because these secrets are injected automatically by Terraform in step `4-projects`, zero manual secret management is required.
-
-#### Step 1: Clone the Application Repository
-
-Clone the private repository created to host the `5-app-infra` code. The following instructions assume `bu1-example-app` is cloned at the same directory level as `terraform-example-foundation`.
-
-```bash
-git clone git@github.com:<GITHUB-OWNER>/bu1-example-app.git
-cd bu1-example-app
-```
-
-#### Step 2: Seed Repository Branches
-
-If the repository has not been initialized with environment branches, initialize the named environment branches:
-
-```bash
-git commit --allow-empty -m 'repository seed'
-git push --set-upstream origin main
-
-git checkout -b production
-git push --set-upstream origin production
-
-git checkout -b nonproduction
-git push --set-upstream origin nonproduction
-
-git checkout -b development
-git push --set-upstream origin development
-```
-
-#### Step 3: Checkout the Plan Branch & Copy Foundation Files
-
-```bash
-git checkout -b plan
-
-# Copy application infrastructure code
-cp -RT ../terraform-example-foundation/5-app-infra/ .
-
-# Copy policy library for automated compliance validation
-cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-
-# Set up GitHub Actions CI workflows and execution wrapper
-mkdir -p .github/workflows
-cp ../terraform-example-foundation/build/github-tf-* ./.github/workflows/
-cp ../terraform-example-foundation/build/tf-wrapper.sh .
-chmod 755 ./tf-wrapper.sh
-```
-
-#### Step 4: Configure `common.auto.tfvars`
-
-Rename the example tfvars file and populate environment inputs:
-
-```bash
-mv common.auto.example.tfvars common.auto.tfvars
-
-# Set the remote state bucket pointing to 4-projects state
-export remote_state_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
-echo "remote_state_bucket = ${remote_state_bucket}"
-sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
-```
-
-Configure Confidential Space container image and digest:
-- If using the image built in the `tf-runners` Artifact Registry in `cicd_project_id`:
-
-  ```bash
-  export CICD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/4-projects/business_unit_1/shared/" output -raw cicd_project_id)
-  export DEFAULT_REGION=$(terraform -chdir="../terraform-example-foundation/4-projects/business_unit_1/shared/" output -raw default_region)
-  export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${DEFAULT_REGION}-docker.pkg.dev/${CICD_PROJECT_ID}/tf-runners/confidential_space_image:latest --format="value(image_summary.digest)")
-  sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
-  ```
-
-- Alternatively, if using an existing custom container image from another registry:
-
-  ```bash
-  export CUSTOM_TEE_IMAGE="us-central1-docker.pkg.dev/YOUR_PROJECT/YOUR_REPO/YOUR_IMAGE:latest"
-  export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${CUSTOM_TEE_IMAGE} --format="value(image_summary.digest)")
-  sed -i'' -e "s|# custom_tee_image_reference = .*|custom_tee_image_reference = \"${CUSTOM_TEE_IMAGE}\"|" ./common.auto.tfvars
-  sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
-  ```
-
-> [!NOTE]
-> The GitHub Actions workflow automatically substitutes `UPDATE_APP_INFRA_BUCKET` in all `backend.tf` files using the injected `TF_BACKEND` secret during pipeline execution. You do not need to manually edit `backend.tf`.
-
-#### Step 5: Commit and Push the Plan Branch
-
-```bash
-git add .
-git commit -m 'feat: initialize bu1-example-app infrastructure'
-git push --set-upstream origin plan
-```
-
-#### Step 6: Review Plan and Deploy Environments
-
-1. **Deploy Development:**
-   - In GitHub, open a Pull Request from `plan` to `development`.
-   - The Pull Request triggers the `tf-pull-request` workflow, which executes `terraform init`, `plan`, and `validate` via WIF authentication.
-   - Review the plan output in the GitHub Actions tab.
-   - Once approved, merge the Pull Request into `development`. Merging triggers `tf-apply`, applying the Terraform configuration in the `development` service projects.
-
-2. **Promote to Nonproduction:**
-   - Open a Pull Request from `development` to `nonproduction`.
-   - Review the plan output in GitHub Actions.
-   - Merge the Pull Request into `nonproduction` to apply.
-
-3. **Promote to Production:**
-   - Open a Pull Request from `nonproduction` to `production`.
-   - Review the plan output in GitHub Actions.
-   - Merge the Pull Request into `production` to apply.
+See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-step-5-app-infra).
 
 ---
 
 ### Deploying with GitLab CI
 
-When deploying with GitLab CI, the application infrastructure pipeline created in `4-projects/business_unit_1/shared` provisions GitLab OIDC provider trust and automatically configures CI/CD variables in the target GitLab project (`bu1-example-app`):
-- `PROJECT_ID`: The application infrastructure CI/CD project ID.
-- `WIF_PROVIDER_NAME`: The full resource name of the Workload Identity Provider.
-- `TF_BACKEND`: The dedicated GCS state bucket created for `bu1-example-app`.
-- `SERVICE_ACCOUNT_EMAIL`: The dedicated application Terraform service account (`sa-tf-bu1-example-app@...`).
-
-#### Step 1: Clone the Application Project
-
-Clone the project from GitLab at the same directory level as `terraform-example-foundation`:
-
-```bash
-git clone git@gitlab.com:<GITLAB-GROUP>/bu1-example-app.git
-cd bu1-example-app
-```
-
-#### Step 2: Seed Project Branches
-
-If the GitLab project is newly created, initialize the environment branches:
-
-```bash
-git commit --allow-empty -m 'repository seed'
-git push --set-upstream origin main
-
-git checkout -b production
-git push --set-upstream origin production
-
-git checkout -b nonproduction
-git push --set-upstream origin nonproduction
-
-git checkout -b development
-git push --set-upstream origin development
-```
-
-#### Step 3: Checkout the Plan Branch & Copy Foundation Files
-
-```bash
-git checkout -b plan
-
-# Copy application infrastructure code
-cp -RT ../terraform-example-foundation/5-app-infra/ .
-
-# Copy policy library
-cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
-
-# Copy GitLab CI pipeline and authentication scripts
-cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
-cp ../terraform-example-foundation/build/run_gcp_auth.sh .
-cp ../terraform-example-foundation/build/tf-wrapper.sh .
-chmod 755 ./*.sh
-```
-
-#### Step 4: Configure `common.auto.tfvars`
-
-```bash
-mv common.auto.example.tfvars common.auto.tfvars
-
-# Set the remote state bucket pointing to 4-projects state
-export remote_state_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
-echo "remote_state_bucket = ${remote_state_bucket}"
-sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
-```
-
-Configure Confidential Space container image and digest:
-- If using the image in the `tf-runners` Artifact Registry:
-
-  ```bash
-  export CICD_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/4-projects/business_unit_1/shared/" output -raw cicd_project_id)
-  export DEFAULT_REGION=$(terraform -chdir="../terraform-example-foundation/4-projects/business_unit_1/shared/" output -raw default_region)
-  export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${DEFAULT_REGION}-docker.pkg.dev/${CICD_PROJECT_ID}/tf-runners/confidential_space_image:latest --format="value(image_summary.digest)")
-  sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
-  ```
-
-- Alternatively, if using a custom image reference:
-
-  ```bash
-  export CUSTOM_TEE_IMAGE="us-central1-docker.pkg.dev/YOUR_PROJECT/YOUR_REPO/YOUR_IMAGE:latest"
-  export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${CUSTOM_TEE_IMAGE} --format="value(image_summary.digest)")
-  sed -i'' -e "s|# custom_tee_image_reference = .*|custom_tee_image_reference = \"${CUSTOM_TEE_IMAGE}\"|" ./common.auto.tfvars
-  sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
-  ```
-
-> [!NOTE]
-> The GitLab CI pipeline automatically substitutes `UPDATE_APP_INFRA_BUCKET` in all `backend.tf` files using the injected `TF_BACKEND` variable. You do not need to manually edit `backend.tf`.
-
-#### Step 5: Commit and Push the Plan Branch
-
-```bash
-git add .
-git commit -m 'feat: initialize bu1-example-app infrastructure'
-git push --set-upstream origin plan
-```
-
-#### Step 6: Review Plan and Deploy Environments via Merge Requests
-
-1. **Deploy Development:**
-   - In GitLab, open a Merge Request from `plan` to `development`.
-   - The Merge Request triggers the `terraform-plan-mr` pipeline job using GitLab OIDC token exchange.
-   - Review the plan output in the GitLab CI/CD pipeline logs.
-   - Merge the Merge Request into `development`. Merging triggers `terraform-apply`, applying the Terraform configuration in `development`.
-
-2. **Promote to Nonproduction:**
-   - Open a Merge Request from `development` to `nonproduction`.
-   - Review the plan output in GitLab CI/CD.
-   - Merge into `nonproduction` to apply.
-
-3. **Promote to Production:**
-   - Open a Merge Request from `nonproduction` to `production`.
-   - Review the plan output in GitLab CI/CD.
-   - Merge into `production` to apply.
+See `0-bootstrap` [README-GitLab.md](../0-bootstrap/README-GitLab.md#deploying-step-5-app-infra).
 
 ---
 
@@ -373,7 +153,7 @@ chmod 755 ./tf-wrapper.sh
 mv common.auto.example.tfvars common.auto.tfvars
 
 # Set the remote state bucket pointing to 4-projects state
-export remote_state_bucket=$(terraform -chdir="../0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_gcs_bucket_tfstate)
 echo "remote_state_bucket = ${remote_state_bucket}"
 sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
 ```
@@ -383,7 +163,7 @@ When deploying locally (`build_type = local`), if Docker was available during `4
 
 ```bash
 # Retrieve image name from Stage 4 shared output
-export CUSTOM_TEE_IMAGE=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw image_name)
+export CUSTOM_TEE_IMAGE=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw image_name)
 export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${CUSTOM_TEE_IMAGE} --format="value(image_summary.digest)")
 
 sed -i'' -e "s|# custom_tee_image_reference = .*|custom_tee_image_reference = \"${CUSTOM_TEE_IMAGE}\"|" ./common.auto.tfvars
@@ -407,7 +187,7 @@ Grant the active user the `roles/iam.serviceAccountTokenCreator` role on the app
 export member="user:$(gcloud auth list --filter="status=ACTIVE" --format="value(account)")"
 echo "Active user: ${member}"
 
-export terraform_sa=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq -r '."bu1-example-app"')
+export terraform_sa=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -json terraform_service_accounts | jq -r '."bu1-example-app"')
 echo "Target SA: ${terraform_sa}"
 
 gcloud iam service-accounts add-iam-policy-binding "${terraform_sa}" \
@@ -420,7 +200,7 @@ gcloud iam service-accounts add-iam-policy-binding "${terraform_sa}" \
 Retrieve the dedicated application state bucket name from `4-projects/shared` and update the backends:
 
 ```bash
-export backend_bucket=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -json state_buckets | jq -r '."bu1-example-app"')
+export backend_bucket=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -json state_buckets | jq -r '."bu1-example-app"')
 echo "backend_bucket = ${backend_bucket}"
 
 for i in `find . -name 'backend.tf'`; do
@@ -478,7 +258,7 @@ If your Google Cloud organization has existing access to CSR and you selected `b
 #### Step 1: Initialize the Policy Library Repository
 
 ```bash
-export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../4-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
+export INFRA_PIPELINE_PROJECT_ID=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw cloudbuild_project_id)
 echo "Infra Pipeline Project: ${INFRA_PIPELINE_PROJECT_ID}"
 
 # Clone gcp-policies repo created in the app-infra pipeline project
@@ -515,11 +295,11 @@ chmod 755 ./tf-wrapper.sh
 mv common.auto.example.tfvars common.auto.tfvars
 
 # Set remote state bucket
-export remote_state_bucket=$(terraform -chdir="../terraform-example-foundation/0-bootstrap/" output -raw projects_gcs_bucket_tfstate)
+export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_gcs_bucket_tfstate)
 sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
 
 # Resolve Confidential Space image digest built during step 4-projects
-export DEFAULT_REGION=$(terraform -chdir="../terraform-example-foundation/4-projects/business_unit_1/shared" output -raw default_region)
+export DEFAULT_REGION=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw default_region)
 export confidential_image_digest=$(gcloud artifacts docker images describe ${DEFAULT_REGION}-docker.pkg.dev/${INFRA_PIPELINE_PROJECT_ID}/tf-runners/confidential_space_image:latest --format="value(image_summary.digest)" --project=${INFRA_PIPELINE_PROJECT_ID})
 echo "confidential_image_digest = ${confidential_image_digest}"
 
@@ -573,7 +353,7 @@ Check that the sample Compute Engine VM (`sample-svpc`) is running inside the Sh
 
 ```bash
 # Retrieve development project ID
-export DEV_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/4-projects/business_unit_1/development/" output -raw shared_vpc_project)
+export DEV_PROJECT_ID=$(terraform -chdir="../gcp-projects/business_unit_1/development/" output -raw shared_vpc_project)
 gcloud compute instances list --project="${DEV_PROJECT_ID}"
 ```
 
@@ -588,7 +368,7 @@ sample-svpc  us-central1-a  e2-micro                    10.0.64.x               
 Verify that the Confidential Space instance template and Workload Identity Pool were created in the confidential computing project:
 
 ```bash
-export CONF_PROJECT_ID=$(terraform -chdir="../terraform-example-foundation/4-projects/business_unit_1/development/" output -raw confidential_space_project)
+export CONF_PROJECT_ID=$(terraform -chdir="../gcp-projects/business_unit_1/development/" output -raw confidential_space_project)
 
 # List Instance Templates
 gcloud compute instance-templates list --project="${CONF_PROJECT_ID}"
@@ -604,7 +384,7 @@ gcloud iam workload-identity-pools describe "confidential-space-pool" \
 Verify that application state is stored in the dedicated application state bucket:
 
 ```bash
-export TF_STATE_BUCKET=$(terraform -chdir="../terraform-example-foundation/4-projects/business_unit_1/shared/" output -json state_buckets | jq -r '."bu1-example-app"')
+export TF_STATE_BUCKET=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -json state_buckets | jq -r '."bu1-example-app"')
 gsutil ls -r "gs://${TF_STATE_BUCKET}/terraform/app-infra/"
 ```
 

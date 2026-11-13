@@ -409,19 +409,19 @@ If you received any errors or made any changes to the Terraform config or any `.
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
 
-1. Before move to the next step, configure directional policies for your perimeter.
+1. Before moving to the next step, configure directional policies for your perimeter.
 
 1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
-   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/" output -raw seed_project_id)
+   export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw seed_project_id)
    echo ${SEED_PROJECT_ID}
 
-   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/" output -raw organization_step_terraform_service_account_email)
+   export GOOGLE_IMPERSONATE_SERVICE_ACCOUNT=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw organization_step_terraform_service_account_email)
    echo ${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}
    ```
 
-1. Before move to the next step, configure directional policies for your perimeter.
+1. Before moving to the next step, configure directional policies for your perimeter.
 
 1. Navigate to `gcp-org`.
 1. Use `terraform output` to get the APP Infra Pipeline cloud build project id and project number.

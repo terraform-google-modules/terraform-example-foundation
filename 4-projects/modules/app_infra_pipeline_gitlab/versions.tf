@@ -31,6 +31,9 @@ terraform {
       source  = "gitlabhq/gitlab"
       version = "~> 18.6"
     }
+    random = {
+      source = "hashicorp/random"
+    }
   }
 
   provider_meta "google" {

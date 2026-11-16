@@ -73,8 +73,14 @@ data "terraform_remote_state" "business_unit_shared" {
   }
 }
 
+resource "random_string" "suffix" {
+  length  = 4
+  special = false
+  upper   = false
+}
+
 resource "google_iam_workload_identity_pool" "confidential_space_pool" {
-  workload_identity_pool_id = "confidential-space-pool"
+  workload_identity_pool_id = "confidential-space-pool-${random_string.suffix.result}"
   disabled                  = false
   project                   = local.env_project_id
 }
@@ -166,7 +172,7 @@ resource "time_sleep" "wait_workload_pool_propagation" {
 resource "google_service_account_iam_member" "workload_identity_binding" {
   service_account_id = "projects/${local.env_project_id}/serviceAccounts/${local.confidential_space_workload_sa}"
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${local.confidential_space_project_number}/locations/global/workloadIdentityPools/confidential-space-pool/*"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.confidential_space_pool.name}/*"
 
   depends_on = [
     time_sleep.wait_workload_pool_propagation

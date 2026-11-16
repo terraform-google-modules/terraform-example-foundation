@@ -92,9 +92,15 @@ module "core" {
   remote_tfstate_bucket = var.remote_tfstate_bucket
 }
 
+resource "random_string" "suffix" {
+  length  = 4
+  special = false
+  upper   = false
+}
+
 resource "google_iam_workload_identity_pool" "gitlab_pool" {
   project                   = module.app_infra_project.project_id
-  workload_identity_pool_id = "app-infra-pool"
+  workload_identity_pool_id = "app-infra-pool-${random_string.suffix.result}"
   display_name              = "App Infra GitLab Pool"
   description               = "Workload Identity Pool for App Infra GitLab CI"
 }

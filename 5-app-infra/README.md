@@ -369,12 +369,13 @@ Verify that the Confidential Space instance template and Workload Identity Pool 
 
 ```bash
 export CONF_PROJECT_ID=$(terraform -chdir="../gcp-projects/business_unit_1/development/" output -raw confidential_space_project)
+export WIP_ID=$(terraform output -raw workload_identity_pool_id)
 
 # List Instance Templates
 gcloud compute instance-templates list --project="${CONF_PROJECT_ID}"
 
 # Verify Workload Identity Pool
-gcloud iam workload-identity-pools describe "confidential-space-pool" \
+gcloud iam workload-identity-pools describe "${WIP_ID}" \
   --location="global" \
   --project="${CONF_PROJECT_ID}"
 ```

@@ -91,12 +91,18 @@ module "core" {
   remote_tfstate_bucket = var.remote_tfstate_bucket
 }
 
+resource "random_string" "suffix" {
+  length  = 4
+  special = false
+  upper   = false
+}
+
 module "gh_oidc" {
   source  = "terraform-google-modules/github-actions-runners/google//modules/gh-oidc"
   version = "~> 5.1"
 
   project_id          = module.app_infra_project.project_id
-  pool_id             = "app-infra-pool"
+  pool_id             = "app-infra-pool-${random_string.suffix.result}"
   provider_id         = "app-infra-gh-provider"
   sa_mapping          = local.sa_mapping
   attribute_condition = local.gh_owner != "" ? "assertion.repository_owner=='${local.gh_owner}'" : null

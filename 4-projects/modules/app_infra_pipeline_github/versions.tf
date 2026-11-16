@@ -31,6 +31,9 @@ terraform {
       source  = "integrations/github"
       version = "~> 6.0"
     }
+    random = {
+      source = "hashicorp/random"
+    }
   }
 
   provider_meta "google" {

@@ -1,7 +1,7 @@
 # Confidential Space Module
 
 This module provisions Google Cloud [Confidential Space](https://cloud.google.com/confidential-computing/confidential-space/docs/confidential-space-overview) resources:
-- Dedicated Workload Identity Pool (`confidential-space-pool`) and OIDC Attestation Verifier provider (`attestation-verifier`).
+- Dedicated Workload Identity Pool (`confidential-space-pool-<random>`) and OIDC Attestation Verifier provider (`attestation-verifier`).
 - Confidential VM instance template and compute instance running within a hardware-isolated Trusted Execution Environment (TEE) (AMD SEV/SNP or Intel TDX).
 - Workload Identity User IAM binding for hardware attestation token exchange.
 

@@ -208,6 +208,7 @@ resource "google_project_iam_member" "cai_monitoring_builder" {
       "roles/logging.logWriter",
       "roles/storage.objectViewer",
       "roles/artifactregistry.writer",
+      "roles/serviceusage.serviceUsageConsumer",
   ] : [])
   role   = each.key
   member = "serviceAccount:${google_service_account.cai_monitoring_builder[0].email}"

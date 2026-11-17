@@ -24,7 +24,9 @@ locals {
     "artifactregistry.googleapis.com",
     "storage.googleapis.com",
     "run.googleapis.com",
-    "eventarc.googleapis.com"
+    "eventarc.googleapis.com",
+    "eventarcpublishing.googleapis.com",
+    "serviceusage.googleapis.com",
   ]
   cai_source_name = var.random_suffix ? "CAI Monitoring - ${random_id.suffix.hex}" : "CAI Monitoring"
 }

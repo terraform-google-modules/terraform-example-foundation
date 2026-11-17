@@ -25,4 +25,9 @@ module "cai_monitoring" {
   kms_iam_sleep_duration = var.kms_iam_sleep_duration
   bucket_sleep_duration  = var.bucket_sleep_duration
   build_service_account  = "projects/${module.scc_notifications.project_id}/serviceAccounts/${google_service_account.cai_monitoring_builder[0].email}"
+
+  depends_on = [
+    google_project_iam_member.cai_monitoring_builder,
+    module.scc_notifications
+  ]
 }

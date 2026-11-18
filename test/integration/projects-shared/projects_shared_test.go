@@ -16,6 +16,8 @@ package projectsshared
 
 import (
 	"fmt"
+	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -24,9 +26,27 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/terraform-google-modules/terraform-example-foundation/test/integration/testutils"
 )
+
+// envBootstrapBuildType selects which bootstrap variant the integration test runs.
+// "local" (default): no Cloud Build / CSR / trigger resources are created.
+// "cb" (opt-in via BOOTSTRAP_BUILD_TYPE=cb): full Cloud Build assertions — requires
+// 0-bootstrap already in cb mode (active build_cb.tf, outputs_cb.tf, versions_cb.tf).
+const envBootstrapBuildType = "BOOTSTRAP_BUILD_TYPE"
+
+func bootstrapBuildType() string {
+	if v := strings.TrimSpace(os.Getenv(envBootstrapBuildType)); v != "" {
+		return strings.ToLower(v)
+	}
+	return "local"
+}
+
+func isLocalBootstrapBuild() bool {
+	return bootstrapBuildType() == "local"
+}
 
 func TestProjectsShared(t *testing.T) {
 
@@ -74,6 +94,10 @@ func TestProjectsShared(t *testing.T) {
 		tts := tts
 		t.Run(tts.name, func(t *testing.T) {
 			t.Parallel()
+
+			if isLocalBootstrapBuild() {
+				require.NoError(t, testutils.RenameBuildFiles(tts.tfDir, "local"))
+			}
 
 			sharedVars := map[string]interface{}{
 				"remote_state_bucket":     backend_bucket,

@@ -31,6 +31,9 @@ var (
 		// Granting IAM Roles is eventually consistent.
 		".*Error 403.*Permission.*denied on resource.*": "Permission denied on resource.",
 
+		// Eventarc trigger validation is eventually consistent while IAM propagates.
+		".*Error 403.*Validation failed for trigger.*": "Eventarc trigger validation IAM propagation.",
+
 		// Editing VPC Service Controls is eventually consistent.
 		".*Error 403.*Request is prohibited by organization's policy.*vpcServiceControlsUniqueIdentifier.*": "Request is prohibited by organization's policy.",
 

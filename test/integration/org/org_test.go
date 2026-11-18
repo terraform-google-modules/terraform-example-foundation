@@ -206,7 +206,7 @@ func TestOrg(t *testing.T) {
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
 		tft.WithVars(vars),
-		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),
+		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 5, 3*time.Minute),
 		tft.WithBackendConfig(backendConfig),
 	)
 

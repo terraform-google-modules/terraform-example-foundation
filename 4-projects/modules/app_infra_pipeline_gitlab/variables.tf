@@ -92,8 +92,8 @@ variable "gl_repos" {
   })
 
   validation {
-    condition     = var.gl_repos != null && can(regex("^[a-zA-Z0-9][-a-zA-Z0-9_.]*$", var.gl_repos.owner))
-    error_message = "The gl_repos variable and gl_repos.owner must not be null/empty and must contain only alphanumeric characters, dashes, underscores, or periods."
+    condition     = var.gl_repos != null && can(regex("^[a-zA-Z0-9][-a-zA-Z0-9_.]*(/[a-zA-Z0-9][-a-zA-Z0-9_.]*)*$", var.gl_repos.owner))
+    error_message = "The gl_repos variable and gl_repos.owner must not be null/empty and must contain only alphanumeric characters, dashes, underscores, periods, or forward slashes for subgroups."
   }
 }
 

@@ -38,6 +38,7 @@ This module implements the Local deployment pipeline for Step 5 (`5-app-infra`).
 | artifact\_registry\_repository\_id | Artifact Registry ID. |
 | bootstrap\_cloudbuild\_project\_id | Cloudbuild project ID. |
 | cicd\_project\_id | APP Infra CI/CD Project ID (CB, GitHub, or GitLab project; project hosting Artifact Registry for local). |
+| cicd\_project\_number | APP Infra CI/CD Project number. |
 | cloudbuild\_project\_id | APP Infra cloudbuild project id. |
 | cloudbuild\_project\_number | APP Infra cloudbuild project number. |
 | default\_region | Default region to create resources where applicable. |

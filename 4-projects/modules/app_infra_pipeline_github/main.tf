@@ -111,9 +111,9 @@ module "gh_oidc" {
 resource "github_actions_secret" "secrets" {
   for_each = { for s in local.secrets_list : "${s.repo}.${s.secret_name}" => s }
 
-  repository  = each.value.repo
-  secret_name = each.value.secret_name
-  value       = each.value.value
+  repository      = each.value.repo
+  secret_name     = each.value.secret_name
+  plaintext_value = each.value.value
 }
 
 resource "google_service_account_iam_member" "token_creator" {

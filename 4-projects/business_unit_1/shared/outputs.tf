@@ -35,6 +35,11 @@ output "cicd_project_id" {
   value       = module.app_infra_pipeline.cicd_project_id
 }
 
+output "cicd_project_number" {
+  description = "APP Infra CI/CD Project Number (CB, GitHub, or GitLab project; empty for local)."
+  value       = module.app_infra_pipeline.cicd_project_number
+}
+
 output "enable_cloudbuild_deploy" {
   description = "Enable infra deployment using Cloud Build."
   value       = module.app_infra_pipeline.enable_cloudbuild_deploy

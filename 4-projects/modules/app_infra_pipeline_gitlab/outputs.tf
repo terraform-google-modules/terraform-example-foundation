@@ -34,6 +34,11 @@ output "cicd_project_id" {
   value       = module.app_infra_project.project_id
 }
 
+output "cicd_project_number" {
+  description = "APP Infra CI/CD Project number."
+  value       = module.app_infra_project.project_number
+}
+
 output "enable_cloudbuild_deploy" {
   description = "Enable infra deployment using Cloud Build."
   value       = false

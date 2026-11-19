@@ -72,5 +72,5 @@ module "env" {
   ncc_private_service_connect_ip                = local.private_service_connect_ip
   enable_confidential_space                     = var.enable_confidential_space
   confidential_space_subnet_ip_range            = "10.4.192.0/24"
-  confidential_space_private_service_connect_ip = "10.17.0.12"
+  confidential_space_private_service_connect_ip = "10.17.0.14"
 }

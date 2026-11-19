@@ -210,7 +210,7 @@ module "confidential_space_firewall_rules" {
       description    = "Allow Google APIs on TCP port 443 via Private Service Connect."
       enable_logging = var.firewall_enable_logging
       match = {
-        dest_ip_ranges = [var.confidential_space_private_service_connect_ip]
+        dest_ip_ranges = ["${var.confidential_space_private_service_connect_ip}/32"]
         layer4_configs = [
           {
             ip_protocol = "tcp"
@@ -228,7 +228,7 @@ module "confidential_space_firewall_rules" {
       enable_logging     = var.firewall_enable_logging
       target_secure_tags = ["tagValues/${google_tags_tag_value.firewall_tag_value_conf_space[0].name}"]
       match = {
-        dest_ip_ranges = [var.confidential_space_private_service_connect_ip]
+        dest_ip_ranges = ["${var.confidential_space_private_service_connect_ip}/32"]
         layer4_configs = [
           {
             ip_protocol = "tcp"
@@ -270,6 +270,6 @@ resource "google_network_connectivity_spoke" "confidential_space_spoke" {
 
   linked_vpc_network {
     uri                   = module.confidential_space_network[0].network_id
-    include_export_ranges = [var.confidential_space_private_service_connect_ip]
+    include_export_ranges = ["${var.confidential_space_private_service_connect_ip}/32"]
   }
 }

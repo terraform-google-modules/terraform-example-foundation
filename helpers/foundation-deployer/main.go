@@ -211,17 +211,15 @@ func main() {
 			os.Exit(3)
 		}
 
-		// Rerun org only to disable ingress and egress rules (Cloud Build only)
-		if conf.BuildType == stages.BuildTypeCBCSR {
-			msg.PrintStageMsg("Re-applying 1-org (disable app-infra dry-run rules)")
-			err = s.RunStep("gcp-org.disable-app-infra-dry-run-rules", func() error {
-				bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
-				return stages.DeployOrgStageWithRules(t, s, globalTFVars, bo, conf, false)
-			})
-			if err != nil {
-				fmt.Printf("# Org re-apply (disable rules) failed. Error: %s\n", err.Error())
-				os.Exit(3)
-			}
+		// Rerun org only to disable ingress and egress rules
+		msg.PrintStageMsg("Re-applying 1-org (disable app-infra dry-run rules)")
+		err = s.RunStep("gcp-org.disable-app-infra-dry-run-rules", func() error {
+			bo := stages.GetBootstrapStepOutputs(t, conf.FoundationPath, conf.BuildType)
+			return stages.DeployOrgStageWithRules(t, s, globalTFVars, bo, conf, false)
+		})
+		if err != nil {
+			fmt.Printf("# Org re-apply (disable rules) failed. Error: %s\n", err.Error())
+			os.Exit(3)
 		}
 
 		// 4-projects
@@ -353,16 +351,14 @@ func main() {
 		os.Exit(3)
 	}
 
-	// Rerun org only to enable ingress and egress rules (Cloud Build only)
-	if conf.BuildType == stages.BuildTypeCBCSR {
-		msg.PrintStageMsg("Re-applying 1-org (enable app-infra dry-run rules)")
-		err = s.RunStep("gcp-org.enable-app-infra-dry-run-rules", func() error {
-			return stages.DeployOrgStageWithRules(t, s, globalTFVars, bo, conf, true)
-		})
-		if err != nil {
-			fmt.Printf("# Org re-apply (rules) failed. Error: %s\n", err.Error())
-			os.Exit(3)
-		}
+	// Rerun org to enable ingress and egress rules
+	msg.PrintStageMsg("Re-applying 1-org (enable app-infra dry-run rules)")
+	err = s.RunStep("gcp-org.enable-app-infra-dry-run-rules", func() error {
+		return stages.DeployOrgStageWithRules(t, s, globalTFVars, bo, conf, true)
+	})
+	if err != nil {
+		fmt.Printf("# Org re-apply (rules) failed. Error: %s\n", err.Error())
+		os.Exit(3)
 	}
 
 	// 5-app-infra

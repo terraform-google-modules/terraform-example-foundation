@@ -199,6 +199,13 @@ locals {
     : []
   )
 
+  # Only evaluate app infra perimeter rules if both source and target projects exist,
+  # preventing Access Context Manager 400 errors with empty resources or identities.
+  app_infra_has_resources = (
+    local.cloudbuild_project_number != "" &&
+    length(local.app_infra_to_resources) > 0
+  )
+
   required_egress_rules_dry_run_cb = {
     seed_to_cicd = {
       title = "ER seed -> cicd"
@@ -825,7 +832,7 @@ locals {
     var.universe_domain == "googleapis.com" ? local.required_ingress_rules_dry_run : {},
     var.universe_domain != "googleapis.com" ? local.required_ingress_rules_dry_run_universe : {},
     local.enable_cloudbuild_deploy ? local.required_ingress_rules_dry_run_cb : {},
-    (local.enable_cloudbuild_deploy && var.required_ingress_rules_app_infra_dry_run) ? local.required_ingress_rules_app_infra_dry_run : {},
+    (var.required_ingress_rules_app_infra_dry_run && local.app_infra_has_resources) ? local.required_ingress_rules_app_infra_dry_run : {},
     var.enable_scc_resources_in_terraform ? local.required_ingress_rule_scc_dry_run : {},
     var.ingress_policies_dry_run_map
   )
@@ -834,7 +841,7 @@ locals {
     var.universe_domain == "googleapis.com" ? local.required_ingress_rules : {},
     var.universe_domain != "googleapis.com" ? local.required_ingress_rules_universe : {},
     local.enable_cloudbuild_deploy ? local.required_ingress_rules_cb : {},
-    (local.enable_cloudbuild_deploy && var.required_ingress_rules_app_infra) ? local.required_ingress_rules_app_infra : {},
+    (var.required_ingress_rules_app_infra && local.app_infra_has_resources) ? local.required_ingress_rules_app_infra : {},
     var.enable_scc_resources_in_terraform ? local.required_ingress_rule_scc : {},
     var.ingress_policies_map
   )
@@ -842,14 +849,14 @@ locals {
   egress_policies_dry_run_map = merge(
     local.enable_cloudbuild_deploy ? local.required_egress_rules_dry_run_cb : {},
     local.required_egress_rules_dry_run,
-    (local.enable_cloudbuild_deploy && var.required_egress_rules_app_infra_dry_run) ? local.required_egress_rules_app_infra_dry_run : {},
+    (var.required_egress_rules_app_infra_dry_run && local.app_infra_has_resources) ? local.required_egress_rules_app_infra_dry_run : {},
     var.egress_policies_dry_run_map
   )
 
   egress_policies_map = merge(
     local.enable_cloudbuild_deploy ? local.required_egress_rules_cb : {},
     local.required_egress_rules,
-    (local.enable_cloudbuild_deploy && var.required_egress_rules_app_infra) ? local.required_egress_rules_app_infra : {},
+    (var.required_egress_rules_app_infra && local.app_infra_has_resources) ? local.required_egress_rules_app_infra : {},
     var.egress_policies_map
   )
 }

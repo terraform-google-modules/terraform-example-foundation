@@ -97,6 +97,9 @@ func TestProjectsShared(t *testing.T) {
 
 			if isLocalBootstrapBuild() {
 				require.NoError(t, testutils.RenameBuildFiles(tts.tfDir, "local"))
+				t.Cleanup(func() {
+					_ = testutils.RenameBuildFiles(tts.tfDir, "cb")
+				})
 			}
 
 			sharedVars := map[string]interface{}{

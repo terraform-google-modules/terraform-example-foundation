@@ -374,11 +374,18 @@ The following steps introduce the steps to deploy with Cloud Build Alternatively
 
 The following steps will guide you through deploying without using Cloud Build.
 
-1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and create to the `gcp-bootstrap` folder at the same level. Copy the `0-bootstrap` content and `.gitignore` to `gcp-bootstrap`.
+1. Clone [terraform-example-foundation](https://github.com/terraform-google-modules/terraform-example-foundation) into your local environment and create to the `gcp-bootstrap` folder at the same level.
+   In the `terraform-example-foundation` repository, run the helper script `choose_build_type.sh` to enable the Bootstrap local version:
 
    ```bash
-   git clone https://github.com/terraform-google-modules/terraform-example-foundation.git
+   cd terraform-example-foundation
+   ./scripts/choose_build_type.sh local
+   cd ..
+   ```
 
+   Copy the `0-bootstrap` content and `.gitignore` to `gcp-bootstrap`.
+
+   ```bash
    mkdir gcp-bootstrap/envs/shared -p
 
    cp -R terraform-example-foundation/0-bootstrap/* gcp-bootstrap/envs/shared/
@@ -404,16 +411,10 @@ The following steps will guide you through deploying without using Cloud Build.
    mv terraform.example.tfvars terraform.tfvars
    ```
 
-1. Activate the local build type using the `choose_build_type.sh` script:
-
-   ```bash
-   ../terraform-example-foundation/scripts/choose_build_type.sh local
-   ```
-
 1. Use the helper script [validate-requirements.sh](../scripts/validate-requirements.sh) to validate your environment:
 
    ```bash
-   ../terraform-example-foundation/scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
+   ../../../terraform-example-foundation/scripts/validate-requirements.sh -o <ORGANIZATION_ID> -b <BILLING_ACCOUNT_ID> -u <END_USER_EMAIL>
    ```
 
    **Note:** The script is not able to validate if the user is in a Cloud Identity or Google Workspace group with the required roles.

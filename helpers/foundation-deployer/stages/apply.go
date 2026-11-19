@@ -844,9 +844,10 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 		} else if tfvars.CustomTeeImageReference != "" {
 			targetProject := outputs.CICDProjectID
 			digest, err := gcp.NewGCP().GetDockerImageDigest(t, targetProject, tfvars.CustomTeeImageReference)
-			if err == nil && digest != "" {
-				commonTfvars.ImageDigest = digest
+			if err != nil {
+				return fmt.Errorf("failed to retrieve image digest for custom tee image %s: %w", tfvars.CustomTeeImageReference, err)
 			}
+			commonTfvars.ImageDigest = digest
 		} else if outputs.ImageName != "" {
 			targetProject := outputs.CICDProjectID
 			if targetProject == "" {
@@ -856,21 +857,16 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 			if c.BuildType == BuildTypeLocal {
 				digest, err := buildAndPushLocalConfidentialImage(t, c.FoundationPath, outputs)
 				if err != nil {
-					fmt.Printf("# Warning: failed to build/push local confidential space image: %v\n", err)
-				} else {
-					commonTfvars.ImageDigest = digest
+					return fmt.Errorf("failed to build and push local confidential space image: %w", err)
 				}
+				commonTfvars.ImageDigest = digest
 			} else if targetProject != "" {
 				digest, err := gcp.NewGCP().GetDockerImageDigest(t, targetProject, outputs.ImageName)
-				if err == nil && digest != "" {
-					commonTfvars.ImageDigest = digest
+				if err != nil {
+					return fmt.Errorf("failed to retrieve image digest for %s in project %s: %w", outputs.ImageName, targetProject, err)
 				}
+				commonTfvars.ImageDigest = digest
 			}
-		}
-
-		if commonTfvars.ImageDigest == "" {
-			// Valid default digest for syntax/attestation verifier validation when image resolution fails
-			commonTfvars.ImageDigest = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
 		}
 	}
 

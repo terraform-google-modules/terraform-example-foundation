@@ -153,7 +153,10 @@ func TestChooseBuildTypeScript_MultiStageSwitching(t *testing.T) {
 
 			// Check 4-projects shared (for types present in shared)
 			sharedDir := filepath.Join(tempDir, "4-projects", "business_unit_1", "shared")
-			if target != "terraform_cloud" {
+			if target == "terraform_cloud" {
+				assert.FileExists(t, filepath.Join(sharedDir, "main_local.tf"))
+				assert.NoFileExists(t, filepath.Join(sharedDir, "main_local.tf.example"))
+			} else {
 				assert.FileExists(t, filepath.Join(sharedDir, fmt.Sprintf("main_%s.tf", target)))
 				assert.NoFileExists(t, filepath.Join(sharedDir, fmt.Sprintf("main_%s.tf.example", target)))
 			}

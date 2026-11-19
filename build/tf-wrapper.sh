@@ -151,7 +151,15 @@ tf_apply() {
           echo "Found Dockerfile and image_name: ${image_name}. Building and pushing..."
           local registry_host
           registry_host="$(echo "$image_name" | cut -d/ -f1)"
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin "https://${registry_host}"
+          local impersonate_flag=()
+          if [ -n "${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT:-}" ]; then
+            local active_account
+            active_account="$(gcloud config get-value account 2>/dev/null)"
+            if [ "$active_account" != "$GOOGLE_IMPERSONATE_SERVICE_ACCOUNT" ]; then
+              impersonate_flag=("--impersonate-service-account=${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}")
+            fi
+          fi
+          gcloud auth print-access-token "${impersonate_flag[@]}" | docker login -u oauth2accesstoken --password-stdin "https://${registry_host}"
           docker build --platform linux/amd64 -t "${image_name}" .
           docker push "${image_name}"
         fi

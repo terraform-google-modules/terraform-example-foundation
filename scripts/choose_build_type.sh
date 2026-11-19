@@ -73,26 +73,46 @@ if [[ ${#SEARCH_PATHS[@]} -eq 0 ]]; then
   SEARCH_PATHS+=("$ROOT_DIR")
 fi
 
-# Deactivate all other build types to ensure a clean state
-for type in "${build_types[@]}"; do
-  if [[ "$type" != "$TARGET_BUILD" ]]; then
-    find "${SEARCH_PATHS[@]}" -type d \( -name .git -o -name .terraform \) -prune -o -name "*_$type.tf" -type f -print0 | while IFS= read -r -d $'\0' file; do
-      if [ -f "$file" ]; then
-        new_name="${file}.example"
-        echo "Deactivating: renaming \"$file\" to \"$new_name\""
-        mv "$file" "$new_name"
-      fi
-    done
+# Process build type switching for a given directory tree
+process_directory() {
+  local dir="$1"
+  local target="$2"
+
+  # If target is terraform_cloud and this directory lacks terraform_cloud templates
+  # (e.g. 4-projects shared where TFC is deprecated), map to local runner instead of
+  # deactivating all modules and breaking outputs.
+  if [[ "$target" == "terraform_cloud" ]]; then
+    local tfc_count
+    tfc_count=$(find "$dir" -maxdepth 2 -name "*_terraform_cloud.tf*" 2>/dev/null | wc -l)
+    if [[ "$tfc_count" -eq 0 ]]; then
+      echo "Note: No terraform_cloud templates found in \"$dir\"; mapping to local runner"
+      target="local"
+    fi
   fi
-done
 
-# Activate the target build type
-find "${SEARCH_PATHS[@]}" -type d \( -name .git -o -name .terraform \) -prune -o -name "*_$TARGET_BUILD.tf.example" -type f -print0 | while IFS= read -r -d $'\0' file; do
-  base_name="${file%.tf.example}"
-  new_name="$base_name.tf"
+  for type in "${build_types[@]}"; do
+    if [[ "$type" != "$target" ]]; then
+      find "$dir" -type d \( -name .git -o -name .terraform \) -prune -o -name "*_$type.tf" -type f -print0 | while IFS= read -r -d $'\0' file; do
+        if [ -f "$file" ]; then
+          new_name="${file}.example"
+          echo "Deactivating: renaming \"$file\" to \"$new_name\""
+          mv "$file" "$new_name"
+        fi
+      done
+    fi
+  done
 
-  echo "Activating: renaming \"$file\" to \"$new_name\""
-  mv "$file" "$new_name"
+  find "$dir" -type d \( -name .git -o -name .terraform \) -prune -o -name "*_$target.tf.example" -type f -print0 | while IFS= read -r -d $'\0' file; do
+    base_name="${file%.tf.example}"
+    new_name="$base_name.tf"
+
+    echo "Activating: renaming \"$file\" to \"$new_name\""
+    mv "$file" "$new_name"
+  done
+}
+
+for path in "${SEARCH_PATHS[@]}"; do
+  process_directory "$path" "$TARGET_BUILD"
 done
 
 echo "File renaming complete."

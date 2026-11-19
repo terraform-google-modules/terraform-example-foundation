@@ -44,8 +44,16 @@ func RenameBuildFiles(basePath, targetBuild string) error {
 		return fmt.Errorf("invalid build type '%s'. Must be one of: %s", targetBuild, strings.Join(AllowedBuildTypes, ", "))
 	}
 
+	effectiveTarget := targetBuild
+	if targetBuild == "terraform_cloud" {
+		matches, err := filepath.Glob(filepath.Join(basePath, "*_terraform_cloud.tf*"))
+		if err == nil && len(matches) == 0 {
+			effectiveTarget = "local"
+		}
+	}
+
 	for _, buildType := range AllowedBuildTypes {
-		if buildType == targetBuild {
+		if buildType == effectiveTarget {
 			continue
 		}
 		pattern := filepath.Join(basePath, fmt.Sprintf("*_%s.tf", buildType))
@@ -61,10 +69,10 @@ func RenameBuildFiles(basePath, targetBuild string) error {
 		}
 	}
 
-	pattern := filepath.Join(basePath, fmt.Sprintf("*_%s.tf%s", targetBuild, DisableFileSuffix))
+	pattern := filepath.Join(basePath, fmt.Sprintf("*_%s.tf%s", effectiveTarget, DisableFileSuffix))
 	files, err := filepath.Glob(pattern)
 	if err != nil {
-		return fmt.Errorf("error finding files to activate for build type %s: %w", targetBuild, err)
+		return fmt.Errorf("error finding files to activate for build type %s: %w", effectiveTarget, err)
 	}
 	for _, file := range files {
 		newName := strings.TrimSuffix(file, DisableFileSuffix)

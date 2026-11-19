@@ -5,6 +5,10 @@
 |------|-------------|------|---------|:--------:|
 | business\_code | The business code (ex. bu1). | `string` | n/a | yes |
 | business\_unit | The business (ex. business\_unit\_1). | `string` | n/a | yes |
+| confidential\_space\_enable\_ncc\_spoke | Toggle creation of NCC Spoke for the Confidential Space standalone VPC. | `bool` | `false` | no |
+| confidential\_space\_private\_service\_connect\_ip | The internal IP address to be used as the Private Service Connect endpoint in the Confidential Space VPC. | `string` | `"10.17.0.12"` | no |
+| confidential\_space\_subnet\_ip\_range | IP range for the Confidential Space dedicated subnetwork. | `string` | `"10.4.64.0/24"` | no |
+| enable\_confidential\_space | Enable Confidential Space project, service account, and workload IAM. | `bool` | `true` | no |
 | env | The environment to prepare (ex. development). | `string` | n/a | yes |
 | firewall\_enable\_logging | Toggle firewall logging for VPC Firewalls. | `bool` | `true` | no |
 | folder\_deletion\_protection | Prevent Terraform from destroying or recreating the folder. | `string` | `true` | no |
@@ -40,8 +44,11 @@
 |------|-------------|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | bucket | The created storage bucket. |
+| confidential\_space\_firewall\_tags | The security tags created for Confidential Space firewall rules to be used on the VM created in step 5-app-infra. |
+| confidential\_space\_network\_name | The network name of the Confidential Space dedicated network. |
 | confidential\_space\_project | Confidential Space project id. |
 | confidential\_space\_project\_number | Confidential Space project number. |
+| confidential\_space\_subnetwork\_self\_link | The subnetwork self link of the Confidential Space dedicated network. |
 | confidential\_space\_workload\_sa | Workload Service Account for confidential space |
 | floating\_project | Project sample floating project. |
 | floating\_project\_number | Project number sample floating project. |

@@ -54,7 +54,7 @@ variable "universe_domain" {
 }
 
 variable "source_image_family" {
-  description = "Source image family used for confidential instance. The default is confidential-space."
+  description = "Source image family used for confidential instance. The default is 'confidential-space'. Use 'confidential-space-debug' if you need to view workload and container launcher logs in Cloud Logging (Logs Explorer) or serial console during debugging and development, as the hardened 'confidential-space' production image disables logging export and stops immediately on exit."
   type        = string
   default     = "confidential-space"
 }
@@ -98,4 +98,16 @@ variable "workload_pool_propagation_sleep_duration" {
   description = "The duration to wait for Workload Identity Pool propagation (e.g., 60s, 2m)."
   type        = string
   default     = "60s"
+}
+
+variable "custom_tee_image_reference" {
+  description = "Custom TEE container image reference to override the default image derived from cicd_project_id."
+  type        = string
+  default     = ""
+}
+
+variable "zone" {
+  description = "Zone where the confidential compute instance should be created. If null, a zone is automatically selected within the region."
+  type        = string
+  default     = null
 }

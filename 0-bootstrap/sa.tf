@@ -94,6 +94,7 @@ locals {
       "roles/compute.networkAdmin",
       "roles/compute.xpnAdmin",
       "roles/iam.serviceAccountAdmin",
+      "roles/iam.workloadIdentityPoolAdmin",
       "roles/networkconnectivity.hubUser",
       "roles/networkconnectivity.groupUser"
     ],
@@ -137,6 +138,9 @@ locals {
       "roles/resourcemanager.projectDeleter",
       "roles/dns.admin",
       "roles/iam.workloadIdentityPoolAdmin",
+    ],
+    "proj" = [
+      "roles/cloudbuild.workerPoolUser",
     ],
   }
 

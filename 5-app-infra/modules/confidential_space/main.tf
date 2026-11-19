@@ -15,25 +15,37 @@
  */
 
 locals {
-  default_tee_image_reference = "${local.default_region}-docker.pkg.dev/${local.cloudbuild_project_id}/${local.artifact_registry_repository}/confidential_space_image:latest"
+  cicd_project_id = data.terraform_remote_state.business_unit_shared.outputs.cicd_project_id
+  default_region  = data.terraform_remote_state.projects_env.outputs.default_region
+
+  default_tee_image_reference = var.custom_tee_image_reference != "" ? var.custom_tee_image_reference : (
+    local.cicd_project_id != "" ? "${local.default_region}-docker.pkg.dev/${local.cicd_project_id}/${local.artifact_registry_repository}/confidential_space_image:latest" : ""
+  )
+  tee_image_reference = local.default_tee_image_reference
+
+  # Safe fallback preventing out-of-bounds indexing if Shared VPC outputs are absent
+  svpc_subnetwork_self_link = try([for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0], "")
+
+  dedicated_subnetwork_self_link = data.terraform_remote_state.projects_env.outputs.confidential_space_subnetwork_self_link
+  effective_subnetwork_self_link = coalesce(local.dedicated_subnetwork_self_link != "" && local.dedicated_subnetwork_self_link != null ? local.dedicated_subnetwork_self_link : null, local.svpc_subnetwork_self_link)
+
+  dedicated_firewall_tags = data.terraform_remote_state.projects_env.outputs.confidential_space_firewall_tags
+
   env_project_ids = {
     "conf-space" = data.terraform_remote_state.projects_env.outputs.confidential_space_project,
   }
   env_project_subnets = {
-    "conf-space" = local.svpc_subnetwork_self_link,
+    "conf-space" = local.effective_subnetwork_self_link,
   }
   env_project_resource_manager_tags = {
-    "conf-space" = null,
+    "conf-space" = local.dedicated_firewall_tags != null && length(local.dedicated_firewall_tags) > 0 ? local.dedicated_firewall_tags : null,
   }
 
-  subnetwork_self_links     = data.terraform_remote_state.projects_env.outputs.subnets_self_links
-  svpc_subnetwork_self_link = [for subnet in local.subnetwork_self_links : subnet if length(regexall("regions/${var.region}/subnetworks", subnet)) > 0][0]
+  subnetwork_self_links = data.terraform_remote_state.projects_env.outputs.subnets_self_links
 
-  cloudbuild_project_id             = data.terraform_remote_state.business_unit_shared.outputs.bootstrap_cloudbuild_project_id
-  default_region                    = data.terraform_remote_state.projects_env.outputs.default_region
   env_project_id                    = local.env_project_ids[var.project_suffix]
   subnetwork_self_link              = local.env_project_subnets[var.project_suffix]
-  subnetwork_project                = element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1, )
+  subnetwork_project                = try(element(split("/", local.subnetwork_self_link), index(split("/", local.subnetwork_self_link), "projects") + 1), local.env_project_id)
   resource_manager_tags             = local.env_project_resource_manager_tags[var.project_suffix]
   artifact_registry_repository      = "tf-runners"
   confidential_space_project_id     = data.terraform_remote_state.projects_env.outputs.confidential_space_project
@@ -61,8 +73,14 @@ data "terraform_remote_state" "business_unit_shared" {
   }
 }
 
+resource "random_string" "suffix" {
+  length  = 4
+  special = false
+  upper   = false
+}
+
 resource "google_iam_workload_identity_pool" "confidential_space_pool" {
-  workload_identity_pool_id = "confidential-space-pool"
+  workload_identity_pool_id = "confidential-space-pool-${random_string.suffix.result}"
   disabled                  = false
   project                   = local.env_project_id
 }
@@ -107,6 +125,7 @@ module "confidential_instance_template" {
   min_cpu_platform           = var.cpu_platform
   enable_confidential_vm     = true
   confidential_instance_type = var.confidential_instance_type
+  enable_shielded_vm         = true
 
   shielded_instance_config = {
     enable_secure_boot          = true
@@ -115,13 +134,16 @@ module "confidential_instance_template" {
   }
 
   metadata = {
-    tee-image-reference = local.default_tee_image_reference
+    tee-image-reference        = local.tee_image_reference
+    tee-container-log-redirect = "true"
   }
 
   service_account = {
     email  = local.confidential_space_workload_sa
     scopes = ["cloud-platform"]
   }
+
+  resource_manager_tags = local.resource_manager_tags
 }
 
 module "confidential_compute_instance" {
@@ -130,6 +152,7 @@ module "confidential_compute_instance" {
 
   project_id            = local.env_project_id
   region                = var.region
+  zone                  = var.zone
   subnetwork_project    = local.subnetwork_project
   subnetwork            = local.subnetwork_self_link
   num_instances         = var.num_instances
@@ -149,7 +172,7 @@ resource "time_sleep" "wait_workload_pool_propagation" {
 resource "google_service_account_iam_member" "workload_identity_binding" {
   service_account_id = "projects/${local.env_project_id}/serviceAccounts/${local.confidential_space_workload_sa}"
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${local.confidential_space_project_number}/locations/global/workloadIdentityPools/confidential-space-pool/*"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.confidential_space_pool.name}/*"
 
   depends_on = [
     time_sleep.wait_workload_pool_propagation

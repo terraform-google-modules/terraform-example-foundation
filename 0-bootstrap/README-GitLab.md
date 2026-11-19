@@ -59,6 +59,7 @@ Also make sure that you have the following:
     - Environments
     - Networks
     - Projects
+    - bu1-example-app (Application Infrastructure)
     - CI/CD Runner
 - A [Personal](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) access token or a [Group](https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html) access token configured with the following [scopes](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#personal-access-token-scopes):
     - api
@@ -200,6 +201,12 @@ Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create the
    git checkout plan
    ```
 
+1. In the `terraform-example-foundation` repository, run the helper script `choose_build_type.sh` to enable the Bootstrap GitLab version:
+
+   ```bash
+   ../terraform-example-foundation/scripts/choose_build_type.sh gitlab
+   ```
+
 1. Copy contents of foundation to cloned project (modify accordingly based on your current directory).
 
    ```bash
@@ -212,11 +219,6 @@ Run the `0-bootstrap/scripts/git_create_branches_helper.sh` script to create the
    cp ../terraform-example-foundation/build/tf-wrapper.sh .
    chmod 755 ./*.sh
    cd ./envs/shared
-   ```
-
-1. Run the helper script `choose_build_type.sh` to enable Bootstrap GitLab version
-   ```bash
-   ./scripts/choose_build_type.sh gitlab
    ```
 
 1. Rename file `terraform.example.tfvars` to `terraform.tfvars`
@@ -945,3 +947,115 @@ An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set with th
    ```bash
    unset GOOGLE_IMPERSONATE_SERVICE_ACCOUNT
    ```
+
+### Deploying step 5-app-infra
+
+When deploying with GitLab CI, the application infrastructure pipeline created in `4-projects/business_unit_1/shared` provisions GitLab OIDC provider trust and automatically configures CI/CD variables in the target GitLab project (`bu1-example-app`):
+- `PROJECT_ID`: The application infrastructure CI/CD project ID.
+- `WIF_PROVIDER_NAME`: The full resource name of the Workload Identity Provider.
+- `TF_BACKEND`: The dedicated GCS state bucket created for `bu1-example-app`.
+- `SERVICE_ACCOUNT_EMAIL`: The dedicated application Terraform service account (`sa-tf-bu1-example-app@...`).
+
+1. Clone the project from GitLab at the same directory level as `terraform-example-foundation`:
+
+   ```bash
+   git clone git@gitlab.com:<GITLAB-GROUP>/bu1-example-app.git
+   ```
+
+1. Navigate into the repo. All subsequent steps assume you are running them from the `bu1-example-app` directory.
+
+   ```bash
+   cd bu1-example-app
+   ```
+
+1. Seed project branches:
+
+   ```bash
+   git commit --allow-empty -m 'repository seed'
+   git push --set-upstream origin main
+
+   git checkout -b production
+   git push --set-upstream origin production
+
+   git checkout -b nonproduction
+   git push --set-upstream origin nonproduction
+
+   git checkout -b development
+   git push --set-upstream origin development
+   ```
+
+1. Checkout the `plan` branch and copy foundation files:
+
+   ```bash
+   git checkout -b plan
+
+   # Copy application infrastructure code
+   cp -RT ../terraform-example-foundation/5-app-infra/ .
+
+   # Copy policy library
+   cp -RT ../terraform-example-foundation/policy-library/ ./policy-library
+
+   # Copy GitLab CI pipeline and authentication scripts
+   cp ../terraform-example-foundation/build/gitlab-ci.yml ./.gitlab-ci.yml
+   cp ../terraform-example-foundation/build/run_gcp_auth.sh .
+   cp ../terraform-example-foundation/build/tf-wrapper.sh .
+   chmod 755 ./*.sh
+   ```
+
+1. Rename the example tfvars file and populate environment inputs:
+
+   ```bash
+   mv common.auto.example.tfvars common.auto.tfvars
+
+   # Set the remote state bucket pointing to 4-projects state
+   export remote_state_bucket=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw projects_gcs_bucket_tfstate)
+   echo "remote_state_bucket = ${remote_state_bucket}"
+   sed -i'' -e "s/REMOTE_STATE_BUCKET/${remote_state_bucket}/" ./common.auto.tfvars
+   ```
+
+1. Configure Confidential Space container image and digest:
+   - If using the image in the `tf-runners` Artifact Registry:
+
+     ```bash
+     export CICD_PROJECT_ID=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw cicd_project_id)
+     export DEFAULT_REGION=$(terraform -chdir="../gcp-projects/business_unit_1/shared/" output -raw default_region)
+     export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${DEFAULT_REGION}-docker.pkg.dev/${CICD_PROJECT_ID}/tf-runners/confidential_space_image:latest --format="value(image_summary.digest)")
+     sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
+     ```
+
+   - Alternatively, if using a custom image reference:
+
+     ```bash
+     export CUSTOM_TEE_IMAGE="us-central1-docker.pkg.dev/YOUR_PROJECT/YOUR_REPO/YOUR_IMAGE:latest"
+     export IMAGE_DIGEST=$(gcloud artifacts docker images describe ${CUSTOM_TEE_IMAGE} --format="value(image_summary.digest)")
+     sed -i'' -e "s|# custom_tee_image_reference = .*|custom_tee_image_reference = \"${CUSTOM_TEE_IMAGE}\"|" ./common.auto.tfvars
+     sed -i'' -e "s/IMAGE_DIGEST/${IMAGE_DIGEST}/" ./common.auto.tfvars
+     ```
+
+   > [!NOTE]
+   > The GitLab CI pipeline automatically substitutes `UPDATE_APP_INFRA_BUCKET` in all `backend.tf` files using the injected `TF_BACKEND` variable. You do not need to manually edit `backend.tf`.
+
+1. Commit and push the `plan` branch:
+
+   ```bash
+   git add .
+   git commit -m 'feat: initialize bu1-example-app infrastructure'
+   git push --set-upstream origin plan
+   ```
+
+1. Open a merge request in GitLab https://gitlab.com/GITLAB-OWNER/bu1-example-app/-/merge_requests?scope=all&state=opened from the `plan` branch to the `development` branch and review the output.
+1. The merge request will trigger a GitLab pipeline that will run Terraform `init`/`plan`/`validate` using GitLab OIDC authentication.
+1. Review the GitLab pipeline output under `terraform-plan-mr`.
+1. Once approved, merge the merge request into the `development` branch. Merging triggers `terraform-apply`, applying the Terraform configuration in `development`.
+1. Review merge output under `terraform-apply`.
+
+1. Open a merge request in GitLab from the `development` branch to the `nonproduction` branch and review the output.
+1. Review the pipeline output under `terraform-plan-mr`.
+1. Merge into `nonproduction` to apply.
+1. Review merge output under `terraform-apply`.
+
+1. Open a merge request in GitLab from the `nonproduction` branch to the `production` branch and review the output.
+1. Review the pipeline output under `terraform-plan-mr`.
+1. Merge into `production` to apply.
+1. Review merge output under `terraform-apply`.
+

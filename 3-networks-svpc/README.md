@@ -328,7 +328,7 @@ We will now deploy each of our environments(development/production/nonproduction
 When using Cloud Build as your CI/CD tool each environment corresponds to a branch in the repository for 3-networks-svpc step.
 Only the corresponding environment is applied.
 
-1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+1. Use `terraform output` to get the Seed project ID and the networks step Terraform service account from 0-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
    export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw seed_project_id)

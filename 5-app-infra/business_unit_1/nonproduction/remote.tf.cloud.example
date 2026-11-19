@@ -15,7 +15,7 @@
  */
 
 locals {
-  default_region     = data.tfe_outputs.projects.outputs.default_region
+  default_region = data.tfe_outputs.projects.outputs.default_region
 }
 
 data "tfe_outputs" "projects" {

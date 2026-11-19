@@ -118,6 +118,7 @@ groups = {
 //     environments = "ENVIRONMENTS_REPO"
 //     networks     = "NETWORKS_REPO"
 //     projects     = "PROJECTS_REPO"
+//     app_infra    = "bu1-example-app" // Optional, defaults to bu1-example-app
 //     cicd_runner  = "" // Required for GitLab
 // }
 
@@ -206,6 +207,10 @@ target_name_server_addresses = [
 location_kms = "us"
 location_gcs = "US"
 
+// Optional toggle to enable/disable Confidential Space across 4-projects and 5-app-infra
+// Defaults to true. Set to false to skip confidential project, workload SA, and confidential VM deployment.
+enable_confidential_space = true
+
 // 5-app-infra
 
 // on Google Cloud Dedicated the following values need to be updated with values available on the environment
@@ -216,3 +221,10 @@ location_gcs = "US"
 machine_type = "f1-micro"
 disk_type    = "pd-standard"
 source_image = "" // format "projects/PROJECT/global/images/NAME"
+
+// Optional configurations for Confidential Space in 5-app-infra
+// confidential_image_digest  = "sha256:..."
+// custom_tee_image_reference = "" // e.g., "us-central1-docker.pkg.dev/my-project/my-repo/confidential_space_image:latest"
+// Zone within default_region for confidential compute instance (e.g. us-central1-c).
+// If omitted or null, a zone is automatically selected within default_region.
+// confidential_instance_zone = "us-central1-c"

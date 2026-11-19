@@ -63,3 +63,9 @@ output "ncc_hub_uri" {
   value       = local.ncc_hub_uri
   description = "The NCC Hub ID"
 }
+
+output "firewall_policy" {
+  value       = module.shared_vpc.firewall_policy
+  description = "Policy created for firewall policy rules."
+}
+

@@ -42,9 +42,14 @@ func TestAppInfra(t *testing.T) {
 	// Configure impersonation for test execution
 	terraformSA := bootstrap.GetStringOutput("projects_step_terraform_service_account_email")
 	backend_bucket := projects_backend_bucket
-	if shared.GetStringOutput("enable_cloudbuild_deploy") == "true" {
-		terraformSA = terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")["bu1-example-app"]
-		backend_bucket = terraform.OutputMap(t, shared.GetTFOptions(), "state_buckets")["bu1-example-app"]
+
+	sharedStateBuckets := terraform.OutputMap(t, shared.GetTFOptions(), "state_buckets")
+	sharedPipelineSAs := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")
+	if appBucket, ok := sharedStateBuckets["bu1-example-app"]; ok && appBucket != "" {
+		backend_bucket = appBucket
+	}
+	if appSA, ok := sharedPipelineSAs["bu1-example-app"]; ok && appSA != "" {
+		terraformSA = appSA
 	}
 	utils.SetEnv(t, "GOOGLE_IMPERSONATE_SERVICE_ACCOUNT", terraformSA)
 	backendConfig := map[string]interface{}{
@@ -107,6 +112,9 @@ func TestAppInfra(t *testing.T) {
 						serviceAccounts := computeInstance.Get("serviceAccounts").Array()
 						assert.Len(serviceAccounts, 1)
 						assert.Equal(fmt.Sprintf("confidential-space-workload-sa@%s.iam.gserviceaccount.com", confidentialProjectID), serviceAccounts[0].Get("email").String())
+						networkInterfaces := computeInstance.Get("networkInterfaces").Array()
+						assert.Len(networkInterfaces, 1)
+						assert.Contains(networkInterfaces[0].Get("subnetwork").String(), fmt.Sprintf("projects/%s/regions", confidentialProjectID), "Confidential instance subnetwork must belong to the confidential space project")
 					}
 				})
 

@@ -58,13 +58,16 @@ module "env" {
       upper(local.default_region_2),
     ]
   }
-  tfc_org_name                   = var.tfc_org_name
-  peering_module_depends_on      = var.peering_module_depends_on
-  peering_iap_fw_rules_enabled   = true
-  subnet_region                  = coalesce(var.instance_region, local.default_region)
-  subnet_ip_range                = "10.3.64.0/21"
-  project_deletion_policy        = var.project_deletion_policy
-  folder_deletion_protection     = var.folder_deletion_protection
-  ncc_spoke_subnets              = local.effective_subnets
-  ncc_private_service_connect_ip = local.private_service_connect_ip
+  tfc_org_name                                  = var.tfc_org_name
+  peering_module_depends_on                     = var.peering_module_depends_on
+  peering_iap_fw_rules_enabled                  = true
+  subnet_region                                 = coalesce(var.instance_region, local.default_region)
+  subnet_ip_range                               = "10.3.64.0/21"
+  project_deletion_policy                       = var.project_deletion_policy
+  folder_deletion_protection                    = var.folder_deletion_protection
+  ncc_spoke_subnets                             = local.effective_subnets
+  ncc_private_service_connect_ip                = local.private_service_connect_ip
+  enable_confidential_space                     = var.enable_confidential_space
+  confidential_space_subnet_ip_range            = "10.4.64.0/24"
+  confidential_space_private_service_connect_ip = "10.17.0.12"
 }

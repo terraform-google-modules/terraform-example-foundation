@@ -57,6 +57,10 @@ output "workload_pool_provider_id" {
 output "workload_identity_pool_id" {
   description = "Workload identity pool ID."
   value       = google_iam_workload_identity_pool.confidential_space_pool.workload_identity_pool_id
+}
 
+output "tee_image_reference" {
+  description = "Container image reference used for confidential space instance."
+  value       = local.tee_image_reference
 }
 

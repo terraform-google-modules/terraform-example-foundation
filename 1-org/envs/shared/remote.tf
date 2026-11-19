@@ -44,13 +44,14 @@ locals {
   projects_gcs_bucket_tfstate                   = data.terraform_remote_state.bootstrap.outputs.projects_gcs_bucket_tfstate
   peering_projects_numbers                      = compact([for s in data.terraform_remote_state.projects_env : try(s.outputs.peering_project_number, null)])
   shared_vpc_project_numbers                    = compact([for s in data.terraform_remote_state.projects_env : try(s.outputs.shared_vpc_project_number, null)])
-  app_infra_project_id                          = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_id, "")
-  app_infra_project_number                      = try(data.terraform_remote_state.projects_app_infra[0].outputs.cloudbuild_project_number, "")
+  app_infra_outputs                             = try(data.terraform_remote_state.projects_app_infra[0].outputs, {})
+  app_infra_project_id                          = try(local.app_infra_outputs.cicd_project_id, try(local.app_infra_outputs.cloudbuild_project_id, ""))
+  app_infra_project_number                      = try(local.app_infra_outputs.cicd_project_number, try(local.app_infra_outputs.cloudbuild_project_number, ""))
   universe_prefix                               = data.terraform_remote_state.bootstrap.outputs.common_config.universe_prefix
   available_universe_services                   = data.terraform_remote_state.bootstrap.outputs.common_config.available_universe_services
 
   app_infra_pipeline_identity = (
-    local.app_infra_project_number != ""
+    try(local.app_infra_outputs.enable_cloudbuild_deploy, true) && local.app_infra_project_number != ""
     ? "serviceAccount:${local.app_infra_project_number}@cloudbuild.gserviceaccount.com"
     : null
   )
@@ -61,10 +62,14 @@ locals {
     : []
   )
 
+  app_infra_sa_email = try(local.app_infra_outputs.terraform_service_accounts["bu1-example-app"], null)
   app_infra_cicd_identity = (
-    local.app_infra_project_id != ""
-    ? "serviceAccount:sa-tf-cb-bu1-example-app@${local.app_infra_project_id}.iam.gserviceaccount.com"
-    : null
+    local.app_infra_sa_email != null
+    ? "serviceAccount:${local.app_infra_sa_email}"
+    : (local.app_infra_project_id != ""
+      ? "serviceAccount:sa-tf-bu1-example-app@${local.app_infra_project_id}.iam.gserviceaccount.com"
+      : null
+    )
   )
 
   app_infra_targets = distinct(concat(

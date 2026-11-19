@@ -20,7 +20,7 @@ locals {
     toset(keys(var.app_infra_pipeline_service_accounts)),
     toset(keys(var.sa_roles))
   )
-  pipeline_roles = var.enable_cloudbuild_deploy ? flatten([
+  pipeline_roles = flatten([
     for repo in local.source_repos : [
       for role in var.sa_roles[repo] :
       {
@@ -29,9 +29,9 @@ locals {
         sa   = var.app_infra_pipeline_service_accounts[repo]
       }
     ]
-  ]) : []
+  ])
 
-  network_user_role = var.enable_cloudbuild_deploy ? flatten([
+  network_user_role = flatten([
     for repo in local.source_repos : [
       for subnet in var.shared_vpc_subnets :
       {
@@ -41,7 +41,7 @@ locals {
         sa     = var.app_infra_pipeline_service_accounts[repo]
       }
     ]
-  ]) : []
+  ])
   extra_api = var.billing_budget_available ? ["billingbudgets.googleapis.com"] : []
 }
 

@@ -3,6 +3,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| enable\_confidential\_space | Enable Confidential Space project, service account, and workload IAM. | `bool` | `true` | no |
 | folder\_deletion\_protection | Prevent Terraform from destroying or recreating the folder. | `string` | `true` | no |
 | gcs\_custom\_placement\_config | Configuration of the bucket's custom location in a dual-region bucket setup. If the bucket is designated a single or multi-region, the variable are null. | <pre>object({<br>    data_locations = list(string)<br>  })</pre> | `null` | no |
 | instance\_region | Region which the peered subnet will be created (Should be same region as the VM that will be created on step 5-app-infra on the peering project). | `string` | `null` | no |
@@ -20,8 +21,11 @@
 |------|-------------|
 | access\_context\_manager\_policy\_id | Access Context Manager Policy ID. |
 | bucket | The created storage bucket. |
+| confidential\_space\_firewall\_tags | The security tags created for Confidential Space firewall rules to be used on the VM created in step 5-app-infra. |
+| confidential\_space\_network\_name | The network name of the Confidential Space dedicated network. |
 | confidential\_space\_project | Confidential Space project id. |
 | confidential\_space\_project\_number | Confidential Space project number. |
+| confidential\_space\_subnetwork\_self\_link | The subnetwork self link of the Confidential Space dedicated network. |
 | confidential\_space\_workload\_sa | Workload Service Account for confidential space from base\_env |
 | default\_region | The default region for the project. |
 | floating\_project | Project sample floating project. |

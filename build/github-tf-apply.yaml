@@ -50,6 +50,7 @@ jobs:
       - uses: 'hashicorp/setup-terraform@v3'
         with:
           terraform_version: '1.5.7'
+          terraform_wrapper: false
 
       - id: setup
         shell: bash
@@ -59,6 +60,7 @@ jobs:
           do
             sed -i'' -e "s/UPDATE_ME/${TF_BACKEND}/" $i
             sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${TF_BACKEND}/" $i
+            sed -i'' -e "s/UPDATE_APP_INFRA_BUCKET/${TF_BACKEND}/" $i
           done
 
       - id: init

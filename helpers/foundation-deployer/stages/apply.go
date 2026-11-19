@@ -17,6 +17,7 @@ package stages
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -221,12 +222,6 @@ func DeployBootstrapStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 			err = utils.ReplaceStringInFile(file, "UPDATE_PROJECTS_BACKEND", backendBucketProjects)
 			if err != nil {
 				return err
-			}
-			if c.BuildType == BuildTypeLocal { // We don't have new buckets created in 4-projects/shared
-				err = utils.ReplaceStringInFile(file, "UPDATE_APP_INFRA_BUCKET", backendBucketProjects)
-				if err != nil {
-					return err
-				}
 			}
 			err = utils.ReplaceStringInFile(file, "# UPDATE_ENDPOINT", customEndpoint)
 			if err != nil {
@@ -608,10 +603,32 @@ func DeployNetworksStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 
 func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs BootstrapOutputs, c CommonConf) error {
 
+	buSharedDirs, _ := filepath.Glob(filepath.Join(c.FoundationPath, ProjectsStep, "business_unit_*", "shared"))
+	for _, buSharedDir := range buSharedDirs {
+		if err := testutils.RenameBuildFiles(buSharedDir, tfvars.BuildType); err != nil {
+			return err
+		}
+	}
+
+	enableConfidentialSpace := true
+	if tfvars.EnableConfidentialSpace != nil {
+		enableConfidentialSpace = *tfvars.EnableConfidentialSpace
+	}
+
 	// shared
 	sharedTfvars := ProjSharedTfvars{
-		DefaultRegion:         tfvars.DefaultRegion,
-		ProjectDeletionPolicy: tfvars.ProjectDeletionPolicy,
+		DefaultRegion:           tfvars.DefaultRegion,
+		ProjectDeletionPolicy:   tfvars.ProjectDeletionPolicy,
+		EnableConfidentialSpace: &enableConfidentialSpace,
+	}
+	if c.BuildType == BuildTypeGiHub && tfvars.GitRepos != nil {
+		sharedTfvars.GHRepos = &ProjSharedGitHubRepos{
+			Owner: tfvars.GitRepos.Owner,
+		}
+	} else if c.BuildType == BuildTypeGitLab && tfvars.GitRepos != nil {
+		sharedTfvars.GLRepos = &ProjSharedGitLabRepos{
+			Owner: tfvars.GitRepos.Owner,
+		}
 	}
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, ProjectsStep, "shared.auto.tfvars"), sharedTfvars)
 	if err != nil {
@@ -625,12 +642,14 @@ func DeployProjectsStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outpu
 	if err != nil {
 		return err
 	}
+
 	//for each environment
 	envTfvars := ProjEnvTfvars{
 		LocationKMS:              tfvars.LocationKMS,
 		LocationGCS:              tfvars.LocationGCS,
 		FolderDeletionProtection: tfvars.FolderDeletionProtection,
 		ProjectDeletionPolicy:    tfvars.ProjectDeletionPolicy,
+		EnableConfidentialSpace:  &enableConfidentialSpace,
 	}
 	for _, envfile := range []string{
 		"development.auto.tfvars",
@@ -805,21 +824,50 @@ func DeployOrgStageWithRules(t testing.TB, s steps.Steps, tfvars GlobalTFVars, o
 }
 
 func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, outputs InfraPipelineOutputs, projectsSA string, c CommonConf) error {
+	enableConfidentialSpace := tfvars.IsConfidentialSpaceEnabled()
+
 	// create tfvars file
 	commonTfvars := AppInfraCommonTfvars{
-		InstanceRegion:    tfvars.DefaultRegion,
-		RemoteStateBucket: outputs.RemoteStateBucket,
-		MachineType:       tfvars.MachineType,
-		DiskType:          tfvars.DiskType,
-		SourceImage:       tfvars.SourceImage,
+		InstanceRegion:           tfvars.DefaultRegion,
+		RemoteStateBucket:        outputs.RemoteStateBucket,
+		MachineType:              tfvars.MachineType,
+		DiskType:                 tfvars.DiskType,
+		SourceImage:              tfvars.SourceImage,
+		CustomTeeImageReference:  tfvars.CustomTeeImageReference,
+		ConfidentialInstanceZone: tfvars.ConfidentialInstanceZone,
+		EnableConfidentialSpace:  &enableConfidentialSpace,
 	}
 
-	if c.BuildType == BuildTypeCBCSR {
-		digest, err := gcp.NewGCP().GetDockerImageDigest(t, outputs.BootstrapCloudbuildProjectID, outputs.ImageName)
-		if err != nil {
-			return err
+	if enableConfidentialSpace {
+		if tfvars.ConfidentialImageDigest != "" {
+			commonTfvars.ImageDigest = tfvars.ConfidentialImageDigest
+		} else if tfvars.CustomTeeImageReference != "" {
+			targetProject := outputs.CICDProjectID
+			digest, err := gcp.NewGCP().GetDockerImageDigest(t, targetProject, tfvars.CustomTeeImageReference)
+			if err != nil {
+				return fmt.Errorf("failed to retrieve image digest for custom tee image %s: %w", tfvars.CustomTeeImageReference, err)
+			}
+			commonTfvars.ImageDigest = digest
+		} else if outputs.ImageName != "" {
+			targetProject := outputs.CICDProjectID
+			if targetProject == "" {
+				targetProject = outputs.BootstrapCloudbuildProjectID
+			}
+
+			if c.BuildType == BuildTypeLocal {
+				digest, err := buildAndPushLocalConfidentialImage(t, c.FoundationPath, outputs)
+				if err != nil {
+					return fmt.Errorf("failed to build and push local confidential space image: %w", err)
+				}
+				commonTfvars.ImageDigest = digest
+			} else if targetProject != "" {
+				digest, err := gcp.NewGCP().GetDockerImageDigest(t, targetProject, outputs.ImageName)
+				if err != nil {
+					return fmt.Errorf("failed to retrieve image digest for %s in project %s: %w", outputs.ImageName, targetProject, err)
+				}
+				commonTfvars.ImageDigest = digest
+			}
 		}
-		commonTfvars.ImageDigest = digest
 	}
 
 	err := utils.WriteTfvars(filepath.Join(c.FoundationPath, AppInfraStep, "common.auto.tfvars"), commonTfvars)
@@ -845,15 +893,29 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 	var executor Executor
 
 	stageSA := outputs.TerraformSA
+	appRepo := AppInfraRepo
+	if tfvars.GitRepos != nil && tfvars.GitRepos.AppInfra != nil && *tfvars.GitRepos.AppInfra != "" {
+		appRepo = *tfvars.GitRepos.AppInfra
+	}
 
 	switch c.BuildType {
+	case BuildTypeGiHub:
+		msg.PrintGHActionMsg(tfvars.GitRepos.Owner, appRepo, c.DisablePrompt)
+		executor = NewGitHubExecutor(tfvars.GitRepos.Owner, appRepo, c.GitToken)
+		repoURL := utils.BuildGitHubURL(tfvars.GitRepos.Owner, appRepo, c.GitToken)
+		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, AppInfraRepo), "", c.Logger)
+	case BuildTypeGitLab:
+		msg.PrintGLJobsMsg(tfvars.GitRepos.Owner, appRepo, c.DisablePrompt)
+		executor = NewGitLabExecutor(tfvars.GitRepos.Owner, appRepo, c.GitToken)
+		repoURL := utils.BuildGitLabURL(tfvars.GitRepos.Owner, appRepo, c.GitToken)
+		conf = utils.GitClone(t, tfvars.BuildType, "", repoURL, filepath.Join(c.CheckoutPath, AppInfraRepo), "", c.Logger)
 	case BuildTypeLocal:
 		executor = NewEmptyExecutor(AppInfraRepo)
 		conf, err = utils.GitInit(t, filepath.Join(c.CheckoutPath, AppInfraRepo), c.Logger)
 		if err != nil {
 			return err
 		}
-		stageSA = projectsSA
+		stageSA = outputs.TerraformSA
 	default:
 		executor = NewGCPExecutor(outputs.InfraPipeProj, outputs.DefaultRegion, AppInfraRepo)
 		conf = utils.GitClone(t, "CSR", AppInfraRepo, "", filepath.Join(c.CheckoutPath, AppInfraRepo), outputs.InfraPipeProj, c.Logger)
@@ -874,6 +936,52 @@ func DeployExampleAppStage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, out
 	}
 
 	return deployStage(t, stageConf, s, c)
+}
+
+func buildAndPushLocalConfidentialImage(t testing.TB, foundationPath string, outputs InfraPipelineOutputs) (string, error) {
+	if _, err := exec.LookPath("docker"); err != nil {
+		return "", fmt.Errorf("docker is required for local build and push of confidential image, but was not found in PATH: %w", err)
+	}
+
+	dockerfileDir := filepath.Join(foundationPath, ProjectsStep, "business_unit_1", "shared")
+	imageName := outputs.ImageName
+	if imageName == "" || outputs.CICDProjectID == "" {
+		return "", fmt.Errorf("missing imageName or CICDProjectID")
+	}
+
+	fmt.Printf("# Building Confidential Space sample image locally: %s\n", imageName)
+	buildCmd := exec.Command("docker", "build", "--platform", "linux/amd64", "-t", imageName, dockerfileDir)
+	buildOut, err := buildCmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("docker build failed: %s: %w", string(buildOut), err)
+	}
+
+	registryHost := strings.Split(imageName, "/")[0]
+	if outputs.TerraformSA != "" {
+		token := gcp.NewGCP().GetServiceAccountAccessToken(t, outputs.TerraformSA)
+		if token == "" {
+			return "", fmt.Errorf("failed to obtain access token for service account %s to login to registry %s", outputs.TerraformSA, registryHost)
+		}
+		loginCmd := exec.Command("docker", "login", "-u", "oauth2accesstoken", "--password-stdin", fmt.Sprintf("https://%s", registryHost))
+		loginCmd.Stdin = strings.NewReader(token)
+		if loginOut, err := loginCmd.CombinedOutput(); err != nil {
+			return "", fmt.Errorf("docker login failed: %s: %w", string(loginOut), err)
+		}
+	}
+
+	fmt.Printf("# Pushing Confidential Space sample image to Artifact Registry: %s\n", imageName)
+	pushCmd := exec.Command("docker", "push", imageName)
+	pushOut, err := pushCmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("docker push failed: %s: %w", string(pushOut), err)
+	}
+
+	digest, err := gcp.NewGCP().GetDockerImageDigest(t, outputs.CICDProjectID, imageName)
+	if err != nil {
+		return "", fmt.Errorf("failed to retrieve image digest after push: %w", err)
+	}
+	fmt.Printf("# Confidential Space sample image pushed successfully (digest: %s)\n", digest)
+	return digest, nil
 }
 
 func deployStage(t testing.TB, sc StageConf, s steps.Steps, c CommonConf) error {

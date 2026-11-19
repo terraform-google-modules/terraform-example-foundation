@@ -60,3 +60,21 @@ variable "source_image" {
   type        = string
   default     = ""
 }
+
+variable "custom_tee_image_reference" {
+  description = "Custom TEE container image reference to override the default image derived from cicd_project_id."
+  type        = string
+  default     = ""
+}
+
+variable "confidential_instance_zone" {
+  description = "Zone where the confidential compute instance should be created (e.g. us-central1-b, us-central1-c). If null, a zone is automatically selected within the region."
+  type        = string
+  default     = null
+}
+
+variable "enable_confidential_space" {
+  description = "Explicitly enable or disable Confidential Space. If null, derived automatically from Stage 4 remote state."
+  type        = bool
+  default     = null
+}

@@ -216,7 +216,7 @@ See `0-bootstrap` [README-GitHub.md](../0-bootstrap/README-GitHub.md#deploying-s
 
 We will now deploy each of our environments(development/production/nonproduction) using this script.
 
-1. Use `terraform output` to get the Seed project ID and the organization step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
+1. Use `terraform output` to get the Seed project ID and the environment step Terraform service account from gcp-bootstrap output. An environment variable `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT` will be set using the Terraform Service Account to enable impersonation.
 
    ```bash
    export SEED_PROJECT_ID=$(terraform -chdir="../gcp-bootstrap/envs/shared/" output -raw seed_project_id)

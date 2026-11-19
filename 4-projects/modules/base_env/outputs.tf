@@ -117,6 +117,23 @@ output "confidential_space_workload_sa" {
   value       = try(google_service_account.workload_sa[0].email, "")
 }
 
+output "confidential_space_subnetwork_self_link" {
+  description = "The subnetwork self link of the Confidential Space dedicated network."
+  value       = try(module.confidential_space_network[0].subnets_self_links[0], "")
+}
+
+output "confidential_space_network_name" {
+  description = "The network name of the Confidential Space dedicated network."
+  value       = try(module.confidential_space_network[0].network_name, "")
+}
+
+output "confidential_space_firewall_tags" {
+  description = "The security tags created for Confidential Space firewall rules to be used on the VM created in step 5-app-infra."
+  value = var.enable_confidential_space ? {
+    (google_tags_tag_key.firewall_tag_key_conf_space[0].id) = google_tags_tag_value.firewall_tag_value_conf_space[0].id
+  } : {}
+}
+
 output "ncc_spoke_group" {
   value       = local.ncc_spoke_group
   description = "The NCC group to be used by spokes"

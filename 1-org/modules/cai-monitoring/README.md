@@ -27,7 +27,7 @@ module "secure_cai_notification" {
 | build\_service\_account | Cloud Function Build Service Account Id. This is The fully-qualified name of the service account to be used for building the container. | `string` | n/a | yes |
 | enable\_cmek | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `bool` | `false` | no |
 | encryption\_key | The KMS Key to Encrypt Artifact Registry repository, Cloud Storage Bucket and Pub/Sub. | `string` | `null` | no |
-| kms\_iam\_sleep\_duration | The duration to wait for KMS and Cloud Function IAM bindings to propagate (e.g., 60s, 2m). | `string` | `"60s"` | no |
+| kms\_iam\_sleep\_duration | The duration to wait for KMS and Cloud Function IAM bindings to propagate (e.g., 60s, 2m). | `string` | `"120s"` | no |
 | labels | Labels to be assigned to resources. | `map(any)` | `{}` | no |
 | location | Default location to create resources where applicable. | `string` | `"us-central1"` | no |
 | org\_id | GCP Organization ID | `string` | n/a | yes |

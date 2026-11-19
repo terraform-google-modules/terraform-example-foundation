@@ -206,7 +206,7 @@ func TestOrg(t *testing.T) {
 	org := tft.NewTFBlueprintTest(t,
 		tft.WithTFDir("../../../1-org/envs/shared"),
 		tft.WithVars(vars),
-		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 1, 2*time.Minute),
+		tft.WithRetryableTerraformErrors(testutils.RetryableTransientErrors, 7, 2*time.Minute),
 		tft.WithBackendConfig(backendConfig),
 	)
 
@@ -454,6 +454,12 @@ func TestOrg(t *testing.T) {
 			assert.Equal("ACTIVE", opCf.Get("state").String(), "Should be ACTIVE. Cloud Function is not successfully deployed.")
 			assert.Equal(caiSaEmail, opCf.Get("serviceConfig.serviceAccountEmail").String(), fmt.Sprintf("Cloud Function should use the service account %s.", caiSaEmail))
 			assert.Contains(opCf.Get("eventTrigger.eventType").String(), "google.cloud.pubsub.topic.v1.messagePublished", "Event Trigger is not based on Pub/Sub message. Check the EventType configuration.")
+
+			// CAI Monitoring IAM Roles
+			caiSaIam := gcloud.Runf(t, "projects get-iam-policy %s --flatten=bindings --filter=bindings.members:serviceAccount:%s --format=json", sccProjectID, caiSaEmail).Array()
+			caiRoles := testutils.GetResultFieldStrSlice(caiSaIam, "bindings.role")
+			assert.Contains(caiRoles, "roles/serviceusage.serviceUsageConsumer", "cai-monitoring SA must have serviceusage.serviceUsageConsumer")
+			assert.Contains(caiRoles, "roles/eventarc.eventReceiver", "cai-monitoring SA must have eventarc.eventReceiver")
 
 			// Cloud Function Storage Bucket
 			bktArgs := gcloud.WithCommonArgs([]string{"--project", sccProjectID, "--json"})

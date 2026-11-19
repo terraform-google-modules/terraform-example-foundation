@@ -564,6 +564,9 @@ locals {
           "storage.googleapis.com" = {
             methods = ["*"]
           }
+          "serviceusage.googleapis.com" = {
+            methods = ["*"]
+          }
         }
       }
     }
@@ -592,6 +595,9 @@ locals {
             methods = ["*"]
           }
           "storage.googleapis.com" = {
+            methods = ["*"]
+          }
+          "serviceusage.googleapis.com" = {
             methods = ["*"]
           }
         }

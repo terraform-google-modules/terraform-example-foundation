@@ -79,7 +79,7 @@ variable "build_service_account" {
 variable "kms_iam_sleep_duration" {
   description = "The duration to wait for KMS and Cloud Function IAM bindings to propagate (e.g., 60s, 2m)."
   type        = string
-  default     = "60s"
+  default     = "120s"
 }
 
 variable "bucket_sleep_duration" {

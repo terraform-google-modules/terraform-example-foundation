@@ -24,7 +24,9 @@ locals {
     "artifactregistry.googleapis.com",
     "storage.googleapis.com",
     "run.googleapis.com",
-    "eventarc.googleapis.com"
+    "eventarc.googleapis.com",
+    "eventarcpublishing.googleapis.com",
+    "serviceusage.googleapis.com",
   ]
   cai_source_name = var.random_suffix ? "CAI Monitoring - ${random_id.suffix.hex}" : "CAI Monitoring"
 }
@@ -151,7 +153,7 @@ module "cloud_function" {
   project_id            = var.project_id
   labels                = var.labels
   location              = var.location
-  runtime               = "nodejs20"
+  runtime               = "nodejs22"
   entrypoint            = "caiMonitoring"
   docker_repository     = google_artifact_registry_repository.cloudfunction.id
   build_service_account = var.build_service_account

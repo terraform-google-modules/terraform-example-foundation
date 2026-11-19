@@ -151,8 +151,8 @@ tf_apply() {
           echo "Found Dockerfile and image_name: ${image_name}. Building and pushing..."
           local registry_host
           registry_host="$(echo "$image_name" | cut -d/ -f1)"
-          gcloud auth configure-docker "${registry_host}" --quiet
-          docker build -t "${image_name}" .
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin "https://${registry_host}"
+          docker build --platform linux/amd64 -t "${image_name}" .
           docker push "${image_name}"
         fi
       fi

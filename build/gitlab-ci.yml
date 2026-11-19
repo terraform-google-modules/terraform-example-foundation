@@ -113,9 +113,9 @@ build-confidential-image:
     GITLAB_OIDC_TOKEN:
       aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
   variables:
-    DOCKER_HOST: tcp://dockerhost:2375/
+    DOCKER_HOST: tcp://dockerhost:2376/
     DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_CERTDIR: "/certs"
     GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: "$SERVICE_ACCOUNT_EMAIL"
   script:
     - apk add --no-cache bash curl jq python3
@@ -129,7 +129,7 @@ build-confidential-image:
           registry_host="${DEFAULT_REGION:-us-central1}-docker.pkg.dev"
           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin "https://${registry_host}"
           image_name="${registry_host}/${PROJECT_ID}/tf-runners/confidential_space_image:latest"
-          docker build -t "${image_name}" "$shared_dir"
+          docker build --platform linux/amd64 -t "${image_name}" "$shared_dir"
           docker push "${image_name}"
         fi
       done

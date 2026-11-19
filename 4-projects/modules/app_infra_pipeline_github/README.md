@@ -22,7 +22,7 @@ This module implements the GitHub Actions CI/CD pipeline for Step 5 (`5-app-infr
 | enable\_confidential\_space | Whether to enable Confidential Space resources. | `bool` | `true` | no |
 | enforce\_vpcsc | Whether to enforce VPC Service Controls. | `bool` | `false` | no |
 | folder\_id | The folder ID where the CI/CD project should be created. | `string` | n/a | yes |
-| gh\_repos | Configuration for GitHub Repositories (owner). | <pre>object({<br>    owner = string<br>  })</pre> | `null` | no |
+| gh\_repos | Configuration for GitHub Repositories (owner). | <pre>object({<br>    owner = string<br>  })</pre> | n/a | yes |
 | gh\_token | Personal access token for GitHub. | `string` | `""` | no |
 | org\_id | GCP Organization ID. | `string` | n/a | yes |
 | perimeter\_name | VPC Service Controls Perimeter Name. | `string` | `""` | no |

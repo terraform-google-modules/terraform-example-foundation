@@ -26,7 +26,7 @@ This module implements the GitLab CI CI/CD pipeline for Step 5 (`5-app-infra`). 
 | folder\_id | The folder ID where the CI/CD project should be created. | `string` | n/a | yes |
 | gitlab\_token | Personal access token for GitLab. | `string` | `""` | no |
 | gitlab\_url | GitLab URL. | `string` | `"https://gitlab.com"` | no |
-| gl\_repos | Configuration for GitLab Repositories (owner). | <pre>object({<br>    owner = string<br>  })</pre> | `null` | no |
+| gl\_repos | Configuration for GitLab Repositories (owner). | <pre>object({<br>    owner = string<br>  })</pre> | n/a | yes |
 | org\_id | GCP Organization ID. | `string` | n/a | yes |
 | perimeter\_name | VPC Service Controls Perimeter Name. | `string` | `""` | no |
 | project\_budget | Budget configuration. | `any` | `{}` | no |

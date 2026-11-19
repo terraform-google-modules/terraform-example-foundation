@@ -101,7 +101,11 @@ variable "gh_repos" {
   type = object({
     owner = string
   })
-  default = null
+
+  validation {
+    condition     = var.gh_repos != null && can(regex("^[a-zA-Z0-9][-a-zA-Z0-9_.]*$", var.gh_repos.owner))
+    error_message = "The gh_repos variable and gh_repos.owner must not be null/empty and must contain only alphanumeric characters, dashes, underscores, or periods."
+  }
 }
 
 variable "gh_token" {

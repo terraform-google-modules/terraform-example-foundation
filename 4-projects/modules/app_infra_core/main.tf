@@ -64,7 +64,7 @@ resource "google_artifact_registry_repository" "tf_runners" {
 
   project       = var.project_id
   location      = var.default_region
-  repository_id = length(var.app_infra_repos) == 1 ? "tf-runners" : "${each.key}-tf-runners"
+  repository_id = each.key == var.app_infra_repos[0] ? "tf-runners" : "${each.key}-tf-runners"
   description   = "Artifact Registry repository for ${each.key} runner and confidential space images"
   format        = "DOCKER"
 }

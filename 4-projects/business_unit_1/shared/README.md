@@ -21,6 +21,22 @@ To switch runner type across stages, execute:
 ./scripts/choose_build_type.sh <cb|github|gitlab|local>
 ```
 
+### Upgrading Existing Cloud Build Deployments
+
+> [!WARNING]
+> **State Migration Required Before Apply**: For existing in-place deployments upgrading from versions prior to v7.0.0, deleting `example_infra_pipeline.tf` and activating `main_cb.tf` changes resource addresses to reside under `module.app_infra_pipeline`. Because `tf_workspace` state buckets have `buckets_force_destroy = true`, applying without migrating state will cause Terraform to destroy the old state buckets and Cloud Source Repositories!
+>
+> You **must** run the following `terraform state mv` commands in `4-projects/business_unit_1/shared` before running `terraform apply`:
+>
+> ```bash
+> terraform state mv 'module.app_infra_cloudbuild_project[0]' 'module.app_infra_pipeline.module.app_infra_cloudbuild_project[0]'
+> terraform state mv 'module.infra_pipelines[0].module.tf_workspace["bu1-example-app"]' 'module.app_infra_pipeline.module.tf_workspace["bu1-example-app"]'
+> terraform state mv 'module.infra_pipelines[0].google_sourcerepo_repository.app_infra_repo["bu1-example-app"]' 'module.app_infra_pipeline.google_sourcerepo_repository.app_infra_repo["bu1-example-app"]'
+> terraform state mv 'module.infra_pipelines[0].google_artifact_registry_repository.tf_runners' 'module.app_infra_pipeline.module.core.google_artifact_registry_repository.tf_runners["bu1-example-app"]'
+> terraform state mv 'module.infra_pipelines[0].google_service_account.app_infra_sa["bu1-example-app"]' 'module.app_infra_pipeline.module.core.google_service_account.app_infra_sa["bu1-example-app"]'
+> terraform state mv 'module.infra_pipelines[0].google_storage_bucket.state_buckets["bu1-example-app"]' 'module.app_infra_pipeline.module.core.google_storage_bucket.state_buckets["bu1-example-app"]'
+> ```
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
 
@@ -52,6 +68,7 @@ To switch runner type across stages, execute:
 | artifact\_registry\_repository\_id | Artifact Registry ID. |
 | bootstrap\_cloudbuild\_project\_id | Cloudbuild project ID. |
 | cicd\_project\_id | APP Infra CI/CD Project ID (CB, GitHub, or GitLab project; empty for local). |
+| cicd\_project\_number | APP Infra CI/CD Project Number (CB, GitHub, or GitLab project; empty for local). |
 | cloudbuild\_project\_id | APP Infra cloudbuild project id. |
 | cloudbuild\_project\_number | APP Infra cloudbuild project number. |
 | default\_region | Default region to create resources where applicable. |

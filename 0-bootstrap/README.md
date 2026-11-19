@@ -378,6 +378,7 @@ The following steps will guide you through deploying without using Cloud Build.
    In the `terraform-example-foundation` repository, run the helper script `choose_build_type.sh` to enable the Bootstrap local version:
 
    ```bash
+   git clone https://github.com/terraform-google-modules/terraform-example-foundation.git
    cd terraform-example-foundation
    ./scripts/choose_build_type.sh local
    cd ..

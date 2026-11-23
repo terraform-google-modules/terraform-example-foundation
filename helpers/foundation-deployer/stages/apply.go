@@ -78,12 +78,21 @@ func buildGitLabCICDImage(t testing.TB, s steps.Steps, tfvars GlobalTFVars, c Co
 		return err
 	}
 
-	projectsToAdd := make([]string, 5)
-	projectsToAdd[0] = tfvars.GitRepos.Bootstrap
-	projectsToAdd[1] = tfvars.GitRepos.Organization
-	projectsToAdd[2] = tfvars.GitRepos.Environments
-	projectsToAdd[3] = tfvars.GitRepos.Networks
-	projectsToAdd[4] = tfvars.GitRepos.Projects
+	appRepo := AppInfraRepo
+	if tfvars.GitRepos != nil && tfvars.GitRepos.AppInfra != nil && *tfvars.GitRepos.AppInfra != "" {
+		appRepo = *tfvars.GitRepos.AppInfra
+	}
+
+	projectsToAdd := []string{
+		tfvars.GitRepos.Bootstrap,
+		tfvars.GitRepos.Organization,
+		tfvars.GitRepos.Environments,
+		tfvars.GitRepos.Networks,
+		tfvars.GitRepos.Projects,
+	}
+	if appRepo != "" {
+		projectsToAdd = append(projectsToAdd, appRepo)
+	}
 
 	return gl.AddProjectsToJobTokenScope(t, tfvars.GitRepos.Owner, *tfvars.GitRepos.CICDRunner, c.GitToken, projectsToAdd)
 }

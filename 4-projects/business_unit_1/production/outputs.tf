@@ -119,6 +119,21 @@ output "confidential_space_workload_sa" {
   value       = module.env.confidential_space_workload_sa
 }
 
+output "confidential_space_subnetwork_self_link" {
+  description = "The subnetwork self link of the Confidential Space dedicated network."
+  value       = module.env.confidential_space_subnetwork_self_link
+}
+
+output "confidential_space_network_name" {
+  description = "The network name of the Confidential Space dedicated network."
+  value       = module.env.confidential_space_network_name
+}
+
+output "confidential_space_firewall_tags" {
+  description = "The security tags created for Confidential Space firewall rules to be used on the VM created in step 5-app-infra."
+  value       = module.env.confidential_space_firewall_tags
+}
+
 output "ncc_spoke_group" {
   value       = module.env.ncc_spoke_group
   description = "The NCC group to be used by spokes"

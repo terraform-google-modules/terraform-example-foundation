@@ -16,7 +16,6 @@
 
 locals {
   default_region = data.terraform_remote_state.projects_env.outputs.default_region
-  // TODO get flag if is a cloud build deploy and use it for a flag on the confidential space module
 }
 
 data "terraform_remote_state" "projects_env" {

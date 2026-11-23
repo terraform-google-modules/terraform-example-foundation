@@ -57,6 +57,7 @@ terraform-plan:
   script:
     - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
     - gcloud config set project "$PROJECT_ID"
+    - for i in `find . -name 'backend.tf'`; do sed -i -e "s/UPDATE_ME/${TF_BACKEND}/" -e "s/UPDATE_PROJECTS_BACKEND/${TF_BACKEND}/" -e "s/UPDATE_APP_INFRA_BUCKET/${TF_BACKEND}/" "$i"; done
     - bash tf-wrapper.sh plan_validate_all $CI_COMMIT_REF_NAME $CI_PROJECT_DIR/policy-library $PROJECT_ID "FILESYSTEM"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
@@ -73,6 +74,7 @@ terraform-plan-mr:
   script:
     - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
     - gcloud config set project "$PROJECT_ID"
+    - for i in `find . -name 'backend.tf'`; do sed -i -e "s/UPDATE_ME/${TF_BACKEND}/" -e "s/UPDATE_PROJECTS_BACKEND/${TF_BACKEND}/" -e "s/UPDATE_APP_INFRA_BUCKET/${TF_BACKEND}/" "$i"; done
     - bash tf-wrapper.sh init $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     - bash tf-wrapper.sh plan $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
   rules:
@@ -88,6 +90,7 @@ terraform-apply:
   script:
     - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
     - gcloud config set project "$PROJECT_ID"
+    - for i in `find . -name 'backend.tf'`; do sed -i -e "s/UPDATE_ME/${TF_BACKEND}/" -e "s/UPDATE_PROJECTS_BACKEND/${TF_BACKEND}/" -e "s/UPDATE_APP_INFRA_BUCKET/${TF_BACKEND}/" "$i"; done
     - bash tf-wrapper.sh init $CI_COMMIT_REF_NAME
     - bash tf-wrapper.sh plan $CI_COMMIT_REF_NAME
     - bash tf-wrapper.sh apply $CI_COMMIT_REF_NAME
@@ -97,3 +100,57 @@ terraform-apply:
     - if: $CI_COMMIT_REF_NAME == "development"
     - if: $CI_COMMIT_REF_NAME == "production"
     - if: $CI_COMMIT_REF_NAME == "nonproduction"
+
+build-confidential-image:
+  stage: apply
+  needs: ["terraform-apply"]
+  image:
+    name: google/cloud-sdk:512.0.0-alpine
+  services:
+    - name: docker:28-dind
+      alias: docker
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: "//iam.googleapis.com/${WIF_PROVIDER_NAME}"
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: "1"
+    DOCKER_CERT_PATH: "/certs/client"
+    GOOGLE_IMPERSONATE_SERVICE_ACCOUNT: "$SERVICE_ACCOUNT_EMAIL"
+  script:
+    - apk add --no-cache bash curl jq docker-cli
+    - curl -sSL https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip -o /tmp/tf.zip && unzip -q /tmp/tf.zip -d /usr/local/bin && rm /tmp/tf.zip
+    - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
+    - for i in $(find . -name 'backend.tf'); do sed -i -e "s/UPDATE_ME/${TF_BACKEND}/" -e "s/UPDATE_PROJECTS_BACKEND/${TF_BACKEND}/" -e "s/UPDATE_APP_INFRA_BUCKET/${TF_BACKEND}/" "$i"; done
+    - |
+      for bu_shared in $(find . -maxdepth 3 -name "Dockerfile" -path "*/shared/Dockerfile" ! -path "*/envs/*"); do
+        shared_dir="$(dirname "$bu_shared")"
+        if [ -d "$shared_dir" ]; then
+          pushd "$shared_dir" > /dev/null
+          terraform init -no-color -input=false
+          image_name="$(terraform output -raw image_name 2>/dev/null || true)"
+          if [ -n "$image_name" ] && [[ ! "$image_name" =~ "::error::" ]]; then
+            registry_host="$(echo "$image_name" | cut -d/ -f1)"
+            impersonate_flag=()
+            if [ -n "${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT:-}" ]; then
+              active_account="$(gcloud config get-value account 2>/dev/null)"
+              if [ "$active_account" != "$GOOGLE_IMPERSONATE_SERVICE_ACCOUNT" ]; then
+                impersonate_flag=("--impersonate-service-account=${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}")
+              fi
+            fi
+            gcloud auth print-access-token "${impersonate_flag[@]}" | docker login -u oauth2accesstoken --password-stdin "https://${registry_host}"
+            docker build --platform linux/amd64 -t "${image_name}" .
+            docker push "${image_name}"
+          fi
+          popd > /dev/null
+        fi
+      done
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "production"
+      exists:
+        - "*/shared/Dockerfile"
+        - "*/*/shared/Dockerfile"

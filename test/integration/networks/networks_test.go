@@ -82,9 +82,9 @@ func TestNetworks(t *testing.T) {
 	}
 
 	cidrRanges := map[string][]string{
-		"development":   []string{"10.8.64.0/18", "10.9.64.0/18"},
-		"nonproduction": []string{"10.8.128.0/18", "10.9.128.0/18"},
-		"production":    []string{"10.8.192.0/18", "10.9.192.0/18"},
+		"development":   {"10.8.64.0/18", "10.9.64.0/18"},
+		"nonproduction": {"10.8.128.0/18", "10.9.128.0/18"},
+		"production":    {"10.8.192.0/18", "10.9.192.0/18"},
 	}
 
 	googleapisCIDR := map[string]string{

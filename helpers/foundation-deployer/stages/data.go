@@ -105,6 +105,7 @@ type BootstrapOutputs struct {
 type InfraPipelineOutputs struct {
 	RemoteStateBucket            string
 	InfraPipeProj                string
+	CICDProjectID                string
 	DefaultRegion                string
 	TerraformSA                  string
 	StateBucket                  string
@@ -156,6 +157,7 @@ type GitRepos struct {
 	Environments string  `cty:"environments"`
 	Networks     string  `cty:"networks"`
 	Projects     string  `cty:"projects"`
+	AppInfra     *string `cty:"app_infra"`
 	CICDRunner   *string `cty:"cicd_runner"`
 }
 
@@ -244,6 +246,10 @@ type GlobalTFVars struct {
 	MachineType                           *string                    `hcl:"machine_type"`
 	DiskType                              *string                    `hcl:"disk_type"`
 	SourceImage                           *string                    `hcl:"source_image"`
+	CustomTeeImageReference               string                     `hcl:"custom_tee_image_reference,optional"`
+	ConfidentialImageDigest               string                     `hcl:"confidential_image_digest,optional"`
+	ConfidentialInstanceZone              *string                    `hcl:"confidential_instance_zone,optional"`
+	EnableConfidentialSpace               *bool                      `hcl:"enable_confidential_space,optional"`
 }
 
 // HasValidatorProj checks if a Validator Project was provided
@@ -260,6 +266,14 @@ func (g GlobalTFVars) IsDefaultUniverse() bool {
 // IsProdOnly checks if production only deploy is enabled
 func (g GlobalTFVars) IsProdOnly() bool {
 	return g.ProductionOnlyDeploy != nil && *g.ProductionOnlyDeploy
+}
+
+// IsConfidentialSpaceEnabled checks if Confidential Space is enabled (defaults to true)
+func (g GlobalTFVars) IsConfidentialSpaceEnabled() bool {
+	if g.EnableConfidentialSpace != nil {
+		return *g.EnableConfidentialSpace
+	}
+	return true
 }
 
 // HasGroupsCreation checks if Groups creation is enabled
@@ -360,9 +374,20 @@ type ProjCommonTfvars struct {
 	RemoteStateBucket string `hcl:"remote_state_bucket"`
 }
 
+type ProjSharedGitHubRepos struct {
+	Owner string `cty:"owner" hcl:"owner"`
+}
+
+type ProjSharedGitLabRepos struct {
+	Owner string `cty:"owner" hcl:"owner"`
+}
+
 type ProjSharedTfvars struct {
-	DefaultRegion         string `hcl:"default_region"`
-	ProjectDeletionPolicy string `hcl:"project_deletion_policy"`
+	DefaultRegion           string                 `hcl:"default_region"`
+	ProjectDeletionPolicy   string                 `hcl:"project_deletion_policy"`
+	GHRepos                 *ProjSharedGitHubRepos `hcl:"gh_repos"`
+	GLRepos                 *ProjSharedGitLabRepos `hcl:"gl_repos"`
+	EnableConfidentialSpace *bool                  `hcl:"enable_confidential_space"`
 }
 
 type ProjEnvTfvars struct {
@@ -370,15 +395,19 @@ type ProjEnvTfvars struct {
 	LocationGCS              string `hcl:"location_gcs"`
 	FolderDeletionProtection *bool  `hcl:"folder_deletion_protection"`
 	ProjectDeletionPolicy    string `hcl:"project_deletion_policy"`
+	EnableConfidentialSpace  *bool  `hcl:"enable_confidential_space"`
 }
 
 type AppInfraCommonTfvars struct {
-	InstanceRegion    string  `hcl:"instance_region"`
-	RemoteStateBucket string  `hcl:"remote_state_bucket"`
-	ImageDigest       string  `hcl:"confidential_image_digest"`
-	MachineType       *string `hcl:"machine_type"`
-	DiskType          *string `hcl:"disk_type"`
-	SourceImage       *string `hcl:"source_image"`
+	InstanceRegion           string  `hcl:"instance_region"`
+	RemoteStateBucket        string  `hcl:"remote_state_bucket"`
+	ImageDigest              string  `hcl:"confidential_image_digest"`
+	MachineType              *string `hcl:"machine_type"`
+	DiskType                 *string `hcl:"disk_type"`
+	SourceImage              *string `hcl:"source_image"`
+	CustomTeeImageReference  string  `hcl:"custom_tee_image_reference"`
+	ConfidentialInstanceZone *string `hcl:"confidential_instance_zone"`
+	EnableConfidentialSpace  *bool   `hcl:"enable_confidential_space"`
 }
 
 type UniverseTfvars struct {
@@ -418,8 +447,20 @@ func GetInfraPipelineOutputs(t testing.TB, checkoutPath, workspace string) Infra
 		Logger:       logger.Discard,
 		NoColor:      true,
 	}
+
+	cicdProj := terraform.Output(t, options, "cicd_project_id")
+	cbProj := terraform.Output(t, options, "cloudbuild_project_id")
+	if cicdProj == "" {
+		cicdProj = cbProj
+	}
+	infraPipeProj := cbProj
+	if infraPipeProj == "" {
+		infraPipeProj = cicdProj
+	}
+
 	return InfraPipelineOutputs{
-		InfraPipeProj:                terraform.Output(t, options, "cloudbuild_project_id"),
+		InfraPipeProj:                infraPipeProj,
+		CICDProjectID:                cicdProj,
 		DefaultRegion:                terraform.Output(t, options, "default_region"),
 		TerraformSA:                  terraform.OutputMap(t, options, "terraform_service_accounts")["bu1-example-app"],
 		StateBucket:                  terraform.OutputMap(t, options, "state_buckets")["bu1-example-app"],

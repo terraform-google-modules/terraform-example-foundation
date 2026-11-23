@@ -144,6 +144,27 @@ tf_apply() {
   if [ -d "$path" ]; then
     cd "$path" || exit
     terraform apply -no-color -input=false -auto-approve "${tmp_plan}/${tf_file}.tfplan" || exit 1
+    if [ -f "Dockerfile" ]; then
+      local image_name
+      if image_name="$(terraform output -raw image_name 2>/dev/null)" && [ -n "$image_name" ] && [[ ! "$image_name" =~ "::error::" ]]; then
+        if command -v docker &>/dev/null; then
+          echo "Found Dockerfile and image_name: ${image_name}. Building and pushing..."
+          local registry_host
+          registry_host="$(echo "$image_name" | cut -d/ -f1)"
+          local impersonate_flag=()
+          if [ -n "${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT:-}" ]; then
+            local active_account
+            active_account="$(gcloud config get-value account 2>/dev/null)"
+            if [ "$active_account" != "$GOOGLE_IMPERSONATE_SERVICE_ACCOUNT" ]; then
+              impersonate_flag=("--impersonate-service-account=${GOOGLE_IMPERSONATE_SERVICE_ACCOUNT}")
+            fi
+          fi
+          gcloud auth print-access-token "${impersonate_flag[@]}" | docker login -u oauth2accesstoken --password-stdin "https://${registry_host}"
+          docker build --platform linux/amd64 -t "${image_name}" .
+          docker push "${image_name}"
+        fi
+      fi
+    fi
     cd "$base_dir" || exit
   else
     echo "ERROR: ${path} does not exist"

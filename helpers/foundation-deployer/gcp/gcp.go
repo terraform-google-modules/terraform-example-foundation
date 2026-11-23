@@ -265,5 +265,5 @@ func (g GCP) GetDockerImageDigest(t testing.TB, project, imageName string) (stri
 
 func (g GCP) GetServiceAccountAccessToken(t testing.TB, sa_email string) string {
 	cmd := fmt.Sprintf("auth print-access-token --impersonate-service-account=%s", sa_email)
-	return g.Runf(t,cmd).Get("token").String()
+	return g.Runf(t, cmd).Get("token").String()
 }

@@ -77,6 +77,8 @@ module "instance_template" {
     email  = google_service_account.compute_engine_service_account.email
     scopes = ["compute-rw"]
   }
+
+  resource_manager_tags = local.resource_manager_tags
 }
 
 module "compute_instance" {

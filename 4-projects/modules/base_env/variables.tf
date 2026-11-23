@@ -226,3 +226,28 @@ variable "ncc_private_service_connect_ip" {
   type        = string
   description = "The subnet internal IP to be used as the private service connect endpoint in the NCC VPC"
 }
+
+variable "enable_confidential_space" {
+  description = "Enable Confidential Space project, service account, and workload IAM."
+  type        = bool
+  default     = true
+  nullable    = false
+}
+
+variable "confidential_space_subnet_ip_range" {
+  description = "IP range for the Confidential Space dedicated subnetwork."
+  type        = string
+  default     = "10.4.64.0/24"
+}
+
+variable "confidential_space_private_service_connect_ip" {
+  description = "The internal IP address to be used as the Private Service Connect endpoint in the Confidential Space VPC."
+  type        = string
+  default     = "10.17.0.12"
+}
+
+variable "confidential_space_enable_ncc_spoke" {
+  description = "Toggle creation of NCC Spoke for the Confidential Space standalone VPC."
+  type        = bool
+  default     = false
+}

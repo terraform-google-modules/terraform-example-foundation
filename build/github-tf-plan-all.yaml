@@ -59,6 +59,7 @@ jobs:
           do
             sed -i'' -e "s/UPDATE_ME/${TF_BACKEND}/" $i
             sed -i'' -e "s/UPDATE_PROJECTS_BACKEND/${TF_BACKEND}/" $i
+            sed -i'' -e "s/UPDATE_APP_INFRA_BUCKET/${TF_BACKEND}/" $i
           done
 
       - id: plan-validate-all

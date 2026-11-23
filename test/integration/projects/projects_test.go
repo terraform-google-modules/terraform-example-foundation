@@ -116,7 +116,6 @@ func TestProjects(t *testing.T) {
 			shared := tft.NewTFBlueprintTest(t,
 				tft.WithTFDir(fmt.Sprintf(tt.baseDir, "shared")),
 			)
-			enableCB := shared.GetStringOutput("enable_cloudbuild_deploy") == "true"
 
 			vars := map[string]interface{}{
 				"remote_state_bucket":        backend_bucket,
@@ -139,8 +138,13 @@ func TestProjects(t *testing.T) {
 						"peering_project",
 						"shared_vpc_project",
 					}
-					if enableCB {
+					confidentialProjectID := projects.GetStringOutput("confidential_space_project")
+					if confidentialProjectID != "" {
 						projectsToVerify = append(projectsToVerify, "confidential_space_project")
+					} else {
+						assert.Empty(confidentialProjectID, "confidential_space_project output should be empty when disabled")
+						assert.Empty(projects.GetStringOutput("confidential_space_project_number"), "confidential_space_project_number output should be empty when disabled")
+						assert.Empty(projects.GetStringOutput("confidential_space_workload_sa"), "confidential_space_workload_sa output should be empty when disabled")
 					}
 
 					for _, projectOutput := range projectsToVerify {
@@ -178,6 +182,9 @@ func TestProjects(t *testing.T) {
 
 						if projectOutput == "confidential_space_project" {
 
+							sharedVPC := gcloud.Runf(t, "compute shared-vpc get-host-project %s", projectID)
+							assert.Empty(sharedVPC.Map(), "Confidential Space project must not be attached to Shared VPC host")
+
 							enabledAPIS := gcloud.Runf(t, "services list --project %s --impersonate-service-account %s", projectID, terraformSA).Array()
 							listApis := testutils.GetResultFieldStrSlice(enabledAPIS, "config.name")
 							assert.Subset(listApis, confidentialRestrictedApisEnabled, "API should have been enabled")
@@ -196,13 +203,13 @@ func TestProjects(t *testing.T) {
 						if projectOutput == "peering_project" {
 
 							peeringProjectSaRoles := append(project_sa_roles, "roles/resourcemanager.tagUser")
-							if enableCB {
-								sharedCloudBuildSA := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")[tt.repo]
-								iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", sharedCloudBuildSA)
+							sharedPipelineSAs := terraform.OutputMap(t, shared.GetTFOptions(), "terraform_service_accounts")
+							if sharedSA, ok := sharedPipelineSAs[tt.repo]; ok && sharedSA != "" {
+								iamFilter := fmt.Sprintf("bindings.members:'serviceAccount:%s'", sharedSA)
 								iamOpts := gcloud.WithCommonArgs([]string{"--flatten", "bindings", "--filter", iamFilter, "--format", "json"})
 								projectPolicy := gcloud.Run(t, fmt.Sprintf("projects get-iam-policy %s", projectID), iamOpts).Array()
 								listRoles := testutils.GetResultFieldStrSlice(projectPolicy, "bindings.role")
-								assert.Subset(listRoles, peeringProjectSaRoles, fmt.Sprintf("service account %s should have project level roles", sharedCloudBuildSA))
+								assert.Subset(listRoles, peeringProjectSaRoles, fmt.Sprintf("service account %s should have project level roles", sharedSA))
 							}
 
 							peering := gcloud.Runf(t, "compute networks peerings list --project %s", projectID).Array()[0]

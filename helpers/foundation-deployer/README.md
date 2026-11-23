@@ -10,6 +10,7 @@ Helper tool to deploy the Terraform example foundation using Cloud Build and Clo
 - [Google Cloud SDK](https://cloud.google.com/sdk/install) version 393.0.0 or later
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) version 2.28.0 or later
 - [Terraform](https://www.terraform.io/downloads.html) version 1.5.7 or later
+- [Docker](https://docs.docker.com/get-docker/) (required when deploying locally with `build_type = "local"` and `enable_confidential_space = true` to build and push the Confidential Space container image)
 - See `0-bootstrap` README for additional IAM [requirements](../../0-bootstrap/README.md#prerequisites) on the user deploying the Foundation.
 - To enable Security Command Center, choose a Security Command Center tier and create and grant permissions for the Security Command Center service account as described in [Setting up Security Command Center](https://cloud.google.com/security-command-center/docs/quickstart-security-command-center).
 
@@ -52,7 +53,7 @@ Version 1.5.7 is the last version before the license model change. To use a late
 
 ### Validate required tools
 
-- Check if required tools, Go 1.22.0+, Terraform 1.5.7+, gcloud 393.0.0+, and Git 2.28.0+, are installed:
+- Check if required tools, Go 1.22.0+, Terraform 1.5.7+, gcloud 393.0.0+, Git 2.28.0+, and Docker (for local confidential space builds), are installed:
 
     ```bash
     go version
@@ -62,6 +63,8 @@ Version 1.5.7 is the last version before the license model change. To use a late
     gcloud --version
 
     git --version
+
+    docker --version
     ```
 
 - check if required components of `gcloud` are installed:

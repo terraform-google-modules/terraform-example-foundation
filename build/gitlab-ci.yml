@@ -125,12 +125,12 @@ build-confidential-image:
     - bash run_gcp_auth.sh "${GITLAB_OIDC_TOKEN}" "${WIF_PROVIDER_NAME}" "${SERVICE_ACCOUNT_EMAIL}" `pwd`
     - for i in $(find . -name 'backend.tf'); do sed -i -e "s/UPDATE_ME/${TF_BACKEND}/" -e "s/UPDATE_PROJECTS_BACKEND/${TF_BACKEND}/" -e "s/UPDATE_APP_INFRA_BUCKET/${TF_BACKEND}/" "$i"; done
     - |
-      for bu_shared in $(find . -maxdepth 3 -name "Dockerfile" -path "*/shared/Dockerfile"); do
+      for bu_shared in $(find . -maxdepth 3 -name "Dockerfile" -path "*/shared/Dockerfile" ! -path "*/envs/*"); do
         shared_dir="$(dirname "$bu_shared")"
         if [ -d "$shared_dir" ]; then
           pushd "$shared_dir" > /dev/null
           terraform init -no-color -input=false
-          image_name="$(terraform output -raw image_name 2>/dev/null)"
+          image_name="$(terraform output -raw image_name 2>/dev/null || true)"
           if [ -n "$image_name" ] && [[ ! "$image_name" =~ "::error::" ]]; then
             registry_host="$(echo "$image_name" | cut -d/ -f1)"
             impersonate_flag=()
@@ -151,3 +151,6 @@ build-confidential-image:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
       when: never
     - if: $CI_COMMIT_REF_NAME == "production"
+      exists:
+        - "*/shared/Dockerfile"
+        - "*/*/shared/Dockerfile"

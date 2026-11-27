@@ -50,6 +50,7 @@
 | keys | List of created key names. |
 | ncc\_hub\_uri | The NCC Hub ID |
 | ncc\_spoke\_group | The NCC group to be used by spokes |
+| org\_id | Organization ID. |
 | peering\_complete | Output to be used as a module dependency. |
 | peering\_network | Peer network peering resource. |
 | peering\_project | Project sample peering project id. |

@@ -52,6 +52,7 @@ module "project" {
   random_project_id        = true
   random_project_id_length = 4
   activate_apis            = distinct(concat(var.activate_apis, local.extra_api))
+  activate_api_identities  = var.activate_api_identities
   name                     = "${var.project_prefix}-${local.env_code}-${var.business_code}-${var.project_suffix}"
   universe_prefix          = var.universe_prefix
   org_id                   = var.org_id

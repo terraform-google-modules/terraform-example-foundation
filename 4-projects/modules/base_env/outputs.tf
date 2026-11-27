@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+output "org_id" {
+  description = "Organization ID."
+  value       = local.org_id
+}
+
 output "floating_project" {
   description = "Project sample floating project."
   value       = module.floating_project.project_id
